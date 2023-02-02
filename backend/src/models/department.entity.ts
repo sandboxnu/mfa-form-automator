@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Position } from "./position.entity";
 
 @Entity()
@@ -10,9 +10,11 @@ export class Department {
     name: string
 
     @OneToOne(() => Position)
+    @JoinColumn()
     departmentHead: Position
 
     @OneToOne(() => Position)
+    @JoinColumn()
     leadershipTeamMember: Position
 
     @OneToMany(() => Position, (position) => position.manager)

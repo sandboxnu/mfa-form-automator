@@ -1,5 +1,6 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { FormInstance } from "./formInstance.entity";
+import { SignatureChainLink } from "./signatureChainLink.entity";
 
 @Entity()
 export class Form {
@@ -12,11 +13,10 @@ export class Form {
     @Column()
     pdfLink: string
 
-    // @Column()
-    // @OneToOne(() => SignatureChainLink)
-    // signatureChainLinkHead: SignatureChainLink
+    @OneToOne(() => SignatureChainLink, (signatureChainLink) => signatureChainLink.form)
+    @JoinColumn()
+    signatureChainLinkHead: SignatureChainLink
 
-    // @Column({ array: true })
     @OneToMany(() => FormInstance, (formInstance) => formInstance.formType)
     formInstances: FormInstance[]
 }
