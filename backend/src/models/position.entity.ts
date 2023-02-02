@@ -11,23 +11,18 @@ export class Position {
     @Column()
     roleName: string
 
-    @Column({nullable: true}) //many to 1
     @ManyToOne(() => Position, (position) => position.underlings)
     manager: Position
 
-    @Column({nullable: true})
     @OneToMany(() => Position, (position) => position.manager)
     underlings: Position[]
 
-    @Column()
     @ManyToOne(() => Department, (department) => department.employees)
     department: number
 
-    @Column()
     @OneToOne(() => Employee, (employee) => employee.id)
     employee: number
 
-    @Column()
     @OneToMany(() => FormInstance, (formInstance) => formInstance.initiator)
     formInstances: FormInstance[]
 }

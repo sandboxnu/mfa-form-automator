@@ -7,7 +7,6 @@ export class FormInstance {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
     @ManyToOne(() => Form, (form) => form.formInstances)
     formType: Form
 
@@ -17,7 +16,6 @@ export class FormInstance {
     // @Column()
     // signatureRequestHead: SignatureRequestChain
 
-    @Column()
     @ManyToOne(() => Position, (position) => position.formInstances)
     initiator: Position
 }

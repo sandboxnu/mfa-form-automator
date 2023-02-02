@@ -9,15 +9,12 @@ export class Department {
     @Column()
     name: string
 
-    @Column()
     @OneToOne(() => Position)
     departmentHead: Position
 
-    @Column()
     @OneToOne(() => Position)
     leadershipTeamMember: Position
 
-    @Column()
     @OneToMany(() => Position, (position) => position.manager)
     employees: Position[]
 }

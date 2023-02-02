@@ -16,7 +16,7 @@ export class Form {
     // @OneToOne(() => SignatureChainLink)
     // signatureChainLinkHead: SignatureChainLink
 
-    @Column()
+    // @Column({ array: true })
     @OneToMany(() => FormInstance, (formInstance) => formInstance.formType)
     formInstances: FormInstance[]
 }
