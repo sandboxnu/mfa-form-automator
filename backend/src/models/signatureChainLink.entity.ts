@@ -10,10 +10,10 @@ export class SignatureChainLink {
     @OneToOne(() => Form, (form) => form.signatureChainLinkHead)
     form: Form
 
-    // @Column()
-    // position: MFA.SigningPositions
+    @Column()
+    position: SigningPositions
 
-    @ManyToOne(() => Position, (position) => position.id)
+    @ManyToOne(() => Position)
     specificPosition: Position
 
     @OneToOne(() => SignatureChainLink)

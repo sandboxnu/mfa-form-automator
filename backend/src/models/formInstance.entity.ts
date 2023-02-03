@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Form } from "./form.entity";
 import { Position } from "./position.entity";
+import { SignatureRequestLink } from "./signatureRequestLink.entity";
 
 @Entity()
 export class FormInstance {
@@ -13,8 +14,9 @@ export class FormInstance {
     @Column()
     completed: boolean
 
-    // @Column()
-    // signatureRequestHead: SignatureRequestChain
+    @OneToOne(() => SignatureRequestLink)
+    @JoinColumn()
+    signatureRequestHead: SignatureRequestLink
 
     @ManyToOne(() => Position, (position) => position.formInstances)
     initiator: Position

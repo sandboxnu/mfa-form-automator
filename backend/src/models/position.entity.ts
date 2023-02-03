@@ -18,11 +18,11 @@ export class Position {
     underlings: Position[]
 
     @ManyToOne(() => Department, (department) => department.employees)
-    department: number
+    department: Department
 
-    @OneToOne(() => Employee, (employee) => employee.id)
+    @OneToOne(() => Employee)
     @JoinColumn()
-    employee: number
+    employee: Employee
 
     @OneToMany(() => FormInstance, (formInstance) => formInstance.initiator)
     formInstances: FormInstance[]
