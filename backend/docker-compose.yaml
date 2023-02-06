@@ -1,10 +1,17 @@
-version: "3.8"
+version: "3.8" # Docker compose version being used (3.8 is the current latest)
 services:
-  databse:
+  database:
+    #
     image: postgres:latest
+    #
+    restart: always
+    # Mapping the ports, takes the form [port on local device]:[port in docker container]
     ports:
       - "5432:5432"
+    # Normally we have a environments: here instead and it has all the database specifications (user, password, database) 
+    # but since we have that in our .env file we can tell docker to look in a specific location for the connection details instead
     env_file: .env
+    #
     volumes:
       - ./mfa_db_data:/var/lib/postgresql/data
 volumes:

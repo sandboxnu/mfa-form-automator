@@ -31,6 +31,19 @@
 ```bash
 $ npm install
 ```
+## Running the app for development
+```bash
+cd backend
+
+# Starting the database
+yarn start:dev:db
+
+#Running the app
+yarn start:dev
+
+#Shutting down the database
+yarn stop:dev:db
+```
 
 ## Running the app
 
