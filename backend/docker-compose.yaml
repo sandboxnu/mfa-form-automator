@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  databse:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    env_file: .env
+    volumes:
+      - ./mfa_db_data:/var/lib/postgresql/data
+volumes:
+  mfa_db_data:

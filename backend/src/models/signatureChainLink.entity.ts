@@ -1,3 +1,4 @@
+import { SigningPositions } from "src/ts/enums/SigningPositions";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Form } from "./form.entity";
 import { Position } from "./position.entity";
