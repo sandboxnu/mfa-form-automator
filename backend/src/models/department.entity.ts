@@ -17,7 +17,7 @@ export class Department {
     departmentHeadId: number
 
     @OneToOne(() => Position)
-    @JoinColumn()
+    @JoinColumn({ name: "leadershipTeamMemberId"})
     leadershipTeamMember: Position
 
     @Column({ type: "int", nullable: true})
