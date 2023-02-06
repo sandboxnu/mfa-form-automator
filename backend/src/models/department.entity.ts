@@ -10,12 +10,18 @@ export class Department {
     name: string
 
     @OneToOne(() => Position)
-    @JoinColumn()
+    @JoinColumn({ name: "departmentHeadId" })
     departmentHead: Position
+
+    @Column({ type: "int", nullable: true })
+    departmentHeadId: number
 
     @OneToOne(() => Position)
     @JoinColumn()
     leadershipTeamMember: Position
+
+    @Column({ type: "int", nullable: true})
+    leadershipTeamMemberId: number
 
     @OneToMany(() => Position, (position) => position.manager)
     employees: Position[]
