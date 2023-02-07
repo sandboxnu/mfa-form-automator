@@ -1,4 +1,4 @@
-enum SigningPositions {
+export enum SigningPositions {
     EMPLOYEE = "EMPLOYEE",
     MANAGER = "MANAGER",
     DEPARTMENT_HEAD = "DEPARTMENT_HEAD",

@@ -6,7 +6,7 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
 export class DatabaseConfig implements TypeOrmOptionsFactory {
     constructor(private readonly configService: ConfigService) {}
     createTypeOrmOptions(connectionName?: string): TypeOrmModuleOptions | Promise<TypeOrmModuleOptions> {
-       return this.configService.get('database');
+        return this.configService.get('database');
     }
     
 }

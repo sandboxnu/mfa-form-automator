@@ -9,7 +9,6 @@ import { DatabaseConfig } from './config/database.config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `${process.cwd()}/.env.${process.env.NODE_ENV}`,
       isGlobal: true, 
       load: [config]
     }), 
