@@ -14,8 +14,11 @@ export class Form {
     pdfLink: string
 
     @OneToOne(() => SignatureChainLink, (signatureChainLink) => signatureChainLink.form)
-    @JoinColumn()
+    @JoinColumn({ name: "signatureChainLinkHeadId" })
     signatureChainLinkHead: SignatureChainLink
+
+    @Column({ type: "int", nullable: true })
+    signatureChainLinkHeadId: number
 
     @OneToMany(() => FormInstance, (formInstance) => formInstance.formType)
     formInstances: FormInstance[]

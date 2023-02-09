@@ -12,17 +12,28 @@ export class Position {
     roleName: string
 
     @ManyToOne(() => Position, (position) => position.underlings)
+    @JoinColumn({ name: "managerId"})
     manager: Position
+
+    @Column({ type: "int", nullable: true })
+    managerId: number
 
     @OneToMany(() => Position, (position) => position.manager)
     underlings: Position[]
 
     @ManyToOne(() => Department, (department) => department.employees)
+    @JoinColumn({ name: "departmentId"})
     department: Department
 
+    @Column({ type: "int", nullable: true })
+    departmentId: number
+
     @OneToOne(() => Employee)
-    @JoinColumn()
+    @JoinColumn({ name: "employeeId" })
     employee: Employee
+
+    @Column({ type: "int", nullable: true })
+    employeeId: number
 
     @OneToMany(() => FormInstance, (formInstance) => formInstance.initiator)
     formInstances: FormInstance[]
