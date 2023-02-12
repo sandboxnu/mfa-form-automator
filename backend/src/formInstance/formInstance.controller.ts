@@ -19,7 +19,7 @@ export class FormInstanceController {
     @ApiOperation({ summary: 'Creates a new FormInstance' })
     @ApiBody({ type: CreateFormInstanceDto })
     @ApiOkResponse({ description: 'The created form instance', type: FormInstanceDto })
-    async createFormInstance(@Body() createFormInstanceDto: CreateFormInstanceDto): Promise<FormInstance> {
+    async createFormInstance(@Body() createFormInstanceDto: CreateFormInstanceDto): Promise<Number> {
         this.employeeService.getEmployeeById(createFormInstanceDto.employeeId).then((employees) => {
             if (employees.length === 0) {
                 throw new HttpException('Employee not found', HttpStatus.BAD_REQUEST);
@@ -31,6 +31,6 @@ export class FormInstanceController {
             }
         });
         const createdFormInstance = await this.formInstanceService.createFormInstance(createFormInstanceDto);
-        return createdFormInstance;
+        return createdFormInstance.id;
     }
 }
