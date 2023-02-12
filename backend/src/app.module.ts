@@ -7,6 +7,7 @@ import { config } from './config/config';
 import { DatabaseConfig } from './config/database.config';
 import { FormModule } from './form/form.module';
 import { FormInstanceModule } from './formInstance/formInstance.module';
+import { EmployeeModule } from './employee/employee.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FormInstanceModule } from './formInstance/formInstance.module';
       imports: [ConfigModule],
       useClass: DatabaseConfig,
     }),
+    EmployeeModule,
     FormModule,
     FormInstanceModule,
   ],

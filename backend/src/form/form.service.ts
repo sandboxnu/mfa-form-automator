@@ -23,6 +23,14 @@ export class FormService {
     return this.formRepository.save(form);
   }
 
+  getFormById(formId: number) {
+    return this.formRepository.find({
+      where: {
+          id: formId
+      }
+    })
+  }
+
   async findAllForms() {
     console.log(await this.formRepository.find());
   }
