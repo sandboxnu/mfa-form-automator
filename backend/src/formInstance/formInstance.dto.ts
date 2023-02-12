@@ -5,7 +5,7 @@ import { SignatureRequestLink } from "src/models/signatureRequestLink.entity";
 export class CreateFormInstanceDto {
     @IsNotEmpty()
     @ApiProperty()
-    employeeId: number;
+    positionId: number;
 
     @IsNotEmpty()
     @ApiProperty()
@@ -15,7 +15,7 @@ export class CreateFormInstanceDto {
 export class FormInstanceDto {
     @ApiProperty()
     formId: number;
-    
+
     @ApiProperty()
     completed: boolean;
 

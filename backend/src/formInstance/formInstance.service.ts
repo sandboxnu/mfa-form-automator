@@ -16,7 +16,7 @@ export class FormInstanceService {
             formId: createFormInstanceDto.formId,
             completed: false,
             signatureRequestHead: null,
-            initiatorId: createFormInstanceDto.employeeId
+            initiatorId: createFormInstanceDto.positionId
         };
     
         const formInstance: FormInstance = this.formInstanceRepository.create(formInstanceDto);
