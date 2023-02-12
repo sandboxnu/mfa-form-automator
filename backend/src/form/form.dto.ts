@@ -15,7 +15,6 @@ export class CreateFormDto {
 }
 
 export class FormDto {
-  // id:
   @IsNotEmpty()
   @ApiProperty()
   name: string;

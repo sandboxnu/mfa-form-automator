@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Form } from 'src/models/form.entity';
 import { CreateFormDto, FormDto } from './form.dto';
@@ -16,5 +16,10 @@ export class FormController {
   async createForm(@Body() createFormDto: CreateFormDto): Promise<Form> {
     const createdForm = await this.formService.createForm(createFormDto);
     return createdForm;
+  }
+
+  @Get()
+  async findAllForms() {
+    await this.formService.findAllForms();
   }
 }

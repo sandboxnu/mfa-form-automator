@@ -11,6 +11,7 @@ export class FormService {
   ) {}
 
   createForm(createFormDto: CreateFormDto) {
+    //TODO signatureChanLinkHead should be built out
     const formDto: FormDto = {
       name: createFormDto.name,
       pdfLink: createFormDto.pdfLink,
@@ -20,5 +21,9 @@ export class FormService {
 
     const form: Form = this.formRepository.create(formDto);
     return this.formRepository.save(form);
+  }
+
+  async findAllForms() {
+    console.log(await this.formRepository.find());
   }
 }
