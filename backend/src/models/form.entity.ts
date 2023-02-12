@@ -18,16 +18,13 @@ export class Form {
   @Column()
   name: string;
 
-  @Column()
-  pdfLink: string;
+  @OneToOne(() => SignatureChainLink, (signatureChainLink) => signatureChainLink.form)
+  @JoinColumn({ name: "signatureChainLinkHeadId" })
+  signatureChainLinkHead: SignatureChainLink
 
-  @OneToOne(
-    () => SignatureChainLink,
-    (signatureChainLink) => signatureChainLink.form,
-  )
-  @JoinColumn()
-  signatureChainLinkHead: SignatureChainLink;
+  @Column({ type: "int", nullable: true })
+  signatureChainLinkHeadId: number
 
   @OneToMany(() => FormInstance, (formInstance) => formInstance.formType)
-  formInstances: FormInstance[];
+  formInstances: FormInstance[]
 }

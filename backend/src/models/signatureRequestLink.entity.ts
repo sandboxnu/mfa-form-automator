@@ -15,7 +15,11 @@ export class SignatureRequestLink {
     formInstance: FormInstance
 
     @ManyToOne(() => Position)
+    @JoinColumn({ name: "positionId"})
     position: Position
+
+    @Column({ type: "int", nullable: true })
+    positionId: number
 
     @Column()
     isSigned: boolean
@@ -24,7 +28,9 @@ export class SignatureRequestLink {
     canSign: boolean
 
     @OneToOne(() => SignatureRequestLink)
-    @JoinColumn()
+    @JoinColumn({ name: "nextId" })
     next: SignatureRequestLink
 
+    @Column({ type: "int", nullable: true })
+    nextId: number
 }

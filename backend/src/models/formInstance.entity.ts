@@ -15,9 +15,16 @@ export class FormInstance {
     completed: boolean
 
     @OneToOne(() => SignatureRequestLink)
-    @JoinColumn()
+    @JoinColumn({ name: "signatureRequestHeadId"})
     signatureRequestHead: SignatureRequestLink
 
+    @Column({ type: "int", nullable: true })
+    signatureRequestHeadId: number
+
     @ManyToOne(() => Position, (position) => position.formInstances)
+    @JoinColumn({ name: "initiatorId"})
     initiator: Position
+
+    @Column({ type: "int", nullable: true })
+    initiatorId: number
 }
