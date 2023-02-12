@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { config } from './config/config';
 import { DatabaseConfig } from './config/database.config';
 import { FormModule } from './form/form.module';
+import { FormInstanceModule } from './formInstance/formInstance.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FormModule } from './form/form.module';
       useClass: DatabaseConfig,
     }),
     FormModule,
+    FormInstanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
