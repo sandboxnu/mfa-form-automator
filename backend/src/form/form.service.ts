@@ -9,7 +9,8 @@ import { CreateFormDto, FormDto } from './form.dto';
 export class FormService {
   constructor(
     @InjectRepository(Form) private formRepository: Repository<Form>,
-    @Inject(SignatureChainService) private signatureChainLinkService: SignatureChainService,
+    @Inject(SignatureChainService)
+    private signatureChainLinkService: SignatureChainService,
   ) {}
 
   async createForm(createFormDto: CreateFormDto) {
@@ -21,10 +22,11 @@ export class FormService {
     };
     const form: Form = this.formRepository.create(formDto);
 
-    form.signatureChainLinkHead = await this.signatureChainLinkService.createSignatureChain({
-      formId: form.id,
-      signatureChainLinks: createFormDto.signatureChainLinks
-    });
+    form.signatureChainLinkHead =
+      await this.signatureChainLinkService.createSignatureChain({
+        formId: form.id,
+        signatureChainLinks: createFormDto.signatureChainLinks,
+      });
 
     return this.formRepository.save(form);
   }
@@ -32,9 +34,9 @@ export class FormService {
   getFormById(formId: number) {
     return this.formRepository.find({
       where: {
-          id: formId
-      }
-    })
+        id: formId,
+      },
+    });
   }
 
   async findAllForms() {
