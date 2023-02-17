@@ -18,8 +18,10 @@ export class FormInstanceService {
             signatureRequestHead: null,
             initiatorId: createFormInstanceDto.positionId
         };
-    
         const formInstance: FormInstance = this.formInstanceRepository.create(formInstanceDto);
+
+        // TODO: Instantiate a new signature request chain, and add to the form instance
+        
         return this.formInstanceRepository.save(formInstance);
     }
 }
