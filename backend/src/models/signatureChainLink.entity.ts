@@ -9,7 +9,11 @@ export class SignatureChainLink {
     id: number
     
     @OneToOne(() => Form, (form) => form.signatureChainLinkHead)
+    @JoinColumn({ name: "formId"})
     form: Form
+
+    @Column({ type: "int", nullable: true })
+    formId: number
 
     @Column()
     position: SigningPositions

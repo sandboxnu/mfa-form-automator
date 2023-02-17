@@ -9,17 +9,18 @@ export class SignatureRequestLink {
     id: number
 
     @ManyToOne(() => SignatureChainLink)
+    @JoinColumn({ name: "signatureChainLinkId"})
     signatureChainLink: SignatureChainLink
 
+    @Column({ type: "int", nullable: true })
+    signatureChainLinkId: number
+
     @OneToOne(() => FormInstance)
+    @JoinColumn({ name: "formInstanceId"})
     formInstance: FormInstance
 
-    @ManyToOne(() => Position)
-    @JoinColumn({ name: "positionId"})
-    position: Position
-
     @Column({ type: "int", nullable: true })
-    positionId: number
+    formInstanceId: number
 
     @Column()
     isSigned: boolean

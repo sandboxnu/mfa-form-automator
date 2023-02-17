@@ -1,12 +1,26 @@
-
-export class CreateSignatureRequestChainLinkDto {
-    // TODO: Specify fields
-}
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty } from "class-validator";
 
 export class CreateSignatureRequestChainDto {
-    // TODO: Specify fields
+    @IsNotEmpty()
+    @ApiProperty()
+    formId: number
+
+    @IsNotEmpty()
+    @ApiProperty()
+    formInstanceId: number
 }
 
-export class SignatureRequestChainDto {
-    // TODO: Specify fields
+export class SignatureRequestChainLinkDto {
+    @ApiProperty()
+    formInstanceId: number
+
+    @ApiProperty()
+    isSigned: boolean
+
+    @ApiProperty()
+    canSign: boolean
+
+    @ApiProperty()
+    nextId: number
 }
