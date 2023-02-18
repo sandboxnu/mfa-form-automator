@@ -1,37 +1,44 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { FormInstance } from "./formInstance.entity";
-import { Position } from "./position.entity";
-import { SignatureChainLink } from "./signatureChainLink.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { FormInstance } from './formInstance.entity';
+import { Position } from './position.entity';
+import { SignatureChainLink } from './signatureChainLink.entity';
 
 @Entity()
 export class SignatureRequestLink {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @ManyToOne(() => SignatureChainLink)
-    @JoinColumn({ name: "signatureChainLinkId"})
-    signatureChainLink: SignatureChainLink
+  @ManyToOne(() => SignatureChainLink)
+  @JoinColumn({ name: 'signatureChainLinkId' })
+  signatureChainLink: SignatureChainLink;
 
-    @Column({ type: "int", nullable: true })
-    signatureChainLinkId: number
+  @Column({ type: 'int', nullable: true })
+  signatureChainLinkId: number;
 
-    @OneToOne(() => FormInstance)
-    @JoinColumn({ name: "formInstanceId"})
-    formInstance: FormInstance
+  @OneToOne(() => FormInstance)
+  @JoinColumn({ name: 'formInstanceId' })
+  formInstance: FormInstance;
 
-    @Column({ type: "int", nullable: true })
-    formInstanceId: number
+  @Column({ type: 'int', nullable: true })
+  formInstanceId: number;
 
-    @Column()
-    isSigned: boolean
+  @Column()
+  isSigned: boolean;
 
-    @Column()
-    canSign: boolean
+  @Column()
+  canSign: boolean;
 
-    @OneToOne(() => SignatureRequestLink)
-    @JoinColumn({ name: "nextId" })
-    next: SignatureRequestLink
+  @OneToOne(() => SignatureRequestLink)
+  @JoinColumn({ name: 'nextId' })
+  next: SignatureRequestLink;
 
-    @Column({ type: "int", nullable: true })
-    nextId: number
+  @Column({ type: 'int', nullable: true })
+  nextId: number;
 }

@@ -38,17 +38,17 @@ export class SignatureChainService {
   async getSignatureChainByNextSignatureId(nextSignatureId: number) {
     return this.signatureChainLinkRepository.findOne({
       where: {
-        nextSignatureId: nextSignatureId
-      }
-    })
+        nextSignatureId: nextSignatureId,
+      },
+    });
   }
 
   async getSignatureChainRootByFormId(formId: number) {
     return this.signatureChainLinkRepository.findOne({
       where: {
         formId: formId,
-        nextSignatureId: null
-      }
-    })
+        nextSignatureId: null,
+      },
+    });
   }
 }
