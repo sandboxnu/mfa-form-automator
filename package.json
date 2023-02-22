@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "class-validator": "^0.14.0",
+    "react-router-dom": "^6.8.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.11"
   },

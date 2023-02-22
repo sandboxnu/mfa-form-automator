@@ -7,6 +7,7 @@ import {
     createIcon
   } from "@chakra-ui/react";
   import { Children, useState } from "react";
+  import { useNavigate } from "react-router-dom"; 
   
   const StyleButton = ({children}: React.PropsWithChildren) => <Button bg="transparent" height="9">{children}</Button>
 
@@ -46,22 +47,27 @@ import {
     d:"M20.4128 13.176C20.4604 12.792 20.4961 12.408 20.4961 12C20.4961 11.592 20.4604 11.208 20.4128 10.824L22.9229 8.844C23.1489 8.664 23.2084 8.34 23.0656 8.076L20.6864 3.924C20.5794 3.732 20.3771 3.624 20.163 3.624C20.0916 3.624 20.0202 3.636 19.9608 3.66L16.9987 4.86C16.3801 4.38 15.7139 3.984 14.9882 3.684L14.5362 0.504C14.5005 0.216 14.2507 0 13.9533 0H9.19485C8.89745 0 8.64763 0.216 8.61194 0.504L8.15989 3.684C7.43423 3.984 6.76805 4.392 6.14946 4.86L3.18734 3.66C3.11597 3.636 3.04459 3.624 2.97322 3.624C2.77098 3.624 2.56875 3.732 2.46169 3.924L0.0824771 8.076C-0.0721714 8.34 -0.000795007 8.664 0.22523 8.844L2.7353 10.824C2.68771 11.208 2.65202 11.604 2.65202 12C2.65202 12.396 2.68771 12.792 2.7353 13.176L0.22523 15.156C-0.000795007 15.336 -0.0602754 15.66 0.0824771 15.924L2.46169 20.076C2.56875 20.268 2.77098 20.376 2.98511 20.376C3.05649 20.376 3.12786 20.364 3.18734 20.34L6.14946 19.14C6.76805 19.62 7.43423 20.016 8.15989 20.316L8.61194 23.496C8.64763 23.784 8.89745 24 9.19485 24H13.9533C14.2507 24 14.5005 23.784 14.5362 23.496L14.9882 20.316C15.7139 20.016 16.3801 19.608 16.9987 19.14L19.9608 20.34C20.0321 20.364 20.1035 20.376 20.1749 20.376C20.3771 20.376 20.5794 20.268 20.6864 20.076L23.0656 15.924C23.2084 15.66 23.1489 15.336 22.9229 15.156L20.4128 13.176ZM18.0574 11.124C18.105 11.496 18.1169 11.748 18.1169 12C18.1169 12.252 18.0931 12.516 18.0574 12.876L17.8909 14.232L18.9496 15.072L20.2344 16.08L19.4017 17.532L17.8909 16.92L16.6537 16.416L15.583 17.232C15.0715 17.616 14.5838 17.904 14.096 18.108L12.835 18.624L12.6447 19.98L12.4068 21.6H10.7413L10.325 18.624L9.06399 18.108C8.55246 17.892 8.07662 17.616 7.60078 17.256L6.51824 16.416L5.25726 16.932L3.74646 17.544L2.91374 16.092L4.19851 15.084L5.25726 14.244L5.09071 12.888C5.05502 12.516 5.03123 12.24 5.03123 12C5.03123 11.76 5.05502 11.484 5.09071 11.124L5.25726 9.768L4.19851 8.928L2.91374 7.92L3.74646 6.468L5.25726 7.08L6.49444 7.584L7.56509 6.768C8.07662 6.384 8.56436 6.096 9.0521 5.892L10.3131 5.376L10.5034 4.02L10.7413 2.4H12.3949L12.8112 5.376L14.0722 5.892C14.5838 6.108 15.0596 6.384 15.5354 6.744L16.618 7.584L17.879 7.068L19.3898 6.456L20.2225 7.908L18.9496 8.928L17.8909 9.768L18.0574 11.124ZM11.5741 7.2C8.94503 7.2 6.81564 9.348 6.81564 12C6.81564 14.652 8.94503 16.8 11.5741 16.8C14.2031 16.8 16.3325 14.652 16.3325 12C16.3325 9.348 14.2031 7.2 11.5741 7.2ZM11.5741 14.4C10.2655 14.4 9.19485 13.32 9.19485 12C9.19485 10.68 10.2655 9.6 11.5741 9.6C12.8826 9.6 13.9533 10.68 13.9533 12C13.9533 13.32 12.8826 14.4 11.5741 14.4Z"
   }) 
 
+  
   export const NavBar: React.FC = () => {
+    
+    /*
+    const navigate = useNavigate();
+    const toEmptyPage = async () => {
+    navigate('/EmptyPage');
+    };
+    */
+    
     return (
-      <Flex align="left" justify="space-around" flexDirection ="column">
-      <StyleButton>Overview</StyleButton> 
-        <StyleButton>To do</StyleButton>
-        <StyleButton>Pending</StyleButton>
-        <StyleButton>Completed</StyleButton>
+      <Flex paddingLeft="80px">
+        <Flex alignItems="center" justify="space-around" flexDirection ="column" width="25">
+        <StyleButton><OverViewIcon marginRight="2"/>Overview</StyleButton> 
+        <StyleButton><ToDoIcon marginRight="2"/> To do</StyleButton>
+        <StyleButton><PendingIcon marginRight="2"/> Pending</StyleButton>
+        <StyleButton><CompletedIcon marginRight="2"/> Completed</StyleButton>
         <Divider mt={"5"} mb={5} borderColor={'gray'}/>
-        <StyleButton>History</StyleButton>
-        <StyleButton>Settings</StyleButton>
-        <OverViewIcon/>
-        <ToDoIcon/> 
-        <PendingIcon/> 
-        <CompletedIcon/> 
-        <HistoryIcon/> 
-        <SettingsIcon/>
+        <StyleButton><HistoryIcon marginRight="2"/> History</StyleButton>
+        <StyleButton><SettingsIcon marginRight="2"/>Settings</StyleButton>
+        </Flex>
     </Flex>
     );
   };
