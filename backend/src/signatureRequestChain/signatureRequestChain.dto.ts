@@ -9,11 +9,18 @@ export class CreateSignatureRequestChainDto {
   @IsNotEmpty()
   @ApiProperty()
   formInstanceId: number;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  initiatorId: number;
 }
 
 export class SignatureRequestChainLinkDto {
   @ApiProperty()
   formInstanceId: number;
+
+  @ApiProperty()
+  signatureChainLinkId: number;
 
   @ApiProperty()
   isSigned: boolean;
