@@ -16,6 +16,8 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "start:test:db": "docker-compose -f docker-compose.test.yaml -p mfa_test_database up -d",
+    "stop:test:db": "docker-compose -f docker-compose.test.yaml -p mfa_test_database down",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -26,7 +28,7 @@
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.0",
-    "@nestjs/core": "^9.0.0",
+    "@nestjs/core": "^9.3.9",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/typeorm": "^9.0.1",
@@ -41,9 +43,10 @@
     "typeorm": "^0.3.11"
   },
   "devDependencies": {
+    "@linnify/typeorm-factory": "^1.0.12",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
-    "@nestjs/testing": "^9.3.7",
+    "@nestjs/testing": "^9.3.9",
     "@types/express": "^4.17.13",
     "@types/jest": "28.1.8",
     "@types/node": "^16.0.0",

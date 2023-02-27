@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Form } from 'src/models/form.entity';
+import { Form } from '../models/form.entity';
 import { Repository } from 'typeorm';
 import { CreateFormDto, FormDto } from './form.dto';
 
