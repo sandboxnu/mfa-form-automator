@@ -15,8 +15,12 @@ export class FormInstance {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Form, (form) => form.formInstances)
-  formType: Form;
+    @ManyToOne(() => Form, (form) => form.formInstances)
+    @JoinColumn({ name: "formId"})
+    formType: Form
+
+    @Column({ type: "int", nullable: false})
+    formId: number
 
   @Column()
   completed: boolean;

@@ -1,19 +1,27 @@
-import { IsNotEmpty } from 'class-validator';
-import { Form } from 'src/models/form.entity';
-import { Position } from 'src/models/position.entity';
-import { SignatureRequestLink } from 'src/models/signatureRequestLink.entity';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty } from "class-validator";
+import { SignatureRequestLink } from "../models/signatureRequestLink.entity";
 
 export class CreateFormInstanceDto {
-  @IsNotEmpty()
-  employeeId: number;
+    @IsNotEmpty()
+    @ApiProperty()
+    positionId: number;
 
-  @IsNotEmpty()
-  formId: number;
+    @IsNotEmpty()
+    @ApiProperty()
+    formId: number;
 }
 
 export class FormInstanceDto {
-  formType: Form;
-  completed: boolean;
-  signatureRequestHead: SignatureRequestLink;
-  initiatorId: number;
+    @ApiProperty()
+    formId: number;
+
+    @ApiProperty()
+    completed: boolean;
+
+    @ApiProperty()
+    signatureRequestHead: SignatureRequestLink;
+
+    @ApiProperty()
+    initiatorId: number;
 }
