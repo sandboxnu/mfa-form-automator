@@ -27,12 +27,13 @@ const StyleButton = ({ children, link }: { children: any; link: string }) => {
           bg="transparent"
           height="9"
           width="100%"
+          borderRadius={10}
           // temporary until I figure out custom color schemes
-          _hover={{
-            background: "#FAFA78",
-          }}
           style={{
             background: isActive ? "#FAFA78" : "white",
+          }}
+          _hover={{
+            background: "#FAFA78 !important",
           }}
           isActive={isActive}
         >
