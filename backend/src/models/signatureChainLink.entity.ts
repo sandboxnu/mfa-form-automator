@@ -15,10 +15,16 @@ export class SignatureChainLink {
     position: SigningPositions
 
     @ManyToOne(() => Position)
+    @JoinColumn({ name: "specificPositionId"})
     specificPosition: Position
 
+    @Column({ type: "int", nullable: true })
+    specificPositionid: number
+
     @OneToOne(() => SignatureChainLink)
-    @JoinColumn()
+    @JoinColumn({ name: "nextSignatureId"})
     nextSignature: SignatureChainLink
 
+    @Column({ type: "int", nullable: true })
+    nextSignatureId: number
 }
