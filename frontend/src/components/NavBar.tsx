@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
+// button abstraction to include the Link and styling
 const StyleButton = ({ children, link }: { children: any; link: string }) => {
   const router = useRouter();
   const isActive = router.pathname === link;
@@ -86,6 +87,7 @@ const PlusIcon = createIcon({
   d: "M0.855469 8.17188V5.11328H5.66016V0.308594H8.74219V5.11328H13.5469V8.17188H8.74219V13H5.66016V8.17188H0.855469Z",
 });
 
+// Navbar component
 export const NavBar: React.FC = () => {
   return (
     <Box padding={10} w={250}>
