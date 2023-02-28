@@ -40,3 +40,4 @@ lerna-debug.log*
 
 # Docker Files
 /mfa_db_data
+/mfa_test_db_data
