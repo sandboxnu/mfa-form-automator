@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { Form } from 'src/models/form.entity';
+import { Form } from '../models/form.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FormController } from './form.controller';
 import { FormService } from './form.service';
