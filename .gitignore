@@ -37,4 +37,7 @@ lerna-debug.log*
 # Environment variables
 .env
 .env.development
+
+# Docker Files
+backend/mfa_db_data
 backend/mfa_test_db_data
