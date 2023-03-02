@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FormInstance } from '../models/formInstance.entity';
 import { Repository } from 'typeorm';
 import { CreateFormInstanceDto, FormInstanceDto } from './formInstance.dto';
-import { SignatureRequestLink } from 'src/models/signatureRequestLink.entity';
-import { SignatureRequestChainService } from 'src/signatureRequestChain/signatureRequestChain.service';
+import { SignatureRequestLink } from '../models/signatureRequestLink.entity';
+import { SignatureRequestChainService } from '../signatureRequestChain/signatureRequestChain.service';
 
 @Injectable()
 export class FormInstanceService {

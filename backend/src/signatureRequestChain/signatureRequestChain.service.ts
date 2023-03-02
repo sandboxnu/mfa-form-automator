@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DepartmentService } from 'src/department/department.service';
-import { SignatureChainLink } from 'src/models/signatureChainLink.entity';
-import { SignatureRequestLink } from 'src/models/signatureRequestLink.entity';
-import { PositionService } from 'src/position/position.service';
-import { SignatureChainService } from 'src/signatureChain/signatureChain.service';
-import { SigningPositions } from 'src/ts/enums/SigningPositions';
+import { DepartmentService } from '../department/department.service';
+import { SignatureChainLink } from '../models/signatureChainLink.entity';
+import { SignatureRequestLink } from '../models/signatureRequestLink.entity';
+import { PositionService } from '../position/position.service';
+import { SignatureChainService } from '../signatureChain/signatureChain.service';
+import { SigningPositions } from '../ts/enums/SigningPositions';
 import { Repository } from 'typeorm';
 import {
   CreateSignatureRequestChainDto,
