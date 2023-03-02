@@ -8,6 +8,7 @@ import { DatabaseConfig } from './config/database.config';
 import { FormModule } from './form/form.module';
 import { FormInstanceModule } from './formInstance/formInstance.module';
 import { PositionModule } from './position/position.module';
+import { SignatureChainModule } from './signatureChain/signatureChain.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PositionModule } from './position/position.module';
     PositionModule,
     FormModule,
     FormInstanceModule,
+    SignatureChainModule,
   ],
   controllers: [AppController],
   providers: [AppService],

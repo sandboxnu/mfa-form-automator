@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUrl } from 'class-validator';
-import { FormInstance } from 'src/models/formInstance.entity';
+import { ArrayNotEmpty, IsNotEmpty, IsUrl } from 'class-validator';
+import { FormInstance } from '../models/formInstance.entity';
 import { SignatureChainLink } from '../models/signatureChainLink.entity';
+import { CreateSignatureChainLinkDto } from '../signatureChain/signatureChain.dto';
 
 export class CreateFormDto {
   @IsNotEmpty()
@@ -12,9 +13,30 @@ export class CreateFormDto {
   @IsUrl()
   @ApiProperty()
   pdfLink: string;
+
+  @ArrayNotEmpty()
+  @ApiProperty()
+  signatureChainLinks: CreateSignatureChainLinkDto[];
+}
+
+export class CreateFormDtoInternal {
+  @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
+  @IsUrl()
+  pdfLink: string;
+
+  signatureChainLinkHead: SignatureChainLink;
+
+  formInstances: FormInstance[];
 }
 
 export class FormDto {
+  @IsNotEmpty()
+  @ApiProperty()
+  id: number;
+
   @IsNotEmpty()
   @ApiProperty()
   name: string;

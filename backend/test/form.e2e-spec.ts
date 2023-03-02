@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import { SigningPositions } from '../src/ts/enums/SigningPositions';
 import * as request from 'supertest';
 import { initializeApp } from './utils';
 
@@ -25,6 +26,16 @@ describe('FormController (e2e)', () => {
         .send({
           name: 'test1',
           pdfLink: 'https://www.sandboxnu.com/',
+          signatureChainLinks: [
+            {
+              position: SigningPositions.MANAGER,
+              specificPositionId: null,
+            },
+            {
+              position: SigningPositions.DEPARTMENT_HEAD,
+              specificPositionId: null,
+            },
+          ],
         })
         .expect(201);
     });
@@ -35,6 +46,16 @@ describe('FormController (e2e)', () => {
         .send({
           name: 'test2',
           pdfLink: 'https://www.sandboxnu.com/',
+          signatureChainLinks: [
+            {
+              position: SigningPositions.MANAGER,
+              specificPositionId: null,
+            },
+            {
+              position: SigningPositions.DEPARTMENT_HEAD,
+              specificPositionId: null,
+            },
+          ],
         })
         .expect(201)
         .then((res) => {
@@ -42,7 +63,7 @@ describe('FormController (e2e)', () => {
           expect(body.id).toBeGreaterThanOrEqual(0);
           expect(body.name).toStrictEqual('test2');
           expect(body.signatureChainLinkHead).toBeNull();
-          expect(body.signatureChainLinkHeadId).toBeNull();
+          expect(body.signatureChainLinkHeadId).toBeGreaterThanOrEqual(0);
           expect(body.formInstances).toStrictEqual([]);
         });
     });
@@ -53,6 +74,16 @@ describe('FormController (e2e)', () => {
         .send({
           name: '',
           pdfLink: 'https://www.sandboxnu.com/',
+          signatureChainLinks: [
+            {
+              position: SigningPositions.MANAGER,
+              specificPositionId: null,
+            },
+            {
+              position: SigningPositions.DEPARTMENT_HEAD,
+              specificPositionId: null,
+            },
+          ],
         })
         .expect(400);
     });
@@ -62,6 +93,16 @@ describe('FormController (e2e)', () => {
         .post('/forms')
         .send({
           pdfLink: 'https://www.sandboxnu.com/',
+          signatureChainLinks: [
+            {
+              position: SigningPositions.MANAGER,
+              specificPositionId: null,
+            },
+            {
+              position: SigningPositions.DEPARTMENT_HEAD,
+              specificPositionId: null,
+            },
+          ],
         })
         .expect(400);
     });
@@ -72,6 +113,16 @@ describe('FormController (e2e)', () => {
         .send({
           name: 'test',
           pdfLink: 'google',
+          signatureChainLinks: [
+            {
+              position: SigningPositions.MANAGER,
+              specificPositionId: null,
+            },
+            {
+              position: SigningPositions.DEPARTMENT_HEAD,
+              specificPositionId: null,
+            },
+          ],
         })
         .expect(400);
     });
@@ -81,6 +132,37 @@ describe('FormController (e2e)', () => {
         .post('/forms')
         .send({
           name: 'test',
+          signatureChainLinks: [
+            {
+              position: SigningPositions.MANAGER,
+              specificPositionId: null,
+            },
+            {
+              position: SigningPositions.DEPARTMENT_HEAD,
+              specificPositionId: null,
+            },
+          ],
+        })
+        .expect(400);
+    });
+
+    it('should fail if signature chain is empty', () => {
+      return request(server)
+        .post('/forms')
+        .send({
+          name: 'test',
+          pdfLink: 'https://www.sandboxnu.com/',
+          signatureChainLinks: [],
+        })
+        .expect(400);
+    });
+
+    it('should fail if signature chain is missing', () => {
+      return request(server)
+        .post('/forms')
+        .send({
+          name: 'test',
+          pdfLink: 'https://www.sandboxnu.com/',
         })
         .expect(400);
     });

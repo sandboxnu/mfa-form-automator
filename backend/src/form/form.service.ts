@@ -1,34 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Form } from '../models/form.entity';
+import { SignatureChainService } from '../signatureChain/signatureChain.service';
 import { Repository } from 'typeorm';
-import { CreateFormDto, FormDto } from './form.dto';
+import { CreateFormDto, CreateFormDtoInternal } from './form.dto';
 
 @Injectable()
 export class FormService {
   constructor(
     @InjectRepository(Form) private formRepository: Repository<Form>,
+    @Inject(SignatureChainService)
+    private signatureChainLinkService: SignatureChainService,
   ) {}
 
-  createForm(createFormDto: CreateFormDto) {
-    //TODO signatureChanLinkHead should be built out
-    const formDto: FormDto = {
+  async createForm(createFormDto: CreateFormDto) {
+    const formInternalDto: CreateFormDtoInternal = {
       name: createFormDto.name,
       pdfLink: createFormDto.pdfLink,
       signatureChainLinkHead: null,
       formInstances: [],
     };
 
-    const form: Form = this.formRepository.create(formDto);
-    return this.formRepository.save(form);
+    let form: Form = this.formRepository.create(formInternalDto);
+    await this.formRepository.insert(form);
+    const signatureChainLinkHead =
+      await this.signatureChainLinkService.createSignatureChain({
+        formId: form.id,
+        signatureChainLinks: createFormDto.signatureChainLinks,
+      });
+    this.formRepository.update(
+      {
+        id: form.id,
+      },
+      {
+        signatureChainLinkHeadId: signatureChainLinkHead.id,
+      },
+    );
+    form.signatureChainLinkHeadId = signatureChainLinkHead.id;
+    return form;
   }
 
   getFormById(formId: number) {
     return this.formRepository.find({
       where: {
-          id: formId
-      }
-    })
+        id: formId,
+      },
+    });
   }
 
   async findAllForms() {

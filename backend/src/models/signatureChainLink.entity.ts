@@ -4,7 +4,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -16,8 +15,12 @@ export class SignatureChainLink {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Form, (form) => form.signatureChainLinkHead)
+  @ManyToOne(() => Form, (form) => form.signatureChainLinkHead)
+  @JoinColumn({ name: 'formId' })
   form: Form;
+
+  @Column({ type: 'int', nullable: true })
+  formId: number;
 
   @Column()
   position: SigningPositions;
