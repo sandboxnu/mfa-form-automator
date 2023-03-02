@@ -6,14 +6,15 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class PositionService {
   constructor(
-    @InjectRepository(Position) private positionRepository: Repository<Position>,
+    @InjectRepository(Position)
+    private positionRepository: Repository<Position>,
   ) {}
 
   getPositionById(positionId: number) {
-    return this.positionRepository.find({
-        where: {
-            id: positionId
-        }
-    })
+    return this.positionRepository.findOne({
+      where: {
+        id: positionId,
+      },
+    });
   }
 }

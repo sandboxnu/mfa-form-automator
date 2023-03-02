@@ -1,10 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DepartmentService } from 'src/department/department.service';
 import { SignatureChainLink } from 'src/models/signatureChainLink.entity';
 import { SignatureRequestLink } from 'src/models/signatureRequestLink.entity';
+import { PositionService } from 'src/position/position.service';
 import { SignatureChainService } from 'src/signatureChain/signatureChain.service';
 import { SigningPositions } from 'src/ts/enums/SigningPositions';
-import { getManager, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   CreateSignatureRequestChainDto,
   SignatureRequestChainLinkDto,
@@ -17,6 +19,10 @@ export class SignatureRequestChainService {
     private signatureRequestLinkRepository: Repository<SignatureRequestLink>,
     @Inject(SignatureChainService)
     private signatureChainService: SignatureChainService,
+    @Inject(PositionService)
+    private positionService: PositionService,
+    @Inject(DepartmentService)
+    private departmentService: DepartmentService,
   ) {}
 
   async createSignatureRequestChain(
@@ -82,22 +88,52 @@ export class SignatureRequestChainService {
     position?: SigningPositions,
     specificPositionId?: number,
   ) {
-    // (list of visited specific position ids, signingposition enum value, initiator position id): boolean {
-    // if (
-    //   signatureChainLinkCurrent.specificPositionid != null &&
-    //   specificPositionIdsSeen.includes(
-    //     signatureChainLinkCurrent.specificPositionid,
-    //   )
-    // )
-    //   switch (enum)
-    //   case manager
-    //     refer to the initiator's manager id field
-    //   case departmenthead
-    //     search through all positions for the department head of the initiator's department
-    //   case leadershipteam
-    //     refer to department leadership team person id for the department of the initiator
-    //   check if this person's id is in our list of visited ids, if it is return true, else return false
-    // }
-    return true;
+    if (specificPositionId && seen.includes(specificPositionId)) {
+      return true;
+    }
+    switch (position) {
+      case SigningPositions.MANAGER:
+        return this.positionService
+          .getPositionById(initiatorId)
+          .then((initiator) => {
+            return seen.includes(initiator.managerId);
+          })
+          .catch((reason) => {
+            console.log(reason);
+            return false;
+          });
+      case SigningPositions.DEPARTMENT_HEAD:
+        return this.positionService
+          .getPositionById(initiatorId)
+          .then((initiator) => {
+            return this.departmentService.getDepartmentById(
+              initiator.departmentId,
+            );
+          })
+          .then((department) => {
+            return seen.includes(department.departmentHeadId);
+          })
+          .catch((reason) => {
+            console.log(reason);
+            return false;
+          });
+      case SigningPositions.LEADERSHIP_TEAM:
+        return this.positionService
+          .getPositionById(initiatorId)
+          .then((initiator) => {
+            return this.departmentService.getDepartmentById(
+              initiator.departmentId,
+            );
+          })
+          .then((department) => {
+            return seen.includes(department.leadershipTeamMemberId);
+          })
+          .catch((reason) => {
+            console.log(reason);
+            return false;
+          });
+      default:
+        return false;
+    }
   }
 }
