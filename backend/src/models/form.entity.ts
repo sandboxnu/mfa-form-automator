@@ -1,3 +1,4 @@
+import { IsNotEmpty } from 'class-validator';
 import {
   Column,
   Entity,
@@ -17,6 +18,9 @@ export class Form {
 
   @Column()
   name: string;
+
+  @Column()
+  pdfLink: string;
 
   @OneToOne(
     () => SignatureChainLink,

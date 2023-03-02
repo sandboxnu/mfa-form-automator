@@ -19,7 +19,24 @@ export class CreateFormDto {
   signatureChainLinks: CreateSignatureChainLinkDto[];
 }
 
+export class CreateFormDtoInternal {
+  @IsNotEmpty()
+  name: string;
+
+  @IsNotEmpty()
+  @IsUrl()
+  pdfLink: string;
+
+  signatureChainLinkHead: SignatureChainLink;
+
+  formInstances: FormInstance[];
+}
+
 export class FormDto {
+  @IsNotEmpty()
+  @ApiProperty()
+  id: number;
+
   @IsNotEmpty()
   @ApiProperty()
   name: string;

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SignatureChainLink } from 'src/models/signatureChainLink.entity';
+import { SignatureChainLink } from '../models/signatureChainLink.entity';
 import { Repository } from 'typeorm';
 import {
   CreateSignatureChainDto,
@@ -25,12 +25,10 @@ export class SignatureChainService {
         specificPositionId: createSignatureChainLinkDto.specificPositionId,
         nextSignatureId: previousSignatureChainLinkId,
       };
-      const signatureChainLink: SignatureChainLink =
-        this.signatureChainLinkRepository.create(signatureChainLinkDto);
       lastSignatureChainLink = await this.signatureChainLinkRepository.save(
-        signatureChainLink,
+        this.signatureChainLinkRepository.create(signatureChainLinkDto),
       );
-      previousSignatureChainLinkId = signatureChainLink.id;
+      previousSignatureChainLinkId = lastSignatureChainLink.id;
     }
     return lastSignatureChainLink;
   }
