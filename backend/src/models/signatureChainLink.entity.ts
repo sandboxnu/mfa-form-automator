@@ -15,7 +15,7 @@ export class SignatureChainLink {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Form, (form) => form.signatureChainLinkHead)
+  @ManyToOne(() => Form, (form) => form.signatureChainLinkHead)
   @JoinColumn({ name: 'formId' })
   form: Form;
 

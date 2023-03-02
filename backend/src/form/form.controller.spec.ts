@@ -47,7 +47,7 @@ describe('FormService', () => {
           useValue: {
             create: jest.fn((entity: FormDto): Form => {
               const form: Form = {
-                id: 1,
+                id: null,
                 name: entity.name,
                 pdfLink: entity.pdfLink,
                 signatureChainLinkHead: entity.signatureChainLinkHead,
@@ -56,7 +56,14 @@ describe('FormService', () => {
               };
               return form;
             }),
-            save: jest.fn((entity) => entity),
+            update: jest.fn((entity) => {
+              entity.signatureChainLinkHeadId = 1;
+              return entity;
+            }),
+            insert: jest.fn((entity) => {
+              entity.id = 1;
+              return entity;
+            }),
           },
         },
       ],

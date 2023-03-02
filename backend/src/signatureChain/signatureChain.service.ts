@@ -18,16 +18,18 @@ export class SignatureChainService {
     let previousSignatureChainLinkId: number = null;
     let lastSignatureChainLink: SignatureChainLink = null;
 
-    for (var createSignatureChainLinkDto of createSignatureChainDto.signatureChainLinks) {
+    for (const createSignatureChainLinkDto of createSignatureChainDto.signatureChainLinks) {
       const signatureChainLinkDto: SignatureChainLinkDto = {
         formId: createSignatureChainDto.formId,
         position: createSignatureChainLinkDto.position,
         specificPositionId: createSignatureChainLinkDto.specificPositionId,
         nextSignatureId: previousSignatureChainLinkId,
       };
-      lastSignatureChainLink = await this.signatureChainLinkRepository.save(
-        this.signatureChainLinkRepository.create(signatureChainLinkDto),
+      lastSignatureChainLink = this.signatureChainLinkRepository.create(
+        signatureChainLinkDto,
       );
+      await this.signatureChainLinkRepository.insert(lastSignatureChainLink);
+
       previousSignatureChainLinkId = lastSignatureChainLink.id;
     }
     return lastSignatureChainLink;

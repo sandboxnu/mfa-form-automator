@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Form } from '../models/form.entity';
 import { SignatureChainService } from '../signatureChain/signatureChain.service';
 import { Repository } from 'typeorm';
-import { CreateFormDto, CreateFormDtoInternal, FormDto } from './form.dto';
+import { CreateFormDto, CreateFormDtoInternal } from './form.dto';
 
 @Injectable()
 export class FormService {
@@ -20,17 +20,24 @@ export class FormService {
       signatureChainLinkHead: null,
       formInstances: [],
     };
-    const form: Form = await this.formRepository.save(
-      this.formRepository.create(formInternalDto),
-    );
+
+    let form: Form = this.formRepository.create(formInternalDto);
+    await this.formRepository.insert(form);
     const signatureChainLinkHead =
       await this.signatureChainLinkService.createSignatureChain({
         formId: form.id,
         signatureChainLinks: createFormDto.signatureChainLinks,
       });
+    this.formRepository.update(
+      {
+        id: form.id,
+      },
+      {
+        signatureChainLinkHeadId: signatureChainLinkHead.id,
+      },
+    );
     form.signatureChainLinkHeadId = signatureChainLinkHead.id;
-
-    return this.formRepository.save(form);
+    return form;
   }
 
   getFormById(formId: number) {
