@@ -16,7 +16,7 @@ export class CreateFormDto {
 
   @IsNotEmpty()
   @ApiProperty()
-  signatureChainLinks: CreateSignatureChainLinkDto[]
+  signatureChainLinks: CreateSignatureChainLinkDto[];
 }
 
 export class FormDto {

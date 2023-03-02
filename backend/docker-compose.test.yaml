@@ -1,0 +1,20 @@
+ # Docker compose version being used (3.8 is the current latest)
+version: "3.8"
+services:
+  database: # Basically the name for the service, can be named anything
+    # Image we want to start the container with, aka we want the latest version of postgress on docker
+    image: postgres:latest
+    # Defines the policy for container termination, aka always means the container will always restart after termination
+    restart: always
+    # Mapping the ports, takes the form [port on local device]:[port in docker container]
+    ports:
+      - "5431:5432"
+    environment:
+      POSTGRES_USERNAME: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_TEST_DB}
+
+#     volumes:
+#       - ./mfa_test_db_data:/var/lib/postgresql/data
+# volumes:
+#   mfa_test_db_data:
