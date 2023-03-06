@@ -42,7 +42,7 @@ const StyleButton = ({ children, link }: { children: any; link: string }) => {
             background: isActive ? "#FAFA78" : "white",
           }}
           _hover={{
-            background: "#FAFA78 !important",
+            background: "#EFEFEF !important",
           }}
           isActive={isActive}
         >
