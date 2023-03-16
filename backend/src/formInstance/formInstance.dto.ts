@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
-import { SignatureRequestLink } from "src/models/signatureRequestLink.entity";
+import { SignatureRequestLink } from "../models/signatureRequestLink.entity";
 
 export class CreateFormInstanceDto {
     @IsNotEmpty()

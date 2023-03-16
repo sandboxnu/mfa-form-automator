@@ -1,28 +1,35 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Position } from "./position.entity";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Position } from './position.entity';
 
 @Entity()
 export class Department {
-    @PrimaryGeneratedColumn()
-    id: number
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    name: string
+  @Column()
+  name: string;
 
-    @OneToOne(() => Position)
-    @JoinColumn({ name: "departmentHeadId" })
-    departmentHead: Position
+  @OneToOne(() => Position)
+  @JoinColumn({ name: 'departmentHeadId' })
+  departmentHead: Position;
 
-    @Column({ type: "int", nullable: true })
-    departmentHeadId: number
+  @Column({ type: 'int', nullable: true })
+  departmentHeadId: number;
 
-    @OneToOne(() => Position)
-    @JoinColumn({ name: "leadershipTeamMemberId"})
-    leadershipTeamMember: Position
+  @OneToOne(() => Position)
+  @JoinColumn({ name: 'leadershipTeamMemberId' })
+  leadershipTeamMember: Position;
 
-    @Column({ type: "int", nullable: true})
-    leadershipTeamMemberId: number
+  @Column({ type: 'int', nullable: true })
+  leadershipTeamMemberId: number;
 
-    @OneToMany(() => Position, (position) => position.manager)
-    employees: Position[]
+  @OneToMany(() => Position, (position) => position.manager)
+  employees: Position[];
 }

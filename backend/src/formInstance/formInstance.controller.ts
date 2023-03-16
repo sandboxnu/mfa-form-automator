@@ -1,11 +1,17 @@
-import { Body, Controller, HttpException, HttpStatus, Post } from "@nestjs/common";
-import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { PositionService } from "src/position/position.service";
-import { FormService } from "src/form/form.service";
-import { Form } from "src/models/form.entity";
-import { CreateFormInstanceDto, FormInstanceDto } from "./formInstance.dto";
-import { FormInstanceService } from "./formInstance.service";
-import { Position } from "src/models/position.entity";
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { FormService } from '../form/form.service';
+import { Form } from '../models/form.entity';
+import { Position } from '../models/position.entity';
+import { PositionService } from '../position/position.service';
+import { CreateFormInstanceDto, FormInstanceDto } from './formInstance.dto';
+import { FormInstanceService } from './formInstance.service';
 
 @Controller('formInstances')
 @ApiTags('Form Instances')
@@ -33,3 +39,4 @@ export class FormInstanceController {
         return createdFormInstance.id;
     }
 }
+
