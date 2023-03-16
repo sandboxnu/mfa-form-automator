@@ -34,8 +34,8 @@ const StyleButton = ({ children, link }: { children: any; link: string }) => {
         <Button
           justifyContent="flex-start"
           bg="transparent"
-          height="9"
-          width="100%"
+          height="44px"
+          width="240px"
           borderRadius={10}
           // temporary until I figure out custom color schemes
           style={{
@@ -56,7 +56,7 @@ const StyleButton = ({ children, link }: { children: any; link: string }) => {
 // Navbar component
 export const NavBar: React.FC = () => {
   return (
-    <Box padding={10} w={250}>
+    <Box padding={10} w={320} h="100vh">
       <Flex
         alignItems="flex-start"
         justify="space-around"
@@ -66,13 +66,14 @@ export const NavBar: React.FC = () => {
           <PopoverTrigger>
             <Button
               marginBottom="5"
-              height="9"
-              width="85%"
-              justifyContent="flex-start"
+              height="48px"
+              width="183px"
+              justifyContent="center"
               bg="#FF5000"
               textColor="white"
+              textAlign="center"
             >
-              <PlusIcon marginRight="2" />
+              <PlusIcon marginRight={11}/>
               Create Form
             </Button>
           </PopoverTrigger>
@@ -89,31 +90,36 @@ export const NavBar: React.FC = () => {
             </PopoverContent>
           </Portal>
         </Popover>
-        <StyleButton link="/">
-          <OverViewIcon marginRight="2" />
-          Overview
-        </StyleButton>
-        <StyleButton link="/todo">
-          <ToDoIcon marginRight="2" />
-          To do
-        </StyleButton>
-        <StyleButton link="/pending">
-          <PendingIcon marginRight="2" />
-          Pending
-        </StyleButton>
-        <StyleButton link="/completed">
-          <CompletedIcon marginRight="2" />
-          Completed
-        </StyleButton>
-        <Divider mt={"5"} mb={5} borderColor={"gray"} />
-        <StyleButton link="/history">
-          <HistoryIcon marginRight="2" />
-          History
-        </StyleButton>
-        <StyleButton link="/settings">
-          <SettingsIcon marginRight="2" />
-          Settings
-        </StyleButton>
+        <Box>
+          <StyleButton link="/">
+            <OverViewIcon marginRight="2" />
+            Overview
+          </StyleButton>
+          <StyleButton link="/todo">
+            <ToDoIcon marginRight="2" />
+            To do
+          </StyleButton>
+          <StyleButton link="/pending">
+            <PendingIcon marginRight="2" />
+            Pending
+          </StyleButton>
+          <StyleButton link="/completed">
+            <CompletedIcon marginRight="2" />
+            Completed
+          </StyleButton>
+          <Divider mt={"5"} mb={5} borderColor={"gray"} />
+          <StyleButton link="/history">
+            <HistoryIcon marginRight="2" />
+            History
+          </StyleButton>
+          <StyleButton link="/settings">
+            <SettingsIcon marginRight="2" />
+            Settings
+          </StyleButton>
+        </Box>
+        <Box position="absolute" bottom="0" fontSize={16} paddingBottom={5}> 
+          Museum of Fine Arts, Boston
+        </Box>
       </Flex>
     </Box>
   );
