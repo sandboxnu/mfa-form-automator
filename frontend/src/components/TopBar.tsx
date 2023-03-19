@@ -19,6 +19,7 @@ export const TopBar: React.FC = () => {
         <Spacer minW={200} />
         <InputGroup maxW="600">
           <Select
+            minW="120"
             maxW="120"
             backgroundColor="lightgrey"
             borderTopRightRadius="0"
@@ -36,7 +37,9 @@ export const TopBar: React.FC = () => {
           />
         </InputGroup>
         <Spacer />
-        <Text>Welcome back, User!</Text>
+        <Text minW="200" align="right">
+          Welcome back, User!
+        </Text>
         <IconButton
           aria-label="Visit profile"
           icon={<ProfileIcon boxSize={7} />}
