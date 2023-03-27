@@ -8,7 +8,24 @@ import { OverviewForm } from '@/components/OverviewForm';
 export default function Test() {
   return <>
     <Box position="absolute" top="50vh" left="50vw">
-      <OverviewForm formName="Placeholder Form" assignees={["Joe Smith", "Joe Smith", "Joe Smith", "Joe Smith"]} />
+      <OverviewForm formName="Placeholder Form" assignees={[
+        {
+          name: "John Smith",
+          signed: true,
+        },
+        {
+          name: "John Smith",
+          signed: true,
+        },
+        {
+          name: "John Smith",
+          signed: false,
+        },
+        {
+          name: "John Smith",
+          signed: true,
+        }
+      ]} />
     </Box>
   </>;
 }
