@@ -18,7 +18,7 @@ export const OverviewForm = ({ formName, assignees } : { formName: String, assig
           </Text>
           <AvatarGroup size="md" max={5} marginTop={19}>
             {assignees.map((assignee: Assignee, index: number) => {
-              return <Avatar name={assignee.name} key={index} boxSize="36px" backgroundColor={assignee.signed ? "#BBDFC8" : "#FFFFFF"} border="1px solid #A8A8A8" color="black"/>
+              return <Avatar name={assignee.name} key={index} boxSize="36px" backgroundColor={assignee.signed ? "#D0F0DC" : "#FFFFFF"} border={assignee.signed ? "1px solid #BBDFC8" : "1px solid #A8A8A8"} color="black"/>
             })}
           </AvatarGroup>
         </Box>
