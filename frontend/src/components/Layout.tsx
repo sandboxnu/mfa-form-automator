@@ -33,26 +33,8 @@ import { NavBar } from "./NavBar";
 import { TopBar } from "./TopBar";
 
 // Common layout component for all pages
-// export const Layout = ({ children }: { children: any }) => {
-//   return (
-//     <Box display="flex">
-//       <NavBar />
-//       {/* Sidebar */}
-//       <Box flex="1" position="fixed" top="75">
-//         <TopBar />
-//         {/* Navbar */}
-//         <Box mt="50px" p="4">
-//           {/* Rest content */}
-//         </Box>
-//       </Box>
-//     </Box>
-//   );
-// };
 
 export const Layout = ({ children }: { children: any }) => {
-  const integrations = useDisclosure();
-  const color = useColorModeValue("gray.600", "gray.300");
-
   const icons = {
     overview: <OverViewIcon marginRight="2" />,
     todo: <ToDoIcon marginRight="2" />,
@@ -79,9 +61,6 @@ export const Layout = ({ children }: { children: any }) => {
           }}
           _hover={{
             bg: "#FFDCCC",
-            // _dark: {
-            //   bg: "gray.900",
-            // },
             color: "gray.900",
           }}
           role="group"
@@ -117,9 +96,6 @@ export const Layout = ({ children }: { children: any }) => {
       w="80"
       {...props}
     >
-      {/* <Flex px="8" py="5" align="center">
-        <MFALogoIcon height="35" width="35" />
-      </Flex> */}
       <Flex
         direction="column"
         as="nav"
@@ -173,28 +149,6 @@ export const Layout = ({ children }: { children: any }) => {
         <NavItem icon="history">History</NavItem>
         <NavItem icon="settings">Settings</NavItem>
         <Spacer minH="30vh" />
-        {/* <NavItem icon={FaRss}>Articles</NavItem>
-        <NavItem icon={HiCollection}>Collections</NavItem>
-        <NavItem icon={FaClipboardCheck}>Checklists</NavItem>
-        <NavItem icon={HiCode} onClick={integrations.onToggle}>
-          Integrations
-          <Icon
-            as={MdKeyboardArrowRight}
-            ml="auto"
-            transform={integrations.isOpen && "rotate(90deg)"}
-          />
-        </NavItem>
-        <Collapse in={integrations.isOpen}>
-          <NavItem pl="12" py="2">
-            Shopify
-          </NavItem>
-          <NavItem pl="12" py="2">
-            Slack
-          </NavItem>
-          <NavItem pl="12" py="2">
-            Zapier
-          </NavItem>
-        </Collapse> */}
       </Flex>
     </Box>
   );
@@ -208,18 +162,12 @@ export const Layout = ({ children }: { children: any }) => {
       }}
       minH="100vh"
     >
-      <SidebarContent
-      // display={{
-      //   base: "none",
-      //   md: "unset",
-      // }}
-      />
+      <SidebarContent />
       <Box>
         <Flex
           as="header"
           align="center"
           pos="fixed"
-          // justify="space-between"
           w="full"
           px="4"
           bg="white"
@@ -236,9 +184,7 @@ export const Layout = ({ children }: { children: any }) => {
             </Flex>
           </Box>
           <InputGroup
-            // w="96"
             display={{
-              // base: "none",
               md: "flex",
             }}
           >
@@ -265,14 +211,6 @@ export const Layout = ({ children }: { children: any }) => {
           </InputGroup>
 
           <Flex align="center" pl="10">
-            {/* <Icon color="gray.500" as={FaBell} cursor="pointer" /> */}
-            {/* <Avatar
-              ml="4"
-              size="sm"
-              name="anubra266"
-              src="https://avatars.githubusercontent.com/u/30869823?v=4"
-              cursor="pointer"
-            /> */}
             <Hide breakpoint="(max-width: 1000px)">
               <Text minW="200" align="right">
                 Welcome back, User!
