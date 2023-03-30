@@ -11,9 +11,9 @@ export const Layout = ({ children }: { children: any }) => {
         <HStack minW="100vw">
           <NavBar />
           <Spacer />
+          {children}
         </HStack>
       </VStack>
-      {children}
     </>
   );
 };
