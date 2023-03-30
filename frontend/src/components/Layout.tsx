@@ -283,7 +283,7 @@ export const Layout = ({ children }: { children: any }) => {
 
         <Box as="main" ml="320" pt="136">
           {/* Add content here, remove div below  */}
-          <Box borderWidth="4px" borderStyle="dashed" rounded="md" h="96" />
+          <Box borderWidth="4px" borderStyle="dashed" rounded="md" minH="500" />
         </Box>
       </Box>
     </Box>
