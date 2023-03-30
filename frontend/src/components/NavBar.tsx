@@ -39,7 +39,8 @@ const StyleButton = ({ children, link }: { children: any; link: string }) => {
           borderRadius={10}
           // temporary until I figure out custom color schemes
           style={{
-            background: isActive ? "#FAFA78" : "white",
+            background: isActive ? "#EFEFEF" : "white",
+            fontWeight: isActive? "800" : "normal"
           }}
           _hover={{
             background: "#EFEFEF !important",
@@ -66,10 +67,10 @@ export const NavBar: React.FC = () => {
           <PopoverTrigger>
             <Button
               marginBottom="5"
-              height="48px"
-              width="183px"
+              height="40px"
+              width="156px"
               justifyContent="center"
-              bg="#FF5000"
+              bg="#4C658A"
               textColor="white"
               textAlign="center"
             >
