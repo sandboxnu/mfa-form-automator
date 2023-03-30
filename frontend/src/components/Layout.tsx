@@ -6,6 +6,7 @@ import {
   PendingIcon,
   PlusIcon,
   ProfileIcon,
+  SearchIcon,
   SettingsIcon,
   ToDoIcon,
 } from "@/static/icons";
@@ -20,6 +21,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  InputRightElement,
   Select,
   Spacer,
   Text,
@@ -255,6 +257,10 @@ export const Layout = ({ children }: { children: any }) => {
               borderTopLeftRadius="0"
               borderBottomLeftRadius="0"
               placeholder="Search for articles..."
+            />
+            <InputRightElement
+              pointerEvents="none"
+              children={<SearchIcon boxSize="7" color="grey" />}
             />
           </InputGroup>
 
