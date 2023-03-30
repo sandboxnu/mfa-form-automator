@@ -11,7 +11,6 @@ import {
   ToDoIcon,
 } from "@/static/icons";
 import {
-  Avatar,
   Box,
   Button,
   Divider,
@@ -20,17 +19,11 @@ import {
   IconButton,
   Input,
   InputGroup,
-  InputLeftElement,
   InputRightElement,
   Select,
   Spacer,
   Text,
-  useColorModeValue,
-  useDisclosure,
 } from "@chakra-ui/react";
-import { Component } from "react";
-import { NavBar } from "./NavBar";
-import { TopBar } from "./TopBar";
 
 // Common layout component for all pages
 
