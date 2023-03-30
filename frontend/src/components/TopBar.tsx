@@ -14,7 +14,7 @@ import {
 
 export const TopBar: React.FC = () => {
   return (
-    <Box padding={10} w="100vw" h="75">
+    <Box position="fixed" top="0" padding={10} w="100vw" h="75" bg="blue">
       <HStack>
         <MFALogoIcon height="35" width="35" />
         <Spacer minW={200} />

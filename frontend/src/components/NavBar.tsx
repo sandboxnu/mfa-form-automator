@@ -56,7 +56,7 @@ const StyleButton = ({ children, link }: { children: any; link: string }) => {
 // Navbar component
 export const NavBar: React.FC = () => {
   return (
-    <Box padding={10} w={320} h="100vh">
+    <Box position="fixed" top="75" padding={10} w={320} h="100vh" bg="red">
       <Flex
         alignItems="flex-start"
         justify="space-around"
@@ -117,7 +117,7 @@ export const NavBar: React.FC = () => {
             Settings
           </StyleButton>
         </Box>
-        <Box position="absolute" bottom="0" fontSize={16} paddingBottom={5}>
+        <Box position="absolute" bottom="75" fontSize={16} paddingBottom={5}>
           Museum of Fine Arts, Boston
         </Box>
       </Flex>

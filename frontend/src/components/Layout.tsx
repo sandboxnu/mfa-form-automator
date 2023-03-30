@@ -5,15 +5,16 @@ import { TopBar } from "./TopBar";
 // Common layout component for all pages
 export const Layout = ({ children }: { children: any }) => {
   return (
-    <>
-      <VStack>
+    <Box display="flex">
+      <NavBar />
+      {/* Sidebar */}
+      <Box flex="1" position="fixed" top="75">
         <TopBar />
-        <HStack minW="100vw">
-          <NavBar />
-          <Spacer />
-          {children}
-        </HStack>
-      </VStack>
-    </>
+        {/* Navbar */}
+        <Box mt="50px" p="4">
+          {/* Rest content */}
+        </Box>
+      </Box>
+    </Box>
   );
 };
