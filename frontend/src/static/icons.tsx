@@ -51,13 +51,16 @@ export const SearchIcon = createIcon({
 export const ProfileIcon = createIcon({
   displayName: "ProfileIcon",
   viewBox: "0 0 44 45",
-  path: [
-    <circle cx="22" cy="22.25" r="21.5" fill="white" stroke="black" />,
-    <path
-      d="M11.6606 30.6786V13.9506H22.6286V15.8466H13.7726V21.1986H21.4526V23.0946H13.7726V30.6786H11.6606ZM25.231 30.6786V13.9506H27.343V28.7826H34.831V30.6786H25.231Z"
-      fill="black"
-    />,
-  ],
+  path: (
+    <>
+      <circle cx="22" cy="22.25" r="21.5" fill="white" stroke="black" />,
+      <path
+        d="M11.6606 30.6786V13.9506H22.6286V15.8466H13.7726V21.1986H21.4526V23.0946H13.7726V30.6786H11.6606ZM25.231 30.6786V13.9506H27.343V28.7826H34.831V30.6786H25.231Z"
+        fill="black"
+      />
+      ,
+    </>
+  ),
 });
 
 export const MFALogoIcon = createIcon({

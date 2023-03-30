@@ -37,7 +37,7 @@ export const Layout = ({ children }: { children: any }) => {
     settings: <SettingsIcon marginRight="2" />,
   };
 
-  const NavItem = (props) => {
+  const NavItem = (props: any) => {
     const { icon, children, ...rest } = props;
     return (
       <Box px="8">
@@ -68,7 +68,7 @@ export const Layout = ({ children }: { children: any }) => {
     );
   };
 
-  const SidebarContent = (props) => (
+  const SidebarContent = (props: any) => (
     <Box
       as="nav"
       pos="fixed"
@@ -197,10 +197,9 @@ export const Layout = ({ children }: { children: any }) => {
               borderBottomLeftRadius="0"
               placeholder="Search for articles..."
             />
-            <InputRightElement
-              pointerEvents="none"
-              children={<SearchIcon boxSize="7" color="grey" />}
-            />
+            <InputRightElement pointerEvents="none">
+              <SearchIcon boxSize="7" color="grey" />
+            </InputRightElement>
           </InputGroup>
 
           <Flex align="center" pl="10">

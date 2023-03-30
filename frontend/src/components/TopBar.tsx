@@ -30,10 +30,9 @@ export const TopBar: React.FC = () => {
             <option value="option2">Option 2</option>
             <option value="option3">Option 3</option>
           </Select>
-          <InputRightElement
-            pointerEvents="none"
-            children={<SearchIcon boxSize="7" color="grey" />}
-          />
+          <InputRightElement pointerEvents="none">
+            <SearchIcon boxSize="7" color="grey" />
+          </InputRightElement>
           <Input
             placeholder="Search"
             borderTopLeftRadius="0"
