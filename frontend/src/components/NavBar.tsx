@@ -73,7 +73,7 @@ export const NavBar: React.FC = () => {
               textColor="white"
               textAlign="center"
             >
-              <PlusIcon marginRight={11}/>
+              <PlusIcon marginRight={11} />
               Create Form
             </Button>
           </PopoverTrigger>
@@ -117,7 +117,7 @@ export const NavBar: React.FC = () => {
             Settings
           </StyleButton>
         </Box>
-        <Box position="absolute" bottom="0" fontSize={16} paddingBottom={5}> 
+        <Box position="absolute" bottom="0" fontSize={16} paddingBottom={5}>
           Museum of Fine Arts, Boston
         </Box>
       </Flex>
