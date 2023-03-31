@@ -3,15 +3,8 @@ import {
   Button,
   Flex,
   Divider,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverArrow,
-  PopoverCloseButton,
-  Portal,
-  Link,
+  Spacer,
+  Link
 } from "@chakra-ui/react";
 import {
   OverViewIcon,
@@ -24,103 +17,131 @@ import {
 } from "@/static/icons";
 import { useRouter } from "next/router";
 
-// button abstraction to include the Link and styling
-const StyleButton = ({ children, link }: { children: any; link: string }) => {
+const icons = {
+  overview: <OverViewIcon marginRight="2" />,
+  todo: <ToDoIcon marginRight="2" />,
+  pending: <PendingIcon marginRight="2" />,
+  completed: <CompletedIcon marginRight="2" />,
+  history: <HistoryIcon marginRight="2" />,
+  settings: <SettingsIcon marginRight="2" />,
+};
+
+// navigation item abstraction to include the Link and styling
+const NavItem = ({ children, icon, link } : { children: any, icon: string, link: string}) => {
   const router = useRouter();
   const isActive = router.pathname === link;
+
   return (
-    <>
-      <Link href={link} width="100%">
-        <Button
-          justifyContent="flex-start"
-          bg="transparent"
-          height="44px"
-          width="240px"
-          borderRadius={10}
-          // temporary until I figure out custom color schemes
-          style={{
-            background: isActive ? "#FAFA78" : "white",
+    <Link href={link}>
+      <Box px="8">
+        <Flex
+          align="center"
+          px="4"
+          pl="4"
+          py="3"
+          rounded="8px"
+          cursor="pointer"
+          color="inherit"
+          _dark={{
+            color: "gray.400",
           }}
           _hover={{
-            background: "#EFEFEF !important",
+            bg: "#EFEFEF !important",
+            color: "gray.900",
           }}
-          isActive={isActive}
+          style={{
+            fontWeight: isActive? "800" : "normal"
+          }}
+          bg={isActive ? "#EFEFEF" : "white"}
+          role="group"
+          fontWeight="semibold"
+          transition=".15s ease"
         >
+          {icons[icon as keyof typeof icons]}
           {children}
-        </Button>
-      </Link>
-    </>
+        </Flex>
+      </Box>
+    </Link>
   );
 };
 
 // Navbar component
-export const NavBar: React.FC = () => {
-  return (
-    <Box position="fixed" top="75" padding={10} w={320} h="100vh" bg="red">
+export const NavBar: React.FC = (props: any) => (
+  <Box
+    as="nav"
+    pos="fixed"
+    top="136"
+    left="0"
+    zIndex="sticky"
+    h="full"
+    pb="10"
+    overflowX="hidden"
+    overflowY="auto"
+    bg="white"
+    _dark={{
+      bg: "gray.800",
+    }}
+    border
+    color="inherit"
+    borderRightWidth="1px"
+    w="80"
+    {...props}
+  >
+    <Flex
+      direction="column"
+      as="nav"
+      fontSize="sm"
+      color="black"
+      aria-label="Main Navigation"
+    >
       <Flex
-        alignItems="flex-start"
-        justify="space-around"
-        flexDirection="column"
+        align="center"
+        px="4"
+        pl="8"
+        py="3"
+        cursor="pointer"
+        color="inherit"
+        _dark={{
+          color: "gray.400",
+        }}
+        role="group"
+        fontWeight="semibold"
+        transition=".15s ease"
       >
-        <Popover>
-          <PopoverTrigger>
-            <Button
-              marginBottom="5"
-              height="48px"
-              width="183px"
-              justifyContent="center"
-              bg="#FF5000"
-              textColor="white"
-              textAlign="center"
-            >
-              <PlusIcon marginRight={11} />
-              Create Form
-            </Button>
-          </PopoverTrigger>
-          <Portal>
-            <PopoverContent w="350px">
-              <PopoverArrow />
-              <PopoverHeader>Select Form</PopoverHeader>
-              <PopoverCloseButton />
-              <PopoverBody>
-                <Button marginRight="2">Form #1</Button>
-                <Button marginRight="2">Form #2</Button>
-                <Button marginRight="2">Form #3</Button>
-              </PopoverBody>
-            </PopoverContent>
-          </Portal>
-        </Popover>
-        <Box>
-          <StyleButton link="/">
-            <OverViewIcon marginRight="2" />
-            Overview
-          </StyleButton>
-          <StyleButton link="/todo">
-            <ToDoIcon marginRight="2" />
-            To do
-          </StyleButton>
-          <StyleButton link="/pending">
-            <PendingIcon marginRight="2" />
-            Pending
-          </StyleButton>
-          <StyleButton link="/completed">
-            <CompletedIcon marginRight="2" />
-            Completed
-          </StyleButton>
-          <Divider mt={"5"} mb={5} borderColor={"gray"} />
-          <StyleButton link="/history">
-            <HistoryIcon marginRight="2" />
-            History
-          </StyleButton>
-          <StyleButton link="/settings">
-            <SettingsIcon marginRight="2" />
-            Settings
-          </StyleButton>
-        </Box>
-        <Box position="absolute" bottom="75" fontSize={16} paddingBottom={5}>
-          Museum of Fine Arts, Boston
-        </Box>
+        <Button
+          marginY="5"
+          // marginBottom="5"
+          height="40px"
+          width="156px"
+          justifyContent="center"
+          bg="#D74100"
+          textColor="white"
+          textAlign="center"
+          fontSize="sm"
+          backgroundColor="#4C658A"
+          fontWeight="900"
+          _hover={{
+            bg: "gray.100",
+            _dark: {
+              bg: "gray.900",
+            },
+            color: "gray.900",
+          }}
+        >
+          <PlusIcon marginRight={11} />
+          Create Form
+        </Button>
       </Flex>
-    </Box>
-  );
-};
+      <NavItem icon="overview" link="/">Overview</NavItem>
+      <NavItem icon="todo" link="/todo">To do</NavItem>
+      <NavItem icon="pending" link="/pending">Pending</NavItem>
+      <NavItem icon="completed" link="/completed">Completed</NavItem>
+      <Box px={8}>
+        <Divider mt={"5"} mb={5} borderColor={"gray"} />
+      </Box>
+      <NavItem icon="history" link="/history">History</NavItem>
+      <NavItem icon="settings" link="/settings">Settings</NavItem>
+      <Spacer minH="30vh" />
+    </Flex>
+  </Box>
+);
