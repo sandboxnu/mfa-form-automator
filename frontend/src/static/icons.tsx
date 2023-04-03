@@ -63,6 +63,16 @@ export const ProfileIcon = createIcon({
   ),
 });
 
+export const RightArrowIcon = createIcon({
+  displayName: "RightArrowIcon",
+  viewBox: "0 0 8 10",
+  path: (
+    <>
+      <path d="M0.330127 0.5L7.83013 4.83013L0.330127 9.16025L0.330127 0.5Z" fill="#4C658A"/>
+    </>
+  )
+})
+
 export const MFALogoIcon = createIcon({
   displayName: "MFALogoIcon",
   viewBox: "0 0 211 52",

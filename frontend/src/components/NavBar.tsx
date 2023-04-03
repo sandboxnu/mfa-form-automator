@@ -3,7 +3,6 @@ import {
   Button,
   Flex,
   Divider,
-  Link,
   Spacer
 } from "@chakra-ui/react";
 import {
@@ -16,6 +15,7 @@ import {
   PlusIcon,
 } from "@/static/icons";
 import { useRouter } from "next/router";
+import Link from 'next/link';
 
 const icons = {
   overview: <OverViewIcon marginRight="2" />,
@@ -84,7 +84,7 @@ export const NavBar: React.FC = (props: any) => (
     border
     color="inherit"
     borderRightWidth="1px"
-    w="80"
+    width="80"
     {...props}
   >
     <Flex
