@@ -4,6 +4,7 @@ import { FormCard } from "./FormCard"
 import { RightArrowIcon } from "@/static/icons"
 import Link from "next/link";
 
+// abstraction for a row of cards in the overview page
 export const OverviewRow = ({ title, color, link, forms }: { title: string, color: string, link: string, forms: Form[]}) => {
   let displayForms: Form[] = forms.slice(0, Math.min(4, forms.length));
   let rowWidth: number = displayForms.length * 246
