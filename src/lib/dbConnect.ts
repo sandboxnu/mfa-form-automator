@@ -5,7 +5,7 @@ Source :
 https://github.com/vercel/next.js/blob/canary/examples/with-mongodb-mongoose/utils/dbConnect.js 
 **/
 
-const MONGODB_URI = process.env.MONGO_URI;
+const MONGODB_URI = 'mongodb://localhost:27017/'; //process.env.MONGO_URI;
 
 if (MONGODB_URI === undefined) {
   throw new Error(
