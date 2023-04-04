@@ -1,17 +1,15 @@
-import { Prop, PropType, Ref } from "@typegoose/typegoose";
-import SignatureChainLink from "./signature-chain-link";
+import { PropType, Ref, prop } from "@typegoose/typegoose";
 import FormInstance from "./form-instance";
+import { SigningPositions } from "../enums/signing-positions";
 
-class Form {
-    //! Still confused on how IDs work here???? Do I need to add one? 😭
-    
-    @Prop({ required: true, type: () => String }) //? Also be unique?
+class Form {    
+    @prop({ required: true, unique: true, type: () => String })
     public name!: string;
 
-    @Prop({ required: true, ref: () => SignatureChainLink, type: () => SignatureChainLink })
-    public signatureChainLinkHead!: Ref<SignatureChainLink>;
+    @prop({ required: true, type: () => String, enum: SigningPositions, default: [] }, PropType.ARRAY)
+    public signingOrder: SigningPositions[] = [];
 
-    @Prop({ required: true, ref: () => FormInstance, type: () => [FormInstance] }, PropType.ARRAY)
+    @prop({ required: true, ref: () => FormInstance, type: () => [FormInstance], default: [] }, PropType.ARRAY)
     public formInstances!: Ref<FormInstance>[];
 };
 

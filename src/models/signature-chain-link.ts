@@ -1,4 +1,4 @@
-import { Ref, prop } from "@typegoose/typegoose";
+import { prop } from "@typegoose/typegoose";
 import Form from "./form";
 import { SigningPositions } from "@/enums/signing-positions";
 import Position from "./position";
@@ -12,12 +12,9 @@ class SignatureChainLink {
     public position!: SigningPositions;
 
     @prop({ required: true, ref: () => Position, type: () => Position })
-    public specificPosition!: Position;
+    public specificPosition!: Position; //! Only thing I'm confused about is why a SignatureChainLink has a specific position if its supposed to be generic?
 
-    // @prop({ required: true, ref: () => SignatureChainLink, type: () => SignatureChainLink }) //? Do we want to make this not required? Or make it potentially undefined?
-    // public nextSignature?: Ref<SignatureChainLink>;
-
-    @prop({ required: true, type: () => String }) //? Do we want to make this not required? Or make it potentially undefined?
+    @prop({ required: true, type: () => String })
     public nextSignature?: string;
 };
 

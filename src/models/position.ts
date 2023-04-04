@@ -2,22 +2,19 @@ import { PropType, Ref, prop } from "@typegoose/typegoose";
 import Department from "./department";
 import Employee from "./employee";
 import FormInstance from "./form-instance";
+import { SigningPositions } from "../enums/signing-positions";
 
 class Position {
-
     @prop({ required: true, type: () => String })
     public roleName!: string;
-    
-    // @prop({ required: true, ref: () => Position, type: () => Position }) //? Same question here
-    // public manager?: Ref<Position>; //? What if we made this not hold the entire reference but just the id?
 
-    @prop({ required: true, type: () => String }) //? Same question here
-    public manager?: string; //? What if we made this not hold the entire reference but just the id?
+    @prop({ required: true, type: () => String, enum: SigningPositions })
+    public signingPosition!: SigningPositions;
 
-    // @prop({ required: true, ref: () => Position, type: () => [Position] }, PropType.ARRAY)
-    // public underlings: Ref<Position>[] = [];
+    @prop({ required: true, type: () => String })
+    public manager?: string;
 
-    @prop({ required: true, type: () => [String] }, PropType.ARRAY)
+    @prop({ required: true, type: () => [String], default: [] }, PropType.ARRAY)
     public underlings: string[] = [];
 
     @prop({ required: true, ref: () => Department, type: () => Department })
@@ -26,7 +23,7 @@ class Position {
     @prop({ required: true, ref: () => Employee, type: () => Employee })
     public employee!: Ref<Employee>;
 
-    @prop({ required: true, ref: () => FormInstance, type: () => [FormInstance] }, PropType.ARRAY)
+    @prop({ required: true, ref: () => FormInstance, type: () => [FormInstance], default: [] }, PropType.ARRAY)
     public formInstances: Ref<FormInstance>[] = [];
 };
 
