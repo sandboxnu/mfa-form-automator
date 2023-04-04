@@ -3,8 +3,7 @@ import {
   Button,
   Flex,
   Divider,
-  Spacer,
-  Link
+  Spacer
 } from "@chakra-ui/react";
 import {
   OverViewIcon,
@@ -16,6 +15,7 @@ import {
   PlusIcon,
 } from "@/static/icons";
 import { useRouter } from "next/router";
+import Link from 'next/link';
 
 const icons = {
   overview: <OverViewIcon marginRight="2" />,
@@ -84,7 +84,7 @@ export const NavBar: React.FC = (props: any) => (
     border
     color="inherit"
     borderRightWidth="1px"
-    w="80"
+    width="80"
     {...props}
   >
     <Flex
@@ -141,7 +141,10 @@ export const NavBar: React.FC = (props: any) => (
       </Box>
       <NavItem icon="history" link="/history">History</NavItem>
       <NavItem icon="settings" link="/settings">Settings</NavItem>
-      <Spacer minH="30vh" />
+      <Box paddingLeft="40px" fontSize="14px" position="absolute" bottom="160px">
+        Museum of Fine Arts, Boston
+      </Box>
+      <Spacer minH="30vh"/>
     </Flex>
   </Box>
 );

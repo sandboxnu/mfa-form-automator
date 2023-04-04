@@ -26,6 +26,7 @@ export const TopBar: React.FC = () => {
       borderBottomWidth="1px"
       color="inherit"
       h="136"
+      zIndex="sticky"
     >
       <Box minWidth={302}>
         <Flex px="4" py="5" align="left">
