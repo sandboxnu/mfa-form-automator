@@ -1,8 +1,8 @@
-import { Form } from "utils/types"
 import { HStack, Flex, Box, Text } from "@chakra-ui/react"
 import { FormCard } from "./FormCard"
 import { RightArrowIcon } from "@/static/icons"
 import Link from "next/link";
+import { Form } from "@/utils/types";
 
 // abstraction for a row of cards in the overview page
 export const OverviewRow = ({ title, color, link, forms }: { title: string, color: string, link: string, forms: Form[]}) => {

@@ -1,3 +1,4 @@
+import { Assignee } from "@/utils/types";
 import {
   Box,
   Text,
@@ -5,7 +6,6 @@ import {
   AvatarGroup
 } from "@chakra-ui/react";
 
-import { Assignee } from "utils/types";
 
 // Overview Form component for displaying forms in the dashboard
 // will probably have to change the types once the backend is finished

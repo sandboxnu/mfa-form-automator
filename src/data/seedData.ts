@@ -1,4 +1,4 @@
-import { Form } from "utils/types"
+import { Form } from "@/utils/types"
 
 export const todoForms: Form[]  = [
   {

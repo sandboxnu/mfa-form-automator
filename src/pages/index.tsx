@@ -1,5 +1,5 @@
 import { OverviewRow } from "@/components/OverviewRow";
-import { todoForms, pendingForms, completedForms } from "data/seedData";
+import { completedForms, pendingForms, todoForms } from "@/data/seedData";
 import { Box } from "@chakra-ui/react";
 
 // overview page
