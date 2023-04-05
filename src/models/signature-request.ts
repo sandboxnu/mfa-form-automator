@@ -1,6 +1,6 @@
 import Position from "./position";
 
-class SignatureRequestLink {
+class SignatureRequest {
     public position!: Position;
 
     public canSign: boolean = false;
@@ -8,4 +8,4 @@ class SignatureRequestLink {
     public isSigned: boolean = false;
 };
 
-export default SignatureRequestLink;
+export default SignatureRequest;
