@@ -9,7 +9,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <Layout>
         <Component {...pageProps} />
       </Layout>
-      //
     </ChakraProvider>
   );
 }
