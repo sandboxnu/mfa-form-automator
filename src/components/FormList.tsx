@@ -26,7 +26,9 @@ export const FormList = ({
       <Box padding="30px">
         <Flex justifyContent="space-between" pb="20px">
           <Flex>
-            <Text fontSize="24px">{title}</Text>
+            <Text fontSize="22px" fontWeight="800">
+              {title}
+            </Text>
             <Box pt="10px">
               <Flex
                 marginLeft="13px"

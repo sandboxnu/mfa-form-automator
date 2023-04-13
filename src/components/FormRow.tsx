@@ -15,7 +15,9 @@ export const FormRow = ({ formInstance }: { formInstance: FormInstance }) => {
         templateColumns="repeat(20, 1fr)"
         gap={0}
         background="white"
-        boxShadow="inset 0px -5px 2px -5px #8B8B8B"
+        boxShadow="0px 0px 1px 1px #f7f7f7"
+        _hover={{ boxShadow: "0px 0px 1px 1px #dbdbdb" }}
+        mb={"2px"}
       >
         <GridItem colSpan={10} h="64px">
           <Text pl="24px" pt="20px">
