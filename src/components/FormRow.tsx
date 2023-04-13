@@ -8,13 +8,21 @@ import {
 } from "@chakra-ui/react";
 import { Assignee, FormInstance } from "@/utils/types";
 
-export const FormRow = ({ formInstance }: { formInstance: FormInstance }) => {
+// form component for displaying a row in a list of forms
+export const FormRow = ({
+  formInstance,
+  last,
+}: {
+  formInstance: FormInstance;
+  last?: boolean;
+}) => {
   return (
     <>
       <Grid
         templateColumns="repeat(20, 1fr)"
         gap={0}
         background="white"
+        borderBottomRadius={last ? "5px" : "0px"}
         boxShadow="0px 0px 1px 1px #f7f7f7"
         _hover={{ boxShadow: "0px 0px 1px 1px #dbdbdb" }}
         mb={"2px"}
@@ -66,45 +74,6 @@ export const FormRow = ({ formInstance }: { formInstance: FormInstance }) => {
           </Flex>
         </GridItem>
       </Grid>
-      {/* <Flex
-        justifyContent="space-between"
-        alignItems="center"
-        h="64px"
-        p="10px"
-        background={"#FFFFFF"}
-        boxShadow="inset 0px -5px 2px -5px #8B8B8B"
-      >
-        <Text pl="24px">{formInstance.name}</Text>
-        <Flex alignItems="center">
-          <Avatar
-            name={formInstance.originator}
-            boxSize="36px"
-            backgroundColor={"#DCDCDC"}
-            border="1px solid #FFFFFF"
-            color="black"
-            fontWeight={400}
-            fontSize="14px"
-          />
-          <Text pl="8px">{formInstance.originator}</Text>
-        </Flex>
-
-        <AvatarGroup size="md" max={5} marginTop="10px">
-          {formInstance.assignees.map((assignee: Assignee, index: number) => {
-            return (
-              <Avatar
-                name={assignee.name}
-                key={index}
-                boxSize="36px"
-                backgroundColor={assignee.signed ? "#D0F0DC" : "#DCDCDC"}
-                border="1px solid #FFFFFF"
-                color="black"
-                fontWeight={400}
-                fontSize="14px"
-              />
-            );
-          })}
-        </AvatarGroup>
-      </Flex> */}
     </>
   );
 };
