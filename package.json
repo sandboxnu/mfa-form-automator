@@ -12,6 +12,7 @@
     "@chakra-ui/react": "^2.4.9",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@fontsource/hanken-grotesk": "^4.5.2",
     "@next/font": "13.1.4",
     "@typegoose/typegoose": "^10.3.3",
     "@types/node": "18.11.18",

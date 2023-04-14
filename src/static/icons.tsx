@@ -68,10 +68,13 @@ export const RightArrowIcon = createIcon({
   viewBox: "0 0 8 10",
   path: (
     <>
-      <path d="M0.330127 0.5L7.83013 4.83013L0.330127 9.16025L0.330127 0.5Z" fill="#4C658A"/>
+      <path
+        d="M0.330127 0.5L7.83013 4.83013L0.330127 9.16025L0.330127 0.5Z"
+        fill="#4C658A"
+      />
     </>
-  )
-})
+  ),
+});
 
 export const MFALogoIcon = createIcon({
   displayName: "MFALogoIcon",
@@ -109,4 +112,10 @@ export const MFALogoIcon = createIcon({
       </defs>
     </>
   ),
+});
+
+export const SortDownArrow = createIcon({
+  displayName: "SortDownArrow",
+  viewBox: "0 0 10 8",
+  d: "M5 8L0.669872 0.5L9.33013 0.5L5 8Z",
 });
