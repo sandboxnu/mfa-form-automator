@@ -7,10 +7,12 @@ export const todoForms: FormInstance[] = [
     assignees: [
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: false,
       },
     ],
@@ -21,14 +23,17 @@ export const todoForms: FormInstance[] = [
     assignees: [
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: false,
       },
     ],
@@ -42,14 +47,17 @@ export const pendingForms: FormInstance[] = [
     assignees: [
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: false,
       },
     ],
@@ -60,10 +68,12 @@ export const pendingForms: FormInstance[] = [
     assignees: [
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: false,
       },
     ],
@@ -74,18 +84,22 @@ export const pendingForms: FormInstance[] = [
     assignees: [
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: false,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: false,
       },
     ],
@@ -99,28 +113,17 @@ export const completedForms: FormInstance[] = [
     assignees: [
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
-        signed: true,
-      },
-    ],
-  },
-  {
-    name: "Completed Form",
-    originator: "John Smith",
-    assignees: [
-      {
-        name: "John Smith",
-        signed: true,
-      },
-      {
-        name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
     ],
@@ -131,28 +134,12 @@ export const completedForms: FormInstance[] = [
     assignees: [
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
-        signed: true,
-      },
-      {
-        name: "John Smith",
-        signed: true,
-      },
-    ],
-  },
-  {
-    name: "Completed Form",
-    originator: "John Smith",
-    assignees: [
-      {
-        name: "John Smith",
-        signed: true,
-      },
-      {
-        name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
     ],
@@ -163,32 +150,17 @@ export const completedForms: FormInstance[] = [
     assignees: [
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
-        signed: true,
-      },
-    ],
-  },
-  {
-    name: "Completed Form",
-    originator: "John Smith",
-    assignees: [
-      {
-        name: "John Smith",
-        signed: true,
-      },
-      {
-        name: "John Smith",
-        signed: true,
-      },
-      {
-        name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
     ],
@@ -199,14 +171,75 @@ export const completedForms: FormInstance[] = [
     assignees: [
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
+        signed: true,
+      },
+    ],
+  },
+  {
+    name: "Completed Form",
+    originator: "John Smith",
+    assignees: [
+      {
+        name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
       {
         name: "John Smith",
+        email: "johnsmith@gmail.com",
+        signed: true,
+      },
+      {
+        name: "John Smith",
+        email: "johnsmith@gmail.com",
+        signed: true,
+      },
+    ],
+  },
+  {
+    name: "Completed Form",
+    originator: "John Smith",
+    assignees: [
+      {
+        name: "John Smith",
+        email: "johnsmith@gmail.com",
+        signed: true,
+      },
+      {
+        name: "John Smith",
+        email: "johnsmith@gmail.com",
+        signed: true,
+      },
+      {
+        name: "John Smith",
+        email: "johnsmith@gmail.com",
+        signed: true,
+      },
+    ],
+  },
+  {
+    name: "Completed Form",
+    originator: "John Smith",
+    assignees: [
+      {
+        name: "John Smith",
+        email: "johnsmith@gmail.com",
+        signed: true,
+      },
+      {
+        name: "John Smith",
+        email: "johnsmith@gmail.com",
+        signed: true,
+      },
+      {
+        name: "John Smith",
+        email: "johnsmith@gmail.com",
         signed: true,
       },
     ],
