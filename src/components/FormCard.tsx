@@ -3,7 +3,8 @@ import {
   Box,
   Text,
   Avatar,
-  AvatarGroup
+  AvatarGroup,
+  Tooltip
 } from "@chakra-ui/react";
 
 
@@ -17,9 +18,37 @@ export const FormCard = ({ formName, assignees }: { formName: String, assignees:
           {formName}
         </Text>
         <AvatarGroup size="md" max={5} marginTop="10px">
-          {assignees.map((assignee: Assignee, index: number) => {
-            return <Avatar name={assignee.name} key={index} boxSize="36px" backgroundColor={assignee.signed ? "#D0F0DC" : "#DCDCDC"} border="1px solid #FFFFFF" color="black" fontWeight={400} fontSize="14px"/>
-          })}
+      {assignees.map((assignee: Assignee, index: number) => {
+        return (
+          <Tooltip
+          bg={"white"}
+          color={"black"}
+          label={
+            <>
+              <span style={{ fontSize: "16px", fontWeight: "bold" }}>{assignee.name}</span>
+              <br />
+              {assignee.email}
+              <br />
+              <span style={{ color: assignee.signed ? "#14A34A" : "#D74100" }}>
+                {assignee.signed ? "Signed" : "Not yet signed"}
+              </span>
+            </>
+          }
+          key={index}
+        >
+          <Avatar
+            name={assignee.name}
+            key={index}
+            boxSize="36px"
+            backgroundColor={assignee.signed ? "#D0F0DC" : "#DCDCDC"}
+            border="1px solid #FFFFFF"
+            color="black"
+            fontWeight={400}
+            fontSize="14px"
+          />
+        </Tooltip>
+        );
+      })}
         </AvatarGroup>
       </Box>
     </Box>

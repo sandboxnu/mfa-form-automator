@@ -1,5 +1,6 @@
 export type Assignee = {
   name: string;
+  email: string;
   signed: boolean;
 };
 
