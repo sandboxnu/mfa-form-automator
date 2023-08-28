@@ -14,19 +14,25 @@ datasource db {
 //
 // Each `Employee` corresponds to a user who holds a certain position.
 model Employee {
-  id        String      @id @default(uuid()) @db.Uuid
-  firstName String      @db.VarChar(255)
-  lastName  String      @db.VarChar(255)
-  email     String      @db.VarChar(255)
-  pswdHash  String      @db.VarChar(255)
+  id        String   @id @default(uuid()) @db.Uuid
+  firstName String   @db.VarChar(255)
+  lastName  String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  pswdHash  String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   Signature Signature[]
 }
 
 // `Positions` represent the various positions that employees at the MFA can hold.
 model Position {
-  id             String           @id @default(uuid()) @db.Uuid
-  name           String           @db.VarChar(255)
-  single         Boolean          @default(false)
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
+  single    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   SignatureField SignatureField[]
   Signature      Signature[]
 }
@@ -36,8 +42,10 @@ model Position {
 // Each `SignatureField` also specifies its order on the form it is on.
 // `SignatureFields` are used as subdocuments within `FormTemplates`.
 model SignatureField {
-  id    String @id @default(uuid()) @db.Uuid
-  order Int    @db.Integer
+  id        String   @id @default(uuid()) @db.Uuid
+  order     Int      @db.Integer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   signerPosition   Position @relation(fields: [signerPositionId], references: [id])
   signerPositionId String   @db.Uuid
@@ -54,10 +62,12 @@ model SignatureField {
 // has been signed and completed, the `signedDoc` should contain a reference to the
 // signed file with all previous signatures up to the current signature.
 model Signature {
-  id            String  @id @default(uuid()) @db.Uuid
-  order         Int     @db.Integer
-  signed        Boolean @default(false)
-  signedDocLink String? @db.VarChar(255)
+  id            String   @id @default(uuid()) @db.Uuid
+  order         Int      @db.Integer
+  signed        Boolean  @default(false)
+  signedDocLink String?  @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   signerPosition   Position @relation(fields: [signerPositionId], references: [id])
   signerPositionId String   @db.Uuid
@@ -76,10 +86,12 @@ model Signature {
 // A `FormInstance` should be marked completed when all of its signatures
 // have been collected and marked as completed.
 model FormInstance {
-  id          String  @id @default(uuid()) @db.Uuid
-  name        String  @db.VarChar(255)
-  formDocLink String  @db.VarChar(255)
-  completed   Boolean @default(false)
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  formDocLink String   @db.VarChar(255)
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   signatures Signature[]
 
@@ -89,9 +101,11 @@ model FormInstance {
 
 // A `FormTemplate` is a reference for a form that is used when creating forms initiated by users.
 model FormTemplate {
-  id          String @id @default(uuid()) @db.Uuid
-  name        String @db.VarChar(255)
-  formDocLink String @db.VarChar(255)
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  formDocLink String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   signatureFields SignatureField[]
   formInstances   FormInstance[]
