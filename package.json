@@ -1,34 +1,12 @@
 {
-  "name": "mfa-frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@chakra-ui/react": "^2.4.9",
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@fontsource/hanken-grotesk": "^4.5.2",
-    "@next/font": "13.1.4",
-    "@typegoose/typegoose": "^10.3.3",
-    "@types/node": "18.11.18",
-    "@types/react": "18.0.27",
-    "@types/react-dom": "^18.0.10",
-    "axios": "^1.2.3",
-    "eslint": "8.32.0",
-    "eslint-config-next": "13.1.4",
-    "framer-motion": "^8.5.0",
-    "mongoose": "^7.0.2",
-    "next": "13.1.4",
-    "react": "18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.1",
-    "react-scripts": "^5.0.1",
-    "typescript": "4.9.4",
-    "zod": "^3.21.4"
+    "name": "mfa-form-automator",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "dev": "yarn --cwd apps/client dev & yarn --cwd apps/server start:dev"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
   }
-}
