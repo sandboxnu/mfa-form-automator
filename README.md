@@ -14,7 +14,7 @@ NextJS, NestJS, Prisma, PostgreSQL
     yarn prisma generate
     ```
 
-4. To run the development client and server:
+4. To run the development client and server together:
 
     ```bash
     yarn dev
@@ -23,3 +23,23 @@ NextJS, NestJS, Prisma, PostgreSQL
     The client should be hosted at [http://localhost:3000](http://localhost:3000).
 
     The server should be hosted at [http://localhost:4000](http://localhost:4000).
+
+TODO: Database setup and initialization using Prisma Migrate.
+
+## Regenerating Client
+
+When making changes to our backend, we need to regenerate our frontend client to allow us to access the updated endpoints.
+
+1. Start instance of backend server hosted at [http://localhost:4000](http://localhost:4000) by running the following command in the server directory:
+
+    ```bash
+    yarn start:dev
+    ```
+
+2. In the client directory, run the following command:
+
+    ```bash
+    yarn gen-client
+    ```
+
+    The client should be regenerated based on the running local backend instance.
