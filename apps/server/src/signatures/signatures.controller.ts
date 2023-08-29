@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SignaturesService } from './signatures.service';
 import { CreateSignatureDto } from './dto/create-signature.dto';
 import { UpdateSignatureDto } from './dto/update-signature.dto';
@@ -23,7 +31,10 @@ export class SignaturesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSignatureDto: UpdateSignatureDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSignatureDto: UpdateSignatureDto,
+  ) {
     return this.signaturesService.update(+id, updateSignatureDto);
   }
 

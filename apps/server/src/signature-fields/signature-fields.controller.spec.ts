@@ -11,7 +11,9 @@ describe('SignatureFieldsController', () => {
       providers: [SignatureFieldsService],
     }).compile();
 
-    controller = module.get<SignatureFieldsController>(SignatureFieldsController);
+    controller = module.get<SignatureFieldsController>(
+      SignatureFieldsController,
+    );
   });
 
   it('should be defined', () => {

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { FormTemplatesService } from './form-templates.service';
 import { CreateFormTemplateDto } from './dto/create-form-template.dto';
 import { UpdateFormTemplateDto } from './dto/update-form-template.dto';
@@ -23,7 +31,10 @@ export class FormTemplatesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFormTemplateDto: UpdateFormTemplateDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateFormTemplateDto: UpdateFormTemplateDto,
+  ) {
     return this.formTemplatesService.update(+id, updateFormTemplateDto);
   }
 

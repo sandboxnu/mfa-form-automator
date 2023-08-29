@@ -10,7 +10,7 @@ export class EmployeesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
-    let newEmployee = await this.prisma.employee.create({
+    const newEmployee = await this.prisma.employee.create({
       data: {
         firstName: createEmployeeDto.firstName,
         lastName: createEmployeeDto.lastName,
@@ -26,12 +26,12 @@ export class EmployeesService {
   }
 
   async findAll(limit: number): Promise<Employee[]> {
-    let employees = await this.prisma.employee.findMany({ take: limit });
+    const employees = await this.prisma.employee.findMany({ take: limit });
     return employees;
   }
 
   async findOne(id: string): Promise<Employee> {
-    let employee = await this.prisma.employee.findFirstOrThrow({
+    const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         id: id,
       },
@@ -43,7 +43,7 @@ export class EmployeesService {
     id: string,
     updateEmployeeDto: UpdateEmployeeDto,
   ): Promise<Employee> {
-    let updatedEmployee = this.prisma.employee.update({
+    const updatedEmployee = this.prisma.employee.update({
       where: {
         id: id,
       },

@@ -10,7 +10,15 @@ import { FormInstancesModule } from './form-instances/form-instances.module';
 import { FormTemplatesModule } from './form-templates/form-templates.module';
 
 @Module({
-  imports: [PrismaModule, EmployeesModule, PositionsModule, SignatureFieldsModule, SignaturesModule, FormInstancesModule, FormTemplatesModule],
+  imports: [
+    PrismaModule,
+    EmployeesModule,
+    PositionsModule,
+    SignatureFieldsModule,
+    SignaturesModule,
+    FormInstancesModule,
+    FormTemplatesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

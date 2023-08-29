@@ -34,7 +34,7 @@ export class EmployeesController {
   })
   async create(@Body() createEmployeeDto: CreateEmployeeDto) {
     // TODO: Auth
-    let newEmployee = await this.employeesService.create(createEmployeeDto);
+    const newEmployee = await this.employeesService.create(createEmployeeDto);
     return new EmployeeEntity(newEmployee);
   }
 
@@ -43,7 +43,7 @@ export class EmployeesController {
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   async findAll(@Param('limit') limit: number) {
     // TODO: Auth
-    let employees = await this.employeesService.findAll(limit);
+    const employees = await this.employeesService.findAll(limit);
     return employees.map((employee) => new EmployeeEntity(employee));
   }
 
@@ -53,7 +53,7 @@ export class EmployeesController {
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   async findOne(@Param('id') id: string) {
     // TODO: Auth
-    let employee = await this.employeesService.findOne(id);
+    const employee = await this.employeesService.findOne(id);
     if (employee == null) {
       console.log(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
       throw new NotFoundException(
@@ -76,7 +76,7 @@ export class EmployeesController {
   ) {
     // TODO: Auth
     try {
-      let updatedEmployee = await this.employeesService.update(
+      const updatedEmployee = await this.employeesService.update(
         id,
         updateEmployeeDto,
       );
