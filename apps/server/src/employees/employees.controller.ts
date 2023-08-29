@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { EmployeeEntity } from './entities/employee.entity';
 import { Prisma } from '@prisma/client';
-import { AppErrorMessage } from '@server/app.errors';
+import { AppErrorMessage } from '../app.errors';
 
 @Controller('employees')
 export class EmployeesController {
@@ -95,6 +95,9 @@ export class EmployeesController {
   }
 
   @Delete(':id')
+  @ApiOkResponse()
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   async remove(@Param('id') id: string) {
     // TODO: Auth
     try {
