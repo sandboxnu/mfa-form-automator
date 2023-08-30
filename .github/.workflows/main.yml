@@ -1,4 +1,4 @@
-name: Lint/Tests
+name: Lint/tsc/Tests
 on:
   pull_request: ~
   push:
