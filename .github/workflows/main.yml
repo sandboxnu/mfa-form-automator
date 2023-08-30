@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Lint web
-        run: yarn --cwd apps/web lint-web
+        run: yarn lint-web
   lint-server:
     runs-on: ubuntu-latest
     name: Run eslint on server
@@ -43,10 +43,10 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Lint server
-        run: yarn --cwd apps/server lint-server
+        run: yarn lint-server
   tsc-web:
     runs-on: ubuntu-latest
-    name: Check typescript on frontend
+    name: Check tsc on frontend
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
@@ -60,10 +60,10 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: tsc web
-        run: yarn --cwd apps/web tsc-web
+        run: yarn tsc-web
   tsc-server:
     runs-on: ubuntu-latest
-    name: Check typescript on server
+    name: Check tsc on server
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
@@ -95,7 +95,7 @@ jobs:
   #     - name: Install dependencies
   #       run: yarn
   #     - name: Test web
-  #       run: yarn --cwd apps/web test-web
+  #       run: yarn test-web
   jest-server:
     runs-on: ubuntu-latest
     name: Run tests on server
@@ -113,4 +113,4 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Test server
-        run: yarn --cwd apps/server test-server
+        run: yarn test-server
