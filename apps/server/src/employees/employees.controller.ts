@@ -23,6 +23,7 @@ import {
 import { EmployeeEntity } from './entities/employee.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
+import { EmployeeErrorMessage } from './employees.errors';
 
 @ApiTags('employees')
 @Controller('employees')
