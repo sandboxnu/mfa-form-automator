@@ -96,7 +96,7 @@ describe('EmployeesController', () => {
       ];
       jest
         .spyOn(employeeService, 'findAll')
-        .mockImplementation(async (limit) => result);
+        .mockImplementation(async () => result);
 
       expect(await controller.findAll(10)).toEqual(expected);
     });

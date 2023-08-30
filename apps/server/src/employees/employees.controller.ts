@@ -17,12 +17,14 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { EmployeeEntity } from './entities/employee.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 
+@ApiTags('employees')
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}

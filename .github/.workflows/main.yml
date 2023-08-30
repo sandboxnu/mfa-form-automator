@@ -1,0 +1,34 @@
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Run eslint
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '19.x'
+      - run: yarn
+      - run: yarn lint
+  tsc:
+    runs-on: ubuntu-latest
+    name: Check typescript
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '19.x'
+      - run: yarn
+      - run: yarn tsc -p tsconfig.json
+  jest:
+    runs-on: ubuntu-latest
+    name: Run tests
+    needs: [lint, tsc] # ensure tests are run only after eslint and tsc pass
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '19.x'
+      - run: yarn
+      - run: yarn test
