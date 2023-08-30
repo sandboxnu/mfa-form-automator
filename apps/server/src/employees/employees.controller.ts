@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -41,7 +42,7 @@ export class EmployeesController {
   @Get()
   @ApiOkResponse({ type: [EmployeeEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
-  async findAll(@Param('limit') limit: number) {
+  async findAll(@Query('limit') limit?: number) {
     // TODO: Auth
     const employees = await this.employeesService.findAll(limit);
     return employees.map((employee) => new EmployeeEntity(employee));

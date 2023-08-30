@@ -79,6 +79,9 @@ model SignatureField {
 // from which the `FormInstance` that the `Signature` belongs to was derived. If a `Signature`
 // has been signed and completed, the `signedDoc` should contain a reference to the
 // signed file with all previous signatures up to the current signature.
+//
+// The signer position and the user signed by are populated when the signature has been
+// completed, and are derived from the person who signed at that moment in time.
 model Signature {
   id            String   @id @default(uuid()) @db.Uuid
   order         Int      @db.Integer
@@ -87,10 +90,10 @@ model Signature {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  signerPosition   Position     @relation(fields: [signerPositionId], references: [id])
-  signerPositionId String       @db.Uuid
-  userSignedBy     Employee     @relation(fields: [userSignedById], references: [id])
-  userSignedById   String       @db.Uuid
+  signerPosition   Position?     @relation(fields: [signerPositionId], references: [id])
+  signerPositionId String?       @db.Uuid
+  userSignedBy     Employee?     @relation(fields: [userSignedById], references: [id])
+  userSignedById   String?       @db.Uuid
   formInstance     FormInstance @relation(fields: [formInstanceId], references: [id])
   formInstanceId   String       @db.Uuid
 }

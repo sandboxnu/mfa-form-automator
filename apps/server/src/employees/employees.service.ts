@@ -8,6 +8,11 @@ import * as bcrypt from 'bcrypt';
 export class EmployeesService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Create a new employee.
+   * @param createEmployeeDto create employee dto
+   * @returns the created employee, hydrated
+   */
   async create(createEmployeeDto: CreateEmployeeDto) {
     const newEmployee = await this.prisma.employee.create({
       data: {
@@ -28,7 +33,12 @@ export class EmployeesService {
     return newEmployee;
   }
 
-  async findAll(limit: number) {
+  /**
+   * Retrieve all employees.
+   * @param limit the number of employees we want to retrieve (optional)
+   * @returns all employees, hydrated
+   */
+  async findAll(limit?: number) {
     const employees = await this.prisma.employee.findMany({
       take: limit,
       include: {
@@ -38,6 +48,11 @@ export class EmployeesService {
     return employees;
   }
 
+  /**
+   * Retrieve an employee by id.
+   * @param id the employee id
+   * @returns the selected employee, hydrated
+   */
   async findOne(id: string) {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
@@ -50,6 +65,12 @@ export class EmployeesService {
     return employee;
   }
 
+  /**
+   * Update an employee.
+   * @param id the employee id
+   * @param updateEmployeeDto update employee dto
+   * @returns the updated employee, hydrated
+   */
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     const updatedEmployee = this.prisma.employee.update({
       where: {
@@ -63,6 +84,10 @@ export class EmployeesService {
     return updatedEmployee;
   }
 
+  /**
+   * Remove an employee.
+   * @param id the employee id
+   */
   async remove(id: string) {
     await this.prisma.employee.delete({
       where: {
