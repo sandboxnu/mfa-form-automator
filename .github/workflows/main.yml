@@ -1,4 +1,4 @@
-name: Lint/tsc/Tests
+name: CI
 on:
   pull_request: ~
   push:
@@ -15,17 +15,13 @@ jobs:
     name: Run eslint on frontend
     steps:
       - uses: actions/checkout@v3
-      - name: Install node
+      - name: Set up node
         uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - name: Setup yarn
-        run: npm install -g yarn
-      - name: Setup Nodejs with yarn caching
-        uses: actions/setup-node@v3
-        with:
-          node-version: "19.x"
           cache: yarn
+      - name: Install yarn
+        run: npm install -g yarn
       - name: Install dependencies
         run: yarn
       - name: Lint web
@@ -35,17 +31,13 @@ jobs:
     name: Run eslint on server
     steps:
       - uses: actions/checkout@v3
-      - name: Install node
+      - name: Set up node
         uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - name: Setup yarn
-        run: npm install -g yarn
-      - name: Setup Nodejs with yarn caching
-        uses: actions/setup-node@v3
-        with:
-          node-version: "19.x"
           cache: yarn
+      - name: Install yarn
+        run: npm install -g yarn
       - name: Install dependencies
         run: yarn
       - name: Lint server
@@ -55,17 +47,13 @@ jobs:
     name: Check typescript on frontend
     steps:
       - uses: actions/checkout@v3
-      - name: Install node
+      - name: Set up node
         uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - name: Setup yarn
-        run: npm install -g yarn
-      - name: Setup Nodejs with yarn caching
-        uses: actions/setup-node@v3
-        with:
-          node-version: "19.x"
           cache: yarn
+      - name: Install yarn
+        run: npm install -g yarn
       - name: Install dependencies
         run: yarn
       - name: tsc web
@@ -75,17 +63,13 @@ jobs:
     name: Check typescript on server
     steps:
       - uses: actions/checkout@v3
-      - name: Install node
+      - name: Set up node
         uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - name: Setup yarn
-        run: npm install -g yarn
-      - name: Setup Nodejs with yarn caching
-        uses: actions/setup-node@v3
-        with:
-          node-version: "19.x"
           cache: yarn
+      - name: Install yarn
+        run: npm install -g yarn
       - name: Install dependencies
         run: yarn
       - name: tsc server
@@ -96,17 +80,13 @@ jobs:
   #   needs: [lint-web, tsc-web] # ensure tests are run only after eslint and tsc pass
   #   steps:
   #     - uses: actions/checkout@v3
-  #     - name: Install node
+  #     - name: Set up node
   #       uses: actions/setup-node@v3
   #       with:
   #         node-version: '19.x'
-  #     - name: Setup yarn
-  #       run: npm install -g yarn
-  #     - name: Setup Nodejs with yarn caching
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: "19.x"
   #         cache: yarn
+  #     - name: Install yarn
+  #       run: npm install -g yarn
   #     - name: Install dependencies
   #       run: yarn
   #     - name: Test web
@@ -117,17 +97,13 @@ jobs:
     needs: [lint-server, tsc-server] # ensure tests are run only after eslint and tsc pass
     steps:
       - uses: actions/checkout@v3
-      - name: Install node
+      - name: Set up node
         uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - name: Setup yarn
-        run: npm install -g yarn
-      - name: Setup Nodejs with yarn caching
-        uses: actions/setup-node@v3
-        with:
-          node-version: "19.x"
           cache: yarn
+      - name: Install yarn
+        run: npm install -g yarn
       - name: Install dependencies
         run: yarn
       - name: Test server

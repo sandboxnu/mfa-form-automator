@@ -1,8 +1,8 @@
-import { HStack, Flex, Box, Text } from "@chakra-ui/react";
-import { FormCard } from "./FormCard";
-import { RightArrowIcon } from "apps/client/src/static/icons";
-import Link from "next/link";
-import { FormInstance } from "apps/client/src/utils/types";
+import { HStack, Flex, Box, Text } from '@chakra-ui/react';
+import { FormCard } from './FormCard';
+import { RightArrowIcon } from 'apps/web/src/static/icons';
+import Link from 'next/link';
+import { FormInstance } from 'apps/web/src/utils/types';
 
 // abstraction for a row of cards in the overview page
 export const OverviewRow = ({
@@ -18,7 +18,7 @@ export const OverviewRow = ({
 }) => {
   let displayFormInstances: FormInstance[] = formInstances.slice(
     0,
-    Math.min(4, formInstances.length)
+    Math.min(4, formInstances.length),
   );
   let rowWidth: number = displayFormInstances.length * 246;
   return (
@@ -62,7 +62,7 @@ export const OverviewRow = ({
                   key={index}
                 />
               );
-            }
+            },
           )}
         </HStack>
       </Box>
