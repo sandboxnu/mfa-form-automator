@@ -24,7 +24,7 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
-        run: yarn
+        run: yarn --cwd apps/web
       - name: Lint web
         run: yarn lint-web
   lint-server:
@@ -41,7 +41,7 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
-        run: yarn
+        run: yarn --cwd apps/server
       - name: Lint server
         run: yarn lint-server
   tsc-web:
@@ -58,7 +58,7 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
-        run: yarn
+        run: yarn --cwd apps/web
       - name: tsc web
         run: yarn tsc-web
   tsc-server:
@@ -75,7 +75,7 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
-        run: yarn
+        run: yarn --cwd apps/server
       - name: tsc server
         run: yarn tsc-server
   # jest-web:
@@ -93,7 +93,7 @@ jobs:
   #     - name: Install yarn
   #       run: npm install -g yarn
   #     - name: Install dependencies
-  #       run: yarn
+  #       run: yarn --cwd apps/web
   #     - name: Test web
   #       run: yarn test-web
   jest-server:
@@ -111,6 +111,6 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
-        run: yarn
+        run: yarn --cwd apps/server
       - name: Test server
         run: yarn test-server
