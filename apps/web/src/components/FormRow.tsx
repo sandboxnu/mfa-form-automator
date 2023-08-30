@@ -6,7 +6,7 @@ import {
   GridItem,
   Text,
 } from "@chakra-ui/react";
-import { Assignee, FormInstance } from "apps/client/src/utils/types";
+import { Assignee, FormInstance } from "apps/web/src/utils/types";
 
 // form component for displaying a row in a list of forms
 export const FormRow = ({

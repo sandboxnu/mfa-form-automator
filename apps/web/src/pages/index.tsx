@@ -1,9 +1,9 @@
-import { OverviewRow } from "apps/client/src/components/OverviewRow";
+import { OverviewRow } from "apps/web/src/components/OverviewRow";
 import {
   completedForms,
   pendingForms,
   todoForms,
-} from "apps/client/src/data/seedData";
+} from "apps/web/src/data/seedData";
 import { Box } from "@chakra-ui/react";
 
 // overview page

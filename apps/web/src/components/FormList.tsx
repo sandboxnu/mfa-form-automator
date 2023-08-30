@@ -1,5 +1,5 @@
 import { FormRow } from "./FormRow";
-import { FormInstance } from "apps/client/src/utils/types";
+import { FormInstance } from "apps/web/src/utils/types";
 import {
   Box,
   Flex,
@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { SortDownArrow } from "apps/client/src/static/icons";
+import { SortDownArrow } from "apps/web/src/static/icons";
 
 // abstracted component for displaying forms in list format
 export const FormList = ({

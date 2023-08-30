@@ -7,7 +7,7 @@ import {
   HistoryIcon,
   SettingsIcon,
   PlusIcon,
-} from "apps/client/src/static/icons";
+} from "apps/web/src/static/icons";
 import { useRouter } from "next/router";
 import Link from "next/link";
 

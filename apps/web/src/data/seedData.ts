@@ -1,4 +1,4 @@
-import { FormInstance } from "apps/client/src/utils/types";
+import { FormInstance } from "apps/web/src/utils/types";
 
 export const todoForms: FormInstance[] = [
   {

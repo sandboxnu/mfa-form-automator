@@ -1,5 +1,5 @@
-import { FormList } from "apps/client/src/components/FormList";
-import { pendingForms } from "apps/client/src/data/seedData";
+import { FormList } from "apps/web/src/components/FormList";
+import { pendingForms } from "apps/web/src/data/seedData";
 
 export default function Pending() {
   return (

@@ -1,4 +1,4 @@
-import { Assignee } from "apps/client/src/utils/types";
+import { Assignee } from "apps/web/src/utils/types";
 import { Box, Text, Avatar, AvatarGroup, Tooltip } from "@chakra-ui/react";
 
 // Overview Form component for displaying forms in the dashboard

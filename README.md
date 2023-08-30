@@ -7,7 +7,7 @@ NextJS, NestJS, Prisma, PostgreSQL
 ## Getting Started (Local Development)
 
 1. Create a .env file in the project root and configure environment variables using the example.
-2. Install dependencies in both `apps/client` and `apps/server`. We currently use Yarn as our package manager.
+2. Install dependencies in both `apps/web` and `apps/server`. We currently use Yarn as our package manager.
 3. Generate the Prisma Client in the `apps/server` directory using the following command from within the `apps/server` directory:
 
     ```bash

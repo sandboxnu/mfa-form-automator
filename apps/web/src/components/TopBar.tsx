@@ -2,7 +2,7 @@ import {
   MFALogoIcon,
   ProfileIcon,
   SearchIcon,
-} from "apps/client/src/static/icons";
+} from "apps/web/src/static/icons";
 import {
   Box,
   Hide,
