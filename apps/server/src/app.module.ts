@@ -8,6 +8,7 @@ import { SignatureFieldsModule } from './signature-fields/signature-fields.modul
 import { SignaturesModule } from './signatures/signatures.module';
 import { FormInstancesModule } from './form-instances/form-instances.module';
 import { FormTemplatesModule } from './form-templates/form-templates.module';
+import { DepartmentsModule } from './departments/departments.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FormTemplatesModule } from './form-templates/form-templates.module';
     SignaturesModule,
     FormInstancesModule,
     FormTemplatesModule,
+    DepartmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

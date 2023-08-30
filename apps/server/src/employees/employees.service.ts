@@ -3,13 +3,12 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { Employee } from '@prisma/client';
 
 @Injectable()
 export class EmployeesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
+  async create(createEmployeeDto: CreateEmployeeDto) {
     const newEmployee = await this.prisma.employee.create({
       data: {
         firstName: createEmployeeDto.firstName,
@@ -21,34 +20,45 @@ export class EmployeesService {
           process.env.SALT_ROUNDS || 10,
         ),
       },
+      include: {
+        department: true,
+      },
     });
     newEmployee.pswdHash = null;
     return newEmployee;
   }
 
-  async findAll(limit: number): Promise<Employee[]> {
-    const employees = await this.prisma.employee.findMany({ take: limit });
+  async findAll(limit: number) {
+    const employees = await this.prisma.employee.findMany({
+      take: limit,
+      include: {
+        department: true,
+      },
+    });
     return employees;
   }
 
-  async findOne(id: string): Promise<Employee> {
+  async findOne(id: string) {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         id: id,
+      },
+      include: {
+        department: true,
       },
     });
     return employee;
   }
 
-  async update(
-    id: string,
-    updateEmployeeDto: UpdateEmployeeDto,
-  ): Promise<Employee> {
+  async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     const updatedEmployee = this.prisma.employee.update({
       where: {
         id: id,
       },
       data: updateEmployeeDto,
+      include: {
+        department: true,
+      },
     });
     return updatedEmployee;
   }

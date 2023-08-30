@@ -3,6 +3,7 @@ import { EmployeesController } from './employees.controller';
 import { EmployeesService } from './employees.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmployeeEntity } from './entities/employee.entity';
+import { DepartmentEntity } from '../departments/entities/department.entity';
 
 describe('EmployeesController', () => {
   let controller: EmployeesController;
@@ -29,6 +30,13 @@ describe('EmployeesController', () => {
           id: '38bb3b3f-e7eb-4686-99b8-6a51e6081d8f',
           firstName: 'John',
           lastName: 'Doe',
+          departmentId: 'department-id',
+          department: {
+            id: 'department-id',
+            name: 'department-name',
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+          },
           email: 'john.doe@example.com',
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
@@ -38,6 +46,13 @@ describe('EmployeesController', () => {
           id: 'd6c3c7c4-5f82-4c63-9086-ad6b3f067cdc',
           firstName: 'Bilbo',
           lastName: 'Baggins',
+          departmentId: 'department-id',
+          department: {
+            id: 'department-id',
+            name: 'department-name',
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+          },
           email: 'bilbo.baggins@example.com',
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
@@ -50,6 +65,13 @@ describe('EmployeesController', () => {
           id: '38bb3b3f-e7eb-4686-99b8-6a51e6081d8f',
           firstName: 'John',
           lastName: 'Doe',
+          departmentId: 'department-id',
+          department: new DepartmentEntity({
+            id: 'department-id',
+            name: 'department-name',
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+          }),
           email: 'john.doe@example.com',
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
@@ -59,6 +81,13 @@ describe('EmployeesController', () => {
           id: 'd6c3c7c4-5f82-4c63-9086-ad6b3f067cdc',
           firstName: 'Bilbo',
           lastName: 'Baggins',
+          departmentId: 'department-id',
+          department: new DepartmentEntity({
+            id: 'department-id',
+            name: 'department-name',
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+          }),
           email: 'bilbo.baggins@example.com',
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
