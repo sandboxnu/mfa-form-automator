@@ -20,6 +20,7 @@ jobs:
         with:
           node-version: '19.x'
           cache: yarn
+          cache-dependency-path: './apps/web/package-lock.json'
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
@@ -36,6 +37,7 @@ jobs:
         with:
           node-version: '19.x'
           cache: yarn
+          cache-dependency-path: './apps/server/package-lock.json'
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
@@ -52,6 +54,7 @@ jobs:
         with:
           node-version: '19.x'
           cache: yarn
+          cache-dependency-path: './apps/web/package-lock.json'
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
@@ -68,6 +71,7 @@ jobs:
         with:
           node-version: '19.x'
           cache: yarn
+          cache-dependency-path: './apps/server/package-lock.json'
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
@@ -85,6 +89,7 @@ jobs:
   #       with:
   #         node-version: '19.x'
   #         cache: yarn
+  #         cache-dependency-path: './apps/web/package-lock.json'
   #     - name: Install yarn
   #       run: npm install -g yarn
   #     - name: Install dependencies
@@ -102,6 +107,7 @@ jobs:
         with:
           node-version: '19.x'
           cache: yarn
+          cache-dependency-path: './apps/server/package-lock.json'
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
