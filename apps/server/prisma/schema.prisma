@@ -10,6 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// `Departments` represent the various departments that employees could work in.
+model Department {
+  id   String @id @default(uuid()) @db.Uuid
+  name String @db.VarChar(255)
+
+  employees Employee[]
+}
+
 // `Employees` represent the people who work at the MFA.
 //
 // Each `Employee` corresponds to a user who holds a certain position.
@@ -22,7 +30,11 @@ model Employee {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Signature Signature[]
+  signatures      Signature[]
+  originatedForms FormInstance[]
+
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId String     @db.Uuid
 }
 
 // `Positions` represent the various positions that employees at the MFA can hold.
@@ -33,22 +45,25 @@ model Position {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  SignatureField SignatureField[]
-  Signature      Signature[]
+  signatureFields SignatureField[]
+  signatures      Signature[]
 }
 
-// `SignatureFields` represent each signature that is required on a given form.
+// `SignatureFields` represent each signature field that is required on a given form.
+// A field may have a position specified, indicating that when a user creates an
+// instance of the corresponding form, the field should default to the specified position.
 //
 // Each `SignatureField` also specifies its order on the form it is on.
 // `SignatureFields` are used as subdocuments within `FormTemplates`.
 model SignatureField {
   id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
   order     Int      @db.Integer
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  signerPosition   Position @relation(fields: [signerPositionId], references: [id])
-  signerPositionId String   @db.Uuid
+  signerPosition   Position? @relation(fields: [signerPositionId], references: [id])
+  signerPositionId String?   @db.Uuid
 
   formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
   formTemplateId String
@@ -69,13 +84,12 @@ model Signature {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  signerPosition   Position @relation(fields: [signerPositionId], references: [id])
-  signerPositionId String   @db.Uuid
-  userSignedBy     Employee @relation(fields: [userSignedById], references: [id])
-  userSignedById   String   @db.Uuid
-
-  formInstance   FormInstance @relation(fields: [formInstanceId], references: [id])
-  formInstanceId String
+  signerPosition   Position     @relation(fields: [signerPositionId], references: [id])
+  signerPositionId String       @db.Uuid
+  userSignedBy     Employee     @relation(fields: [userSignedById], references: [id])
+  userSignedById   String       @db.Uuid
+  formInstance     FormInstance @relation(fields: [formInstanceId], references: [id])
+  formInstanceId   String       @db.Uuid
 }
 
 // `FormInstances` represent instances of forms created by employees.
@@ -95,6 +109,8 @@ model FormInstance {
 
   signatures Signature[]
 
+  originator     Employee     @relation(fields: [originatorId], references: [id])
+  originatorId   String       @db.Uuid
   formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
   formTemplateId String
 }

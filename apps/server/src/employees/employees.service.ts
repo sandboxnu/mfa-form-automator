@@ -15,6 +15,7 @@ export class EmployeesService {
         firstName: createEmployeeDto.firstName,
         lastName: createEmployeeDto.lastName,
         email: createEmployeeDto.email,
+        departmentId: createEmployeeDto.departmentId,
         pswdHash: await bcrypt.hash(
           createEmployeeDto.password,
           process.env.SALT_ROUNDS || 10,
