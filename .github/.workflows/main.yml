@@ -1,64 +1,134 @@
-on: [push, pull_request]
+name: Lint/Tests
+on:
+  pull_request: ~
+  push:
+    branches:
+      - master
+      - releases/*
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint-web:
     runs-on: ubuntu-latest
     name: Run eslint on frontend
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - run: yarn --cwd apps/web
-      - run: yarn lint-web
+      - name: Setup yarn
+        run: npm install -g yarn
+      - name: Setup Nodejs with yarn caching
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19.x"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Lint web
+        run: yarn --cwd apps/web lint-web
   lint-server:
     runs-on: ubuntu-latest
     name: Run eslint on server
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - run: yarn --cwd apps/server
-      - run: yarn lint-server
+      - name: Setup yarn
+        run: npm install -g yarn
+      - name: Setup Nodejs with yarn caching
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19.x"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Lint server
+        run: yarn --cwd apps/server lint-server
   tsc-web:
     runs-on: ubuntu-latest
     name: Check typescript on frontend
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - run: yarn --cwd apps/web
-      - run: yarn tsc-web
+      - name: Setup yarn
+        run: npm install -g yarn
+      - name: Setup Nodejs with yarn caching
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19.x"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: tsc web
+        run: yarn --cwd apps/web tsc-web
   tsc-server:
     runs-on: ubuntu-latest
     name: Check typescript on server
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - run: yarn --cwd apps/server
-      - run: yarn tsc-server
+      - name: Setup yarn
+        run: npm install -g yarn
+      - name: Setup Nodejs with yarn caching
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19.x"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: tsc server
+        run: yarn tsc-server
   # jest-web:
   #   runs-on: ubuntu-latest
   #   name: Run tests on frontend
   #   needs: [lint-web, tsc-web] # ensure tests are run only after eslint and tsc pass
   #   steps:
-  #     - uses: actions/checkout@v1
-  #     - uses: actions/setup-node@v1
+  #     - uses: actions/checkout@v3
+  #     - name: Install node
+  #       uses: actions/setup-node@v3
   #       with:
   #         node-version: '19.x'
-  #     - run: yarn --cwd apps/web
-  #     - run: yarn test-web
+  #     - name: Setup yarn
+  #       run: npm install -g yarn
+  #     - name: Setup Nodejs with yarn caching
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: "19.x"
+  #         cache: yarn
+  #     - name: Install dependencies
+  #       run: yarn
+  #     - name: Test web
+  #       run: yarn --cwd apps/web test-web
   jest-server:
     runs-on: ubuntu-latest
     name: Run tests on server
     needs: [lint-server, tsc-server] # ensure tests are run only after eslint and tsc pass
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - name: Install node
+        uses: actions/setup-node@v3
         with:
           node-version: '19.x'
-      - run: yarn --cwd apps/server
-      - run: yarn test-server
+      - name: Setup yarn
+        run: npm install -g yarn
+      - name: Setup Nodejs with yarn caching
+        uses: actions/setup-node@v3
+        with:
+          node-version: "19.x"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Test server
+        run: yarn --cwd apps/server test-server
