@@ -7,7 +7,7 @@
       "dev": "yarn --cwd apps/client dev & yarn --cwd apps/server start:dev",
       "lint-web": "yarn --cwd apps/web lint",
       "lint-server": "yarn --cwd apps/server lint",
-      "test-web": "yarn --cwd apps/web test",
+      "test-web": "yarn --cwd apps/web jest",
       "test-server": "yarn --cwd apps/server test",
       "tsc-web": "yarn --cwd apps/web tsc -p tsconfig.json",
       "tsc-server": "yarn --cwd apps/server tsc -p tsconfig.json"

@@ -1,34 +1,65 @@
 on: [push]
 
 jobs:
-  lint:
+  lint-web:
     runs-on: ubuntu-latest
-    name: Run eslint
+    name: Run eslint on frontend
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '19.x'
       - run: yarn
-      - run: yarn lint
-  tsc:
+      - run: yarn lint-web
+  lint-server:
     runs-on: ubuntu-latest
-    name: Check typescript
+    name: Run eslint on server
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '19.x'
       - run: yarn
-      - run: yarn tsc -p tsconfig.json
-  jest:
+      - run: yarn lint-server
+  tsc-web:
     runs-on: ubuntu-latest
-    name: Run tests
-    needs: [lint, tsc] # ensure tests are run only after eslint and tsc pass
+    name: Check typescript on frontend
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '19.x'
       - run: yarn
-      - run: yarn test
+      - run: yarn tsc-web
+  tsc-server:
+    runs-on: ubuntu-latest
+    name: Check typescript on server
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '19.x'
+      - run: yarn
+      - run: yarn tsc-server
+  # jest-web:
+  #   runs-on: ubuntu-latest
+  #   name: Run tests on frontend
+  #   needs: [lint-web, tsc-web] # ensure tests are run only after eslint and tsc pass
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - uses: actions/setup-node@v1
+  #       with:
+  #         node-version: '19.x'
+  #     - run: yarn
+  #     - run: yarn test-web
+  jest-server:
+    runs-on: ubuntu-latest
+    name: Run tests on server
+    needs: [lint-server, tsc-server] # ensure tests are run only after eslint and tsc pass
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '19.x'
+      - run: yarn
+      - run: yarn test-server
