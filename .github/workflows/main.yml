@@ -28,7 +28,7 @@ jobs:
       - name: Lint web
         run: yarn lint-web
       - name: Prettier
-        run: yarn prettier --check apps/web
+        run: yarn --cwd apps/web prettier --check .
   lint-server:
     runs-on: ubuntu-latest
     name: Run eslint/format on server
@@ -47,7 +47,7 @@ jobs:
       - name: Lint server
         run: yarn lint-server
       - name: Prettier
-        run: yarn prettier --check apps/server
+        run: yarn --cwd apps/server prettier --check .
   tsc-web:
     runs-on: ubuntu-latest
     name: Check tsc on frontend
