@@ -1,10 +1,10 @@
-import { OverviewRow } from "apps/web/src/components/OverviewRow";
+import { OverviewRow } from 'apps/web/src/components/OverviewRow';
 import {
   completedForms,
   pendingForms,
   todoForms,
-} from "apps/web/src/data/seedData";
-import { Box } from "@chakra-ui/react";
+} from 'apps/web/src/data/seedData';
+import { Box } from '@chakra-ui/react';
 
 // overview page
 export default function Overview() {

@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Divider, Spacer } from "@chakra-ui/react";
+import { Box, Button, Flex, Divider, Spacer } from '@chakra-ui/react';
 import {
   OverViewIcon,
   ToDoIcon,
@@ -7,9 +7,9 @@ import {
   HistoryIcon,
   SettingsIcon,
   PlusIcon,
-} from "apps/web/src/static/icons";
-import { useRouter } from "next/router";
-import Link from "next/link";
+} from 'apps/web/src/static/icons';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const icons = {
   overview: <OverViewIcon marginRight="2" />,
@@ -45,16 +45,16 @@ const NavItem = ({
           cursor="pointer"
           color="inherit"
           _dark={{
-            color: "gray.400",
+            color: 'gray.400',
           }}
           _hover={{
-            bg: "#EFEFEF !important",
-            color: "gray.900",
+            bg: '#EFEFEF !important',
+            color: 'gray.900',
           }}
           style={{
-            fontWeight: isActive ? "800" : "normal",
+            fontWeight: isActive ? '800' : 'normal',
           }}
-          bg={isActive ? "#EFEFEF" : "white"}
+          bg={isActive ? '#EFEFEF' : 'white'}
           role="group"
           fontWeight="semibold"
           transition=".15s ease"
@@ -81,7 +81,7 @@ export const NavBar: React.FC = (props: any) => (
     overflowY="auto"
     bg="white"
     _dark={{
-      bg: "gray.800",
+      bg: 'gray.800',
     }}
     border
     color="inherit"
@@ -104,7 +104,7 @@ export const NavBar: React.FC = (props: any) => (
         cursor="pointer"
         color="inherit"
         _dark={{
-          color: "gray.400",
+          color: 'gray.400',
         }}
         role="group"
         fontWeight="semibold"
@@ -123,11 +123,11 @@ export const NavBar: React.FC = (props: any) => (
           backgroundColor="#4C658A"
           fontWeight="900"
           _hover={{
-            bg: "gray.100",
+            bg: 'gray.100',
             _dark: {
-              bg: "gray.900",
+              bg: 'gray.900',
             },
-            color: "gray.900",
+            color: 'gray.900',
           }}
         >
           <PlusIcon marginRight={11} />
@@ -147,7 +147,7 @@ export const NavBar: React.FC = (props: any) => (
         Completed
       </NavItem>
       <Box px={8}>
-        <Divider mt={"5"} mb={5} borderColor={"gray"} />
+        <Divider mt={'5'} mb={5} borderColor={'gray'} />
       </Box>
       <NavItem icon="history" link="/history">
         History

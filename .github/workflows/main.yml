@@ -12,7 +12,7 @@ concurrency:
 jobs:
   lint-web:
     runs-on: ubuntu-latest
-    name: Run eslint on frontend
+    name: Run eslint/format on frontend
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
@@ -27,9 +27,11 @@ jobs:
         run: yarn --cwd apps/web
       - name: Lint web
         run: yarn lint-web
+      - name: Prettier
+        run: yarn prettier --check apps/web
   lint-server:
     runs-on: ubuntu-latest
-    name: Run eslint on server
+    name: Run eslint/format on server
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
@@ -44,6 +46,8 @@ jobs:
         run: yarn --cwd apps/server
       - name: Lint server
         run: yarn lint-server
+      - name: Prettier
+        run: yarn prettier --check apps/server
   tsc-web:
     runs-on: ubuntu-latest
     name: Check tsc on frontend

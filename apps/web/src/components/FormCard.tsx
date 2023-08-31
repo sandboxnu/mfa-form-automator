@@ -1,5 +1,5 @@
-import { Assignee } from "apps/web/src/utils/types";
-import { Box, Text, Avatar, AvatarGroup, Tooltip } from "@chakra-ui/react";
+import { Assignee } from 'apps/web/src/utils/types';
+import { Box, Text, Avatar, AvatarGroup, Tooltip } from '@chakra-ui/react';
 
 // Overview Form component for displaying forms in the dashboard
 // will probably have to change the types once the backend is finished
@@ -29,11 +29,11 @@ export const FormCard = ({
             {assignees.map((assignee: Assignee, index: number) => {
               return (
                 <Tooltip
-                  bg={"white"}
-                  color={"black"}
+                  bg={'white'}
+                  color={'black'}
                   label={
                     <>
-                      <span style={{ fontSize: "16px", fontWeight: "bold" }}>
+                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
                         {assignee.name}
                       </span>
                       <br />
@@ -41,10 +41,10 @@ export const FormCard = ({
                       <br />
                       <span
                         style={{
-                          color: assignee.signed ? "#14A34A" : "#D74100",
+                          color: assignee.signed ? '#14A34A' : '#D74100',
                         }}
                       >
-                        {assignee.signed ? "Signed" : "Not yet signed"}
+                        {assignee.signed ? 'Signed' : 'Not yet signed'}
                       </span>
                     </>
                   }
@@ -54,7 +54,7 @@ export const FormCard = ({
                     name={assignee.name}
                     key={index}
                     boxSize="36px"
-                    backgroundColor={assignee.signed ? "#D0F0DC" : "#DCDCDC"}
+                    backgroundColor={assignee.signed ? '#D0F0DC' : '#DCDCDC'}
                     border="1px solid #FFFFFF"
                     color="black"
                     fontWeight={400}

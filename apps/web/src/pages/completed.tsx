@@ -1,13 +1,13 @@
-import { FormList } from "apps/web/src/components/FormList";
-import { completedForms } from "apps/web/src/data/seedData";
+import { FormList } from 'apps/web/src/components/FormList';
+import { completedForms } from 'apps/web/src/data/seedData';
 
 export default function Completed() {
   return (
     <>
       <FormList
-        title={"Completed"}
+        title={'Completed'}
         formInstances={completedForms}
-        color={"#D0F0DC"}
+        color={'#D0F0DC'}
       ></FormList>
     </>
   );

@@ -2,7 +2,7 @@ import {
   MFALogoIcon,
   ProfileIcon,
   SearchIcon,
-} from "apps/web/src/static/icons";
+} from 'apps/web/src/static/icons';
 import {
   Box,
   Hide,
@@ -13,7 +13,7 @@ import {
   Select,
   Text,
   Flex,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react';
 
 export const TopBar: React.FC = () => {
   return (
@@ -25,7 +25,7 @@ export const TopBar: React.FC = () => {
       px="4"
       bg="white"
       _dark={{
-        bg: "gray.800",
+        bg: 'gray.800',
       }}
       borderBottomWidth="1px"
       color="inherit"
@@ -39,7 +39,7 @@ export const TopBar: React.FC = () => {
       </Box>
       <InputGroup
         display={{
-          md: "flex",
+          md: 'flex',
         }}
       >
         <Select

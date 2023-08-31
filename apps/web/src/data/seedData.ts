@@ -1,39 +1,39 @@
-import { FormInstance } from "apps/web/src/utils/types";
+import { FormInstance } from 'apps/web/src/utils/types';
 
 export const todoForms: FormInstance[] = [
   {
-    name: "Todo Form Name",
-    originator: "John Smith",
+    name: 'Todo Form Name',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: false,
       },
     ],
   },
   {
-    name: "Todo Form Name",
-    originator: "John Smith",
+    name: 'Todo Form Name',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: false,
       },
     ],
@@ -42,64 +42,64 @@ export const todoForms: FormInstance[] = [
 
 export const pendingForms: FormInstance[] = [
   {
-    name: "Pending Form Name",
-    originator: "John Smith",
+    name: 'Pending Form Name',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: false,
       },
     ],
   },
   {
-    name: "Pending Form Name",
-    originator: "John Smith",
+    name: 'Pending Form Name',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: false,
       },
     ],
   },
   {
-    name: "Pending Form Name",
-    originator: "John Smith",
+    name: 'Pending Form Name',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: false,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: false,
       },
     ],
@@ -108,138 +108,138 @@ export const pendingForms: FormInstance[] = [
 
 export const completedForms: FormInstance[] = [
   {
-    name: "Completed Form",
-    originator: "John Smith",
+    name: 'Completed Form',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
     ],
   },
   {
-    name: "Completed Form",
-    originator: "John Smith",
+    name: 'Completed Form',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
     ],
   },
   {
-    name: "Completed Form",
-    originator: "John Smith",
+    name: 'Completed Form',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
     ],
   },
   {
-    name: "Completed Form",
-    originator: "John Smith",
+    name: 'Completed Form',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
     ],
   },
   {
-    name: "Completed Form",
-    originator: "John Smith",
+    name: 'Completed Form',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
     ],
   },
   {
-    name: "Completed Form",
-    originator: "John Smith",
+    name: 'Completed Form',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
     ],
   },
   {
-    name: "Completed Form",
-    originator: "John Smith",
+    name: 'Completed Form',
+    originator: 'John Smith',
     assignees: [
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
       {
-        name: "John Smith",
-        email: "johnsmith@gmail.com",
+        name: 'John Smith',
+        email: 'johnsmith@gmail.com',
         signed: true,
       },
     ],

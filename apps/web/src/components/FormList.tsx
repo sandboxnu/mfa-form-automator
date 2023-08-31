@@ -1,5 +1,5 @@
-import { FormRow } from "./FormRow";
-import { FormInstance } from "apps/web/src/utils/types";
+import { FormRow } from './FormRow';
+import { FormInstance } from 'apps/web/src/utils/types';
 import {
   Box,
   Flex,
@@ -8,8 +8,8 @@ import {
   Select,
   Text,
   VStack,
-} from "@chakra-ui/react";
-import { SortDownArrow } from "apps/web/src/static/icons";
+} from '@chakra-ui/react';
+import { SortDownArrow } from 'apps/web/src/static/icons';
 
 // abstracted component for displaying forms in list format
 export const FormList = ({
@@ -72,9 +72,9 @@ export const FormList = ({
             templateColumns="repeat(20, 1fr)"
             gap={0}
             background="white"
-            borderTopRadius={"5px"}
+            borderTopRadius={'5px'}
             boxShadow="0px 0px 1px 1px #f7f7f7"
-            textColor={"#8B8B8B"}
+            textColor={'#8B8B8B'}
           >
             <GridItem colSpan={10} h="48px">
               <Text fontSize="16px" fontWeight="800" pl="24px" pt="10px">

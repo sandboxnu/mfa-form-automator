@@ -5,8 +5,8 @@ import {
   Grid,
   GridItem,
   Text,
-} from "@chakra-ui/react";
-import { Assignee, FormInstance } from "apps/web/src/utils/types";
+} from '@chakra-ui/react';
+import { Assignee, FormInstance } from 'apps/web/src/utils/types';
 
 // form component for displaying a row in a list of forms
 export const FormRow = ({
@@ -22,10 +22,10 @@ export const FormRow = ({
         templateColumns="repeat(20, 1fr)"
         gap={0}
         background="white"
-        borderBottomRadius={last ? "5px" : "0px"}
+        borderBottomRadius={last ? '5px' : '0px'}
         boxShadow="0px 0px 1px 1px #f7f7f7"
-        _hover={{ boxShadow: "0px 0px 1px 1px #dbdbdb" }}
-        mb={"2px"}
+        _hover={{ boxShadow: '0px 0px 1px 1px #dbdbdb' }}
+        mb={'2px'}
       >
         <GridItem colSpan={10} h="64px">
           <Text pl="24px" pt="20px">
@@ -37,7 +37,7 @@ export const FormRow = ({
             <Avatar
               name={formInstance.originator}
               boxSize="36px"
-              backgroundColor={"#DCDCDC"}
+              backgroundColor={'#DCDCDC'}
               border="1px solid #FFFFFF"
               color="black"
               fontWeight={400}
@@ -56,14 +56,14 @@ export const FormRow = ({
                       name={assignee.name}
                       key={index}
                       boxSize="36px"
-                      backgroundColor={assignee.signed ? "#D0F0DC" : "#DCDCDC"}
+                      backgroundColor={assignee.signed ? '#D0F0DC' : '#DCDCDC'}
                       border="1px solid #FFFFFF"
                       color="black"
                       fontWeight={400}
                       fontSize="14px"
                     />
                   );
-                }
+                },
               )}
             </AvatarGroup>
             <Text pl="15px" mt="5px">{`${

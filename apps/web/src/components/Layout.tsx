@@ -1,9 +1,7 @@
-import {
-  Box,
-} from "@chakra-ui/react";
+import { Box } from '@chakra-ui/react';
 
-import { NavBar } from "./NavBar";
-import { TopBar } from "./TopBar";
+import { NavBar } from './NavBar';
+import { TopBar } from './TopBar';
 
 // Common layout component for all pages
 export const Layout = ({ children }: { children: any }) => {
@@ -12,13 +10,13 @@ export const Layout = ({ children }: { children: any }) => {
       as="section"
       bg="gray.50"
       _dark={{
-        bg: "gray.700",
+        bg: 'gray.700',
       }}
       minH="100vh"
     >
-      <NavBar/>
+      <NavBar />
       <Box>
-        <TopBar/>
+        <TopBar />
 
         <Box as="main" ml="320" pt="136">
           {children}
