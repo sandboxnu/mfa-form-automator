@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
       "dev": "yarn --cwd apps/web dev & yarn --cwd apps/server start:dev",
+      "format": "yarn --cwd apps/web prettier . --write & yarn --cwd apps/server prettier . --write",
       "lint-web": "yarn --cwd apps/web lint",
       "lint-server": "yarn --cwd apps/server lint",
       "test-web": "yarn --cwd apps/web jest",
