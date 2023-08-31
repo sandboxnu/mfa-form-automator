@@ -6,6 +6,7 @@
 export type CreateEmployeeDto = {
     firstName: string;
     lastName: string;
+    departmentId: string;
     email: string;
     password: string;
 };

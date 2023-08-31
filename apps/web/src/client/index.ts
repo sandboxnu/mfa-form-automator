@@ -8,17 +8,9 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { CreateEmployeeDto } from './models/CreateEmployeeDto';
-export type { CreateFormInstanceDto } from './models/CreateFormInstanceDto';
-export type { CreateFormTemplateDto } from './models/CreateFormTemplateDto';
-export type { CreatePositionDto } from './models/CreatePositionDto';
-export type { CreateSignatureDto } from './models/CreateSignatureDto';
-export type { CreateSignatureFieldDto } from './models/CreateSignatureFieldDto';
+export type { DepartmentEntity } from './models/DepartmentEntity';
 export type { EmployeeEntity } from './models/EmployeeEntity';
 export type { UpdateEmployeeDto } from './models/UpdateEmployeeDto';
-export type { UpdateFormInstanceDto } from './models/UpdateFormInstanceDto';
-export type { UpdateFormTemplateDto } from './models/UpdateFormTemplateDto';
-export type { UpdatePositionDto } from './models/UpdatePositionDto';
-export type { UpdateSignatureDto } from './models/UpdateSignatureDto';
-export type { UpdateSignatureFieldDto } from './models/UpdateSignatureFieldDto';
 
 export { DefaultService } from './services/DefaultService';
+export { EmployeesService } from './services/EmployeesService';

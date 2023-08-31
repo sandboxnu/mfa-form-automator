@@ -6,5 +6,6 @@
 export type UpdateEmployeeDto = {
     firstName?: string;
     lastName?: string;
+    departmentId?: string;
 };
 

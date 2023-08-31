@@ -13,6 +13,7 @@ import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import {
+  ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -36,6 +37,7 @@ export class EmployeesController {
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async create(@Body() createEmployeeDto: CreateEmployeeDto) {
     // TODO: Auth
     const newEmployee = await this.employeesService.create(createEmployeeDto);
@@ -45,6 +47,7 @@ export class EmployeesController {
   @Get()
   @ApiOkResponse({ type: [EmployeeEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findAll(@Query('limit') limit?: number) {
     // TODO: Auth
     const employees = await this.employeesService.findAll(limit);
@@ -55,6 +58,7 @@ export class EmployeesController {
   @ApiOkResponse({ type: EmployeeEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findOne(@Param('id') id: string) {
     // TODO: Auth
     const employee = await this.employeesService.findOne(id);
@@ -74,6 +78,7 @@ export class EmployeesController {
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async update(
     @Param('id') id: string,
     @Body() updateEmployeeDto: UpdateEmployeeDto,
@@ -102,6 +107,7 @@ export class EmployeesController {
   @ApiOkResponse()
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async remove(@Param('id') id: string) {
     // TODO: Auth
     try {

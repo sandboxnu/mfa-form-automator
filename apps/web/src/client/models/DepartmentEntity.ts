@@ -3,6 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UpdatePositionDto = {
+export type DepartmentEntity = {
+    id: string;
+    name: string;
 };
 
