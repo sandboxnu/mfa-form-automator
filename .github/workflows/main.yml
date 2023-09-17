@@ -10,9 +10,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint-web:
+  lint:
     runs-on: ubuntu-latest
-    name: Run eslint/format on frontend
+    name: Run eslint/format
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
@@ -24,33 +24,15 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
-        run: yarn --cwd apps/web
+        run: yarn install
       - name: Lint web
-        run: yarn lint-web
+        run: yarn lint
       - name: Prettier
-        run: yarn --cwd apps/web prettier --check .
-  lint-server:
+        run: yarn format
+  tsc:
     runs-on: ubuntu-latest
-    name: Run eslint/format on server
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '19.x'
-          # cache: yarn
-          # cache-dependency-path: './apps/server/package-lock.json'
-      - name: Install yarn
-        run: npm install -g yarn
-      - name: Install dependencies
-        run: yarn --cwd apps/server
-      - name: Lint server
-        run: yarn lint-server
-      - name: Prettier
-        run: yarn --cwd apps/server prettier --check .
-  tsc-web:
-    runs-on: ubuntu-latest
-    name: Check tsc on frontend
+    name: Check tsc
+    needs: [lint]
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
@@ -62,48 +44,13 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
-        run: yarn --cwd apps/web
-      - name: tsc web
-        run: yarn tsc-web
-  tsc-server:
-    runs-on: ubuntu-latest
-    name: Check tsc on server
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '19.x'
-          # cache: yarn
-          # cache-dependency-path: './apps/server/package-lock.json'
-      - name: Install yarn
-        run: npm install -g yarn
-      - name: Install dependencies
-        run: yarn --cwd apps/server
-      - name: tsc server
-        run: yarn tsc-server
-  # jest-web:
-  #   runs-on: ubuntu-latest
-  #   name: Run tests on frontend
-  #   needs: [lint-web, tsc-web] # ensure tests are run only after eslint and tsc pass
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Set up node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: '19.x'
-  #         # cache: yarn
-  #         # cache-dependency-path: './apps/web/package-lock.json'
-  #     - name: Install yarn
-  #       run: npm install -g yarn
-  #     - name: Install dependencies
-  #       run: yarn --cwd apps/web
-  #     - name: Test web
-  #       run: yarn test-web
-  jest-server:
+        run: yarn install
+      - name: tsc
+        run: yarn tsc
+  jest:
     runs-on: ubuntu-latest
     name: Run tests on server
-    needs: [lint-server, tsc-server] # ensure tests are run only after eslint and tsc pass
+    needs: [lint, tsc] # ensure tests are run only after eslint and tsc pass
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
@@ -115,6 +62,6 @@ jobs:
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
-        run: yarn --cwd apps/server
+        run: yarn install
       - name: Test server
-        run: yarn test-server
+        run: yarn test
