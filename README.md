@@ -1,34 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# MFA Form Automator
 
-## Getting Started
+## Tech Stack
 
-First, run the development server:
+NextJS, NestJS, Prisma, PostgreSQL
 
-```bash
-yarn dev
-```
+## Getting Started (Local Development)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Create a .env file in the project root and configure environment variables using the example.
+2. Install dependencies in both `apps/web` and `apps/server`. We currently use Yarn as our package manager.
+3. Generate the Prisma Client in the `apps/server` directory using the following command from within the `apps/server` directory:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+    ```bash
+    yarn prisma generate
+    ```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+4. To run the development client and server together:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+    ```bash
+    yarn dev
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+    The client should be hosted at [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+    The server should be hosted at [http://localhost:4000](http://localhost:4000).
 
-To learn more about Next.js, take a look at the following resources:
+TODO: Database setup and initialization using Prisma Migrate.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Regenerating Client
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+When making changes to our backend, we need to regenerate our frontend client to allow us to access the updated endpoints.
 
-## Deploy on Vercel
+1. Start instance of backend server hosted at [http://localhost:4000](http://localhost:4000) by running the following command in the server directory:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    ```bash
+    yarn start:dev
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+2. In the client directory, run the following command:
+
+    ```bash
+    yarn gen-client
+    ```
+
+    The client should be regenerated based on the running local backend instance.

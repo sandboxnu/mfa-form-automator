@@ -1,0 +1,48 @@
+{
+  "name": "mfa-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "gen-client": "openapi --input http://localhost:4000/api-json --output ./src/client --client axios"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.4.9",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fontsource/hanken-grotesk": "^4.5.2",
+    "@next/font": "13.1.4",
+    "@trpc/client": "^10.38.0",
+    "@trpc/server": "^10.38.0",
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@types/uuid": "^9.0.2",
+    "axios": "^1.5.0",
+    "eslint": "^8.48.0",
+    "eslint-config-next": "13.1.4",
+    "form-data": "4.x",
+    "framer-motion": "^8.5.0",
+    "next": "13.1.4",
+    "openapi-typescript-codegen": "^0.25.0",
+    "react": "18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.1",
+    "react-scripts": "^5.0.1",
+    "typescript": "^5.2.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.10",
+    "@babel/core": "^7.22.11",
+    "@babel/plugin-syntax-flow": "^7.22.5",
+    "@babel/plugin-transform-react-jsx": "^7.22.5",
+    "@babel/preset-env": "^7.22.10",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "prettier": "^3.0.3"
+  }
+}

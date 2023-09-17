@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  relationMode = "foreignKeys"
+}
+
+// `Departments` represent the various departments that employees could work in.
+model Department {
+  id   String @id @default(uuid()) @db.Uuid
+  name String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  employees Employee[]
+}
+
+// `Employees` represent the people who work at the MFA.
+//
+// Each `Employee` corresponds to a user who holds a certain position.
+model Employee {
+  id        String   @id @default(uuid()) @db.Uuid
+  firstName String   @db.VarChar(255)
+  lastName  String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  pswdHash  String?  @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  signatures      Signature[]
+  originatedForms FormInstance[]
+
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId String     @db.Uuid
+}
+
+// `Positions` represent the various positions that employees at the MFA can hold.
+model Position {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
+  single    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  signatureFields SignatureField[]
+  signatures      Signature[]
+}
+
+// `SignatureFields` represent each signature field that is required on a given form.
+// A field may have a position specified, indicating that when a user creates an
+// instance of the corresponding form, the field should default to the specified position.
+//
+// Each `SignatureField` also specifies its order on the form it is on.
+// `SignatureFields` are used as subdocuments within `FormTemplates`.
+model SignatureField {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
+  order     Int      @db.Integer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  signerPosition   Position? @relation(fields: [signerPositionId], references: [id])
+  signerPositionId String?   @db.Uuid
+
+  formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
+  formTemplateId String
+}
+
+// `Signatures` represent the signatures required on a form. Each signature has a
+// specified signer and its corresponding status which indicates if it has been signed.
+//
+// A `Signature` will also carry over its order from the original `FormTemplate` order
+// from which the `FormInstance` that the `Signature` belongs to was derived. If a `Signature`
+// has been signed and completed, the `signedDoc` should contain a reference to the
+// signed file with all previous signatures up to the current signature.
+//
+// The signer position and the user signed by are populated when the signature has been
+// completed, and are derived from the person who signed at that moment in time.
+model Signature {
+  id            String   @id @default(uuid()) @db.Uuid
+  order         Int      @db.Integer
+  signed        Boolean  @default(false)
+  signedDocLink String?  @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  signerPosition   Position?     @relation(fields: [signerPositionId], references: [id])
+  signerPositionId String?       @db.Uuid
+  userSignedBy     Employee?     @relation(fields: [userSignedById], references: [id])
+  userSignedById   String?       @db.Uuid
+  formInstance     FormInstance @relation(fields: [formInstanceId], references: [id])
+  formInstanceId   String       @db.Uuid
+}
+
+// `FormInstances` represent instances of forms created by employees.
+//
+// They are created based on a given `FormTemplate`, and contain a
+// list of `Signatures` that are to be filled by the requested employees.
+//
+// A `FormInstance` should be marked completed when all of its signatures
+// have been collected and marked as completed.
+model FormInstance {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  formDocLink String   @db.VarChar(255)
+  completed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  signatures Signature[]
+
+  originator     Employee     @relation(fields: [originatorId], references: [id])
+  originatorId   String       @db.Uuid
+  formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
+  formTemplateId String
+}
+
+// A `FormTemplate` is a reference for a form that is used when creating forms initiated by users.
+model FormTemplate {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  formDocLink String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  signatureFields SignatureField[]
+  formInstances   FormInstance[]
+}
