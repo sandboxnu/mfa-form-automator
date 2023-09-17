@@ -1,1 +1,21 @@
-export class CreateFormTemplateDto {}
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, IsUrl, IsArray, ArrayMinSize } from 'class-validator';
+import { SignatureField } from '@prisma/client';
+
+export class CreateFormTemplateDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsUrl()
+  @ApiProperty()
+  formDocLink: string;
+
+  @IsArray()
+  @ArrayMinSize(1)
+  @ApiProperty()
+  signatureFields: SignatureField[];
+}
