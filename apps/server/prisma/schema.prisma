@@ -6,15 +6,15 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
   relationMode = "foreignKeys"
 }
 
 // `Departments` represent the various departments that employees could work in.
 model Department {
-  id   String @id @default(uuid()) @db.Uuid
-  name String @db.VarChar(255)
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -69,7 +69,7 @@ model SignatureField {
   signerPositionId String?   @db.Uuid
 
   formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
-  formTemplateId String
+  formTemplateId String       @db.Uuid
 }
 
 // `Signatures` represent the signatures required on a form. Each signature has a
@@ -90,10 +90,10 @@ model Signature {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  signerPosition   Position?     @relation(fields: [signerPositionId], references: [id])
-  signerPositionId String?       @db.Uuid
-  userSignedBy     Employee?     @relation(fields: [userSignedById], references: [id])
-  userSignedById   String?       @db.Uuid
+  signerPosition   Position?    @relation(fields: [signerPositionId], references: [id])
+  signerPositionId String?      @db.Uuid
+  userSignedBy     Employee?    @relation(fields: [userSignedById], references: [id])
+  userSignedById   String?      @db.Uuid
   formInstance     FormInstance @relation(fields: [formInstanceId], references: [id])
   formInstanceId   String       @db.Uuid
 }
@@ -118,7 +118,7 @@ model FormInstance {
   originator     Employee     @relation(fields: [originatorId], references: [id])
   originatorId   String       @db.Uuid
   formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
-  formTemplateId String
+  formTemplateId String       @db.Uuid
 }
 
 // A `FormTemplate` is a reference for a form that is used when creating forms initiated by users.
