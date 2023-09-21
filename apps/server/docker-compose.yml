@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   app:
     restart: on-failure
@@ -13,7 +13,7 @@ services:
       NODE_ENV: development
       PORT: 8080
     ports:
-      - "8080:8080"
+      - '8080:8080'
     command: node dist/main.js
     volumes:
       - ./src:/apps
@@ -24,7 +24,7 @@ services:
     image: postgres:13
     restart: always
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     environment:
