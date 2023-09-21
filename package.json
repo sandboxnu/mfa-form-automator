@@ -1,19 +1,29 @@
 {
-    "name": "mfa-form-automator",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-      "dev": "yarn --cwd apps/web dev & yarn --cwd apps/server start:dev",
-      "format": "yarn --cwd apps/web prettier . --write & yarn --cwd apps/server prettier . --write",
-      "lint-web": "yarn --cwd apps/web lint",
-      "lint-server": "yarn --cwd apps/server lint",
-      "test-web": "yarn --cwd apps/web jest",
-      "test-server": "yarn --cwd apps/server test",
-      "tsc-web": "yarn --cwd apps/web tsc -p tsconfig.json",
-      "tsc-server": "yarn --cwd apps/server tsc -p tsconfig.json"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC"
+  "name": "mfa-form-automator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": "true",
+  "workspaces": [
+    "apps/server",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev": "yarn --cwd apps/web dev & yarn --cwd apps/server start:dev",
+    "format": "yarn workspaces run prettier . --write",
+    "lint": "yarn workspaces run lint",
+    "test": "yarn workspaces run test --passWithNoTests",
+    "tsc": "yarn workspaces run tsc -p tsconfig.json",
+    "dev:db:up": "docker compose -f apps/server/docker-compose.db.yml up -d",
+    "dev:db:down": "docker compose -f apps/server/docker-compose.db.yml down",
+    "backend:docker:build": "docker compose -f apps/server/docker-compose.yml build",
+    "backend:docker:run": "docker compose -f apps/server/docker-compose.yml up -d",
+    "backend:docker:down": "docker compose -f apps/server/docker-compose.yml down"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@yarnpkg/plugin-workspace-tools": "^4.0.0-rc.51"
   }
+}

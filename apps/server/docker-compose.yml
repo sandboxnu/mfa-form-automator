@@ -1,0 +1,45 @@
+version: "3"
+services:
+  app:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mfa-backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://user:pass@postgres:5432/db
+      NODE_ENV: development
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    command: node dist/main.js
+    volumes:
+      - ./src:/apps
+      - .:/apps/
+      - /node_modules
+
+  db:
+    image: postgres:13
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: db
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: nest-pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=pgadmin4
+    ports:
+      - '5050:80'
+    depends_on:
+      - db
