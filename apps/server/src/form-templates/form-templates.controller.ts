@@ -12,7 +12,7 @@ import {
 import { FormTemplatesService } from './form-templates.service';
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
 import { FormTemplateEntity } from './entities/form-template.entity';
-import { AppErrorMessage } from '@server/app.errors';
+import { AppErrorMessage } from '../app.errors';
 import { CreateFormTemplateDto } from './dto/create-form-template.dto';
 import { FormTemplateErrorMessage } from './form-templates.errors';
 import { UpdateFormTemplateDto } from './dto/update-form-template.dto';
