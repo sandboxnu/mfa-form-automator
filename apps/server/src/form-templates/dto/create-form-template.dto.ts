@@ -4,7 +4,6 @@ import {
   IsString,
   IsUrl,
   IsArray,
-  ArrayMinSize,
 } from 'class-validator';
 import { SignatureField } from '@prisma/client';
 
