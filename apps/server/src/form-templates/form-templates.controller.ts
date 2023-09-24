@@ -10,7 +10,15 @@ import {
   Query,
 } from '@nestjs/common';
 import { FormTemplatesService } from './form-templates.service';
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, ApiUnprocessableEntityResponse } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnprocessableEntityResponse,
+} from '@nestjs/swagger';
 import { FormTemplateEntity } from './entities/form-template.entity';
 import { AppErrorMessage } from '../app.errors';
 import { CreateFormTemplateDto } from './dto/create-form-template.dto';
@@ -30,7 +38,9 @@ export class FormTemplatesController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   async create(@Body() createFormTemplateDto: CreateFormTemplateDto) {
-    const newFormTemplate = await this.formTemplatesService.create(createFormTemplateDto);
+    const newFormTemplate = await this.formTemplatesService.create(
+      createFormTemplateDto,
+    );
     return new FormTemplateEntity(newFormTemplate);
   }
 
@@ -40,7 +50,9 @@ export class FormTemplatesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findAll(@Query('limit') limit?: number) {
     const formTemplates = await this.formTemplatesService.findAll(limit);
-    return formTemplates.map((formTemplate) => new FormTemplateEntity(formTemplate));
+    return formTemplates.map(
+      (formTemplate) => new FormTemplateEntity(formTemplate),
+    );
   }
 
   @Get(':id')
@@ -53,7 +65,9 @@ export class FormTemplatesController {
 
     if (formTemplate == null) {
       console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
-      throw new NotFoundException(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
+      throw new NotFoundException(
+        FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+      );
     }
 
     return new FormTemplateEntity(formTemplate);
@@ -67,15 +81,23 @@ export class FormTemplatesController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async update(@Param('id') id: string, @Body() UpdateFormTemplateDto: UpdateFormTemplateDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateFormTemplateDto: UpdateFormTemplateDto,
+  ) {
     try {
-      const updatedFormTemplate = await this.formTemplatesService.update(id, UpdateFormTemplateDto);
+      const updatedFormTemplate = await this.formTemplatesService.update(
+        id,
+        updateFormTemplateDto,
+      );
       return new FormTemplateEntity(updatedFormTemplate);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
-          throw new NotFoundException(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
+          throw new NotFoundException(
+            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+          );
         }
       }
       throw e;
@@ -94,7 +116,9 @@ export class FormTemplatesController {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
-          throw new NotFoundException(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
+          throw new NotFoundException(
+            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+          );
         }
       }
       throw e;

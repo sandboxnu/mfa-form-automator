@@ -12,7 +12,7 @@ export class FormTemplateEntity implements FormTemplate {
   name: string;
 
   @ApiProperty()
-  formDocLink: string; 
+  formDocLink: string;
 
   @Exclude()
   createdAt: Date;
@@ -20,7 +20,7 @@ export class FormTemplateEntity implements FormTemplate {
   @Exclude()
   updatedAt: Date;
 
-  @ApiProperty() 
+  @ApiProperty()
   signatureFields: SignatureFieldEntity[];
 
   @ApiProperty()

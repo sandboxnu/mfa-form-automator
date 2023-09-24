@@ -18,7 +18,7 @@ export class FormTemplatesService {
         name: createFormTemplateDto.name,
         formDocLink: createFormTemplateDto.formDocLink,
         signatureFields: { create: createFormTemplateDto.signatureFields },
-      }
+      },
     });
     return newFormTemplate;
   }
@@ -51,7 +51,7 @@ export class FormTemplatesService {
   }
 
   /**
-   * Update a form template. 
+   * Update a form template.
    * @param id the form template id
    * @param updateFormTemplateDto update form template dto
    * @returns the updated form template, hydrated
@@ -65,7 +65,7 @@ export class FormTemplatesService {
         name: updateFormTemplateDto.name,
         formDocLink: updateFormTemplateDto.formDocLink,
         signatureFields: { create: updateFormTemplateDto.signatureFields },
-      }
+      },
     });
     return updatedFormTemplate;
   }

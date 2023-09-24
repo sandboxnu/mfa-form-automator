@@ -1,4 +1,4 @@
-import { SignatureField } from "@prisma/client";
+import { SignatureField } from '@prisma/client';
 
 export class SignatureFieldEntity implements SignatureField {
   // placeholder

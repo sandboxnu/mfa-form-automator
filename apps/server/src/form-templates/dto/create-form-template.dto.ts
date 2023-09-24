@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUrl, IsArray, ArrayMinSize } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsUrl,
+  IsArray,
+  ArrayMinSize,
+} from 'class-validator';
 import { SignatureField } from '@prisma/client';
 
 export class CreateFormTemplateDto {
