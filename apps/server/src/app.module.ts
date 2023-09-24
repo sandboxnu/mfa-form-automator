@@ -9,6 +9,7 @@ import { SignaturesModule } from './signatures/signatures.module';
 import { FormInstancesModule } from './form-instances/form-instances.module';
 import { FormTemplatesModule } from './form-templates/form-templates.module';
 import { DepartmentsModule } from './departments/departments.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -20,6 +21,9 @@ import { DepartmentsModule } from './departments/departments.module';
     FormInstancesModule,
     FormTemplatesModule,
     DepartmentsModule,
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+    })
   ],
   controllers: [AppController],
   providers: [AppService],
