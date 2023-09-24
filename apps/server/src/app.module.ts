@@ -23,7 +23,7 @@ import { ConfigModule } from '@nestjs/config';
     DepartmentsModule,
     ConfigModule.forRoot({
       envFilePath: '.env',
-    })
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

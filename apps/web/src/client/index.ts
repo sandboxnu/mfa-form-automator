@@ -8,9 +8,13 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { CreateEmployeeDto } from './models/CreateEmployeeDto';
+export type { CreateFormTemplateDto } from './models/CreateFormTemplateDto';
 export type { DepartmentEntity } from './models/DepartmentEntity';
 export type { EmployeeEntity } from './models/EmployeeEntity';
+export type { FormTemplateEntity } from './models/FormTemplateEntity';
 export type { UpdateEmployeeDto } from './models/UpdateEmployeeDto';
+export type { UpdateFormTemplateDto } from './models/UpdateFormTemplateDto';
 
 export { DefaultService } from './services/DefaultService';
 export { EmployeesService } from './services/EmployeesService';
+export { FormTemplatesService } from './services/FormTemplatesService';
