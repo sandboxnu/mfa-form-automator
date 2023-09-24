@@ -21,7 +21,6 @@ export class CreateFormTemplateDto {
   formDocLink: string;
 
   @IsArray()
-  @ArrayMinSize(1)
   @ApiProperty()
   signatureFields: SignatureField[];
 }

@@ -17,7 +17,7 @@ export class FormTemplatesService {
       data: {
         name: createFormTemplateDto.name,
         formDocLink: createFormTemplateDto.formDocLink,
-        signatureFields: { create: createFormTemplateDto.signatureFields },
+        // signatureFields: { create: createFormTemplateDto.signatureFields },
       },
     });
     return newFormTemplate;
@@ -26,7 +26,7 @@ export class FormTemplatesService {
   /**
    * Retrieve all form templates.
    * @param limit the number of form templates we want to retrieve (optional)
-   * @returns all formk templates, hydrated
+   * @returns all form templates, hydrated
    */
   async findAll(limit?: number) {
     const formTemplates = await this.prisma.formTemplate.findMany({
