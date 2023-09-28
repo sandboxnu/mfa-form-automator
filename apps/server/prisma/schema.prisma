@@ -50,6 +50,8 @@ model Position {
 
   signatureFields SignatureField[]
   signatures      Signature[]
+
+  // add the employee field
 }
 
 // `SignatureFields` represent each signature field that is required on a given form.
