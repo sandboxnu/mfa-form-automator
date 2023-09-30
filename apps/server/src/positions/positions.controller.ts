@@ -31,7 +31,6 @@ import { PositionsErrorMessage } from './positions.errors';
 export class PositionsController {
   constructor(private readonly positionsService: PositionsService) {}
 
-
   @Post()
   @ApiCreatedResponse({ type: PositionEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
@@ -80,8 +79,7 @@ export class PositionsController {
   async update(
     @Param('id') id: string,
     @Body() updatePositionDto: UpdatePositionDto,
-  ) 
-  {
+  ) {
     try {
       const updatedPosition = await this.positionsService.update(
         id,

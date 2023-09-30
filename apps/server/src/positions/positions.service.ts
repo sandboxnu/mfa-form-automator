@@ -13,13 +13,15 @@ export class PositionsService {
    * @returns the created position, hydrated
    */
   async create(createPositionDto: CreatePositionDto) {
-    const newEmployee = await this.prisma.position.create({
+    const newPosition = await this.prisma.position.create({
       data: {
         name: createPositionDto.name,
+        departmentId: createPositionDto.departmentId,
+        // employeeId: createPositionDto.employeeId,
         // signatureFields: { create: createFormTemplateDto.signatureFields },
       },
     });
-    return newEmployee;
+    return newPosition;
   }
 
   /**
