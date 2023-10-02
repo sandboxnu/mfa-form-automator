@@ -21,7 +21,7 @@ export class CreateEmployeeDto {
   @IsUUID()
   @IsNotEmpty()
   @ApiProperty()
-  departmentId: string;
+  positionId: string;
 
   @IsEmail()
   @IsNotEmpty()
