@@ -17,8 +17,6 @@ export class PositionsService {
       data: {
         name: createPositionDto.name,
         departmentId: createPositionDto.departmentId,
-        // employeeId: createPositionDto.employeeId,
-        // signatureFields: { create: createFormTemplateDto.signatureFields },
       },
     });
     return newPosition;

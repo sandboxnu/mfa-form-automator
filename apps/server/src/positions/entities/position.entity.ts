@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Position } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 import { SignatureFieldEntity } from './../../signature-fields/entities/signature-field.entity';
-import { Optional } from '@nestjs/common';
-import { DepartmentEntity } from '@server/departments/entities/department.entity';
+import { DepartmentEntity } from './../../departments/entities/department.entity';
+import { IsOptional } from 'class-validator';
 
 export class PositionEntity implements Position {
   @ApiProperty()
@@ -16,21 +16,21 @@ export class PositionEntity implements Position {
   single: boolean;
 
   @Exclude()
-  createdAt: Date;
-
-  @Exclude()
-  updatedAt: Date;
-
-  @Exclude()
-  @Optional()
+  @IsOptional()
   departmentId: string;
 
-  @Optional()
+  @IsOptional()
   @ApiProperty()
   department: DepartmentEntity;
 
   @ApiProperty()
   signatureFields: SignatureFieldEntity[];
+
+  @Exclude()
+  createdAt: Date;
+
+  @Exclude()
+  updatedAt: Date;
 
   constructor(partial: Partial<PositionEntity>) {
     if (partial.department) {
