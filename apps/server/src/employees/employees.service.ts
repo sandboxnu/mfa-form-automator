@@ -19,14 +19,14 @@ export class EmployeesService {
         firstName: createEmployeeDto.firstName,
         lastName: createEmployeeDto.lastName,
         email: createEmployeeDto.email,
-        departmentId: createEmployeeDto.departmentId,
+        positionId: createEmployeeDto.positionId,
         pswdHash: await bcrypt.hash(
           createEmployeeDto.password,
           process.env.SALT_ROUNDS || 10,
         ),
       },
       include: {
-        department: true,
+        position: { include: { department: true, signatureFields: true } },
       },
     });
     newEmployee.pswdHash = null;
@@ -42,7 +42,7 @@ export class EmployeesService {
     const employees = await this.prisma.employee.findMany({
       take: limit,
       include: {
-        department: true,
+        position: { include: { department: true, signatureFields: true } },
       },
     });
     return employees;
@@ -59,7 +59,7 @@ export class EmployeesService {
         id: id,
       },
       include: {
-        department: true,
+        position: { include: { department: true, signatureFields: true } },
       },
     });
     return employee;
@@ -78,7 +78,7 @@ export class EmployeesService {
       },
       data: updateEmployeeDto,
       include: {
-        department: true,
+        position: { include: { department: true, signatureFields: true } },
       },
     });
     return updatedEmployee;
