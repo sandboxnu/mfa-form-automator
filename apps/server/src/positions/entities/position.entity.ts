@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Position } from '@prisma/client';
 import { Exclude } from 'class-transformer';
-import { SignatureFieldEntity } from './../../signature-fields/entities/signature-field.entity';
 import { DepartmentEntity } from './../../departments/entities/department.entity';
 import { IsOptional } from 'class-validator';
 
@@ -22,9 +21,6 @@ export class PositionEntity implements Position {
   @IsOptional()
   @ApiProperty()
   department: DepartmentEntity;
-
-  @ApiProperty()
-  signatureFields: SignatureFieldEntity[];
 
   @Exclude()
   createdAt: Date;

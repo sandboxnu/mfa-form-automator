@@ -26,7 +26,16 @@ export class EmployeesService {
         ),
       },
       include: {
-        position: { include: { department: true, signatureFields: true } },
+        position: {
+          include: {
+            department: true,
+            signatureFields: {
+              include: {
+                formTemplate: true,
+              },
+            },
+          },
+        },
       },
     });
     newEmployee.pswdHash = null;
@@ -59,7 +68,16 @@ export class EmployeesService {
         id: id,
       },
       include: {
-        position: { include: { department: true, signatureFields: true } },
+        position: {
+          include: {
+            department: true,
+            signatureFields: {
+              include: {
+                formTemplate: true,
+              },
+            },
+          },
+        },
       },
     });
     return employee;
@@ -78,7 +96,16 @@ export class EmployeesService {
       },
       data: updateEmployeeDto,
       include: {
-        position: { include: { department: true, signatureFields: true } },
+        position: {
+          include: {
+            department: true,
+            signatureFields: {
+              include: {
+                formTemplate: true,
+              },
+            },
+          },
+        },
       },
     });
     return updatedEmployee;
