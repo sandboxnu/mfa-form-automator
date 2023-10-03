@@ -15,10 +15,10 @@ export class SignatureFieldsService {
   async create(createSignatureFieldDto: CreateSignatureFieldDto) {
     const newSignatureField = await this.prisma.signatureField.create({
       data: {
-        name: createSignatureFieldDto.name, 
-        order: createSignatureFieldDto.order, 
-        signerPositionId: createSignatureFieldDto.signerPositionId, 
-        formTemplateId: createSignatureFieldDto.formTemplateId
+        name: createSignatureFieldDto.name,
+        order: createSignatureFieldDto.order,
+        signerPositionId: createSignatureFieldDto.signerPositionId,
+        formTemplateId: createSignatureFieldDto.formTemplateId,
       },
     });
     return newSignatureField;
@@ -61,7 +61,7 @@ export class SignatureFieldsService {
       where: {
         id: id,
       },
-      data: UpdateSignatureFieldDto,
+      data: updateSignatureFieldDto,
     });
     return updatedSignatureField;
   }

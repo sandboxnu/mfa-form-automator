@@ -1,4 +1,4 @@
-import { Signature } from "@prisma/client";
+import { Signature } from '@prisma/client';
 
 export class SignatureEntity implements Signature {
   // placeholder
