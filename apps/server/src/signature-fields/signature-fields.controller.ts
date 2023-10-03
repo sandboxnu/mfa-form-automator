@@ -16,15 +16,17 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { SignatureFieldEntity } from './entities/signature-field.entity';
-import { AppErrorMessage } from '@server/app.errors';
+import { AppErrorMessage } from '../app.errors';
 import { CreateSignatureFieldDto } from './dto/create-signature-field.dto';
 import { SignatureFieldErrorMessage } from './signature-fields.errors';
 import { UpdateSignatureFieldDto } from './dto/update-signature-field.dto';
 import { Prisma } from '@prisma/client';
 
+@ApiTags('signature-fields')
 @Controller('signature-fields')
 export class SignatureFieldsController {
   constructor(

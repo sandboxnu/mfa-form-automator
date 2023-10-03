@@ -14,12 +14,6 @@ export class SignatureFieldEntity implements SignatureField {
   order: number;
 
   @Exclude()
-  createdAt: Date;
-
-  @Exclude()
-  updatedAt: Date;
-
-  @Exclude()
   signerPositionId: string | null;
 
   @ApiProperty()
@@ -27,6 +21,12 @@ export class SignatureFieldEntity implements SignatureField {
 
   @Exclude()
   formTemplateId: string;
+
+  @Exclude()
+  createdAt: Date;
+
+  @Exclude()
+  updatedAt: Date;
 
   constructor(partial: Partial<SignatureFieldEntity>) {
     if (partial.signerPosition) {

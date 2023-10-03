@@ -36,7 +36,6 @@ describe('EmployeesController', () => {
             single: false,
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
-            signatureFields: [],
             departmentId: 'department-id',
             department: {
               id: 'department-id',
@@ -61,7 +60,6 @@ describe('EmployeesController', () => {
             single: false,
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
-            signatureFields: [],
             departmentId: 'department-id',
             department: {
               id: 'department-id',

@@ -29,11 +29,6 @@ export class EmployeesService {
         position: {
           include: {
             department: true,
-            signatureFields: {
-              include: {
-                formTemplate: true,
-              },
-            },
           },
         },
       },
@@ -51,7 +46,11 @@ export class EmployeesService {
     const employees = await this.prisma.employee.findMany({
       take: limit,
       include: {
-        position: { include: { department: true, signatureFields: true } },
+        position: {
+          include: {
+            department: true,
+          },
+        },
       },
     });
     return employees;
@@ -71,11 +70,6 @@ export class EmployeesService {
         position: {
           include: {
             department: true,
-            signatureFields: {
-              include: {
-                formTemplate: true,
-              },
-            },
           },
         },
       },
@@ -99,11 +93,6 @@ export class EmployeesService {
         position: {
           include: {
             department: true,
-            signatureFields: {
-              include: {
-                formTemplate: true,
-              },
-            },
           },
         },
       },
