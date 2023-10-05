@@ -66,7 +66,7 @@ export class FormTemplatesController {
     if (formTemplate == null) {
       console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
       throw new NotFoundException(
-        FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+        FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND_CLIENT,
       );
     }
 
@@ -96,7 +96,7 @@ export class FormTemplatesController {
         if (e.code === 'P2025') {
           console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
           throw new NotFoundException(
-            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND_CLIENT,
           );
         }
       }
@@ -117,7 +117,7 @@ export class FormTemplatesController {
         if (e.code === 'P2025') {
           console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
           throw new NotFoundException(
-            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND_CLIENT,
           );
         }
       }

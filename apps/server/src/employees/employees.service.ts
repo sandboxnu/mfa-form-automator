@@ -26,7 +26,11 @@ export class EmployeesService {
         ),
       },
       include: {
-        position: { include: { department: true, signatureFields: true } },
+        position: {
+          include: {
+            department: true,
+          },
+        },
       },
     });
     newEmployee.pswdHash = null;
@@ -42,7 +46,11 @@ export class EmployeesService {
     const employees = await this.prisma.employee.findMany({
       take: limit,
       include: {
-        position: { include: { department: true, signatureFields: true } },
+        position: {
+          include: {
+            department: true,
+          },
+        },
       },
     });
     return employees;
@@ -59,7 +67,11 @@ export class EmployeesService {
         id: id,
       },
       include: {
-        position: { include: { department: true, signatureFields: true } },
+        position: {
+          include: {
+            department: true,
+          },
+        },
       },
     });
     return employee;
@@ -78,7 +90,11 @@ export class EmployeesService {
       },
       data: updateEmployeeDto,
       include: {
-        position: { include: { department: true, signatureFields: true } },
+        position: {
+          include: {
+            department: true,
+          },
+        },
       },
     });
     return updatedEmployee;
