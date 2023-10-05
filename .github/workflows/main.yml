@@ -65,3 +65,12 @@ jobs:
         run: yarn install
       - name: Test
         run: yarn test
+  build-backend-image:
+    runs-on: ubuntu-latest
+    name: Build backend image
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: yarn install --immutable
+      - name: Build Docker image for backend
+        run: yarn backend:docker:build
