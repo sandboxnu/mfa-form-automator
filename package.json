@@ -29,6 +29,7 @@
     "@yarnpkg/cli": "^4.0.0-rc.51",
     "@yarnpkg/core": "^4.0.0-rc.51",
     "@yarnpkg/plugin-git": "^3.0.0-rc",
-    "@yarnpkg/plugin-workspace-tools": "^4.0.0-rc.51"
+    "@yarnpkg/plugin-workspace-tools": "^4.0.0-rc.51",
+    "husky": "^8.0.3"
   }
 }
