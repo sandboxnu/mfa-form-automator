@@ -22,13 +22,19 @@
     "backend:docker:run": "docker compose -f apps/server/docker-compose.yml up -d",
     "backend:docker:down": "docker compose -f apps/server/docker-compose.yml down"
   },
+  "prisma": {
+    "seed": "ts-node apps/server/prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^20.8.2",
     "@yarnpkg/cli": "^4.0.0-rc.51",
     "@yarnpkg/core": "^4.0.0-rc.51",
     "@yarnpkg/plugin-git": "^3.0.0-rc",
-    "@yarnpkg/plugin-workspace-tools": "^4.0.0-rc.51"
+    "@yarnpkg/plugin-workspace-tools": "^4.0.0-rc.51",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
   }
 }
