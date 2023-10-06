@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Employee } from '@prisma/client';
-import { DepartmentEntity } from './../../departments/entities/department.entity';
+import { PositionEntity } from './../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 
 export class EmployeeEntity implements Employee {
@@ -14,10 +14,10 @@ export class EmployeeEntity implements Employee {
   lastName: string;
 
   @Exclude()
-  departmentId: string;
+  positionId: string;
 
   @ApiProperty()
-  department: DepartmentEntity;
+  position: PositionEntity;
 
   @ApiProperty()
   email: string;
@@ -32,8 +32,8 @@ export class EmployeeEntity implements Employee {
   updatedAt: Date;
 
   constructor(partial: Partial<EmployeeEntity>) {
-    if (partial.department) {
-      partial.department = new DepartmentEntity(partial.department);
+    if (partial.position) {
+      partial.position = new PositionEntity(partial.position);
     }
     Object.assign(this, partial);
   }

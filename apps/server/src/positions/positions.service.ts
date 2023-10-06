@@ -1,22 +1,79 @@
 import { Injectable } from '@nestjs/common';
-// import { CreatePositionDto } from './dto/create-position.dto';
-// import { UpdatePositionDto } from './dto/update-position.dto';
+import { CreatePositionDto } from './dto/create-position.dto';
+import { UpdatePositionDto } from './dto/update-position.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class PositionsService {
-  // create(createPositionDto: CreatePositionDto) {
-  //   return 'This action adds a new position';
-  // }
-  // findAll() {
-  //   return `This action returns all positions`;
-  // }
-  // findOne(id: number) {
-  //   return `This action returns a #${id} position`;
-  // }
-  // update(id: number, updatePositionDto: UpdatePositionDto) {
-  //   return `This action updates a #${id} position`;
-  // }
-  // remove(id: number) {
-  //   return `This action removes a #${id} position`;
-  // }
+  constructor(private prisma: PrismaService) {}
+
+  /**
+   * Create a new position.
+   * @param createPositionDto create position dto
+   * @returns the created position, hydrated
+   */
+  async create(createPositionDto: CreatePositionDto) {
+    const newPosition = await this.prisma.position.create({
+      data: {
+        name: createPositionDto.name,
+        departmentId: createPositionDto.departmentId,
+      },
+    });
+    return newPosition;
+  }
+
+  /**
+   * Retrieve all positions.
+   * @param limit the number of positions we want to retrieve (optional)
+   * @returns all positions, hydrated
+   */
+  async findAll(limit?: number) {
+    const positions = await this.prisma.position.findMany({
+      take: limit,
+    });
+    return positions;
+  }
+
+  /**
+   * Retrieve a position by id.
+   * @param id the position id
+   * @returns the selected position, hydrated
+   */
+  async findOne(id: string) {
+    const position = await this.prisma.position.findFirstOrThrow({
+      where: {
+        id: id,
+      },
+    });
+
+    return position;
+  }
+
+  /**
+   * Update a position.
+   * @param id the position id
+   * @param updatePositionDto update position dto
+   * @returns the updated position, hydrated
+   */
+  async update(id: string, updatePositionDto: UpdatePositionDto) {
+    const updatedPosition = this.prisma.position.update({
+      where: {
+        id: id,
+      },
+      data: updatePositionDto,
+    });
+    return updatedPosition;
+  }
+
+  /**
+   * Remove a position.
+   * @param id the position id
+   */
+  async remove(id: string) {
+    await this.prisma.position.delete({
+      where: {
+        id: id,
+      },
+    });
+  }
 }

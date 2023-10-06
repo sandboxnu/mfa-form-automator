@@ -1,4 +1,4 @@
-import { FormInstance } from "@prisma/client";
+import { FormInstance } from '@prisma/client';
 
 export class FormInstanceEntity implements FormInstance {
   // placeholder

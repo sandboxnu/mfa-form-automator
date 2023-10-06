@@ -18,7 +18,7 @@ model Department {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  employees Employee[]
+  positions Position[]
 }
 
 // `Employees` represent the people who work at the MFA.
@@ -36,8 +36,8 @@ model Employee {
   signatures      Signature[]
   originatedForms FormInstance[]
 
-  department   Department @relation(fields: [departmentId], references: [id])
-  departmentId String     @db.Uuid
+  position   Position @relation(fields: [positionId], references: [id])
+  positionId String   @db.Uuid
 }
 
 // `Positions` represent the various positions that employees at the MFA can hold.
@@ -50,6 +50,10 @@ model Position {
 
   signatureFields SignatureField[]
   signatures      Signature[]
+  employees       Employee[]
+  
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId String     @db.Uuid
 }
 
 // `SignatureFields` represent each signature field that is required on a given form.
