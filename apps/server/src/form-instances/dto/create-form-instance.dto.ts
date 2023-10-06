@@ -1,27 +1,25 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Signature } from "@prisma/client";
-import { FormTemplate } from "@server/form-templates/entities/form-template.entity";
-import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { Signature } from '@prisma/client';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateFormInstanceDto {
-    @IsString()
-    @IsNotEmpty()
-    @ApiProperty()
-    name: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  name: string;
 
-    @IsArray()
-    @ArrayMinSize(1)
-    @ApiProperty()
-    signatures: Signature[];
+  @IsArray()
+  @ArrayMinSize(1)
+  @ApiProperty()
+  signatures: Signature[];
 
-    @IsString()
-    @IsNotEmpty()
-    @ApiProperty()
-    formTemplateId: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  originatorId: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    formTemplate: FormTemplate;
-
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  formTemplateId: string;
 }

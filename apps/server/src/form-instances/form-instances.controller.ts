@@ -1,45 +1,129 @@
 import {
   Controller,
-  // Get,
-  // Post,
-  // Body,
-  // Patch,
-  // Param,
-  // Delete,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { FormInstancesService } from './form-instances.service';
-// import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
-// import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
+import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
+import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
+import {
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiUnprocessableEntityResponse,
+  ApiOkResponse,
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+} from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
+import { AppErrorMessage } from '@server/app.errors';
+import { CreateFormTemplateDto } from '@server/form-templates/dto/create-form-template.dto';
+import { UpdateFormTemplateDto } from '@server/form-templates/dto/update-form-template.dto';
+import { FormTemplateEntity } from '@server/form-templates/entities/form-template.entity';
+import { FormTemplateErrorMessage } from '@server/form-templates/form-templates.errors';
+import { FormInstanceEntity } from './entities/form-instance.entity';
+import { FormInstanceErrorMessage } from './form-instance.errors';
 
 @Controller('form-instances')
 export class FormInstancesController {
   constructor(private readonly formInstancesService: FormInstancesService) {}
 
-  // @Post()
-  // create(@Body() createFormInstanceDto: CreateFormInstanceDto) {
-  //   return this.formInstancesService.create(createFormInstanceDto);
-  // }
+  @Post()
+  @ApiCreatedResponse({ type: FormInstanceEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  async create(@Body() createFormInstanceDto: CreateFormInstanceDto) {
+    const newFormTemplate = await this.formInstancesService.create(
+      createFormInstanceDto,
+    );
+    return new FormInstanceEntity(newFormTemplate);
+  }
 
-  // @Get()
-  // findAll() {
-  //   return this.formInstancesService.findAll();
-  // }
+  @Get()
+  @ApiOkResponse({ type: [FormInstanceEntity] })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findAll(@Query('limit') limit?: number) {
+    const formTemplates = await this.formInstancesService.findAll(limit);
+    return formTemplates.map(
+      (formInstance) => new FormInstanceEntity(formInstance),
+    );
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.formInstancesService.findOne(+id);
-  // }
+  @Get(':id')
+  @ApiOkResponse({ type: FormInstanceEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findOne(@Param('id') id: string) {
+    const formInstance = await this.formInstancesService.findOne(id);
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateFormInstanceDto: UpdateFormInstanceDto,
-  // ) {
-  //   return this.formInstancesService.update(+id, updateFormInstanceDto);
-  // }
+    if (formInstance == null) {
+      console.log(FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND);
+      throw new NotFoundException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
+      );
+    }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.formInstancesService.remove(+id);
-  // }
+    return new FormInstanceEntity(formInstance);
+  }
+
+  @Patch(':id')
+  @ApiOkResponse({ type: FormInstanceEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async update(
+    @Param('id') id: string,
+    @Body() updateFormInstanceDto: UpdateFormInstanceDto,
+  ) {
+    try {
+      const updatedFormInstance = await this.formInstancesService.update(
+        id,
+        updateFormInstanceDto,
+      );
+      return new FormInstanceEntity(updatedFormInstance);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          console.log(FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND);
+          throw new NotFoundException(
+            FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
+          );
+        }
+      }
+      throw e;
+    }
+  }
+
+  @Delete(':id')
+  @ApiOkResponse()
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async remove(@Param('id') id: string) {
+    try {
+      await this.formInstancesService.remove(id);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          console.log(FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND);
+          throw new NotFoundException(
+            FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
+          );
+        }
+      }
+      throw e;
+    }
+  }
 }

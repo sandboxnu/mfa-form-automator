@@ -6,50 +6,83 @@ import { FormTemplatesService } from '@server/form-templates/form-templates.serv
 
 @Injectable()
 export class FormInstancesService {
-  constructor(private prisma: PrismaService, private formTemplateService: FormTemplatesService) {}
+  constructor(
+    private prisma: PrismaService,
+    private formTemplateService: FormTemplatesService,
+  ) {}
 
   /**
-   * Create a new form instance. 
-   * @param createFormInstanceDto 
+   * Create a new form instance.
+   * @param createFormInstanceDto
    */
   async create(createFormInstanceDto: CreateFormInstanceDto) {
-    const formTemplate = this.formTemplateService.findOne(createFormInstanceDto.formTemplateId);
+    // TODO: Add validation before creating new form instance
+
+    const formTemplate = await this.formTemplateService.findOne(
+      createFormInstanceDto.formTemplateId,
+    );
     const newFormInstance = await this.prisma.formInstance.create({
       data: {
         name: createFormInstanceDto.name,
-        signatures: {create: createFormInstanceDto.signatures},
-        formTemplate : formTemplate,
-        formTemplateId: createFormInstanceDto.formTemplateId
-      }
+        formDocLink: formTemplate.formDocLink,
+        signatures: { create: createFormInstanceDto.signatures },
+        originator: {
+          connect: {
+            id: createFormInstanceDto.originatorId,
+          },
+        },
+        formTemplate: {
+          connect: {
+            id: createFormInstanceDto.formTemplateId,
+          },
+        },
+      },
+      include: {
+        originator: true,
+        formTemplate: true,
+      },
     });
     return newFormInstance;
   }
 
-   
   async findAll(limit?: number) {
     const formInstances = await this.prisma.formInstance.findMany({
       take: limit,
+      include: {
+        originator: true,
+        formTemplate: true,
+      },
     });
     return formInstances;
- }
- 
+  }
+
   async findOne(id: string) {
     const formInstance = await this.prisma.formInstance.findFirstOrThrow({
       where: {
         id: id,
+      },
+      include: {
+        originator: true,
+        formTemplate: true,
       },
     });
     return formInstance;
   }
 
   async update(id: string, updateFormInstanceDto: UpdateFormInstanceDto) {
+    // TODO: How do we support updating signatures?
+
     const updatedFormInstance = this.prisma.formInstance.update({
       where: {
         id: id,
       },
       data: {
-        name: updateFormInstanceDto.name, 
-        signatures: {create: updateFormInstanceDto.signatures}
+        name: updateFormInstanceDto.name,
+        // signatures: { create: updateFormInstanceDto.signatures },
+      },
+      include: {
+        originator: true,
+        formTemplate: true,
       },
     });
     return updatedFormInstance;
@@ -59,6 +92,10 @@ export class FormInstancesService {
     await this.prisma.formInstance.delete({
       where: {
         id: id,
+      },
+      include: {
+        originator: true,
+        formTemplate: true,
       },
     });
   }
