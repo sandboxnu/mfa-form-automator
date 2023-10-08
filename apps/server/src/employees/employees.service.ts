@@ -22,7 +22,7 @@ export class EmployeesService {
         positionId: createEmployeeDto.positionId,
         pswdHash: await bcrypt.hash(
           createEmployeeDto.password,
-          await bcrypt.genSalt(),
+          await bcrypt.genSalt(10),
         ),
       },
       include: {
