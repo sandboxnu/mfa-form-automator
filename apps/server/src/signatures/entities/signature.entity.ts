@@ -24,10 +24,10 @@ export class SignatureEntity implements Signature {
   updatedAt: Date;
 
   @ApiProperty()
-  signerPositionId: string | null;
+  signerPositionId: string;
 
   @ApiProperty()
-  signerPosition: PositionEntity | null;
+  signerPosition: PositionEntity;
 
   @ApiProperty()
   userSignedById: string | null;
@@ -37,4 +37,15 @@ export class SignatureEntity implements Signature {
 
   @Exclude()
   formInstanceId: string;
+
+  constructor(partial: Partial<SignatureEntity>) {
+    if (partial.signerPosition) {
+      partial.signerPosition = new PositionEntity(partial.signerPosition);
+    }
+    if (partial.userSignedBy) {
+      partial.userSignedBy = new EmployeeEntity(partial.userSignedBy);
+    }
+
+    Object.assign(this, partial);
+  }
 }

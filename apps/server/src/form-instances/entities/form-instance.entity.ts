@@ -3,6 +3,7 @@ import { Employee, FormInstance } from '@prisma/client';
 import { FormTemplateBaseEntity } from '../../form-templates/entities/form-template.entity';
 import { Exclude } from 'class-transformer';
 import { SignatureEntity } from '../../signatures/entities/signature.entity';
+import { EmployeeEntity } from '../../employees/entities/employee.entity';
 
 export class FormInstanceEntity implements FormInstance {
   @ApiProperty()
@@ -39,6 +40,16 @@ export class FormInstanceEntity implements FormInstance {
   signatures: SignatureEntity[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
+    if (partial.originator) {
+      partial.originator = new EmployeeEntity(partial.originator);
+    }
+    if (partial.formTemplate) {
+      partial.formTemplate = new FormTemplateBaseEntity(partial.formTemplate);
+    }
+    if (partial.originator) {
+      partial.originator = new EmployeeEntity(partial.originator);
+    }
+
     Object.assign(this, partial);
   }
 }

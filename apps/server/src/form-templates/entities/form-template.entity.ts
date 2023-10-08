@@ -34,6 +34,16 @@ export class FormTemplateEntity extends FormTemplateBaseEntity {
 
   constructor(partial: Partial<FormTemplateEntity>) {
     super(partial);
+    if (partial.signatureFields) {
+      partial.signatureFields = partial.signatureFields.map(
+        (signatureField) => new SignatureFieldEntity(signatureField),
+      );
+    }
+    if (partial.formInstances) {
+      partial.formInstances = partial.formInstances.map(
+        (formInstance) => new FormInstanceEntity(formInstance),
+      );
+    }
     Object.assign(this, partial);
   }
 }

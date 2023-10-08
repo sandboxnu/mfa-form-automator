@@ -57,7 +57,7 @@ export class FormInstancesService {
   }
 
   async findOne(id: string) {
-    const formInstance = await this.prisma.formInstance.findFirstOrThrow({
+    const formInstance = await this.prisma.formInstance.findFirst({
       where: {
         id: id,
       },
