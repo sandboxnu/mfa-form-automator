@@ -32,7 +32,7 @@ jobs:
   tsc:
     runs-on: ubuntu-latest
     name: Check tsc
-    needs: [lint]
+    # needs: [lint]
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
@@ -50,7 +50,7 @@ jobs:
   jest:
     runs-on: ubuntu-latest
     name: Run tests
-    needs: [lint, tsc] # ensure tests are run only after eslint and tsc pass
+    # needs: [lint, tsc] # ensure tests are run only after eslint and tsc pass
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
@@ -65,3 +65,12 @@ jobs:
         run: yarn install
       - name: Test
         run: yarn test
+  build-backend-image:
+    runs-on: ubuntu-latest
+    name: Build backend image
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: yarn install --immutable
+      - name: Build Docker image for backend
+        run: yarn backend:docker:build
