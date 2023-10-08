@@ -3,7 +3,6 @@ import { Position } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 import { DepartmentEntity } from './../../departments/entities/department.entity';
 import { IsOptional } from 'class-validator';
-
 export class PositionEntity implements Position {
   @ApiProperty()
   id: string;

@@ -67,7 +67,11 @@ export class EmployeesService {
         id: id,
       },
       include: {
-        position: { include: { department: true, signatureFields: true } },
+        position: {
+          include: {
+            department: true,
+          },
+        },
       },
     });
     return employee;
