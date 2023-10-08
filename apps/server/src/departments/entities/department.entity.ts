@@ -16,9 +16,6 @@ export class DepartmentEntity implements Department {
   @Exclude()
   updatedAt: Date;
 
-  @ApiProperty()
-  position: PositionEntity[];
-
   constructor(partial: Partial<DepartmentEntity>) {
     Object.assign(this, partial);
   }

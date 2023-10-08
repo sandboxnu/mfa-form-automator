@@ -25,15 +25,6 @@ export class PositionEntity implements Position {
   @ApiProperty()
   department: DepartmentEntity;
 
-  @ApiProperty()
-  signatureFields: SignatureFieldEntity[];
-
-  @ApiProperty()
-  signatures: SignatureEntity[];
-
-  @ApiProperty()
-  employees: EmployeeEntity[];
-
   @Exclude()
   createdAt: Date;
 
