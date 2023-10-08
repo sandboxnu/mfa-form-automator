@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
 import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { FormTemplatesService } from '@server/form-templates/form-templates.service';
+import { FormTemplatesService } from '../form-templates/form-templates.service';
 
 @Injectable()
 export class FormInstancesService {

@@ -22,7 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
-import { AppErrorMessage } from '@server/app.errors';
+import { AppErrorMessage } from '../app.errors';
 import { FormInstanceEntity } from './entities/form-instance.entity';
 import { FormInstanceErrorMessage } from './form-instance.errors';
 

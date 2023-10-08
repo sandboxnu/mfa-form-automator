@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Signature } from '@prisma/client';
+import { CreateSignatureDto } from '../../signatures/dto/create-signature.dto';
 import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateFormInstanceDto {
@@ -11,7 +11,7 @@ export class CreateFormInstanceDto {
   @IsArray()
   @ArrayMinSize(1)
   @ApiProperty()
-  signatures: Signature[];
+  signatures: CreateSignatureDto[];
 
   @IsString()
   @IsNotEmpty()
