@@ -1,7 +1,4 @@
-import { Signature } from "@prisma/client";
-import { PositionEntity } from './../../positions/entities/position.entity';
-import { EmployeeEntity } from './../../employees/entities/employee.entity';
-import { FormInstanceEntity } from './../../form-instances/entities/form-instance.entity';
+import { Signature } from '@prisma/client';
 
 export class SignatureEntity implements Signature {
   id: string;

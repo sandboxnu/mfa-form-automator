@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Department } from '@prisma/client';
-import { PositionEntity } from './../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 
 export class DepartmentEntity implements Department {
