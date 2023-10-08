@@ -186,7 +186,6 @@ const db = {
 
 describe('FormInstancesService', () => {
   let service: FormInstancesService;
-  let formTemplatesService: FormTemplatesService;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
@@ -202,8 +201,6 @@ describe('FormInstancesService', () => {
     }).compile();
 
     service = module.get<FormInstancesService>(FormInstancesService);
-    formTemplatesService =
-      module.get<FormTemplatesService>(FormTemplatesService);
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
@@ -213,7 +210,7 @@ describe('FormInstancesService', () => {
 
   describe('create', () => {
     it('should successfully create a form instance', () => {
-      let createFormInstanceDto = {
+      const createFormInstanceDto = {
         name: formInstance1Name,
         signatures: [
           {
@@ -251,8 +248,8 @@ describe('FormInstancesService', () => {
 
   describe('update', () => {
     it('should call the update method', async () => {
-      let newFormInstanceName = 'New-Form-Instance-Name';
-      let updateFormInstanceDto = {
+      const newFormInstanceName = 'New-Form-Instance-Name';
+      const updateFormInstanceDto = {
         name: newFormInstanceName,
       };
 

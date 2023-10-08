@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Signature } from '@prisma/client';
-import { EmployeeEntity } from '@server/employees/entities/employee.entity';
-import { PositionEntity } from '@server/positions/entities/position.entity';
+import { EmployeeEntity } from '../../employees/entities/employee.entity';
+import { PositionEntity } from '../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 
 export class SignatureEntity implements Signature {
