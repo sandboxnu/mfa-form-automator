@@ -19,16 +19,14 @@ import {
   ApiOkResponse,
   ApiBadRequestResponse,
   ApiNotFoundResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '@server/app.errors';
-import { CreateFormTemplateDto } from '@server/form-templates/dto/create-form-template.dto';
-import { UpdateFormTemplateDto } from '@server/form-templates/dto/update-form-template.dto';
-import { FormTemplateEntity } from '@server/form-templates/entities/form-template.entity';
-import { FormTemplateErrorMessage } from '@server/form-templates/form-templates.errors';
 import { FormInstanceEntity } from './entities/form-instance.entity';
 import { FormInstanceErrorMessage } from './form-instance.errors';
 
+@ApiTags('form-instances')
 @Controller('form-instances')
 export class FormInstancesController {
   constructor(private readonly formInstancesService: FormInstancesService) {}
