@@ -820,7 +820,236 @@ describe('FormInstancesController', () => {
     });
   });
 
-  describe('update', () => {});
+  describe('update', () => {
+    const formInstanceId = 'formInstanceId';
+    const newFormInstanceName = 'Updated Form Instance Name';
+    const updateFormInstanceDto = {
+      name: newFormInstanceName,
+    };
+
+    it('should update a form instance with id', async () => {
+      const result = (formInstanceId: string) => {
+        return {
+          id: formInstanceId,
+          name: newFormInstanceName,
+          formDocLink: 'mfa.org/form1',
+          completed: false,
+          createdAt: new Date(1672531200),
+          updatedAt: new Date(1672531200),
+          originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
+          originator: {
+            id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
+            firstName: 'First',
+            lastName: 'Last',
+            positionId: 'c25ac126-d450-4929-8982-0df70d3cd988',
+            position: {
+              id: 'c25ac126-d450-4929-8982-0df70d3cd988',
+              name: 'Associate',
+              single: true,
+              departmentId: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+              department: {
+                id: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+                name: 'Archives',
+                createdAt: new Date(1672531200),
+                updatedAt: new Date(1672531200),
+              },
+              createdAt: new Date(1672531200),
+              updatedAt: new Date(1672531200),
+            },
+            email: 'user@mfa.org',
+            pswdHash: 'password',
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+          },
+          formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
+          formTemplate: {
+            id: 'c0f1fdee-278c-4977-86a2-89ae6a73ffb4',
+            name: 'Form Template 1',
+            formDocLink: 'mfa.org/formtemplate1',
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+          },
+          signatures: [
+            {
+              id: '63baef23-2ff1-40a2-89fe-e22b0ff8660e',
+              order: 0,
+              signed: false,
+              signedDocLink: null,
+              createdAt: new Date(1672531200),
+              updatedAt: new Date(1672531200),
+              signerPositionId: 'f244c232-c453-4394-8180-9b9a82725677',
+              signerPosition: {
+                id: 'f244c232-c453-4394-8180-9b9a82725677',
+                name: 'Manager',
+                single: true,
+                departmentId: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+                department: {
+                  id: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+                  name: 'Archives',
+                  createdAt: new Date(1672531200),
+                  updatedAt: new Date(1672531200),
+                },
+                createdAt: new Date(1672531200),
+                updatedAt: new Date(1672531200),
+              },
+              userSignedById: null,
+              userSignedBy: null,
+              formInstanceId: formInstanceId,
+            },
+            {
+              id: '49da79f1-e562-4686-a0ed-699e06ac0154',
+              order: 1,
+              signed: false,
+              signedDocLink: null,
+              createdAt: new Date(1672531200),
+              updatedAt: new Date(1672531200),
+              signerPositionId: '6d88b27c-457a-414b-866d-72ad1335ea23',
+              signerPosition: {
+                id: '6d88b27c-457a-414b-866d-72ad1335ea23',
+                name: 'Director',
+                single: true,
+                departmentId: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+                department: {
+                  id: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+                  name: 'Archives',
+                  createdAt: new Date(1672531200),
+                  updatedAt: new Date(1672531200),
+                },
+                createdAt: new Date(1672531200),
+                updatedAt: new Date(1672531200),
+              },
+              userSignedById: null,
+              userSignedBy: null,
+              formInstanceId: formInstanceId,
+            },
+          ],
+        };
+      };
+
+      const expected = new FormInstanceEntity({
+        id: formInstanceId,
+        name: newFormInstanceName,
+        formDocLink: 'mfa.org/form1',
+        completed: false,
+        createdAt: new Date(1672531200),
+        updatedAt: new Date(1672531200),
+        originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
+        originator: new EmployeeEntity({
+          id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
+          firstName: 'First',
+          lastName: 'Last',
+          positionId: 'c25ac126-d450-4929-8982-0df70d3cd988',
+          position: new PositionEntity({
+            id: 'c25ac126-d450-4929-8982-0df70d3cd988',
+            name: 'Associate',
+            single: true,
+            departmentId: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+            department: new DepartmentEntity({
+              id: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+              name: 'Archives',
+              createdAt: new Date(1672531200),
+              updatedAt: new Date(1672531200),
+            }),
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+          }),
+          email: 'user@mfa.org',
+          pswdHash: 'password',
+          createdAt: new Date(1672531200),
+          updatedAt: new Date(1672531200),
+        }),
+        formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
+        formTemplate: new FormTemplateEntity({
+          id: 'c0f1fdee-278c-4977-86a2-89ae6a73ffb4',
+          name: 'Form Template 1',
+          formDocLink: 'mfa.org/formtemplate1',
+          createdAt: new Date(1672531200),
+          updatedAt: new Date(1672531200),
+        }),
+        signatures: [
+          new SignatureEntity({
+            id: '63baef23-2ff1-40a2-89fe-e22b0ff8660e',
+            order: 0,
+            signed: false,
+            signedDocLink: null,
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+            signerPositionId: 'f244c232-c453-4394-8180-9b9a82725677',
+            signerPosition: new PositionEntity({
+              id: 'f244c232-c453-4394-8180-9b9a82725677',
+              name: 'Manager',
+              single: true,
+              departmentId: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+              department: new DepartmentEntity({
+                id: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+                name: 'Archives',
+                createdAt: new Date(1672531200),
+                updatedAt: new Date(1672531200),
+              }),
+              createdAt: new Date(1672531200),
+              updatedAt: new Date(1672531200),
+            }),
+            userSignedById: null,
+            userSignedBy: null,
+            formInstanceId: formInstanceId,
+          }),
+          new SignatureEntity({
+            id: '49da79f1-e562-4686-a0ed-699e06ac0154',
+            order: 1,
+            signed: false,
+            signedDocLink: null,
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+            signerPositionId: '6d88b27c-457a-414b-866d-72ad1335ea23',
+            signerPosition: new PositionEntity({
+              id: '6d88b27c-457a-414b-866d-72ad1335ea23',
+              name: 'Director',
+              single: true,
+              departmentId: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+              department: new DepartmentEntity({
+                id: '42c2a72d-7a8e-44bb-9298-a2eb3ce830de',
+                name: 'Archives',
+                createdAt: new Date(1672531200),
+                updatedAt: new Date(1672531200),
+              }),
+              createdAt: new Date(1672531200),
+              updatedAt: new Date(1672531200),
+            }),
+            userSignedById: null,
+            userSignedBy: null,
+            formInstanceId: formInstanceId,
+          }),
+        ],
+      });
+
+      jest
+        .spyOn(formInstancesService, 'update')
+        .mockImplementation(async (formInstanceId, _) =>
+          result(formInstanceId),
+        );
+
+      expect(
+        await controller.update(formInstanceId, updateFormInstanceDto),
+      ).toEqual(expected);
+    });
+
+    it('should raise an error if not found', async () => {
+      jest
+        .spyOn(formInstancesService, 'update')
+        .mockImplementation(async (_, __) => {
+          throw new Prisma.PrismaClientKnownRequestError('', {
+            code: 'P2025',
+            clientVersion: '',
+            meta: undefined,
+            batchRequestIdx: undefined,
+          });
+        });
+
+      expect(
+        controller.update(formInstanceId, updateFormInstanceDto),
+      ).rejects.toThrowError(NotFoundException);
+    });
+  });
 
   describe('remove', () => {
     it('should delete a form instance with id', async () => {
