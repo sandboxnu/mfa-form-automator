@@ -812,7 +812,7 @@ describe('FormInstancesController', () => {
 
       jest
         .spyOn(formInstancesService, 'findOne')
-        .mockImplementation(async (formInstanceId) => null);
+        .mockImplementation(async () => null);
 
       expect(controller.findOne(formInstanceId)).rejects.toThrowError(
         NotFoundException,
@@ -1024,9 +1024,7 @@ describe('FormInstancesController', () => {
 
       jest
         .spyOn(formInstancesService, 'update')
-        .mockImplementation(async (formInstanceId, _) =>
-          result(formInstanceId),
-        );
+        .mockImplementation(async (formInstanceId) => result(formInstanceId));
 
       expect(
         await controller.update(formInstanceId, updateFormInstanceDto),
@@ -1036,7 +1034,7 @@ describe('FormInstancesController', () => {
     it('should raise an error if not found', async () => {
       jest
         .spyOn(formInstancesService, 'update')
-        .mockImplementation(async (_, __) => {
+        .mockImplementation(async () => {
           throw new Prisma.PrismaClientKnownRequestError('', {
             code: 'P2025',
             clientVersion: '',

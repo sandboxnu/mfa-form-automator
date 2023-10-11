@@ -3,9 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UpdateEmployeeDto = {
-    firstName?: string;
-    lastName?: string;
-    positionId?: string;
+export type CreateSignatureFieldDto = {
+    name: string;
+    order: number;
+    signerPositionId: string;
+    formTemplateId: string;
 };
 

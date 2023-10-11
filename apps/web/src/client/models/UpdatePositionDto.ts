@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UpdateEmployeeDto = {
-    firstName?: string;
-    lastName?: string;
-    positionId?: string;
+export type UpdatePositionDto = {
+    name?: string;
+    departmentId?: string;
 };
 

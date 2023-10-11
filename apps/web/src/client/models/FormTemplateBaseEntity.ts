@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UpdateEmployeeDto = {
-    firstName?: string;
-    lastName?: string;
-    positionId?: string;
+export type FormTemplateBaseEntity = {
+    id: string;
+    name: string;
+    formDocLink: string;
 };
 
