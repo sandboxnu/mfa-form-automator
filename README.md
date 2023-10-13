@@ -18,6 +18,7 @@ NextJS, NestJS, Prisma, PostgreSQL
 - `backend:docker:build`: build the docker image for the backend
 - `backend:docker:run`: start the backend and database stack
 - `backend:docker:down`: stop the backend and database stack
+- `prisma db seed`: run database seed script
 
 ## Getting Started (Local Development)
 
