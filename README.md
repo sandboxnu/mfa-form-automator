@@ -13,21 +13,12 @@ NextJS, NestJS, Prisma, PostgreSQL
 - `tsc`: run ts checker
 - `migrate`: run prisma migrate and make changes to local db in `apps/server`
 - `gen-client`: regenerate client used to communicate with backend in `apps/web`
-<<<<<<< HEAD
 - `dev:db:up`: start up the database in `apps`
 - `dev:db:down`: stop the database in `apps`
 - `backend:docker:build`: build the docker image for the backend in `apps`
 - `backend:docker:run`: start the backend and database stack in `apps`
 - `backend:docker:down`: stop the backend and database stack in `apps`
 - `prisma db seed`: run database seed script in `apps/server`
-=======
-- `dev:db:up`: start up the database
-- `dev:db:down`: stop the database
-- `backend:docker:build`: build the docker image for the backend
-- `backend:docker:run`: start the backend and database stack
-- `backend:docker:down`: stop the backend and database stack
-- `prisma db seed`: run database seed script
->>>>>>> cc4a50b (uhh i think this works)
 
 ## Getting Started (Local Development)
 
