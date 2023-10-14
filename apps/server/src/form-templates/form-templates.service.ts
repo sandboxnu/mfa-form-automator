@@ -17,7 +17,9 @@ export class FormTemplatesService {
       data: {
         name: createFormTemplateDto.name,
         formDocLink: createFormTemplateDto.formDocLink,
-        // signatureFields: { create: createFormTemplateDto.signatureFields },
+        signatureFields: {
+          create: createFormTemplateDto.signatureFields,
+        },
       },
     });
     return newFormTemplate;
@@ -57,6 +59,7 @@ export class FormTemplatesService {
    * @returns the updated form template, hydrated
    */
   async update(id: string, updateFormTemplateDto: UpdateFormTemplateDto) {
+    // TODO: Support updating signature fields (updating name/order/position, adding, deleting, etc)
     const updatedFormTemplate = await this.prisma.formTemplate.update({
       where: {
         id: id,
@@ -64,7 +67,6 @@ export class FormTemplatesService {
       data: {
         name: updateFormTemplateDto.name,
         formDocLink: updateFormTemplateDto.formDocLink,
-        signatureFields: { create: updateFormTemplateDto.signatureFields },
       },
     });
     return updatedFormTemplate;
@@ -75,6 +77,7 @@ export class FormTemplatesService {
    * @param id the form template id
    */
   async remove(id: string) {
+    // TODO: Support cascade delete of dependent entities?
     await this.prisma.formTemplate.delete({
       where: {
         id: id,
