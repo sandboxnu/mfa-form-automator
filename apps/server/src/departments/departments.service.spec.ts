@@ -25,7 +25,6 @@ describe('DepartmentsService', () => {
     it('should create a new department', async () => {
       const createDepartmentDto: CreateDepartmentDto = {
         name: 'Test Department',
-        signatureFields: [],
       };
 
       const createdDepartment = {

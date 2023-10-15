@@ -42,8 +42,8 @@ async function upsertEmployee(empData: any) {
       lastName: empData.lastName,
       email: empData.email,
       position: {
-        connect: { id: empData.positionId }
-      }
+        connect: { id: empData.positionId },
+      },
     },
   });
 }
@@ -59,7 +59,7 @@ type PositionData = {
 // update or insert position into database based on position id
 async function upsertPosition(data: PositionData) {
   const { id, name, departmentId, signatureFields } = data;
-  const connections = signatureFields.map(sigField => ({ id: sigField.id }));
+  const connections = signatureFields.map((sigField) => ({ id: sigField.id }));
 
   return prisma.position.upsert({
     where: { id },
@@ -69,9 +69,9 @@ async function upsertPosition(data: PositionData) {
       name,
       departmentId,
       signatureFields: {
-        connect: connections
-      }
-    }
+        connect: connections,
+      },
+    },
   });
 }
 
@@ -86,14 +86,15 @@ type SignatureFieldMap = {
 };
 
 //  fetch or create signature field for the given form template based on form template id
-async function fetchSignatureFields(formTemplateId: string): Promise<SignatureFieldMap> {
-
+async function fetchSignatureFields(
+  formTemplateId: string,
+): Promise<SignatureFieldMap> {
   // hard coded signature fields
   const signatureFieldNames = ['Chief', 'Manager', 'Director'];
   const signatureFieldIds: { [key: string]: string } = {
-    'Chief': CHIEF_SIG_FIELD_UUID,
-    'Manager': MANAGER_SIG_FIELD_UUID,
-    'Director': DIR_SIG_FIELD_UUID,
+    Chief: CHIEF_SIG_FIELD_UUID,
+    Manager: MANAGER_SIG_FIELD_UUID,
+    Director: DIR_SIG_FIELD_UUID,
   };
 
   let signatureFieldsMap: SignatureFieldMap = {};
@@ -142,7 +143,7 @@ async function main() {
     create: {
       id: formTemplate1Id,
       name: 'Form Template 1',
-      formDocLink: 'https://www.mfa.org/'
+      formDocLink: 'https://www.mfa.org/',
     },
   });
 
@@ -157,7 +158,8 @@ async function main() {
   });
 
   // signature fields
-  const signatureFieldsMap: SignatureFieldMap = await fetchSignatureFields(formTemplate1Id);
+  const signatureFieldsMap: SignatureFieldMap =
+    await fetchSignatureFields(formTemplate1Id);
 
   // positions
   const positions = [
@@ -165,28 +167,28 @@ async function main() {
       id: CHIEF_OF_STAFF_UUID,
       name: 'Chief of Staff',
       departmentId: departmentLeadershipTeam.id,
-      signatureFields: [signatureFieldsMap['Chief']]
+      signatureFields: [signatureFieldsMap['Chief']],
     },
     {
       id: CHIEF_FIN_OFFICER_UUID,
       name: 'Chief Financial Officer',
       departmentId: departmentLeadershipTeam.id,
-      signatureFields: [signatureFieldsMap['Chief']]
+      signatureFields: [signatureFieldsMap['Chief']],
     },
     {
       id: AGG_DIR_UUID,
       name: 'AGG Director',
       departmentId: departmentLeadershipTeam.id,
-      signatureFields: [signatureFieldsMap['Director']]
+      signatureFields: [signatureFieldsMap['Director']],
     },
     {
       id: CHIEF_LEARNING_ENGAGEMENT_UUID,
       name: 'Chief of Learning & Community Engagement',
       departmentId: departmentLeadershipTeam.id,
-      signatureFields: [signatureFieldsMap['Manager']]
+      signatureFields: [signatureFieldsMap['Manager']],
     },
   ];
-  
+
   for (const positionData of positions) {
     await upsertPosition(positionData);
   }
@@ -219,8 +221,7 @@ async function main() {
       firstName: 'Anshul',
       lastName: 'Shirude',
       email: 'email@gmail.com',
-      positionId: CHIEF_LEARNING_ENGAGEMENT_UUID
-      ,
+      positionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
     },
   ];
 
@@ -231,7 +232,7 @@ async function main() {
 
 // runs main seeding function
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   })
@@ -245,15 +246,15 @@ main()
 
     const allPositions = await prisma.position.findMany({
       include: {
-        signatureFields: true
-      }
+        signatureFields: true,
+      },
     });
     console.log('Positions:', JSON.stringify(allPositions, null, 2));
 
     const allEmployees = await prisma.employee.findMany({
       include: {
-        position: true
-      }
+        position: true,
+      },
     });
     console.log('Employees:', allEmployees);
 

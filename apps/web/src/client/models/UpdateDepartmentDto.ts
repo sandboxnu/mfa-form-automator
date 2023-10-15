@@ -3,8 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type CreateFormTemplateDto = {
-    name: string;
-    formDocLink: string;
+export type UpdateDepartmentDto = {
+    name?: string;
 };
 
