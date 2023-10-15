@@ -3,13 +3,10 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-// import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmployeesService {
-  constructor(
-    private prisma: PrismaService, // private configService: ConfigService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   /**
    * Create a new employee.
@@ -17,8 +14,6 @@ export class EmployeesService {
    * @returns the created employee, hydrated
    */
   async create(createEmployeeDto: CreateEmployeeDto) {
-    // const saltRounds = this.configService.get<number>('SALT_ROUNDS', 10);
-
     const newEmployee = await this.prisma.employee.create({
       data: {
         firstName: createEmployeeDto.firstName,
@@ -27,7 +22,7 @@ export class EmployeesService {
         positionId: createEmployeeDto.positionId,
         pswdHash: await bcrypt.hash(
           createEmployeeDto.password,
-          await bcrypt.genSalt(10),
+          await bcrypt.genSalt(),
         ),
       },
       include: {
