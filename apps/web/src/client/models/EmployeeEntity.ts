@@ -3,13 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { DepartmentEntity } from './DepartmentEntity';
+import type { PositionEntity } from './PositionEntity';
 
 export type EmployeeEntity = {
     id: string;
     firstName: string;
     lastName: string;
-    department: DepartmentEntity;
+    position: PositionEntity;
     email: string;
 };
 
