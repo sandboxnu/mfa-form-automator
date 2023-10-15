@@ -11,13 +11,14 @@ NextJS, NestJS, Prisma, PostgreSQL
 - `lint`: run eslint
 - `test`: run all tests
 - `tsc`: run ts checker
-- `migrate`: run prisma migrate and make changes to local db
+- `migrate`: run prisma migrate and make changes to local db in `apps/server`
 - `gen-client`: regenerate client used to communicate with backend in `apps/web`
-- `dev:db:up`: start up the database
-- `dev:db:down`: stop the database
-- `backend:docker:build`: build the docker image for the backend
-- `backend:docker:run`: start the backend and database stack
-- `backend:docker:down`: stop the backend and database stack
+- `dev:db:up`: start up the database in `apps`
+- `dev:db:down`: stop the database in `apps`
+- `backend:docker:build`: build the docker image for the backend in `apps`
+- `backend:docker:run`: start the backend and database stack in `apps`
+- `backend:docker:down`: stop the backend and database stack in `apps`
+- `prisma db seed`: run database seed script in `apps/server`
 
 ## Getting Started (Local Development)
 
@@ -34,7 +35,7 @@ NextJS, NestJS, Prisma, PostgreSQL
    yarn prisma generate
    ```
 
-4. Start up your local database:
+4. Start up your local database in `apps` directory:
 
    ```bash
    yarn dev:db:up
@@ -75,3 +76,32 @@ When making changes to our backend, we need to regenerate our frontend client to
    ```
 
    The client should be regenerated based on the running local backend instance.
+
+## Database Seeding
+
+Run the database seeding script (seed.ts) to initially populate the database.
+
+1. Start docker container and backend database in `apps`
+
+   ```bash
+   yarn backend:docker:run
+   yarn dev:db:up
+   ```
+2. Generate the Prisma Client in the `apps/server` directory using the following command from within the `apps/server` directory:
+
+   ```bash
+   yarn prisma generate
+   ```
+
+3. To reset existing migrations and run the seeding script, run the following command in `apps/server`:
+
+   ```bash
+   yarn prisma migrate reset
+   ```
+
+4. To run the seeding script and leave existing migrations, run the following command in `apps/server`:
+
+   ```bash
+   yarn prisma db seed
+   ```
+
