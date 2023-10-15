@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsUrl, IsArray } from 'class-validator';
-import { SignatureField } from '@prisma/client';
+import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
 
 export class CreateFormTemplateDto {
   @IsString()
