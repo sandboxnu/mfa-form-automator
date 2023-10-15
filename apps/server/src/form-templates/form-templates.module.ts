@@ -6,6 +6,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 @Module({
   controllers: [FormTemplatesController],
   providers: [FormTemplatesService],
+  exports: [FormTemplatesService],
   imports: [PrismaModule],
 })
 export class FormTemplatesModule {}

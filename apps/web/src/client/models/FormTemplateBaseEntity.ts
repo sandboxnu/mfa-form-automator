@@ -3,6 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type CreateDepartmentDto = {
-  name: string;
+export type FormTemplateBaseEntity = {
+    id: string;
+    name: string;
+    formDocLink: string;
 };
+

@@ -1,17 +1,51 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Signature } from '@prisma/client';
+import { EmployeeEntity } from '../../employees/entities/employee.entity';
+import { PositionEntity } from '../../positions/entities/position.entity';
+import { Exclude } from 'class-transformer';
 
 export class SignatureEntity implements Signature {
-  // placeholder
+  @ApiProperty()
   id: string;
+
+  @ApiProperty()
   order: number;
+
+  @ApiProperty()
   signed: boolean;
-  signedDocLink: string;
+
+  @ApiProperty()
+  signedDocLink: string | null;
+
+  @ApiProperty()
   createdAt: Date;
+
+  @ApiProperty()
   updatedAt: Date;
-  signerPosition: any;
+
+  @ApiProperty()
   signerPositionId: string;
-  userSignedBy: any;
-  userSignedById: string;
-  formInstance: any;
+
+  @ApiProperty()
+  signerPosition: PositionEntity;
+
+  @ApiProperty()
+  userSignedById: string | null;
+
+  @ApiProperty()
+  userSignedBy: EmployeeEntity | null;
+
+  @Exclude()
   formInstanceId: string;
+
+  constructor(partial: Partial<SignatureEntity>) {
+    if (partial.signerPosition) {
+      partial.signerPosition = new PositionEntity(partial.signerPosition);
+    }
+    if (partial.userSignedBy) {
+      partial.userSignedBy = new EmployeeEntity(partial.userSignedBy);
+    }
+
+    Object.assign(this, partial);
+  }
 }
