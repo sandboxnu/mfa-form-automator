@@ -4,7 +4,5 @@
 /* eslint-disable */
 
 export type CreateDepartmentDto = {
-    name: string;
-    signatureFields: Array<string>;
+  name: string;
 };
-

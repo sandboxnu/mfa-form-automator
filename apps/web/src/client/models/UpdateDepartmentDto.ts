@@ -4,7 +4,5 @@
 /* eslint-disable */
 
 export type UpdateDepartmentDto = {
-    name?: string;
-    signatureFields?: Array<string>;
+  name?: string;
 };
-

@@ -6,6 +6,5 @@
 export type UpdateFormTemplateDto = {
     name?: string;
     formDocLink?: string;
-    signatureFields?: Array<string>;
 };
 

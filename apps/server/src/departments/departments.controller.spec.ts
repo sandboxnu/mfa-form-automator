@@ -69,7 +69,6 @@ describe('DepartmentsController', () => {
     it('should create a new department', async () => {
       const createDepartmentDto: CreateDepartmentDto = {
         name: 'New Department',
-        signatureFields: [],
       };
 
       const createdDepartment = {
