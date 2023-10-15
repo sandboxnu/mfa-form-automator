@@ -23,26 +23,24 @@ describe('FormTemplatesController', () => {
     it('should return an array of form templates', async () => {
       const result = [
         {
-          id: "e975f200-cca7-4f47-9139-41ad743ba159",
-          name: "Form Template 1",
-          formDocLink: "formtemplate1.pdf",
+          id: 'e975f200-cca7-4f47-9139-41ad743ba159',
+          name: 'Form Template 1',
+          formDocLink: 'formtemplate1.pdf',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
           signatureFields: [],
-          formInstances: []
+          formInstances: [],
         },
         {
-          id: "00f1becf-4348-4680-a6d7-374af5c39d75",
-          name: "Form Template 2",
-          formDocLink: "formtemplate2.pdf",
+          id: '00f1becf-4348-4680-a6d7-374af5c39d75',
+          name: 'Form Template 2',
+          formDocLink: 'formtemplate2.pdf',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
           signatureFields: [],
-          formInstances: []
-        }
-      ]
-
-
+          formInstances: [],
+        },
+      ];
     });
-  })
+  });
 });
