@@ -13,8 +13,4 @@ export class CreateFormTemplateDto {
   @IsUrl()
   @ApiProperty()
   formDocLink: string;
-
-  @IsArray()
-  @ApiProperty()
-  signatureFields: SignatureField[];
 }

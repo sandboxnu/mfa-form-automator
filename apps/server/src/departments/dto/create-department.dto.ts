@@ -7,8 +7,4 @@ export class CreateDepartmentDto {
   @IsNotEmpty()
   @ApiProperty()
   name: string;
-
-  @IsArray()
-  @ApiProperty()
-  signatureFields: Position[];
 }
