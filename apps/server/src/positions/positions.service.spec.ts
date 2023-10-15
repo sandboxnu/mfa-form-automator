@@ -22,7 +22,7 @@ describe('PositionsService', () => {
   });
 
   describe('create', () => {
-    it('should create a new department', async () => {
+    it('should create a new position', async () => {
       const createPositionDto: CreatePositionDto = {
         name: 'New Position',
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d', 
@@ -32,7 +32,7 @@ describe('PositionsService', () => {
         id: '1',
         single: false, 
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
-        name: 'Test Positions',
+        name: 'Test Position',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -46,7 +46,7 @@ describe('PositionsService', () => {
   });
 
   describe('findAll', () => {
-    it('should retrieve all departments', async () => {
+    it('should retrieve all positions', async () => {
       const positions = [
         {
           id: '1',

@@ -145,7 +145,7 @@ describe('PositionsController', () => {
   describe('update', () => {});
 
   describe('remove', () => {
-    it('should delete a department with id', async () => {
+    it('should delete a position with id', async () => {
       const positionId = 'valid-Position-id';
 
       jest
