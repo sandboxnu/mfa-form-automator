@@ -25,12 +25,12 @@ describe('PositionsService', () => {
     it('should create a new position', async () => {
       const createPositionDto: CreatePositionDto = {
         name: 'New Position',
-        departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d', 
+        departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
       };
 
       const createdPosition = {
         id: '1',
-        single: false, 
+        single: false,
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
         name: 'Test Position',
         createdAt: new Date(),
@@ -51,7 +51,7 @@ describe('PositionsService', () => {
         {
           id: '1',
           name: 'Position 1',
-          single: false, 
+          single: false,
           departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -59,7 +59,7 @@ describe('PositionsService', () => {
         {
           id: '2',
           name: 'Position 2',
-          single: false, 
+          single: false,
           departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -80,7 +80,7 @@ describe('PositionsService', () => {
       const position = {
         id: positionId,
         name: 'Test Position',
-        single: false, 
+        single: false,
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -114,7 +114,7 @@ describe('PositionsService', () => {
       const updatedPosition = {
         id: positionId,
         name: 'Updated Position',
-        single: false, 
+        single: false,
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -134,7 +134,7 @@ describe('PositionsService', () => {
       const updatedPosition = {
         id: '1',
         name: 'Updated Position',
-        single: false, 
+        single: false,
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
         createdAt: new Date(),
         updatedAt: new Date(),
