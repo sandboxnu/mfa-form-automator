@@ -8,7 +8,6 @@ import {
   Delete,
   NotFoundException,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
@@ -26,8 +25,6 @@ import { DepartmentEntity } from './entities/department.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { DepartmentsErrorMessage } from './departments.errors';
-import { JwtAuthGuard } from '@server/auth/guards/jwt-auth.guard';
-import { Public } from '@server/auth/public.decorator';
 
 @ApiTags('departments')
 @Controller('departments')
@@ -48,7 +45,6 @@ export class DepartmentsController {
   }
 
   @Get()
-  @Public()
   @ApiOkResponse({ type: [DepartmentEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })

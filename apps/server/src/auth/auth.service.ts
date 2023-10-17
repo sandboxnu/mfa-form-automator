@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EmployeesService } from '@server/employees/employees.service';
+import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
@@ -11,17 +11,32 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateEmployee(email: string, pass: string): Promise<any | null> {
+  /**
+   * Validate an employee's credentials.
+   * @param email the employee's email
+   * @param pass the employee's raw text password
+   * @returns an employee
+   */
+  async validateEmployee(
+    email: string,
+    pass: string,
+  ): Promise<EmployeeEntity | null> {
     const user = await this.employeesService.findOneByEmail(email);
     if (user?.pswdHash && !(await bcrypt.compare(pass, user.pswdHash!))) {
       return null;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { pswdHash, ...result } = user;
-    return result;
+    return new EmployeeEntity(result);
   }
 
-  async login(employee: any) {
-    const payload = { email: employee.user.email, sub: employee.user.id };
+  /**
+   * Authenticate a user.
+   * @param request the incoming request
+   * @returns a valid JWT auth token
+   */
+  async login(request: any) {
+    const payload = { email: request.user.email, sub: request.user.id };
     return {
       access_token: await this.jwtService.signAsync(payload, {
         secret: process.env.JWT_SECRET,
