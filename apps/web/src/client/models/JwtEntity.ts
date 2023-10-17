@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type CreateDepartmentDto = {
-    name: string;
+export type JwtEntity = {
+    access_token: string;
 };
 
