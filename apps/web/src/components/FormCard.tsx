@@ -15,7 +15,6 @@ export const FormCard = ({
       <Box
         w="246px"
         h="120px"
-        border="1px solid #C0C0C0"
         borderRadius="5px"
         backgroundColor="#FFFFFF"
         boxShadow="0px 0.5px 3px 1px #D4D4D4"
