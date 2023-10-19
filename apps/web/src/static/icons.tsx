@@ -76,6 +76,19 @@ export const RightArrowIcon = createIcon({
   ),
 });
 
+export const LeftArrowIcon = createIcon({
+  displayName: 'LeftArrowIcon',
+  viewBox: '0 0 8 10',
+  path: (
+    <>
+      <path
+        d="M8.33003 0.5L0.830028 4.83013L8.33003 9.16025L8.33003 0.5Z"
+        fill="#4C658A"
+      />
+    </>
+  ),
+});
+
 export const MFALogoIcon = createIcon({
   displayName: 'MFALogoIcon',
   viewBox: '0 0 211 52',
