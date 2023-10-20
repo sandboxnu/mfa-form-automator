@@ -3,7 +3,7 @@ import { Employee } from '@prisma/client';
 import { PositionEntity } from './../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 
-export class EmployeeEntity implements Employee {
+export class EmployeeBaseEntity implements Employee {
   @ApiProperty()
   id: string;
 
@@ -17,9 +17,6 @@ export class EmployeeEntity implements Employee {
   positionId: string;
 
   @ApiProperty()
-  position: PositionEntity;
-
-  @ApiProperty()
   email: string;
 
   @Exclude()
@@ -31,7 +28,17 @@ export class EmployeeEntity implements Employee {
   @Exclude()
   updatedAt: Date;
 
+  constructor(partial: Partial<EmployeeBaseEntity>) {
+    Object.assign(this, partial);
+  }
+}
+
+export class EmployeeEntity extends EmployeeBaseEntity {
+  @ApiProperty()
+  position: PositionEntity;
+
   constructor(partial: Partial<EmployeeEntity>) {
+    super(partial);
     if (partial.position) {
       partial.position = new PositionEntity(partial.position);
     }

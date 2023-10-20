@@ -54,6 +54,36 @@ export class FormInstancesService {
     }
 
     /**
+     * @returns FormInstanceEntity
+     * @throws ApiError
+     */
+    public static formInstancesControllerFindAllAssignedToCurrentEmployee(): CancelablePromise<Array<FormInstanceEntity>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/form-instances/me',
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+            },
+        });
+    }
+
+    /**
+     * @returns FormInstanceEntity
+     * @throws ApiError
+     */
+    public static formInstancesControllerFindAllCreatedByCurrentEmployee(): CancelablePromise<Array<FormInstanceEntity>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/form-instances/created/me',
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+            },
+        });
+    }
+
+    /**
      * @param id
      * @returns FormInstanceEntity
      * @throws ApiError

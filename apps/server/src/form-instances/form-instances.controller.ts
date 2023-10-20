@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FormInstancesService } from './form-instances.service';
 import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
@@ -20,11 +21,15 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
   ApiTags,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { FormInstanceEntity } from './entities/form-instance.entity';
 import { FormInstanceErrorMessage } from './form-instance.errors';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthUser } from '../auth/auth.decorators';
+import { UserEntity } from '../auth/entities/user.entity';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
@@ -50,6 +55,36 @@ export class FormInstancesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findAll(@Query('limit') limit?: number) {
     const formTemplates = await this.formInstancesService.findAll(limit);
+    return formTemplates.map(
+      (formInstance) => new FormInstanceEntity(formInstance),
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: [FormInstanceEntity] })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findAllAssignedToCurrentEmployee(@AuthUser() currentUser: UserEntity) {
+    const formTemplates = await this.formInstancesService.findAssignedTo(
+      currentUser.id,
+    );
+    return formTemplates.map(
+      (formInstance) => new FormInstanceEntity(formInstance),
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('created/me')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: [FormInstanceEntity] })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findAllCreatedByCurrentEmployee(@AuthUser() currentUser: UserEntity) {
+    const formTemplates = await this.formInstancesService.findCreatedBy(
+      currentUser.id,
+    );
     return formTemplates.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );

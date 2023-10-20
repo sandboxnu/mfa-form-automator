@@ -49,6 +49,11 @@ export class FormInstanceEntity implements FormInstance {
     if (partial.originator) {
       partial.originator = new EmployeeEntity(partial.originator);
     }
+    if (partial.signatures) {
+      partial.signatures = partial.signatures.map(
+        (signature) => new SignatureEntity(signature),
+      );
+    }
 
     Object.assign(this, partial);
   }

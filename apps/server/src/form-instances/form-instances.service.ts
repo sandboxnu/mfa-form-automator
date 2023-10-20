@@ -40,9 +40,79 @@ export class FormInstancesService {
       include: {
         originator: true,
         formTemplate: true,
+        signatures: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+            userSignedBy: true,
+          },
+        },
       },
     });
     return newFormInstance;
+  }
+
+  async findAssignedTo(employeeId: string) {
+    const formInstances = await this.prisma.formInstance.findMany({
+      where: {
+        signatures: {
+          some: {
+            signerPosition: {
+              employees: {
+                some: {
+                  id: {
+                    equals: employeeId,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      include: {
+        originator: true,
+        formTemplate: true,
+        signatures: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+            userSignedBy: true,
+          },
+        },
+      },
+    });
+    return formInstances;
+  }
+
+  async findCreatedBy(employeeId: string) {
+    const formInstances = await this.prisma.formInstance.findMany({
+      where: {
+        originatorId: {
+          equals: employeeId,
+        },
+      },
+      include: {
+        originator: true,
+        formTemplate: true,
+        signatures: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+            userSignedBy: true,
+          },
+        },
+      },
+    });
+    return formInstances;
   }
 
   async findAll(limit?: number) {
@@ -51,6 +121,16 @@ export class FormInstancesService {
       include: {
         originator: true,
         formTemplate: true,
+        signatures: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+            userSignedBy: true,
+          },
+        },
       },
     });
     return formInstances;
@@ -64,6 +144,16 @@ export class FormInstancesService {
       include: {
         originator: true,
         formTemplate: true,
+        signatures: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+            userSignedBy: true,
+          },
+        },
       },
     });
     return formInstance;
@@ -83,6 +173,16 @@ export class FormInstancesService {
       include: {
         originator: true,
         formTemplate: true,
+        signatures: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+            userSignedBy: true,
+          },
+        },
       },
     });
     return updatedFormInstance;
@@ -96,6 +196,16 @@ export class FormInstancesService {
       include: {
         originator: true,
         formTemplate: true,
+        signatures: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+            userSignedBy: true,
+          },
+        },
       },
     });
   }

@@ -9,27 +9,63 @@ const formInstance3Id = 'formInstanceId3';
 const formInstance1Name = 'Form-Instance-1';
 const formInstance2Name = 'Form-Instance-2';
 const formInstance3Name = 'Form-Instance-3';
-const originatorId = 'originatorId';
-const originator = {
-  id: originatorId,
+const departmentId = 'departmentId';
+const department = {
+  id: departmentId,
+  name: 'Archives',
+  createdAt: new Date(1672531200),
+  updatedAt: new Date(1672531200),
+};
+const positionId1 = 'positionId1';
+const positionId2 = 'positionId2';
+const positionId3 = 'positionId3';
+const position1 = {
+  id: positionId1,
+  name: 'Manager',
+  single: true,
+  departmentId: departmentId,
+  department: department,
+  createdAt: new Date(1672531200),
+  updatedAt: new Date(1672531200),
+};
+const position2 = {
+  id: positionId2,
+  name: 'Senior Manager',
+  single: true,
+  departmentId: departmentId,
+  department: department,
+  createdAt: new Date(1672531200),
+  updatedAt: new Date(1672531200),
+};
+const position3 = {
+  id: positionId3,
+  name: 'Associate',
+  single: true,
+  departmentId: departmentId,
+  department: department,
+  createdAt: new Date(1672531200),
+  updatedAt: new Date(1672531200),
+};
+const originatorId1 = 'originatorId1';
+const originatorId2 = 'originatorId2';
+const originator1 = {
+  id: originatorId1,
   firstName: 'First',
   lastName: 'Last',
-  positionId: 'positionId',
-  position: {
-    id: 'positionId',
-    name: 'Manager',
-    single: true,
-    departmentId: 'departmentId',
-    department: {
-      id: 'departmentId',
-      name: 'Archives',
-      createdAt: new Date(1672531200),
-      updatedAt: new Date(1672531200),
-    },
-    createdAt: new Date(1672531200),
-    updatedAt: new Date(1672531200),
-  },
-  email: 'info@mfa.org',
+  positionId: positionId1,
+  position: position1,
+  email: 'info1@mfa.org',
+  pswdHash: 'password',
+  createdAt: new Date(1672531200),
+  updatedAt: new Date(1672531200),
+};
+const originator2 = {
+  id: originatorId2,
+  firstName: 'Also First',
+  lastName: 'And Last',
+  positionId: positionId2,
+  position: position2,
+  email: 'info2@mfa.org',
   pswdHash: 'password',
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
@@ -42,6 +78,10 @@ const formTemplate = {
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
 };
+const signatureId1 = 'signatureId1';
+const signatureId2 = 'signatureId1';
+const signatureId3 = 'signatureId1';
+const signatureId4 = 'signatureId1';
 
 const formInstancesArray = [
   {
@@ -51,33 +91,33 @@ const formInstancesArray = [
     completed: false,
     createdAt: new Date(1672531200),
     updatedAt: new Date(1672531200),
-    originatorId: originatorId,
-    originator: originator,
+    originatorId: originatorId1,
+    originator: originator1,
     formTemplateId: formTemplateId,
     formTemplate: formTemplate,
     signatures: [
       {
-        id: 'signatureId1',
+        id: signatureId1,
         order: 0,
         signed: false,
         signedDocLink: null,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
-        signerPositionId: null,
-        signerPosition: null,
+        signerPositionId: positionId3,
+        signerPosition: position3,
         userSignedById: null,
         userSignedBy: null,
         formInstanceId: formInstance1Id,
       },
       {
-        id: 'signatureId2',
+        id: signatureId2,
         order: 1,
         signed: false,
         signedDocLink: null,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
-        signerPositionId: null,
-        signerPosition: null,
+        signerPositionId: positionId2,
+        signerPosition: position2,
         userSignedById: null,
         userSignedBy: null,
         formInstanceId: formInstance1Id,
@@ -91,33 +131,20 @@ const formInstancesArray = [
     completed: false,
     createdAt: new Date(1672531200),
     updatedAt: new Date(1672531200),
-    originatorId: originatorId,
-    originator: originator,
+    originatorId: originatorId1,
+    originator: originator1,
     formTemplateId: formTemplateId,
     formTemplate: formTemplate,
     signatures: [
       {
-        id: 'signatureId1',
+        id: signatureId3,
         order: 0,
         signed: false,
         signedDocLink: null,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
-        signerPositionId: null,
-        signerPosition: null,
-        userSignedById: null,
-        userSignedBy: null,
-        formInstanceId: formInstance2Id,
-      },
-      {
-        id: 'signatureId2',
-        order: 1,
-        signed: false,
-        signedDocLink: null,
-        createdAt: new Date(1672531200),
-        updatedAt: new Date(1672531200),
-        signerPositionId: null,
-        signerPosition: null,
+        signerPositionId: positionId3,
+        signerPosition: position3,
         userSignedById: null,
         userSignedBy: null,
         formInstanceId: formInstance2Id,
@@ -131,33 +158,20 @@ const formInstancesArray = [
     completed: false,
     createdAt: new Date(1672531200),
     updatedAt: new Date(1672531200),
-    originatorId: originatorId,
-    originator: originator,
+    originatorId: originatorId2,
+    originator: originator2,
     formTemplateId: formTemplateId,
     formTemplate: formTemplate,
     signatures: [
       {
-        id: 'signatureId1',
+        id: signatureId4,
         order: 0,
         signed: false,
         signedDocLink: null,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
-        signerPositionId: null,
-        signerPosition: null,
-        userSignedById: null,
-        userSignedBy: null,
-        formInstanceId: formInstance3Id,
-      },
-      {
-        id: 'signatureId2',
-        order: 1,
-        signed: false,
-        signedDocLink: null,
-        createdAt: new Date(1672531200),
-        updatedAt: new Date(1672531200),
-        signerPositionId: null,
-        signerPosition: null,
+        signerPositionId: positionId1,
+        signerPosition: position1,
         userSignedById: null,
         userSignedBy: null,
         formInstanceId: formInstance3Id,
@@ -229,6 +243,51 @@ describe('FormInstancesService', () => {
       expect(service.create(createFormInstanceDto)).resolves.toEqual(
         oneFormInstance,
       );
+    });
+  });
+
+  // WORK IN PROGRESS
+  // describe('findAssignedTo', () => {
+  //   beforeEach(async () => {
+  //     db.formInstance.findMany = jest
+  //       .fn()
+  //       .mockResolvedValue(
+  //         formInstancesArray.slice(formInstancesArray.length - 1),
+  //       );
+  //   });
+
+  //   it('should successfully find all form instances assigned to an employee', () => {
+  //     expect(service.findAssignedTo(originatorId2)).resolves.toEqual(
+  //       formInstancesArray.slice(formInstancesArray.length - 1),
+  //     );
+  //   });
+
+  //   afterEach(async () => {
+  //     db.formInstance.findMany = jest
+  //       .fn()
+  //       .mockResolvedValue(formInstancesArray);
+  //   });
+  // });
+
+  describe('findCreatedBy', () => {
+    beforeEach(async () => {
+      db.formInstance.findMany = jest
+        .fn()
+        .mockResolvedValue(
+          formInstancesArray.slice(formInstancesArray.length - 1),
+        );
+    });
+
+    it('should successfully find all form instances created by an employee', () => {
+      expect(service.findCreatedBy(originatorId2)).resolves.toEqual(
+        formInstancesArray.slice(formInstancesArray.length - 1),
+      );
+    });
+
+    afterEach(async () => {
+      db.formInstance.findMany = jest
+        .fn()
+        .mockResolvedValue(formInstancesArray);
     });
   });
 
