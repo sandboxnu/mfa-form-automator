@@ -1,12 +1,51 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Request } from '@nestjs/common';
 import { AppService } from './app.service';
+import {
+  ApiOkResponse,
+  ApiForbiddenResponse,
+  ApiUnprocessableEntityResponse,
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { AppErrorMessage } from './app.errors';
+import { JwtEntity } from './auth/entities/jwt.entity';
+import { LocalAuthGuard } from './auth/guards/local-auth.guard';
+import { EmployeeEntity } from './employees/entities/employee.entity';
+import { AuthService } from './auth/auth.service';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private appService: AppService,
+    private authService: AuthService,
+  ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
+  @ApiBearerAuth()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  @ApiOkResponse({ type: JwtEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  @ApiBody({
+    schema: {
+      properties: {
+        username: { type: 'string' },
+        password: { type: 'string' },
+      },
+    },
+  })
+  async login(@Request() req: EmployeeEntity) {
+    return this.authService.login(req);
   }
 }

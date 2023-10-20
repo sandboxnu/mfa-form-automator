@@ -78,6 +78,27 @@ export class EmployeesService {
   }
 
   /**
+   * Retrieve an employee by email.
+   * @param email the employee email
+   * @returns the selected employee, hydrated
+   */
+  async findOneByEmail(email: string) {
+    const employee = await this.prisma.employee.findFirstOrThrow({
+      where: {
+        email: email,
+      },
+      include: {
+        position: {
+          include: {
+            department: true,
+          },
+        },
+      },
+    });
+    return employee;
+  }
+
+  /**
    * Update an employee.
    * @param id the employee id
    * @param updateEmployeeDto update employee dto
