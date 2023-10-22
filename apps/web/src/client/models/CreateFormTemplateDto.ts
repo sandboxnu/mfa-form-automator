@@ -6,5 +6,6 @@
 export type CreateFormTemplateDto = {
     name: string;
     formDocLink: string;
+    signatureFields: Array<string>;
 };
 

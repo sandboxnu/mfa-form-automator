@@ -17,6 +17,9 @@ export class FormTemplatesService {
       data: {
         name: createFormTemplateDto.name,
         formDocLink: createFormTemplateDto.formDocLink,
+        signatureFields: {
+          create: createFormTemplateDto.signatureFields,
+        }
       },
     });
     return newFormTemplate;
