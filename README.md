@@ -23,6 +23,16 @@ NextJS, NestJS, Prisma, PostgreSQL
 ## Getting Started (Local Development)
 
 1. Create a .env file in `apps/web` and `apps/server` and configure environment variables using the provided example files.
+
+   | VARIABLE           | VALUE                                                                                                                           |   |   |   |
+   |--------------------|---------------------------------------------------------------------------------------------------------------------------------|---|---|---|
+   | FRONTEND_DOMAIN    | <http://localhost:3000>                                                                                                           |   |   |   |
+   | PORT               | 8080                                                                                                                            |   |   |   |
+   | SALT_ROUNDS        | 10                                                                                                                              |   |   |   |
+   | DATABASE_URL       | postgresql://user:pass@localhost:5432/db?schema=public                                                                          |   |   |   |
+   | JWT_SECRET         | Execute the following to generate a random secret key: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" |   |   |   |
+   | JWT_VALID_DURATION | 600
+
 2. Install yarn dependencies. We currently use Yarn and Yarn workspaces to manage dependencies.
 
    ```bash
@@ -87,6 +97,7 @@ Run the database seeding script (seed.ts) to initially populate the database.
    yarn backend:docker:run
    yarn dev:db:up
    ```
+
 2. Generate the Prisma Client in the `apps/server` directory using the following command from within the `apps/server` directory:
 
    ```bash
@@ -104,4 +115,3 @@ Run the database seeding script (seed.ts) to initially populate the database.
    ```bash
    yarn prisma db seed
    ```
-
