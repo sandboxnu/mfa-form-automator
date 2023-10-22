@@ -140,15 +140,17 @@ type FormInstanceData = {
 async function upsertFormInstance(formInstanceData: FormInstanceData) {
   const { id, name, formDocLink, originatorId, formTemplateId, signatures } =
     formInstanceData;
-  await prisma.formInstance.create({
-    data: {
-      id: id,
-      name: name,
-      formDocLink: formDocLink,
-      originatorId: originatorId,
-      formTemplateId: formTemplateId,
+  await prisma.formInstance.upsert({
+    where: { id },
+    update: {},
+    create: {
+      id,
+      name,
+      formDocLink,
+      originatorId,
+      formTemplateId,
       signatures: {
-        create: signatures,
+        connect: signatures,
       },
     },
   });
