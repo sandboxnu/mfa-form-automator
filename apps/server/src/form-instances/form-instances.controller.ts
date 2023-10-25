@@ -125,7 +125,7 @@ export class FormInstancesController {
     }
   }
 
-  @Post(':formInstanceId/sign/:signatureId')
+  @Patch(':formInstanceId/sign/:signatureId')
   @ApiOkResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -141,7 +141,7 @@ export class FormInstancesController {
         formInstanceId,
         signatureId,
       );
-      return new FormInstanceEntity(updatedFormInstance);
+      return updatedFormInstance;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
