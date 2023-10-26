@@ -106,6 +106,10 @@ a {
   }
 }
 
-.lighter-text {
-  color: gray;
+.custom-dropdown {
+  background-color: white;
+}
+
+.bold-selected-option {
+  font-weight: bold;
 }

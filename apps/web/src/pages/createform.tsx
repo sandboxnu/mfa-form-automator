@@ -1,35 +1,108 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text, Icon } from '@chakra-ui/react';
 import { LeftArrowIcon } from '@web/static/icons';
 import { useState } from 'react';
 import Link from 'next/link';
 import { DropdownDownArrow, DropdownUpArrow } from 'apps/web/src/static/icons';
 // TODO make leadership/dept head selects searchable using chakra-react-select
-import { GroupBase, OptionsOrGroups, Select } from 'chakra-react-select';
+import { Select, chakraComponents } from 'chakra-react-select';
+// TODO add clear icon to remove selected form type
 
 const CreateForm = () => {
   interface Option {
     value: string;
     label: string;
   }
+
   const [selectedForm, setSelectedForm] = useState<Option | null>(null);
-  // const [selectedForm, setSelectedForm] = useState('');
-  const options: Option[] = [
-    // { value: '', label: 'Select Form Template' },
+  const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
+  const [isLeadershipDropdownOpen, setIsLeadershipDropdownOpen] = useState(false);
+  const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
+
+  const formOptions: Option[] = [
     { value: 'Form 1', label: 'Form 1' },
     { value: 'Form 2', label: 'Form 2' },
     { value: 'Form 3', label: 'Form 3' },
   ];
 
+  const assigneeOptions: Option[] = [
+    {
+      value: 'Person 1',
+      label: (
+        <span>
+          <strong>Person 1</strong> <span style={{ marginLeft: '8px' }}>Role</span>
+        </span>
+      ),
+    },
+    {
+      value: 'Person 2',
+      label: (
+        <span>
+          <strong>Person 2</strong> <span style={{ marginLeft: '8px' }}>Role</span>
+        </span>
+      ),
+    },
+    {
+      value: 'Person 3',
+      label: (
+        <span>
+          <strong>Person 3</strong> <span style={{ marginLeft: '8px' }}>Role</span>
+        </span>
+      ),
+    },
+  ];
 
 
-  // const handleFormChange = (selectedOption: Option) => {
-  //   setSelectedForm(selectedOption.value);
-  // };
-  const handleFormChange = (selectedOption: Option) => {
-    setSelectedForm(selectedOption);
+  const components = {
+    DropdownIndicator: (props: any) => (
+      <chakraComponents.DropdownIndicator {...props}>
+        <div style={{ marginLeft: '10px' }}>
+          <DropdownDownArrow />
+        </div>
+      </chakraComponents.DropdownIndicator>
+    ),
   };
 
+  const handleFormTypeDropdownOpen = () => {
+    setIsFormTypeDropdownOpen(true);
+    setIsLeadershipDropdownOpen(false);
+    setIsDepartmentDropdownOpen(false);
+  };
 
+  const handleLeadershipDropdownOpen = () => {
+    setIsLeadershipDropdownOpen(true);
+    setIsFormTypeDropdownOpen(false);
+    setIsDepartmentDropdownOpen(false);
+  };
+
+  const handleDepartmentDropdownOpen = () => {
+    setIsDepartmentDropdownOpen(true);
+    setIsFormTypeDropdownOpen(false);
+    setIsLeadershipDropdownOpen(false);
+  };
+
+  const handleDropdownClose = () => {
+    setIsFormTypeDropdownOpen(false);
+    setIsLeadershipDropdownOpen(false);
+    setIsDepartmentDropdownOpen(false);
+  };
+
+  const FormTypeDropdownIndicator = (props: any) => (
+    <chakraComponents.DropdownIndicator {...props}>
+      {isFormTypeDropdownOpen ? <DropdownUpArrow /> : <DropdownDownArrow />}
+    </chakraComponents.DropdownIndicator>
+  );
+
+  const LeadershipDropdownIndicator = (props: any) => (
+    <chakraComponents.DropdownIndicator {...props}>
+      {isLeadershipDropdownOpen ? <DropdownUpArrow /> : <DropdownDownArrow />}
+    </chakraComponents.DropdownIndicator>
+  );
+
+  const DepartmentDropdownIndicator = (props: any) => (
+    <chakraComponents.DropdownIndicator {...props}>
+      {isDepartmentDropdownOpen ? <DropdownUpArrow /> : <DropdownDownArrow />}
+    </chakraComponents.DropdownIndicator>
+  );
 
   return (
     <Flex flexDirection="column" marginLeft="49px">
@@ -52,13 +125,21 @@ const CreateForm = () => {
           <Text fontWeight="700" fontSize="20px" color="black">
             Form Type
           </Text>
+          {/* TODO add clear button to reset */}
           <Select
+          useBasicStyles
           selectedOptionStyle="check"
-            options={options}
+            options={formOptions}
             placeholder="Select Form Template"
             value={selectedForm}
             onChange={setSelectedForm}
-          />
+            className="custom-dropdown"
+            components={{ DropdownIndicator: FormTypeDropdownIndicator }}
+            onMenuOpen={handleFormTypeDropdownOpen}
+            onMenuClose={handleDropdownClose}
+            getOptionLabel={(option) => option.label}
+            classNamePrefix="react-select"
+            />
           <Box width="496px" height="436px" backgroundColor="gray.300" marginBottom="10px" marginTop="10px">
             {/* Placeholder for PDF */}
           </Box>
@@ -71,23 +152,33 @@ const CreateForm = () => {
           <Text fontWeight="500" fontSize="16px" color="black" marginTop="40px">
             Leadership Team Member
           </Text>
-          {/* <Select width="440px" height="40px" marginTop="9px"
-            backgroundColor="white" icon={<DropdownDownArrow />}>
-            <option selected hidden disabled value="">Select assignee</option>
-            <option value="Form 1">First Last</option>
-            <option value="Form 2">First Last</option>
-            <option value="Form 3">First Last</option>
-          </Select> */}
+          <Select
+          useBasicStyles
+          selectedOptionStyle="check"
+            options={assigneeOptions}
+            placeholder="Select assigneee"
+            className="custom-dropdown"
+            components={{ DropdownIndicator: LeadershipDropdownIndicator }}
+            onMenuOpen={handleLeadershipDropdownOpen}
+            onMenuClose={handleDropdownClose}
+            getOptionLabel={(option) => option.label}
+            classNamePrefix="react-select"
+            />
           <Text fontWeight="500" fontSize="16px" color="black" marginTop="24px">
             Department Head
           </Text>
-          {/* <Select width="440px" height="40px" marginTop="9px"
-            backgroundColor="white" icon={<DropdownDownArrow />}>
-            <option selected hidden disabled value="">Select assignee</option>
-            <option value="Form 1">First Last</option>
-            <option value="Form 2">First Last</option>
-            <option value="Form 3">First Last</option> 
-        </Select> */}
+          <Select
+          useBasicStyles
+          selectedOptionStyle="check"
+            options={assigneeOptions}
+            placeholder="Select assigneee"
+            className="custom-dropdown"
+            components={{ DropdownIndicator: DepartmentDropdownIndicator }}
+            onMenuOpen={handleDepartmentDropdownOpen}
+            onMenuClose={handleDropdownClose}
+            getOptionLabel={(option) => option.label}
+            classNamePrefix="react-select"
+            />
         </Flex>
       </Flex>
 
