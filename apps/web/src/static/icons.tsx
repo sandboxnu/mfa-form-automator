@@ -132,3 +132,15 @@ export const SortDownArrow = createIcon({
   viewBox: '0 0 10 8',
   d: 'M5 8L0.669872 0.5L9.33013 0.5L5 8Z',
 });
+
+export const DropdownDownArrow = createIcon({
+  displayName: 'DropdownDownArrow',
+  viewBox: '0 0 25 8',
+  d: "M6 9L0.803848 0H11.1962L6 9Z",
+})
+
+export const DropdownUpArrow = createIcon({
+  displayName: 'DropdownUpArrow',
+  viewBox: '0 0 25 8',
+  d: "M6 0L11.1962 9H0.803848L6 0Z",
+})
