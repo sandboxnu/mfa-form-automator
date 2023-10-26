@@ -1,6 +1,7 @@
-import { Box, Button, Flex, Link, Select, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Select, Text } from '@chakra-ui/react';
 import { LeftArrowIcon } from '@web/static/icons';
 import { useState } from 'react';
+import Link from 'next/link';
 // TODO make leadership/dept head selects searchable using chakra-react-select
 // import { Select } from 'chakra-react-select';
 
@@ -15,10 +16,10 @@ const CreateForm = () => {
   return (
     <Flex flexDirection="column" marginLeft="49px">
       <Flex alignItems="center" marginTop="42px" marginBottom="22px">
-        <Link href="/">
+      <Link href="/">
           <Flex alignItems="center">
             <LeftArrowIcon width="10px" height="10px" marginLeft="4px" marginRight="4px" />
-            <Text fontWeight="700" fontSize="16px" color="#4C658A">
+            <Text fontWeight="500" fontSize="16px" color="#4C658A">
               Back to Overview
             </Text>
           </Flex>
