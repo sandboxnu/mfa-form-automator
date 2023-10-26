@@ -1,6 +1,5 @@
 import { Assignee } from 'apps/web/src/utils/types';
 import { Box, Text, Avatar, AvatarGroup, Tooltip, flexbox } from '@chakra-ui/react';
-import { relative } from 'path';
 import '@fontsource/Hanken-Grotesk/800.css'
 import '@fontsource/Hanken-Grotesk/400.css'
 
