@@ -5,12 +5,8 @@ import Link from 'next/link';
 import { DropdownDownArrow, DropdownUpArrow } from 'apps/web/src/static/icons';
 import { Select, chakraComponents } from 'chakra-react-select';
 // TODO 
-// add clear icon to remove selected form type
 // make outline not blue when dropdown is clicked
-// search directory in assignees
-// add search icon to all of them?
-// or make it so when you click the dropdown again it unselects the currently selected stuff, will allow 
-// search in directory right in dropdown
+// search directory in assignees and icon?
 const CreateForm = () => {
   interface Option {
     value: string;
@@ -51,7 +47,7 @@ const CreateForm = () => {
   const formatOptionLabel = ({ value, label }: OptionLabel) => (
     <span>
       <strong>{value}</strong>
-      <span style={{ marginLeft: '8px' }}>{label}
+      <span style={{ marginLeft: '8px', color: 'gray' }}>{label}
       </span>
     </span>
   );
