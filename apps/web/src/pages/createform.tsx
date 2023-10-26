@@ -3,10 +3,14 @@ import { LeftArrowIcon } from '@web/static/icons';
 import { useState } from 'react';
 import Link from 'next/link';
 import { DropdownDownArrow, DropdownUpArrow } from 'apps/web/src/static/icons';
-// TODO make leadership/dept head selects searchable using chakra-react-select
 import { Select, chakraComponents } from 'chakra-react-select';
-// TODO add clear icon to remove selected form type
-
+// TODO 
+// add clear icon to remove selected form type
+// make outline not blue when dropdown is clicked
+// search directory in assignees
+// add search icon to all of them?
+// or make it so when you click the dropdown again it unselects the currently selected stuff, will allow 
+// search in directory right in dropdown
 const CreateForm = () => {
   interface Option {
     value: string;
@@ -27,30 +31,30 @@ const CreateForm = () => {
   const assigneeOptions: Option[] = [
     {
       value: 'Person 1',
-      label: (
-        <span>
-          <strong>Person 1</strong> <span style={{ marginLeft: '8px' }}>Role</span>
-        </span>
-      ),
+      label: 'Role',
     },
     {
       value: 'Person 2',
-      label: (
-        <span>
-          <strong>Person 2</strong> <span style={{ marginLeft: '8px' }}>Role</span>
-        </span>
-      ),
+      label: 'Role',
     },
     {
       value: 'Person 3',
-      label: (
-        <span>
-          <strong>Person 3</strong> <span style={{ marginLeft: '8px' }}>Role</span>
-        </span>
-      ),
+      label: 'Role',
     },
   ];
 
+  type OptionLabel = {
+    value: string;
+    label: string;
+  };
+  
+  const formatOptionLabel = ({ value, label }: OptionLabel) => (
+    <span>
+      <strong>{value}</strong>
+      <span style={{ marginLeft: '8px' }}>{label}
+      </span>
+    </span>
+  );
 
   const components = {
     DropdownIndicator: (props: any) => (
@@ -139,6 +143,7 @@ const CreateForm = () => {
             onMenuClose={handleDropdownClose}
             getOptionLabel={(option) => option.label}
             classNamePrefix="react-select"
+            isClearable
             />
           <Box width="496px" height="436px" backgroundColor="gray.300" marginBottom="10px" marginTop="10px">
             {/* Placeholder for PDF */}
@@ -162,7 +167,9 @@ const CreateForm = () => {
             onMenuOpen={handleLeadershipDropdownOpen}
             onMenuClose={handleDropdownClose}
             getOptionLabel={(option) => option.label}
+            formatOptionLabel={formatOptionLabel}
             classNamePrefix="react-select"
+            isClearable
             />
           <Text fontWeight="500" fontSize="16px" color="black" marginTop="24px">
             Department Head
@@ -177,7 +184,9 @@ const CreateForm = () => {
             onMenuOpen={handleDepartmentDropdownOpen}
             onMenuClose={handleDropdownClose}
             getOptionLabel={(option) => option.label}
+            formatOptionLabel={formatOptionLabel}
             classNamePrefix="react-select"
+            isClearable
             />
         </Flex>
       </Flex>
