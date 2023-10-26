@@ -1,7 +1,12 @@
 import { Assignee } from 'apps/web/src/utils/types';
-import { Box, Text, Avatar, AvatarGroup, Tooltip, flexbox } from '@chakra-ui/react';
-import '@fontsource/Hanken-Grotesk/800.css'
-import '@fontsource/Hanken-Grotesk/400.css'
+import {
+  Box,
+  Text,
+  Avatar,
+  AvatarGroup,
+  Tooltip,
+  flexbox,
+} from '@chakra-ui/react';
 
 // Overview Form component for displaying forms in the dashboard
 // will probably have to change the types once the backend is finished
@@ -26,7 +31,7 @@ export const FormCard = ({
           <Text fontFamily="Hanken Grotesk" fontWeight={800} fontSize="18px">
             {formName}
           </Text>
-          <AvatarGroup size="sm" max={5} marginTop="10px" spacing={"-3px"}>
+          <AvatarGroup size="sm" max={5} marginTop="10px" spacing={'-3px'}>
             {assignees.map((assignee: Assignee, index: number) => {
               return (
                 <Tooltip
@@ -61,7 +66,7 @@ export const FormCard = ({
                     fontWeight={400}
                     fontSize="16px"
                     size="sm"
-                    marginRight={"-3.5px"}
+                    marginRight={'-3.5px'}
                   />
                 </Tooltip>
               );
