@@ -27,7 +27,7 @@ export const FormCard = ({
           <Text fontFamily="Hanken Grotesk" fontWeight={800} fontSize="18px">
             {formName}
           </Text>
-          <AvatarGroup size="sm" max={2} marginTop="10px" spacing={"-3px"}>
+          <AvatarGroup size="sm" max={5} marginTop="10px" spacing={"-3px"}>
             {assignees.map((assignee: Assignee, index: number) => {
               return (
                 <Tooltip
