@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { FormInstancesService } from './form-instances.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
+import { PositionsService } from '../positions/positions.service';
+import { Prisma } from '@prisma/client';
 
 const formInstance1Id = 'formInstanceId1';
 const formInstance2Id = 'formInstanceId2';
@@ -75,6 +77,18 @@ const formTemplate = {
   id: formTemplateId,
   name: 'Form-Template-1',
   formDocLink: 'mfa.org/form1',
+  signatureFields: [
+    {
+      id: '086885ca-ecc8-4614-8103-9a99fa0bdf6d',
+      name: 'Manager',
+      order: 0,
+      signerPosition: null,
+      signerPositionId: null,
+      formTemplateId: formTemplateId,
+      createdAt: new Date(1672531200),
+      updatedAt: new Date(1672531200),
+    },
+  ],
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
 };
@@ -180,7 +194,7 @@ const formInstancesArray = [
   },
 ];
 
-const oneFormInstance = formInstancesArray[0];
+const oneFormInstance = formInstancesArray[1];
 
 const db = {
   formInstance: {
@@ -200,6 +214,8 @@ const db = {
 
 describe('FormInstancesService', () => {
   let service: FormInstancesService;
+  let formTemplateService: FormTemplatesService;
+  let positionService: PositionsService;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
@@ -207,6 +223,7 @@ describe('FormInstancesService', () => {
       providers: [
         FormInstancesService,
         FormTemplatesService,
+        PositionsService,
         {
           provide: PrismaService,
           useValue: db,
@@ -215,6 +232,9 @@ describe('FormInstancesService', () => {
     }).compile();
 
     service = module.get<FormInstancesService>(FormInstancesService);
+    formTemplateService =
+      module.get<FormTemplatesService>(FormTemplatesService);
+    positionService = module.get<PositionsService>(PositionsService);
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
@@ -229,19 +249,96 @@ describe('FormInstancesService', () => {
         signatures: [
           {
             order: 0,
-            signerPositionId: 'signer-position-id-1',
-          },
-          {
-            order: 1,
-            signerPositionId: 'signer-position-id-2',
+            signerPositionId: positionId3,
           },
         ],
         originatorId: 'originator-id',
         formTemplateId: 'form-template-id',
       };
 
+      jest
+        .spyOn(formTemplateService, 'findOne')
+        .mockImplementation(async (formTemplateId) => formTemplate);
+
+      jest
+        .spyOn(positionService, 'findAllWithIds')
+        .mockImplementation(async (positionIds) => [position3]);
+
       expect(service.create(createFormInstanceDto)).resolves.toEqual(
         oneFormInstance,
+      );
+    });
+
+    it('should fail when invalid form template is specified', () => {
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        signatures: [
+          {
+            order: 0,
+            signerPositionId: positionId3,
+          },
+        ],
+        originatorId: 'originator-id',
+        formTemplateId: 'invalid-form-template-id',
+      };
+
+      jest
+        .spyOn(formTemplateService, 'findOne')
+        .mockImplementation(async () => {
+          throw new Prisma.PrismaClientKnownRequestError('', {
+            code: 'P2025',
+            clientVersion: '',
+            meta: undefined,
+            batchRequestIdx: undefined,
+          });
+        });
+
+      expect(service.create(createFormInstanceDto)).rejects.toThrowError(
+        new Error('Invalid form template specified'),
+      );
+    });
+
+    it('should fail when number of signatures does not equal number of signature fields', () => {
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        signatures: [
+          {
+            order: 0,
+            signerPositionId: positionId3,
+          },
+          {
+            order: 1,
+            signerPositionId: positionId2,
+          },
+        ],
+        originatorId: 'originator-id',
+        formTemplateId: 'form-template-id',
+      };
+
+      expect(service.create(createFormInstanceDto)).rejects.toThrowError(
+        new Error('Invalid number of signatures specified'),
+      );
+    });
+
+    it('should fail when invalid position ids are specified', () => {
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        signatures: [
+          {
+            order: 0,
+            signerPositionId: 'invalid-position-id',
+          },
+        ],
+        originatorId: 'originator-id',
+        formTemplateId: 'form-template-id',
+      };
+
+      jest
+        .spyOn(positionService, 'findAllWithIds')
+        .mockImplementation(async () => []);
+
+      expect(service.create(createFormInstanceDto)).rejects.toThrowError(
+        new Error('Invalid position specified'),
       );
     });
   });

@@ -3,12 +3,16 @@ import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
 import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
+import { PositionsService } from '../positions/positions.service';
+import { Prisma } from '@prisma/client';
+import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 
 @Injectable()
 export class FormInstancesService {
   constructor(
     private prisma: PrismaService,
     private formTemplateService: FormTemplatesService,
+    private positionService: PositionsService,
   ) {}
 
   /**
@@ -16,11 +20,51 @@ export class FormInstancesService {
    * @param createFormInstanceDto
    */
   async create(createFormInstanceDto: CreateFormInstanceDto) {
-    // TODO: Add validation before creating new form instance
+    const formTemplate = await (async () => {
+      try {
+        return await this.formTemplateService.findOne(
+          createFormInstanceDto.formTemplateId,
+        );
+      } catch (e) {
+        if (e instanceof Prisma.PrismaClientKnownRequestError) {
+          if (e.code === 'P2025') {
+            console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
+            return null;
+          }
+        }
+        throw e;
+      }
+    })();
 
-    const formTemplate = await this.formTemplateService.findOne(
-      createFormInstanceDto.formTemplateId,
+    // form template should be valid
+    if (formTemplate == null) {
+      throw Error('Invalid form template specified');
+    }
+
+    // number of signatures to be created should be equal to the number of
+    // signature fields on the form template
+    if (
+      formTemplate.signatureFields.length !=
+      createFormInstanceDto.signatures.length
+    ) {
+      throw Error('Invalid number of signatures specified');
+    }
+
+    // all positions in signatures should be valid
+    let positionIds = new Set(
+      createFormInstanceDto.signatures.map(
+        (signature) => signature.signerPositionId,
+      ),
     );
+    let positions = await this.positionService.findAllWithIds(
+      createFormInstanceDto.signatures.map(
+        (signature) => signature.signerPositionId,
+      ),
+    );
+    if (positions.length != positionIds.size) {
+      throw Error('Invalid position specified');
+    }
+
     const newFormInstance = await this.prisma.formInstance.create({
       data: {
         name: createFormInstanceDto.name,

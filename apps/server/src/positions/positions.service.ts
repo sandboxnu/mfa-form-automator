@@ -35,6 +35,20 @@ export class PositionsService {
   }
 
   /**
+   * Retrieve all positions with specified ids.
+   * @param ids list of position ids
+   * @returns all matching positions, hydrated
+   */
+  async findAllWithIds(ids: string[]) {
+    const positions = await this.prisma.position.findMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+    return positions;
+  }
+
+  /**
    * Retrieve a position by id.
    * @param id the position id
    * @returns the selected position, hydrated
