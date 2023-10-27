@@ -258,11 +258,11 @@ describe('FormInstancesService', () => {
 
       jest
         .spyOn(formTemplateService, 'findOne')
-        .mockImplementation(async (formTemplateId) => formTemplate);
+        .mockImplementation(async () => formTemplate);
 
       jest
         .spyOn(positionService, 'findAllWithIds')
-        .mockImplementation(async (positionIds) => [position3]);
+        .mockImplementation(async () => [position3]);
 
       expect(service.create(createFormInstanceDto)).resolves.toEqual(
         oneFormInstance,
