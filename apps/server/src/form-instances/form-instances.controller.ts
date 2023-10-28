@@ -137,10 +137,11 @@ export class FormInstancesController {
     @Param('signatureId') signatureId: string,
   ) {
     try {
-      const updatedFormInstance = await this.formInstancesService.signFormInstance(
-        formInstanceId,
-        signatureId,
-      );
+      const updatedFormInstance =
+        await this.formInstancesService.signFormInstance(
+          formInstanceId,
+          signatureId,
+        );
       return updatedFormInstance;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {

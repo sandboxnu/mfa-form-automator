@@ -1,8 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
 import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
+import { FormInstanceErrorMessage } from './form-instance.errors';
+import { SignatureErrorMessage } from '../signatures/signatures.errors';
 
 @Injectable()
 export class FormInstancesService {
@@ -102,27 +108,41 @@ export class FormInstancesService {
 
   async signFormInstance(formInstanceId: string, signatureId: string) {
     const formInstance = await this.prisma.formInstance.findUnique({
-        where: { id: formInstanceId },
-        include: { signatures: { include: { signerPosition: true, userSignedBy: true } } },
+      where: { id: formInstanceId },
+      include: {
+        signatures: { include: { signerPosition: true, userSignedBy: true } },
+      },
     });
 
     if (!formInstance) {
-        throw new Error('Form instance not found');
+      throw new NotFoundException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+      );
     }
 
-    const signature = formInstance.signatures.find(sig => sig.id === signatureId);
+    const signatureIndex = formInstance.signatures.findIndex(
+      (sig) => sig.id === signatureId,
+    );
 
-    if (!signature) {
-        throw new Error('Signature not found');
+    if (signatureIndex === -1) {
+      throw new NotFoundException(SignatureErrorMessage.SIGNATURE_NOT_FOUND);
+    }
+
+    for (let i = 0; i < signatureIndex; i++) {
+      if (!formInstance.signatures[i].signed) {
+        throw new BadRequestException(SignatureErrorMessage.SIGNATURE_NOT_NEXT);
+      }
     }
 
     const updatedSignature = await this.prisma.signature.update({
-        where: { id: signatureId },
-        data: { signed: true},
+      where: { id: signatureId },
+      data: { signed: true },
     });
 
-    const signatureIndex = formInstance.signatures.findIndex(sig => sig.id === signatureId);
-    formInstance.signatures[signatureIndex] = { ...formInstance.signatures[signatureIndex], ...updatedSignature };
+    formInstance.signatures[signatureIndex] = {
+      ...formInstance.signatures[signatureIndex],
+      ...updatedSignature,
+    };
 
     return formInstance;
   }
