@@ -4,6 +4,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
 import { Prisma } from '@prisma/client';
+import { FormTemplateErrorMessage } from '@server/form-templates/form-templates.errors';
+import { FormInstanceErrorMessage } from './form-instance.errors';
+import { PositionsErrorMessage } from '@server/positions/positions.errors';
 
 const formInstance1Id = 'formInstanceId1';
 const formInstance2Id = 'formInstanceId2';
@@ -294,7 +297,7 @@ describe('FormInstancesService', () => {
         });
 
       expect(service.create(createFormInstanceDto)).rejects.toThrowError(
-        new Error('Invalid form template specified'),
+        new Error(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND),
       );
     });
 
@@ -316,7 +319,9 @@ describe('FormInstancesService', () => {
       };
 
       expect(service.create(createFormInstanceDto)).rejects.toThrowError(
-        new Error('Invalid number of signatures specified'),
+        new Error(
+          FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_SIGNATURES,
+        ),
       );
     });
 
@@ -338,7 +343,7 @@ describe('FormInstancesService', () => {
         .mockImplementation(async () => []);
 
       expect(service.create(createFormInstanceDto)).rejects.toThrowError(
-        new Error('Invalid position specified'),
+        new Error(PositionsErrorMessage.POSITION_NOT_FOUND),
       );
     });
   });

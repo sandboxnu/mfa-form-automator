@@ -6,6 +6,8 @@ import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
 import { Prisma } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
+import { FormInstanceErrorMessage } from './form-instance.errors';
+import { PositionsErrorMessage } from '@server/positions/positions.errors';
 
 @Injectable()
 export class FormInstancesService {
@@ -28,7 +30,6 @@ export class FormInstancesService {
       } catch (e) {
         if (e instanceof Prisma.PrismaClientKnownRequestError) {
           if (e.code === 'P2025') {
-            console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
             return null;
           }
         }
@@ -38,7 +39,7 @@ export class FormInstancesService {
 
     // form template should be valid
     if (formTemplate == null) {
-      throw Error('Invalid form template specified');
+      throw Error(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
     }
 
     // number of signatures to be created should be equal to the number of
@@ -47,7 +48,9 @@ export class FormInstancesService {
       formTemplate.signatureFields.length !=
       createFormInstanceDto.signatures.length
     ) {
-      throw Error('Invalid number of signatures specified');
+      throw Error(
+        FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_SIGNATURES,
+      );
     }
 
     // all positions in signatures should be valid
@@ -62,7 +65,7 @@ export class FormInstancesService {
       ),
     );
     if (positions.length != positionIds.size) {
-      throw Error('Invalid position specified');
+      throw Error(PositionsErrorMessage.POSITION_NOT_FOUND);
     }
 
     const newFormInstance = await this.prisma.formInstance.create({
