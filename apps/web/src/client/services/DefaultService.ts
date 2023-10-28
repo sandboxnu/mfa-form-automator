@@ -42,4 +42,15 @@ export class DefaultService {
         });
     }
 
+    /**
+     * @returns any
+     * @throws ApiError
+     */
+    public static appControllerLogout(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/auth/logout',
+        });
+    }
+
 }

@@ -6,20 +6,17 @@ import {
 } from 'apps/web/src/data/seedData';
 import { Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 
 // overview page
 export default function Overview() {
   const { isLoading, error, data } = useQuery({
     queryKey: ['form-instances/me'],
   });
+  const router = useRouter();
 
   if (error) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      }
-    }
+    router.push('/signin');
   }
 
   // placeholder
