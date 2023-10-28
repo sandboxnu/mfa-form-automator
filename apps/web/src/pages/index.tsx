@@ -5,9 +5,29 @@ import {
   todoForms,
 } from 'apps/web/src/data/seedData';
 import { Box } from '@chakra-ui/react';
+import { useQuery } from '@tanstack/react-query';
 
 // overview page
 export default function Overview() {
+  const { isLoading, error, data } = useQuery({
+    queryKey: ['form-instances/me'],
+  });
+
+  if (error) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
+
+  // placeholder
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+
   return (
     <>
       <Box marginLeft="40px" height="100vh">

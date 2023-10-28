@@ -13,6 +13,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   app.use(cookieParser());
+  app.enableCors();
 
   const config = new DocumentBuilder()
     .setTitle('MFA Form Automator API')
