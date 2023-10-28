@@ -10,11 +10,12 @@ import { useAuth } from './../hooks/useAuth';
 
 // overview page
 export default function Overview() {
-  const auth = useAuth();
+  const { user } = useAuth();
+  console.log(user);
   const { isLoading, error, data } = useQuery({
     queryKey: ['form-instances/me'],
   });
-
+  
   return (
     <>
       <Box marginLeft="40px" height="100vh">
