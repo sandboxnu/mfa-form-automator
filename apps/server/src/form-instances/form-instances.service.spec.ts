@@ -4,9 +4,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
 import { Prisma } from '@prisma/client';
-import { FormTemplateErrorMessage } from '@server/form-templates/form-templates.errors';
+import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
-import { PositionsErrorMessage } from '@server/positions/positions.errors';
+import { PositionsErrorMessage } from '../positions/positions.errors';
 
 const formInstance1Id = 'formInstanceId1';
 const formInstance2Id = 'formInstanceId2';

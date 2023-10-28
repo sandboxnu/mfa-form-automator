@@ -7,7 +7,7 @@ import { PositionsService } from '../positions/positions.service';
 import { Prisma } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
-import { PositionsErrorMessage } from '@server/positions/positions.errors';
+import { PositionsErrorMessage } from '../positions/positions.errors';
 
 @Injectable()
 export class FormInstancesService {
@@ -54,12 +54,12 @@ export class FormInstancesService {
     }
 
     // all positions in signatures should be valid
-    let positionIds = new Set(
+    const positionIds = new Set(
       createFormInstanceDto.signatures.map(
         (signature) => signature.signerPositionId,
       ),
     );
-    let positions = await this.positionService.findAllWithIds(
+    const positions = await this.positionService.findAllWithIds(
       createFormInstanceDto.signatures.map(
         (signature) => signature.signerPositionId,
       ),
