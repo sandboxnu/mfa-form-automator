@@ -1,12 +1,34 @@
-import { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 import { User } from './../utils/types';
 
-interface AuthContextData {
+interface AuthContext {
   user: User | null;
-  setUser: (user: User) => void;
+  login: (user: User) => void;
+  logout: () => void;
 }
 
-export const AuthContext = createContext<AuthContextData>({
+export const AuthContext = createContext<AuthContext>({
   user: null,
-  setUser: () => {},
-});
+  login: (user: User) => {},
+  logout: () => {},
+})
+
+
+export const AuthProvider = ({ children }: any) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  const login = (user: User) => {
+    setUser(user)
+  }
+
+  const logout = () => {
+    setUser(null)
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+

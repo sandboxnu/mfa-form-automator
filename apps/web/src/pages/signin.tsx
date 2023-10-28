@@ -1,7 +1,7 @@
-import { AuthContext } from './../context/AuthContext';
-import { useContext } from 'react';
+import { useAuth } from './../hooks/useAuth';
 
 export default function Signin() {
-  const { user, setUser } = useContext(AuthContext);
+  const { user, login, logout } = useAuth();
+
   return <></>;
 }

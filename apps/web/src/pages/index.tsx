@@ -6,24 +6,14 @@ import {
 } from 'apps/web/src/data/seedData';
 import { Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/router';
+import { useAuth } from './../hooks/useAuth';
 
 // overview page
 export default function Overview() {
+  const auth = useAuth();
   const { isLoading, error, data } = useQuery({
     queryKey: ['form-instances/me'],
   });
-  const router = useRouter();
-
-  if (error) {
-    router.push('/signin');
-  }
-
-  // placeholder
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
 
   return (
     <>
