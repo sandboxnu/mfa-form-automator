@@ -159,4 +159,35 @@ export class FormInstancesController {
       throw e;
     }
   }
+
+  @Patch(':formInstanceId/sign/:signatureId')
+  @ApiOkResponse({ type: FormInstanceEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  async signFormInstance(
+    @Param('formInstanceId') formInstanceId: string,
+    @Param('signatureId') signatureId: string,
+  ) {
+    try {
+      const updatedFormInstance =
+        await this.formInstancesService.signFormInstance(
+          formInstanceId,
+          signatureId,
+        );
+      return updatedFormInstance;
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          console.log(FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND);
+          throw new NotFoundException(
+            FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
+          );
+        }
+      }
+      throw e;
+    }
+  }
 }
