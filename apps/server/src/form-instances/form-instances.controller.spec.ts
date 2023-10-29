@@ -11,6 +11,7 @@ import { SignatureEntity } from '../signatures/entities/signature.entity';
 import { DepartmentEntity } from '../departments/entities/department.entity';
 import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { PositionsService } from '../positions/positions.service';
 
 describe('FormInstancesController', () => {
   let controller: FormInstancesController;
@@ -20,7 +21,12 @@ describe('FormInstancesController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FormInstancesController],
-      providers: [FormInstancesService, FormTemplatesService, PrismaService],
+      providers: [
+        FormInstancesService,
+        FormTemplatesService,
+        PositionsService,
+        PrismaService,
+      ],
     }).compile();
 
     controller = module.get<FormInstancesController>(FormInstancesController);
@@ -52,6 +58,18 @@ describe('FormInstancesController', () => {
         id: 'c0f1fdee-278c-4977-86a2-89ae6a73ffb4',
         name: 'Form Template 1',
         formDocLink: 'mfa.org/formtemplate1',
+        signatureFields: [
+          {
+            id: '086885ca-ecc8-4614-8103-9a99fa0bdf6d',
+            name: 'Manager',
+            order: 0,
+            signerPosition: null,
+            signerPositionId: null,
+            formTemplateId: 'c0f1fdee-278c-4977-86a2-89ae6a73ffb4',
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+          },
+        ],
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
       };
