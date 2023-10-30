@@ -83,7 +83,6 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
     _dark={{
       bg: 'gray.800',
     }}
-    border
     color="inherit"
     borderRightWidth="1px"
     width="80"
