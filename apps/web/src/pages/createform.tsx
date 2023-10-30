@@ -7,6 +7,17 @@ import { Select, chakraComponents } from 'chakra-react-select';
 // TODO 
 // make outline not blue when dropdown is clicked
 // search directory in assignees and icon?
+// set default width of assignee dropdowns to be wider
+// more margin w search
+// save form instead of submit form
+// modal
+// get rid of back to overview
+// endpoint to get all templates 
+// get all positions for assignees
+// end point to create new form instanc e
+// check api spec 
+// click outside 
+// make form name editable
 const CreateForm = () => {
   interface Option {
     value: string;
