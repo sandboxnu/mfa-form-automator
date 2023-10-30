@@ -39,6 +39,3 @@ next-env.d.ts
 
 # postgres
 /apps/server/pgdata
-
-# vscode
-.vscode/
