@@ -15,8 +15,16 @@ import {
   EditableInput,
   EditablePreview,
   Spacer,
+  IconButton,
+  Stack,
 } from '@chakra-ui/react';
-import { DraggerIcon, UploadForm } from '@web/static/icons';
+import {
+  CompletedIcon,
+  DeleteIcon,
+  DraggerIcon,
+  EditIcon,
+  UploadForm,
+} from '@web/static/icons';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
 
@@ -29,7 +37,7 @@ const variants = {
   dragging: {
     zIndex: 1,
     boxShadow: 'var(--chakra-shadows-lg)',
-    background: '#4C658A',
+    background: '#C0CDDF',
   },
 };
 
@@ -55,26 +63,42 @@ const SignatureField = ({
     } = useEditableControls();
 
     return isEditing ? (
-      <ButtonGroup justifyContent="center" size="sm">
-        <Button onSubmit={() => handleChange(value, i)}>Submit</Button>
-        <Button {...getCancelButtonProps()}>Cancel</Button>
-      </ButtonGroup>
-    ) : (
       <Flex justifyContent="center">
-        <ButtonGroup>
-          <Button size="sm" {...getEditButtonProps()}>
-            Edit
-          </Button>
-          <Button size="sm" onClick={() => handleDelete(field)}>
-            Delete
-          </Button>
+        <ButtonGroup justifyContent="center" size="sm" spacing="0">
+          <IconButton
+            aria-label="Submit"
+            icon={<CompletedIcon />}
+            onSubmit={() => handleChange(value, i)}
+          >
+            Submit
+          </IconButton>
+          {/* <Button {...getCancelButtonProps()}>Cancel</Button> */}
+        </ButtonGroup>
+      </Flex>
+    ) : (
+      <Flex justifyContent="center" alignItems="center">
+        <ButtonGroup spacing="0">
+          <IconButton
+            aria-label="Edit Signature Field"
+            size="sm"
+            background="transparent"
+            icon={<EditIcon />}
+            {...getEditButtonProps()}
+          />
+          <IconButton
+            aria-label="Delete Signature Field"
+            size="sm"
+            background="transparent"
+            icon={<DeleteIcon />}
+            onClick={() => handleDelete(field)}
+          />
         </ButtonGroup>
       </Flex>
     );
   }
 
   return (
-    <HStack>
+    <HStack w="100%">
       <DraggerIcon />
       <Editable
         fontFamily="Hanken Grotesk"
@@ -82,17 +106,21 @@ const SignatureField = ({
         fontSize="16px"
         fontWeight="400"
         isPreviewFocusable={false}
+        as={Flex}
+        justifyContent="space-between"
+        alignItems="center"
+        w="100%"
       >
-        <HStack w="100%">
+        <Box w="100%" pr="5px">
           <EditablePreview />
           <Input
             as={EditableInput}
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            w="100%"
           />
-          <Spacer />
-          <EditableControls />
-        </HStack>
+        </Box>
+        <EditableControls />
       </Editable>
     </HStack>
   );
@@ -218,6 +246,7 @@ export const CreateFormTemplate = () => {
                   initial="notDragging"
                   whileDrag="dragging"
                   position="relative"
+                  minW="100%"
                 >
                   <SignatureField
                     field={signatureField}
