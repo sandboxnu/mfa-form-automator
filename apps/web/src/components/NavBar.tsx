@@ -68,7 +68,7 @@ const NavItem = ({
 };
 
 // Navbar component
-export const NavBar: React.FC = (props: any) => (
+export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
   <Box
     as="nav"
     pos="fixed"
@@ -110,30 +110,27 @@ export const NavBar: React.FC = (props: any) => (
         fontWeight="semibold"
         transition=".15s ease"
       >
-        <Button
-          marginY="5"
-          // marginBottom="5"
-          height="40px"
-          width="156px"
-          justifyContent="center"
-          bg="#D74100"
-          textColor="white"
-          textAlign="center"
-          fontSize="sm"
-          backgroundColor="#4C658A"
-          fontWeight="900"
-          _hover={{
-            bg: 'gray.100',
-            _dark: {
-              bg: 'gray.900',
-            },
-            color: 'gray.900',
-          }}
-        >
-          <PlusIcon marginRight={11} />
-          Create Form
-        </Button>
+        <Link href="/createform" passHref>
+          <Button
+            marginY="5"
+            height="40px"
+            width="156px"
+            justifyContent="center"
+            bg="#D74100"
+            textColor="white"
+            textAlign="center"
+            fontSize="sm"
+            backgroundColor="#4C658A"
+            fontWeight="900"
+            _focus={{ outline: 'none', boxShadow: 'none' }}
+          >
+            <PlusIcon marginRight={11} />
+            Create Form
+          </Button>
+        </Link>
+        <Button onClick={props.onOpenCreateFormTemplate}>Open Modal</Button>
       </Flex>
+
       <NavItem icon="overview" link="/">
         Overview
       </NavItem>
