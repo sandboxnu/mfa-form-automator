@@ -24,6 +24,12 @@ export const CompletedIcon = createIcon({
   d: 'M10.2667 18.5503L5.36667 13.6503L3.73334 15.2836L10.2667 21.8169L24.2667 7.81693L22.6333 6.18359L10.2667 18.5503Z',
 });
 
+export const FormInstanceIcon = createIcon({
+  displayName: 'FormInstanceIcon',
+  viewBox: '0 0 28 28',
+  d: 'M3 3h22v22H3V3z',
+});
+
 export const HistoryIcon = createIcon({
   displayName: 'HistoryIcon',
   viewBox: '0 0 28 24',

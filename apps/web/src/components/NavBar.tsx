@@ -7,6 +7,7 @@ import {
   HistoryIcon,
   SettingsIcon,
   PlusIcon,
+  FormInstanceIcon,
 } from 'apps/web/src/static/icons';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -18,6 +19,7 @@ const icons = {
   completed: <CompletedIcon marginRight="2" />,
   history: <HistoryIcon marginRight="2" />,
   settings: <SettingsIcon marginRight="2" />,
+  formInstance: <FormInstanceIcon marginRight="2" />,
 };
 
 // navigation item abstraction to include the Link and styling
@@ -145,6 +147,9 @@ export const NavBar: React.FC = (props: any) => (
       </NavItem>
       <NavItem icon="completed" link="/completed">
         Completed
+      </NavItem>
+      <NavItem icon="formInstance" link="/formInstance">
+        Form Instance View
       </NavItem>
       <Box px={8}>
         <Divider mt={'5'} mb={5} borderColor={'gray'} />
