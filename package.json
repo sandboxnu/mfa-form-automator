@@ -9,7 +9,7 @@
     "apps/web"
   ],
   "scripts": {
-    "dev": "yarn --cwd apps/web dev & yarn --cwd apps/server start:dev",
+    "dev": "yarn --cwd apps/web dev & yarn --cwd apps/server start:dev & node apps/proxy.ts",
     "format": "yarn workspaces run prettier . --write",
     "lint": "yarn workspaces run lint",
     "test": "yarn workspaces run test --passWithNoTests",
