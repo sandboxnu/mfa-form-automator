@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    PORT: process.env.PORT,
+    PORT: process.env.FRONTEND_PORT,
   },
 };
 

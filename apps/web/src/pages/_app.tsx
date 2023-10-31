@@ -5,24 +5,13 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { Layout } from 'apps/web/src/components/Layout';
 import theme from '../styles/theme';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 import { AuthProvider } from './../context/AuthContext';
+import { OpenAPI } from '@web/client';
 
 export default function App({ Component, pageProps, ...appProps }: AppProps) {
-  const baseUrl = 'http://localhost:' + process.env.PORT;
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        queryFn: async ({ queryKey }) => {
-          const { data } = await axios.get(
-            `${baseUrl}/${queryKey[0]}`,
-            queryKey[1] as any,
-          );
-          return data;
-        },
-      },
-    },
-  });
+  OpenAPI.CREDENTIALS = 'include';
+  OpenAPI.WITH_CREDENTIALS = true;
+  const queryClient = new QueryClient();
 
   const excludeLayoutPaths = ['/signin'];
 

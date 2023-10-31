@@ -7,13 +7,15 @@ import {
 import { Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from './../hooks/useAuth';
+import { FormInstancesService } from '@web/client';
 
 // overview page
 export default function Overview() {
   const { user } = useAuth();
-  console.log(user);
   const { isLoading, error, data } = useQuery({
     queryKey: ['form-instances/me'],
+    queryFn:
+      FormInstancesService.formInstancesControllerFindAllAssignedToCurrentEmployee,
   });
 
   return (
