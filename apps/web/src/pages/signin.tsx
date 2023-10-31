@@ -2,9 +2,9 @@ import { useAuth } from './../hooks/useAuth';
 import { FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
 import { useState } from 'react';
 import { User } from './../utils/types';
-import api from './../lib/ApiClient';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/router';
+import { DefaultService } from '@web/client';
 
 export default function Signin() {
   const { user, login, logout } = useAuth();
@@ -20,16 +20,14 @@ export default function Signin() {
   }
 
   const handleLogin = () => {
-    api
-      .post('/api/auth/login', {
-        username: email,
-        password: password,
-      })
+    DefaultService.appControllerLogin({
+      username: email,
+      password: password,
+    })
       .then((response) => {
-        const token = response.data.jwt.access_token;
+        const token = response.access_token;
         const decoded = jwtDecode(token) as jwtPayload;
 
-        console.log(decoded);
         const user: User = {
           email: decoded.email,
           firstName: decoded.firstName,
