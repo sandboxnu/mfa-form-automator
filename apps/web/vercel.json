@@ -1,8 +1,8 @@
 {
-    "rewrites": [
-      {
-        "source": "/api/:path*",
-        "destination": "https://mfa-server.onrender.com/api/:path*"
-      }
-    ]
-  }
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://mfa-server.onrender.com/api/:path*"
+    }
+  ]
+}
