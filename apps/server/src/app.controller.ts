@@ -46,18 +46,17 @@ export class AppController {
     @Request() req: EmployeeEntity,
     @Res({ passthrough: true }) response: ResponseType,
   ) {
-    const frontendDomain = process.env.FRONTEND_DOMAIN;
     const jwtToken = await this.authService.login(req);
-    response.cookie('jwt', jwtToken.access_token, {
-      httpOnly: true,
-      domain: frontendDomain,
-    });
+    response.setHeader(
+      'Set-Cookie',
+      `jwt=${jwtToken.access_token}; HttpOnly; Path=/; Max-Age=${60000}`,
+    );
     return { jwt: jwtToken };
   }
 
   @Get('/auth/logout')
   @ApiOkResponse({ type: undefined })
-  async logout(@Res({ passthrough: true }) res: ResponseType) {
-    res.cookie('token', '', { expires: new Date() });
+  async logout(@Res({ passthrough: true }) response: ResponseType) {
+    response.setHeader('Set-Cookie', `jwt=; HttpOnly; Path=/; Max-Age=0`);
   }
 }
