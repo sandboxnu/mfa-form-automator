@@ -4,11 +4,8 @@ import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Layout } from 'apps/web/src/components/Layout';
 import theme from '../styles/theme';
-import {
-  QueryClientProvider,
-  QueryClient,
-} from '@tanstack/react-query'
-import axios from 'axios'
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { AuthProvider } from './../context/AuthContext';
 
 export default function App({ Component, pageProps, ...appProps }: AppProps) {
@@ -17,14 +14,17 @@ export default function App({ Component, pageProps, ...appProps }: AppProps) {
     defaultOptions: {
       queries: {
         queryFn: async ({ queryKey }) => {
-          const { data } = await axios.get(`${baseUrl}/${queryKey[0]}`, queryKey[1] as any)
-          return data
+          const { data } = await axios.get(
+            `${baseUrl}/${queryKey[0]}`,
+            queryKey[1] as any,
+          );
+          return data;
         },
       },
     },
-  }) 
+  });
 
-  const excludeLayoutPaths = ['/signin']
+  const excludeLayoutPaths = ['/signin'];
 
   if (excludeLayoutPaths.includes(appProps.router.pathname)) {
     return (
@@ -35,7 +35,7 @@ export default function App({ Component, pageProps, ...appProps }: AppProps) {
           </ChakraProvider>
         </QueryClientProvider>
       </AuthProvider>
-    )
+    );
   }
 
   return (

@@ -11,24 +11,22 @@ export const AuthContext = createContext<AuthContext>({
   user: null,
   login: (user: User) => {},
   logout: () => {},
-})
-
+});
 
 export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState<User | null>(null);
 
   const login = (user: User) => {
-    setUser(user)
-  }
+    setUser(user);
+  };
 
   const logout = () => {
-    setUser(null)
-  }
+    setUser(null);
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
-  )
-}
-
+  );
+};

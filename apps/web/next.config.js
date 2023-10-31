@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   env: {
     PORT: process.env.PORT,
-  }
-}; 
+  },
+};
 
 module.exports = nextConfig;
