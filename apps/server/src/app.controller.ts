@@ -51,7 +51,7 @@ export class AppController {
       'Set-Cookie',
       `jwt=${jwtToken.access_token}; HttpOnly; Path=/; Max-Age=${60000}`,
     );
-    return { jwt: jwtToken };
+    return jwtToken;
   }
 
   @Get('/auth/logout')
