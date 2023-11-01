@@ -14,10 +14,9 @@ import {
   Editable,
   EditableInput,
   EditablePreview,
-  Spacer,
   IconButton,
-  Stack,
 } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 import {
   CompletedIcon,
   DeleteIcon,
@@ -27,6 +26,7 @@ import {
 } from '@web/static/icons';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
+import { useQuery } from 'react-query';
 
 const variants = {
   notDragging: {
@@ -47,12 +47,12 @@ const SignatureField = ({
   handleChange,
   handleDelete,
 }: {
-  field: string;
+  field: TempSignatureField;
   i: number;
-  handleChange: (val: string, i: number) => void;
-  handleDelete: (val: string) => void;
+  handleChange: (newSignatureField: TempSignatureField) => void;
+  handleDelete: (id: number) => void;
 }) => {
-  const [value, setValue] = useState(field);
+  const [value, setValue] = useState<TempSignatureField>(field);
 
   function EditableControls() {
     const {
@@ -68,7 +68,7 @@ const SignatureField = ({
           <IconButton
             aria-label="Submit"
             icon={<CompletedIcon />}
-            onSubmit={() => handleChange(value, i)}
+            onSubmit={() => handleChange(value)}
           >
             Submit
           </IconButton>
@@ -90,7 +90,7 @@ const SignatureField = ({
             size="sm"
             background="transparent"
             icon={<DeleteIcon />}
-            onClick={() => handleDelete(field)}
+            onClick={() => handleDelete(value.id)}
           />
         </ButtonGroup>
       </Flex>
@@ -102,7 +102,7 @@ const SignatureField = ({
       <DraggerIcon />
       <Editable
         fontFamily="Hanken Grotesk"
-        defaultValue={value}
+        defaultValue={value.value}
         fontSize="16px"
         fontWeight="400"
         isPreviewFocusable={false}
@@ -110,13 +110,14 @@ const SignatureField = ({
         justifyContent="space-between"
         alignItems="center"
         w="100%"
+        startWithEditView={value.value === ''}
       >
         <Box w="100%" pr="5px">
           <EditablePreview />
           <Input
             as={EditableInput}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
+            value={value.value}
+            onChange={(e) => setValue({ id: value.id, value: e.target.value })}
             w="100%"
           />
         </Box>
@@ -126,24 +127,30 @@ const SignatureField = ({
   );
 };
 
+type TempSignatureField = {
+  id: number;
+  value: string;
+};
+
 export const CreateFormTemplate = () => {
-  const [signatureFields, setSignatureFields] = useState([
-    'Leadership Team Member',
-    'Director',
-    'Senior Director',
+  const [signatureFields, setSignatureFields] = useState<TempSignatureField[]>([
+    { id: 0, value: 'Leadership Team Member' },
+    { id: 1, value: 'Director' },
+    { id: 2, value: 'Senior Director' },
   ]);
 
-  function deleteSignatureField(val: string) {
+  function deleteSignatureField(id: number) {
     const newSignatureFields = signatureFields.filter((item) => {
-      return item !== val;
+      return item.id !== id;
     });
     setSignatureFields(newSignatureFields);
   }
 
-  const handleChange = (val: string, i: number) => {
-    console.log('handleChange:', val, i);
+  const handleChange = (newSignatureField: TempSignatureField) => {
     let tempSignatureFields = [...signatureFields];
-    tempSignatureFields[i] = val;
+    tempSignatureFields.filter(
+      (value) => value.id === newSignatureField.id,
+    )[0] = newSignatureField;
     setSignatureFields(tempSignatureFields);
   };
 
@@ -230,12 +237,13 @@ export const CreateFormTemplate = () => {
               values={signatureFields}
               onReorder={setSignatureFields}
               pt="16px"
+              pb="10px"
             >
               {signatureFields.map((signatureField, i) => (
                 <ListItem
-                  key={signatureField}
+                  key={signatureField.id}
                   as={Reorder.Item}
-                  value={signatureField}
+                  value={signatureField.value}
                   p={2}
                   bg="gray.100"
                   rounded="xl"
@@ -257,6 +265,32 @@ export const CreateFormTemplate = () => {
                 </ListItem>
               ))}
             </List>
+            <Button
+              padding="0"
+              background="transparent"
+              _hover={{ bg: 'transparent' }}
+              _groupHover={{ color: 'yellow' }}
+              onClick={() => {
+                let currentSignatureFields = signatureFields.slice(0);
+                currentSignatureFields.push({
+                  id: signatureFields.length,
+                  value: '',
+                });
+                setSignatureFields(currentSignatureFields);
+              }}
+            >
+              <HStack>
+                <AddIcon color="white" background="#4C658A" />
+                <Text
+                  fontFamily="Hanken Grotesk"
+                  fontSize="16px"
+                  fontWeight="400"
+                  color="#4C658A"
+                >
+                  Add signature field
+                </Text>
+              </HStack>
+            </Button>
           </GridItem>
         </Grid>
       </Box>

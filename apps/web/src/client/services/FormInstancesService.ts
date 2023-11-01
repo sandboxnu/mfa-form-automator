@@ -154,4 +154,29 @@ export class FormInstancesService {
         });
     }
 
+    /**
+     * @param formInstanceId
+     * @param signatureId
+     * @returns FormInstanceEntity
+     * @throws ApiError
+     */
+    public static formInstancesControllerSignFormInstance(
+        formInstanceId: string,
+        signatureId: string,
+    ): CancelablePromise<FormInstanceEntity> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/form-instances/{formInstanceId}/sign/{signatureId}',
+            path: {
+                'formInstanceId': formInstanceId,
+                'signatureId': signatureId,
+            },
+            errors: {
+                403: `Unauthorized Request`,
+                404: `Resource not found`,
+                422: `Bad Request`,
+            },
+        });
+    }
+
 }
