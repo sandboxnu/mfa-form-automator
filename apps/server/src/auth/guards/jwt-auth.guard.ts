@@ -35,7 +35,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   private isTokenInHeader(request: Request): boolean {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    const [type] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer';
   }
 }

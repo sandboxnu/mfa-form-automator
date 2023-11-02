@@ -7,8 +7,7 @@ import {
 import { Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from './../hooks/useAuth';
-import { FormInstancesService } from '@web/client';
-
+import { FormInstancesService } from './../../../web/src/client';
 // overview page
 export default function Overview() {
   const { user } = useAuth();
