@@ -78,7 +78,8 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
     h="full"
     pb="10"
     overflowX="hidden"
-    overflowY="auto"
+    overflowY="hidden"
+    minH="800px"
     bg="white"
     _dark={{
       bg: 'gray.800',
@@ -94,6 +95,7 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
       fontSize="sm"
       color="black"
       aria-label="Main Navigation"
+      overflow="hidden"
     >
       <Flex
         align="center"
