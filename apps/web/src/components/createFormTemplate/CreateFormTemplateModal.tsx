@@ -137,7 +137,7 @@ export const CreateFormTemplateModal = ({
                 >
                   Form Preview
                 </Text>
-                <Box w="480px" h="680px" background="gray" />
+                <Box w="386px" h="500px" background="gray" />
               </GridItem>
               <GridItem w="100%">
                 <Text
@@ -157,6 +157,8 @@ export const CreateFormTemplateModal = ({
                 </Text>
                 <List
                   as={Reorder.Group}
+                  overflowY="auto"
+                  maxH="350px"
                   spacing={2}
                   axis="y"
                   values={signatureFields}
@@ -164,8 +166,9 @@ export const CreateFormTemplateModal = ({
                     console.log(a);
                     setSignatureFields(a);
                   }}
-                  pt="16px"
-                  pb="10px"
+                  mt="16px"
+                  mb="10px"
+                  pr="5px"
                 >
                   {signatureFields.map((signatureField) => (
                     <Reorder.Item
