@@ -13,6 +13,8 @@ import { OpenAPI } from '@web/client';
 export default function App({ Component, pageProps, ...appProps }: AppProps) {
   OpenAPI.CREDENTIALS = 'include';
   OpenAPI.WITH_CREDENTIALS = true;
+  OpenAPI.BASE = 'http://localhost:8080';
+  
   const queryClient = new QueryClient();
 
   const excludeLayoutPaths = ['/signin'];

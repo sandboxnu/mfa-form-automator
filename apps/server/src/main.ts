@@ -14,7 +14,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  let frontendUrl = process.env.FRONTEND_DOMAIN;
+  const frontendUrl = process.env.FRONTEND_DOMAIN;
   if (frontendUrl) {
     app.enableCors({
       origin: frontendUrl,
