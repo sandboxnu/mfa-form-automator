@@ -3,14 +3,13 @@ import {
   Flex,
   ButtonGroup,
   IconButton,
-  HStack,
   Editable,
   EditablePreview,
   Input,
   EditableInput,
   Box,
 } from '@chakra-ui/react';
-import { CompletedIcon, EditIcon, DraggerIcon } from '@web/static/icons';
+import { CompletedIcon, EditIcon } from '@web/static/icons';
 import { useState } from 'react';
 
 export const FormTemplateTitle = ({
@@ -23,12 +22,7 @@ export const FormTemplateTitle = ({
   const [innerTitle, setInnerTitle] = useState<string>(title);
 
   const FormTemplateTitleEditableControls = () => {
-    const {
-      isEditing,
-      getSubmitButtonProps,
-      getCancelButtonProps,
-      getEditButtonProps,
-    } = useEditableControls();
+    const { isEditing, getEditButtonProps } = useEditableControls();
 
     return isEditing ? (
       <Flex justifyContent="center">
