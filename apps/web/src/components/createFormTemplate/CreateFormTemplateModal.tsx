@@ -11,13 +11,13 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
+  Input,
 } from '@chakra-ui/react';
 import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { FormTemplateTitle } from './FormTemplateTitle';
 import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
@@ -92,18 +92,29 @@ export const CreateFormTemplateModal = ({
             >
               Create Form Template
             </Text>
-            <Text fontFamily="Hanken Grotesk" fontSize="19px" fontWeight="400">
+            <Text
+              fontFamily="Hanken Grotesk"
+              fontSize="17px"
+              fontWeight="700"
+              mb="10px"
+            >
               Title
             </Text>
-            <FormTemplateTitle
-              title={formTemplateName}
-              handleChange={setFormTemplateName}
+            <Input
+              value={formTemplateName}
+              onChange={(e) => setFormTemplateName(e.target.value)}
+              placeholder="Form Name"
+              fontFamily="Hanken Grotesk"
+              fontSize="16px"
+              fontWeight="400px"
+              width="483px"
+              height="40px"
             />
             <Text
               pt="40px"
               pb="8px"
               fontFamily="Hanken Grotesk"
-              fontSize="19px"
+              fontSize="17px"
               fontWeight="700"
             >
               Upload Form
@@ -131,9 +142,9 @@ export const CreateFormTemplateModal = ({
               <GridItem w="100%">
                 <Text
                   fontFamily="Hanken Grotesk"
-                  fontSize="19px"
+                  fontSize="17px"
                   fontWeight="700"
-                  pb="22px"
+                  mb="22px"
                 >
                   Form Preview
                 </Text>
@@ -142,7 +153,7 @@ export const CreateFormTemplateModal = ({
               <GridItem w="100%">
                 <Text
                   fontFamily="Hanken Grotesk"
-                  fontSize="19px"
+                  fontSize="17px"
                   fontWeight="700"
                 >
                   Add Signature Fields
@@ -158,7 +169,7 @@ export const CreateFormTemplateModal = ({
                 <List
                   as={Reorder.Group}
                   overflowY="auto"
-                  maxH="350px"
+                  maxH="325px"
                   spacing={2}
                   axis="y"
                   values={signatureFields}
@@ -169,6 +180,18 @@ export const CreateFormTemplateModal = ({
                   mt="16px"
                   mb="10px"
                   pr="5px"
+                  css={{
+                    '&::-webkit-scrollbar': {
+                      width: '4px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                      width: '6px',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      background: '#4C658A',
+                      borderRadius: '24px',
+                    },
+                  }}
                 >
                   {signatureFields.map((signatureField) => (
                     <Reorder.Item

@@ -5,6 +5,13 @@ const theme = extendTheme({
     heading: `'Hanken Grotesk', sans-serif`,
     body: `'Hanken Grotesk', sans-serif`,
   },
+  components: {
+    Input: {
+      defaultProps: {
+        focusBorderColor: 'gray.400',
+      },
+    },
+  },
 });
 
 export default theme;
