@@ -170,7 +170,7 @@ export const AddIcon = createIcon({
   viewBox: '0 0 19 19',
   path: (
     <>
-      <circle cx="9.5" cy="9.5" r="9.5" fill="#4C658A" />
+      <circle cx="9.5" cy="9.5" r="9.5" />
       <line x1="5" y1="9.5" x2="14" y2="9.5" stroke="white" />
       <line x1="9.5" y1="5" x2="9.5" y2="14" stroke="white" />
     </>

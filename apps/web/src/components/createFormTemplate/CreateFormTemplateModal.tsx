@@ -144,7 +144,7 @@ export const CreateFormTemplateModal = ({
                   fontFamily="Hanken Grotesk"
                   fontSize="17px"
                   fontWeight="700"
-                  mb="22px"
+                  mb="5px"
                 >
                   Form Preview
                 </Text>
@@ -218,8 +218,14 @@ export const CreateFormTemplateModal = ({
                 </List>
                 <Button
                   variant="ghost"
-                  leftIcon={<AddIcon />}
+                  leftIcon={
+                    <AddIcon
+                      fill="#4C658A"
+                      _groupHover={{ fill: 'var(--chakra-colors-gray-500)' }}
+                    />
+                  }
                   padding="0px"
+                  data-group
                   _hover={{ bg: 'transparent' }}
                   onClick={() => {
                     let currentSignatureFields = signatureFields.slice(0);
@@ -235,6 +241,7 @@ export const CreateFormTemplateModal = ({
                     fontSize="16px"
                     fontWeight="400"
                     color="#4C658A"
+                    _groupHover={{ color: 'var(--chakra-colors-gray-500)' }}
                   >
                     Add signature field
                   </Text>
