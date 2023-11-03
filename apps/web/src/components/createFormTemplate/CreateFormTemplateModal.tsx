@@ -13,6 +13,7 @@ import {
   ModalOverlay,
   Input,
   useToast,
+  Skeleton,
 } from '@chakra-ui/react';
 import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
@@ -185,7 +186,7 @@ export const CreateFormTemplateModal = ({
                 >
                   Form Preview
                 </Text>
-                <Box w="386px" h="500px" background="gray" />
+                <Skeleton w="386px" h="300px" background="gray" />
               </GridItem>
               <GridItem w="100%">
                 <Text
@@ -219,7 +220,7 @@ export const CreateFormTemplateModal = ({
                 <List
                   as={Reorder.Group}
                   overflowY="auto"
-                  maxH="325px"
+                  maxH="175px"
                   spacing={2}
                   axis="y"
                   values={signatureFields}
