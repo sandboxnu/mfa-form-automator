@@ -9,6 +9,7 @@ import {
   Input,
   EditableInput,
   Box,
+  Text,
 } from '@chakra-ui/react';
 import {
   CompletedIcon,
@@ -44,6 +45,7 @@ export const SignatureField = ({
           <IconButton
             aria-label="Submit"
             icon={<CompletedIcon />}
+            isDisabled={value.value === ''}
             onSubmit={() => handleChange(value)}
           >
             Submit
@@ -73,31 +75,48 @@ export const SignatureField = ({
   };
 
   return (
-    <HStack w="100%">
-      <DraggerIcon />
-      <Editable
-        fontFamily="Hanken Grotesk"
-        defaultValue={value.value}
-        fontSize="16px"
-        fontWeight="400"
-        isPreviewFocusable={false}
-        as={Flex}
-        justifyContent="space-between"
-        alignItems="center"
-        w="100%"
-        startWithEditView={value.value === ''}
-      >
-        <Box w="100%" pr="5px">
-          <EditablePreview />
-          <Input
-            as={EditableInput}
-            value={value.value}
-            onChange={(e) => setValue({ id: value.id, value: e.target.value })}
-            w="100%"
-          />
-        </Box>
-        <SignatureFieldEditableControls />
-      </Editable>
-    </HStack>
+    <>
+      {value.value === '' ? (
+        <Text
+          fontFamily="Hanken Grotesk"
+          fontSize="12px"
+          fontWeight="400"
+          color="red"
+          pl="5px"
+        >
+          Please specify a title
+        </Text>
+      ) : (
+        <></>
+      )}
+      <HStack w="100%">
+        <DraggerIcon />
+        <Editable
+          fontFamily="Hanken Grotesk"
+          defaultValue={value.value}
+          fontSize="16px"
+          fontWeight="400"
+          isPreviewFocusable={false}
+          as={Flex}
+          justifyContent="space-between"
+          alignItems="center"
+          w="100%"
+          startWithEditView={value.value === ''}
+        >
+          <Box w="100%" pr="5px">
+            <EditablePreview />
+            <Input
+              as={EditableInput}
+              value={value.value}
+              onChange={(e) =>
+                setValue({ id: value.id, value: e.target.value })
+              }
+              w="100%"
+            />
+          </Box>
+          <SignatureFieldEditableControls />
+        </Editable>
+      </HStack>
+    </>
   );
 };

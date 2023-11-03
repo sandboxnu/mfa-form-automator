@@ -307,6 +307,11 @@ export const CreateFormTemplateModal = ({
           </Button>
           <Button
             color="#4C658A"
+            isDisabled={
+              isFormTemplateNameInvalid ||
+              signatureFields.length == 0 ||
+              !signatureFields.every((field) => field.value !== '')
+            }
             onClick={async (e) => {
               toast.promise(submitFormTemplate(), {
                 success: {
