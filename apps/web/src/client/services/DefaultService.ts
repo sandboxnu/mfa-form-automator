@@ -17,7 +17,7 @@ export class DefaultService {
     public static appControllerGetHello(): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/',
+            url: '/api',
         });
     }
 
@@ -31,7 +31,7 @@ export class DefaultService {
     ): CancelablePromise<JwtEntity> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/auth/login',
+            url: '/api/auth/login',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -39,6 +39,17 @@ export class DefaultService {
                 403: `Unauthorized Request`,
                 422: `Bad Request`,
             },
+        });
+    }
+
+    /**
+     * @returns any
+     * @throws ApiError
+     */
+    public static appControllerLogout(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/auth/logout',
         });
     }
 
