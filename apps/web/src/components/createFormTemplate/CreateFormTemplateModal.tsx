@@ -12,6 +12,7 @@ import {
   ModalFooter,
   ModalOverlay,
   Input,
+  useToast,
 } from '@chakra-ui/react';
 import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
@@ -49,9 +50,12 @@ export const CreateFormTemplateModal = ({
     { id: 'f232-f32f32f2-f23-f23-f2f', value: 'Director' },
     { id: 'vf0efe0eff-fff23f2-ff-2f2f', value: 'Senior Director' },
   ]);
+  let isFormTemplateNameInvalid = formTemplateName === '';
+
+  const toast = useToast();
 
   const createFormTemplateMutation = useMutation({
-    mutationFn: (newFormTemplate: CreateFormTemplateDto) => {
+    mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
       return FormTemplatesService.formTemplatesControllerCreate(
         newFormTemplate,
       );
@@ -72,6 +76,26 @@ export const CreateFormTemplateModal = ({
     )[0] = newSignatureField;
     setSignatureFields(tempSignatureFields);
   };
+
+  const submitFormTemplate = async () =>
+    createFormTemplateMutation
+      .mutateAsync({
+        name: formTemplateName,
+        formDocLink: 'mfa.org',
+        signatureFields: signatureFields.map((signatureField, i) => {
+          return {
+            name: signatureField.value,
+            order: i,
+          };
+        }),
+      })
+      .then((response) => {
+        onCloseCreateFormTemplate();
+        return response;
+      })
+      .catch((e) => {
+        throw e;
+      });
 
   return (
     <Modal
@@ -100,8 +124,21 @@ export const CreateFormTemplateModal = ({
             >
               Title
             </Text>
+            {isFormTemplateNameInvalid ? (
+              <Text
+                fontFamily="Hanken Grotesk"
+                fontSize="12px"
+                fontWeight="400"
+                color="red"
+              >
+                Please specify a name for the form template
+              </Text>
+            ) : (
+              <></>
+            )}
             <Input
               value={formTemplateName}
+              isInvalid={isFormTemplateNameInvalid}
               onChange={(e) => setFormTemplateName(e.target.value)}
               placeholder="Form Name"
               fontFamily="Hanken Grotesk"
@@ -166,6 +203,19 @@ export const CreateFormTemplateModal = ({
                   Enter the role titles of employees that will need to sign this
                   form.
                 </Text>
+                {signatureFields.length == 0 ? (
+                  <Text
+                    fontFamily="Hanken Grotesk"
+                    fontSize="12px"
+                    fontWeight="400"
+                    color="red"
+                    pt="10px"
+                  >
+                    At least one signature field must be present
+                  </Text>
+                ) : (
+                  <></>
+                )}
                 <List
                   as={Reorder.Group}
                   overflowY="auto"
@@ -256,18 +306,21 @@ export const CreateFormTemplateModal = ({
           </Button>
           <Button
             color="#4C658A"
-            onClick={() => {
-              createFormTemplateMutation.mutate({
-                name: formTemplateName,
-                formDocLink: 'mfa.org',
-                signatureFields: signatureFields.map((signatureField, i) => {
-                  return {
-                    name: signatureField.value,
-                    order: i,
-                  };
-                }),
+            onClick={async (e) => {
+              toast.promise(submitFormTemplate(), {
+                success: {
+                  title: 'Success',
+                  description: 'Form template created',
+                },
+                error: {
+                  title: 'Error',
+                  description: 'Unable to create form template',
+                },
+                loading: {
+                  title: 'Pending',
+                  description: 'Please wait',
+                },
               });
-              onCloseCreateFormTemplate();
             }}
           >
             Create
