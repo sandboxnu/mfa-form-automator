@@ -22,7 +22,7 @@ export class FormInstancesService {
     ): CancelablePromise<FormInstanceEntity> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/form-instances',
+            url: '/api/form-instances',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -42,7 +42,7 @@ export class FormInstancesService {
     ): CancelablePromise<Array<FormInstanceEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/form-instances',
+            url: '/api/form-instances',
             query: {
                 'limit': limit,
             },
@@ -60,7 +60,7 @@ export class FormInstancesService {
     public static formInstancesControllerFindAllAssignedToCurrentEmployee(): CancelablePromise<Array<FormInstanceEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/form-instances/me',
+            url: '/api/form-instances/me',
             errors: {
                 400: `Bad Request`,
                 403: `Unauthorized Request`,
@@ -75,7 +75,7 @@ export class FormInstancesService {
     public static formInstancesControllerFindAllCreatedByCurrentEmployee(): CancelablePromise<Array<FormInstanceEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/form-instances/created/me',
+            url: '/api/form-instances/created/me',
             errors: {
                 400: `Bad Request`,
                 403: `Unauthorized Request`,
@@ -93,7 +93,7 @@ export class FormInstancesService {
     ): CancelablePromise<FormInstanceEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/form-instances/{id}',
+            url: '/api/form-instances/{id}',
             path: {
                 'id': id,
             },
@@ -117,7 +117,7 @@ export class FormInstancesService {
     ): CancelablePromise<FormInstanceEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/form-instances/{id}',
+            url: '/api/form-instances/{id}',
             path: {
                 'id': id,
             },
@@ -142,7 +142,7 @@ export class FormInstancesService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/form-instances/{id}',
+            url: '/api/form-instances/{id}',
             path: {
                 'id': id,
             },
