@@ -113,7 +113,7 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
       >
         <Link href="/createform" passHref>
           <Button
-            marginY="5"
+            marginTop="5"
             height="40px"
             width="156px"
             justifyContent="center"
@@ -129,7 +129,25 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
             Create Form
           </Button>
         </Link>
-        <Button onClick={props.onOpenCreateFormTemplate}>Open Modal</Button>
+      </Flex>
+
+      <Flex
+        align="center"
+        px="4"
+        pl="8"
+        pb="3"
+        cursor="pointer"
+        color="inherit"
+        _dark={{
+          color: 'gray.400',
+        }}
+        role="group"
+        fontWeight="semibold"
+        transition=".15s ease"
+      >
+        <Button onClick={props.onOpenCreateFormTemplate}>
+          Create Template
+        </Button>
       </Flex>
 
       <NavItem icon="overview" link="/">
