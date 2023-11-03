@@ -10,7 +10,10 @@ export class CreateFormInstanceDto {
 
   @IsArray()
   @ArrayMinSize(1)
-  @ApiProperty()
+  @ApiProperty({
+    isArray: true,
+    type: CreateSignatureDto,
+  })
   signatures: CreateSignatureDto[];
 
   @IsString()

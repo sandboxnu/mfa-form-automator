@@ -166,7 +166,7 @@ export class FormInstancesService {
     ): CancelablePromise<FormInstanceEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/form-instances/{formInstanceId}/sign/{signatureId}',
+            url: '/api/form-instances/{formInstanceId}/sign/{signatureId}',
             path: {
                 'formInstanceId': formInstanceId,
                 'signatureId': signatureId,

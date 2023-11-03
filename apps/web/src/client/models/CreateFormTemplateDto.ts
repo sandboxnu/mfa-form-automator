@@ -3,9 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { CreateSignatureFieldDto } from './CreateSignatureFieldDto';
+
 export type CreateFormTemplateDto = {
     name: string;
     formDocLink: string;
-    signatureFields: Array<string>;
+    signatureFields: Array<CreateSignatureFieldDto>;
 };
 

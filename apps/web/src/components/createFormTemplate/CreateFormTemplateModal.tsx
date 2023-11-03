@@ -16,7 +16,7 @@ import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { FormTemplateTitle } from './FormTemplateTitle';
 import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
@@ -229,11 +229,15 @@ export const CreateFormTemplateModal = ({
             onClick={() => {
               createFormTemplateMutation.mutate({
                 name: formTemplateName,
-                formDocLink: '',
-                signatureFields: signatureFields.map(
-                  (signatureField) => signatureField.value,
-                ),
+                formDocLink: 'mfa.org',
+                signatureFields: signatureFields.map((signatureField, i) => {
+                  return {
+                    name: signatureField.value,
+                    order: i,
+                  };
+                }),
               });
+              onCloseCreateFormTemplate();
             }}
           >
             Create

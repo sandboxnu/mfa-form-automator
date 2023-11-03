@@ -3,10 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type CreateSignatureFieldDto = {
-    name: string;
+export type CreateSignatureDto = {
     order: number;
-    signerPositionId?: string;
-    formTemplateId?: string;
+    signerPositionId: string;
 };
 
