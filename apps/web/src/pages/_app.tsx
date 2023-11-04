@@ -13,6 +13,7 @@ import { OpenAPI } from '@web/client';
 export default function App({ Component, pageProps, ...appProps }: AppProps) {
   OpenAPI.CREDENTIALS = 'include';
   OpenAPI.WITH_CREDENTIALS = true;
+  OpenAPI.BASE = process.env.BACKEND_DOMAIN || 'https://localhost:8080';
 
   const queryClient = new QueryClient();
 

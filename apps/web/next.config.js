@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   env: {
     PORT: process.env.FRONTEND_PORT,
+    BACKEND_DOMAIN: process.env.BACKEND_DOMAIN,
   },
 };
 

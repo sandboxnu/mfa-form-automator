@@ -131,7 +131,7 @@ export class EmployeesController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('me')
+  @Get('find/me')
   @ApiBearerAuth()
   @ApiOkResponse({ type: EmployeeEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })

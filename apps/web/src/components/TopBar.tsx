@@ -14,8 +14,11 @@ import {
   Text,
   Flex,
 } from '@chakra-ui/react';
+import { useAuthData } from '@web/hooks/useAuthData';
 
 export const TopBar: React.FC = () => {
+  const { user } = useAuthData();
+
   return (
     <Flex
       as="header"
@@ -66,7 +69,7 @@ export const TopBar: React.FC = () => {
       <Flex align="center" pl="10">
         <Hide breakpoint="(max-width: 1000px)">
           <Text minW="200" align="right">
-            Welcome back, User!
+            Welcome back, {user?.firstName}!
           </Text>
         </Hide>
         <IconButton

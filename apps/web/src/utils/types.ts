@@ -21,3 +21,10 @@ export type User = {
   lastName: string;
   email: string;
 };
+
+// jwt payload returned from server
+export type jwtPayload = {
+  email: string;
+  firstName: string;
+  lastName: string;
+}
