@@ -10,7 +10,7 @@ import { useAuth } from './../hooks/useAuth';
 import { FormInstancesService } from './../../../web/src/client';
 // overview page
 export default function Overview() {
-  const { user } = useAuth();
+  useAuth();
 
   const { isLoading, error, data } = useQuery({
     queryKey: ['form-instances/me'],
