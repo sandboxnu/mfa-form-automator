@@ -82,6 +82,25 @@ export const RightArrowIcon = createIcon({
   ),
 });
 
+export const LeftArrowIcon = createIcon({
+  displayName: 'LeftArrowIcon',
+  viewBox: '0 0 8 10',
+  path: (
+    <>
+      <path
+        d="M7.66987 0.5L0.169872 4.83013L7.66987 9.16025L7.66987 0.5Z"
+        fill="#4C658A"
+      />
+    </>
+  ),
+});
+
+export const PencilIcon = createIcon({
+  displayName: 'PencilIcon',
+  viewBox: '0 0 16 16',
+  d: 'M0.368652 12.2309V15.3555H3.49322L12.7086 6.14008L9.58404 3.01552L0.368652 12.2309ZM15.1249 3.72375C15.4499 3.3988 15.4499 2.87387 15.1249 2.54891L13.1752 0.599185C12.8503 0.27423 12.3253 0.27423 12.0004 0.599185L10.4756 2.12397L13.6001 5.24854L15.1249 3.72375Z',
+});
+
 export const MFALogoIcon = createIcon({
   displayName: 'MFALogoIcon',
   viewBox: '0 0 211 52',

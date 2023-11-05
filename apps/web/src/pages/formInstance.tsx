@@ -1,19 +1,31 @@
-import { Box, Flex, IconButton, Text } from '@chakra-ui/react';
-import { ArrowBackIcon } from '@chakra-ui/icons';
+import { Avatar, Box, Button, Flex, Grid, Text } from '@chakra-ui/react';
+import { LeftArrowIcon, PencilIcon } from 'apps/web/src/static/icons';
 
 const FormInstance = () => {
+  const names = [
+    { name: 'Elvin Cheng', signed: true, title: 'Director' },
+    { name: 'Anshul Shirude', signed: true, title: 'Leadership Team Member' },
+    { name: 'Kai Zheng', signed: false, title: 'Department Head' },
+    { name: 'Angela Weigl', signed: false, title: 'Project Manager' },
+  ];
+
   return (
     <Box className="main">
-      <Flex align="center" p={4}>
-        <IconButton
-          aria-label="Back to Pending"
-          icon={<ArrowBackIcon />}
-          mr={2}
-          bg="transparent"
-          onClick={() => {
-            // handle the click action here
-          }}
-        />
+      <Flex
+        ml={12}
+        as="span"
+        align="center"
+        onClick={() => {
+          // handle the click action here
+        }}
+        cursor="pointer"
+        color="#4C658A"
+        mt={10}
+      >
+        <LeftArrowIcon boxSize={3} mr={2} />
+        <Text>Back to Pending</Text>
+      </Flex>
+      <Flex align="center" pl={4} mt={4}>
         <Text
           color="#000"
           fontFamily="Hanken Grotesk"
@@ -21,21 +33,38 @@ const FormInstance = () => {
           fontStyle="normal"
           fontWeight="800"
           lineHeight="normal"
-          textAlign="center"
-          flex={1}
+          ml={9}
+          mt={4}
         >
           Travel Authorization Form
         </Text>
+        <Button
+          variant="link"
+          onClick={() => {
+            // handle edit action here
+          }}
+          color="black"
+          fontWeight="normal"
+          textAlign="left"
+        >
+          <Flex alignItems="center" textDecoration="underline">
+            <PencilIcon boxSize={4} mr={2} />
+            Edit
+          </Flex>
+        </Button>
       </Flex>
       <Text
         color="#000"
         fontFamily="Hanken Grotesk"
         fontSize="20px"
         fontStyle="normal"
-        fontWeight="600"
+        fontWeight="700"
         lineHeight="normal"
-        textAlign="center"
+        textAlign="left"
         my={4}
+        pl={4}
+        ml={9}
+        mt={12}
       >
         Description
       </Text>
@@ -46,42 +75,99 @@ const FormInstance = () => {
         fontStyle="normal"
         fontWeight="normal"
         lineHeight="normal"
-        textAlign="center"
+        textAlign="left"
+        pl={4}
+        ml={9}
+        maxW="450px"
       >
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et imperdiet enim. Ut enim justo, tincidunt ac enim ut, mollis pulvinar neque. Suspendisse id semper nunc.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et
+        imperdiet enim. Ut enim justo, tincidunt ac enim ut, mollis pulvinar
+        neque. Suspendisse id semper nunc.
       </Text>
-      <Text
-        color="#000"
-        fontFamily="Hanken Grotesk"
-        fontSize="20px"
-        fontStyle="normal"
-        fontWeight="600"
-        lineHeight="normal"
-        textAlign="center"
-        my={4}
-      >
-        From Preview
-      </Text>
-      <Box
-        w="436.353px"
-        h="566.219px"
-        bg="#000"
-        mx="auto"
-        my={4}
-      />
-      <Text
-        color="#000"
-        fontFamily="Hanken Grotesk"
-        fontSize="20px"
-        fontStyle="normal"
-        fontWeight="600"
-        lineHeight="normal"
-        textAlign="center"
-        my={4}
-      >
-        Assignees
-      </Text>
-      {/* Your content here */}
+      <Flex justifyContent="space-between" mt={20}>
+        <Text
+          color="#000"
+          fontFamily="Hanken Grotesk"
+          fontSize="20px"
+          fontStyle="normal"
+          fontWeight="700"
+          lineHeight="normal"
+          ml={9}
+          pl={4}
+        >
+          Form Preview
+        </Text>
+        <Text
+          color="#000"
+          fontFamily="Hanken Grotesk"
+          fontSize="20px"
+          fontStyle="normal"
+          fontWeight="700"
+          lineHeight="normal"
+          mr={800}
+        >
+          Assignees
+        </Text>
+      </Flex>
+
+      <Flex justifyContent="space-between">
+        <Box
+          ml={12}
+          pl={4}
+          mt={6}
+          bg="#000"
+          width="436.353px"
+          height="566.219px"
+        />
+        <Flex my={2} position="relative" flexDirection="column" mr={640}>
+          {names.map((person, index) => (
+            <Flex key={index} position="relative" my={4}>
+              <Grid templateColumns="auto 1fr" gap={4}>
+                <Avatar
+                  name={person.name}
+                  src={undefined} // If you have an image source, provide it here
+                  size="md" // Adjust the size as needed
+                  color="black"
+                  bg={person.signed ? '#D1F0D4' : '#E5E5E5'}
+                />
+                <Box>
+                  <Text
+                    color="#000"
+                    font-family="Hanken Grotesk"
+                    font-size="16px"
+                    font-style="normal"
+                    font-weight="500"
+                    line-height="normal"
+                  >
+                    {person.title}
+                  </Text>
+                  <Text
+                    color="#5E5E5E"
+                    font-family="Hanken Grotesk"
+                    font-size="16px"
+                    font-style="normal"
+                    font-weight="400"
+                    line-height="normal"
+                  >
+                    {person.name}
+                  </Text>
+                </Box>
+              </Grid>
+              {index < names.length - 1 && (
+                <Box
+                  position="absolute"
+                  top="100%"
+                  left="22px"
+                  w="2px"
+                  h="40px"
+                  bg="#000"
+                  color={person.signed ? '#D1F0D4' : '#E5E5E5'}
+                />
+              )}
+            </Flex>
+          ))}
+        </Flex>
+      </Flex>
     </Box>
   );
 };
