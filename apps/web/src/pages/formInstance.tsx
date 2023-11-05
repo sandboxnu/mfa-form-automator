@@ -1,5 +1,9 @@
 import { Avatar, Box, Button, Flex, Grid, Text } from '@chakra-ui/react';
-import { LeftArrowIcon, PencilIcon } from 'apps/web/src/static/icons';
+import {
+  LeftArrowIcon,
+  PencilIcon,
+  CheckIcon,
+} from 'apps/web/src/static/icons';
 
 const FormInstance = () => {
   const names = [
@@ -119,7 +123,7 @@ const FormInstance = () => {
           width="436.353px"
           height="566.219px"
         />
-        <Flex my={2} position="relative" flexDirection="column" mr={640}>
+        <Flex my={2} position="relative" flexDirection="column" mr={510}>
           {names.map((person, index) => (
             <Flex key={index} position="relative" my={4}>
               <Grid templateColumns="auto 1fr" gap={4}>
@@ -130,17 +134,26 @@ const FormInstance = () => {
                   color="black"
                   bg={person.signed ? '#D1F0D4' : '#E5E5E5'}
                 />
-                <Box>
-                  <Text
-                    color="#000"
-                    font-family="Hanken Grotesk"
-                    font-size="16px"
-                    font-style="normal"
-                    font-weight="500"
-                    line-height="normal"
-                  >
-                    {person.title}
-                  </Text>
+                <Box minWidth="100px">
+                  <Flex width="100%">
+                    <Text
+                      color="#000"
+                      fontFamily="Hanken Grotesk"
+                      fontSize="16px"
+                      fontStyle="normal"
+                      fontWeight="500"
+                      lineHeight="normal"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
+                      {person.title}
+                    </Text>
+                    {person.signed && (
+                      <Flex width="100%" ml={2}>
+                        <Text style={{ whiteSpace: "nowrap" }} mr={2} color="#008933">Already Signed</Text>
+                        <CheckIcon textAlign="right" mt={1}> </CheckIcon>
+                      </Flex>
+                    )}
+                  </Flex>
                   <Text
                     color="#5E5E5E"
                     font-family="Hanken Grotesk"
@@ -148,6 +161,7 @@ const FormInstance = () => {
                     font-style="normal"
                     font-weight="400"
                     line-height="normal"
+                    style={{ whiteSpace: "nowrap" }}
                   >
                     {person.name}
                   </Text>
