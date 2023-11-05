@@ -14,12 +14,7 @@ export const useAuth = () => {
   })
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      router.push('/signin');
-      return;
-    }
-
-    if (error) {
+    if (error || !isLoggedIn) {
       router.push('/signin');
       return;
     }
