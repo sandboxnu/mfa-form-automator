@@ -123,7 +123,7 @@ export const CreateFormTemplateModal = ({
               fontWeight="700"
               mb="10px"
             >
-              Title
+              Form Name
             </Text>
             {isFormTemplateNameInvalid ? (
               <Text
@@ -145,7 +145,7 @@ export const CreateFormTemplateModal = ({
               fontFamily="Hanken Grotesk"
               fontSize="16px"
               fontWeight="400px"
-              width="483px"
+              width="386px"
               height="40px"
             />
             <Text
@@ -176,7 +176,7 @@ export const CreateFormTemplateModal = ({
                 Upload Form
               </Text>
             </Button>
-            <Grid templateColumns="repeat(2, 1fr)" gap={122} pt="30px">
+            <Grid templateColumns="repeat(2, 1fr)" gap={75} pt="30px">
               <GridItem w="100%">
                 <Text
                   fontFamily="Hanken Grotesk"
@@ -188,7 +188,7 @@ export const CreateFormTemplateModal = ({
                 </Text>
                 <Skeleton w="386px" h="300px" background="gray" />
               </GridItem>
-              <GridItem w="100%">
+              <GridItem w="100%" pr="0px">
                 <Text
                   fontFamily="Hanken Grotesk"
                   fontSize="17px"
@@ -202,7 +202,7 @@ export const CreateFormTemplateModal = ({
                   fontWeight="400"
                 >
                   Enter the role titles of employees that will need to sign this
-                  form.
+                  form, and set the order it will be signed in.
                 </Text>
                 {signatureFields.length == 0 ? (
                   <Text
@@ -302,9 +302,6 @@ export const CreateFormTemplateModal = ({
           </Box>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" mr={3} onClick={onCloseCreateFormTemplate}>
-            Cancel
-          </Button>
           <Button
             color="#4C658A"
             isDisabled={
