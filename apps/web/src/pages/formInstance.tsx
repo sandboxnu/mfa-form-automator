@@ -120,13 +120,14 @@ const FormInstance = () => {
           pl={4}
           mt={6}
           bg="#000"
-          width="436.353px"
-          height="566.219px"
+          minWidth="436.353px"
+          minHeight="566.219px"
+          marginRight="100px"
         />
-        <Flex my={2} position="relative" flexDirection="column" mr={510}>
+        <Flex my={2} position="relative" flexDirection="column" mr={650}>
           {names.map((person, index) => (
             <Flex key={index} position="relative" my={4}>
-              <Grid templateColumns="auto 1fr" gap={4}>
+              <Grid templateColumns="repeat(3, 1fr)" gap={4}>
                 <Avatar
                   name={person.name}
                   src={undefined} // If you have an image source, provide it here
@@ -134,7 +135,7 @@ const FormInstance = () => {
                   color="black"
                   bg={person.signed ? '#D1F0D4' : '#E5E5E5'}
                 />
-                <Box minWidth="100px">
+                <Box minWidth="200px">
                   <Flex width="100%">
                     <Text
                       color="#000"
@@ -147,12 +148,6 @@ const FormInstance = () => {
                     >
                       {person.title}
                     </Text>
-                    {person.signed && (
-                      <Flex width="100%" ml={2}>
-                        <Text style={{ whiteSpace: "nowrap" }} mr={2} color="#008933">Already Signed</Text>
-                        <CheckIcon textAlign="right" mt={1}> </CheckIcon>
-                      </Flex>
-                    )}
                   </Flex>
                   <Text
                     color="#5E5E5E"
@@ -166,6 +161,14 @@ const FormInstance = () => {
                     {person.name}
                   </Text>
                 </Box>
+                <Box minWidth="200px">
+                {person.signed && (
+                      <Flex width="100%" ml={2}>
+                        <Text style={{ whiteSpace: "nowrap" }} mr={2} color="#008933">Already Signed</Text>
+                        <CheckIcon textAlign="right" mt={1}> </CheckIcon>
+                      </Flex>
+                    )}
+                    </Box>
               </Grid>
               {index < names.length - 1 && (
                 <Box
