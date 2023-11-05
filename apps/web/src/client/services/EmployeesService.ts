@@ -55,6 +55,21 @@ export class EmployeesService {
     }
 
     /**
+     * @returns EmployeeEntity
+     * @throws ApiError
+     */
+    public static employeesControllerFindMe(): CancelablePromise<EmployeeEntity> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/employees/me',
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+            },
+        });
+    }
+
+    /**
      * @param id
      * @returns EmployeeEntity
      * @throws ApiError
@@ -121,21 +136,6 @@ export class EmployeesService {
                 400: `Bad Request`,
                 403: `Unauthorized Request`,
                 404: `Resource not found`,
-            },
-        });
-    }
-
-    /**
-     * @returns EmployeeEntity
-     * @throws ApiError
-     */
-    public static employeesControllerFindMe(): CancelablePromise<EmployeeEntity> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/employees/find/me',
-            errors: {
-                400: `Bad Request`,
-                403: `Unauthorized Request`,
             },
         });
     }

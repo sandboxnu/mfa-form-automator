@@ -1,20 +1,20 @@
-import { useContext, useEffect } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import { EmployeesService } from './../client/index';
+import { useAuthData } from './useAuthData';
 
 export const useAuth = () => {
-  const { user, login, logout, isLoggedIn } = useContext(AuthContext);
+  const { user, login, logout } = useAuthData();
   const router = useRouter();
 
   const { isLoading, data, error } = useQuery({
-    queryKey: ['employees/find/me'],
+    queryKey: ['employees/me'],
     queryFn: EmployeesService.employeesControllerFindMe,
   })
 
   useEffect(() => {
-    if (error || !isLoggedIn) {
+    if (error) {
       router.push('/signin');
       return;
     }
@@ -28,7 +28,8 @@ export const useAuth = () => {
         return;
       }
     }
-  }, [user, router, data, isLoading, error, login, isLoggedIn])
+  }, [user, router, data, isLoading, error, login])
+
 
   return { user, login, logout };
 };

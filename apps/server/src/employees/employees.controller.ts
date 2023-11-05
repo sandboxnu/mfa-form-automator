@@ -59,6 +59,17 @@ export class EmployeesController {
     return employees.map((employee) => new EmployeeEntity(employee));
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: EmployeeEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findMe(@AuthUser() currentUser: UserEntity) {
+    const employee = await this.employeesService.findOne(currentUser.id);
+    return new EmployeeEntity(employee);
+  }
+
   @Get(':id')
   @ApiOkResponse({ type: EmployeeEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
@@ -128,16 +139,5 @@ export class EmployeesController {
       }
       throw e;
     }
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('find/me')
-  @ApiBearerAuth()
-  @ApiOkResponse({ type: EmployeeEntity })
-  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
-  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async findMe(@AuthUser() currentUser: UserEntity) {
-    const employee = await this.employeesService.findOne(currentUser.id);
-    return new EmployeeEntity(employee);
   }
 }
