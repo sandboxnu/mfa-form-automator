@@ -22,7 +22,7 @@ export class EmployeesService {
     ): CancelablePromise<EmployeeEntity> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/employees',
+            url: '/api/employees',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -43,10 +43,25 @@ export class EmployeesService {
     ): CancelablePromise<Array<EmployeeEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/employees',
+            url: '/api/employees',
             query: {
                 'limit': limit,
             },
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+            },
+        });
+    }
+
+    /**
+     * @returns EmployeeEntity
+     * @throws ApiError
+     */
+    public static employeesControllerFindMe(): CancelablePromise<EmployeeEntity> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/employees/me',
             errors: {
                 400: `Bad Request`,
                 403: `Unauthorized Request`,
@@ -64,7 +79,7 @@ export class EmployeesService {
     ): CancelablePromise<EmployeeEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/employees/{id}',
+            url: '/api/employees/{id}',
             path: {
                 'id': id,
             },
@@ -88,7 +103,7 @@ export class EmployeesService {
     ): CancelablePromise<EmployeeEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/employees/{id}',
+            url: '/api/employees/{id}',
             path: {
                 'id': id,
             },
@@ -113,7 +128,7 @@ export class EmployeesService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/employees/{id}',
+            url: '/api/employees/{id}',
             path: {
                 'id': id,
             },

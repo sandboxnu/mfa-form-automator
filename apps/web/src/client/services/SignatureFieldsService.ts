@@ -22,7 +22,7 @@ export class SignatureFieldsService {
     ): CancelablePromise<SignatureFieldEntity> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/signature-fields',
+            url: '/api/signature-fields',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -42,7 +42,7 @@ export class SignatureFieldsService {
     ): CancelablePromise<Array<SignatureFieldEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/signature-fields',
+            url: '/api/signature-fields',
             query: {
                 'limit': limit,
             },
@@ -63,7 +63,7 @@ export class SignatureFieldsService {
     ): CancelablePromise<SignatureFieldEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/signature-fields/{id}',
+            url: '/api/signature-fields/{id}',
             path: {
                 'id': id,
             },
@@ -87,7 +87,7 @@ export class SignatureFieldsService {
     ): CancelablePromise<SignatureFieldEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/signature-fields/{id}',
+            url: '/api/signature-fields/{id}',
             path: {
                 'id': id,
             },
@@ -112,7 +112,7 @@ export class SignatureFieldsService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/signature-fields/{id}',
+            url: '/api/signature-fields/{id}',
             path: {
                 'id': id,
             },

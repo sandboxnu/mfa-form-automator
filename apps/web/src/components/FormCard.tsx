@@ -15,17 +15,16 @@ export const FormCard = ({
       <Box
         w="246px"
         h="120px"
-        border="1px solid #C0C0C0"
         borderRadius="5px"
         backgroundColor="#FFFFFF"
         boxShadow="0px 0.5px 3px 1px #D4D4D4"
         background="#FCFCFC"
       >
-        <Box paddingLeft="28px" paddingTop="28px">
-          <Text fontFamily="Helvetica" fontWeight={800} fontSize="18px">
+        <Box paddingLeft="24px" paddingTop="26px">
+          <Text fontFamily="Hanken Grotesk" fontWeight={800} fontSize="18px">
             {formName}
           </Text>
-          <AvatarGroup size="md" max={5} marginTop="10px">
+          <AvatarGroup size="sm" max={5} marginTop="10px" spacing={'-3px'}>
             {assignees.map((assignee: Assignee, index: number) => {
               return (
                 <Tooltip
@@ -53,12 +52,14 @@ export const FormCard = ({
                   <Avatar
                     name={assignee.name}
                     key={index}
-                    boxSize="36px"
-                    backgroundColor={assignee.signed ? '#D0F0DC' : '#DCDCDC'}
-                    border="1px solid #FFFFFF"
+                    boxSize="32px"
+                    backgroundColor={assignee.signed ? '#D1F0D4' : '#DCDCDC'}
+                    outline="1px solid #FFFFFF"
                     color="black"
                     fontWeight={400}
-                    fontSize="14px"
+                    fontSize="16px"
+                    size="sm"
+                    marginRight={'-3.5px'}
                   />
                 </Tooltip>
               );

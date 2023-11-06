@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Signature } from '@prisma/client';
-import { EmployeeEntity } from '../../employees/entities/employee.entity';
+import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 import { PositionEntity } from '../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 
@@ -33,7 +33,7 @@ export class SignatureEntity implements Signature {
   userSignedById: string | null;
 
   @ApiProperty()
-  userSignedBy: EmployeeEntity | null;
+  userSignedBy: EmployeeBaseEntity | null;
 
   @Exclude()
   formInstanceId: string;
@@ -43,7 +43,7 @@ export class SignatureEntity implements Signature {
       partial.signerPosition = new PositionEntity(partial.signerPosition);
     }
     if (partial.userSignedBy) {
-      partial.userSignedBy = new EmployeeEntity(partial.userSignedBy);
+      partial.userSignedBy = new EmployeeBaseEntity(partial.userSignedBy);
     }
 
     Object.assign(this, partial);

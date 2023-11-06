@@ -8,12 +8,14 @@ import {
   Delete,
   NotFoundException,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
@@ -25,6 +27,9 @@ import { EmployeeEntity } from './entities/employee.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { EmployeeErrorMessage } from './employees.errors';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthUser } from '../auth/auth.decorators';
+import { UserEntity } from '../auth/entities/user.entity';
 
 @ApiTags('employees')
 @Controller('employees')
@@ -52,6 +57,17 @@ export class EmployeesController {
     // TODO: Auth
     const employees = await this.employeesService.findAll(limit);
     return employees.map((employee) => new EmployeeEntity(employee));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: EmployeeEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findMe(@AuthUser() currentUser: UserEntity) {
+    const employee = await this.employeesService.findOne(currentUser.id);
+    return new EmployeeEntity(employee);
   }
 
   @Get(':id')

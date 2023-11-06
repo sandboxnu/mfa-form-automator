@@ -23,6 +23,24 @@ NextJS, NestJS, Prisma, PostgreSQL
 ## Getting Started (Local Development)
 
 1. Create a .env file in `apps/web` and `apps/server` and configure environment variables using the provided example files.
+
+   `apps/server/.env`
+   | VARIABLE           | VALUE                                                                                                                           |   |   |   |
+   |--------------------|---------------------------------------------------------------------------------------------------------------------------------|---|---|---|
+   | DOMAIN             | <http://localhost>                                                                                                              |   |   |   |
+   | BACKEND_PORT       | 8080                                                                                                                            |   |   |   |
+   | SALT_ROUNDS        | 10                                                                                                                              |   |   |   |
+   | DATABASE_URL       | postgresql://user:pass@localhost:5432/db?schema=public                                                                          |   |   |   |
+   | JWT_SECRET         | Execute the following to generate a random secret key: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" |   |   |   |
+   | JWT_VALID_DURATION | 600                                                                                                                             |   |   |   |
+   | FRONTEND_DOMAIN    | <http://localhost:3002>                                                                                                         |   |   |   |
+
+   `apps/web/.env`
+   | VARIABLE           | VALUE                                                                                                                           |   |   |   |
+   |--------------------|---------------------------------------------------------------------------------------------------------------------------------|---|---|---|
+   | DOMAIN             | <http://localhost>                                                                                                              |   |   |   |
+   | FRONTEND_PORT      | 3000                                                                                                                            |   |   |   |
+
 2. Install yarn dependencies. We currently use Yarn and Yarn workspaces to manage dependencies.
 
    ```bash
@@ -58,13 +76,15 @@ NextJS, NestJS, Prisma, PostgreSQL
 
    The server should be hosted at [http://localhost:8080](http://localhost:8080).
 
+   We utilize a reverse proxy hosted at [http://localhost:3002](http://localhost:3002) to allow for CORS/Access Control. To interact with the frontend, visit [http://localhost:3002](http://localhost:3002). All backend traffic will also be directed to [http://localhost:3002](http://localhost:3002), and the proxy forwards traffic accordingly. Backend traffic is differentiated by a `/api` in the url.
+
 7. The database should be located at [http://localhost:5432](http://localhost:5432). pgadmin is accessible from [http://localhost:5050](http://localhost:5050), and the credentials are `admin@admin.com:pgadmin4`. To connect to the database using pgadmin, create a new server connection with the host set to `host.docker.internal`, port set to `5432`, and username and password set to `user` and `pass` respectively.
 
 ## Regenerating Client
 
 When making changes to our backend, we need to regenerate our frontend client to allow us to access the updated endpoints.
 
-1. Start instance of backend server hosted at [http://localhost:4000](http://localhost:4000) by running the following command in the server directory:
+1. Start instance of backend server hosted at [http://localhost:8080](http://localhost:8080) by running the following command in the server directory:
 
    ```bash
    yarn dev
@@ -88,6 +108,7 @@ Run the database seeding script (seed.ts) to initially populate the database.
    yarn backend:docker:run
    yarn dev:db:up
    ```
+
 2. Generate the Prisma Client in the `apps/server` directory using the following command from within the `apps/server` directory:
 
    ```bash
@@ -105,4 +126,3 @@ Run the database seeding script (seed.ts) to initially populate the database.
    ```bash
    yarn prisma db seed
    ```
-

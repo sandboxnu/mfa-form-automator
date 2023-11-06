@@ -14,7 +14,7 @@ services:
       PORT: 8080
     ports:
       - '8080:8080'
-    command: node dist/main.js
+    command: node dist/src/main.js
     volumes:
       - ./src:/apps
       - .:/apps/

@@ -17,6 +17,18 @@ export class FormTemplatesService {
       data: {
         name: createFormTemplateDto.name,
         formDocLink: createFormTemplateDto.formDocLink,
+        signatureFields: { create: createFormTemplateDto.signatureFields },
+      },
+      include: {
+        signatureFields: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
       },
     });
     return newFormTemplate;
@@ -30,6 +42,17 @@ export class FormTemplatesService {
   async findAll(limit?: number) {
     const formTemplates = await this.prisma.formTemplate.findMany({
       take: limit,
+      include: {
+        signatureFields: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
+      },
     });
     return formTemplates;
   }
@@ -43,6 +66,17 @@ export class FormTemplatesService {
     const formTemplate = await this.prisma.formTemplate.findFirstOrThrow({
       where: {
         id: id,
+      },
+      include: {
+        signatureFields: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -64,6 +98,17 @@ export class FormTemplatesService {
       data: {
         name: updateFormTemplateDto.name,
         formDocLink: updateFormTemplateDto.formDocLink,
+      },
+      include: {
+        signatureFields: {
+          include: {
+            signerPosition: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
       },
     });
     return updatedFormTemplate;

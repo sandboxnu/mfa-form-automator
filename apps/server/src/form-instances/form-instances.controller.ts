@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FormInstancesService } from './form-instances.service';
 import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
@@ -20,11 +21,15 @@ import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
   ApiTags,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { FormInstanceEntity } from './entities/form-instance.entity';
 import { FormInstanceErrorMessage } from './form-instance.errors';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AuthUser } from '../auth/auth.decorators';
+import { UserEntity } from '../auth/entities/user.entity';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
@@ -50,6 +55,36 @@ export class FormInstancesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findAll(@Query('limit') limit?: number) {
     const formTemplates = await this.formInstancesService.findAll(limit);
+    return formTemplates.map(
+      (formInstance) => new FormInstanceEntity(formInstance),
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: [FormInstanceEntity] })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findAllAssignedToCurrentEmployee(@AuthUser() currentUser: UserEntity) {
+    const formTemplates = await this.formInstancesService.findAssignedTo(
+      currentUser.id,
+    );
+    return formTemplates.map(
+      (formInstance) => new FormInstanceEntity(formInstance),
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('created/me')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: [FormInstanceEntity] })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findAllCreatedByCurrentEmployee(@AuthUser() currentUser: UserEntity) {
+    const formTemplates = await this.formInstancesService.findCreatedBy(
+      currentUser.id,
+    );
     return formTemplates.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );
@@ -112,6 +147,37 @@ export class FormInstancesController {
   async remove(@Param('id') id: string) {
     try {
       await this.formInstancesService.remove(id);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          console.log(FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND);
+          throw new NotFoundException(
+            FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
+          );
+        }
+      }
+      throw e;
+    }
+  }
+
+  @Patch(':formInstanceId/sign/:signatureId')
+  @ApiOkResponse({ type: FormInstanceEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  async signFormInstance(
+    @Param('formInstanceId') formInstanceId: string,
+    @Param('signatureId') signatureId: string,
+  ) {
+    try {
+      const updatedFormInstance =
+        await this.formInstancesService.signFormInstance(
+          formInstanceId,
+          signatureId,
+        );
+      return updatedFormInstance;
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {

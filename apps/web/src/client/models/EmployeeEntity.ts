@@ -9,7 +9,7 @@ export type EmployeeEntity = {
     id: string;
     firstName: string;
     lastName: string;
-    position: PositionEntity;
     email: string;
+    position: PositionEntity;
 };
 

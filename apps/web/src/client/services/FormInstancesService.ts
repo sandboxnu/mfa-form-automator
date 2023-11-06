@@ -22,7 +22,7 @@ export class FormInstancesService {
     ): CancelablePromise<FormInstanceEntity> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/form-instances',
+            url: '/api/form-instances',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -42,10 +42,40 @@ export class FormInstancesService {
     ): CancelablePromise<Array<FormInstanceEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/form-instances',
+            url: '/api/form-instances',
             query: {
                 'limit': limit,
             },
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+            },
+        });
+    }
+
+    /**
+     * @returns FormInstanceEntity
+     * @throws ApiError
+     */
+    public static formInstancesControllerFindAllAssignedToCurrentEmployee(): CancelablePromise<Array<FormInstanceEntity>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/form-instances/me',
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+            },
+        });
+    }
+
+    /**
+     * @returns FormInstanceEntity
+     * @throws ApiError
+     */
+    public static formInstancesControllerFindAllCreatedByCurrentEmployee(): CancelablePromise<Array<FormInstanceEntity>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/form-instances/created/me',
             errors: {
                 400: `Bad Request`,
                 403: `Unauthorized Request`,
@@ -63,7 +93,7 @@ export class FormInstancesService {
     ): CancelablePromise<FormInstanceEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/form-instances/{id}',
+            url: '/api/form-instances/{id}',
             path: {
                 'id': id,
             },
@@ -87,7 +117,7 @@ export class FormInstancesService {
     ): CancelablePromise<FormInstanceEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/form-instances/{id}',
+            url: '/api/form-instances/{id}',
             path: {
                 'id': id,
             },
@@ -112,7 +142,7 @@ export class FormInstancesService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/form-instances/{id}',
+            url: '/api/form-instances/{id}',
             path: {
                 'id': id,
             },
@@ -120,6 +150,31 @@ export class FormInstancesService {
                 400: `Bad Request`,
                 403: `Unauthorized Request`,
                 404: `Resource not found`,
+            },
+        });
+    }
+
+    /**
+     * @param formInstanceId
+     * @param signatureId
+     * @returns FormInstanceEntity
+     * @throws ApiError
+     */
+    public static formInstancesControllerSignFormInstance(
+        formInstanceId: string,
+        signatureId: string,
+    ): CancelablePromise<FormInstanceEntity> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/form-instances/{formInstanceId}/sign/{signatureId}',
+            path: {
+                'formInstanceId': formInstanceId,
+                'signatureId': signatureId,
+            },
+            errors: {
+                403: `Unauthorized Request`,
+                404: `Resource not found`,
+                422: `Bad Request`,
             },
         });
     }

@@ -9,13 +9,13 @@
     "apps/web"
   ],
   "scripts": {
-    "dev": "yarn --cwd apps/web dev & yarn --cwd apps/server start:dev",
+    "dev": "yarn --cwd apps/web dev & yarn --cwd apps/server start:dev & node apps/proxy.ts",
     "format": "yarn workspaces run prettier . --write",
     "lint": "yarn workspaces run lint",
     "test": "yarn workspaces run test --passWithNoTests",
     "tsc": "yarn workspaces run tsc -p tsconfig.json",
     "migrate": "yarn --cwd apps/server prisma migrate dev",
-    "gen-client": "yarn --cwd apps/web openapi --input http://localhost:8080/api-json --output ./src/client --client axios",
+    "gen-client": "yarn --cwd apps/web openapi --input http://localhost:3002/api-json --output ./src/client --client axios",
     "dev:db:up": "docker compose -f apps/server/docker-compose.db.yml up -d",
     "dev:db:down": "docker compose -f apps/server/docker-compose.db.yml down",
     "backend:docker:build": "docker compose -f apps/server/docker-compose.yml build",

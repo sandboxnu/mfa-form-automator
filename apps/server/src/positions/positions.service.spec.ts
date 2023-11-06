@@ -25,12 +25,12 @@ describe('PositionsService', () => {
     it('should create a new position', async () => {
       const createPositionDto: CreatePositionDto = {
         name: 'New Position',
-        departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d', 
+        departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
       };
 
       const createdPosition = {
         id: '1',
-        single: false, 
+        single: false,
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
         name: 'Test Position',
         createdAt: new Date(),
@@ -51,7 +51,7 @@ describe('PositionsService', () => {
         {
           id: '1',
           name: 'Position 1',
-          single: false, 
+          single: false,
           departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -59,7 +59,7 @@ describe('PositionsService', () => {
         {
           id: '2',
           name: 'Position 2',
-          single: false, 
+          single: false,
           departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -74,13 +74,53 @@ describe('PositionsService', () => {
     });
   });
 
+  describe('findAllWithIds', () => {
+    it('should retrieve all positions', async () => {
+      const positionIds = ['1', '2'];
+      const positions = [
+        {
+          id: '1',
+          name: 'Position 1',
+          single: false,
+          departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: '2',
+          name: 'Position 2',
+          single: false,
+          departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: '3',
+          name: 'Position 3',
+          single: false,
+          departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+
+      jest
+        .spyOn(prismaService.position, 'findMany')
+        .mockResolvedValue(
+          positions.filter((position) => positionIds.includes(position.id)),
+        );
+      const result = await service.findAllWithIds(positionIds);
+      expect(result).toEqual(positions.slice(0, 2));
+    });
+  });
+
   describe('findOne', () => {
     it('should retrieve a position by ID', async () => {
       const positionId = '1';
       const position = {
         id: positionId,
         name: 'Test Position',
-        single: false, 
+        single: false,
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -114,7 +154,7 @@ describe('PositionsService', () => {
       const updatedPosition = {
         id: positionId,
         name: 'Updated Position',
-        single: false, 
+        single: false,
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -134,7 +174,7 @@ describe('PositionsService', () => {
       const updatedPosition = {
         id: '1',
         name: 'Updated Position',
-        single: false, 
+        single: false,
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
         createdAt: new Date(),
         updatedAt: new Date(),
