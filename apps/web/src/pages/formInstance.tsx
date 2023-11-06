@@ -3,6 +3,7 @@ import {
   LeftArrowIcon,
   PencilIcon,
   CheckIcon,
+  EditUnderlineIcon,
 } from 'apps/web/src/static/icons';
 
 const FormInstance = () => {
@@ -39,6 +40,7 @@ const FormInstance = () => {
           lineHeight="normal"
           ml={9}
           mt={4}
+          mr={5}
         >
           Travel Authorization Form
         </Text>
@@ -51,9 +53,17 @@ const FormInstance = () => {
           fontWeight="normal"
           textAlign="left"
         >
-          <Flex alignItems="center" textDecoration="underline">
-            <PencilIcon boxSize={4} mr={2} />
-            Edit
+          <Flex flexDirection="column">
+            <Flex>
+              <PencilIcon mr={1} mt={5} />
+              <Text color='#000' style={{ fontSize: '18px' }} mt={4}>Edit</Text>
+            </Flex>
+            <EditUnderlineIcon
+              stroke="black"
+              width="52px"
+              height="2"
+              fill="none"
+            />
           </Flex>
         </Button>
       </Flex>
@@ -101,7 +111,7 @@ const FormInstance = () => {
         >
           Form Preview
         </Text>
-        <Text
+        {/* <Text
           color="#000"
           fontFamily="Hanken Grotesk"
           fontSize="20px"
@@ -111,7 +121,7 @@ const FormInstance = () => {
           mr={800}
         >
           Assignees
-        </Text>
+        </Text> */}
       </Flex>
 
       <Flex justifyContent="space-between">
@@ -119,6 +129,7 @@ const FormInstance = () => {
           ml={12}
           pl={4}
           mt={6}
+          mb="100px"
           bg="#000"
           minWidth="436.353px"
           minHeight="566.219px"
@@ -144,7 +155,7 @@ const FormInstance = () => {
                       fontStyle="normal"
                       fontWeight="500"
                       lineHeight="normal"
-                      style={{ whiteSpace: "nowrap" }}
+                      style={{ whiteSpace: 'nowrap' }}
                     >
                       {person.title}
                     </Text>
@@ -156,19 +167,27 @@ const FormInstance = () => {
                     font-style="normal"
                     font-weight="400"
                     line-height="normal"
-                    style={{ whiteSpace: "nowrap" }}
+                    style={{ whiteSpace: 'nowrap' }}
                   >
                     {person.name}
                   </Text>
                 </Box>
                 <Box minWidth="200px">
-                {person.signed && (
-                      <Flex width="100%" ml={2}>
-                        <Text style={{ whiteSpace: "nowrap" }} mr={2} color="#008933">Already Signed</Text>
-                        <CheckIcon textAlign="right" mt={1}> </CheckIcon>
-                      </Flex>
-                    )}
-                    </Box>
+                  {person.signed && (
+                    <Flex width="100%" ml={2}>
+                      <Text
+                        style={{ whiteSpace: 'nowrap' }}
+                        mr={2}
+                        color="#008933"
+                      >
+                        Already Signed
+                      </Text>
+                      <CheckIcon textAlign="right" mt={1}>
+                        {' '}
+                      </CheckIcon>
+                    </Flex>
+                  )}
+                </Box>
               </Grid>
               {index < names.length - 1 && (
                 <Box

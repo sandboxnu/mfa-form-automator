@@ -101,6 +101,12 @@ export const PencilIcon = createIcon({
   d: 'M0.368652 12.2309V15.3555H3.49322L12.7086 6.14008L9.58404 3.01552L0.368652 12.2309ZM15.1249 3.72375C15.4499 3.3988 15.4499 2.87387 15.1249 2.54891L13.1752 0.599185C12.8503 0.27423 12.3253 0.27423 12.0004 0.599185L10.4756 2.12397L13.6001 5.24854L15.1249 3.72375Z',
 });
 
+export const EditUnderlineIcon = createIcon({
+  displayName: 'EditUnderlineIcon',
+  viewBox: '0 0 51 2',
+  d: 'M0.368652 1.27344L50.2391 1.27344',
+});
+
 export const CheckIcon = createIcon({
   displayName: 'CheckIcon',
   viewBox: '0 0 19 14',
