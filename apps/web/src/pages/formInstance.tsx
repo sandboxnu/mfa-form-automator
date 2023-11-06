@@ -56,7 +56,9 @@ const FormInstance = () => {
           <Flex flexDirection="column">
             <Flex>
               <PencilIcon mr={1} mt={5} />
-              <Text color='#000' style={{ fontSize: '18px' }} mt={4}>Edit</Text>
+              <Text color="#000" style={{ fontSize: '18px' }} mt={4}>
+                Edit
+              </Text>
             </Flex>
             <EditUnderlineIcon
               stroke="black"
@@ -111,17 +113,6 @@ const FormInstance = () => {
         >
           Form Preview
         </Text>
-        {/* <Text
-          color="#000"
-          fontFamily="Hanken Grotesk"
-          fontSize="20px"
-          fontStyle="normal"
-          fontWeight="700"
-          lineHeight="normal"
-          mr={800}
-        >
-          Assignees
-        </Text> */}
       </Flex>
 
       <Flex justifyContent="space-between">
@@ -136,6 +127,16 @@ const FormInstance = () => {
           marginRight="100px"
         />
         <Flex my={2} position="relative" flexDirection="column" mr={650}>
+          <Text
+            color="#000"
+            fontFamily="Hanken Grotesk"
+            fontSize="20px"
+            fontStyle="normal"
+            fontWeight="700"
+            lineHeight="normal"
+          >
+            Assignees
+          </Text>
           {names.map((person, index) => (
             <Flex key={index} position="relative" my={4}>
               <Grid templateColumns="repeat(3, 1fr)" gap={4}>
