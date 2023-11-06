@@ -10,6 +10,8 @@ import {
 } from 'apps/web/src/static/icons';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useState } from 'react';
+import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal';
 
 const icons = {
   overview: <OverViewIcon marginRight="2" />,
@@ -71,50 +73,60 @@ const NavItem = ({
 
 
 // Navbar component
-export const NavBar: React.FC = (props: any) => (
-  <Box
-    as="nav"
-    pos="fixed"
-    top="136"
-    left="0"
-    zIndex="sticky"
-    h="full"
-    pb="10"
-    overflowX="hidden"
-    overflowY="auto"
-    bg="white"
-    _dark={{
-      bg: 'gray.800',
-    }}
-    border
-    color="inherit"
-    borderRightWidth="1px"
-    width="80"
-    {...props}
-  >
-    <Flex
-      direction="column"
+export const NavBar: React.FC = (props: any) => {
+  const [isCreateFormInstanceModalOpen, setCreateFormInstanceModalOpen] = useState(false); 
+
+  const openCreateFormInstanceModal = () => {
+    setCreateFormInstanceModalOpen(true);
+  };
+
+  const closeCreateFormInstanceModal = () => {
+    setCreateFormInstanceModalOpen(false);
+  };
+
+  return (
+    <Box
       as="nav"
-      fontSize="sm"
-      color="black"
-      aria-label="Main Navigation"
+      pos="fixed"
+      top="136"
+      left="0"
+      zIndex="sticky"
+      h="full"
+      pb="10"
+      overflowX="hidden"
+      overflowY="auto"
+      bg="white"
+      _dark={{
+        bg: 'gray.800',
+      }}
+      border
+      color="inherit"
+      borderRightWidth="1px"
+      width="80"
+      {...props}
     >
       <Flex
-  align="center"
-  px="4"
-  pl="8"
-  py="3"
-  cursor="pointer"
-  color="inherit"
-  _dark={{
-    color: 'gray.400',
-  }}
-  role="group"
-  fontWeight="semibold"
-  transition=".15s ease"
->
-  <Link href="/createform" passHref>
-     <Button
+        direction="column"
+        as="nav"
+        fontSize="sm"
+        color="black"
+        aria-label="Main Navigation"
+      >
+        <Flex
+          align="center"
+          px="4"
+          pl="8"
+          py="3"
+          cursor="pointer"
+          color="inherit"
+          _dark={{
+            color: 'gray.400',
+          }}
+          role="group"
+          fontWeight="semibold"
+          transition=".15s ease"
+        >
+          <Button
             marginY="5"
             height="40px"
             width="156px"
@@ -126,43 +138,45 @@ export const NavBar: React.FC = (props: any) => (
             backgroundColor="#4C658A"
             fontWeight="900"
             _focus={{ outline: 'none', boxShadow: 'none' }}
+            onClick={openCreateFormInstanceModal}
           >
             <PlusIcon marginRight={11} />
             Create Form
           </Button>
-  </Link>
-</Flex>
+        </Flex>
 
-      <NavItem icon="overview" link="/">
-        Overview
-      </NavItem>
-      <NavItem icon="todo" link="/todo">
-        To do
-      </NavItem>
-      <NavItem icon="pending" link="/pending">
-        Pending
-      </NavItem>
-      <NavItem icon="completed" link="/completed">
-        Completed
-      </NavItem>
-      <Box px={8}>
-        <Divider mt={'5'} mb={5} borderColor={'gray'} />
-      </Box>
-      <NavItem icon="history" link="/history">
-        History
-      </NavItem>
-      <NavItem icon="settings" link="/settings">
-        Settings
-      </NavItem>
-      <Box
-        paddingLeft="40px"
-        fontSize="14px"
-        position="absolute"
-        bottom="160px"
-      >
-        Museum of Fine Arts, Boston
-      </Box>
-      <Spacer minH="30vh" />
-    </Flex>
-  </Box>
-);
+        <NavItem icon="overview" link="/">
+          Overview
+        </NavItem>
+        <NavItem icon="todo" link="/todo">
+          To do
+        </NavItem>
+        <NavItem icon="pending" link="/pending">
+          Pending
+        </NavItem>
+        <NavItem icon="completed" link="/completed">
+          Completed
+        </NavItem>
+        <Box px={8}>
+          <Divider mt={'5'} mb={5} borderColor={'gray'} />
+        </Box>
+        <NavItem icon="history" link="/history">
+          History
+        </NavItem>
+        <NavItem icon="settings" link="/settings">
+          Settings
+        </NavItem>
+        <Box
+          paddingLeft="40px"
+          fontSize="14px"
+          position="absolute"
+          bottom="160px"
+        >
+          Museum of Fine Arts, Boston
+        </Box>
+        <Spacer minH="30vh" />
+      </Flex>
+      <CreateFormInstanceModal isOpen={isCreateFormInstanceModalOpen} onClose={closeCreateFormInstanceModal} />
+    </Box>
+  )
+};
