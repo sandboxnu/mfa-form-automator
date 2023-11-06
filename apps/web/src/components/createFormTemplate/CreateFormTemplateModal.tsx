@@ -46,11 +46,9 @@ export const CreateFormTemplateModal = ({
 }) => {
   const [formTemplateName, setFormTemplateName] =
     useState<string>('New Form Template');
-  const [signatureFields, setSignatureFields] = useState<TempSignatureField[]>([
-    { id: 'v-ew-v-23v-v-v2bb-b-2b2b', value: 'Leadership Team Member' },
-    { id: 'f232-f32f32f2-f23-f23-f2f', value: 'Director' },
-    { id: 'vf0efe0eff-fff23f2-ff-2f2f', value: 'Senior Director' },
-  ]);
+  const [signatureFields, setSignatureFields] = useState<TempSignatureField[]>(
+    [],
+  );
   let isFormTemplateNameInvalid = formTemplateName === '';
 
   const toast = useToast();
@@ -224,10 +222,7 @@ export const CreateFormTemplateModal = ({
                   spacing={2}
                   axis="y"
                   values={signatureFields}
-                  onReorder={(a: any[]) => {
-                    console.log(a);
-                    setSignatureFields(a);
-                  }}
+                  onReorder={setSignatureFields}
                   mt="16px"
                   mb="10px"
                   pr="5px"
