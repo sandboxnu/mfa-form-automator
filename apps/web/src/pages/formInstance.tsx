@@ -18,7 +18,7 @@ const FormInstance = () => {
   return (
     <Box className="main">
       <Flex
-        ml={12}
+        ml="50px"
         as="span"
         align="center"
         onClick={() => {
@@ -39,7 +39,7 @@ const FormInstance = () => {
           fontStyle="normal"
           fontWeight="800"
           lineHeight="normal"
-          ml={9}
+          ml="30px"
           mt={4}
           mr={5}
         >
@@ -53,11 +53,12 @@ const FormInstance = () => {
           color="black"
           fontWeight="normal"
           textAlign="left"
+          _hover={{ textDecoration: 'none' }}
         >
           <Flex flexDirection="column">
             <Flex>
               <PencilIcon mr={1} mt={5} />
-              <Text color="#000" style={{ fontSize: '18px' }} mt={4}>
+              <Text color="#000" style={{ fontSize: '18px'}} mt={4}>
                 Edit
               </Text>
             </Flex>
@@ -79,8 +80,7 @@ const FormInstance = () => {
         lineHeight="normal"
         textAlign="left"
         my={4}
-        pl={4}
-        ml={9}
+        ml="50px"
         mt={12}
       >
         Description
@@ -93,8 +93,7 @@ const FormInstance = () => {
         fontWeight="normal"
         lineHeight="normal"
         textAlign="left"
-        pl={4}
-        ml={9}
+        ml="50px"
         maxW="450px"
       >
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et
@@ -110,8 +109,7 @@ const FormInstance = () => {
             fontStyle="normal"
             fontWeight="700"
             lineHeight="normal"
-            ml={9}
-            pl={4}
+            ml="50px"
           >
             Form Preview
           </Text>
@@ -132,8 +130,7 @@ const FormInstance = () => {
 
       <Flex justifyContent="space-between">
         <Box
-          ml={12}
-          pl={4}
+          ml="50px"
           mt={6}
           mb="100px"
           bg="#000"
