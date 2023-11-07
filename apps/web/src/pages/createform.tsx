@@ -23,14 +23,13 @@ import { PositionsService } from '@web/client';
 // click outside 
 // make form name editable
 interface FormData {
-  id: string; // Change the type if 'id' is not a string
+  id: string; 
   name: string;
 }
 interface EmployeeData {
   id: string;
   firstName: string;
   lastName: string;
-  // Define other properties here
 }
 
 const employee: EmployeeData = {
@@ -53,15 +52,6 @@ const API_EMPLOYEES = '/api/employees?limit=100';
 
 
 const CreateForm = () => {
-  // const queryClient = useQueryClient();
-  // const [formOptions, setFormOptions] = useState<Option[]>([]);
-  // const [selectedForm, setSelectedForm] = useState<Option | null>(null);
-  // const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
-  // const [isLeadershipDropdownOpen, setIsLeadershipDropdownOpen] = useState(false);
-  // const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
-  // const [assigneeOptions, setAssigneeOptions] = useState<Option[]>([]);
-  // const [selectedAssignee, setSelectedAssignee] = useState<Option | null>(null);
-
     const queryClient = useQueryClient();
     const [formOptions, setFormOptions] = useState<{ value: string; label: string }[]>([]);
     const [selectedForm, setSelectedForm] = useState<{ value: string; label: string } | null>(null);
@@ -71,7 +61,8 @@ const CreateForm = () => {
     const [assigneeOptions, setAssigneeOptions] = useState<{ value: string; label: string }[]>([]);
     const [selectedAssignee, setSelectedAssignee] = useState<{ value: string; label: string } | null>(null);
     const [selectedDepartmentHead, setSelectedDepartmentHead] = useState<{ value: string; label: string } | null>(null);
- // Fetch form templates data
+ 
+    // Fetch form templates data
  const { data: formTemplates, error: formTemplatesError } = useQuery({
   queryKey: ['http://localhost:8080/api/form-templates'],
   queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),

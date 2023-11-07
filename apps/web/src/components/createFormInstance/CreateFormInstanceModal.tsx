@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -13,6 +13,9 @@ import {
 } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
+import { QueryClientProvider, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import { EmployeesService, FormTemplatesService } from '@web/client';
+
 // TODO 
 // make outline not blue when dropdown is clicked
 // search directory in assignees and icon?
@@ -30,61 +33,77 @@ interface CreateFormInstanceModalProps {
   onClose: () => void;
 }
 
-const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({ isOpen, onClose }) => {
-  interface Option {
-    value: string;
-    label: string;
-  }
+interface Option {
+  value: string;
+  label: string;
+}
 
-  const [selectedForm, setSelectedForm] = useState<Option | null>(null);
+interface Option {
+  value: string;
+  label: string;
+}
+interface OptionLabel {
+  value: string;
+  label: string;
+}
+
+interface EmployeeData {
+  id: string;
+  firstName: string;
+  lastName: string;
+}
+
+const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({ isOpen, onClose }) => {
+  const queryClient = useQueryClient();
+  const [formOptions, setFormOptions] = useState<{ value: string; label: string }[]>([]);
+  const [selectedForm, setSelectedForm] = useState<{ value: string; label: string } | null>(null);
   const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
   const [isLeadershipDropdownOpen, setIsLeadershipDropdownOpen] = useState(false);
   const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
+  const [assigneeOptions, setAssigneeOptions] = useState<{ value: string; label: string }[]>([]);
+  const [selectedAssignee, setSelectedAssignee] = useState<{ value: string; label: string } | null>(null);
+  const [selectedDepartmentHead, setSelectedDepartmentHead] = useState<{ value: string; label: string } | null>(null);
   const [formTypeSelected, setFormTypeSelected] = useState(false);
+// Fetch form templates data
+const { data: formTemplates, error: formTemplatesError } = useQuery({
+  queryKey: ['http://localhost:8080/api/form-templates'],
+  queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
+});
 
 
-  const formOptions: Option[] = [
-    { value: 'Form 1', label: 'Form 1' },
-    { value: 'Form 2', label: 'Form 2' },
-    { value: 'Form 3', label: 'Form 3' },
-  ];
+ // Fetch form templates data
+ const { data: employees, error: employeesError } = useQuery({
+  queryKey: ['http://localhost:8080/api/employees'],
+  queryFn: () => EmployeesService.employeesControllerFindAll(),
+});
 
-  const assigneeOptions: Option[] = [
-    {
-      value: 'Person 1',
-      label: 'Role',
-    },
-    {
-      value: 'Person 2',
-      label: 'Role',
-    },
-    {
-      value: 'Person 3',
-      label: 'Role',
-    },
-  ];
+useEffect(() => {
+  if (formTemplates) {
+    // Map formTemplates data to the required format
+    const templatesOptions = formTemplates.map((template) => ({
+      value: template.id,
+      label: template.name,
+    }));
+    setFormOptions(templatesOptions); // Update formOptions with the mapped data
+  }
 
-  type OptionLabel = {
-    value: string;
-    label: string;
-  };
+  if (employees) {
+    // Map employees data to include both employee name and position name
+    const employeesOptions = employees.map((employee) => ({
+      value: `${employee.firstName} ${employee.lastName}`,
+      label: `| ${employee.position.name}`,
+    }));
+    setAssigneeOptions(employeesOptions); // Update assigneeOptions with the mapped data
+  }
+}, [formTemplates, employees]);
 
-  const formatOptionLabel = ({ value, label }: OptionLabel) => (
-    <span>
-      <strong>{value}</strong>
-      <span style={{ marginLeft: '8px', color: 'gray' }}>{label}</span>
+const formatOptionLabel = ({ value, label }: OptionLabel) => (
+  <span>
+    <strong>{value}</strong>
+    <span style={{ marginLeft: '8px', color: 'gray' }}>{label}
     </span>
-  );
-
-  const components = {
-    DropdownIndicator: (props: any) => (
-      <chakraComponents.DropdownIndicator {...props}>
-        <div style={{ marginLeft: '10px' }}>
-          <DropdownDownArrow />
-        </div>
-      </chakraComponents.DropdownIndicator>
-    ),
-  };
+  </span>
+);
 
   const handleFormTypeDropdownOpen = () => {
     setIsFormTypeDropdownOpen(true);
@@ -145,23 +164,25 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({ isOpe
                 Form Type
               </Text>
               <Select
-                useBasicStyles
-                selectedOptionStyle="check"
-                options={formOptions}
-                placeholder="Select form template"
-                value={selectedForm}
-                onChange={(option) => {
-                  setSelectedForm(option);
-                  setFormTypeSelected(option !== null);
-                }}
-                className="custom-dropdown"
-                components={{ DropdownIndicator: FormTypeDropdownIndicator }}
-                onMenuOpen={handleFormTypeDropdownOpen}
-                onMenuClose={handleDropdownClose}
-                getOptionLabel={(option) => option.label}
-                classNamePrefix="react-select"
-                isClearable
-              />
+  useBasicStyles
+  selectedOptionStyle="check"
+  options={formOptions}
+  placeholder="Select Form Template"
+  value={selectedForm}
+
+
+  onChange={(option) => {
+    setSelectedForm(option);
+    setFormTypeSelected(option !== null);
+  }}
+  className="custom-dropdown"
+  components={{ DropdownIndicator: FormTypeDropdownIndicator }}
+  onMenuOpen={handleFormTypeDropdownOpen}
+  onMenuClose={handleDropdownClose}
+  getOptionLabel={(option) => option.label}
+  classNamePrefix="react-select"
+  isClearable
+/>
               <Box width="496px" height="436px" backgroundColor="gray.300" marginBottom="10px" marginTop="10px">
                 {/* Placeholder for PDF */}
               </Box>
@@ -176,19 +197,24 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({ isOpe
                   Leadership Team Member
                 </Text>
                 <Select
-                  useBasicStyles
-                  selectedOptionStyle="check"
-                  options={assigneeOptions}
-                  placeholder="Select assignee"
-                  className="custom-dropdown"
-                  components={{ DropdownIndicator: LeadershipDropdownIndicator }}
-                  onMenuOpen={handleLeadershipDropdownOpen}
-                  onMenuClose={handleDropdownClose}
-                  getOptionLabel={(option) => option.label}
-                  formatOptionLabel={formatOptionLabel}
-                  classNamePrefix="react-select"
-                  isClearable
-                />
+  useBasicStyles
+  selectedOptionStyle="check"
+  options={assigneeOptions}
+  placeholder="Select assignee"
+  value={selectedDepartmentHead} // Create a separate state for Department Head
+  onChange={(value: { value: string; label: string } | null) => {
+    // value is the selected option or null
+    setSelectedDepartmentHead(value);
+  }}
+  className="custom-dropdown"
+  components={{ DropdownIndicator: DepartmentDropdownIndicator }}
+  onMenuOpen={handleDepartmentDropdownOpen}
+  onMenuClose={handleDropdownClose}
+  getOptionLabel={(option) => option.label}
+  formatOptionLabel={formatOptionLabel}
+  classNamePrefix="react-select"
+  isClearable
+/>
                 <Text fontWeight="500" fontSize="16px" color="black" marginTop="24px">
                   Department Head
                 </Text>
