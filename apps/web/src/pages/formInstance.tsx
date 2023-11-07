@@ -58,7 +58,7 @@ const FormInstance = () => {
           <Flex flexDirection="column">
             <Flex>
               <PencilIcon mr={1} mt={5} />
-              <Text color="#000" style={{ fontSize: '18px'}} mt={4}>
+              <Text color="#000" style={{ fontSize: '18px' }} mt={4}>
                 Edit
               </Text>
             </Flex>
@@ -100,8 +100,9 @@ const FormInstance = () => {
         imperdiet enim. Ut enim justo, tincidunt ac enim ut, mollis pulvinar
         neque. Suspendisse id semper nunc.
       </Text>
-      <Flex justifyContent="space-between" mt={20}>
-        <Box display="inline-block" minWidth="590px">
+
+      <Grid templateColumns="1fr 1fr" gap="100px" mt={20}>
+        <Box>
           <Text
             color="#000"
             fontFamily="Hanken Grotesk"
@@ -113,33 +114,30 @@ const FormInstance = () => {
           >
             Form Preview
           </Text>
+          <Box
+            ml="50px"
+            mt={6}
+            mb="100px"
+            bg="#000"
+            minWidth="436.353px"
+            minHeight="566.219px"
+          />
         </Box>
 
-        <Text
-          mr="100%"
-          color="#000"
-          fontFamily="Hanken Grotesk"
-          fontSize="20px"
-          fontStyle="normal"
-          fontWeight="700"
-          lineHeight="normal"
-        >
-          Assignees
-        </Text>
-      </Flex>
-
-      <Flex justifyContent="space-between">
-        <Box
-          ml="50px"
-          mt={6}
-          mb="100px"
-          bg="#000"
-          minWidth="436.353px"
-          minHeight="566.219px"
-          marginRight="100px"
-        />
-        <AvatarMap names={names} />
-      </Flex>
+        <Box>
+          <Text
+            color="#000"
+            fontFamily="Hanken Grotesk"
+            fontSize="20px"
+            fontStyle="normal"
+            fontWeight="700"
+            lineHeight="normal"
+          >
+            Assignees
+          </Text>
+          <AvatarMap names={names} />
+        </Box>
+      </Grid>
     </Box>
   );
 };
