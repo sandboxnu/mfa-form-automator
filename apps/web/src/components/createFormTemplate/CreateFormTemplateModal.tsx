@@ -302,7 +302,7 @@ export const CreateFormTemplateModal = ({
             isDisabled={
               isFormTemplateNameInvalid ||
               signatureFields.length == 0 ||
-              !signatureFields.every((field) => field.value !== '')
+              signatureFields.every((field) => field.value !== '')
             }
             onClick={async (e) => {
               toast.promise(submitFormTemplate(), {
