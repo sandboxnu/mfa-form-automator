@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateSignatureFieldDto {
   @IsString()
@@ -12,12 +12,12 @@ export class CreateSignatureFieldDto {
   order: number;
 
   @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  signerPositionId?: string;
+  @IsOptional()
+  @ApiPropertyOptional()
+  signerPositionId: string;
 
   @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
+  @IsOptional()
+  @ApiPropertyOptional()
   formTemplateId: string;
 }

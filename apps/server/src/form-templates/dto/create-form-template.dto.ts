@@ -22,6 +22,9 @@ export class CreateFormTemplateDto {
 
   @IsArray()
   @ArrayMinSize(1)
-  @ApiProperty()
+  @ApiProperty({
+    isArray: true,
+    type: CreateSignatureFieldDto,
+  })
   signatureFields: CreateSignatureFieldDto[];
 }

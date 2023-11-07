@@ -142,38 +142,57 @@ export const NavBar: React.FC = (props: any) => {
             Create Form
           </Button>
         </Flex>
-
-        <NavItem icon="overview" link="/">
-          Overview
-        </NavItem>
-        <NavItem icon="todo" link="/todo">
-          To do
-        </NavItem>
-        <NavItem icon="pending" link="/pending">
-          Pending
-        </NavItem>
-        <NavItem icon="completed" link="/completed">
-          Completed
-        </NavItem>
-        <Box px={8}>
-          <Divider mt={'5'} mb={5} borderColor={'gray'} />
-        </Box>
-        <NavItem icon="history" link="/history">
-          History
-        </NavItem>
-        <NavItem icon="settings" link="/settings">
-          Settings
-        </NavItem>
-        <Box
-          paddingLeft="40px"
-          fontSize="14px"
-          position="absolute"
-          bottom="160px"
-        >
-          Museum of Fine Arts, Boston
-        </Box>
-        <Spacer minH="30vh" />
       </Flex>
+
+      <Flex
+        align="center"
+        px="4"
+        pl="8"
+        pb="3"
+        cursor="pointer"
+        color="inherit"
+        _dark={{
+          color: 'gray.400',
+        }}
+        role="group"
+        fontWeight="semibold"
+        transition=".15s ease"
+      >
+        <Button onClick={props.onOpenCreateFormTemplate}>
+          Create Template
+        </Button>
+      </Flex>
+
+      <NavItem icon="overview" link="/">
+        Overview
+      </NavItem>
+      <NavItem icon="todo" link="/todo">
+        To do
+      </NavItem>
+      <NavItem icon="pending" link="/pending">
+        Pending
+      </NavItem>
+      <NavItem icon="completed" link="/completed">
+        Completed
+      </NavItem>
+      <Box px={8}>
+        <Divider mt={'5'} mb={5} borderColor={'gray'} />
+      </Box>
+      <NavItem icon="history" link="/history">
+        History
+      </NavItem>
+      <NavItem icon="settings" link="/settings">
+        Settings
+      </NavItem>
+      <Box
+        paddingLeft="40px"
+        fontSize="14px"
+        position="absolute"
+        bottom="160px"
+      >
+        Museum of Fine Arts, Boston
+      </Box>
+      <Spacer minH="30vh" />
       <CreateFormInstanceModal
         isOpen={isCreateFormInstanceModalOpen}
         onClose={closeCreateFormInstanceModal}
