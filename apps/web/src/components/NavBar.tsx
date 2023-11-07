@@ -10,8 +10,6 @@ import {
 } from 'apps/web/src/static/icons';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useState } from 'react';
-import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal';
 
 const icons = {
   overview: <OverViewIcon marginRight="2" />,
@@ -70,18 +68,15 @@ const NavItem = ({
 };
 
 // Navbar component
-export const NavBar: React.FC = (props: any) => {
-  const [isCreateFormInstanceModalOpen, setCreateFormInstanceModalOpen] =
-    useState(false);
-
-  const openCreateFormInstanceModal = () => {
-    setCreateFormInstanceModalOpen(true);
-  };
-
-  const closeCreateFormInstanceModal = () => {
-    setCreateFormInstanceModalOpen(false);
-  };
-
+export const NavBar = ({
+  onOpenCreateFormTemplate,
+  onOpenCreateFormInstance,
+  ...props
+}: {
+  onOpenCreateFormTemplate: () => void;
+  onOpenCreateFormInstance: () => void;
+  props?: {};
+}) => {
   return (
     <Box
       as="nav"
@@ -97,7 +92,7 @@ export const NavBar: React.FC = (props: any) => {
       _dark={{
         bg: 'gray.800',
       }}
-      border
+      border="true"
       color="inherit"
       borderRightWidth="1px"
       width="80"
@@ -136,7 +131,7 @@ export const NavBar: React.FC = (props: any) => {
             backgroundColor="#4C658A"
             fontWeight="900"
             _focus={{ outline: 'none', boxShadow: 'none' }}
-            onClick={openCreateFormInstanceModal}
+            onClick={onOpenCreateFormInstance}
           >
             <PlusIcon marginRight={11} />
             Create Form
@@ -158,9 +153,7 @@ export const NavBar: React.FC = (props: any) => {
         fontWeight="semibold"
         transition=".15s ease"
       >
-        <Button onClick={props.onOpenCreateFormTemplate}>
-          Create Template
-        </Button>
+        <Button onClick={onOpenCreateFormTemplate}>Create Template</Button>
       </Flex>
 
       <NavItem icon="overview" link="/">
@@ -193,10 +186,6 @@ export const NavBar: React.FC = (props: any) => {
         Museum of Fine Arts, Boston
       </Box>
       <Spacer minH="30vh" />
-      <CreateFormInstanceModal
-        isOpen={isCreateFormInstanceModalOpen}
-        onClose={closeCreateFormInstanceModal}
-      />
     </Box>
   );
 };
