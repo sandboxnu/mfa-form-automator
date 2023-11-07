@@ -27,4 +27,4 @@ export type jwtPayload = {
   email: string;
   firstName: string;
   lastName: string;
-}
+};

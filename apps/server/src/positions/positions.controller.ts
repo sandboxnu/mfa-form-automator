@@ -18,6 +18,7 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
@@ -47,6 +48,12 @@ export class PositionsController {
   @ApiOkResponse({ type: [PositionEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Limit on number of positions to return',
+    required: false,
+  })
   async findAll(@Query('limit') limit?: number) {
     const positions = await this.positionsService.findAll(limit);
     return positions.map((position) => new PositionEntity(position));

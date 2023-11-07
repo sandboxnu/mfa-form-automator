@@ -34,12 +34,12 @@ export class PositionsService {
     }
 
     /**
-     * @param limit
+     * @param limit Limit on number of positions to return
      * @returns PositionEntity
      * @throws ApiError
      */
     public static positionsControllerFindAll(
-        limit: number,
+        limit?: number,
     ): CancelablePromise<Array<PositionEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
