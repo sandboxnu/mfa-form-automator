@@ -11,7 +11,7 @@ import { request as __request } from '../core/request';
 export class DefaultService {
 
     /**
-     * @returns any
+     * @returns any 
      * @throws ApiError
      */
     public static appControllerGetHello(): CancelablePromise<any> {
@@ -22,13 +22,13 @@ export class DefaultService {
     }
 
     /**
-     * @param requestBody
-     * @returns JwtEntity
+     * @param requestBody 
+     * @returns JwtEntity 
      * @throws ApiError
      */
     public static appControllerLogin(
-        requestBody: any,
-    ): CancelablePromise<JwtEntity> {
+requestBody: any,
+): CancelablePromise<JwtEntity> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/auth/login',
@@ -43,7 +43,7 @@ export class DefaultService {
     }
 
     /**
-     * @returns any
+     * @returns any 
      * @throws ApiError
      */
     public static appControllerLogout(): CancelablePromise<any> {

@@ -9,4 +9,3 @@ export type SignatureFieldEntity = {
     order: number;
     signerPosition: Record<string, any>;
 };
-

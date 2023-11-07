@@ -8,4 +8,3 @@ export type FormTemplateBaseEntity = {
     name: string;
     formDocLink: string;
 };
-

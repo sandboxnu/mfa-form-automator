@@ -22,6 +22,7 @@ import {
   ApiNotFoundResponse,
   ApiTags,
   ApiBearerAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
@@ -53,6 +54,12 @@ export class FormInstancesController {
   @ApiOkResponse({ type: [FormInstanceEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Limit on number of positions to return',
+    required: false,
+  })
   async findAll(@Query('limit') limit?: number) {
     const formTemplates = await this.formInstancesService.findAll(limit);
     return formTemplates.map(

@@ -9,4 +9,3 @@ export type CreateSignatureFieldDto = {
     signerPositionId: string;
     formTemplateId: string;
 };
-

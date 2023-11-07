@@ -1,9 +1,13 @@
 import { Box, Button, Flex, Text, Icon } from '@chakra-ui/react';
 import { LeftArrowIcon } from '@web/static/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { DropdownDownArrow, DropdownUpArrow } from 'apps/web/src/static/icons';
 import { Select, chakraComponents } from 'chakra-react-select';
+import { QueryClientProvider, useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
+import { EmployeesService, FormTemplatesService } from '@web/client';
+import { PositionsService } from '@web/client';
+// take docker out of readme
 // TODO 
 // make outline not blue when dropdown is clicked
 // search directory in assignees and icon?
@@ -18,42 +22,145 @@ import { Select, chakraComponents } from 'chakra-react-select';
 // check api spec 
 // click outside 
 // make form name editable
+interface FormData {
+  id: string; // Change the type if 'id' is not a string
+  name: string;
+}
+interface EmployeeData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  // Define other properties here
+}
+
+const employee: EmployeeData = {
+  id: '1',
+  firstName: 'John',
+  lastName: 'Doe',
+  // Other properties
+};
+interface Option {
+  value: string;
+  label: string;
+}
+interface OptionLabel {
+  value: string;
+  label: string;
+}
+
+const API_FORM_INSTANCES = '/api/form-instances?limit=100';
+const API_EMPLOYEES = '/api/employees?limit=100';
+
+
 const CreateForm = () => {
-  interface Option {
-    value: string;
-    label: string;
+  // const queryClient = useQueryClient();
+  // const [formOptions, setFormOptions] = useState<Option[]>([]);
+  // const [selectedForm, setSelectedForm] = useState<Option | null>(null);
+  // const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
+  // const [isLeadershipDropdownOpen, setIsLeadershipDropdownOpen] = useState(false);
+  // const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
+  // const [assigneeOptions, setAssigneeOptions] = useState<Option[]>([]);
+  // const [selectedAssignee, setSelectedAssignee] = useState<Option | null>(null);
+
+    const queryClient = useQueryClient();
+    const [formOptions, setFormOptions] = useState<{ value: string; label: string }[]>([]);
+    const [selectedForm, setSelectedForm] = useState<{ value: string; label: string } | null>(null);
+    const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
+    const [isLeadershipDropdownOpen, setIsLeadershipDropdownOpen] = useState(false);
+    const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
+    const [assigneeOptions, setAssigneeOptions] = useState<{ value: string; label: string }[]>([]);
+    const [selectedAssignee, setSelectedAssignee] = useState<{ value: string; label: string } | null>(null);
+    const [selectedDepartmentHead, setSelectedDepartmentHead] = useState<{ value: string; label: string } | null>(null);
+ // Fetch form templates data
+ const { data: formTemplates, error: formTemplatesError } = useQuery({
+  queryKey: ['http://localhost:8080/api/form-templates'],
+  queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
+});
+
+
+ // Fetch form templates data
+ const { data: employees, error: employeesError } = useQuery({
+  queryKey: ['http://localhost:8080/api/employees'],
+  queryFn: () => EmployeesService.employeesControllerFindAll(),
+});
+
+useEffect(() => {
+  if (formTemplates) {
+    // Map formTemplates data to the required format
+    const templatesOptions = formTemplates.map((template) => ({
+      value: template.id,
+      label: template.name,
+    }));
+    setFormOptions(templatesOptions); // Update formOptions with the mapped data
   }
 
-  const [selectedForm, setSelectedForm] = useState<Option | null>(null);
-  const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
-  const [isLeadershipDropdownOpen, setIsLeadershipDropdownOpen] = useState(false);
-  const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
+  if (employees) {
+    // Map employees data to include both employee name and position name
+    const employeesOptions = employees.map((employee) => ({
+      value: `${employee.firstName} ${employee.lastName}`,
+      label: `| ${employee.position.name}`,
+    }));
+    setAssigneeOptions(employeesOptions); // Update assigneeOptions with the mapped data
+  }
+}, [formTemplates, employees]);
 
-  const formOptions: Option[] = [
-    { value: 'Form 1', label: 'Form 1' },
-    { value: 'Form 2', label: 'Form 2' },
-    { value: 'Form 3', label: 'Form 3' },
-  ];
+  // useEffect(() => {
+  //   if (positions) {
+  //     const positionsOptions = positions.map((position) => ({
+  //       value: position.id, // You can use the ID or another unique identifier
+  //       label: position.name, // Use the name as the label
+  //     }));
+  //     setAssigneeOptions(positionsOptions);
+  //   }
+  // }, [positions]);
 
-  const assigneeOptions: Option[] = [
-    {
-      value: 'Person 1',
-      label: 'Role',
-    },
-    {
-      value: 'Person 2',
-      label: 'Role',
-    },
-    {
-      value: 'Person 3',
-      label: 'Role',
-    },
-  ];
+// Check the results
+if (formTemplates) {
+  // Data has been successfully fetched for formTemplates
+  console.log('Form Templates Data:', formTemplates);
+} else if (formTemplatesError) {
+  // An error occurred while fetching formTemplates
+  console.error('Form Templates Error:', formTemplatesError);
+}
 
-  type OptionLabel = {
-    value: string;
-    label: string;
-  };
+// if (employee) {
+//   // Data has been successfully fetched for positions
+//   console.log('Employee Data:', positions);
+// } else if (positionsError) {
+//   // An error occurred while fetching positions
+//   console.error('Positions Error:', positionsError);
+// }
+
+ // Fetch employees data
+//  const { data: employees, error: employeesError } = useQuery(
+//   'employees',
+//   async () => {
+//     const response = await fetch(API_EMPLOYEES);
+//     if (!response.ok) {
+//       throw new Error('Network response was not ok');
+//     }
+//     return response.json();
+//   }
+// );
+   // Handle the fetched data and update the state
+  //  useEffect(() => {
+  //   if (formInstances) {
+  //     const formOptions = formInstances.map((formInstance) => ({
+  //       value: formInstance.name, // Use the name as both value and label
+  //       label: formInstance.name,
+  //     }));
+  //     setFormOptions(formOptions);
+  //   }
+
+  //   if (employees) {
+  //     const assigneeOptions = employees.map((employee) => ({
+  //       value: employee.id,
+  //       label: `${employee.firstName} ${employee.lastName}`,
+  //     }));
+  //     setAssigneeOptions(assigneeOptions);
+  //   }
+  // }, [formInstances, employees]);
+
   
   const formatOptionLabel = ({ value, label }: OptionLabel) => (
     <span>
@@ -116,6 +223,7 @@ const CreateForm = () => {
   );
 
   return (
+    <QueryClientProvider client={queryClient}>
     <Flex flexDirection="column" marginLeft="49px">
       <Flex alignItems="center" marginTop="42px" marginBottom="22px">
         <Link href="/">
@@ -138,20 +246,23 @@ const CreateForm = () => {
           </Text>
           {/* TODO add clear button to reset */}
           <Select
-          useBasicStyles
-          selectedOptionStyle="check"
-            options={formOptions}
-            placeholder="Select Form Template"
-            value={selectedForm}
-            onChange={setSelectedForm}
-            className="custom-dropdown"
-            components={{ DropdownIndicator: FormTypeDropdownIndicator }}
-            onMenuOpen={handleFormTypeDropdownOpen}
-            onMenuClose={handleDropdownClose}
-            getOptionLabel={(option) => option.label}
-            classNamePrefix="react-select"
-            isClearable
-            />
+  useBasicStyles
+  selectedOptionStyle="check"
+  options={formOptions}
+  placeholder="Select Form Template"
+  value={selectedForm}
+  onChange={(value: { value: string; label: string } | null) => {
+    // value is the selected option or null
+    setSelectedForm(value);
+  }}
+  className="custom-dropdown"
+  components={{ DropdownIndicator: FormTypeDropdownIndicator }}
+  onMenuOpen={handleFormTypeDropdownOpen}
+  onMenuClose={handleDropdownClose}
+  getOptionLabel={(option) => option.label}
+  classNamePrefix="react-select"
+  isClearable
+/>
           <Box width="496px" height="436px" backgroundColor="gray.300" marginBottom="10px" marginTop="10px">
             {/* Placeholder for PDF */}
           </Box>
@@ -165,36 +276,46 @@ const CreateForm = () => {
             Leadership Team Member
           </Text>
           <Select
-          useBasicStyles
-          selectedOptionStyle="check"
-            options={assigneeOptions}
-            placeholder="Select assigneee"
-            className="custom-dropdown"
-            components={{ DropdownIndicator: LeadershipDropdownIndicator }}
-            onMenuOpen={handleLeadershipDropdownOpen}
-            onMenuClose={handleDropdownClose}
-            getOptionLabel={(option) => option.label}
-            formatOptionLabel={formatOptionLabel}
-            classNamePrefix="react-select"
-            isClearable
-            />
-          <Text fontWeight="500" fontSize="16px" color="black" marginTop="24px">
-            Department Head
-          </Text>
-          <Select
-          useBasicStyles
-          selectedOptionStyle="check"
-            options={assigneeOptions}
-            placeholder="Select assigneee"
-            className="custom-dropdown"
-            components={{ DropdownIndicator: DepartmentDropdownIndicator }}
-            onMenuOpen={handleDepartmentDropdownOpen}
-            onMenuClose={handleDropdownClose}
-            getOptionLabel={(option) => option.label}
-            formatOptionLabel={formatOptionLabel}
-            classNamePrefix="react-select"
-            isClearable
-            />
+  useBasicStyles
+  selectedOptionStyle="check"
+  options={assigneeOptions}
+  placeholder="Select assignee"
+  value={selectedAssignee}
+  onChange={(value: { value: string; label: string } | null) => {
+    // value is the selected option or null
+    setSelectedAssignee(value);
+  }}
+  className="custom-dropdown"
+  components={{ DropdownIndicator: LeadershipDropdownIndicator }}
+  onMenuOpen={handleLeadershipDropdownOpen}
+  onMenuClose={handleDropdownClose}
+  getOptionLabel={(option) => option.label}
+  formatOptionLabel={formatOptionLabel}
+  classNamePrefix="react-select"
+  isClearable
+/>
+<Text fontWeight="500" fontSize="16px" color="black" marginTop="24px">
+  Department Head
+</Text>
+<Select
+  useBasicStyles
+  selectedOptionStyle="check"
+  options={assigneeOptions}
+  placeholder="Select assignee"
+  value={selectedDepartmentHead} // Create a separate state for Department Head
+  onChange={(value: { value: string; label: string } | null) => {
+    // value is the selected option or null
+    setSelectedDepartmentHead(value);
+  }}
+  className="custom-dropdown"
+  components={{ DropdownIndicator: DepartmentDropdownIndicator }}
+  onMenuOpen={handleDepartmentDropdownOpen}
+  onMenuClose={handleDropdownClose}
+  getOptionLabel={(option) => option.label}
+  formatOptionLabel={formatOptionLabel}
+  classNamePrefix="react-select"
+  isClearable
+/>
         </Flex>
       </Flex>
 
@@ -225,6 +346,7 @@ const CreateForm = () => {
         Submit Form
       </Button>
     </Flex>
+    </QueryClientProvider>
   );
 };
 

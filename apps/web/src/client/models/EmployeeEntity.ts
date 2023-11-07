@@ -12,4 +12,3 @@ export type EmployeeEntity = {
     email: string;
     position: PositionEntity;
 };
-

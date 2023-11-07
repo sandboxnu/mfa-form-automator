@@ -8,4 +8,3 @@ export type CreateFormTemplateDto = {
     formDocLink: string;
     signatureFields: Array<string>;
 };
-

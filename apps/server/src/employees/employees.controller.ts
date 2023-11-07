@@ -21,6 +21,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
+  ApiQuery,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { EmployeeEntity } from './entities/employee.entity';
@@ -53,6 +54,12 @@ export class EmployeesController {
   @ApiOkResponse({ type: [EmployeeEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Limit on number of positions to return',
+    required: false,
+  })
   async findAll(@Query('limit') limit?: number) {
     // TODO: Auth
     const employees = await this.employeesService.findAll(limit);

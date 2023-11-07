@@ -16,4 +16,3 @@ export type FormInstanceEntity = {
     formTemplate: FormTemplateBaseEntity;
     signatures: Array<string>;
 };
-

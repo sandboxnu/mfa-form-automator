@@ -10,4 +10,3 @@ export type FormTemplateEntity = {
     signatureFields: Array<string>;
     formInstances: Array<string>;
 };
-

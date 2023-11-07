@@ -7,4 +7,3 @@ export type DepartmentEntity = {
     id: string;
     name: string;
 };
-

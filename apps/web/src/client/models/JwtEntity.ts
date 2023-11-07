@@ -6,4 +6,3 @@
 export type JwtEntity = {
     access_token: string;
 };
-

@@ -28,11 +28,14 @@ export class PositionsService {
    * @returns all positions, hydrated
    */
   async findAll(limit?: number) {
-    const positions = await this.prisma.position.findMany({
-      take: limit,
-    });
+    const positions = limit
+      ? await this.prisma.position.findMany({
+          take: limit,
+        })
+      : await this.prisma.position.findMany();
     return positions;
   }
+
 
   /**
    * Retrieve all positions with specified ids.
