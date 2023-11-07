@@ -6,6 +6,7 @@ import { PositionBaseEntity, PositionEntity } from './entities/position.entity';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+
 describe('PositionsController', () => {
   let controller: PositionsController;
   let positionsService: PositionsService;
