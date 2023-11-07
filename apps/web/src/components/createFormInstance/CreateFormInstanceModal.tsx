@@ -175,6 +175,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                     {selectedFormTemplate?.signatureFields.map((field, i) => {
                       return (
                         <SignatureDropdown
+                          key={field.id}
                           field={field}
                           index={i}
                           positions={positions}
