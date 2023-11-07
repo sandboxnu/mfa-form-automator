@@ -30,11 +30,15 @@ import { FormInstanceErrorMessage } from './form-instance.errors';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthUser } from '../auth/auth.decorators';
 import { UserEntity } from '../auth/entities/user.entity';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
 export class FormInstancesController {
-  constructor(private readonly formInstancesService: FormInstancesService) {}
+  constructor(
+    private readonly formInstancesService: FormInstancesService,
+    private readonly loggerService: LoggerServiceImpl,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({ type: FormInstanceEntity })
@@ -99,7 +103,9 @@ export class FormInstancesController {
     const formInstance = await this.formInstancesService.findOne(id);
 
     if (formInstance == null) {
-      console.log(FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND);
+      this.loggerService.error(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+      );
       throw new NotFoundException(
         FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
       );
@@ -129,7 +135,9 @@ export class FormInstancesController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND);
+          this.loggerService.error(
+            FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+          );
           throw new NotFoundException(
             FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
           );
@@ -150,7 +158,9 @@ export class FormInstancesController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND);
+          this.loggerService.error(
+            FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+          );
           throw new NotFoundException(
             FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
           );
@@ -181,7 +191,9 @@ export class FormInstancesController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND);
+          this.loggerService.error(
+            FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+          );
           throw new NotFoundException(
             FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
           );

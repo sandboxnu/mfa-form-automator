@@ -25,12 +25,14 @@ import { CreateSignatureFieldDto } from './dto/create-signature-field.dto';
 import { SignatureFieldErrorMessage } from './signature-fields.errors';
 import { UpdateSignatureFieldDto } from './dto/update-signature-field.dto';
 import { Prisma } from '@prisma/client';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 @ApiTags('signature-fields')
 @Controller('signature-fields')
 export class SignatureFieldsController {
   constructor(
     private readonly signatureFieldsService: SignatureFieldsService,
+    private readonly loggerService: LoggerServiceImpl,
   ) {}
 
   @Post()
@@ -67,7 +69,9 @@ export class SignatureFieldsController {
     const signatureField = await this.signatureFieldsService.findOne(id);
 
     if (signatureField == null) {
-      console.log(SignatureFieldErrorMessage.SIGNATURE_FIELD_NOT_FOUND);
+      this.loggerService.error(
+        SignatureFieldErrorMessage.SIGNATURE_FIELD_NOT_FOUND,
+      );
       throw new NotFoundException(
         SignatureFieldErrorMessage.SIGNATURE_FIELD_NOT_FOUND_CLIENT,
       );
@@ -97,7 +101,9 @@ export class SignatureFieldsController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(SignatureFieldErrorMessage.SIGNATURE_FIELD_NOT_FOUND);
+          this.loggerService.error(
+            SignatureFieldErrorMessage.SIGNATURE_FIELD_NOT_FOUND,
+          );
           throw new NotFoundException(
             SignatureFieldErrorMessage.SIGNATURE_FIELD_NOT_FOUND_CLIENT,
           );
@@ -118,7 +124,9 @@ export class SignatureFieldsController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(SignatureFieldErrorMessage.SIGNATURE_FIELD_NOT_FOUND);
+          this.loggerService.error(
+            SignatureFieldErrorMessage.SIGNATURE_FIELD_NOT_FOUND,
+          );
           throw new NotFoundException(
             SignatureFieldErrorMessage.SIGNATURE_FIELD_NOT_FOUND_CLIENT,
           );

@@ -25,11 +25,15 @@ import { DepartmentEntity } from './entities/department.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { DepartmentsErrorMessage } from './departments.errors';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 @ApiTags('departments')
 @Controller('departments')
 export class DepartmentsController {
-  constructor(private readonly departmentsService: DepartmentsService) {}
+  constructor(
+    private readonly departmentsService: DepartmentsService,
+    private readonly loggerService: LoggerServiceImpl,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({ type: DepartmentEntity })
@@ -62,8 +66,10 @@ export class DepartmentsController {
     const department = await this.departmentsService.findOne(id);
 
     if (department == null) {
-      console.log(DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND);
-      throw new NotFoundException(DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND);
+      this.loggerService.error(DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND);
+      throw new NotFoundException(
+        DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND_CLIENT,
+      );
     }
 
     return new DepartmentEntity(department);
@@ -90,7 +96,9 @@ export class DepartmentsController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND);
+          this.loggerService.error(
+            DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND,
+          );
           throw new NotFoundException(
             DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND_CLIENT,
           );
@@ -111,9 +119,11 @@ export class DepartmentsController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND);
-          throw new NotFoundException(
+          this.loggerService.error(
             DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND,
+          );
+          throw new NotFoundException(
+            DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND_CLIENT,
           );
         }
       }
