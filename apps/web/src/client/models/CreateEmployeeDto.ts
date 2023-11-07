@@ -10,3 +10,4 @@ export type CreateEmployeeDto = {
     email: string;
     password: string;
 };
+

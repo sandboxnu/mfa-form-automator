@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { FormInstanceEntity } from './entities/form-instance.entity';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
-import { PositionEntity } from '../positions/entities/position.entity';
+import { PositionBaseEntity } from '../positions/entities/position.entity';
 import { FormTemplateEntity } from '../form-templates/entities/form-template.entity';
 import { SignatureEntity } from '../signatures/entities/signature.entity';
 import { DepartmentEntity } from '../departments/entities/department.entity';
@@ -157,7 +157,7 @@ describe('FormInstancesController', () => {
           firstName: 'First',
           lastName: 'Last',
           positionId: 'c25ac126-d450-4929-8982-0df70d3cd988',
-          position: new PositionEntity({
+          position: new PositionBaseEntity({
             id: 'c25ac126-d450-4929-8982-0df70d3cd988',
             name: 'Associate',
             single: true,
@@ -193,7 +193,7 @@ describe('FormInstancesController', () => {
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
             signerPositionId: 'signerId',
-            signerPosition: new PositionEntity({
+            signerPosition: new PositionBaseEntity({
               id: 'signerId',
               name: 'Manager',
               single: true,
@@ -434,7 +434,7 @@ describe('FormInstancesController', () => {
             firstName: 'First',
             lastName: 'Last',
             positionId: 'c25ac126-d450-4929-8982-0df70d3cd988',
-            position: new PositionEntity({
+            position: new PositionBaseEntity({
               id: 'c25ac126-d450-4929-8982-0df70d3cd988',
               name: 'Associate',
               single: true,
@@ -470,7 +470,7 @@ describe('FormInstancesController', () => {
               createdAt: new Date(1672531200),
               updatedAt: new Date(1672531200),
               signerPositionId: 'f244c232-c453-4394-8180-9b9a82725677',
-              signerPosition: new PositionEntity({
+              signerPosition: new PositionBaseEntity({
                 id: 'f244c232-c453-4394-8180-9b9a82725677',
                 name: 'Manager',
                 single: true,
@@ -496,7 +496,7 @@ describe('FormInstancesController', () => {
               createdAt: new Date(1672531200),
               updatedAt: new Date(1672531200),
               signerPositionId: '6d88b27c-457a-414b-866d-72ad1335ea23',
-              signerPosition: new PositionEntity({
+              signerPosition: new PositionBaseEntity({
                 id: '6d88b27c-457a-414b-866d-72ad1335ea23',
                 name: 'Director',
                 single: true,
@@ -529,7 +529,7 @@ describe('FormInstancesController', () => {
             firstName: 'First',
             lastName: 'Last',
             positionId: 'c25ac126-d450-4929-8982-0df70d3cd988',
-            position: new PositionEntity({
+            position: new PositionBaseEntity({
               id: 'c25ac126-d450-4929-8982-0df70d3cd988',
               name: 'Associate',
               single: true,
@@ -565,7 +565,7 @@ describe('FormInstancesController', () => {
               createdAt: new Date(1672531200),
               updatedAt: new Date(1672531200),
               signerPositionId: 'f244c232-c453-4394-8180-9b9a82725677',
-              signerPosition: new PositionEntity({
+              signerPosition: new PositionBaseEntity({
                 id: 'f244c232-c453-4394-8180-9b9a82725677',
                 name: 'Manager',
                 single: true,
@@ -735,7 +735,7 @@ describe('FormInstancesController', () => {
           firstName: 'First',
           lastName: 'Last',
           positionId: 'c25ac126-d450-4929-8982-0df70d3cd988',
-          position: new PositionEntity({
+          position: new PositionBaseEntity({
             id: 'c25ac126-d450-4929-8982-0df70d3cd988',
             name: 'Associate',
             single: true,
@@ -771,7 +771,7 @@ describe('FormInstancesController', () => {
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
             signerPositionId: 'f244c232-c453-4394-8180-9b9a82725677',
-            signerPosition: new PositionEntity({
+            signerPosition: new PositionBaseEntity({
               id: 'f244c232-c453-4394-8180-9b9a82725677',
               name: 'Manager',
               single: true,
@@ -797,7 +797,7 @@ describe('FormInstancesController', () => {
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
             signerPositionId: '6d88b27c-457a-414b-866d-72ad1335ea23',
-            signerPosition: new PositionEntity({
+            signerPosition: new PositionBaseEntity({
               id: '6d88b27c-457a-414b-866d-72ad1335ea23',
               name: 'Director',
               single: true,
@@ -957,7 +957,7 @@ describe('FormInstancesController', () => {
           firstName: 'First',
           lastName: 'Last',
           positionId: 'c25ac126-d450-4929-8982-0df70d3cd988',
-          position: new PositionEntity({
+          position: new PositionBaseEntity({
             id: 'c25ac126-d450-4929-8982-0df70d3cd988',
             name: 'Associate',
             single: true,
@@ -993,7 +993,7 @@ describe('FormInstancesController', () => {
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
             signerPositionId: 'f244c232-c453-4394-8180-9b9a82725677',
-            signerPosition: new PositionEntity({
+            signerPosition: new PositionBaseEntity({
               id: 'f244c232-c453-4394-8180-9b9a82725677',
               name: 'Manager',
               single: true,
@@ -1019,7 +1019,7 @@ describe('FormInstancesController', () => {
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
             signerPositionId: '6d88b27c-457a-414b-866d-72ad1335ea23',
-            signerPosition: new PositionEntity({
+            signerPosition: new PositionBaseEntity({
               id: '6d88b27c-457a-414b-866d-72ad1335ea23',
               name: 'Director',
               single: true,

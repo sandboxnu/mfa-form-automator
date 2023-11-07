@@ -10,9 +10,11 @@ export default function Settings() {
     queryKey: ['logout'],
     queryFn: DefaultService.appControllerLogout,
     enabled: user === null,
-  })
+  });
 
-  return <>
-    <button onClick={logout}>Logout</button>
-  </>;
+  return (
+    <>
+      <button onClick={logout}>Logout</button>
+    </>
+  );
 }

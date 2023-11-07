@@ -136,11 +136,11 @@ export const SortDownArrow = createIcon({
 export const DropdownDownArrow = createIcon({
   displayName: 'DropdownDownArrow',
   viewBox: '0 0 25 8',
-  d: "M6 9L0.803848 0H11.1962L6 9Z",
-})
+  d: 'M6 9L0.803848 0H11.1962L6 9Z',
+});
 
 export const DropdownUpArrow = createIcon({
   displayName: 'DropdownUpArrow',
   viewBox: '0 0 25 8',
-  d: "M6 0L11.1962 9H0.803848L6 0Z",
-})
+  d: 'M6 0L11.1962 9H0.803848L6 0Z',
+});

@@ -69,12 +69,10 @@ const NavItem = ({
   );
 };
 
-
-
-
 // Navbar component
 export const NavBar: React.FC = (props: any) => {
-  const [isCreateFormInstanceModalOpen, setCreateFormInstanceModalOpen] = useState(false); 
+  const [isCreateFormInstanceModalOpen, setCreateFormInstanceModalOpen] =
+    useState(false);
 
   const openCreateFormInstanceModal = () => {
     setCreateFormInstanceModalOpen(true);
@@ -176,7 +174,10 @@ export const NavBar: React.FC = (props: any) => {
         </Box>
         <Spacer minH="30vh" />
       </Flex>
-      <CreateFormInstanceModal isOpen={isCreateFormInstanceModalOpen} onClose={closeCreateFormInstanceModal} />
+      <CreateFormInstanceModal
+        isOpen={isCreateFormInstanceModalOpen}
+        onClose={closeCreateFormInstanceModal}
+      />
     </Box>
-  )
+  );
 };

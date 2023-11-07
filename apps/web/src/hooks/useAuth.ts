@@ -11,7 +11,7 @@ export const useAuth = () => {
   const { isLoading, data, error } = useQuery({
     queryKey: ['employees/me'],
     queryFn: EmployeesService.employeesControllerFindMe,
-  })
+  });
 
   useEffect(() => {
     if (error) {
@@ -28,8 +28,7 @@ export const useAuth = () => {
         return;
       }
     }
-  }, [user, router, data, isLoading, error, login])
-
+  }, [user, router, data, isLoading, error, login]);
 
   return { user, login, logout };
 };

@@ -7,3 +7,4 @@ export type UpdatePositionDto = {
     name?: string;
     departmentId?: string;
 };
+

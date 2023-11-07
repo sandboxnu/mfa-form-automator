@@ -6,6 +6,7 @@
 export type CreateSignatureFieldDto = {
     name: string;
     order: number;
-    signerPositionId: string;
+    signerPositionId?: string;
     formTemplateId: string;
 };
+

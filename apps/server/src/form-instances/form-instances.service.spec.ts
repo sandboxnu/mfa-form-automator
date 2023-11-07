@@ -48,6 +48,7 @@ const position3 = {
   single: true,
   departmentId: departmentId,
   department: department,
+  employees: [],
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
 };

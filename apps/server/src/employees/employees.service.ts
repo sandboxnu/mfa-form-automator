@@ -63,10 +63,9 @@ export class EmployeesService {
             },
           },
         });
-  
+
     return employees;
   }
-  
 
   /**
    * Retrieve an employee by id.
