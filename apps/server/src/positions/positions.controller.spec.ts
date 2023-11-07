@@ -6,6 +6,7 @@ import { PositionEntity } from './entities/position.entity';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { LoggerServiceImpl } from '../logger/logger.service';
 describe('PositionsController', () => {
   let controller: PositionsController;
   let positionsService: PositionsService;
@@ -13,7 +14,7 @@ describe('PositionsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PositionsController],
-      providers: [PositionsService, PrismaService],
+      providers: [PositionsService, PrismaService, LoggerServiceImpl],
     }).compile();
 
     controller = module.get<PositionsController>(PositionsController);
