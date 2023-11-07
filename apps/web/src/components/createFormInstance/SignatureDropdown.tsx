@@ -1,20 +1,9 @@
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  Flex,
-  Box,
-  Text,
-} from '@chakra-ui/react';
+import { Text } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useState } from 'react';
-import { Option } from './CreateFormInstanceModal';
 import { PositionEntity, SignatureFieldEntity } from '@web/client';
+import { Option } from './types';
 
 export const SignatureDropdown = ({
   field,
@@ -85,6 +74,7 @@ export const SignatureDropdown = ({
         formatOptionLabel={formatOptionLabel}
         classNamePrefix="react-select"
         isClearable
+        closeMenuOnSelect={false}
       />
     </>
   );

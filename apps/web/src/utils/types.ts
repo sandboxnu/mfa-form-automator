@@ -17,6 +17,7 @@ export type FormInstance = {
 
 // for storage in context
 export type User = {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -24,6 +25,7 @@ export type User = {
 
 // jwt payload returned from server
 export type jwtPayload = {
+  sub: string;
   email: string;
   firstName: string;
   lastName: string;

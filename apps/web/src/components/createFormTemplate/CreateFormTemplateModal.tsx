@@ -101,7 +101,7 @@ export const CreateFormTemplateModal = ({
       isOpen={isCreateFormTemplateOpen}
       onClose={onCloseCreateFormTemplate}
     >
-      <ModalOverlay />
+      <ModalOverlay backdropFilter="blur(2px)" />
       <ModalContent minWidth="fit-content" height="fit-content">
         <ModalCloseButton />
         <ModalBody>
