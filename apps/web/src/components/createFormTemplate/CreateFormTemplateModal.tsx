@@ -23,6 +23,7 @@ import { useMutation } from '@tanstack/react-query';
 import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
+import { queryClient } from '@web/pages/_app';
 
 const variants = {
   notDragging: {
@@ -59,6 +60,9 @@ export const CreateFormTemplateModal = ({
         newFormTemplate,
       );
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['api/form-templates'] });
+    },
   });
 
   const deleteSignatureField = (id: string) => {
@@ -69,10 +73,10 @@ export const CreateFormTemplateModal = ({
   };
 
   const handleChange = (newSignatureField: TempSignatureField) => {
-    let tempSignatureFields = [...signatureFields];
+    let tempSignatureFields = signatureFields.slice(0);
     tempSignatureFields.filter(
       (value) => value.id === newSignatureField.id,
-    )[0] = newSignatureField;
+    )[0].value = newSignatureField.value;
     setSignatureFields(tempSignatureFields);
   };
 
