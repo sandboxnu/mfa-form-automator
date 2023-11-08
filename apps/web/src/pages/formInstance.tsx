@@ -6,6 +6,7 @@ import {
   EditUnderlineIcon,
 } from 'apps/web/src/static/icons';
 import AvatarMap from '../components/AvatarMap';
+import { useState } from 'react';
 
 const FormInstance = () => {
   const names = [
@@ -14,6 +15,8 @@ const FormInstance = () => {
     { name: 'Kai Zheng', signed: false, title: 'Department Head' },
     { name: 'Angela Weigl', signed: false, title: 'Project Manager' },
   ];
+
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Box className="main">
@@ -54,20 +57,24 @@ const FormInstance = () => {
           fontWeight="normal"
           textAlign="left"
           _hover={{ textDecoration: 'none' }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           <Flex flexDirection="column">
             <Flex>
-              <PencilIcon mr={1} mt={5} />
-              <Text color="#000" style={{ fontSize: '18px' }} mt={4}>
+              <PencilIcon mr={1} mt={6} />
+              <Text color="#000" style={{ fontSize: '18px', textDecoration: "none"}} mt={5}>
                 Edit
               </Text>
             </Flex>
-            <EditUnderlineIcon
-              stroke="black"
-              width="52px"
-              height="2"
-              fill="none"
-            />
+            {isHovered && (
+              <EditUnderlineIcon
+                stroke="black"
+                width="52px"
+                height="2"
+                fill="none"
+              />
+            )}
           </Flex>
         </Button>
       </Flex>
