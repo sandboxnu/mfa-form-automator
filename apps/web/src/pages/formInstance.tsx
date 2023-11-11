@@ -1,10 +1,10 @@
-import { Avatar, Box, Button, Flex, Grid, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Grid, Text } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
   PencilIcon,
-  CheckIcon,
   EditUnderlineIcon,
 } from 'apps/web/src/static/icons';
+import FormInstanceView from './form-instances/[id]';
 import AvatarMap from '../components/AvatarMap';
 import { useState } from 'react';
 
@@ -63,7 +63,11 @@ const FormInstance = () => {
           <Flex flexDirection="column">
             <Flex>
               <PencilIcon mr={1} mt={6} />
-              <Text color="#000" style={{ fontSize: '18px', textDecoration: "none"}} mt={5}>
+              <Text
+                color="#000"
+                style={{ fontSize: '18px', textDecoration: 'none' }}
+                mt={5}
+              >
                 Edit
               </Text>
             </Flex>
@@ -142,7 +146,19 @@ const FormInstance = () => {
           >
             Assignees
           </Text>
-          <AvatarMap names={names} />
+          <FormInstanceView>
+            {(formInstance) =>
+              formInstance && (
+                <AvatarMap
+                  names={formInstance.signatures.map((name) => ({
+                    name,
+                    signed: true,
+                    title: 'Title',
+                  }))}
+                />
+              )
+            }
+          </FormInstanceView>
         </Box>
       </Grid>
     </Box>
