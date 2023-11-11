@@ -7,13 +7,25 @@ import { useForm } from '@web/hooks/useForm';
 export default function Overview() {
   useAuth();
 
-  const { todoForms, pendingForms, completedForms, assignedFILoading, assignedFIError, createdFILoading, createdFIError } = useForm();
+  const {
+    todoForms,
+    pendingForms,
+    completedForms,
+    assignedFILoading,
+    assignedFIError,
+    createdFILoading,
+    createdFIError,
+  } = useForm();
 
   if (assignedFILoading || createdFILoading) return <p>Loading</p>;
 
-  if (assignedFIError || createdFIError) return <p>Error</p>
+  if (assignedFIError || createdFIError) return <p>Error</p>;
 
-  const rowWidth = Math.max(246 * 1.5, Math.max(todoForms.length, pendingForms.length, completedForms.length) * 246);
+  const rowWidth = Math.max(
+    246 * 1.5,
+    Math.max(todoForms.length, pendingForms.length, completedForms.length) *
+      246,
+  );
 
   return (
     <>
@@ -24,7 +36,7 @@ export default function Overview() {
             color="#FFDFDE"
             link="/todo"
             formInstances={todoForms}
-            rowWidth = {rowWidth}
+            rowWidth={rowWidth}
           />
         </Box>
         <Box marginTop="32px">

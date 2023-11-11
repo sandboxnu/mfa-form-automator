@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 export const FormCard = ({
   formName,
   signatures,
-  link
+  link,
 }: {
   formName: String;
   signatures: SignatureEntity[];
@@ -37,7 +37,7 @@ export const FormCard = ({
           <AvatarGroup size="sm" max={5} marginTop="10px" spacing={'-3px'}>
             {signatures.map((signature: SignatureEntity, index: number) => {
               return (
-                <Tooltip  
+                <Tooltip
                   bg={'white'}
                   color={'black'}
                   label={
@@ -62,8 +62,7 @@ export const FormCard = ({
                     marginRight={'-3.5px'}
                   />
                 </Tooltip>
-                  
-              )
+              );
             })}
           </AvatarGroup>
         </Box>

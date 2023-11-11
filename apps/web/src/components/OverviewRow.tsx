@@ -10,7 +10,7 @@ export const OverviewRow = ({
   color,
   link,
   formInstances,
-  rowWidth
+  rowWidth,
 }: {
   title: string;
   color: string;
@@ -59,7 +59,7 @@ export const OverviewRow = ({
               return (
                 <FormCard
                   formName={formInstance.name}
-                  signatures = {formInstance.signatures}
+                  signatures={formInstance.signatures}
                   key={index}
                   link={'/form-instances/' + formInstance.id}
                 />
