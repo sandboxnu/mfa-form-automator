@@ -4,18 +4,15 @@ import {
   PencilIcon,
   EditUnderlineIcon,
 } from 'apps/web/src/static/icons';
-import FormInstanceView from './form-instances/[id]';
-import AvatarMap from '../components/AvatarMap';
+import AssigneeMap from './AvatarMap';
 import { useState } from 'react';
+import { FormInstanceEntity } from '@web/client';
 
-const FormInstance = () => {
-  const names = [
-    { name: 'Elvin Cheng', signed: true, title: 'Director' },
-    { name: 'Anshul Shirude', signed: true, title: 'Leadership Team Member' },
-    { name: 'Kai Zheng', signed: false, title: 'Department Head' },
-    { name: 'Angela Weigl', signed: false, title: 'Project Manager' },
-  ];
-
+const FormInstance = ({
+  formInstance,
+}: {
+  formInstance: FormInstanceEntity;
+}) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -146,19 +143,13 @@ const FormInstance = () => {
           >
             Assignees
           </Text>
-          <FormInstanceView>
-            {(formInstance) =>
-              formInstance && (
-                <AvatarMap
-                  names={formInstance.signatures.map((name) => ({
-                    name,
-                    signed: true,
-                    title: 'Title',
-                  }))}
-                />
-              )
-            }
-          </FormInstanceView>
+          <AssigneeMap
+            assignees={formInstance.signatures.map((signature) => ({
+              name: 'To be implemented',
+              signed: true,
+              title: signature.signerPosition.name,
+            }))}
+          />
         </Box>
       </Grid>
     </Box>

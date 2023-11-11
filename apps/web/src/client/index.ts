@@ -21,6 +21,7 @@ export type { FormTemplateBaseEntity } from './models/FormTemplateBaseEntity';
 export type { FormTemplateEntity } from './models/FormTemplateEntity';
 export type { JwtEntity } from './models/JwtEntity';
 export type { PositionEntity } from './models/PositionEntity';
+export type { SignatureEntity } from './models/SignatureEntity';
 export type { SignatureFieldEntity } from './models/SignatureFieldEntity';
 export type { UpdateDepartmentDto } from './models/UpdateDepartmentDto';
 export type { UpdateEmployeeDto } from './models/UpdateEmployeeDto';

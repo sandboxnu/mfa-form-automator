@@ -36,7 +36,10 @@ export class FormInstanceEntity implements FormInstance {
   @ApiProperty()
   formTemplate: FormTemplateBaseEntity;
 
-  @ApiProperty()
+  @ApiProperty({
+    isArray: true,
+    type: SignatureEntity,
+  })
   signatures: SignatureEntity[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
