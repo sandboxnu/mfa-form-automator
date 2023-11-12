@@ -93,7 +93,7 @@ export const NavBar = ({
     <Box
       as="nav"
       pos="fixed"
-      top="136"
+      top="96px"
       left="0"
       zIndex="sticky"
       h="full"
