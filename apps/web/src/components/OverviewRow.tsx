@@ -2,7 +2,7 @@ import { HStack, Flex, Box, Text } from '@chakra-ui/react';
 import { FormCard } from './FormCard';
 import { RightArrowIcon } from 'apps/web/src/static/icons';
 import Link from 'next/link';
-import { FormInstance } from 'apps/web/src/utils/types';
+import { FormInstanceEntity } from '@web/client';
 
 // abstraction for a row of cards in the overview page
 export const OverviewRow = ({
@@ -10,17 +10,18 @@ export const OverviewRow = ({
   color,
   link,
   formInstances,
+  rowWidth
 }: {
   title: string;
   color: string;
   link: string;
-  formInstances: FormInstance[];
+  formInstances: FormInstanceEntity[];
+  rowWidth: number;
 }) => {
-  let displayFormInstances: FormInstance[] = formInstances.slice(
+  let displayFormInstances: FormInstanceEntity[] = formInstances.slice(
     0,
     Math.min(4, formInstances.length),
   );
-  let rowWidth: number = displayFormInstances.length * 246;
   return (
     <>
       <Box width={rowWidth}>
@@ -54,12 +55,13 @@ export const OverviewRow = ({
         </Flex>
         <HStack spacing="16px" marginTop="20px">
           {displayFormInstances.map(
-            (formInstance: FormInstance, index: number) => {
+            (formInstance: FormInstanceEntity, index: number) => {
               return (
                 <FormCard
                   formName={formInstance.name}
-                  assignees={formInstance.assignees}
+                  signatures = {formInstance.signatures}
                   key={index}
+                  link={'/form-instances/' + formInstance.id}
                 />
               );
             },
