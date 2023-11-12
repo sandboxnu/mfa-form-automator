@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 export const FormRow = ({
   formInstance,
   last,
-  link
+  link,
 }: {
   formInstance: FormInstanceEntity;
   last?: boolean;
@@ -41,7 +41,11 @@ export const FormRow = ({
         <GridItem colSpan={5} h="64px">
           <Flex alignItems="center" pt="15px">
             <Avatar
-              name={formInstance.originator.firstName + ' ' + formInstance.originator.lastName}
+              name={
+                formInstance.originator.firstName +
+                ' ' +
+                formInstance.originator.lastName
+              }
               boxSize="36px"
               backgroundColor={'#DCDCDC'}
               border="1px solid #FFFFFF"
@@ -50,7 +54,10 @@ export const FormRow = ({
               fontSize="14px"
               size="sm"
             />
-            <Text pl="8px">{formInstance.originator.firstName} {formInstance.originator.lastName}</Text>
+            <Text pl="8px">
+              {formInstance.originator.firstName}{' '}
+              {formInstance.originator.lastName}
+            </Text>
           </Flex>
         </GridItem>
         <GridItem colSpan={5} h="64px">
@@ -74,11 +81,14 @@ export const FormRow = ({
                 },
               )}
             </AvatarGroup>
-            <Text pl="15px" mt="5px">{`${
-              formInstance.signatures.filter((signature: SignatureEntity) => {
-                return signature.signed;
-              }).length
-            }/${formInstance.signatures.length}`} signed</Text>
+            <Text pl="15px" mt="5px">
+              {`${
+                formInstance.signatures.filter((signature: SignatureEntity) => {
+                  return signature.signed;
+                }).length
+              }/${formInstance.signatures.length}`}{' '}
+              signed
+            </Text>
           </Flex>
         </GridItem>
       </Grid>

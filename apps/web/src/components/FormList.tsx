@@ -1,12 +1,5 @@
 import { FormRow } from './FormRow';
-import {
-  Box,
-  Flex,
-  Grid,
-  GridItem,
-  Select,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Flex, Grid, GridItem, Select, Text } from '@chakra-ui/react';
 import { SortDownArrow } from 'apps/web/src/static/icons';
 import { FormInstanceEntity } from '@web/client';
 
@@ -95,14 +88,22 @@ export const FormList = ({
             formInstances
               .slice(0, -1)
               .map((formInstance: FormInstanceEntity, index: number) => {
-                return <FormRow formInstance={formInstance} key={index} link={'/form-instances/' + formInstance.id}/>;
+                return (
+                  <FormRow
+                    formInstance={formInstance}
+                    key={index}
+                    link={'/form-instances/' + formInstance.id}
+                  />
+                );
               })}
           {formInstances.length > 0 && (
             <FormRow
               formInstance={formInstances[formInstances.length - 1]}
               key={formInstances.length - 1}
               last={true}
-              link={'/form-instances/' + formInstances[formInstances.length - 1].id}
+              link={
+                '/form-instances/' + formInstances[formInstances.length - 1].id
+              }
             />
           )}
         </Box>
