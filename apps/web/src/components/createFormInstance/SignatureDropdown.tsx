@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useState } from 'react';
@@ -40,7 +40,7 @@ export const SignatureDropdown = ({
   );
 
   return (
-    <>
+    <Box w="100%">
       <Text fontWeight="500" fontSize="16px" color="black" marginTop="40px">
         {field.name}
       </Text>
@@ -76,6 +76,6 @@ export const SignatureDropdown = ({
         isClearable
         closeMenuOnSelect={false}
       />
-    </>
+    </Box>
   );
 };

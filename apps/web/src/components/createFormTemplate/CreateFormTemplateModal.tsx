@@ -307,13 +307,12 @@ export const CreateFormTemplateModal = ({
             width="161px"
             height="40px"
             position="absolute"
-            right="40px"
             bottom="32px"
             isDisabled={
               isFormTemplateNameInvalid ||
               signatureFields.length == 0 ||
               signatureFields.some((field) => field.value === '')
-          }
+            }
             onClick={async (e) => {
               toast.promise(submitFormTemplate(), {
                 success: {

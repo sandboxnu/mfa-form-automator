@@ -10,6 +10,7 @@ import {
   Box,
   Text,
   ModalFooter,
+  Grid,
 } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
@@ -26,9 +27,9 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 
 // TODO
-// select assignee search icon  
+// select assignee search icon
 // set default width of assignee dropdowns to be wider
-// elipsis for overflow 
+// elipsis for overflow
 // make form name editable
 
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
@@ -107,7 +108,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
             >
               {selectedFormTemplate ? selectedFormTemplate.name : 'New Form'}
             </Text>
-            <Flex flexDirection="row">
+            <Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
               <Flex flexDirection="column" marginRight="79px">
                 <Text
                   fontFamily="Hanken Grotesk"
@@ -155,7 +156,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   {/* Placeholder for PDF */}
                 </Box>
               </Flex>
-
               {formTypeSelected ? (
                 <Flex flexDirection="column">
                   <Text
@@ -166,7 +166,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   >
                     Assignees
                   </Text>
-                  <Box>
+                  <Box w="100%">
                     {selectedFormTemplate?.signatureFields.map((field, i) => {
                       return (
                         <SignatureDropdown
@@ -194,19 +194,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   </Text>
                 </Box>
               )}
-            </Flex>
-
-            <Button
-              backgroundColor="#4C658A"
-              textColor="white"
-              width="161px"
-              height="40px"
-              position="absolute"
-              right="40px"
-              bottom="32px"
-            >
-              Create Form
-            </Button>
+            </Grid>
           </Box>
         </ModalBody>
         <ModalFooter>
@@ -216,7 +204,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
             width="161px"
             height="40px"
             position="absolute"
-            right="40px"
             bottom="32px"
             onClick={submitFormInstance}
           >
