@@ -43,10 +43,10 @@ export class FormInstancesController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   async create(@Body() createFormInstanceDto: CreateFormInstanceDto) {
-    const newFormTemplate = await this.formInstancesService.create(
+    const newFormInstance = await this.formInstancesService.create(
       createFormInstanceDto,
     );
-    return new FormInstanceEntity(newFormTemplate);
+    return new FormInstanceEntity(newFormInstance);
   }
 
   @Get()
@@ -54,8 +54,8 @@ export class FormInstancesController {
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findAll(@Query('limit') limit?: number) {
-    const formTemplates = await this.formInstancesService.findAll(limit);
-    return formTemplates.map(
+    const formInstances = await this.formInstancesService.findAll(limit);
+    return formInstances.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );
   }
@@ -67,10 +67,10 @@ export class FormInstancesController {
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findAllAssignedToCurrentEmployee(@AuthUser() currentUser: UserEntity) {
-    const formTemplates = await this.formInstancesService.findAssignedTo(
+    const formInstances = await this.formInstancesService.findAssignedTo(
       currentUser.id,
     );
-    return formTemplates.map(
+    return formInstances.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );
   }
@@ -82,10 +82,10 @@ export class FormInstancesController {
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findAllCreatedByCurrentEmployee(@AuthUser() currentUser: UserEntity) {
-    const formTemplates = await this.formInstancesService.findCreatedBy(
+    const formInstances = await this.formInstancesService.findCreatedBy(
       currentUser.id,
     );
-    return formTemplates.map(
+    return formInstances.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );
   }
