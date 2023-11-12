@@ -7,6 +7,7 @@ import {
 import AssigneeMap from './AvatarMap';
 import { useState } from 'react';
 import { FormInstanceEntity } from '@web/client';
+import { useRouter } from 'next/router';
 
 const FormInstance = ({
   formInstance,
@@ -14,22 +15,31 @@ const FormInstance = ({
   formInstance: FormInstanceEntity;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
 
   return (
     <Box className="main">
       <Flex
         ml="50px"
-        as="span"
+        as="button"
         align="center"
-        onClick={() => {
-          // handle the click action here
-        }}
         cursor="pointer"
-        color="#4C658A"
         mt={10}
+        data-group
+        onClick={router.back}
       >
-        <LeftArrowIcon boxSize={3} mr={2} />
-        <Text>Back to Pending</Text>
+        <LeftArrowIcon
+          boxSize={3}
+          mr={2}
+          fill="#4C658A"
+          _groupHover={{ fill: 'var(--chakra-colors-gray-500)' }}
+        />
+        <Text
+          color="#4C658A"
+          _groupHover={{ color: 'var(--chakra-colors-gray-500)' }}
+        >
+          Back
+        </Text>
       </Flex>
       <Flex align="center" pl={4} mt={4}>
         <Text
@@ -43,7 +53,7 @@ const FormInstance = ({
           mt={4}
           mr={5}
         >
-          Travel Authorization Form
+          {formInstance.name}
         </Text>
         <Button
           variant="link"

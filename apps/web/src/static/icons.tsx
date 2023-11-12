@@ -87,10 +87,7 @@ export const LeftArrowIcon = createIcon({
   viewBox: '0 0 8 10',
   path: (
     <>
-      <path
-        d="M7.66987 0.5L0.169872 4.83013L7.66987 9.16025L7.66987 0.5Z"
-        fill="#4C658A"
-      />
+      <path d="M7.66987 0.5L0.169872 4.83013L7.66987 9.16025L7.66987 0.5Z" />
     </>
   ),
 });
