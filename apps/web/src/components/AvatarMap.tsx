@@ -2,7 +2,7 @@ import { Avatar, Box, Flex, Grid, Text } from '@chakra-ui/react';
 import { CheckIcon } from 'apps/web/src/static/icons';
 
 type Assignee = {
-  name: string;
+  name?: string;
   signed: boolean;
   title: string;
 };
@@ -38,17 +38,21 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                   {assignee.title}
                 </Text>
               </Flex>
-              <Text
-                color="#5E5E5E"
-                fontFamily="Hanken Grotesk"
-                fontSize="16px"
-                fontStyle="normal"
-                fontWeight="400"
-                lineHeight="normal"
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                {assignee.name}
-              </Text>
+              {assignee.name ? (
+                <Text
+                  color="#5E5E5E"
+                  fontFamily="Hanken Grotesk"
+                  fontSize="16px"
+                  fontStyle="normal"
+                  fontWeight="400"
+                  lineHeight="normal"
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  {assignee.name}
+                </Text>
+              ) : (
+                <></>
+              )}
             </Box>
             <Box minWidth="200px">
               {assignee.signed && (

@@ -15,6 +15,7 @@ export type { CreatePositionDto } from './models/CreatePositionDto';
 export type { CreateSignatureDto } from './models/CreateSignatureDto';
 export type { CreateSignatureFieldDto } from './models/CreateSignatureFieldDto';
 export type { DepartmentEntity } from './models/DepartmentEntity';
+export type { EmployeeBaseEntity } from './models/EmployeeBaseEntity';
 export type { EmployeeEntity } from './models/EmployeeEntity';
 export type { FormInstanceEntity } from './models/FormInstanceEntity';
 export type { FormTemplateBaseEntity } from './models/FormTemplateBaseEntity';
