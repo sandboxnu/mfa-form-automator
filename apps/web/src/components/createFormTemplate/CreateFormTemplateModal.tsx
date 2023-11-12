@@ -302,7 +302,13 @@ export const CreateFormTemplateModal = ({
         </ModalBody>
         <ModalFooter>
           <Button
-            color="#4C658A"
+            backgroundColor="#4C658A"
+            textColor="white"
+            width="161px"
+            height="40px"
+            position="absolute"
+            right="40px"
+            bottom="32px"
             isDisabled={
               isFormTemplateNameInvalid ||
               signatureFields.length == 0 ||
