@@ -100,24 +100,16 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalCloseButton />
         <ModalBody>
           <Box h="75vh" w="75vw">
-          <Text
-  fontFamily="Hanken Grotesk"
-  fontWeight="800"
-  fontSize="27px"
-  pt="30px"
-  pb="5px" // Adjusted padding
->
-  Create Form
-</Text>
-<Text
-  fontFamily="Hanken Grotesk"
-  fontWeight="600" // Changed from 800 to 600 for subheading
-  fontSize="18px" // Adjusted font size
-  pb="20px" // Padding bottom
->
-  {selectedFormTemplate ? selectedFormTemplate.name : ''}
-</Text>
-<Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
+            <Text
+              fontFamily="Hanken Grotesk"
+              fontWeight="800"
+              fontSize="27px"
+              pt="30px"
+              pb="5px" // Adjusted padding
+            >
+              Create {selectedFormTemplate ? selectedFormTemplate.name : 'Form'}
+            </Text>
+            <Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
               <Flex flexDirection="column" marginRight="79px">
                 <Text
                   fontFamily="Hanken Grotesk"
@@ -155,16 +147,8 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   classNamePrefix="react-select"
                   isClearable
                 />
-                {/* <Box
-                  width="496px"
-                  height="436px"
-                  backgroundColor="gray.300"
-                  marginBottom="10px"
-                  marginTop="10px"
-                > */}
-                 <Skeleton marginBottom="10px"
+                <Skeleton marginBottom="10px"
                   marginTop="10px" w="100%" h="450px" background="gray" />
-                {/* </Box> */}
               </Flex>
               {formTypeSelected ? (
                 <Flex flexDirection="column" w="100%">
