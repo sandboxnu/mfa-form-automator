@@ -1,15 +1,7 @@
 import { FormRow } from './FormRow';
-import { FormInstance } from 'apps/web/src/utils/types';
-import {
-  Box,
-  Flex,
-  Grid,
-  GridItem,
-  Select,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Flex, Grid, GridItem, Select, Text } from '@chakra-ui/react';
 import { SortDownArrow } from 'apps/web/src/static/icons';
+import { FormInstanceEntity } from '@web/client';
 
 // abstracted component for displaying forms in list format
 export const FormList = ({
@@ -18,7 +10,7 @@ export const FormList = ({
   color,
 }: {
   title: string;
-  formInstances: FormInstance[];
+  formInstances: FormInstanceEntity[];
   color: string;
 }) => {
   return (
@@ -95,14 +87,23 @@ export const FormList = ({
           {formInstances.length > 1 &&
             formInstances
               .slice(0, -1)
-              .map((formInstance: FormInstance, index: number) => {
-                return <FormRow formInstance={formInstance} key={index} />;
+              .map((formInstance: FormInstanceEntity, index: number) => {
+                return (
+                  <FormRow
+                    formInstance={formInstance}
+                    key={index}
+                    link={'/form-instances/' + formInstance.id}
+                  />
+                );
               })}
           {formInstances.length > 0 && (
             <FormRow
               formInstance={formInstances[formInstances.length - 1]}
               key={formInstances.length - 1}
               last={true}
+              link={
+                '/form-instances/' + formInstances[formInstances.length - 1].id
+              }
             />
           )}
         </Box>
