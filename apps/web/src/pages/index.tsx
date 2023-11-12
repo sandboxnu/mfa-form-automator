@@ -5,8 +5,6 @@ import { useForm } from '@web/hooks/useForm';
 
 // overview page
 export default function Overview() {
-  useAuth();
-
   const {
     todoForms,
     pendingForms,

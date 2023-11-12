@@ -161,9 +161,6 @@ export const NavBar = ({
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
-      <NavItem icon="formInstance" link="/formInstance">
-        Form Instance View
-      </NavItem>
       <Box px={8}>
         <Divider mt={'5'} mb={5} borderColor={'gray'} />
       </Box>
@@ -177,7 +174,7 @@ export const NavBar = ({
         paddingLeft="40px"
         fontSize="14px"
         position="absolute"
-        bottom="160px"
+        bottom="130px"
       >
         Museum of Fine Arts, Boston
       </Box>
