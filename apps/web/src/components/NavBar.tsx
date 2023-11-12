@@ -1,4 +1,14 @@
-import { Box, Button, Flex, Divider, Spacer } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Divider,
+  Spacer,
+  MenuButton,
+  Menu,
+  MenuItem,
+  MenuList,
+} from '@chakra-ui/react';
 import {
   OverViewIcon,
   ToDoIcon,
@@ -102,8 +112,10 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
       <Flex
         align="center"
         px="4"
+        pt="40px"
+        pb="32px"
         pl="8"
-        py="3"
+        rounded="8px"
         cursor="pointer"
         color="inherit"
         _dark={{
@@ -113,43 +125,25 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
         fontWeight="semibold"
         transition=".15s ease"
       >
-        <Link href="/createform" passHref>
-          <Button
-            marginTop="5"
-            height="40px"
-            width="156px"
-            justifyContent="center"
-            bg="#D74100"
-            textColor="white"
-            textAlign="center"
-            fontSize="sm"
+        <Menu closeOnSelect={false}>
+          <MenuButton
+            as={Button}
+            h="40px"
+            w="124px"
             backgroundColor="#4C658A"
-            fontWeight="900"
-            _focus={{ outline: 'none', boxShadow: 'none' }}
+            textColor="white"
+            leftIcon={<PlusIcon />}
           >
-            <PlusIcon marginRight={11} />
-            Create Form
-          </Button>
-        </Link>
-      </Flex>
-
-      <Flex
-        align="center"
-        px="4"
-        pl="8"
-        pb="3"
-        cursor="pointer"
-        color="inherit"
-        _dark={{
-          color: 'gray.400',
-        }}
-        role="group"
-        fontWeight="semibold"
-        transition=".15s ease"
-      >
-        <Button onClick={props.onOpenCreateFormTemplate}>
-          Create Template
-        </Button>
+            Create
+          </MenuButton>
+          <MenuList minW="0px" w={'124px'} p="5px">
+            {/* add form instance prop in the menu item below when ready */}
+            <MenuItem rounded="8px">Form</MenuItem>
+            <MenuItem rounded="8px" onClick={props.onOpenCreateFormTemplate}>
+              Template
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </Flex>
 
       <NavItem icon="overview" link="/">
