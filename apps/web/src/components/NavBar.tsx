@@ -84,7 +84,7 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
   <Box
     as="nav"
     pos="fixed"
-    top="136"
+    top="96px"
     left="0"
     zIndex="sticky"
     h="full"
@@ -174,7 +174,7 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
         paddingLeft="40px"
         fontSize="14px"
         position="absolute"
-        bottom="160px"
+        bottom="130px"
       >
         Museum of Fine Arts, Boston
       </Box>
