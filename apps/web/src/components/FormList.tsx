@@ -95,7 +95,7 @@ export const FormList = ({
           {formInstances.length > 1 &&
             formInstances
               .slice(0, -1)
-              .map((formInstance: FormInstance, index: number) => {
+              .map((formInstance: FormInstanceEntity, index: number) => {
                 return <FormRow formInstance={formInstance} key={index} />;
               })}
           {formInstances.length > 0 && (
