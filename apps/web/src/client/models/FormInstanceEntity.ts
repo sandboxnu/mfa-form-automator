@@ -16,5 +16,7 @@ export type FormInstanceEntity = {
     originator: Record<string, any>;
     formTemplate: FormTemplateBaseEntity;
     signatures: Array<SignatureEntity>;
+    originatorId: string;
+    formTemplateId: string;
 };
 

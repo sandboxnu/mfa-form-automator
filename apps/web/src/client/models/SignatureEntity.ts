@@ -3,18 +3,20 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { EmployeeBaseEntity } from './EmployeeBaseEntity';
 import type { PositionEntity } from './PositionEntity';
 
 export type SignatureEntity = {
     id: string;
     order: number;
     signed: boolean;
-    signedDocLink: Record<string, any>;
+    signedDocLink: string | null;
     createdAt: string;
     updatedAt: string;
     signerPositionId: string;
     signerPosition: PositionEntity;
-    userSignedById: Record<string, any>;
-    userSignedBy: Record<string, any>;
+    userSignedById?: string | null;
+    userSignedBy?: EmployeeBaseEntity | null;
+    formInstanceId: string;
 };
 

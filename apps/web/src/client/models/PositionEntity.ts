@@ -10,5 +10,8 @@ export type PositionEntity = {
     name: string;
     single: boolean;
     department: DepartmentEntity;
+    departmentId: string;
+    createdAt: string;
+    updatedAt: string;
 };
 

@@ -11,10 +11,10 @@ import { request as __request } from '../core/request';
 export class DefaultService {
 
     /**
-     * @returns any
+     * @returns string
      * @throws ApiError
      */
-    public static appControllerGetHello(): CancelablePromise<any> {
+    public static appControllerGetHello(): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api',
@@ -24,11 +24,12 @@ export class DefaultService {
     /**
      * @param requestBody
      * @returns JwtEntity
+     * @returns any
      * @throws ApiError
      */
     public static appControllerLogin(
         requestBody: any,
-    ): CancelablePromise<JwtEntity> {
+    ): CancelablePromise<JwtEntity | any> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/auth/login',

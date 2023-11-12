@@ -3,9 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type DepartmentEntity = {
+export type EmployeeBaseEntity = {
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    positionId: string;
+    pswdHash: string | null;
     createdAt: string;
     updatedAt: string;
 };
