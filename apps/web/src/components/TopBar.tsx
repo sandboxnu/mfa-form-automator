@@ -1,19 +1,5 @@
-import {
-  MFALogoIcon,
-  ProfileIcon,
-  SearchIcon,
-} from 'apps/web/src/static/icons';
-import {
-  Box,
-  Hide,
-  IconButton,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Select,
-  Text,
-  Flex,
-} from '@chakra-ui/react';
+import { MFALogoIcon, ProfileIcon } from 'apps/web/src/static/icons';
+import { Box, Hide, IconButton, Text, Flex, Spacer } from '@chakra-ui/react';
 import { useAuthData } from '@web/hooks/useAuthData';
 
 export const TopBar: React.FC = () => {
@@ -32,7 +18,7 @@ export const TopBar: React.FC = () => {
       }}
       borderBottomWidth="1px"
       color="inherit"
-      h="136"
+      h="96px"
       zIndex="sticky"
     >
       <Box minWidth={302}>
@@ -40,31 +26,7 @@ export const TopBar: React.FC = () => {
           <MFALogoIcon height="51px" width="220px" />
         </Flex>
       </Box>
-      <InputGroup
-        display={{
-          md: 'flex',
-        }}
-      >
-        <Select
-          minW="120"
-          maxW="120"
-          backgroundColor="lightgrey"
-          borderTopRightRadius="0"
-          borderBottomRightRadius="0"
-        >
-          <option value="all_forms">All Forms</option>
-          <option value="option2">Option 2</option>
-          <option value="option3">Option 3</option>
-        </Select>
-        <Input
-          borderTopLeftRadius="0"
-          borderBottomLeftRadius="0"
-          placeholder="Search all forms"
-        />
-        <InputRightElement pointerEvents="none">
-          <SearchIcon boxSize="7" color="grey" />
-        </InputRightElement>
-      </InputGroup>
+      <Spacer />
 
       <Flex align="center" pl="10">
         <Hide breakpoint="(max-width: 1000px)">

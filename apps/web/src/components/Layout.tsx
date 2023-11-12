@@ -36,7 +36,7 @@ export const Layout = ({ children }: { children: any }) => {
       <Box>
         <TopBar />
 
-        <Box as="main" ml="320" pt="136">
+        <Box as="main" ml="320" pt="96px">
           {children}
         </Box>
       </Box>
