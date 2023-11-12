@@ -28,6 +28,9 @@ export const FormCard = ({
         onClick={() => {
           router.push(link);
         }}
+        _hover={{
+          boxShadow: '0px 0.5px 6px 1px #D4D4D4',
+        }}
       >
         <Box paddingLeft="24px" paddingTop="26px">
           <Text fontFamily="Hanken Grotesk" fontWeight={800} fontSize="18px">
