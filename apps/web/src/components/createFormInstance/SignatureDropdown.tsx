@@ -44,7 +44,7 @@ export const SignatureDropdown = ({
       <Text fontWeight="500" fontSize="16px" color="black" marginTop="40px">
         {field.name}
       </Text>
-      <Select
+      <Select 
         useBasicStyles
         selectedOptionStyle="check"
         options={positions?.map((position) => {

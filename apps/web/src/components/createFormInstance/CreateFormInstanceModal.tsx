@@ -10,6 +10,7 @@ import {
   Box,
   Text,
   ModalFooter,
+  Skeleton,
   Grid,
 } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
@@ -27,10 +28,11 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 
 // TODO
-// select assignee search icon
-// set default width of assignee dropdowns to be wider
-// elipsis for overflow
+// select assignee search icon  
+// set default width of assignee dropdowns to be wider (in line with create form button)
+// elipsis for overflow 
 // make form name editable
+// make list of
 
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   isOpen,
@@ -44,7 +46,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
   >([]);
-
   const createFormInstanceMutation = useMutation({
     mutationFn: async (newFormInstance: CreateFormInstanceDto) => {
       return FormInstancesService.formInstancesControllerCreate(
@@ -74,7 +75,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const submitFormInstance = async () =>
     createFormInstanceMutation
       .mutateAsync({
-        name: selectedFormTemplate?.name ?? 'New Form',
+        name: selectedFormTemplate?.name ?? 'Create Form',
         signatures: signaturePositions.map((pos, i) => {
           return {
             order: i,
@@ -99,16 +100,24 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalCloseButton />
         <ModalBody>
           <Box h="75vh" w="75vw">
-            <Text
-              fontFamily="Hanken Grotesk"
-              fontWeight="800"
-              fontSize="27px"
-              pt="30px"
-              pb="30px"
-            >
-              {selectedFormTemplate ? selectedFormTemplate.name : 'New Form'}
-            </Text>
-            <Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
+          <Text
+  fontFamily="Hanken Grotesk"
+  fontWeight="800"
+  fontSize="27px"
+  pt="30px"
+  pb="5px" // Adjusted padding
+>
+  Create Form
+</Text>
+<Text
+  fontFamily="Hanken Grotesk"
+  fontWeight="600" // Changed from 800 to 600 for subheading
+  fontSize="18px" // Adjusted font size
+  pb="20px" // Padding bottom
+>
+  {selectedFormTemplate ? selectedFormTemplate.name : ''}
+</Text>
+<Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
               <Flex flexDirection="column" marginRight="79px">
                 <Text
                   fontFamily="Hanken Grotesk"
@@ -146,18 +155,19 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   classNamePrefix="react-select"
                   isClearable
                 />
-                <Box
+                {/* <Box
                   width="496px"
                   height="436px"
                   backgroundColor="gray.300"
                   marginBottom="10px"
                   marginTop="10px"
-                >
-                  {/* Placeholder for PDF */}
-                </Box>
+                > */}
+                 <Skeleton marginBottom="10px"
+                  marginTop="10px" w="100%" h="450px" background="gray" />
+                {/* </Box> */}
               </Flex>
               {formTypeSelected ? (
-                <Flex flexDirection="column">
+                <Flex flexDirection="column" w="100%">
                   <Text
                     fontFamily="Hanken Grotesk"
                     fontSize="17px"
