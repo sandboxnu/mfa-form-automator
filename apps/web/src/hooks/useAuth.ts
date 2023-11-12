@@ -22,7 +22,8 @@ export const useAuth = () => {
     if (!user && !isLoading) {
       if (data) {
         const { id, firstName, lastName, email } = data;
-        login({ id, firstName, lastName, email });
+        const positionId = data.position.id;
+        login({ id, positionId, firstName, lastName, email });
       } else {
         router.push('/signin');
         return;

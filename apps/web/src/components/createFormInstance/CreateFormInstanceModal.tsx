@@ -26,15 +26,10 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 
 // TODO
-// search directory in assignees and icon?
+// select assignee search icon  
 // set default width of assignee dropdowns to be wider
-// more margin w search
-// endpoint to get all templates
-// get all positions for assignees
-// end point to create new form instance
-// check api spec
+// elipsis for overflow 
 // make form name editable
-// make modal stay the same size?
 
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   isOpen,

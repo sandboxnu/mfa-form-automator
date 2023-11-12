@@ -1,9 +1,11 @@
 import { FormList } from 'apps/web/src/components/FormList';
-import { completedForms } from 'apps/web/src/data/seedData';
 import { useAuth } from './../hooks/useAuth';
+import { useForm } from '@web/hooks/useForm';
 
 export default function Completed() {
   useAuth();
+  const { completedForms } = useForm();
+
   return (
     <>
       <FormList

@@ -37,6 +37,7 @@ export default function Signin() {
 
         const user: User = {
           id: decoded.sub,
+          positionId: decoded.positionId,
           email: decoded.email,
           firstName: decoded.firstName,
           lastName: decoded.lastName,

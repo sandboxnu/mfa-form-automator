@@ -1,22 +1,31 @@
 import { OverviewRow } from 'apps/web/src/components/OverviewRow';
-import {
-  completedForms,
-  pendingForms,
-  todoForms,
-} from 'apps/web/src/data/seedData';
 import { Box } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { useAuth } from './../hooks/useAuth';
-import { FormInstancesService } from './../../../web/src/client';
+import { useForm } from '@web/hooks/useForm';
+
 // overview page
 export default function Overview() {
   useAuth();
 
-  const { isLoading, error, data } = useQuery({
-    queryKey: ['form-instances/me'],
-    queryFn:
-      FormInstancesService.formInstancesControllerFindAllAssignedToCurrentEmployee,
-  });
+  const {
+    todoForms,
+    pendingForms,
+    completedForms,
+    assignedFILoading,
+    assignedFIError,
+    createdFILoading,
+    createdFIError,
+  } = useForm();
+
+  if (assignedFILoading || createdFILoading) return <p>Loading</p>;
+
+  if (assignedFIError || createdFIError) return <p>Error</p>;
+
+  const rowWidth = Math.max(
+    246 * 1.5,
+    Math.max(todoForms.length, pendingForms.length, completedForms.length) *
+      246,
+  );
 
   return (
     <>
@@ -27,6 +36,7 @@ export default function Overview() {
             color="#FFDFDE"
             link="/todo"
             formInstances={todoForms}
+            rowWidth={rowWidth}
           />
         </Box>
         <Box marginTop="32px">
@@ -35,6 +45,7 @@ export default function Overview() {
             color="#FFECCC"
             link="/pending"
             formInstances={pendingForms}
+            rowWidth={rowWidth}
           />
         </Box>
         <Box marginTop="32px">
@@ -43,6 +54,7 @@ export default function Overview() {
             color="#D0F0DC"
             link="/completed"
             formInstances={completedForms}
+            rowWidth={rowWidth}
           />
         </Box>
       </Box>

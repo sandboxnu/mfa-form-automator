@@ -6,16 +6,20 @@ import {
   GridItem,
   Text,
 } from '@chakra-ui/react';
-import { Assignee, FormInstance } from 'apps/web/src/utils/types';
+import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import { useRouter } from 'next/router';
 
 // form component for displaying a row in a list of forms
 export const FormRow = ({
   formInstance,
   last,
+  link,
 }: {
-  formInstance: FormInstance;
+  formInstance: FormInstanceEntity;
   last?: boolean;
+  link: string;
 }) => {
+  const router = useRouter();
   return (
     <>
       <Grid
@@ -26,6 +30,8 @@ export const FormRow = ({
         boxShadow="0px 0px 1px 1px #f7f7f7"
         _hover={{ boxShadow: '0px 0px 1px 1px #dbdbdb' }}
         mb={'2px'}
+        cursor="pointer"
+        onClick={() => router.push(link)}
       >
         <GridItem colSpan={10} h="64px">
           <Text pl="24px" pt="20px">
@@ -35,42 +41,54 @@ export const FormRow = ({
         <GridItem colSpan={5} h="64px">
           <Flex alignItems="center" pt="15px">
             <Avatar
-              name={formInstance.originator}
+              name={
+                formInstance.originator.firstName +
+                ' ' +
+                formInstance.originator.lastName
+              }
               boxSize="36px"
               backgroundColor={'#DCDCDC'}
               border="1px solid #FFFFFF"
               color="black"
               fontWeight={400}
               fontSize="14px"
+              size="sm"
             />
-            <Text pl="8px">{formInstance.originator}</Text>
+            <Text pl="8px">
+              {formInstance.originator.firstName}{' '}
+              {formInstance.originator.lastName}
+            </Text>
           </Flex>
         </GridItem>
         <GridItem colSpan={5} h="64px">
           <Flex pt="15px">
-            <AvatarGroup size="md" max={5}>
-              {formInstance.assignees.map(
-                (assignee: Assignee, index: number) => {
+            <AvatarGroup size="sm" max={5}>
+              {/*Dummy values until userSignedBy fixed*/}
+              {formInstance.signatures.map(
+                (signature: SignatureEntity, index: number) => {
                   return (
                     <Avatar
-                      name={assignee.name}
+                      name={signature.signerPosition.name}
                       key={index}
                       boxSize="36px"
-                      backgroundColor={assignee.signed ? '#D0F0DC' : '#DCDCDC'}
+                      backgroundColor={signature.signed ? '#D0F0DC' : '#DCDCDC'}
                       border="1px solid #FFFFFF"
                       color="black"
                       fontWeight={400}
-                      fontSize="14px"
+                      fontSize="12px"
                     />
                   );
                 },
               )}
             </AvatarGroup>
-            <Text pl="15px" mt="5px">{`${
-              formInstance.assignees.filter((assignee) => {
-                return assignee.signed;
-              }).length
-            }/${formInstance.assignees.length}`}</Text>
+            <Text pl="15px" mt="5px">
+              {`${
+                formInstance.signatures.filter((signature: SignatureEntity) => {
+                  return signature.signed;
+                }).length
+              }/${formInstance.signatures.length}`}{' '}
+              signed
+            </Text>
           </Flex>
         </GridItem>
       </Grid>

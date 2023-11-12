@@ -1,15 +1,20 @@
-import { Assignee } from 'apps/web/src/utils/types';
 import { Box, Text, Avatar, AvatarGroup, Tooltip } from '@chakra-ui/react';
+import { SignatureEntity } from './../../../web/src/client';
+import { useRouter } from 'next/router';
 
 // Overview Form component for displaying forms in the dashboard
 // will probably have to change the types once the backend is finished
 export const FormCard = ({
   formName,
-  assignees,
+  signatures,
+  link,
 }: {
   formName: String;
-  assignees: Array<Assignee>;
+  signatures: SignatureEntity[];
+  link: string;
 }) => {
+  const router = useRouter();
+
   return (
     <>
       <Box
@@ -19,13 +24,21 @@ export const FormCard = ({
         backgroundColor="#FFFFFF"
         boxShadow="0px 0.5px 3px 1px #D4D4D4"
         background="#FCFCFC"
+        cursor="pointer"
+        onClick={() => {
+          router.push(link);
+        }}
+        _hover={{
+          boxShadow: '0px 0.5px 6px 1px #D4D4D4',
+        }}
       >
         <Box paddingLeft="24px" paddingTop="26px">
           <Text fontFamily="Hanken Grotesk" fontWeight={800} fontSize="18px">
             {formName}
           </Text>
+          {/*Dummy values until userSignedBy fixed*/}
           <AvatarGroup size="sm" max={5} marginTop="10px" spacing={'-3px'}>
-            {assignees.map((assignee: Assignee, index: number) => {
+            {signatures.map((signature: SignatureEntity, index: number) => {
               return (
                 <Tooltip
                   bg={'white'}
@@ -33,27 +46,17 @@ export const FormCard = ({
                   label={
                     <>
                       <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                        {assignee.name}
-                      </span>
-                      <br />
-                      {assignee.email}
-                      <br />
-                      <span
-                        style={{
-                          color: assignee.signed ? '#14A34A' : '#D74100',
-                        }}
-                      >
-                        {assignee.signed ? 'Signed' : 'Not yet signed'}
+                        {signature.signerPosition.name}
                       </span>
                     </>
                   }
                   key={index}
                 >
                   <Avatar
-                    name={assignee.name}
+                    name={signature.signerPosition.name}
                     key={index}
                     boxSize="32px"
-                    backgroundColor={assignee.signed ? '#D1F0D4' : '#DCDCDC'}
+                    backgroundColor={signature.signed ? '#D1F0D4' : '#DCDCDC'}
                     outline="1px solid #FFFFFF"
                     color="black"
                     fontWeight={400}
