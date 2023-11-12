@@ -1,19 +1,9 @@
-import {
-  Box,
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, useDisclosure } from '@chakra-ui/react';
 
 import { NavBar } from './NavBar';
 import { TopBar } from './TopBar';
 import { CreateFormTemplateModal } from './createFormTemplate/CreateFormTemplateModal';
+import { useAuth } from '@web/hooks/useAuth';
 
 // Common layout component for all pages
 export const Layout = ({ children }: { children: any }) => {
@@ -22,6 +12,8 @@ export const Layout = ({ children }: { children: any }) => {
     onOpen: onOpenCreateFormTemplate,
     onClose: onCloseCreateFormTemplate,
   } = useDisclosure();
+
+  useAuth();
 
   return (
     <Box
