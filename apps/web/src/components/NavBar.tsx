@@ -158,9 +158,6 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
-      <NavItem icon="formInstance" link="/formInstance">
-        Form Instance View
-      </NavItem>
       <Box px={8}>
         <Divider mt={'5'} mb={5} borderColor={'gray'} />
       </Box>
