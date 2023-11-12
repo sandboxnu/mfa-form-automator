@@ -4,6 +4,14 @@ import { chakraComponents, Select } from 'chakra-react-select';
 import { useState } from 'react';
 import { PositionEntity, SignatureFieldEntity } from '@web/client';
 import { Option } from './types';
+import { SearchIcon } from '@web/static/icons';
+
+const assigneePlaceholderWithIcon = (
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+  <SearchIcon /> 
+  <span style={{ marginLeft: '8px' }}>Select assignee</span>
+</div>
+);
 
 export const SignatureDropdown = ({
   field,
@@ -53,7 +61,7 @@ export const SignatureDropdown = ({
             label: position.name,
           };
         })}
-        placeholder="Select assignee"
+        placeholder={assigneePlaceholderWithIcon}
         value={signaturePositions[index]} // Create a separate state for Department Head
         onChange={(selected) => {
           // value is the selected option or null
