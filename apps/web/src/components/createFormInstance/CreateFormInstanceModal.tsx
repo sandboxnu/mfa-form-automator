@@ -26,6 +26,7 @@ import {
 import { SignatureDropdown } from './SignatureDropdown';
 import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
+import { queryClient } from '@web/pages/_app';
 
 // TODO
 // select assignee search icon
@@ -51,6 +52,12 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       return FormInstancesService.formInstancesControllerCreate(
         newFormInstance,
       );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['api/form-instances/me'] });
+      queryClient.invalidateQueries({
+        queryKey: ['api/form-instances/created/me'],
+      });
     },
   });
 
