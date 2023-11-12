@@ -15,7 +15,7 @@ export const useForm = () => {
     error: assignedFIError,
     data: assignedFIData,
   } = useQuery({
-    queryKey: ['form-instances/me'],
+    queryKey: ['api/form-instances/me'],
     queryFn:
       FormInstancesService.formInstancesControllerFindAllAssignedToCurrentEmployee,
   });
@@ -25,7 +25,7 @@ export const useForm = () => {
     error: createdFIError,
     data: createdFIData,
   } = useQuery({
-    queryKey: ['form-instances/created/me'],
+    queryKey: ['api/form-instances/created/me'],
     queryFn:
       FormInstancesService.formInstancesControllerFindAllCreatedByCurrentEmployee,
   });

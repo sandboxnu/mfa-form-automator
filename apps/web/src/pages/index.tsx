@@ -20,9 +20,11 @@ export default function Overview() {
   if (assignedFIError || createdFIError) return <p>Error</p>;
 
   const rowWidth = Math.max(
-    246 * 1.5,
-    Math.max(todoForms.length, pendingForms.length, completedForms.length) *
-      246,
+    230 * 1.5,
+    Math.min(
+      4,
+      Math.max(todoForms.length, pendingForms.length, completedForms.length),
+    ) * 230,
   );
 
   return (
