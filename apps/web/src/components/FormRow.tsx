@@ -7,15 +7,19 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import { useRouter } from 'next/router';
 
 // form component for displaying a row in a list of forms
 export const FormRow = ({
   formInstance,
   last,
+  link
 }: {
   formInstance: FormInstanceEntity;
   last?: boolean;
+  link: string;
 }) => {
+  const router = useRouter();
   return (
     <>
       <Grid
@@ -26,6 +30,8 @@ export const FormRow = ({
         boxShadow="0px 0px 1px 1px #f7f7f7"
         _hover={{ boxShadow: '0px 0px 1px 1px #dbdbdb' }}
         mb={'2px'}
+        cursor="pointer"
+        onClick={() => router.push(link)}
       >
         <GridItem colSpan={10} h="64px">
           <Text pl="24px" pt="20px">

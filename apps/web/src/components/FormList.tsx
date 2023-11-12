@@ -1,5 +1,4 @@
 import { FormRow } from './FormRow';
-import { FormInstance } from 'apps/web/src/utils/types';
 import {
   Box,
   Flex,
@@ -96,13 +95,14 @@ export const FormList = ({
             formInstances
               .slice(0, -1)
               .map((formInstance: FormInstanceEntity, index: number) => {
-                return <FormRow formInstance={formInstance} key={index} />;
+                return <FormRow formInstance={formInstance} key={index} link={'/form-instances/' + formInstance.id}/>;
               })}
           {formInstances.length > 0 && (
             <FormRow
               formInstance={formInstances[formInstances.length - 1]}
               key={formInstances.length - 1}
               last={true}
+              link={'/form-instances/' + formInstances[formInstances.length - 1].id}
             />
           )}
         </Box>
