@@ -29,6 +29,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
     "@types/node": "^20.8.2",
     "@yarnpkg/cli": "^4.0.0-rc.51",
     "@yarnpkg/core": "^4.0.0-rc.51",

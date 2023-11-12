@@ -29,10 +29,14 @@ export class SignatureEntity implements Signature {
   @ApiProperty()
   signerPosition: PositionBaseEntity;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   userSignedById: string | null;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   userSignedBy: EmployeeBaseEntity | null;
 
   @Exclude()

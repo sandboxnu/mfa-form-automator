@@ -6,14 +6,13 @@
 import type { PositionBaseEntity } from './PositionBaseEntity';
 
 export type EmployeeEntity = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    position: PositionBaseEntity;
-    positionId: string;
-    pswdHash: string | null;
-    createdAt: string;
-    updatedAt: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  position: PositionBaseEntity;
+  positionId: string;
+  pswdHash: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
-
