@@ -15,12 +15,9 @@ import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 
 // TODO
-// select assignee search icon
-// set default width of assignee dropdowns to be wider (in line with create form button)
-// elipsis for overflow
 // make form name editable
-// make list of
 // make it so on click option on dropdown it closes
+// fix form type dropdown bug
 
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   isOpen,
@@ -171,7 +168,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     <div
   className="scrollable-div"
   style={{
-    maxHeight: '60vh',
+    maxHeight: '450px',
     overflowY: 'auto',
     paddingRight: '5px',
     scrollbarWidth: 'thin',
