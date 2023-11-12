@@ -1,9 +1,9 @@
 import { MFALogoIcon, ProfileIcon } from 'apps/web/src/static/icons';
 import { Box, Hide, IconButton, Text, Flex, Spacer } from '@chakra-ui/react';
-import { useAuthData } from '@web/hooks/useAuthData';
+import { useAuth } from '@web/hooks/useAuth';
 
 export const TopBar: React.FC = () => {
-  const { user } = useAuthData();
+  const { user } = useAuth();
 
   return (
     <Flex
