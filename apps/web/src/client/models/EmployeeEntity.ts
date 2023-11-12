@@ -11,5 +11,9 @@ export type EmployeeEntity = {
     lastName: string;
     email: string;
     position: PositionEntity;
+    positionId: string;
+    pswdHash: string | null;
+    createdAt: string;
+    updatedAt: string;
 };
 

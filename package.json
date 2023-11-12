@@ -36,6 +36,7 @@
     "@yarnpkg/plugin-git": "^3.0.0-rc",
     "@yarnpkg/plugin-workspace-tools": "^4.0.0-rc.51",
     "husky": "^8.0.3",
-    "nestjs-config": "^1.4.11"
+    "nestjs-config": "^1.4.11",
+    "react-query": "^3.39.3"
   }
 }

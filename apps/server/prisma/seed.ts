@@ -150,7 +150,7 @@ async function upsertFormInstance(formInstanceData: FormInstanceData) {
       originatorId,
       formTemplateId,
       signatures: {
-        connect: signatures,
+        create: signatures,
       },
     },
   });

@@ -1,21 +1,18 @@
-import { Avatar, Box, Button, Flex, Grid, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Grid, Text } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
   PencilIcon,
-  CheckIcon,
   EditUnderlineIcon,
 } from 'apps/web/src/static/icons';
-import AvatarMap from '../components/AvatarMap';
+import AssigneeMap from './AvatarMap';
 import { useState } from 'react';
+import { FormInstanceEntity } from '@web/client';
 
-const FormInstance = () => {
-  const names = [
-    { name: 'Elvin Cheng', signed: true, title: 'Director' },
-    { name: 'Anshul Shirude', signed: true, title: 'Leadership Team Member' },
-    { name: 'Kai Zheng', signed: false, title: 'Department Head' },
-    { name: 'Angela Weigl', signed: false, title: 'Project Manager' },
-  ];
-
+const FormInstance = ({
+  formInstance,
+}: {
+  formInstance: FormInstanceEntity;
+}) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -63,7 +60,11 @@ const FormInstance = () => {
           <Flex flexDirection="column">
             <Flex>
               <PencilIcon mr={1} mt={6} />
-              <Text color="#000" style={{ fontSize: '18px', textDecoration: "none"}} mt={5}>
+              <Text
+                color="#000"
+                style={{ fontSize: '18px', textDecoration: 'none' }}
+                mt={5}
+              >
                 Edit
               </Text>
             </Flex>
@@ -142,7 +143,16 @@ const FormInstance = () => {
           >
             Assignees
           </Text>
-          <AvatarMap names={names} />
+          <AssigneeMap
+            assignees={formInstance.signatures.map((signature) => ({
+              name: signature.userSignedBy
+                ? signature.userSignedBy?.firstName +
+                  signature.userSignedBy?.lastName
+                : undefined,
+              signed: true,
+              title: signature.signerPosition.name,
+            }))}
+          />
         </Box>
       </Grid>
     </Box>
