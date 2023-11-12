@@ -3,7 +3,9 @@ import { Position } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 import { DepartmentEntity } from './../../departments/entities/department.entity';
 import { IsOptional } from 'class-validator';
-export class PositionEntity implements Position {
+import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
+
+export class PositionBaseEntity implements Position {
   @ApiProperty()
   id: string;
 
@@ -27,10 +29,30 @@ export class PositionEntity implements Position {
   @Exclude()
   updatedAt: Date;
 
-  constructor(partial: Partial<PositionEntity>) {
+  constructor(partial: Partial<PositionBaseEntity>) {
     if (partial.department) {
       partial.department = new DepartmentEntity(partial.department);
     }
     Object.assign(this, partial);
+  }
+}
+
+export class PositionEntity extends PositionBaseEntity {
+  @IsOptional()
+  // @ApiProperty({
+  //   isArray: true,
+  //   required: false,
+  //   type: EmployeeBaseEntity,
+  // })
+  employees?: EmployeeBaseEntity[];
+
+  constructor(partial: Partial<PositionEntity>) {
+    super(partial);
+    if (partial.employees) {
+      partial.employees = partial.employees.map(
+        (employee) => new EmployeeBaseEntity(employee),
+      );
+      Object.assign(this, partial);
+    }
   }
 }

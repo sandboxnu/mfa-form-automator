@@ -1,7 +1,7 @@
 import { SignatureField } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { PositionEntity } from '../../positions/entities/position.entity';
+import { PositionBaseEntity } from '../../positions/entities/position.entity';
 
 export class SignatureFieldEntity implements SignatureField {
   @ApiProperty()
@@ -17,7 +17,7 @@ export class SignatureFieldEntity implements SignatureField {
   signerPositionId: string | null;
 
   @ApiProperty()
-  signerPosition: PositionEntity | null;
+  signerPosition: PositionBaseEntity | null;
 
   @Exclude()
   formTemplateId: string;
@@ -30,7 +30,7 @@ export class SignatureFieldEntity implements SignatureField {
 
   constructor(partial: Partial<SignatureFieldEntity>) {
     if (partial.signerPosition) {
-      partial.signerPosition = new PositionEntity(partial.signerPosition);
+      partial.signerPosition = new PositionBaseEntity(partial.signerPosition);
     }
 
     Object.assign(this, partial);

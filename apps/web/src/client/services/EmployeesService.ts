@@ -34,12 +34,12 @@ export class EmployeesService {
     }
 
     /**
-     * @param limit
+     * @param limit Limit on number of positions to return
      * @returns EmployeeEntity
      * @throws ApiError
      */
     public static employeesControllerFindAll(
-        limit: number,
+        limit?: number,
     ): CancelablePromise<Array<EmployeeEntity>> {
         return __request(OpenAPI, {
             method: 'GET',

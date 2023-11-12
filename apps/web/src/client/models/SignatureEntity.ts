@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 import type { EmployeeBaseEntity } from './EmployeeBaseEntity';
-import type { PositionEntity } from './PositionEntity';
+import type { PositionBaseEntity } from './PositionBaseEntity';
 
 export type SignatureEntity = {
   id: string;
@@ -14,8 +14,8 @@ export type SignatureEntity = {
   createdAt: string;
   updatedAt: string;
   signerPositionId: string;
-  signerPosition: PositionEntity;
-  userSignedById?: string | null;
-  userSignedBy?: EmployeeBaseEntity | null;
+  signerPosition: PositionBaseEntity;
+  userSignedById: string | null;
+  userSignedBy: EmployeeBaseEntity | null;
   formInstanceId: string;
 };

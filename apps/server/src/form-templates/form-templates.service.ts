@@ -40,20 +40,34 @@ export class FormTemplatesService {
    * @returns all form templates, hydrated
    */
   async findAll(limit?: number) {
-    const formTemplates = await this.prisma.formTemplate.findMany({
-      take: limit,
-      include: {
-        signatureFields: {
+    const formTemplates = limit
+      ? await this.prisma.formTemplate.findMany({
+          take: limit,
           include: {
-            signerPosition: {
+            signatureFields: {
               include: {
-                department: true,
+                signerPosition: {
+                  include: {
+                    department: true,
+                  },
+                },
               },
             },
           },
-        },
-      },
-    });
+        })
+      : await this.prisma.formTemplate.findMany({
+          include: {
+            signatureFields: {
+              include: {
+                signerPosition: {
+                  include: {
+                    department: true,
+                  },
+                },
+              },
+            },
+          },
+        });
     return formTemplates;
   }
 

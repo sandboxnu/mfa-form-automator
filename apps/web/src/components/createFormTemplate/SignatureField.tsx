@@ -107,9 +107,9 @@ export const SignatureField = ({
             <EditablePreview />
             <Input
               as={EditableInput}
-              value={value.value}
+              value={field.value}
               onChange={(e) =>
-                setValue({ id: value.id, value: e.target.value })
+                handleChange({ id: value.id, value: e.target.value })
               }
               w="100%"
             />

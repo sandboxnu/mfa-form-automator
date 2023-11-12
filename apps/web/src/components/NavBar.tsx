@@ -80,34 +80,35 @@ const NavItem = ({
 };
 
 // Navbar component
-export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
-  <Box
-    as="nav"
-    pos="fixed"
-    top="96px"
-    left="0"
-    zIndex="sticky"
-    h="full"
-    pb="10"
-    overflowX="hidden"
-    overflowY="hidden"
-    minH="800px"
-    bg="white"
-    _dark={{
-      bg: 'gray.800',
-    }}
-    color="inherit"
-    borderRightWidth="1px"
-    width="80"
-    {...props}
-  >
-    <Flex
-      direction="column"
+export const NavBar = ({
+  onOpenCreateFormTemplate,
+  onOpenCreateFormInstance,
+  ...props
+}: {
+  onOpenCreateFormTemplate: () => void;
+  onOpenCreateFormInstance: () => void;
+  props?: {};
+}) => {
+  return (
+    <Box
       as="nav"
-      fontSize="sm"
-      color="black"
-      aria-label="Main Navigation"
-      overflow="hidden"
+      pos="fixed"
+      top="136"
+      left="0"
+      zIndex="sticky"
+      h="full"
+      pb="10"
+      overflowX="hidden"
+      overflowY="auto"
+      bg="white"
+      _dark={{
+        bg: 'gray.800',
+      }}
+      border="true"
+      color="inherit"
+      borderRightWidth="1px"
+      width="80"
+      {...props}
     >
       <Flex
         align="center"
@@ -138,8 +139,10 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
           </MenuButton>
           <MenuList minW="0px" w={'124px'} p="5px">
             {/* add form instance prop in the menu item below when ready */}
-            <MenuItem rounded="8px">Form</MenuItem>
-            <MenuItem rounded="8px" onClick={props.onOpenCreateFormTemplate}>
+            <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
+              Form
+            </MenuItem>
+            <MenuItem rounded="8px" onClick={onOpenCreateFormTemplate}>
               Template
             </MenuItem>
           </MenuList>
@@ -176,6 +179,6 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
         Museum of Fine Arts, Boston
       </Box>
       <Spacer minH="30vh" />
-    </Flex>
-  </Box>
-);
+    </Box>
+  );
+};

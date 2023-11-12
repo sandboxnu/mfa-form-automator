@@ -56,6 +56,7 @@ NextJS, NestJS, Prisma, PostgreSQL
 4. Start up your local database in `apps` directory:
 
    ```bash
+   yarn backend:docker:run
    yarn dev:db:up
    ```
 

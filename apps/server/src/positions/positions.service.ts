@@ -18,6 +18,9 @@ export class PositionsService {
         name: createPositionDto.name,
         departmentId: createPositionDto.departmentId,
       },
+      include: {
+        employees: true,
+      },
     });
     return newPosition;
   }
@@ -31,8 +34,15 @@ export class PositionsService {
     const positions = limit
       ? await this.prisma.position.findMany({
           take: limit,
+          include: {
+            employees: true,
+          },
         })
-      : await this.prisma.position.findMany();
+      : await this.prisma.position.findMany({
+          include: {
+            employees: true,
+          },
+        });
     return positions;
   }
 
@@ -45,6 +55,9 @@ export class PositionsService {
     const positions = await this.prisma.position.findMany({
       where: {
         id: { in: ids },
+      },
+      include: {
+        employees: true,
       },
     });
     return positions;
@@ -59,6 +72,9 @@ export class PositionsService {
     const position = await this.prisma.position.findFirstOrThrow({
       where: {
         id: id,
+      },
+      include: {
+        employees: true,
       },
     });
 
@@ -77,6 +93,9 @@ export class PositionsService {
         id: id,
       },
       data: updatePositionDto,
+      include: {
+        employees: true,
+      },
     });
     return updatedPosition;
   }

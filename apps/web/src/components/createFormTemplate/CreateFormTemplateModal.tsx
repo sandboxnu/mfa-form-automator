@@ -23,6 +23,7 @@ import { useMutation } from '@tanstack/react-query';
 import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
+import { queryClient } from '@web/pages/_app';
 
 const variants = {
   notDragging: {
@@ -59,6 +60,9 @@ export const CreateFormTemplateModal = ({
         newFormTemplate,
       );
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['api/form-templates'] });
+    },
   });
 
   const deleteSignatureField = (id: string) => {
@@ -69,10 +73,10 @@ export const CreateFormTemplateModal = ({
   };
 
   const handleChange = (newSignatureField: TempSignatureField) => {
-    let tempSignatureFields = [...signatureFields];
+    let tempSignatureFields = signatureFields.slice(0);
     tempSignatureFields.filter(
       (value) => value.id === newSignatureField.id,
-    )[0] = newSignatureField;
+    )[0].value = newSignatureField.value;
     setSignatureFields(tempSignatureFields);
   };
 
@@ -101,7 +105,7 @@ export const CreateFormTemplateModal = ({
       isOpen={isCreateFormTemplateOpen}
       onClose={onCloseCreateFormTemplate}
     >
-      <ModalOverlay />
+      <ModalOverlay backdropFilter="blur(2px)" />
       <ModalContent minWidth="fit-content" height="fit-content">
         <ModalCloseButton />
         <ModalBody>
@@ -298,11 +302,16 @@ export const CreateFormTemplateModal = ({
         </ModalBody>
         <ModalFooter>
           <Button
-            color="#4C658A"
+            backgroundColor="#4C658A"
+            textColor="white"
+            width="161px"
+            height="40px"
+            position="absolute"
+            bottom="32px"
             isDisabled={
               isFormTemplateNameInvalid ||
               signatureFields.length == 0 ||
-              !signatureFields.every((field) => field.value !== '')
+              signatureFields.some((field) => field.value === '')
             }
             onClick={async (e) => {
               toast.promise(submitFormTemplate(), {
@@ -321,7 +330,7 @@ export const CreateFormTemplateModal = ({
               });
             }}
           >
-            Create
+            Create Template
           </Button>
         </ModalFooter>
       </ModalContent>

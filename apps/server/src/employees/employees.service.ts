@@ -43,16 +43,27 @@ export class EmployeesService {
    * @returns all employees, hydrated
    */
   async findAll(limit?: number) {
-    const employees = await this.prisma.employee.findMany({
-      take: limit,
-      include: {
-        position: {
+    const employees = limit
+      ? await this.prisma.employee.findMany({
+          take: limit,
           include: {
-            department: true,
+            position: {
+              include: {
+                department: true,
+              },
+            },
           },
-        },
-      },
-    });
+        })
+      : await this.prisma.employee.findMany({
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        });
+
     return employees;
   }
 

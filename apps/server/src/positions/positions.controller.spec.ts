@@ -2,10 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PositionsController } from './positions.controller';
 import { PositionsService } from './positions.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { PositionEntity } from './entities/position.entity';
+import { PositionBaseEntity, PositionEntity } from './entities/position.entity';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+
 describe('PositionsController', () => {
   let controller: PositionsController;
   let positionsService: PositionsService;
@@ -32,6 +33,7 @@ describe('PositionsController', () => {
           name: 'position-name',
           single: false,
           departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+          employees: [],
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
         },
@@ -40,6 +42,7 @@ describe('PositionsController', () => {
           name: 'position-name',
           single: false,
           departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+          employees: [],
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
         },
@@ -51,6 +54,7 @@ describe('PositionsController', () => {
           name: 'position-name',
           single: false,
           departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+          employees: [],
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
         }),
@@ -59,6 +63,7 @@ describe('PositionsController', () => {
           name: 'position-name',
           single: false,
           departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+          employees: [],
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
         }),
@@ -83,6 +88,7 @@ describe('PositionsController', () => {
         id: 'new-Position-id',
         name: 'New Position',
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+        employees: [],
         single: false,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -106,6 +112,7 @@ describe('PositionsController', () => {
         name: 'Position Name',
         single: false,
         departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+        employees: [],
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -118,7 +125,7 @@ describe('PositionsController', () => {
       });
 
       const result = await controller.findOne(positionId);
-      const expected = new PositionEntity(position);
+      const expected = new PositionBaseEntity(position);
       expect(result).toEqual(expected);
     });
 

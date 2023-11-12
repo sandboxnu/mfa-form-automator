@@ -33,12 +33,12 @@ export class FormTemplatesService {
     }
 
     /**
-     * @param limit
+     * @param limit Limit on number of form templates to return
      * @returns FormTemplateEntity
      * @throws ApiError
      */
     public static formTemplatesControllerFindAll(
-        limit: number,
+        limit?: number,
     ): CancelablePromise<Array<FormTemplateEntity>> {
         return __request(OpenAPI, {
             method: 'GET',

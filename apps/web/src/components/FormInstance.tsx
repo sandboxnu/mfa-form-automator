@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Grid, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Grid, Text, Skeleton } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
   PencilIcon,
@@ -132,7 +132,7 @@ const FormInstance = ({
           >
             Form Preview
           </Text>
-          <Box
+          <Skeleton
             ml="50px"
             mt={6}
             mb="100px"
