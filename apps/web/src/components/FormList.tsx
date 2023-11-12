@@ -7,9 +7,9 @@ import {
   GridItem,
   Select,
   Text,
-  VStack,
 } from '@chakra-ui/react';
 import { SortDownArrow } from 'apps/web/src/static/icons';
+import { FormInstanceEntity } from '@web/client';
 
 // abstracted component for displaying forms in list format
 export const FormList = ({
@@ -18,7 +18,7 @@ export const FormList = ({
   color,
 }: {
   title: string;
-  formInstances: FormInstance[];
+  formInstances: FormInstanceEntity[];
   color: string;
 }) => {
   return (

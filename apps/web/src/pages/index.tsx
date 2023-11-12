@@ -21,6 +21,9 @@ export default function Overview() {
 
   if (assignedFIError || createdFIError) return <p>Error</p>;
 
+
+  console.log(pendingForms);
+
   const rowWidth = Math.max(
     246 * 1.5,
     Math.max(todoForms.length, pendingForms.length, completedForms.length) *
