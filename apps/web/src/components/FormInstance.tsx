@@ -159,7 +159,7 @@ const FormInstance = ({
                 ? signature.userSignedBy?.firstName +
                   signature.userSignedBy?.lastName
                 : undefined,
-              signed: true,
+              signed: signature.userSignedById ? true : false,
               title: signature.signerPosition.name,
             }))}
           />
