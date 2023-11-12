@@ -22,7 +22,7 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { PositionBaseEntity, PositionEntity } from './entities/position.entity';
+import { PositionEntity } from './entities/position.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { PositionsErrorMessage } from './positions.errors';
