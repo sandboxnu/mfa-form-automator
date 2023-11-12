@@ -28,9 +28,9 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 
 // TODO
-// select assignee search icon  
+// select assignee search icon
 // set default width of assignee dropdowns to be wider (in line with create form button)
-// elipsis for overflow 
+// elipsis for overflow
 // make form name editable
 // make list of
 
@@ -147,8 +147,13 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   classNamePrefix="react-select"
                   isClearable
                 />
-                <Skeleton marginBottom="10px"
-                  marginTop="10px" w="100%" h="450px" background="gray" />
+                <Skeleton
+                  marginBottom="10px"
+                  marginTop="10px"
+                  w="100%"
+                  h="450px"
+                  background="gray"
+                />
               </Flex>
               {formTypeSelected ? (
                 <Flex flexDirection="column" w="100%">
