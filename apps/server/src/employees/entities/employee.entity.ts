@@ -19,6 +19,9 @@ export class EmployeeBaseEntity implements Employee {
   @ApiProperty()
   email: string;
 
+  @ApiProperty()
+  isAdmin: boolean;
+
   @Exclude()
   pswdHash: string | null;
 

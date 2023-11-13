@@ -71,6 +71,7 @@ export const AuthProvider = ({ children }: any) => {
           email: decoded.email,
           firstName: decoded.firstName,
           lastName: decoded.lastName,
+          isAdmin: decoded.isAdmin,
         };
         setUser(user);
         router.push('/');
