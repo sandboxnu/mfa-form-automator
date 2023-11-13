@@ -24,6 +24,12 @@ export const CompletedIcon = createIcon({
   d: 'M10.2667 18.5503L5.36667 13.6503L3.73334 15.2836L10.2667 21.8169L24.2667 7.81693L22.6333 6.18359L10.2667 18.5503Z',
 });
 
+export const FormInstanceIcon = createIcon({
+  displayName: 'FormInstanceIcon',
+  viewBox: '0 0 28 28',
+  d: 'M3 3h22v22H3V3z',
+});
+
 export const HistoryIcon = createIcon({
   displayName: 'HistoryIcon',
   viewBox: '0 0 28 24',
@@ -73,6 +79,43 @@ export const RightArrowIcon = createIcon({
         fill="#4C658A"
       />
     </>
+  ),
+});
+
+export const LeftArrowIcon = createIcon({
+  displayName: 'LeftArrowIcon',
+  viewBox: '0 0 8 10',
+  path: (
+    <>
+      <path d="M7.66987 0.5L0.169872 4.83013L7.66987 9.16025L7.66987 0.5Z" />
+    </>
+  ),
+});
+
+export const PencilIcon = createIcon({
+  displayName: 'PencilIcon',
+  viewBox: '0 0 16 16',
+  d: 'M0.368652 12.2309V15.3555H3.49322L12.7086 6.14008L9.58404 3.01552L0.368652 12.2309ZM15.1249 3.72375C15.4499 3.3988 15.4499 2.87387 15.1249 2.54891L13.1752 0.599185C12.8503 0.27423 12.3253 0.27423 12.0004 0.599185L10.4756 2.12397L13.6001 5.24854L15.1249 3.72375Z',
+});
+
+export const EditUnderlineIcon = createIcon({
+  displayName: 'EditUnderlineIcon',
+  viewBox: '0 0 51 2',
+  d: 'M0.368652 1.27344L50.2391 1.27344',
+});
+
+export const CheckIcon = createIcon({
+  displayName: 'CheckIcon',
+  viewBox: '0 0 19 14',
+  d: 'M1.84473 7.90904L6.26544 12.3298L17.3511 1.24414',
+  path: (
+    <path
+      fill="none"
+      stroke="#008933"
+      strokeLinecap="round"
+      strokeWidth="2"
+      d="M1.84473 7.90904L6.26544 12.3298L17.3511 1.24414"
+    />
   ),
 });
 

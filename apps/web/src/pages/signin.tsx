@@ -1,4 +1,3 @@
-import { useAuthData } from './../hooks/useAuthData';
 import {
   FormControl,
   FormLabel,
@@ -9,44 +8,18 @@ import {
   InputRightElement,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { User, jwtPayload } from './../utils/types';
-import { jwtDecode } from 'jwt-decode';
-import { useRouter } from 'next/router';
-import { DefaultService } from '@web/client';
 import { Flex } from '@chakra-ui/react';
 import { MFALogoIcon } from '@web/static/icons';
+import { useAuth } from '@web/hooks/useAuth';
 
 export default function Signin() {
-  const { login } = useAuthData();
-  const router = useRouter();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
-
-  const handleLogin = () => {
-    DefaultService.appControllerLogin({
-      username: email,
-      password: password,
-    })
-      .then((response) => {
-        const token = response.access_token;
-        const decoded = jwtDecode(token) as jwtPayload;
-
-        const user: User = {
-          email: decoded.email,
-          firstName: decoded.firstName,
-          lastName: decoded.lastName,
-        };
-        login(user);
-        router.push('/');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   return (
     <>
@@ -92,7 +65,11 @@ export default function Signin() {
             </InputGroup>
           </FormControl>
           <Flex justifyContent="center" marginTop="32px" marginBottom="48px">
-            <Button background="#4C658A" color="#FFF" onClick={handleLogin}>
+            <Button
+              background="#4C658A"
+              color="#FFF"
+              onClick={() => login(email, password)}
+            >
               Sign In
             </Button>
           </Flex>

@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json", // Extend the config options from the root
   "compilerOptions": {
+    "jsx": "react",
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,

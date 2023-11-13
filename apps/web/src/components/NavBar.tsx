@@ -1,4 +1,14 @@
-import { Box, Button, Flex, Divider, Spacer } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Divider,
+  Spacer,
+  MenuButton,
+  Menu,
+  MenuItem,
+  MenuList,
+} from '@chakra-ui/react';
 import {
   OverViewIcon,
   ToDoIcon,
@@ -7,6 +17,7 @@ import {
   HistoryIcon,
   SettingsIcon,
   PlusIcon,
+  FormInstanceIcon,
 } from 'apps/web/src/static/icons';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -18,6 +29,7 @@ const icons = {
   completed: <CompletedIcon marginRight="2" />,
   history: <HistoryIcon marginRight="2" />,
   settings: <SettingsIcon marginRight="2" />,
+  formInstance: <FormInstanceIcon marginRight="2" />,
 };
 
 // navigation item abstraction to include the Link and styling
@@ -68,40 +80,43 @@ const NavItem = ({
 };
 
 // Navbar component
-export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
-  <Box
-    as="nav"
-    pos="fixed"
-    top="136"
-    left="0"
-    zIndex="sticky"
-    h="full"
-    pb="10"
-    overflowX="hidden"
-    overflowY="hidden"
-    minH="800px"
-    bg="white"
-    _dark={{
-      bg: 'gray.800',
-    }}
-    color="inherit"
-    borderRightWidth="1px"
-    width="80"
-    {...props}
-  >
-    <Flex
-      direction="column"
+export const NavBar = ({
+  onOpenCreateFormTemplate,
+  onOpenCreateFormInstance,
+  ...props
+}: {
+  onOpenCreateFormTemplate: () => void;
+  onOpenCreateFormInstance: () => void;
+  props?: {};
+}) => {
+  return (
+    <Box
       as="nav"
-      fontSize="sm"
-      color="black"
-      aria-label="Main Navigation"
-      overflow="hidden"
+      pos="fixed"
+      top="96px"
+      left="0"
+      zIndex="sticky"
+      h="full"
+      pb="10"
+      overflowX="hidden"
+      overflowY="auto"
+      bg="white"
+      _dark={{
+        bg: 'gray.800',
+      }}
+      border="true"
+      color="inherit"
+      borderRightWidth="1px"
+      width="80"
+      {...props}
     >
       <Flex
         align="center"
         px="4"
+        pt="40px"
+        pb="32px"
         pl="8"
-        py="3"
+        rounded="8px"
         cursor="pointer"
         color="inherit"
         _dark={{
@@ -111,43 +126,27 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
         fontWeight="semibold"
         transition=".15s ease"
       >
-        <Link href="/createform" passHref>
-          <Button
-            marginTop="5"
-            height="40px"
-            width="156px"
-            justifyContent="center"
-            bg="#D74100"
-            textColor="white"
-            textAlign="center"
-            fontSize="sm"
+        <Menu closeOnSelect={false}>
+          <MenuButton
+            as={Button}
+            h="40px"
+            w="124px"
             backgroundColor="#4C658A"
-            fontWeight="900"
-            _focus={{ outline: 'none', boxShadow: 'none' }}
+            textColor="white"
+            leftIcon={<PlusIcon />}
           >
-            <PlusIcon marginRight={11} />
-            Create Form
-          </Button>
-        </Link>
-      </Flex>
-
-      <Flex
-        align="center"
-        px="4"
-        pl="8"
-        pb="3"
-        cursor="pointer"
-        color="inherit"
-        _dark={{
-          color: 'gray.400',
-        }}
-        role="group"
-        fontWeight="semibold"
-        transition=".15s ease"
-      >
-        <Button onClick={props.onOpenCreateFormTemplate}>
-          Create Template
-        </Button>
+            Create
+          </MenuButton>
+          <MenuList minW="0px" w={'124px'} p="5px">
+            {/* add form instance prop in the menu item below when ready */}
+            <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
+              Form
+            </MenuItem>
+            <MenuItem rounded="8px" onClick={onOpenCreateFormTemplate}>
+              Template
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </Flex>
 
       <NavItem icon="overview" link="/">
@@ -175,11 +174,11 @@ export const NavBar = (props: { onOpenCreateFormTemplate: any }) => (
         paddingLeft="40px"
         fontSize="14px"
         position="absolute"
-        bottom="160px"
+        bottom="130px"
       >
         Museum of Fine Arts, Boston
       </Box>
       <Spacer minH="30vh" />
-    </Flex>
-  </Box>
-);
+    </Box>
+  );
+};

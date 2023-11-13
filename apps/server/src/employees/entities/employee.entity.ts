@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Employee } from '@prisma/client';
-import { PositionEntity } from './../../positions/entities/position.entity';
+import { PositionBaseEntity } from './../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 
 export class EmployeeBaseEntity implements Employee {
@@ -35,12 +35,12 @@ export class EmployeeBaseEntity implements Employee {
 
 export class EmployeeEntity extends EmployeeBaseEntity {
   @ApiProperty()
-  position: PositionEntity;
+  position: PositionBaseEntity;
 
   constructor(partial: Partial<EmployeeEntity>) {
     super(partial);
     if (partial.position) {
-      partial.position = new PositionEntity(partial.position);
+      partial.position = new PositionBaseEntity(partial.position);
     }
     Object.assign(this, partial);
   }

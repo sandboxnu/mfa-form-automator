@@ -11,11 +11,11 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from './../context/AuthContext';
 import { OpenAPI } from '@web/client';
 
+export const queryClient = new QueryClient();
+
 export default function App({ Component, pageProps, ...appProps }: AppProps) {
   OpenAPI.CREDENTIALS = 'include';
   OpenAPI.WITH_CREDENTIALS = true;
-
-  const queryClient = new QueryClient();
 
   const excludeLayoutPaths = ['/signin'];
 

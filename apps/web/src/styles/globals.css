@@ -105,3 +105,11 @@ a {
     color-scheme: dark;
   }
 }
+
+.custom-dropdown {
+  background-color: white;
+}
+
+.bold-selected-option {
+  font-weight: bold;
+}

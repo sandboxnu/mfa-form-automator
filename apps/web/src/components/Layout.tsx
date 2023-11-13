@@ -1,19 +1,10 @@
-import {
-  Box,
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, useDisclosure } from '@chakra-ui/react';
 
 import { NavBar } from './NavBar';
 import { TopBar } from './TopBar';
 import { CreateFormTemplateModal } from './createFormTemplate/CreateFormTemplateModal';
+import { useAuth } from '@web/hooks/useAuth';
+import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal';
 
 // Common layout component for all pages
 export const Layout = ({ children }: { children: any }) => {
@@ -22,6 +13,14 @@ export const Layout = ({ children }: { children: any }) => {
     onOpen: onOpenCreateFormTemplate,
     onClose: onCloseCreateFormTemplate,
   } = useDisclosure();
+
+  const {
+    isOpen: isCreateFormInstanceOpen,
+    onOpen: onOpenCreateFormInstance,
+    onClose: onCloseCreateFormInstance,
+  } = useDisclosure();
+
+  useAuth();
 
   return (
     <Box
@@ -32,17 +31,24 @@ export const Layout = ({ children }: { children: any }) => {
       }}
       minH="100vh"
     >
-      <NavBar onOpenCreateFormTemplate={onOpenCreateFormTemplate} />
+      <NavBar
+        onOpenCreateFormTemplate={onOpenCreateFormTemplate}
+        onOpenCreateFormInstance={onOpenCreateFormInstance}
+      />
       <Box>
         <TopBar />
 
-        <Box as="main" ml="320" pt="136">
+        <Box as="main" ml="320" pt="96px">
           {children}
         </Box>
       </Box>
       <CreateFormTemplateModal
         isCreateFormTemplateOpen={isCreateFormTemplateOpen}
         onCloseCreateFormTemplate={onCloseCreateFormTemplate}
+      />
+      <CreateFormInstanceModal
+        isOpen={isCreateFormInstanceOpen}
+        onClose={onCloseCreateFormInstance}
       />
     </Box>
   );

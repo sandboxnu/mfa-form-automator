@@ -29,7 +29,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   private isTokenInCookie(request: Request): boolean {
-    return request.headers.cookie?.split('=')[0] == 'jwt';
+    return 'jwt' in request.cookies;
   }
 
   private isTokenInHeader(request: Request): boolean {

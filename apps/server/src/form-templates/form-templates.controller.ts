@@ -17,6 +17,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
+  ApiQuery,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 import { FormTemplateEntity } from './entities/form-template.entity';
@@ -52,6 +53,12 @@ export class FormTemplatesController {
   @ApiOkResponse({ type: [FormTemplateEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Limit on number of form templates to return',
+    required: false,
+  })
   async findAll(@Query('limit') limit?: number) {
     const formTemplates = await this.formTemplatesService.findAll(limit);
     return formTemplates.map(

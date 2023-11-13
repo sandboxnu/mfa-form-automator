@@ -33,12 +33,12 @@ export class FormInstancesService {
     }
 
     /**
-     * @param limit
+     * @param limit Limit on number of positions to return
      * @returns FormInstanceEntity
      * @throws ApiError
      */
     public static formInstancesControllerFindAll(
-        limit: number,
+        limit?: number,
     ): CancelablePromise<Array<FormInstanceEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
