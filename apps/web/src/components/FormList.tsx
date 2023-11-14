@@ -1,7 +1,8 @@
 import { FormRow } from './FormRow';
-import { Box, Flex, Grid, GridItem, Select, Text } from '@chakra-ui/react';
-import { SortDownArrow } from 'apps/web/src/static/icons';
+import { Box, Flex, Grid, GridItem, Input, InputGroup, InputLeftElement, Select, Text } from '@chakra-ui/react';
+import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
 import { FormInstanceEntity } from '@web/client';
+import { useState } from 'react';
 
 // abstracted component for displaying forms in list format
 export const FormList = ({
@@ -13,6 +14,12 @@ export const FormList = ({
   formInstances: FormInstanceEntity[];
   color: string;
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredFormInstances = formInstances.filter((formInstance) =>
+    formInstance.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <Box padding="30px">
@@ -38,8 +45,28 @@ export const FormList = ({
             </Box>
           </Flex>
 
-          <Flex>
-            <Text fontSize="16px" pr="5px">
+          <Flex alignItems="baseline">
+            <InputGroup marginRight="12px">
+              <InputLeftElement pointerEvents="none">
+                <RightSearchIcon color="#595959" w="25px" h="25px" />
+              </InputLeftElement>
+              <Input
+                size="16px"
+                borderRadius="0"
+                border="none"
+                borderBottom="1px solid"
+                borderColor="#B0B0B0"
+                boxShadow="none"
+                _hover={{ borderColor: "#595959" }}
+                _focus={{
+                  borderColor: "#595959",
+                  boxShadow: "none",
+                }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </InputGroup>
+            <Text fontSize="16px" width="115px" height="21px">
               Sort by:
             </Text>
             <Select
@@ -48,8 +75,8 @@ export const FormList = ({
               minH="28px"
               maxH="28px"
               backgroundColor="white"
-              borderRadius="0"
-              size="xs"
+              borderRadius="md"
+              size="16px"
               icon={<SortDownArrow />}
               iconSize="10px"
             >
@@ -84,28 +111,13 @@ export const FormList = ({
               </Text>
             </GridItem>
           </Grid>
-          {formInstances.length > 1 &&
-            formInstances
-              .slice(0, -1)
-              .map((formInstance: FormInstanceEntity, index: number) => {
-                return (
-                  <FormRow
-                    formInstance={formInstance}
-                    key={index}
-                    link={'/form-instances/' + formInstance.id}
-                  />
-                );
-              })}
-          {formInstances.length > 0 && (
+          {filteredFormInstances.map((formInstance: FormInstanceEntity, index: number) => (
             <FormRow
-              formInstance={formInstances[formInstances.length - 1]}
-              key={formInstances.length - 1}
-              last={true}
-              link={
-                '/form-instances/' + formInstances[formInstances.length - 1].id
-              }
+              formInstance={formInstance}
+              key={index}
+              link={'/form-instances/' + formInstance.id}
             />
-          )}
+          ))}
         </Box>
       </Box>
     </>
