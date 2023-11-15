@@ -1,4 +1,4 @@
-import { createIcon } from '@chakra-ui/react';
+import { Box, createIcon } from '@chakra-ui/react';
 
 export const OverViewIcon = createIcon({
   displayName: 'OverviewIcon',
@@ -54,20 +54,40 @@ export const SearchIcon = createIcon({
   d: 'M20.3504 18.6627H19.33L18.9683 18.3139C20.2342 16.8414 20.9963 14.9298 20.9963 12.8502C20.9963 8.2131 17.2375 4.45435 12.6004 4.45435C7.96334 4.45435 4.20459 8.2131 4.20459 12.8502C4.20459 17.4873 7.96334 21.246 12.6004 21.246C14.68 21.246 16.5917 20.4839 18.0642 19.2181L18.4129 19.5798V20.6002L24.8713 27.0456L26.7958 25.121L20.3504 18.6627ZM12.6004 18.6627C9.38417 18.6627 6.78792 16.0664 6.78792 12.8502C6.78792 9.63393 9.38417 7.03768 12.6004 7.03768C15.8167 7.03768 18.4129 9.63393 18.4129 12.8502C18.4129 16.0664 15.8167 18.6627 12.6004 18.6627Z',
 });
 
-export const ProfileIcon = createIcon({
-  displayName: 'ProfileIcon',
-  viewBox: '0 0 44 45',
-  path: (
-    <>
-      <circle cx="22" cy="22.25" r="21.5" fill="white" stroke="black" />,
-      <path
-        d="M11.6606 30.6786V13.9506H22.6286V15.8466H13.7726V21.1986H21.4526V23.0946H13.7726V30.6786H11.6606ZM25.231 30.6786V13.9506H27.343V28.7826H34.831V30.6786H25.231Z"
-        fill="black"
-      />
-      ,
-    </>
-  ),
-});
+type ProfileIconProps = {
+  firstName?: string;
+  lastName?: string;
+  boxSize: number;
+};
+
+export const ProfileIcon: React.FC<ProfileIconProps> = ({
+  firstName,
+  lastName,
+  boxSize,
+}) => {
+  const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : '';
+  const lastInitial = lastName ? lastName.charAt(0).toUpperCase() : '';
+
+  return (
+    <Box boxSize={boxSize}>
+      <svg viewBox="0 0 44 45">
+        <circle cx="22" cy="22.25" r="21.5" fill="#4C658A" stroke="black" />
+        <text
+          x="50%"
+          y="52%"
+          dominantBaseline="middle"
+          textAnchor="middle"
+          fill="#E5E5E5"
+          fontSize="19px"
+          fontWeight={400}
+        >
+          {firstInitial}
+          {lastInitial}
+        </text>
+      </svg>
+    </Box>
+  );
+};
 
 export const RightArrowIcon = createIcon({
   displayName: 'RightArrowIcon',

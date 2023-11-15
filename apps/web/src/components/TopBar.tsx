@@ -38,7 +38,13 @@ export const TopBar: React.FC = () => {
           pl="12px"
           pr="40px"
           aria-label="Visit profile"
-          icon={<ProfileIcon boxSize={7} />}
+          icon={
+            <ProfileIcon
+              firstName={user?.firstName}
+              lastName={user?.lastName}
+              boxSize={7}
+            />
+          }
           colorScheme="none"
         />
       </Flex>
