@@ -6,6 +6,7 @@ import { DepartmentEntity } from './entities/department.entity';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 describe('DepartmentsController', () => {
   let controller: DepartmentsController;
@@ -14,7 +15,7 @@ describe('DepartmentsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [DepartmentsController],
-      providers: [DepartmentsService, PrismaService],
+      providers: [DepartmentsService, PrismaService, LoggerServiceImpl],
     }).compile();
 
     controller = module.get<DepartmentsController>(DepartmentsController);
