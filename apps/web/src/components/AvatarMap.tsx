@@ -24,7 +24,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
               color="black"
               bg={assignee.signed ? '#D1F0D4' : '#E5E5E5'}
             />
-            <Box minWidth="200px">
+            <Box minWidth="240px">
               <Flex width="100%">
                 <Text
                   color="#000"
@@ -33,7 +33,12 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                   fontStyle="normal"
                   fontWeight="500"
                   lineHeight="normal"
-                  style={{ whiteSpace: 'nowrap' }}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '240px',
+                  }}
                 >
                   {assignee.title}
                 </Text>

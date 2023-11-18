@@ -3,6 +3,7 @@ import { EmployeesController } from './employees.controller';
 import { EmployeesService } from './employees.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmployeeEntity } from './entities/employee.entity';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 describe('EmployeesController', () => {
   let controller: EmployeesController;
@@ -11,7 +12,7 @@ describe('EmployeesController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EmployeesController],
-      providers: [EmployeesService, PrismaService],
+      providers: [EmployeesService, PrismaService, LoggerServiceImpl],
     }).compile();
 
     controller = module.get<EmployeesController>(EmployeesController);

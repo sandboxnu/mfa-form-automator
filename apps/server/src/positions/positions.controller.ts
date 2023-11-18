@@ -26,11 +26,15 @@ import { PositionEntity } from './entities/position.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { PositionsErrorMessage } from './positions.errors';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 @ApiTags('positions')
 @Controller('positions')
 export class PositionsController {
-  constructor(private readonly positionsService: PositionsService) {}
+  constructor(
+    private readonly positionsService: PositionsService,
+    private readonly loggerService: LoggerServiceImpl,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({ type: PositionEntity })
@@ -67,7 +71,7 @@ export class PositionsController {
   async findOne(@Param('id') id: string) {
     const position = await this.positionsService.findOne(id);
     if (position == null) {
-      console.log(PositionsErrorMessage.POSITION_NOT_FOUND);
+      this.loggerService.error(PositionsErrorMessage.POSITION_NOT_FOUND);
       throw new NotFoundException(
         PositionsErrorMessage.POSITION_NOT_FOUND_CLIENT,
       );
@@ -96,7 +100,7 @@ export class PositionsController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(PositionsErrorMessage.POSITION_NOT_FOUND);
+          this.loggerService.error(PositionsErrorMessage.POSITION_NOT_FOUND);
           throw new NotFoundException(
             PositionsErrorMessage.POSITION_NOT_FOUND_CLIENT,
           );
@@ -117,7 +121,7 @@ export class PositionsController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(PositionsErrorMessage.POSITION_NOT_FOUND);
+          this.loggerService.error(PositionsErrorMessage.POSITION_NOT_FOUND);
           throw new NotFoundException(
             PositionsErrorMessage.POSITION_NOT_FOUND_CLIENT,
           );
