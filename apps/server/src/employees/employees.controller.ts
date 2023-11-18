@@ -31,7 +31,7 @@ import { EmployeeErrorMessage } from './employees.errors';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { AuthUser } from '../auth/auth.decorators';
 import { UserEntity } from '../auth/entities/user.entity';
-import { JwtAuthGuard } from '@server/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LoggerServiceImpl } from '../logger/logger.service';
 
 @ApiTags('employees')
