@@ -300,6 +300,12 @@ export class FormInstancesService {
       ...updatedSignature,
     };
 
+    const allSigned = formInstance.signatures.every((sig) => sig.signed);
+
+    if (allSigned) {
+      formInstance.completed = true;
+    }
+
     return formInstance;
   }
 }
