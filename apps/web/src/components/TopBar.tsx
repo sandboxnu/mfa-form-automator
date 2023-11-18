@@ -1,4 +1,4 @@
-import { MFALogoIcon, ProfileIcon } from 'apps/web/src/static/icons';
+import { MFALogoIcon, UserProfileAvatar } from 'apps/web/src/static/icons';
 import { Box, Hide, IconButton, Text, Flex, Spacer } from '@chakra-ui/react';
 import { useAuth } from '@web/hooks/useAuth';
 
@@ -39,7 +39,7 @@ export const TopBar: React.FC = () => {
           pr="40px"
           aria-label="Visit profile"
           icon={
-            <ProfileIcon
+            <UserProfileAvatar
               firstName={user?.firstName}
               lastName={user?.lastName}
               boxSize={7}
