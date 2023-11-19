@@ -31,11 +31,15 @@ import { EmployeeErrorMessage } from './employees.errors';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthUser } from '../auth/auth.decorators';
 import { UserEntity } from '../auth/entities/user.entity';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 @ApiTags('employees')
 @Controller('employees')
 export class EmployeesController {
-  constructor(private readonly employeesService: EmployeesService) {}
+  constructor(
+    private readonly employeesService: EmployeesService,
+    private readonly loggerService: LoggerServiceImpl,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({ type: EmployeeEntity })
@@ -86,7 +90,7 @@ export class EmployeesController {
     // TODO: Auth
     const employee = await this.employeesService.findOne(id);
     if (employee == null) {
-      console.log(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
+      this.loggerService.error(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
       throw new NotFoundException(
         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_CLIENT,
       );
@@ -116,7 +120,7 @@ export class EmployeesController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
+          this.loggerService.error(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
           throw new NotFoundException(
             EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_CLIENT,
           );
@@ -138,7 +142,7 @@ export class EmployeesController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2016' && e.message.includes('RecordNotFound')) {
-          console.log(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
+          this.loggerService.error(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
           throw new NotFoundException(
             EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_CLIENT,
           );

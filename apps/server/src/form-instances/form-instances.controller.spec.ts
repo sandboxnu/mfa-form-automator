@@ -12,6 +12,7 @@ import { DepartmentEntity } from '../departments/entities/department.entity';
 import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PositionsService } from '../positions/positions.service';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 describe('FormInstancesController', () => {
   let controller: FormInstancesController;
@@ -26,6 +27,7 @@ describe('FormInstancesController', () => {
         FormTemplatesService,
         PositionsService,
         PrismaService,
+        LoggerServiceImpl,
       ],
     }).compile();
 
@@ -79,8 +81,11 @@ describe('FormInstancesController', () => {
         name: 'Form Instance 1',
         formDocLink: 'mfa.org/formtemplate1',
         completed: false,
+        markedCompleted: false,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
+        completedAt: null,
+        markedCompletedAt: null,
         originatorId: 'originatorId',
         originator: {
           id: 'originatorId',
@@ -149,8 +154,11 @@ describe('FormInstancesController', () => {
         name: 'Form Instance 1',
         formDocLink: 'mfa.org/formtemplate1',
         completed: false,
+        markedCompleted: false,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
+        completedAt: null,
+        markedCompletedAt: null,
         originatorId: 'originatorId',
         originator: new EmployeeEntity({
           id: 'originatorId',
@@ -233,8 +241,11 @@ describe('FormInstancesController', () => {
           name: 'Form Instance',
           formDocLink: 'mfa.org/form1',
           completed: false,
+          markedCompleted: false,
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          completedAt: null,
+          markedCompletedAt: null,
           originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
           originator: {
             id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
@@ -328,8 +339,11 @@ describe('FormInstancesController', () => {
           name: 'Form Instance 2',
           formDocLink: 'mfa.org/form2',
           completed: false,
+          markedCompleted: false,
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          completedAt: null,
+          markedCompletedAt: null,
           originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
           originator: {
             id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
@@ -426,8 +440,11 @@ describe('FormInstancesController', () => {
           name: 'Form Instance',
           formDocLink: 'mfa.org/form1',
           completed: false,
+          markedCompleted: false,
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          completedAt: null,
+          markedCompletedAt: null,
           originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
           originator: new EmployeeEntity({
             id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
@@ -521,8 +538,11 @@ describe('FormInstancesController', () => {
           name: 'Form Instance 2',
           formDocLink: 'mfa.org/form2',
           completed: false,
+          markedCompleted: false,
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          completedAt: null,
+          markedCompletedAt: null,
           originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
           originator: new EmployeeEntity({
             id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
@@ -630,8 +650,11 @@ describe('FormInstancesController', () => {
           name: 'Form Instance',
           formDocLink: 'mfa.org/form1',
           completed: false,
+          markedCompleted: false,
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          completedAt: null,
+          markedCompletedAt: null,
           originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
           originator: {
             id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
@@ -727,8 +750,11 @@ describe('FormInstancesController', () => {
         name: 'Form Instance',
         formDocLink: 'mfa.org/form1',
         completed: false,
+        markedCompleted: false,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
+        completedAt: null,
+        markedCompletedAt: null,
         originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
         originator: new EmployeeEntity({
           id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
@@ -852,8 +878,11 @@ describe('FormInstancesController', () => {
           name: newFormInstanceName,
           formDocLink: 'mfa.org/form1',
           completed: false,
+          markedCompleted: false,
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          completedAt: null,
+          markedCompletedAt: null,
           originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
           originator: {
             id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
@@ -949,8 +978,11 @@ describe('FormInstancesController', () => {
         name: newFormInstanceName,
         formDocLink: 'mfa.org/form1',
         completed: false,
+        markedCompleted: false,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
+        completedAt: null,
+        markedCompletedAt: null,
         originatorId: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
         originator: new EmployeeEntity({
           id: 'affc3c9a-d96d-4fee-973d-c3f14b83a077',
