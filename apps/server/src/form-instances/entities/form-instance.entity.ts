@@ -19,10 +19,19 @@ export class FormInstanceEntity implements FormInstance {
   completed: boolean;
 
   @ApiProperty()
+  markedCompleted: boolean;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty()
+  completedAt: Date | null;
+
+  @ApiProperty()
+  markedCompletedAt: Date | null;
 
   @Exclude()
   originatorId: string;
