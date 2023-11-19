@@ -304,6 +304,7 @@ export class FormInstancesService {
 
     if (allSigned) {
       formInstance.completed = true;
+      formInstance.completedAt = new Date();
     }
 
     return formInstance;
@@ -321,6 +322,7 @@ export class FormInstancesService {
     }
 
     formInstance.markedCompleted = true;
+    formInstance.markedCompletedAt = new Date();
     return formInstance;
   }
 }
