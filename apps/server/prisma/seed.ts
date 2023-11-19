@@ -32,7 +32,7 @@ type EmployeeData = {
 };
 
 // update or insert employee to database based on the employee id
-async function upsertEmployee(empData: any) {
+async function upsertEmployee(empData: EmployeeData) {
   await prisma.employee.upsert({
     where: { id: empData.id },
     update: {},
@@ -97,7 +97,7 @@ async function fetchSignatureFields(
     Director: DIR_SIG_FIELD_UUID,
   };
 
-  let signatureFieldsMap: SignatureFieldMap = {};
+  const signatureFieldsMap: SignatureFieldMap = {};
 
   // fetch signaturefield, or create one if it doesn't already exist
   for (const name of signatureFieldNames) {
@@ -167,7 +167,7 @@ async function upsertFormInstance(formInstanceData: FormInstanceData) {
 async function main() {
   // form template
   const formTemplate1Id = '1fbccd8a-b00c-472f-a94f-defa8e86e0cf';
-  const formTemplate1 = await prisma.formTemplate.upsert({
+  await prisma.formTemplate.upsert({
     where: { id: formTemplate1Id },
     update: {},
     create: {
