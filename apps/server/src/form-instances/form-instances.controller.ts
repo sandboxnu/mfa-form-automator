@@ -209,4 +209,33 @@ export class FormInstancesController {
       throw e;
     }
   }
+
+  @Patch(':formInstanceId/complete')
+  @ApiOkResponse({ type: FormInstanceEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  async completeFormInstance(@Param('formInstanceId') formInstanceId: string) {
+    try {
+      const updatedFormInstance =
+        await this.formInstancesService.markFormInstanceAsCompleted(
+          formInstanceId,
+        );
+      return updatedFormInstance;
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          this.loggerService.error(
+            FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+          );
+          throw new NotFoundException(
+            FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
+          );
+        }
+      }
+      throw e;
+    }
+  }
 }

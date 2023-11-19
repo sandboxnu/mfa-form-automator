@@ -308,4 +308,19 @@ export class FormInstancesService {
 
     return formInstance;
   }
+
+  async markFormInstanceAsCompleted(formInstanceId: string) {
+    const formInstance = await this.prisma.formInstance.findUnique({
+      where: { id: formInstanceId },
+    });
+
+    if (!formInstance) {
+      throw new NotFoundException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+      );
+    }
+
+    formInstance.markedCompleted = true;
+    return formInstance;
+  }
 }
