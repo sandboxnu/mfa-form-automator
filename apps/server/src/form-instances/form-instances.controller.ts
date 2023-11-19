@@ -194,7 +194,7 @@ export class FormInstancesController {
           formInstanceId,
           signatureId,
         );
-      return updatedFormInstance;
+      return new FormInstanceEntity(updatedFormInstance);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {

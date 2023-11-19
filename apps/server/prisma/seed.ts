@@ -23,13 +23,13 @@ const MANAGER_SIG_FIELD_UUID = '1727a4d2-b22c-42de-b63d-5f553e964d75';
 const DIR_SIG_FIELD_UUID = '6bd5c08b-f309-4226-8914-7fef4ba631c2';
 
 // type definition for employee data used in upsertEmployee
-type EmployeeData = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  positionId: string;
-};
+// type EmployeeData = {
+//   id: string;
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   positionId: string;
+// };
 
 // update or insert employee to database based on the employee id
 async function upsertEmployee(empData: any) {
@@ -97,7 +97,7 @@ async function fetchSignatureFields(
     Director: DIR_SIG_FIELD_UUID,
   };
 
-  let signatureFieldsMap: SignatureFieldMap = {};
+  const signatureFieldsMap: SignatureFieldMap = {};
 
   // fetch signaturefield, or create one if it doesn't already exist
   for (const name of signatureFieldNames) {

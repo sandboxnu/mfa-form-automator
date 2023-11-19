@@ -303,11 +303,21 @@ export class FormInstancesService {
     const allSigned = formInstance.signatures.every((sig) => sig.signed);
 
     if (allSigned) {
-      formInstance.completed = true;
-      formInstance.completedAt = new Date();
+      await this.prisma.formInstance.update({
+        where: { id: formInstanceId },
+        data: { completed: true, completedAt: new Date() },
+      });
     }
 
-    return formInstance;
+    const updatedFormInstance = await this.findOne(formInstanceId);
+
+    if (!updatedFormInstance) {
+      throw new NotFoundException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+      );
+    }
+
+    return updatedFormInstance;
   }
 
   async markFormInstanceAsCompleted(formInstanceId: string) {
@@ -321,8 +331,11 @@ export class FormInstancesService {
       );
     }
 
-    formInstance.markedCompleted = true;
-    formInstance.markedCompletedAt = new Date();
-    return formInstance;
+    const updatedFormInstance = await this.prisma.formInstance.update({
+      where: { id: formInstanceId },
+      data: { markedCompleted: true, markedCompletedAt: new Date() },
+    });
+
+    return updatedFormInstance;
   }
 }
