@@ -1,8 +1,10 @@
 import { FormRow } from './FormRow';
-import { Box, Flex, Grid, GridItem, Input, InputGroup, InputLeftElement, Select, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Grid, GridItem, Input, InputGroup, InputLeftElement, Select, Text, useDisclosure } from '@chakra-ui/react';
 import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
 import { FormInstanceEntity } from '@web/client';
 import { useState } from 'react';
+import { distance } from 'fastest-levenshtein';
+import { motion } from 'framer-motion';
 
 // abstracted component for displaying forms in list format
 export const FormList = ({
@@ -15,10 +17,17 @@ export const FormList = ({
   color: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const { isOpen, onToggle } = useDisclosure();
+  const [showButton, setShowButton] = useState(false);
 
-  const filteredFormInstances = formInstances.filter((formInstance) =>
-    formInstance.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
+
+  const sortedFormInstances = formInstances
+    .map((formInstance) => ({
+      ...formInstance,
+      levenshteinDistance: distance(searchQuery.toLowerCase(), formInstance.name.toLowerCase()),
+    }))
+    .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance);
 
   return (
     <>
@@ -45,28 +54,59 @@ export const FormList = ({
             </Box>
           </Flex>
 
-          <Flex alignItems="baseline">
-            <InputGroup marginRight="12px">
-              <InputLeftElement pointerEvents="none">
+          <Flex alignItems="flex-end">
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+              transition={{ duration: 0.3}}
+              onAnimationComplete={() => setShowButton(!isOpen)}
+            >
+              <InputGroup marginRight="12px">
+                {isOpen ? (
+                  <InputLeftElement as="button" onClick={onToggle}>
+                    <RightSearchIcon color="#595959" w="25px" h="25px" />
+                  </InputLeftElement>
+                ) : (
+                  <Button
+                    variant="unstyled"
+                    onClick={onToggle}
+                    display="flex"
+                    alignItems="flex-end"
+                    p={0}
+                  >
+                    <RightSearchIcon color="#595959" w="25px" h="25px" />
+                  </Button>
+                )}
+                <Input
+                  size="16px"
+                  borderRadius="0"
+                  border="none"
+                  marginRight="12px"
+                  borderBottom="1px solid"
+                  borderColor="#B0B0B0"
+                  boxShadow="none"
+                  _hover={{ borderColor: "#595959" }}
+                  _focus={{
+                    borderColor: "#595959",
+                    boxShadow: "none",
+                  }}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </InputGroup>
+            </motion.div>
+            {showButton && !isOpen && (
+              <Button
+                variant="unstyled"
+                onClick={onToggle}
+                display="flex"
+                alignItems="flex-end"
+                p={0}
+              >
                 <RightSearchIcon color="#595959" w="25px" h="25px" />
-              </InputLeftElement>
-              <Input
-                size="16px"
-                borderRadius="0"
-                border="none"
-                borderBottom="1px solid"
-                borderColor="#B0B0B0"
-                boxShadow="none"
-                _hover={{ borderColor: "#595959" }}
-                _focus={{
-                  borderColor: "#595959",
-                  boxShadow: "none",
-                }}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </InputGroup>
-            <Text fontSize="16px" width="115px" height="21px">
+              </Button>
+            )}
+            <Text fontSize="16px" paddingRight="12px">
               Sort by:
             </Text>
             <Select
@@ -111,7 +151,7 @@ export const FormList = ({
               </Text>
             </GridItem>
           </Grid>
-          {filteredFormInstances.map((formInstance: FormInstanceEntity, index: number) => (
+          {sortedFormInstances.map((formInstance: FormInstanceEntity, index: number) => (
             <FormRow
               formInstance={formInstance}
               key={index}
