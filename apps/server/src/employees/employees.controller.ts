@@ -28,9 +28,10 @@ import { EmployeeEntity } from './entities/employee.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { EmployeeErrorMessage } from './employees.errors';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { AuthUser } from '../auth/auth.decorators';
 import { UserEntity } from '../auth/entities/user.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LoggerServiceImpl } from '../logger/logger.service';
 
 @ApiTags('employees')
@@ -41,6 +42,7 @@ export class EmployeesController {
     private readonly loggerService: LoggerServiceImpl,
   ) {}
 
+  @UseGuards(AdminAuthGuard)
   @Post()
   @ApiCreatedResponse({ type: EmployeeEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
