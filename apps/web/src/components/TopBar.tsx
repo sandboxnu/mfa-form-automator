@@ -39,11 +39,15 @@ export const TopBar: React.FC = () => {
           pr="40px"
           aria-label="Visit profile"
           icon={
-            <UserProfileAvatar
-              firstName={user?.firstName}
-              lastName={user?.lastName}
-              boxSize={7}
-            />
+            user?.firstName && user?.lastName ? (
+              <UserProfileAvatar
+                firstName={user.firstName}
+                lastName={user.lastName}
+                boxSize={7}
+              />
+            ) : (
+              <UserProfileAvatar firstName="Default" lastName="User" boxSize={7} />
+            )
           }
           colorScheme="none"
         />
