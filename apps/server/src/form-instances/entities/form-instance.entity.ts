@@ -27,10 +27,14 @@ export class FormInstanceEntity implements FormInstance {
   @ApiProperty()
   updatedAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   completedAt: Date | null;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: false,
+  })
   markedCompletedAt: Date | null;
 
   @Exclude()

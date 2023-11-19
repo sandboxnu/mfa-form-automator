@@ -110,7 +110,7 @@ async function fetchSignatureFields(
 
     if (existingField) {
       signatureFieldsMap[name] = existingField;
-    } else {
+    } else {  
       const createdField = await prisma.signatureField.create({
         data: {
           id: signatureFieldIds[name],

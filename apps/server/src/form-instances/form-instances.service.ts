@@ -8,7 +8,7 @@ import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
-import { Prisma } from '@prisma/client';
+import { FormInstance, Prisma } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
@@ -302,19 +302,15 @@ export class FormInstancesService {
 
     const allSigned = formInstance.signatures.every((sig) => sig.signed);
 
+    let updatedFormInstance = (await this.findOne(
+      formInstanceId,
+    )) as FormInstance;
+
     if (allSigned) {
-      await this.prisma.formInstance.update({
+      updatedFormInstance = await this.prisma.formInstance.update({
         where: { id: formInstanceId },
         data: { completed: true, completedAt: new Date() },
       });
-    }
-
-    const updatedFormInstance = await this.findOne(formInstanceId);
-
-    if (!updatedFormInstance) {
-      throw new NotFoundException(
-        FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
-      );
     }
 
     return updatedFormInstance;
