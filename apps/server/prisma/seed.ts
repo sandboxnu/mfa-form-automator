@@ -23,16 +23,16 @@ const MANAGER_SIG_FIELD_UUID = '1727a4d2-b22c-42de-b63d-5f553e964d75';
 const DIR_SIG_FIELD_UUID = '6bd5c08b-f309-4226-8914-7fef4ba631c2';
 
 // type definition for employee data used in upsertEmployee
-// type EmployeeData = {
-//   id: string;
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   positionId: string;
-// };
+type EmployeeData = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  positionId: string;
+};
 
 // update or insert employee to database based on the employee id
-async function upsertEmployee(empData: any) {
+async function upsertEmployee(empData: EmployeeData) {
   await prisma.employee.upsert({
     where: { id: empData.id },
     update: {},
@@ -110,7 +110,7 @@ async function fetchSignatureFields(
 
     if (existingField) {
       signatureFieldsMap[name] = existingField;
-    } else {  
+    } else {
       const createdField = await prisma.signatureField.create({
         data: {
           id: signatureFieldIds[name],
@@ -167,7 +167,7 @@ async function upsertFormInstance(formInstanceData: FormInstanceData) {
 async function main() {
   // form template
   const formTemplate1Id = '1fbccd8a-b00c-472f-a94f-defa8e86e0cf';
-  const formTemplate1 = await prisma.formTemplate.upsert({
+  await prisma.formTemplate.upsert({
     where: { id: formTemplate1Id },
     update: {},
     create: {
