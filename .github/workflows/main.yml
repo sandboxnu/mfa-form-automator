@@ -28,7 +28,7 @@ jobs:
       - name: Lint
         run: yarn lint
       - name: Prettier
-        run: yarn format
+        run: yarn workspaces run prettier . --write --check
   tsc:
     runs-on: ubuntu-latest
     name: Check tsc
