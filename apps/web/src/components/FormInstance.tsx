@@ -6,8 +6,10 @@ import {
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
 import { useState } from 'react';
-import { FormInstanceEntity } from '@web/client';
+import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
+import { useMutation } from '@tanstack/react-query';
+import { queryClient } from '@web/pages/_app';
 
 const FormInstance = ({
   formInstance,
@@ -16,6 +18,21 @@ const FormInstance = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
+
+  const completeFormInstanceMutation = useMutation({
+    mutationFn: FormInstancesService.formInstancesControllerCompleteFormInstance,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['api/form-instances/me'] });
+      queryClient.invalidateQueries({
+        queryKey: ['api/form-instances/created/me'],
+      });
+    },
+  })
+
+  const handleFormApprove = () => {
+    if (formInstance.markedCompleted) return;
+    completeFormInstanceMutation.mutate(formInstance.id);
+  };
 
   return (
     <Box className="main">
@@ -142,7 +159,11 @@ const FormInstance = ({
           />
         </Box>
 
-        <Box>
+        <Box
+          display="flex"
+          flexDirection={"column"}
+          justifyContent={"flex-start"}
+          maxWidth="370px">
           <Text
             color="#000"
             fontFamily="Hanken Grotesk"
@@ -163,6 +184,19 @@ const FormInstance = ({
               title: signature.signerPosition.name,
             }))}
           />
+          {formInstance.completed && 
+            <Box display="flex" justifyContent={"flex-end"}>
+              <Button
+                borderRadius="8px"
+                width="111px"
+                height="40px"
+                background= {formInstance.markedCompleted ? "#e2e8f0" : "#4C658A"}
+                cursor = {formInstance.markedCompleted ? "not-allowed" : "pointer"}
+                _active={{ background: "#e2e8f0"}}
+                isLoading = {completeFormInstanceMutation.isPending}
+                color="#FFF"
+                onClick={handleFormApprove}>Approve</Button>
+            </Box>}
         </Box>
       </Grid>
     </Box>

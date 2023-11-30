@@ -210,17 +210,23 @@ export class FormInstancesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':formInstanceId/complete')
+  @ApiBearerAuth()
   @ApiOkResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
-  async completeFormInstance(@Param('formInstanceId') formInstanceId: string) {
+  async completeFormInstance(
+    @AuthUser() currentUser: UserEntity,
+    @Param('formInstanceId') formInstanceId: string,
+  ) {
     try {
       const updatedFormInstance =
         await this.formInstancesService.markFormInstanceAsCompleted(
+          currentUser.id,
           formInstanceId,
         );
       return updatedFormInstance;

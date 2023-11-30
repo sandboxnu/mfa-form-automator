@@ -316,14 +316,23 @@ export class FormInstancesService {
     return updatedFormInstance;
   }
 
-  async markFormInstanceAsCompleted(formInstanceId: string) {
+  async markFormInstanceAsCompleted(
+    employeeId: string,
+    formInstanceId: string,
+  ) {
     const formInstance = await this.prisma.formInstance.findUnique({
-      where: { id: formInstanceId },
+      where: { id: formInstanceId, originatorId: employeeId },
     });
 
     if (!formInstance) {
       throw new NotFoundException(
         FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+      );
+    }
+
+    if (!formInstance.completed) {
+      throw new BadRequestException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_COMPLETED,
       );
     }
 

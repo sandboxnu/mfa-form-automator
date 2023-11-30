@@ -44,6 +44,7 @@ export const useForm = () => {
       return;
     }
 
+    // Forms assigned to current user that they still need to sign
     const todoForms: FormInstanceEntity[] = assignedFIData.filter(
       (formInstance: FormInstanceEntity) => {
         const signatures: SignatureEntity[] = formInstance.signatures;
@@ -55,15 +56,17 @@ export const useForm = () => {
       },
     );
 
+    // Forms created by current user that aren't completed (all/some/no signatures + not marked completed)
     const pendingForms: FormInstanceEntity[] = createdFIData.filter(
       (formInstance: FormInstanceEntity) => {
-        return formInstance.completed === false;
+        return !formInstance.markedCompleted;
       },
     );
 
+    // Forms created by current user that are completed (all signatures + marked completed)
     const completedForms: FormInstanceEntity[] = createdFIData.filter(
       (formInstance: FormInstanceEntity) => {
-        return formInstance.completed === true;
+        return formInstance.markedCompleted;  
       },
     );
 
