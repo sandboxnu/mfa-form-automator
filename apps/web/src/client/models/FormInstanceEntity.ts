@@ -14,7 +14,7 @@ export type FormInstanceEntity = {
     markedCompleted: boolean;
     createdAt: string;
     updatedAt: string;
-    completedAt: string | null;
+    completedAt?: string | null;
     markedCompletedAt?: string | null;
     originator: Record<string, any>;
     formTemplate: FormTemplateBaseEntity;
