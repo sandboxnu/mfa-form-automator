@@ -66,7 +66,7 @@ export const useForm = () => {
     // Forms created by current user that are completed (all signatures + marked completed)
     const completedForms: FormInstanceEntity[] = createdFIData.filter(
       (formInstance: FormInstanceEntity) => {
-        return formInstance.markedCompleted;  
+        return formInstance.markedCompleted;
       },
     );
 
