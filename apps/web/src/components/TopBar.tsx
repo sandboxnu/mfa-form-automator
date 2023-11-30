@@ -46,7 +46,11 @@ export const TopBar: React.FC = () => {
                 boxSize={7}
               />
             ) : (
-              <UserProfileAvatar firstName="Default" lastName="User" boxSize={7} />
+              <UserProfileAvatar
+                firstName="Default"
+                lastName="User"
+                boxSize={7}
+              />
             )
           }
           colorScheme="none"

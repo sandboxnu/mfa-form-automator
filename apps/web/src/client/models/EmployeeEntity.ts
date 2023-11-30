@@ -10,6 +10,7 @@ export type EmployeeEntity = {
     firstName: string;
     lastName: string;
     email: string;
+    isAdmin: boolean;
     position: PositionBaseEntity;
     positionId: string;
     pswdHash: string | null;

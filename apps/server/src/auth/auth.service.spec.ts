@@ -49,6 +49,7 @@ describe('AuthService', () => {
         updatedAt: new Date(1672531200),
       },
       email: 'info@mfa.org',
+      isAdmin: false,
       pswdHash: 'password',
       createdAt: new Date(1672531200),
       updatedAt: new Date(1672531200),
@@ -75,6 +76,7 @@ describe('AuthService', () => {
           updatedAt: new Date(1672531200),
         },
         email: 'info@mfa.org',
+        isAdmin: false,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
       });

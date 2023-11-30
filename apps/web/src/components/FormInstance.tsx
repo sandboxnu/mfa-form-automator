@@ -33,7 +33,7 @@ const FormInstance = ({
     if (formInstance.markedCompleted) return;
     completeFormInstanceMutation.mutate(formInstance.id);
   };
-
+  
   return (
     <Box className="main">
       <Flex
