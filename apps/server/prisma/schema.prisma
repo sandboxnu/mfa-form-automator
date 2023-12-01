@@ -25,14 +25,15 @@ model Department {
 //
 // Each `Employee` corresponds to a user who holds a certain position.
 model Employee {
-  id        String   @id @default(uuid()) @db.Uuid
-  firstName String   @db.VarChar(255)
-  lastName  String   @db.VarChar(255)
-  email     String   @db.VarChar(255) @unique
-  isAdmin   Boolean  @db.Boolean @default(false)
-  pswdHash  String?  @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid()) @db.Uuid
+  firstName    String   @db.VarChar(255)
+  lastName     String   @db.VarChar(255)
+  email        String   @unique @db.VarChar(255)
+  isAdmin      Boolean  @default(false) @db.Boolean
+  pswdHash     String?  @db.VarChar(255)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  refreshToken String?  @db.Text()
 
   signatures      Signature[]
   originatedForms FormInstance[]
@@ -52,7 +53,7 @@ model Position {
   signatureFields SignatureField[]
   signatures      Signature[]
   employees       Employee[]
-  
+
   department   Department @relation(fields: [departmentId], references: [id])
   departmentId String     @db.Uuid
 }
@@ -95,8 +96,8 @@ model Signature {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  signerPosition   Position    @relation(fields: [signerPositionId], references: [id])
-  signerPositionId String      @db.Uuid
+  signerPosition   Position     @relation(fields: [signerPositionId], references: [id])
+  signerPositionId String       @db.Uuid
   userSignedBy     Employee?    @relation(fields: [userSignedById], references: [id])
   userSignedById   String?      @db.Uuid
   formInstance     FormInstance @relation(fields: [formInstanceId], references: [id])
@@ -111,15 +112,15 @@ model Signature {
 // A `FormInstance` should be marked completed when all of its signatures
 // have been collected and marked as completed.
 model FormInstance {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(255)
-  formDocLink String   @db.VarChar(255)
-  completed   Boolean  @default(false)
-  markedCompleted Boolean @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  completedAt DateTime? 
-  markedCompletedAt DateTime? 
+  id                String    @id @default(uuid()) @db.Uuid
+  name              String    @db.VarChar(255)
+  formDocLink       String    @db.VarChar(255)
+  completed         Boolean   @default(false)
+  markedCompleted   Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  completedAt       DateTime?
+  markedCompletedAt DateTime?
 
   signatures Signature[]
 

@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
+import { PositionBaseEntity } from '../positions/entities/position.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -53,6 +54,7 @@ describe('AuthService', () => {
       pswdHash: 'password',
       createdAt: new Date(1672531200),
       updatedAt: new Date(1672531200),
+      refreshToken: null,
     };
 
     it('should sucessfully validate credentials', async () => {
@@ -79,6 +81,7 @@ describe('AuthService', () => {
         isAdmin: false,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
+        refreshToken: null,
       });
 
       jest.spyOn(bcrypt, 'compare').mockImplementation(async () => {
@@ -121,14 +124,21 @@ describe('AuthService', () => {
     });
 
     it('successfully creates a JWT token', async () => {
-      const request = {
-        user: {
-          email: 'email@gmail.com',
-          id: 'userId',
-        },
+      const user = {
+        email: 'email@gmail.com',
+        id: 'userId',
+        position: new PositionBaseEntity({}),
+        firstName: 'First',
+        lastName: 'Last',
+        positionId: 'position-id',
+        isAdmin: false,
+        pswdHash: null,
+        createdAt: new Date(0),
+        updatedAt: new Date(0),
+        refreshToken: null,
       };
-      const result = await service.login(request);
-      const decoded = await jwtService.decode(result.access_token);
+      const result = await service.login(user);
+      const decoded = await jwtService.decode(result.accessToken);
 
       expect(decoded).not.toBeNull();
 
@@ -136,8 +146,8 @@ describe('AuthService', () => {
         [key: string]: any;
       };
 
-      expect(decodedObj.email).toEqual(request.user.email);
-      expect(decodedObj.sub).toEqual(request.user.id);
+      expect(decodedObj.email).toEqual(user.email);
+      expect(decodedObj.sub).toEqual(user.id);
       expect((decodedObj.exp - decodedObj.iat).toString()).toEqual(
         process.env.JWT_VALID_DURATION,
       );

@@ -5,6 +5,54 @@ import { Exclude } from 'class-transformer';
 import { SignatureEntity } from '../../signatures/entities/signature.entity';
 import { EmployeeEntity } from '../../employees/entities/employee.entity';
 
+export class FormInstanceBaseEntity implements FormInstance {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @Exclude()
+  formDocLink: string;
+
+  @Exclude()
+  completed: boolean;
+
+  @Exclude()
+  markedCompleted: boolean;
+
+  @Exclude()
+  createdAt: Date;
+
+  @Exclude()
+  updatedAt: Date;
+
+  @Exclude()
+  completedAt: Date | null;
+
+  @Exclude()
+  markedCompletedAt: Date | null;
+
+  @Exclude()
+  originatorId: string;
+
+  @Exclude()
+  originator: Employee;
+
+  @Exclude()
+  formTemplateId: string;
+
+  @Exclude()
+  formTemplate: FormTemplateBaseEntity;
+
+  @Exclude()
+  signatures: SignatureEntity[];
+
+  constructor(partial: Partial<FormInstanceEntity>) {
+    Object.assign(this, partial);
+  }
+}
+
 export class FormInstanceEntity implements FormInstance {
   @ApiProperty()
   id: string;

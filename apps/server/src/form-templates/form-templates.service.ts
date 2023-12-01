@@ -29,6 +29,22 @@ export class FormTemplatesService {
             },
           },
         },
+        formInstances: {
+          include: {
+            formTemplate: true,
+            originator: true,
+            signatures: {
+              include: {
+                signerPosition: {
+                  include: {
+                    department: true,
+                  },
+                },
+                userSignedBy: true,
+              },
+            },
+          },
+        },
       },
     });
     return newFormTemplate;
@@ -53,6 +69,22 @@ export class FormTemplatesService {
                 },
               },
             },
+            formInstances: {
+              include: {
+                formTemplate: true,
+                originator: true,
+                signatures: {
+                  include: {
+                    signerPosition: {
+                      include: {
+                        department: true,
+                      },
+                    },
+                    userSignedBy: true,
+                  },
+                },
+              },
+            },
           },
         })
       : await this.prisma.formTemplate.findMany({
@@ -62,6 +94,22 @@ export class FormTemplatesService {
                 signerPosition: {
                   include: {
                     department: true,
+                  },
+                },
+              },
+            },
+            formInstances: {
+              include: {
+                formTemplate: true,
+                originator: true,
+                signatures: {
+                  include: {
+                    signerPosition: {
+                      include: {
+                        department: true,
+                      },
+                    },
+                    userSignedBy: true,
                   },
                 },
               },
@@ -87,6 +135,22 @@ export class FormTemplatesService {
             signerPosition: {
               include: {
                 department: true,
+              },
+            },
+          },
+        },
+        formInstances: {
+          include: {
+            formTemplate: true,
+            originator: true,
+            signatures: {
+              include: {
+                signerPosition: {
+                  include: {
+                    department: true,
+                  },
+                },
+                userSignedBy: true,
               },
             },
           },
@@ -119,6 +183,22 @@ export class FormTemplatesService {
             signerPosition: {
               include: {
                 department: true,
+              },
+            },
+          },
+        },
+        formInstances: {
+          include: {
+            formTemplate: true,
+            originator: true,
+            signatures: {
+              include: {
+                signerPosition: {
+                  include: {
+                    department: true,
+                  },
+                },
+                userSignedBy: true,
               },
             },
           },

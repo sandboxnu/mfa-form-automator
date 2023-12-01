@@ -1,4 +1,14 @@
-import { Controller, Get, Post, UseGuards, Request, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  Request,
+  Res,
+  Req,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import {
   ApiOkResponse,
@@ -6,6 +16,7 @@ import {
   ApiUnprocessableEntityResponse,
   ApiBadRequestResponse,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AppErrorMessage } from './app.errors';
 import { JwtEntity } from './auth/entities/jwt.entity';
@@ -13,12 +24,17 @@ import { LocalAuthGuard } from './auth/guards/local-auth.guard';
 import { EmployeeEntity } from './employees/entities/employee.entity';
 import { AuthService } from './auth/auth.service';
 import { Response as ResponseType } from 'express';
+import { JwtRefreshAuthGuard } from './auth/guards/jwt-refresh.guard';
+import { Request as RequestType } from 'express';
+import { EmployeesService } from './employees/employees.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Controller()
 export class AppController {
   constructor(
     private appService: AppService,
     private authService: AuthService,
+    private employeeService: EmployeesService,
   ) {}
 
   @Get()
@@ -43,15 +59,55 @@ export class AppController {
     },
   })
   async login(
-    @Request() req: EmployeeEntity,
+    @Request() req: any,
     @Res({ passthrough: true }) response: ResponseType,
   ) {
-    const jwtToken = await this.authService.login(req);
-    response.setHeader(
-      'Set-Cookie',
-      `jwt=${jwtToken.access_token}; HttpOnly; Path=/; Max-Age=${60000}`,
+    const tokens = await this.authService.login(req.user);
+
+    // set the employee's refresh token
+    this.employeeService.setRefreshToken(req.user.id, tokens.refreshToken);
+
+    // set-cookie header for jwt and refresh token
+    response.setHeader('Set-Cookie', [
+      `jwt=${tokens.accessToken}; HttpOnly; Path=/; Max-Age=${process.env.JWT_VALID_DURATION}`,
+      `refresh=${tokens.refreshToken}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_DURATION}`,
+    ]);
+    return tokens;
+  }
+
+  @UseGuards(JwtRefreshAuthGuard)
+  @Get('auth/refresh')
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: JwtEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async refresh(
+    @Req() req: RequestType,
+    @Res({ passthrough: true }) response: ResponseType,
+  ) {
+    // parse the cookies for the user id
+    const decoded = jwtDecode(req.cookies['refresh']);
+    const employee = await this.employeeService.findOneWithRefresh(
+      decoded.sub ?? '',
+      req.cookies['refresh'],
     );
-    return jwtToken;
+    if (employee == null) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+    const tokens = await this.authService.login(new EmployeeEntity(employee));
+
+    // set the employee's new refresh token
+    this.employeeService.setRefreshToken(employee.id, tokens.refreshToken);
+
+    // set-cookie header for jwt and refresh token
+    response.setHeader('Set-Cookie', [
+      `jwt=${tokens.accessToken}; HttpOnly; Path=/; Max-Age=${process.env.JWT_VALID_DURATION}`,
+      `refresh=${tokens.refreshToken}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_DURATION}`,
+    ]);
+    return tokens;
   }
 
   @Get('/auth/logout')
