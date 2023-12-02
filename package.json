@@ -37,6 +37,7 @@
     "@yarnpkg/plugin-workspace-tools": "^4.0.0-rc.51",
     "chakra-react-select": "^4.7.6",
     "husky": "^8.0.3",
+    "ldrs": "^1.0.1",
     "nestjs-config": "^1.4.11",
     "react-query": "^3.39.3"
   }
