@@ -90,7 +90,10 @@ export class AppController {
   ) {
     // parse the cookies for the user id
     const decoded = jwtDecode(req.cookies['refresh']);
-    // TODO: make sure that the token is valid and not expired
+    if (decoded.exp == undefined || decoded.exp - Date.now() < 0) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+
     const employee = await this.employeeService.findOneWithRefresh(
       decoded.sub ?? '',
       req.cookies['refresh'],
@@ -106,7 +109,7 @@ export class AppController {
     // set-cookie header for jwt and refresh token
     response.setHeader('Set-Cookie', [
       `jwt=${tokens.accessToken}; HttpOnly; Path=/; Max-Age=${process.env.JWT_VALID_DURATION}`,
-      `refresh=${tokens.refreshToken}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_DURATION}`,
+      `refresh=${tokens.refreshToken}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_VALID_DURATION}`,
     ]);
     return tokens;
   }

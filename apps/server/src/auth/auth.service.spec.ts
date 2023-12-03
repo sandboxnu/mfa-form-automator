@@ -111,7 +111,7 @@ describe('AuthService', () => {
     const jwtRefreshSecret =
       '7023c7d833140fb4b108212b93bf54dae329648d1c516b9e4700254a3ed12674';
     const validDuration = '600';
-    const validRefreshDuration = '60000';
+    const validRefreshDuration = '6000';
 
     beforeEach(() => {
       jest.resetModules();
@@ -120,7 +120,7 @@ describe('AuthService', () => {
         JWT_SECRET: jwtSecret,
         JWT_REFRESH_SECRET: jwtRefreshSecret,
         JWT_VALID_DURATION: validDuration,
-        JWT_REFRESH_DURATION: validRefreshDuration,
+        JWT_REFRESH_VALID_DURATION: validRefreshDuration,
       };
     });
 
@@ -143,8 +143,8 @@ describe('AuthService', () => {
         refreshToken: null,
       };
       const result = await service.login(user);
-      const decodedAccessToken = await jwtService.decode(result.accessToken);
-      const decodedRefreshToken = await jwtService.decode(result.refreshToken);
+      const decodedAccessToken = jwtService.decode(result.accessToken);
+      const decodedRefreshToken = jwtService.decode(result.refreshToken);
 
       expect(decodedAccessToken).not.toBeNull();
       expect(decodedRefreshToken).not.toBeNull();
@@ -166,7 +166,7 @@ describe('AuthService', () => {
       expect(decodedRefreshObj.sub).toEqual(user.id);
       expect(
         (decodedRefreshObj.exp - decodedRefreshObj.iat).toString(),
-      ).toEqual(process.env.JWT_REFRESH_DURATION);
+      ).toEqual(process.env.JWT_REFRESH_VALID_DURATION);
     });
   });
 });
