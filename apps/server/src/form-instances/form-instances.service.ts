@@ -13,6 +13,7 @@ import { FormTemplateErrorMessage } from '../form-templates/form-templates.error
 import { FormInstanceErrorMessage } from './form-instance.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
+import { EmployeeErrorMessage } from '@server/employees/employees.errors';
 
 @Injectable()
 export class FormInstancesService {
@@ -321,7 +322,15 @@ export class FormInstancesService {
     formInstanceId: string,
   ) {
     const formInstance = await this.prisma.formInstance.findUnique({
-      where: { id: formInstanceId, originatorId: employeeId },
+      where: { id: formInstanceId },
+      include: {
+        originator: { include: { position: true } },
+      },
+    });
+
+    const currUser = await this.prisma.employee.findUnique({
+      where: { id: employeeId },
+      include: { position: true },
     });
 
     if (!formInstance) {
@@ -330,9 +339,19 @@ export class FormInstancesService {
       );
     }
 
-    if (!formInstance.completed) {
+    if (!currUser) {
+      throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
+    }
+
+    const isOriginator = formInstance.originator.id === employeeId;
+    const isAdminInSameDepartment =
+      currUser.isAdmin &&
+      currUser.position.departmentId ===
+        formInstance.originator.position.departmentId;
+
+    if (!isOriginator && !isAdminInSameDepartment) {
       throw new BadRequestException(
-        FormInstanceErrorMessage.FORM_INSTANCE_NOT_COMPLETED,
+        FormInstanceErrorMessage.FORM_INSTANCE_INVALID_MARKED_COMPLETED,
       );
     }
 
