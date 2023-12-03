@@ -58,12 +58,12 @@ export const FormList = ({
             <motion.div
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-              transition={{ duration: 0.3}}
+              transition={{ duration: 0.3 }}
               onAnimationComplete={() => setShowButton(!isOpen)}
             >
               <InputGroup marginRight="12px">
                 {isOpen ? (
-                  <InputLeftElement as="button" onClick={onToggle}>
+                  <InputLeftElement as="button" onClick={onToggle} justifyContent="flex-start">
                     <RightSearchIcon color="#595959" w="25px" h="25px" />
                   </InputLeftElement>
                 ) : (
@@ -99,30 +99,27 @@ export const FormList = ({
               <Button
                 variant="unstyled"
                 onClick={onToggle}
-                display="flex"
-                alignItems="flex-end"
+                height="32px"
+                alignItems="center"
                 p={0}
               >
                 <RightSearchIcon color="#595959" w="25px" h="25px" />
               </Button>
             )}
-            <Text fontSize="16px" paddingRight="12px">
-              Sort by:
-            </Text>
             <Select
-              minW="85px"
-              maxW="85px"
-              minH="28px"
-              maxH="28px"
+              minW="100px"
+              maxW="100px"
+              minH="32px"
+              maxH="32px"
               backgroundColor="white"
               borderRadius="md"
               size="16px"
               icon={<SortDownArrow />}
               iconSize="10px"
             >
-              <option value="recent">Recent</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              <option value="recent">&nbsp;&nbsp;Recent</option>              
+              <option value="option2">&nbsp;&nbsp;Option 2</option>
+              <option value="option3">&nbsp;&nbsp;Option 3</option>
             </Select>
           </Flex>
         </Flex>
