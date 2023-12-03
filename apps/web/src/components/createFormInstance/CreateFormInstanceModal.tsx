@@ -1,27 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  Flex,
-  Box,
-  Text,
-  ModalFooter,
-  Skeleton,
-  Grid,
+  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Flex, Box, Text, ModalFooter, Skeleton, Grid, List
 } from '@chakra-ui/react';
+import { Reorder } from 'framer-motion';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-  CreateFormInstanceDto,
-  FormInstancesService,
-  FormTemplateEntity,
-  FormTemplatesService,
-  PositionsService,
+  CreateFormInstanceDto, FormInstancesService, FormTemplateEntity, FormTemplatesService, PositionsService,
 } from '@web/client';
 import { SignatureDropdown } from './SignatureDropdown';
 import { CreateFormInstanceModalProps, Option } from './types';
@@ -29,11 +15,9 @@ import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 
 // TODO
-// select assignee search icon
-// set default width of assignee dropdowns to be wider (in line with create form button)
-// elipsis for overflow
 // make form name editable
-// make list of
+// make it so on click option on dropdown it closes
+// fix form type dropdown bug
 
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   isOpen,
@@ -47,6 +31,8 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
   >([]);
+  const [formName, setFormName] = useState('Create Form');
+
   const createFormInstanceMutation = useMutation({
     mutationFn: async (newFormInstance: CreateFormInstanceDto) => {
       return FormInstancesService.formInstancesControllerCreate(
@@ -79,10 +65,10 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     );
   }, [selectedFormTemplate]);
 
-  const submitFormInstance = async () =>
+  const submitFormInstance = async () => {
     createFormInstanceMutation
       .mutateAsync({
-        name: selectedFormTemplate?.name ?? 'Create Form',
+        name: formName, // Use the updated form name
         signatures: signaturePositions.map((pos, i) => {
           return {
             order: i,
@@ -99,6 +85,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       .catch((e) => {
         throw e;
       });
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -107,14 +94,20 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalCloseButton />
         <ModalBody>
           <Box h="75vh" w="75vw">
-            <Text
-              fontFamily="Hanken Grotesk"
-              fontWeight="800"
-              fontSize="27px"
-              pt="30px"
-              pb="5px" // Adjusted padding
-            >
-              Create {selectedFormTemplate ? selectedFormTemplate.name : 'Form'}
+          <Text fontFamily="Hanken Grotesk" fontWeight="800" fontSize="27px" pt="30px" pb="5px">
+              <input
+                type="text"
+                value={formName}
+                onChange={(e) => setFormName(e.target.value)}
+                style={{
+                  fontFamily: 'Hanken Grotesk',
+                  fontWeight: 800,
+                  fontSize: '27px',
+                  border: 'none',
+                  outline: 'none',
+                  background: 'transparent',
+                }}
+              />
             </Text>
             <Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
               <Flex flexDirection="column" marginRight="79px">
@@ -163,30 +156,38 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 />
               </Flex>
               {formTypeSelected ? (
-                <Flex flexDirection="column" w="100%">
-                  <Text
-                    fontFamily="Hanken Grotesk"
-                    fontSize="17px"
-                    fontWeight="700"
-                    mb="10px"
-                  >
-                    Assignees
-                  </Text>
-                  <Box w="100%">
-                    {selectedFormTemplate?.signatureFields.map((field, i) => {
-                      return (
-                        <SignatureDropdown
-                          key={field.id}
-                          field={field}
-                          index={i}
-                          positions={positions}
-                          signaturePositions={signaturePositions}
-                          setSignaturePositions={setSignaturePositions}
-                        />
-                      );
-                    })}
-                  </Box>
-                </Flex>
+  <Flex flexDirection="column" w="100%">
+    <Text
+      fontFamily="Hanken Grotesk"
+      fontSize="17px"
+      fontWeight="700"
+      mb="10px"
+    >
+      Assignees
+    </Text>
+    <div
+  className="scrollable-div"
+  style={{
+    maxHeight: '450px',
+    overflowY: 'auto',
+    paddingRight: '5px',
+    scrollbarWidth: 'thin',
+    scrollbarColor: '#4C658A transparent',
+    paddingLeft: '5px',
+  }}
+>
+      {selectedFormTemplate?.signatureFields.map((field, i) => (
+        <SignatureDropdown
+          key={field.id}
+          field={field}
+          index={i}
+          positions={positions}
+          signaturePositions={signaturePositions}
+          setSignaturePositions={setSignaturePositions}
+        />
+      ))}
+    </div>
+  </Flex>
               ) : (
                 <Box width="273px" height="42px">
                   <Text

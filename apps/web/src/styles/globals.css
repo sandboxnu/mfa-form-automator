@@ -113,3 +113,17 @@ a {
 .bold-selected-option {
   font-weight: bold;
 }
+
+.scrollable-div::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollable-div::-webkit-scrollbar-track {
+  width: 6px;
+}
+
+.scrollable-div::-webkit-scrollbar-thumb {
+  background: #4c658a;
+  border-radius: 24px;
+}
+
