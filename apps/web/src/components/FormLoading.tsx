@@ -8,24 +8,16 @@ const FormLoading: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
         paddingTop: '144px',
       }}
     >
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <div className={styles.loader}></div>
-      </div>
-      <div>
-        <p style={{ paddingTop: '20px', fontSize: '24px', fontWeight: 500 }}>
+      <div className={styles.loader}></div>
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <p style={{ fontSize: '24px', fontWeight: 500 }}>
           Forms are loading...
         </p>
-        <p style={{ paddingTop: '3px', fontSize: '18px', fontWeight: 400 }}>
+        <p style={{ fontSize: '18px', fontWeight: 400 }}>
           Thank you for your patience.
         </p>
       </div>

@@ -1,5 +1,4 @@
-import { Avatar, Box, Flex, createIcon } from '@chakra-ui/react';
-import { create } from 'axios';
+import { Avatar, createIcon } from '@chakra-ui/react';
 
 export const OverViewIcon = createIcon({
   displayName: 'OverviewIcon',
