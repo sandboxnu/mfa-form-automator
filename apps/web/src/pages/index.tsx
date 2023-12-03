@@ -2,6 +2,8 @@ import { OverviewRow } from 'apps/web/src/components/OverviewRow';
 import { Box } from '@chakra-ui/react';
 import { useAuth } from './../hooks/useAuth';
 import { useForm } from '@web/hooks/useForm';
+import Error from './../components/Error';
+import FormLoading from './../components/FormLoading';
 
 // overview page
 export default function Overview() {
@@ -15,9 +17,9 @@ export default function Overview() {
     createdFIError,
   } = useForm();
 
-  if (assignedFILoading || createdFILoading) return <p>Loading</p>;
+  if (assignedFILoading || createdFILoading) return <FormLoading />;
 
-  if (assignedFIError || createdFIError) return <p>Error</p>;
+  if (assignedFIError || createdFIError) return <Error />;
 
   const rowWidth = Math.max(
     230 * 1.5,

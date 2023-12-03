@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, createIcon } from '@chakra-ui/react';
+import { Avatar, createIcon } from '@chakra-ui/react';
 
 export const OverViewIcon = createIcon({
   displayName: 'OverviewIcon',
@@ -221,6 +221,19 @@ export const AddIcon = createIcon({
       <circle cx="9.5" cy="9.5" r="9.5" />
       <line x1="5" y1="9.5" x2="14" y2="9.5" stroke="white" />
       <line x1="9.5" y1="5" x2="9.5" y2="14" stroke="white" />
+    </>
+  ),
+});
+
+export const ErrorIcon = createIcon({
+  displayName: 'ErrorIcon',
+  viewBox: '0 0 44 44',
+  path: (
+    <>
+      <path
+        d="M22 0C9.86926 0 0 9.86926 0 22C0 34.1307 9.86926 44 22 44C34.1307 44 44 34.1307 44 22C44 9.86926 34.1307 0 22 0ZM24.1096 32.9819H19.8904V28.9014H24.1096V32.9819ZM24.1096 25.8491H19.8904V10.3165H24.1096V25.8491Z"
+        fill="#8B8B8B"
+      />
     </>
   ),
 });
