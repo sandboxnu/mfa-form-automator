@@ -90,6 +90,7 @@ export class AppController {
   ) {
     // parse the cookies for the user id
     const decoded = jwtDecode(req.cookies['refresh']);
+    // TODO: make sure that the token is valid and not expired
     const employee = await this.employeeService.findOneWithRefresh(
       decoded.sub ?? '',
       req.cookies['refresh'],
@@ -113,6 +114,9 @@ export class AppController {
   @Get('/auth/logout')
   @ApiOkResponse({ type: undefined })
   async logout(@Res({ passthrough: true }) response: ResponseType) {
-    response.setHeader('Set-Cookie', `jwt=; HttpOnly; Path=/; Max-Age=0`);
+    response.setHeader('Set-Cookie', [
+      `jwt=; HttpOnly; Path=/; Max-Age=0`,
+      `refresh=; HttpOnly; Path=/; Max-Age=0`,
+    ]);
   }
 }

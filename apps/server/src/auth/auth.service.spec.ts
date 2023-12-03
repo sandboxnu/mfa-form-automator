@@ -108,14 +108,19 @@ describe('AuthService', () => {
     const originalEnv = process.env;
     const jwtSecret =
       '6f4f04c51b3a6eca490347b9ae450b709f5ae40d4bd1c1003f95bf837a6e5e13';
+    const jwtRefreshSecret =
+      '7023c7d833140fb4b108212b93bf54dae329648d1c516b9e4700254a3ed12674';
     const validDuration = '600';
+    const validRefreshDuration = '60000';
 
     beforeEach(() => {
       jest.resetModules();
       process.env = {
         ...originalEnv,
         JWT_SECRET: jwtSecret,
+        JWT_REFRESH_SECRET: jwtRefreshSecret,
         JWT_VALID_DURATION: validDuration,
+        JWT_REFRESH_DURATION: validRefreshDuration,
       };
     });
 
@@ -138,19 +143,30 @@ describe('AuthService', () => {
         refreshToken: null,
       };
       const result = await service.login(user);
-      const decoded = await jwtService.decode(result.accessToken);
+      const decodedAccessToken = await jwtService.decode(result.accessToken);
+      const decodedRefreshToken = await jwtService.decode(result.refreshToken);
 
-      expect(decoded).not.toBeNull();
+      expect(decodedAccessToken).not.toBeNull();
+      expect(decodedRefreshToken).not.toBeNull();
 
-      const decodedObj = decoded as {
+      const decodedAccessObj = decodedAccessToken as {
+        [key: string]: any;
+      };
+      const decodedRefreshObj = decodedRefreshToken as {
         [key: string]: any;
       };
 
-      expect(decodedObj.email).toEqual(user.email);
-      expect(decodedObj.sub).toEqual(user.id);
-      expect((decodedObj.exp - decodedObj.iat).toString()).toEqual(
+      expect(decodedAccessObj.email).toEqual(user.email);
+      expect(decodedAccessObj.sub).toEqual(user.id);
+      expect((decodedAccessObj.exp - decodedAccessObj.iat).toString()).toEqual(
         process.env.JWT_VALID_DURATION,
       );
+
+      expect(decodedRefreshObj.email).toEqual(user.email);
+      expect(decodedRefreshObj.sub).toEqual(user.id);
+      expect(
+        (decodedRefreshObj.exp - decodedRefreshObj.iat).toString(),
+      ).toEqual(process.env.JWT_REFRESH_DURATION);
     });
   });
 });
