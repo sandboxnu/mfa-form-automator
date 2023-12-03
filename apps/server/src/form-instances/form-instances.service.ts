@@ -13,7 +13,7 @@ import { FormTemplateErrorMessage } from '../form-templates/form-templates.error
 import { FormInstanceErrorMessage } from './form-instance.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
-import { EmployeeErrorMessage } from '@server/employees/employees.errors';
+import { EmployeeErrorMessage } from '../employees/employees.errors';
 
 @Injectable()
 export class FormInstancesService {
