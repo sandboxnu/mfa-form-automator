@@ -90,7 +90,7 @@ export class AppController {
   ) {
     // parse the cookies for the user id
     const decoded = jwtDecode(req.cookies['refresh']);
-    if (decoded.exp == undefined || decoded.exp - Date.now() < 0) {
+    if (decoded.exp == undefined || decoded.exp - Date.now() / 1000 < 0) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
 
