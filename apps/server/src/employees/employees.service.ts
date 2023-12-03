@@ -173,8 +173,6 @@ export class EmployeesService {
    * @param refreshToken the jwt refresh token
    */
   async setRefreshToken(id: string, refreshToken: string) {
-    console.log(id);
-    console.log(refreshToken);
     const updatedEmployee = this.prisma.employee.update({
       where: {
         id: id,
