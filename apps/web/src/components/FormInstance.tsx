@@ -23,9 +23,8 @@ const FormInstance = ({
     mutationFn:
       FormInstancesService.formInstancesControllerCompleteFormInstance,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api/form-instances/me'] });
       queryClient.invalidateQueries({
-        queryKey: ['api/form-instances/created/me'],
+        queryKey: ['api/form-instances/me', 'api/form-instances/created/me'],
       });
     },
   });
