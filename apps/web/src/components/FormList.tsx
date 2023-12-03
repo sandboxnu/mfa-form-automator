@@ -1,7 +1,10 @@
 import { FormRow } from './FormRow';
-import { Box, Flex, Grid, GridItem, Select, Text } from '@chakra-ui/react';
-import { SortDownArrow } from 'apps/web/src/static/icons';
+import { Box, Button, Flex, Grid, GridItem, Input, InputGroup, InputLeftElement, Select, Text, useDisclosure } from '@chakra-ui/react';
+import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
 import { FormInstanceEntity } from '@web/client';
+import { useState } from 'react';
+import { distance } from 'fastest-levenshtein';
+import { motion } from 'framer-motion';
 
 // abstracted component for displaying forms in list format
 export const FormList = ({
@@ -13,6 +16,19 @@ export const FormList = ({
   formInstances: FormInstanceEntity[];
   color: string;
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const { isOpen, onToggle } = useDisclosure();
+  const [showButton, setShowButton] = useState(false);
+
+
+
+  const sortedFormInstances = formInstances
+    .map((formInstance) => ({
+      ...formInstance,
+      levenshteinDistance: distance(searchQuery.toLowerCase(), formInstance.name.toLowerCase()),
+    }))
+    .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance);
+
   return (
     <>
       <Box padding="30px">
@@ -38,24 +54,72 @@ export const FormList = ({
             </Box>
           </Flex>
 
-          <Flex>
-            <Text fontSize="16px" pr="5px">
-              Sort by:
-            </Text>
+          <Flex alignItems="flex-end">
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+              onAnimationComplete={() => setShowButton(!isOpen)}
+            >
+              <InputGroup marginRight="12px">
+                {isOpen ? (
+                  <InputLeftElement as="button" onClick={onToggle} justifyContent="flex-start">
+                    <RightSearchIcon color="#595959" w="25px" h="25px" />
+                  </InputLeftElement>
+                ) : (
+                  <Button
+                    variant="unstyled"
+                    onClick={onToggle}
+                    display="flex"
+                    alignItems="flex-end"
+                    p={0}
+                  >
+                    <RightSearchIcon color="#595959" w="25px" h="25px" />
+                  </Button>
+                )}
+                <Input
+                  size="16px"
+                  borderRadius="0"
+                  border="none"
+                  marginRight="12px"
+                  borderBottom="1px solid"
+                  borderColor="#B0B0B0"
+                  boxShadow="none"
+                  _hover={{ borderColor: "#595959" }}
+                  _focus={{
+                    borderColor: "#595959",
+                    boxShadow: "none",
+                  }}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </InputGroup>
+            </motion.div>
+            {showButton && !isOpen && (
+              <Button
+                variant="unstyled"
+                onClick={onToggle}
+                height="32px"
+                alignItems="center"
+                p={0}
+              >
+                <RightSearchIcon color="#595959" w="25px" h="25px" />
+              </Button>
+            )}
             <Select
-              minW="85px"
-              maxW="85px"
-              minH="28px"
-              maxH="28px"
+              minW="100px"
+              maxW="100px"
+              minH="32px"
+              maxH="32px"
               backgroundColor="white"
-              borderRadius="0"
-              size="xs"
+              borderRadius="md"
+              size="16px"
               icon={<SortDownArrow />}
               iconSize="10px"
             >
-              <option value="recent">Recent</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
+              <option value="recent">&nbsp;&nbsp;Recent</option>              
+              <option value="option2">&nbsp;&nbsp;Option 2</option>
+              <option value="option3">&nbsp;&nbsp;Option 3</option>
             </Select>
           </Flex>
         </Flex>
@@ -84,28 +148,13 @@ export const FormList = ({
               </Text>
             </GridItem>
           </Grid>
-          {formInstances.length > 1 &&
-            formInstances
-              .slice(0, -1)
-              .map((formInstance: FormInstanceEntity, index: number) => {
-                return (
-                  <FormRow
-                    formInstance={formInstance}
-                    key={index}
-                    link={'/form-instances/' + formInstance.id}
-                  />
-                );
-              })}
-          {formInstances.length > 0 && (
+          {sortedFormInstances.map((formInstance: FormInstanceEntity, index: number) => (
             <FormRow
-              formInstance={formInstances[formInstances.length - 1]}
-              key={formInstances.length - 1}
-              last={true}
-              link={
-                '/form-instances/' + formInstances[formInstances.length - 1].id
-              }
+              formInstance={formInstance}
+              key={index}
+              link={'/form-instances/' + formInstance.id}
             />
-          )}
+          ))}
         </Box>
       </Box>
     </>
