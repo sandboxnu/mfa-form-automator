@@ -3,6 +3,7 @@ import { EmployeesController } from './employees.controller';
 import { EmployeesService } from './employees.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmployeeEntity } from './entities/employee.entity';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 describe('EmployeesController', () => {
   let controller: EmployeesController;
@@ -11,7 +12,7 @@ describe('EmployeesController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EmployeesController],
-      providers: [EmployeesService, PrismaService],
+      providers: [EmployeesService, PrismaService, LoggerServiceImpl],
     }).compile();
 
     controller = module.get<EmployeesController>(EmployeesController);
@@ -45,6 +46,7 @@ describe('EmployeesController', () => {
             },
           },
           email: 'john.doe@example.com',
+          isAdmin: false,
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
@@ -69,6 +71,7 @@ describe('EmployeesController', () => {
             },
           },
           email: 'bilbo.baggins@example.com',
+          isAdmin: false,
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
@@ -96,6 +99,7 @@ describe('EmployeesController', () => {
             },
           },
           email: 'john.doe@example.com',
+          isAdmin: false,
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
@@ -120,6 +124,7 @@ describe('EmployeesController', () => {
             },
           },
           email: 'bilbo.baggins@example.com',
+          isAdmin: false,
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),

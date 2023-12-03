@@ -24,8 +24,8 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
               color="black"
               bg={assignee.signed ? '#D1F0D4' : '#E5E5E5'}
             />
-            <Box minWidth="200px">
-              <Flex width="100%">
+            <Box minWidth="240px">
+              <Flex width="100%" flexDirection="column">
                 <Text
                   color="#000"
                   fontFamily="Hanken Grotesk"
@@ -33,26 +33,39 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                   fontStyle="normal"
                   fontWeight="500"
                   lineHeight="normal"
-                  style={{ whiteSpace: 'nowrap' }}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    maxWidth: '240px',
+                  }}
                 >
                   {assignee.title}
                 </Text>
+                {!assignee.name && (
+                  <Text
+                    color="#5E5E5E"
+                    fontSize="16px"
+                    fontStyle="italic"
+                    style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
+                  >
+                    Pending Signature
+                  </Text>
+                )}
+                {assignee.name && (
+                  <Text
+                    color="#5E5E5E"
+                    fontFamily="Hanken Grotesk"
+                    fontSize="16px"
+                    fontStyle="normal"
+                    fontWeight="400"
+                    lineHeight="normal"
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
+                    {assignee.name}
+                  </Text>
+                )}
               </Flex>
-              {assignee.name ? (
-                <Text
-                  color="#5E5E5E"
-                  fontFamily="Hanken Grotesk"
-                  fontSize="16px"
-                  fontStyle="normal"
-                  fontWeight="400"
-                  lineHeight="normal"
-                  style={{ whiteSpace: 'nowrap' }}
-                >
-                  {assignee.name}
-                </Text>
-              ) : (
-                <></>
-              )}
             </Box>
             <Box minWidth="200px">
               {assignee.signed && (

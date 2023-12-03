@@ -8,7 +8,7 @@ import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
-import { Prisma } from '@prisma/client';
+import { FormInstance, Prisma } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
@@ -300,6 +300,38 @@ export class FormInstancesService {
       ...updatedSignature,
     };
 
-    return formInstance;
+    const allSigned = formInstance.signatures.every((sig) => sig.signed);
+
+    let updatedFormInstance = (await this.findOne(
+      formInstanceId,
+    )) as FormInstance;
+
+    if (allSigned) {
+      updatedFormInstance = await this.prisma.formInstance.update({
+        where: { id: formInstanceId },
+        data: { completed: true, completedAt: new Date() },
+      });
+    }
+
+    return updatedFormInstance;
+  }
+
+  async markFormInstanceAsCompleted(formInstanceId: string) {
+    const formInstance = await this.prisma.formInstance.findUnique({
+      where: { id: formInstanceId },
+    });
+
+    if (!formInstance) {
+      throw new NotFoundException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+      );
+    }
+
+    const updatedFormInstance = await this.prisma.formInstance.update({
+      where: { id: formInstanceId },
+      data: { markedCompleted: true, markedCompletedAt: new Date() },
+    });
+
+    return updatedFormInstance;
   }
 }

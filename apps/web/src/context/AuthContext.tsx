@@ -71,6 +71,7 @@ export const AuthProvider = ({ children }: any) => {
           email: decoded.email,
           firstName: decoded.firstName,
           lastName: decoded.lastName,
+          isAdmin: decoded.isAdmin,
         };
         setUser(user);
         router.push('/');
@@ -83,6 +84,7 @@ export const AuthProvider = ({ children }: any) => {
   // from the state.
   const logout = () => {
     DefaultService.appControllerLogout().then(() => setUser(undefined));
+    router.push('/signin');
   };
 
   // Make the provider update only when it should.

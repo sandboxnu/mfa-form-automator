@@ -29,6 +29,7 @@ model Employee {
   firstName String   @db.VarChar(255)
   lastName  String   @db.VarChar(255)
   email     String   @db.VarChar(255) @unique
+  isAdmin   Boolean  @db.Boolean @default(false)
   pswdHash  String?  @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -114,8 +115,11 @@ model FormInstance {
   name        String   @db.VarChar(255)
   formDocLink String   @db.VarChar(255)
   completed   Boolean  @default(false)
+  markedCompleted Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  completedAt DateTime? 
+  markedCompletedAt DateTime? 
 
   signatures Signature[]
 

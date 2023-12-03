@@ -26,11 +26,15 @@ import { CreateFormTemplateDto } from './dto/create-form-template.dto';
 import { FormTemplateErrorMessage } from './form-templates.errors';
 import { UpdateFormTemplateDto } from './dto/update-form-template.dto';
 import { Prisma } from '@prisma/client';
+import { LoggerServiceImpl } from '../logger/logger.service';
 
 @ApiTags('form-templates')
 @Controller('form-templates')
 export class FormTemplatesController {
-  constructor(private readonly formTemplatesService: FormTemplatesService) {}
+  constructor(
+    private readonly formTemplatesService: FormTemplatesService,
+    private readonly loggerService: LoggerServiceImpl,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({ type: FormTemplateEntity })
@@ -71,7 +75,9 @@ export class FormTemplatesController {
     const formTemplate = await this.formTemplatesService.findOne(id);
 
     if (formTemplate == null) {
-      console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
+      this.loggerService.error(
+        FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+      );
       throw new NotFoundException(
         FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND_CLIENT,
       );
@@ -101,7 +107,9 @@ export class FormTemplatesController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
+          this.loggerService.error(
+            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+          );
           throw new NotFoundException(
             FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND_CLIENT,
           );
@@ -122,7 +130,9 @@ export class FormTemplatesController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
-          console.log(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
+          this.loggerService.error(
+            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+          );
           throw new NotFoundException(
             FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND_CLIENT,
           );
