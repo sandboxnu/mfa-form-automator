@@ -2,6 +2,8 @@ import { FormInstancesService } from '../../client/services/FormInstancesService
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import FormInstance from '@web/components/FormInstance';
+import FormLoading from './../../components/FormLoading';
+import ErrorComponent from './../../components/Error';
 
 export default function FormInstanceView() {
   const router = useRouter();
@@ -28,14 +30,14 @@ export default function FormInstanceView() {
   });
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <FormLoading />;
   }
   return (
     <>
       {formInstance && !formInstanceError ? (
         <FormInstance formInstance={formInstance} />
       ) : (
-        <p>Error loading form instance data</p>
+        <ErrorComponent />
       )}
     </>
   );
