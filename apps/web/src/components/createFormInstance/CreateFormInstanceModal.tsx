@@ -173,6 +173,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     paddingRight: '5px',
     scrollbarWidth: 'thin',
     scrollbarColor: '#4C658A transparent',
+    paddingLeft: '5px',
   }}
 >
       {selectedFormTemplate?.signatureFields.map((field, i) => (
