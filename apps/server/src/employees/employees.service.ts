@@ -89,6 +89,28 @@ export class EmployeesService {
   }
 
   /**
+   * Retrieve an employee by id and refresh token.
+   * @param id the employee id
+   * @param refreshToken the refresh token
+   * @returns the selected employee, hydrated
+   */
+  async findOneWithRefresh(id: string, refreshToken: string) {
+    const employee = await this.prisma.employee.findFirst({
+      where: {
+        AND: [{ id: id }, { refreshToken: refreshToken }],
+      },
+      include: {
+        position: {
+          include: {
+            department: true,
+          },
+        },
+      },
+    });
+    return employee;
+  }
+
+  /**
    * Retrieve an employee by email.
    * @param email the employee email
    * @returns the selected employee, hydrated
@@ -143,5 +165,30 @@ export class EmployeesService {
         id: id,
       },
     });
+  }
+
+  /**
+   * Set an employee's refresh token.
+   * @param id the employee id
+   * @param refreshToken the jwt refresh token
+   */
+  async setRefreshToken(id: string, refreshToken: string) {
+    const updatedEmployee = this.prisma.employee.update({
+      where: {
+        id: id,
+      },
+      data: {
+        refreshToken: refreshToken,
+      },
+      include: {
+        position: {
+          include: {
+            department: true,
+            signatures: true,
+          },
+        },
+      },
+    });
+    return updatedEmployee;
   }
 }

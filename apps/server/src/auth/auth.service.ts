@@ -33,22 +33,32 @@ export class AuthService {
   /**
    * Authenticate a user.
    * @param request the incoming request
-   * @returns a valid JWT auth token
+   * @returns a valid JWT auth and refresh token
    */
-  async login(request: any) {
+  async login(user: EmployeeEntity) {
     const payload = {
-      email: request.user.email,
-      firstName: request.user.firstName,
-      lastName: request.user.lastName,
-      sub: request.user.id,
-      positionId: request.user.positionId,
-      isAdmin: request.user.isAdmin,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      sub: user.id,
+      positionId: user.positionId,
+      isAdmin: user.isAdmin,
     };
-    return {
-      access_token: await this.jwtService.signAsync(payload, {
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
         secret: process.env.JWT_SECRET,
         expiresIn: `${process.env.JWT_VALID_DURATION}s`,
       }),
+      this.jwtService.signAsync(payload, {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: `${process.env.JWT_REFRESH_VALID_DURATION}s`,
+      }),
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
     };
   }
 }

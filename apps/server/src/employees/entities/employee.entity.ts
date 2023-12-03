@@ -31,6 +31,9 @@ export class EmployeeBaseEntity implements Employee {
   @Exclude()
   updatedAt: Date;
 
+  @Exclude()
+  refreshToken: string | null;
+
   constructor(partial: Partial<EmployeeBaseEntity>) {
     Object.assign(this, partial);
   }

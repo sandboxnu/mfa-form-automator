@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
+import { PositionBaseEntity } from '../positions/entities/position.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -53,6 +54,7 @@ describe('AuthService', () => {
       pswdHash: 'password',
       createdAt: new Date(1672531200),
       updatedAt: new Date(1672531200),
+      refreshToken: null,
     };
 
     it('should sucessfully validate credentials', async () => {
@@ -79,6 +81,7 @@ describe('AuthService', () => {
         isAdmin: false,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
+        refreshToken: null,
       });
 
       jest.spyOn(bcrypt, 'compare').mockImplementation(async () => {
@@ -105,14 +108,19 @@ describe('AuthService', () => {
     const originalEnv = process.env;
     const jwtSecret =
       '6f4f04c51b3a6eca490347b9ae450b709f5ae40d4bd1c1003f95bf837a6e5e13';
+    const jwtRefreshSecret =
+      '7023c7d833140fb4b108212b93bf54dae329648d1c516b9e4700254a3ed12674';
     const validDuration = '600';
+    const validRefreshDuration = '6000';
 
     beforeEach(() => {
       jest.resetModules();
       process.env = {
         ...originalEnv,
         JWT_SECRET: jwtSecret,
+        JWT_REFRESH_SECRET: jwtRefreshSecret,
         JWT_VALID_DURATION: validDuration,
+        JWT_REFRESH_VALID_DURATION: validRefreshDuration,
       };
     });
 
@@ -121,26 +129,44 @@ describe('AuthService', () => {
     });
 
     it('successfully creates a JWT token', async () => {
-      const request = {
-        user: {
-          email: 'email@gmail.com',
-          id: 'userId',
-        },
+      const user = {
+        email: 'email@gmail.com',
+        id: 'userId',
+        position: new PositionBaseEntity({}),
+        firstName: 'First',
+        lastName: 'Last',
+        positionId: 'position-id',
+        isAdmin: false,
+        pswdHash: null,
+        createdAt: new Date(0),
+        updatedAt: new Date(0),
+        refreshToken: null,
       };
-      const result = await service.login(request);
-      const decoded = await jwtService.decode(result.access_token);
+      const result = await service.login(user);
+      const decodedAccessToken = jwtService.decode(result.accessToken);
+      const decodedRefreshToken = jwtService.decode(result.refreshToken);
 
-      expect(decoded).not.toBeNull();
+      expect(decodedAccessToken).not.toBeNull();
+      expect(decodedRefreshToken).not.toBeNull();
 
-      const decodedObj = decoded as {
+      const decodedAccessObj = decodedAccessToken as {
+        [key: string]: any;
+      };
+      const decodedRefreshObj = decodedRefreshToken as {
         [key: string]: any;
       };
 
-      expect(decodedObj.email).toEqual(request.user.email);
-      expect(decodedObj.sub).toEqual(request.user.id);
-      expect((decodedObj.exp - decodedObj.iat).toString()).toEqual(
+      expect(decodedAccessObj.email).toEqual(user.email);
+      expect(decodedAccessObj.sub).toEqual(user.id);
+      expect((decodedAccessObj.exp - decodedAccessObj.iat).toString()).toEqual(
         process.env.JWT_VALID_DURATION,
       );
+
+      expect(decodedRefreshObj.email).toEqual(user.email);
+      expect(decodedRefreshObj.sub).toEqual(user.id);
+      expect(
+        (decodedRefreshObj.exp - decodedRefreshObj.iat).toString(),
+      ).toEqual(process.env.JWT_REFRESH_VALID_DURATION);
     });
   });
 });

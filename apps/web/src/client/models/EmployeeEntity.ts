@@ -16,5 +16,6 @@ export type EmployeeEntity = {
     pswdHash: string | null;
     createdAt: string;
     updatedAt: string;
+    refreshToken: string | null;
 };
 

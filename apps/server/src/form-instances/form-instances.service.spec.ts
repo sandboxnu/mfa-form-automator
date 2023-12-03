@@ -93,6 +93,7 @@ const formTemplate = {
       updatedAt: new Date(1672531200),
     },
   ],
+  formInstances: [],
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
 };
