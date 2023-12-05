@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Flex, Box, Text, ModalFooter, Skeleton, Grid, List,  Input, InputGroup, InputRightElement
+  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Flex, Box, Text, ModalFooter, Skeleton, Grid, List, Input, InputGroup, InputRightElement
 } from '@chakra-ui/react';
 import { Reorder } from 'framer-motion';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
@@ -18,7 +18,7 @@ import { Icon } from '@chakra-ui/react';
 
 // TODO
 // make form name editable
-// make it so on click option on dropdown it closes
+// make it so on click option on assignee dropdown it closes
 // fix form type dropdown bug
 
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
@@ -94,7 +94,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     }
   }, [selectedFormTemplate]);
 
-  const widthMultiplier = 7;
+  const widthMultiplier = 1;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -102,62 +102,47 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       <ModalContent minWidth="fit-content" height="fit-content">
         <ModalCloseButton />
         <ModalBody>
-        <Box h="75vh" w="75vw">
-            <Flex justifyContent="space-between" alignItems="center" pt="30px" pb="5px">
-              <InputGroup w={`calc(${formName.length}ch + ${widthMultiplier}%)`}>
-                <Input
-                  type="text"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  onFocus={() => setIsEditMode(true)}
-                  onBlur={() => setIsEditMode(false)}
-                  readOnly={!isEditMode}
-                  style={{
-                    fontFamily: 'Hanken Grotesk',
-                    fontWeight: 800,
-                    fontSize: '27px',
-                    border: isEditMode ? '2px solid #4C658A' : 'none',
-                    outline: 'none',
-                    background: 'transparent',
-                    padding: '0',
-                    margin: '0',
-                  }}
-                />
-                <Flex
-                  alignItems="center"
-                  ml="10px" 
-                >
-                  <Box
-                    as={GrayPencilIcon}
-                    color="gray.500"
-                    fontSize="20px"
-                    _hover={{ 
-                      color: 'black', 
-                      textDecoration: 'underline' 
-                    }}
-                    cursor="pointer"
-                    onClick={() => {
-                      setIsEditMode((prev) => !prev);
-                    }}
-                  />
-                </Flex>
-              </InputGroup>
-            </Flex>
-          {/* <Text fontFamily="Hanken Grotesk" fontWeight="800" fontSize="27px" pt="30px" pb="5px">
-              <input
+          <Box h="75vh" w="75vw">
+            <Flex alignItems="center" pt="30px" pb="5px">
+              <Input
                 type="text"
                 value={formName}
                 onChange={(e) => setFormName(e.target.value)}
+                onFocus={() => setIsEditMode(true)}
+                onBlur={() => setIsEditMode(false)}
+                readOnly={!isEditMode}
                 style={{
                   fontFamily: 'Hanken Grotesk',
                   fontWeight: 800,
                   fontSize: '27px',
-                  border: 'none',
+                  border: isEditMode ? '2px solid #4C658A' : 'none',
                   outline: 'none',
                   background: 'transparent',
+                  padding: '0',
+                  margin: '0',
+                  width: `calc(${formName.length}ch + ${widthMultiplier}%)`,
                 }}
               />
-            </Text> */}
+              <Flex
+                alignItems="center"
+                ml="-20px" 
+                flexShrink={0} 
+              >
+                <Box
+                  as={GrayPencilIcon}
+                  color="gray.500"
+                  fontSize="20px"
+                  _hover={{
+                    color: 'black',
+                    textDecoration: 'underline',
+                  }}
+                  cursor="pointer"
+                  onClick={() => {
+                    setIsEditMode((prev) => !prev);
+                  }}
+                />
+              </Flex>
+            </Flex>
             <Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
               <Flex flexDirection="column" marginRight="79px">
                 <Text
@@ -205,38 +190,38 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 />
               </Flex>
               {formTypeSelected ? (
-  <Flex flexDirection="column" w="100%">
-    <Text
-      fontFamily="Hanken Grotesk"
-      fontSize="17px"
-      fontWeight="700"
-      mb="10px"
-    >
-      Assignees
-    </Text>
-    <div
-  className="scrollable-div"
-  style={{
-    maxHeight: '450px',
-    overflowY: 'auto',
-    paddingRight: '5px',
-    scrollbarWidth: 'thin',
-    scrollbarColor: '#4C658A transparent',
-    paddingLeft: '5px',
-  }}
->
-      {selectedFormTemplate?.signatureFields.map((field, i) => (
-        <SignatureDropdown
-          key={field.id}
-          field={field}
-          index={i}
-          positions={positions}
-          signaturePositions={signaturePositions}
-          setSignaturePositions={setSignaturePositions}
-        />
-      ))}
-    </div>
-  </Flex>
+                <Flex flexDirection="column" w="100%">
+                  <Text
+                    fontFamily="Hanken Grotesk"
+                    fontSize="17px"
+                    fontWeight="700"
+                    mb="10px"
+                  >
+                    Assignees
+                  </Text>
+                  <div
+                    className="scrollable-div"
+                    style={{
+                      maxHeight: '450px',
+                      overflowY: 'auto',
+                      paddingRight: '5px',
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#4C658A transparent',
+                      paddingLeft: '5px',
+                    }}
+                  >
+                    {selectedFormTemplate?.signatureFields.map((field, i) => (
+                      <SignatureDropdown
+                        key={field.id}
+                        field={field}
+                        index={i}
+                        positions={positions}
+                        signaturePositions={signaturePositions}
+                        setSignaturePositions={setSignaturePositions}
+                      />
+                    ))}
+                  </div>
+                </Flex>
               ) : (
                 <Box width="273px" height="42px">
                   <Text
