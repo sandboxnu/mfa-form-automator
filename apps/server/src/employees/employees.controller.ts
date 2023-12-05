@@ -44,6 +44,7 @@ export class EmployeesController {
 
   @UseGuards(AdminAuthGuard)
   @Post()
+  @ApiBearerAuth()
   @ApiCreatedResponse({ type: EmployeeEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({

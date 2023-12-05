@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { User, jwtPayload } from './../utils/types';
 import { useRouter } from 'next/router';
-import { DefaultService, EmployeesService } from '@web/client';
+import { DefaultService, EmployeesService, JwtEntity } from '@web/client';
 import { jwtDecode } from 'jwt-decode';
 
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
@@ -25,6 +25,21 @@ export const AuthProvider = ({ children }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
 
+  const parseUser = (jwt: JwtEntity) => {
+    const token = jwt.accessToken;
+    const decoded = jwtDecode(token) as jwtPayload;
+
+    const user: User = {
+      id: decoded.sub,
+      positionId: decoded.positionId,
+      email: decoded.email,
+      firstName: decoded.firstName,
+      lastName: decoded.lastName,
+      isAdmin: decoded.isAdmin,
+    };
+    setUser(user);
+  };
+
   // Reset the error state if we change page
   useEffect(() => {
     if (error) setError(undefined);
@@ -40,8 +55,15 @@ export const AuthProvider = ({ children }: any) => {
   useEffect(() => {
     EmployeesService.employeesControllerFindMe()
       .then((user) => setUser(user))
-      .catch((_error) => {
-        router.push('/signin');
+      .catch(async (_error) => {
+        setUser(undefined);
+        DefaultService.appControllerRefresh()
+          .then((response) => {
+            parseUser(response);
+          })
+          .catch((_error) => {
+            logout();
+          });
       })
       .finally(() => setLoadingInitial(false));
   }, []);
@@ -62,21 +84,12 @@ export const AuthProvider = ({ children }: any) => {
       password: password,
     })
       .then((response) => {
-        const token = response.access_token;
-        const decoded = jwtDecode(token) as jwtPayload;
-
-        const user: User = {
-          id: decoded.sub,
-          positionId: decoded.positionId,
-          email: decoded.email,
-          firstName: decoded.firstName,
-          lastName: decoded.lastName,
-          isAdmin: decoded.isAdmin,
-        };
-        setUser(user);
+        parseUser(response);
         router.push('/');
       })
-      .catch((error) => setError(error))
+      .catch((error) => {
+        setError(error);
+      })
       .finally(() => setLoading(false));
   };
 

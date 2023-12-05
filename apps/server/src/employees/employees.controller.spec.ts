@@ -50,6 +50,7 @@ describe('EmployeesController', () => {
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          refreshToken: null,
         },
         {
           id: 'd6c3c7c4-5f82-4c63-9086-ad6b3f067cdc',
@@ -75,6 +76,7 @@ describe('EmployeesController', () => {
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          refreshToken: null,
         },
       ];
 
@@ -103,6 +105,7 @@ describe('EmployeesController', () => {
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          refreshToken: null,
         }),
         new EmployeeEntity({
           id: 'd6c3c7c4-5f82-4c63-9086-ad6b3f067cdc',
@@ -128,6 +131,7 @@ describe('EmployeesController', () => {
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          refreshToken: null,
         }),
       ];
       jest

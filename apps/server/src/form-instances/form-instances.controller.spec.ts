@@ -72,6 +72,7 @@ describe('FormInstancesController', () => {
             updatedAt: new Date(1672531200),
           },
         ],
+        formInstances: [],
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
       };
@@ -111,6 +112,7 @@ describe('FormInstancesController', () => {
           pswdHash: 'password',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          refreshToken: null,
         },
         formTemplateId: 'c0f1fdee-278c-4977-86a2-89ae6a73ffb4',
         formTemplate: {
@@ -185,6 +187,7 @@ describe('FormInstancesController', () => {
           pswdHash: 'password',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          refreshToken: null,
         }),
         formTemplateId: 'c0f1fdee-278c-4977-86a2-89ae6a73ffb4',
         formTemplate: new FormTemplateEntity({
@@ -273,6 +276,7 @@ describe('FormInstancesController', () => {
             pswdHash: 'password',
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
+            refreshToken: null,
           },
           formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
           formTemplate: {
@@ -372,6 +376,7 @@ describe('FormInstancesController', () => {
             pswdHash: 'password',
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
+            refreshToken: null,
           },
           formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
           formTemplate: {
@@ -474,6 +479,7 @@ describe('FormInstancesController', () => {
             pswdHash: 'password',
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
+            refreshToken: null,
           }),
           formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
           formTemplate: new FormTemplateEntity({
@@ -573,6 +579,7 @@ describe('FormInstancesController', () => {
             pswdHash: 'password',
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
+            refreshToken: null,
           }),
           formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
           formTemplate: new FormTemplateEntity({
@@ -686,6 +693,7 @@ describe('FormInstancesController', () => {
             pswdHash: 'password',
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
+            refreshToken: null,
           },
           formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
           formTemplate: {
@@ -787,6 +795,7 @@ describe('FormInstancesController', () => {
           pswdHash: 'password',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          refreshToken: null,
         }),
         formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
         formTemplate: new FormTemplateEntity({
@@ -916,6 +925,7 @@ describe('FormInstancesController', () => {
             pswdHash: 'password',
             createdAt: new Date(1672531200),
             updatedAt: new Date(1672531200),
+            refreshToken: null,
           },
           formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
           formTemplate: {
@@ -1017,6 +1027,7 @@ describe('FormInstancesController', () => {
           pswdHash: 'password',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          refreshToken: null,
         }),
         formTemplateId: 'f6b24b94-c41d-4aee-992d-f1949a6e1f70',
         formTemplate: new FormTemplateEntity({

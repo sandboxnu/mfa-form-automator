@@ -179,4 +179,26 @@ export class FormInstancesService {
         });
     }
 
+    /**
+     * @param formInstanceId
+     * @returns FormInstanceEntity
+     * @throws ApiError
+     */
+    public static formInstancesControllerCompleteFormInstance(
+        formInstanceId: string,
+    ): CancelablePromise<FormInstanceEntity> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/form-instances/{formInstanceId}/complete',
+            path: {
+                'formInstanceId': formInstanceId,
+            },
+            errors: {
+                403: `Unauthorized Request`,
+                404: `Resource not found`,
+                422: `Bad Request`,
+            },
+        });
+    }
+
 }

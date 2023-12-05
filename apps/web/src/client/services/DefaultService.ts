@@ -44,6 +44,22 @@ export class DefaultService {
     }
 
     /**
+     * @returns JwtEntity
+     * @throws ApiError
+     */
+    public static appControllerRefresh(): CancelablePromise<JwtEntity> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/auth/refresh',
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                422: `Bad Request`,
+            },
+        });
+    }
+
+    /**
      * @returns any
      * @throws ApiError
      */
