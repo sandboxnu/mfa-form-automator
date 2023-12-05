@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Flex, Box, Text, ModalFooter, Skeleton, Grid, List
+  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Flex, Box, Text, ModalFooter, Skeleton, Grid, List,  Input, InputGroup, InputRightElement
 } from '@chakra-ui/react';
 import { Reorder } from 'framer-motion';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
@@ -13,6 +13,8 @@ import { SignatureDropdown } from './SignatureDropdown';
 import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
+import { GrayPencilIcon } from '@web/static/icons';
+import { Icon } from '@chakra-ui/react';
 
 // TODO
 // make form name editable
@@ -32,7 +34,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     (Option | null)[]
   >([]);
   const [formName, setFormName] = useState('Create Form');
-
+  const [isEditMode, setIsEditMode] = useState(false);
   const createFormInstanceMutation = useMutation({
     mutationFn: async (newFormInstance: CreateFormInstanceDto) => {
       return FormInstancesService.formInstancesControllerCreate(
@@ -86,6 +88,13 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         throw e;
       });
   };
+  useEffect(() => {
+    if (selectedFormTemplate) {
+      setFormName(selectedFormTemplate.name);
+    }
+  }, [selectedFormTemplate]);
+
+  const widthMultiplier = 7;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -93,8 +102,48 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       <ModalContent minWidth="fit-content" height="fit-content">
         <ModalCloseButton />
         <ModalBody>
-          <Box h="75vh" w="75vw">
-          <Text fontFamily="Hanken Grotesk" fontWeight="800" fontSize="27px" pt="30px" pb="5px">
+        <Box h="75vh" w="75vw">
+            <Flex justifyContent="space-between" alignItems="center" pt="30px" pb="5px">
+              <InputGroup w={`calc(${formName.length}ch + ${widthMultiplier}%)`}>
+                <Input
+                  type="text"
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  onFocus={() => setIsEditMode(true)}
+                  onBlur={() => setIsEditMode(false)}
+                  readOnly={!isEditMode}
+                  style={{
+                    fontFamily: 'Hanken Grotesk',
+                    fontWeight: 800,
+                    fontSize: '27px',
+                    border: isEditMode ? '2px solid #4C658A' : 'none',
+                    outline: 'none',
+                    background: 'transparent',
+                    padding: '0',
+                    margin: '0',
+                  }}
+                />
+                <Flex
+                  alignItems="center"
+                  ml="10px" 
+                >
+                  <Box
+                    as={GrayPencilIcon}
+                    color="gray.500"
+                    fontSize="20px"
+                    _hover={{ 
+                      color: 'black', 
+                      textDecoration: 'underline' 
+                    }}
+                    cursor="pointer"
+                    onClick={() => {
+                      setIsEditMode((prev) => !prev);
+                    }}
+                  />
+                </Flex>
+              </InputGroup>
+            </Flex>
+          {/* <Text fontFamily="Hanken Grotesk" fontWeight="800" fontSize="27px" pt="30px" pb="5px">
               <input
                 type="text"
                 value={formName}
@@ -108,7 +157,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   background: 'transparent',
                 }}
               />
-            </Text>
+            </Text> */}
             <Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
               <Flex flexDirection="column" marginRight="79px">
                 <Text
