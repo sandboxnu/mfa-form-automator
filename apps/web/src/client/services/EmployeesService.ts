@@ -13,13 +13,13 @@ import { request as __request } from '../core/request';
 export class EmployeesService {
 
     /**
-     * @param requestBody
-     * @returns EmployeeEntity
+     * @param requestBody 
+     * @returns EmployeeEntity 
      * @throws ApiError
      */
     public static employeesControllerCreate(
-        requestBody: CreateEmployeeDto,
-    ): CancelablePromise<EmployeeEntity> {
+requestBody: CreateEmployeeDto,
+): CancelablePromise<EmployeeEntity> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/employees',
@@ -35,12 +35,12 @@ export class EmployeesService {
 
     /**
      * @param limit Limit on number of positions to return
-     * @returns EmployeeEntity
+     * @returns EmployeeEntity 
      * @throws ApiError
      */
     public static employeesControllerFindAll(
-        limit?: number,
-    ): CancelablePromise<Array<EmployeeEntity>> {
+limit?: number,
+): CancelablePromise<Array<EmployeeEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/employees',
@@ -55,7 +55,7 @@ export class EmployeesService {
     }
 
     /**
-     * @returns EmployeeEntity
+     * @returns EmployeeEntity 
      * @throws ApiError
      */
     public static employeesControllerFindMe(): CancelablePromise<EmployeeEntity> {
@@ -70,13 +70,13 @@ export class EmployeesService {
     }
 
     /**
-     * @param id
-     * @returns EmployeeEntity
+     * @param id 
+     * @returns EmployeeEntity 
      * @throws ApiError
      */
     public static employeesControllerFindOne(
-        id: string,
-    ): CancelablePromise<EmployeeEntity> {
+id: string,
+): CancelablePromise<EmployeeEntity> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/employees/{id}',
@@ -92,15 +92,15 @@ export class EmployeesService {
     }
 
     /**
-     * @param id
-     * @param requestBody
-     * @returns EmployeeEntity
+     * @param id 
+     * @param requestBody 
+     * @returns EmployeeEntity 
      * @throws ApiError
      */
     public static employeesControllerUpdate(
-        id: string,
-        requestBody: UpdateEmployeeDto,
-    ): CancelablePromise<EmployeeEntity> {
+id: string,
+requestBody: UpdateEmployeeDto,
+): CancelablePromise<EmployeeEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/employees/{id}',
@@ -119,13 +119,13 @@ export class EmployeesService {
     }
 
     /**
-     * @param id
-     * @returns any
+     * @param id 
+     * @returns any 
      * @throws ApiError
      */
     public static employeesControllerRemove(
-        id: string,
-    ): CancelablePromise<any> {
+id: string,
+): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/employees/{id}',

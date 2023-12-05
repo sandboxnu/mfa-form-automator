@@ -7,4 +7,3 @@ export type CreatePositionDto = {
     name: string;
     departmentId: string;
 };
-

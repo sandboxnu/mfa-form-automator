@@ -13,13 +13,13 @@ import { request as __request } from '../core/request';
 export class DepartmentsService {
 
     /**
-     * @param requestBody
-     * @returns DepartmentEntity
+     * @param requestBody 
+     * @returns DepartmentEntity 
      * @throws ApiError
      */
     public static departmentsControllerCreate(
-        requestBody: CreateDepartmentDto,
-    ): CancelablePromise<DepartmentEntity> {
+requestBody: CreateDepartmentDto,
+): CancelablePromise<DepartmentEntity> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/departments',
@@ -34,13 +34,13 @@ export class DepartmentsService {
     }
 
     /**
-     * @param limit
-     * @returns DepartmentEntity
+     * @param limit 
+     * @returns DepartmentEntity 
      * @throws ApiError
      */
     public static departmentsControllerFindAll(
-        limit: number,
-    ): CancelablePromise<Array<DepartmentEntity>> {
+limit: number,
+): CancelablePromise<Array<DepartmentEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/departments',
@@ -55,13 +55,13 @@ export class DepartmentsService {
     }
 
     /**
-     * @param id
-     * @returns DepartmentEntity
+     * @param id 
+     * @returns DepartmentEntity 
      * @throws ApiError
      */
     public static departmentsControllerFindOne(
-        id: string,
-    ): CancelablePromise<DepartmentEntity> {
+id: string,
+): CancelablePromise<DepartmentEntity> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/departments/{id}',
@@ -77,15 +77,15 @@ export class DepartmentsService {
     }
 
     /**
-     * @param id
-     * @param requestBody
-     * @returns DepartmentEntity
+     * @param id 
+     * @param requestBody 
+     * @returns DepartmentEntity 
      * @throws ApiError
      */
     public static departmentsControllerUpdate(
-        id: string,
-        requestBody: UpdateDepartmentDto,
-    ): CancelablePromise<DepartmentEntity> {
+id: string,
+requestBody: UpdateDepartmentDto,
+): CancelablePromise<DepartmentEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/departments/{id}',
@@ -104,13 +104,13 @@ export class DepartmentsService {
     }
 
     /**
-     * @param id
-     * @returns any
+     * @param id 
+     * @returns any 
      * @throws ApiError
      */
     public static departmentsControllerRemove(
-        id: string,
-    ): CancelablePromise<any> {
+id: string,
+): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/departments/{id}',
