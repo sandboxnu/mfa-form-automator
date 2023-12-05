@@ -21,13 +21,6 @@ export default function Signin() {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      // Call the login function when Enter key is pressed
-      login(email, password);
-    }
-  };
-
   return (
     <>
       <Flex
@@ -76,7 +69,6 @@ export default function Signin() {
               background="#4C658A"
               color="#FFF"
               onClick={() => login(email, password)}
-              onKeyPress={() => login(email, password)}
             >
               Sign In
             </Button>
