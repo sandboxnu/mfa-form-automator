@@ -148,8 +148,9 @@ export const CheckIcon = createIcon({
 
 export const MFALogoIcon = createIcon({
   displayName: 'CustomLogoIcon',
-  viewBox: '0 0 800 200', // Adjust the viewBox according to your logo
+  viewBox: '0 0 800 200', 
   path: (
+    <svg width="800" height="200">
     <g>
       <path d="M442.98,168.25c-9.19,0-17.39-2.09-24.66-6.32s-13.01-10.01-17.19-17.39c-4.06-7.51-6.11-16-6.11-25.44
 		s2.05-18.05,6.11-25.44c4.23-7.38,9.89-13.13,17.03-17.19c7.26-4.23,15.55-6.32,24.86-6.32s17.35,2.09,24.49,6.32
@@ -187,6 +188,7 @@ export const MFALogoIcon = createIcon({
   <polygon points="308.27,166 336,165.96 336,109.75 390.12,109.75 390.12,85.3 336,85.3 336,57.2 398.32,57.2 398.32,32.75 
     308.27,32.67 "/>
     </g>
+    </svg>
   ),
 });
 
