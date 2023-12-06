@@ -220,7 +220,15 @@ const FormInstance = ({
               title: signature.signerPosition.name,
             }))}
           />
-          {_userCanSign && <Button onClick={_handleFormSign}>Sign Form</Button>}
+          {_userCanSign && (
+            <Button
+              onClick={_handleFormSign}
+              background={formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'}
+              color="#FFF"
+            >
+              Sign Form
+            </Button>
+          )}
           {formInstance.completed && (
             <Box display="flex" justifyContent={'flex-end'}>
               <Button
