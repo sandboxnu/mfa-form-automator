@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Grid, Text, Skeleton } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  Text,
+  Skeleton,
+  Spacer,
+} from '@chakra-ui/react';
 import {
   LeftArrowIcon,
   PencilIcon,
@@ -230,25 +238,26 @@ const FormInstance = ({
             </Button>
           )}
           {formInstance.completed && (
-            <Box display="flex" justifyContent={'flex-end'}>
-              <Button
-                borderRadius="8px"
-                width="111px"
-                height="40px"
-                background={
-                  formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
-                }
-                cursor={
-                  formInstance.markedCompleted ? 'not-allowed' : 'pointer'
-                }
-                _active={{ background: '#e2e8f0' }}
-                isLoading={completeFormInstanceMutation.isPending}
-                color="#FFF"
-                onClick={_handleFormApprove}
-              >
-                Approve
-              </Button>
-            </Box>
+            <Flex>
+              <Spacer />
+              <Box pl="350px">
+                <Button
+                  borderRadius="8px"
+                  width="111px"
+                  height="40px"
+                  onClick={_handleFormApprove}
+                  background={
+                    formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
+                  }
+                  color="#FFF"
+                  cursor={
+                    formInstance.markedCompleted ? 'not-allowed' : 'pointer'
+                  }
+                >
+                  Approve
+                </Button>
+              </Box>
+            </Flex>
           )}
         </Box>
       </Grid>
