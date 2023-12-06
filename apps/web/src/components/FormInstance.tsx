@@ -10,6 +10,7 @@ import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
+import { useAuth } from '@web/hooks/useAuth';
 
 const FormInstance = ({
   formInstance,
@@ -18,18 +19,51 @@ const FormInstance = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
+  const { user } = useAuth();
+
+  const signFormInstanceMutation = useMutation({
+    mutationFn: async ({
+      formInstanceId,
+      signatureId,
+    }: {
+      formInstanceId: string;
+      signatureId: string;
+    }) => {
+      return FormInstancesService.formInstancesControllerSignFormInstance(
+        formInstanceId,
+        signatureId,
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['api', 'form-instances'],
+      });
+    },
+  });
 
   const completeFormInstanceMutation = useMutation({
     mutationFn:
       FormInstancesService.formInstancesControllerCompleteFormInstance,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['api/form-instances/me', 'api/form-instances/created/me'],
+        queryKey: ['api', 'form-instances'],
       });
     },
   });
 
-  const handleFormApprove = () => {
+  const _nextSignature = formInstance.signatures
+    .sort((a, b) => a.order - b.order)
+    .find((v) => v.userSignedById == null);
+  const _userCanSign = _nextSignature?.signerPositionId == user?.positionId;
+
+  const _handleFormSign = () => {
+    if (_nextSignature == null || !_userCanSign) return;
+    signFormInstanceMutation.mutate({
+      formInstanceId: formInstance.id,
+      signatureId: _nextSignature?.id!,
+    });
+  };
+  const _handleFormApprove = () => {
     if (formInstance.markedCompleted) return;
     completeFormInstanceMutation.mutate(formInstance.id);
   };
@@ -179,12 +213,14 @@ const FormInstance = ({
             assignees={formInstance.signatures.map((signature) => ({
               name: signature.userSignedBy
                 ? signature.userSignedBy?.firstName +
+                  ' ' +
                   signature.userSignedBy?.lastName
                 : undefined,
               signed: signature.userSignedById ? true : false,
               title: signature.signerPosition.name,
             }))}
           />
+          {_userCanSign && <Button onClick={_handleFormSign}>Sign Form</Button>}
           {formInstance.completed && (
             <Box display="flex" justifyContent={'flex-end'}>
               <Button
@@ -200,7 +236,7 @@ const FormInstance = ({
                 _active={{ background: '#e2e8f0' }}
                 isLoading={completeFormInstanceMutation.isPending}
                 color="#FFF"
-                onClick={handleFormApprove}
+                onClick={_handleFormApprove}
               >
                 Approve
               </Button>

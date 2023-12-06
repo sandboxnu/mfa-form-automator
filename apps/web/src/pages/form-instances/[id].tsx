@@ -13,7 +13,7 @@ export default function FormInstanceView() {
     error: formInstanceError,
     isLoading,
   } = useQuery({
-    queryKey: ['formInstance', router.query.id],
+    queryKey: ['api', 'form-instances', router.query.id],
     queryFn: async () => {
       try {
         if (router.query.id) {

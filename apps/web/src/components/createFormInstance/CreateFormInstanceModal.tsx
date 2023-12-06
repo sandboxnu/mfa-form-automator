@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Flex, Box, Text, ModalFooter, Skeleton, Grid, List
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Flex,
+  Box,
+  Text,
+  ModalFooter,
+  Skeleton,
+  Grid,
 } from '@chakra-ui/react';
-import { Reorder } from 'framer-motion';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-  CreateFormInstanceDto, FormInstancesService, FormTemplateEntity, FormTemplatesService, PositionsService,
+  CreateFormInstanceDto,
+  FormInstancesService,
+  FormTemplateEntity,
+  FormTemplatesService,
+  PositionsService,
 } from '@web/client';
 import { SignatureDropdown } from './SignatureDropdown';
 import { CreateFormInstanceModalProps, Option } from './types';
@@ -40,22 +54,19 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api/form-instances/me'] });
-      queryClient.invalidateQueries({
-        queryKey: ['api/form-instances/created/me'],
-      });
+      queryClient.invalidateQueries({ queryKey: ['api', 'form-instances'] });
     },
   });
 
   // Fetch form templates data
   const { data: formTemplates, error: formTemplatesError } = useQuery({
-    queryKey: ['api/form-templates'],
+    queryKey: ['api', 'form-templates'],
     queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
   });
 
   // Fetch positions data
   const { data: positions, error: positionsError } = useQuery({
-    queryKey: ['api/positions'],
+    queryKey: ['api', 'positions'],
     queryFn: () => PositionsService.positionsControllerFindAll(),
   });
 
@@ -94,7 +105,13 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalCloseButton />
         <ModalBody>
           <Box h="75vh" w="75vw">
-          <Text fontFamily="Hanken Grotesk" fontWeight="800" fontSize="27px" pt="30px" pb="5px">
+            <Text
+              fontFamily="Hanken Grotesk"
+              fontWeight="800"
+              fontSize="27px"
+              pt="30px"
+              pb="5px"
+            >
               <input
                 type="text"
                 value={formName}
@@ -156,38 +173,38 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 />
               </Flex>
               {formTypeSelected ? (
-  <Flex flexDirection="column" w="100%">
-    <Text
-      fontFamily="Hanken Grotesk"
-      fontSize="17px"
-      fontWeight="700"
-      mb="10px"
-    >
-      Assignees
-    </Text>
-    <div
-  className="scrollable-div"
-  style={{
-    maxHeight: '450px',
-    overflowY: 'auto',
-    paddingRight: '5px',
-    scrollbarWidth: 'thin',
-    scrollbarColor: '#4C658A transparent',
-    paddingLeft: '5px',
-  }}
->
-      {selectedFormTemplate?.signatureFields.map((field, i) => (
-        <SignatureDropdown
-          key={field.id}
-          field={field}
-          index={i}
-          positions={positions}
-          signaturePositions={signaturePositions}
-          setSignaturePositions={setSignaturePositions}
-        />
-      ))}
-    </div>
-  </Flex>
+                <Flex flexDirection="column" w="100%">
+                  <Text
+                    fontFamily="Hanken Grotesk"
+                    fontSize="17px"
+                    fontWeight="700"
+                    mb="10px"
+                  >
+                    Assignees
+                  </Text>
+                  <div
+                    className="scrollable-div"
+                    style={{
+                      maxHeight: '450px',
+                      overflowY: 'auto',
+                      paddingRight: '5px',
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#4C658A transparent',
+                      paddingLeft: '5px',
+                    }}
+                  >
+                    {selectedFormTemplate?.signatureFields.map((field, i) => (
+                      <SignatureDropdown
+                        key={field.id}
+                        field={field}
+                        index={i}
+                        positions={positions}
+                        signaturePositions={signaturePositions}
+                        setSignaturePositions={setSignaturePositions}
+                      />
+                    ))}
+                  </div>
+                </Flex>
               ) : (
                 <Box width="273px" height="42px">
                   <Text

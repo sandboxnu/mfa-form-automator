@@ -14,6 +14,7 @@ import { FormInstanceErrorMessage } from './form-instance.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
+import { UserEntity } from '@server/auth/entities/user.entity';
 
 @Injectable()
 export class FormInstancesService {
@@ -263,7 +264,11 @@ export class FormInstancesService {
     });
   }
 
-  async signFormInstance(formInstanceId: string, signatureId: string) {
+  async signFormInstance(
+    formInstanceId: string,
+    signatureId: string,
+    currentUser: UserEntity,
+  ) {
     const formInstance = await this.prisma.formInstance.findUnique({
       where: { id: formInstanceId },
       include: {
@@ -276,6 +281,10 @@ export class FormInstancesService {
         FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
       );
     }
+
+    const employee = await this.prisma.employee.findFirstOrThrow({
+      where: { id: currentUser.id },
+    });
 
     const signatureIndex = formInstance.signatures.findIndex(
       (sig) => sig.id === signatureId,
@@ -291,9 +300,16 @@ export class FormInstancesService {
       }
     }
 
+    if (
+      employee.positionId !=
+      formInstance.signatures[signatureIndex].signerPositionId
+    ) {
+      throw new BadRequestException(SignatureErrorMessage.EMPLOYEE_CANNOT_SIGN);
+    }
+
     const updatedSignature = await this.prisma.signature.update({
       where: { id: signatureId },
-      data: { signed: true },
+      data: { signed: true, userSignedById: currentUser.id },
     });
 
     formInstance.signatures[signatureIndex] = {
@@ -311,6 +327,9 @@ export class FormInstancesService {
       updatedFormInstance = await this.prisma.formInstance.update({
         where: { id: formInstanceId },
         data: { completed: true, completedAt: new Date() },
+        include: {
+          signatures: { include: { signerPosition: true, userSignedBy: true } },
+        },
       });
     }
 
