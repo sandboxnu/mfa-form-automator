@@ -6,6 +6,7 @@ import {
   Text,
   Skeleton,
   Spacer,
+  useToast,
 } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
@@ -27,6 +28,7 @@ const FormInstance = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
+  const toast = useToast();
   const { user } = useAuth();
 
   const signFormInstanceMutation = useMutation({
@@ -64,16 +66,24 @@ const FormInstance = ({
     .find((v) => v.userSignedById == null);
   const _userCanSign = _nextSignature?.signerPositionId == user?.positionId;
 
-  const _handleFormSign = () => {
+  const _handleFormSign = async () => {
     if (_nextSignature == null || !_userCanSign) return;
-    signFormInstanceMutation.mutate({
-      formInstanceId: formInstance.id,
-      signatureId: _nextSignature?.id!,
-    });
+    signFormInstanceMutation
+      .mutateAsync({
+        formInstanceId: formInstance.id,
+        signatureId: _nextSignature?.id!,
+      })
+      .catch((e) => {
+        throw e;
+      });
   };
-  const _handleFormApprove = () => {
+  const _handleFormApprove = async () => {
     if (formInstance.markedCompleted) return;
-    completeFormInstanceMutation.mutate(formInstance.id);
+    completeFormInstanceMutation.mutateAsync(formInstance.id).catch((e) => {
+      throw e;
+    });
+
+    router.push('/');
   };
 
   return (
@@ -230,9 +240,24 @@ const FormInstance = ({
           />
           {_userCanSign && (
             <Button
-              onClick={_handleFormSign}
               background={formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'}
               color="#FFF"
+              onClick={async (_) => {
+                toast.promise(_handleFormSign(), {
+                  success: {
+                    title: 'Success',
+                    description: 'Form signed',
+                  },
+                  error: {
+                    title: 'Error',
+                    description: 'Unable to sign form',
+                  },
+                  loading: {
+                    title: 'Pending',
+                    description: 'Please wait',
+                  },
+                });
+              }}
             >
               Sign Form
             </Button>
@@ -245,7 +270,22 @@ const FormInstance = ({
                   borderRadius="8px"
                   width="111px"
                   height="40px"
-                  onClick={_handleFormApprove}
+                  onClick={async (_) => {
+                    toast.promise(_handleFormApprove(), {
+                      success: {
+                        title: 'Success',
+                        description: 'Form approved',
+                      },
+                      error: {
+                        title: 'Error',
+                        description: 'Unable to approve form',
+                      },
+                      loading: {
+                        title: 'Pending',
+                        description: 'Please wait',
+                      },
+                    });
+                  }}
                   background={
                     formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
                   }
