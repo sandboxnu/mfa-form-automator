@@ -104,12 +104,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalBody>
           <Box h="75vh" w="75vw">
             <Flex alignItems="center" pt="30px" pb="5px">
-            <Flex
-    alignItems="center"
-    style={{
-      marginRight: '0px', // Adjust the distance between input and icon as needed
-    }}
-  >
+          
               <Input
                 type="text"
                 value={formName}
@@ -130,12 +125,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   maxWidth: '72vw',
                 }}
               />
-              </Flex>
-              {/* <Flex
-                alignItems="center"
-                ml="-20px" 
-                flexShrink={0} 
-              > */}
                 <Box
                   as={GrayPencilIcon}
                   color="gray.500"
