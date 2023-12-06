@@ -94,7 +94,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     }
   }, [selectedFormTemplate]);
 
-  const widthMultiplier = 1;
+  
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -104,6 +104,12 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalBody>
           <Box h="75vh" w="75vw">
             <Flex alignItems="center" pt="30px" pb="5px">
+            <Flex
+    alignItems="center"
+    style={{
+      marginRight: '0px', // Adjust the distance between input and icon as needed
+    }}
+  >
               <Input
                 type="text"
                 value={formName}
@@ -120,14 +126,16 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   background: 'transparent',
                   padding: '0',
                   margin: '0',
-                  width: `calc(${formName.length}ch + ${widthMultiplier}%)`,
+                  width: `calc(${formName.length}ch`,
+                  maxWidth: '72vw',
                 }}
               />
-              <Flex
+              </Flex>
+              {/* <Flex
                 alignItems="center"
                 ml="-20px" 
                 flexShrink={0} 
-              >
+              > */}
                 <Box
                   as={GrayPencilIcon}
                   color="gray.500"
@@ -142,7 +150,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   }}
                 />
               </Flex>
-            </Flex>
+            {/* </Flex> */}
             <Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
               <Flex flexDirection="column" marginRight="79px">
                 <Text
@@ -203,7 +211,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                     className="scrollable-div"
                     style={{
                       minHeight: '48.75vh',
-                      maxHeight: '48.75',
+                      maxHeight: '48.75vh',
                       overflowY: 'auto',
                       paddingRight: '5px',
                       scrollbarWidth: 'thin',
