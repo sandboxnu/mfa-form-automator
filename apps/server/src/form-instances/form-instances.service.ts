@@ -14,7 +14,7 @@ import { FormInstanceErrorMessage } from './form-instance.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
-import { UserEntity } from '@server/auth/entities/user.entity';
+import { UserEntity } from '../auth/entities/user.entity';
 
 @Injectable()
 export class FormInstancesService {
