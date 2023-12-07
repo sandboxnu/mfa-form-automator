@@ -1,4 +1,3 @@
-import { MFALogoIcon, UserProfileAvatar } from 'apps/web/src/static/icons';
 import {
   Box,
   Hide,
@@ -12,10 +11,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@chakra-ui/react';
+import {
+  DropdownDownArrow,
+  DropdownUpArrow,
+  MFALogoIcon,
+  UserProfileAvatar,
+} from 'apps/web/src/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
+import { useState } from 'react';
 
 export const TopBar: React.FC = () => {
   const { user, logout } = useAuth();
+  const [isUserInfoOpen, setIsUserInfoOpen] = useState<boolean>(false);
 
   return (
     <Flex
@@ -49,25 +56,39 @@ export const TopBar: React.FC = () => {
         <Spacer w="12px" />
         <Popover placement="bottom-end">
           <PopoverTrigger>
-            <IconButton
-              aria-label="Visit profile"
-              icon={
-                user?.firstName && user?.lastName ? (
-                  <UserProfileAvatar
-                    firstName={user.firstName}
-                    lastName={user.lastName}
-                    boxSize={7}
-                  />
-                ) : (
-                  <UserProfileAvatar
-                    firstName="Default"
-                    lastName="User"
-                    boxSize={7}
-                  />
-                )
-              }
-              colorScheme="none"
-            />
+            <Box>
+              <IconButton
+                aria-label="Visit profile"
+                icon={
+                  user?.firstName && user?.lastName ? (
+                    <UserProfileAvatar
+                      firstName={user.firstName}
+                      lastName={user.lastName}
+                      boxSize={7}
+                    />
+                  ) : (
+                    <UserProfileAvatar
+                      firstName="Default"
+                      lastName="User"
+                      boxSize={7}
+                    />
+                  )
+                }
+                colorScheme="none"
+              />
+              <Hide breakpoint="(max-width: 1000px)">
+                <Flex pr="24px">
+                  <Text pr="10px" fontSize="18">
+                    {user?.firstName + ' ' + user?.lastName}
+                  </Text>
+                  {isUserInfoOpen ? (
+                    <DropdownUpArrow maxH="8px" alignSelf="center" />
+                  ) : (
+                    <DropdownDownArrow maxH="8px" alignSelf="center" />
+                  )}
+                </Flex>
+              </Hide>
+            </Box>
           </PopoverTrigger>
           <PopoverContent maxW="150px">
             <PopoverBody>
