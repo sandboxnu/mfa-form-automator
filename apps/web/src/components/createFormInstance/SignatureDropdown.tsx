@@ -8,9 +8,9 @@ import { SearchIcon } from '@web/static/icons';
 
 const assigneePlaceholderWithIcon = (
   <div style={{ display: 'flex', alignItems: 'center' }}>
-  <SearchIcon /> 
-  <span style={{ marginLeft: '8px' }}>Select assignee</span>
-</div>
+    <SearchIcon />
+    <span style={{ marginLeft: '8px' }}>Select assignee</span>
+  </div>
 );
 
 export const SignatureDropdown = ({
@@ -82,7 +82,7 @@ export const SignatureDropdown = ({
         formatOptionLabel={formatOptionLabel}
         classNamePrefix="react-select"
         isClearable
-        closeMenuOnSelect={false}
+        closeMenuOnSelect
       />
     </Box>
   );

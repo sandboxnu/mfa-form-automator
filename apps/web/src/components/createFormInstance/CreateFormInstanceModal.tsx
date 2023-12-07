@@ -35,8 +35,6 @@ import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
 
 // TODO
-// make form name editable
-// make it so on click option on assignee dropdown it closes
 // fix form type dropdown bug
 
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
@@ -222,6 +220,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   getOptionLabel={(option) => option.name}
                   classNamePrefix="react-select"
                   isClearable
+                  closeMenuOnSelect
                 />
                 <Skeleton
                   marginBottom="10px"
