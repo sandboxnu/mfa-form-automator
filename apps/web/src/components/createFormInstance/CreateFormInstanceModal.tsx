@@ -217,6 +217,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   }}
                   onMenuOpen={() => setIsFormTypeDropdownOpen(true)}
                   onMenuClose={() => setIsFormTypeDropdownOpen(false)}
+                  isOptionSelected={(option, _) => {
+                    return option.id == selectedFormTemplate?.id;
+                  }}
                   getOptionLabel={(option) => option.name}
                   classNamePrefix="react-select"
                   isClearable
