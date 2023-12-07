@@ -1,20 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Button, Flex, Box, Text, ModalFooter, Skeleton, Grid, List, Input, InputGroup, InputRightElement
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Flex,
+  Box,
+  Text,
+  ModalFooter,
+  Skeleton,
+  Grid,
+  Editable,
+  EditableInput,
+  EditablePreview,
+  useEditableControls,
+  HStack,
 } from '@chakra-ui/react';
-import { Reorder } from 'framer-motion';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
-  CreateFormInstanceDto, FormInstancesService, FormTemplateEntity, FormTemplatesService, PositionsService,
+  CreateFormInstanceDto,
+  FormInstancesService,
+  FormTemplateEntity,
+  FormTemplatesService,
+  PositionsService,
 } from '@web/client';
 import { SignatureDropdown } from './SignatureDropdown';
 import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
-import { Icon } from '@chakra-ui/react';
 
 // TODO
 // make form name editable
@@ -34,7 +52,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     (Option | null)[]
   >([]);
   const [formName, setFormName] = useState('Create Form');
-  const [isEditMode, setIsEditMode] = useState(false);
   const createFormInstanceMutation = useMutation({
     mutationFn: async (newFormInstance: CreateFormInstanceDto) => {
       return FormInstancesService.formInstancesControllerCreate(
@@ -94,7 +111,27 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     }
   }, [selectedFormTemplate]);
 
-  const widthMultiplier = 1;
+  function EditableControls() {
+    const { isEditing, getEditButtonProps } = useEditableControls();
+
+    return isEditing ? null : (
+      <Flex justifyContent="center">
+        <Box {...getEditButtonProps()}>
+          <Box
+            as={GrayPencilIcon}
+            color="gray.500"
+            fontSize="20px"
+            _hover={{
+              color: 'black',
+              textDecoration: 'underline',
+            }}
+            cursor="pointer"
+            m="5px"
+          />
+        </Box>
+      </Flex>
+    );
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -104,44 +141,46 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalBody>
           <Box h="75vh" w="75vw">
             <Flex alignItems="center" pt="30px" pb="5px">
-              <Input
-                type="text"
-                value={formName}
-                onChange={(e) => setFormName(e.target.value)}
-                onFocus={() => setIsEditMode(true)}
-                onBlur={() => setIsEditMode(false)}
-                readOnly={!isEditMode}
-                style={{
-                  fontFamily: 'Hanken Grotesk',
-                  fontWeight: 800,
-                  fontSize: '27px',
-                  border: isEditMode ? '2px solid #4C658A' : 'none',
-                  outline: 'none',
-                  background: 'transparent',
-                  padding: '0',
-                  margin: '0',
-                  width: `calc(${formName.length}ch + ${widthMultiplier}%)`,
+              <Editable
+                placeholder="Enter form name"
+                onChange={(value) => {
+                  setFormName(value);
                 }}
-              />
-              <Flex
-                alignItems="center"
-                ml="-20px" 
-                flexShrink={0} 
+                onSubmit={(value) => {
+                  setFormName(value);
+                }}
+                onCancel={(value) => {
+                  setFormName(value);
+                }}
+                value={formName}
               >
-                <Box
-                  as={GrayPencilIcon}
-                  color="gray.500"
-                  fontSize="20px"
-                  _hover={{
-                    color: 'black',
-                    textDecoration: 'underline',
-                  }}
-                  cursor="pointer"
-                  onClick={() => {
-                    setIsEditMode((prev) => !prev);
-                  }}
-                />
-              </Flex>
+                <HStack>
+                  <EditablePreview
+                    style={{
+                      fontFamily: 'Hanken Grotesk',
+                      fontWeight: 800,
+                      fontSize: '27px',
+                      outline: 'none',
+                      background: 'transparent',
+                      padding: '0',
+                      margin: '0',
+                    }}
+                  />
+                  <EditableInput
+                    minW="20em"
+                    style={{
+                      fontFamily: 'Hanken Grotesk',
+                      fontWeight: 800,
+                      fontSize: '27px',
+                      outline: 'none',
+                      background: 'transparent',
+                      padding: '0',
+                      margin: '0',
+                    }}
+                  />
+                  <EditableControls />
+                </HStack>
+              </Editable>
             </Flex>
             <Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
               <Flex flexDirection="column" marginRight="79px">
@@ -162,6 +201,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   onChange={(option) => {
                     setSelectedFormTemplate(option);
                     setFormTypeSelected(option !== null);
+                    if (option !== null) {
+                      setFormName(option?.name);
+                    }
                   }}
                   className="custom-dropdown"
                   components={{
