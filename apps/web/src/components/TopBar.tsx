@@ -1,9 +1,21 @@
 import { MFALogoIcon, UserProfileAvatar } from 'apps/web/src/static/icons';
-import { Box, Hide, IconButton, Text, Flex, Spacer } from '@chakra-ui/react';
+import {
+  Box,
+  Hide,
+  IconButton,
+  Text,
+  Flex,
+  Spacer,
+  Button,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+} from '@chakra-ui/react';
 import { useAuth } from '@web/hooks/useAuth';
 
 export const TopBar: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <Flex
@@ -34,27 +46,53 @@ export const TopBar: React.FC = () => {
             Welcome back, {user?.firstName}!
           </Text>
         </Hide>
-        <IconButton
-          pl="12px"
-          pr="40px"
-          aria-label="Visit profile"
-          icon={
-            user?.firstName && user?.lastName ? (
-              <UserProfileAvatar
-                firstName={user.firstName}
-                lastName={user.lastName}
-                boxSize={7}
-              />
-            ) : (
-              <UserProfileAvatar
-                firstName="Default"
-                lastName="User"
-                boxSize={7}
-              />
-            )
-          }
-          colorScheme="none"
-        />
+        <Spacer w="12px" />
+        <Popover placement="bottom-end">
+          <PopoverTrigger>
+            <IconButton
+              aria-label="Visit profile"
+              icon={
+                user?.firstName && user?.lastName ? (
+                  <UserProfileAvatar
+                    firstName={user.firstName}
+                    lastName={user.lastName}
+                    boxSize={7}
+                  />
+                ) : (
+                  <UserProfileAvatar
+                    firstName="Default"
+                    lastName="User"
+                    boxSize={7}
+                  />
+                )
+              }
+              colorScheme="none"
+            />
+          </PopoverTrigger>
+          <PopoverContent maxW="150px">
+            <PopoverBody>
+              <Box>
+                <Text
+                  fontSize="17px"
+                  fontWeight="700"
+                  cursor="default"
+                  pb="10px"
+                >
+                  {user?.firstName + ' ' + user?.lastName}
+                </Text>
+                <Button
+                  borderRadius="8px"
+                  height="25px"
+                  cursor="default"
+                  onClick={logout}
+                >
+                  Logout
+                </Button>
+              </Box>
+            </PopoverBody>
+          </PopoverContent>
+        </Popover>
+        <Spacer w="40px" />
       </Flex>
     </Flex>
   );
