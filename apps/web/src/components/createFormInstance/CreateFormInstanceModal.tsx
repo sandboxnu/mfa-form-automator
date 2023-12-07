@@ -245,7 +245,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                     className="scrollable-div"
                     style={{
                       minHeight: '48.75vh',
-                      maxHeight: '48.75',
+                      maxHeight: '48.75vh',
                       overflowY: 'auto',
                       paddingRight: '5px',
                       scrollbarWidth: 'thin',
