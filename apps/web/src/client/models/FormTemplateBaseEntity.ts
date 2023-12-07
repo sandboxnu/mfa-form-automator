@@ -10,3 +10,4 @@ export type FormTemplateBaseEntity = {
     createdAt: string;
     updatedAt: string;
 };
+

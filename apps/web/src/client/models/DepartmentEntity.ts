@@ -9,3 +9,4 @@ export type DepartmentEntity = {
     createdAt: string;
     updatedAt: string;
 };
+

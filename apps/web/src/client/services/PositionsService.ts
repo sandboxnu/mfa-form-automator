@@ -13,13 +13,13 @@ import { request as __request } from '../core/request';
 export class PositionsService {
 
     /**
-     * @param requestBody 
-     * @returns PositionEntity 
+     * @param requestBody
+     * @returns PositionEntity
      * @throws ApiError
      */
     public static positionsControllerCreate(
-requestBody: CreatePositionDto,
-): CancelablePromise<PositionEntity> {
+        requestBody: CreatePositionDto,
+    ): CancelablePromise<PositionEntity> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/positions',
@@ -35,12 +35,12 @@ requestBody: CreatePositionDto,
 
     /**
      * @param limit Limit on number of positions to return
-     * @returns PositionEntity 
+     * @returns PositionEntity
      * @throws ApiError
      */
     public static positionsControllerFindAll(
-limit?: number,
-): CancelablePromise<Array<PositionEntity>> {
+        limit?: number,
+    ): CancelablePromise<Array<PositionEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/positions',
@@ -55,13 +55,13 @@ limit?: number,
     }
 
     /**
-     * @param id 
-     * @returns PositionEntity 
+     * @param id
+     * @returns PositionEntity
      * @throws ApiError
      */
     public static positionsControllerFindOne(
-id: string,
-): CancelablePromise<PositionEntity> {
+        id: string,
+    ): CancelablePromise<PositionEntity> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/positions/{id}',
@@ -77,15 +77,15 @@ id: string,
     }
 
     /**
-     * @param id 
-     * @param requestBody 
-     * @returns PositionEntity 
+     * @param id
+     * @param requestBody
+     * @returns PositionEntity
      * @throws ApiError
      */
     public static positionsControllerUpdate(
-id: string,
-requestBody: UpdatePositionDto,
-): CancelablePromise<PositionEntity> {
+        id: string,
+        requestBody: UpdatePositionDto,
+    ): CancelablePromise<PositionEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
             url: '/api/positions/{id}',
@@ -104,13 +104,13 @@ requestBody: UpdatePositionDto,
     }
 
     /**
-     * @param id 
-     * @returns any 
+     * @param id
+     * @returns any
      * @throws ApiError
      */
     public static positionsControllerRemove(
-id: string,
-): CancelablePromise<any> {
+        id: string,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
             url: '/api/positions/{id}',
