@@ -57,22 +57,19 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api/form-instances/me'] });
-      queryClient.invalidateQueries({
-        queryKey: ['api/form-instances/created/me'],
-      });
+      queryClient.invalidateQueries({ queryKey: ['api', 'form-instances'] });
     },
   });
 
   // Fetch form templates data
   const { data: formTemplates, error: formTemplatesError } = useQuery({
-    queryKey: ['api/form-templates'],
+    queryKey: ['api', 'form-templates'],
     queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
   });
 
   // Fetch positions data
   const { data: positions, error: positionsError } = useQuery({
-    queryKey: ['api/positions'],
+    queryKey: ['api', 'positions'],
     queryFn: () => PositionsService.positionsControllerFindAll(),
   });
 
@@ -208,9 +205,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                     DropdownIndicator: (props: any) => (
                       <chakraComponents.DropdownIndicator {...props}>
                         {isFormTypeDropdownOpen ? (
-                          <DropdownUpArrow />
+                          <DropdownUpArrow maxH="7px" />
                         ) : (
-                          <DropdownDownArrow />
+                          <DropdownDownArrow maxH="7px" />
                         )}
                       </chakraComponents.DropdownIndicator>
                     ),
