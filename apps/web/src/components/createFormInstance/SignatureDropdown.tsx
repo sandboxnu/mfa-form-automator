@@ -86,7 +86,7 @@ export const SignatureDropdown = ({
         formatOptionLabel={formatOptionLabel}
         classNamePrefix="react-select"
         isClearable
-        closeMenuOnSelect={false}
+        closeMenuOnSelect
       />
     </Box>
   );
