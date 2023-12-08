@@ -61,7 +61,7 @@ export const CreateFormTemplateModal = ({
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api/form-templates'] });
+      queryClient.invalidateQueries({ queryKey: ['api', 'form-templates'] });
     },
   });
 

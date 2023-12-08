@@ -53,8 +53,18 @@ export const AuthProvider = ({ children }: any) => {
   // Finally, just signal the component that the initial load
   // is over.
   useEffect(() => {
+    setLoadingInitial(true);
     EmployeesService.employeesControllerFindMe()
-      .then((user) => setUser(user))
+      .then((employee) => {
+        setUser({
+          id: employee.id,
+          positionId: employee.position.id,
+          email: employee.email,
+          firstName: employee.firstName,
+          lastName: employee.lastName,
+          isAdmin: employee.isAdmin,
+        });
+      })
       .catch(async (_error) => {
         setUser(undefined);
         DefaultService.appControllerRefresh()

@@ -7,7 +7,7 @@ export default function Settings() {
   const { user, logout } = useAuth();
 
   const { error, isLoading } = useQuery({
-    queryKey: ['logout'],
+    queryKey: ['api', 'logout'],
     queryFn: DefaultService.appControllerLogout,
     enabled: user === null,
   });

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   FormInstanceEntity,
   FormInstancesService,
@@ -15,7 +15,7 @@ export const useForm = () => {
     error: assignedFIError,
     data: assignedFIData,
   } = useQuery({
-    queryKey: ['api/form-instances/me'],
+    queryKey: ['api', 'form-instances'],
     queryFn:
       FormInstancesService.formInstancesControllerFindAllAssignedToCurrentEmployee,
   });
@@ -25,7 +25,7 @@ export const useForm = () => {
     error: createdFIError,
     data: createdFIData,
   } = useQuery({
-    queryKey: ['api/form-instances/created/me'],
+    queryKey: ['api', 'form-instances', 'created', 'me'],
     queryFn:
       FormInstancesService.formInstancesControllerFindAllCreatedByCurrentEmployee,
   });
@@ -36,7 +36,7 @@ export const useForm = () => {
     [],
   );
 
-  useEffect(() => {
+  useMemo(() => {
     if (!assignedFIData || !createdFIData || !user) {
       setTodoForms([]);
       setPendingForms([]);

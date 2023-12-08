@@ -64,8 +64,9 @@ export const FormRow = ({
           <Flex pt="15px">
             <AvatarGroup size="sm" max={5}>
               {/*Dummy values until userSignedBy fixed*/}
-              {formInstance.signatures.map(
-                (signature: SignatureEntity, index: number) => {
+              {formInstance.signatures
+                .sort((a, b) => a.order - b.order)
+                .map((signature: SignatureEntity, index: number) => {
                   return (
                     <Avatar
                       name={signature.signerPosition.name}
@@ -78,8 +79,7 @@ export const FormRow = ({
                       fontSize="12px"
                     />
                   );
-                },
-              )}
+                })}
             </AvatarGroup>
             <Text pl="15px" mt="5px">
               {`${
