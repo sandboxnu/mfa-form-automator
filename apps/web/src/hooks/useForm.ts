@@ -48,10 +48,23 @@ export const useForm = () => {
     const todoForms: FormInstanceEntity[] = assignedFIData.filter(
       (formInstance: FormInstanceEntity) => {
         const signatures: SignatureEntity[] = formInstance.signatures;
-        for (let i = 0; i < signatures.length; i++) {
-          if (signatures[i].signerPositionId === user.positionId) {
-            return signatures[i].signed === false;
-          }
+
+        // Filter out signatures that are already signed
+        signatures.filter((signature: SignatureEntity) => {
+          return signature.signed === false;
+        });
+
+        // Sort signatures by order
+        signatures.sort((a: SignatureEntity, b: SignatureEntity) => {
+          return a.order - b.order;
+        });
+
+        // Get next signature
+        const nextSignature: SignatureEntity = signatures[0];
+
+        // If next signature is current user, then this form is a todo
+        if (nextSignature.signerPositionId === user.positionId) {
+          return true;
         }
       },
     );
