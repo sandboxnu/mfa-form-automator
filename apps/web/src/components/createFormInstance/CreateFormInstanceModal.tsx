@@ -151,9 +151,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                     DropdownIndicator: (props: any) => (
                       <chakraComponents.DropdownIndicator {...props}>
                         {isFormTypeDropdownOpen ? (
-                          <DropdownUpArrow />
+                          <DropdownUpArrow maxH="7px" />
                         ) : (
-                          <DropdownDownArrow />
+                          <DropdownDownArrow maxH="7px" />
                         )}
                       </chakraComponents.DropdownIndicator>
                     ),
