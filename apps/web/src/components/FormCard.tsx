@@ -18,8 +18,8 @@ export const FormCard = ({
   return (
     <>
       <Box
-        w="246px"
-        h="120px"
+        minW="246px"
+        minH="120px"
         borderRadius="5px"
         backgroundColor="#FFFFFF"
         boxShadow="0px 0.5px 3px 1px #D4D4D4"

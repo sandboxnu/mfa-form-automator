@@ -24,7 +24,7 @@ export const OverviewRow = ({
   );
   return (
     <>
-      <Box width={rowWidth}>
+      <Box w={rowWidth}>
         <Flex justifyContent="space-between" alignItems="center">
           <Flex alignItems="center">
             <Text fontSize="22px" fontWeight="800">
