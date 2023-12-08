@@ -184,7 +184,6 @@ export class EmployeesService {
         position: {
           include: {
             department: true,
-            signatures: true,
           },
         },
       },

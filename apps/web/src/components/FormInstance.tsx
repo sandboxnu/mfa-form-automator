@@ -1,4 +1,13 @@
-import { Box, Button, Flex, Grid, Text, Skeleton } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  Text,
+  Skeleton,
+  Spacer,
+  useToast,
+} from '@chakra-ui/react';
 import {
   LeftArrowIcon,
   PencilIcon,
@@ -10,6 +19,7 @@ import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
+import { useAuth } from '@web/hooks/useAuth';
 
 const FormInstance = ({
   formInstance,
@@ -18,20 +28,62 @@ const FormInstance = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
+  const toast = useToast();
+  const { user } = useAuth();
+
+  const signFormInstanceMutation = useMutation({
+    mutationFn: async ({
+      formInstanceId,
+      signatureId,
+    }: {
+      formInstanceId: string;
+      signatureId: string;
+    }) => {
+      return FormInstancesService.formInstancesControllerSignFormInstance(
+        formInstanceId,
+        signatureId,
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['api', 'form-instances'],
+      });
+    },
+  });
 
   const completeFormInstanceMutation = useMutation({
     mutationFn:
       FormInstancesService.formInstancesControllerCompleteFormInstance,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['api/form-instances/me', 'api/form-instances/created/me'],
+        queryKey: ['api', 'form-instances'],
       });
     },
   });
 
-  const handleFormApprove = () => {
+  const _nextSignature = formInstance.signatures
+    .sort((a, b) => a.order - b.order)
+    .find((v) => v.userSignedById == null);
+  const _userCanSign = _nextSignature?.signerPositionId == user?.positionId;
+
+  const _handleFormSign = async () => {
+    if (_nextSignature == null || !_userCanSign) return;
+    signFormInstanceMutation
+      .mutateAsync({
+        formInstanceId: formInstance.id,
+        signatureId: _nextSignature?.id!,
+      })
+      .catch((e) => {
+        throw e;
+      });
+  };
+  const _handleFormApprove = async () => {
     if (formInstance.markedCompleted) return;
-    completeFormInstanceMutation.mutate(formInstance.id);
+    completeFormInstanceMutation.mutateAsync(formInstance.id).catch((e) => {
+      throw e;
+    });
+
+    router.push('/');
   };
 
   return (
@@ -179,32 +231,73 @@ const FormInstance = ({
             assignees={formInstance.signatures.map((signature) => ({
               name: signature.userSignedBy
                 ? signature.userSignedBy?.firstName +
+                  ' ' +
                   signature.userSignedBy?.lastName
                 : undefined,
               signed: signature.userSignedById ? true : false,
               title: signature.signerPosition.name,
             }))}
           />
+          {_userCanSign && (
+            <Button
+              background={formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'}
+              color="#FFF"
+              onClick={async (_) => {
+                toast.promise(_handleFormSign(), {
+                  success: {
+                    title: 'Success',
+                    description: 'Form signed',
+                  },
+                  error: {
+                    title: 'Error',
+                    description: 'Unable to sign form',
+                  },
+                  loading: {
+                    title: 'Pending',
+                    description: 'Please wait',
+                  },
+                });
+              }}
+            >
+              Sign Form
+            </Button>
+          )}
           {formInstance.completed && (
-            <Box display="flex" justifyContent={'flex-end'}>
-              <Button
-                borderRadius="8px"
-                width="111px"
-                height="40px"
-                background={
-                  formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
-                }
-                cursor={
-                  formInstance.markedCompleted ? 'not-allowed' : 'pointer'
-                }
-                _active={{ background: '#e2e8f0' }}
-                isLoading={completeFormInstanceMutation.isPending}
-                color="#FFF"
-                onClick={handleFormApprove}
-              >
-                Approve
-              </Button>
-            </Box>
+            <Flex>
+              <Spacer />
+              <Box pl="350px">
+                <Button
+                  borderRadius="8px"
+                  width="111px"
+                  height="40px"
+                  onClick={async (_) => {
+                    toast.promise(_handleFormApprove(), {
+                      success: {
+                        title: 'Success',
+                        description: 'Form approved',
+                      },
+                      error: {
+                        title: 'Error',
+                        description: 'Unable to approve form',
+                      },
+                      loading: {
+                        title: 'Pending',
+                        description: 'Please wait',
+                      },
+                    });
+                  }}
+                  background={
+                    formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
+                  }
+                  color="#FFF"
+                  cursor={
+                    formInstance.markedCompleted ? 'not-allowed' : 'pointer'
+                  }
+                >
+                  Approve
+                </Button>
+              </Box>
+            </Flex>
           )}
         </Box>
       </Grid>

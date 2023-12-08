@@ -38,35 +38,45 @@ export const FormCard = ({
           </Text>
           {/*Dummy values until userSignedBy fixed*/}
           <AvatarGroup size="sm" max={5} marginTop="10px" spacing={'-3px'}>
-            {signatures.map((signature: SignatureEntity, index: number) => {
-              return (
-                <Tooltip
-                  bg={'white'}
-                  color={'black'}
-                  label={
-                    <>
-                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                        {signature.signerPosition.name}
-                      </span>
-                    </>
-                  }
-                  key={index}
-                >
-                  <Avatar
-                    name={signature.signerPosition.name}
+            {signatures
+              .sort((a, b) => a.order - b.order)
+              .map((signature: SignatureEntity, index: number) => {
+                return (
+                  <Tooltip
+                    bg={'white'}
+                    color={'black'}
+                    placement="bottom-start"
+                    label={
+                      <>
+                        <Text fontSize="16px" fontWeight="bold">
+                          {signature.signerPosition.name}
+                        </Text>
+                        {signature.userSignedBy && (
+                          <Text>
+                            {signature.userSignedBy?.firstName +
+                              ' ' +
+                              signature.userSignedBy?.lastName}
+                          </Text>
+                        )}
+                      </>
+                    }
                     key={index}
-                    boxSize="32px"
-                    backgroundColor={signature.signed ? '#D1F0D4' : '#DCDCDC'}
-                    outline="1px solid #FFFFFF"
-                    color="black"
-                    fontWeight={400}
-                    fontSize="16px"
-                    size="sm"
-                    marginRight={'-3.5px'}
-                  />
-                </Tooltip>
-              );
-            })}
+                  >
+                    <Avatar
+                      name={signature.signerPosition.name}
+                      key={index}
+                      boxSize="32px"
+                      backgroundColor={signature.signed ? '#D1F0D4' : '#DCDCDC'}
+                      outline="1px solid #FFFFFF"
+                      color="black"
+                      fontWeight={400}
+                      fontSize="16px"
+                      size="sm"
+                      marginRight={'-3.5px'}
+                    />
+                  </Tooltip>
+                );
+              })}
           </AvatarGroup>
         </Box>
       </Box>

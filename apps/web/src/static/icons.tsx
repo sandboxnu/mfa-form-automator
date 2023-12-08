@@ -277,6 +277,29 @@ export const ErrorIcon = createIcon({
   ),
 });
 
+export const GrayPencilIcon = createIcon({
+  displayName: 'PencilIcon',
+  viewBox: '0 0 18 18',
+  path: (
+    <>
+      <path
+        d="M17.9996 3.5122L14.4874 0L12.0537 2.43366L15.5659 5.94586L17.9996 3.5122Z"
+        fill="#C0C0C0"
+      />
+      <path
+        d="M3.59961 14.4023L7.46304 14.0512L14.1113 7.40286L10.5991 3.89062L3.95083 10.5389L3.59961 14.4023Z"
+        fill="#C0C0C0"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M11.7 18.0031H0V16.2031H11.7V18.0031Z"
+        fill="#C0C0C0"
+      />
+    </>
+  ),
+});
+
 export const SignoutIcon = createIcon({
   displayName: 'SignoutIcon',
   viewBox: '0 0 15 20',
