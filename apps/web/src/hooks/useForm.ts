@@ -48,11 +48,23 @@ export const useForm = () => {
     const todoForms: FormInstanceEntity[] = assignedFIData.filter(
       (formInstance: FormInstanceEntity) => {
         const signatures: SignatureEntity[] = formInstance.signatures;
-        for (let i = 0; i < signatures.length; i++) {
-          if (signatures[i].signerPositionId === user.positionId) {
-            return signatures[i].signed === false;
-          }
+
+        // Sort signatures by order
+        signatures.sort((a: SignatureEntity, b: SignatureEntity) => {
+          return a.order - b.order;
+        });
+
+        // Find the first signature that doesn't have a signature
+        const firstUnsignedSignature: SignatureEntity | undefined = signatures.find((signature: SignatureEntity) => {
+          return signature.signed === false;
+        });
+
+        // If there is no unsigned signature, return false
+        if (!firstUnsignedSignature) {
+          return false;
         }
+        
+        return firstUnsignedSignature.signerPositionId === user.positionId;
       },
     );
 
