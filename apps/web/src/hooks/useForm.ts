@@ -49,23 +49,28 @@ export const useForm = () => {
       (formInstance: FormInstanceEntity) => {
         const signatures: SignatureEntity[] = formInstance.signatures;
 
-        // Filter out signatures that are already signed
-        signatures.filter((signature: SignatureEntity) => {
-          return signature.signed === false;
-        });
-
         // Sort signatures by order
         signatures.sort((a: SignatureEntity, b: SignatureEntity) => {
           return a.order - b.order;
         });
 
-        // Get next signature
-        const nextSignature: SignatureEntity = signatures[0];
+        // Find the first signature that doesn't have a signature
+        const firstUnsignedSignature: SignatureEntity | undefined = signatures.find((signature: SignatureEntity) => {
+          return signature.signed === false;
+        });
 
-        // If next signature is current user, then this form is a todo
-        if (nextSignature.signerPositionId === user.positionId) {
+        // If there is no unsigned signature, return false
+        if (!firstUnsignedSignature) {
+          return false;
+        }
+        
+        // If the first unsigned signature is the current user, return true
+        if (firstUnsignedSignature.signerPositionId === user.positionId) {
           return true;
         }
+
+        // Otherwise, return false
+        return false;
       },
     );
 
