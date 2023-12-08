@@ -73,7 +73,11 @@ export const SignatureDropdown = ({
         components={{
           DropdownIndicator: (props: any) => (
             <chakraComponents.DropdownIndicator {...props}>
-              {isDropdownOpen ? <DropdownUpArrow /> : <DropdownDownArrow />}
+              {isDropdownOpen ? (
+                <DropdownUpArrow maxH="7px" />
+              ) : (
+                <DropdownDownArrow maxH="7px" />
+              )}
             </chakraComponents.DropdownIndicator>
           ),
         }}
