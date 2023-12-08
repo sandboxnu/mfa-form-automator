@@ -12,9 +12,7 @@ import {
   ModalFooter,
   Skeleton,
   Grid,
-  List,
 } from '@chakra-ui/react';
-import { Reorder } from 'framer-motion';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -56,22 +54,19 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api/form-instances/me'] });
-      queryClient.invalidateQueries({
-        queryKey: ['api/form-instances/created/me'],
-      });
+      queryClient.invalidateQueries({ queryKey: ['api', 'form-instances'] });
     },
   });
 
   // Fetch form templates data
   const { data: formTemplates, error: formTemplatesError } = useQuery({
-    queryKey: ['api/form-templates'],
+    queryKey: ['api', 'form-templates'],
     queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
   });
 
   // Fetch positions data
   const { data: positions, error: positionsError } = useQuery({
-    queryKey: ['api/positions'],
+    queryKey: ['api', 'positions'],
     queryFn: () => PositionsService.positionsControllerFindAll(),
   });
 

@@ -42,17 +42,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 >
                   {assignee.title}
                 </Text>
-                {!assignee.name && (
-                  <Text
-                    color="#5E5E5E"
-                    fontSize="16px"
-                    fontStyle="italic"
-                    style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
-                  >
-                    Pending Signature
-                  </Text>
-                )}
-                {assignee.name && (
+                {assignee.name ? (
                   <Text
                     color="#5E5E5E"
                     fontFamily="Hanken Grotesk"
@@ -60,9 +50,18 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                     fontStyle="normal"
                     fontWeight="400"
                     lineHeight="normal"
-                    style={{ whiteSpace: 'nowrap' }}
+                    style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
                   >
                     {assignee.name}
+                  </Text>
+                ) : (
+                  <Text
+                    color="#5E5E5E"
+                    fontSize="16px"
+                    fontStyle="italic"
+                    style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
+                  >
+                    Pending Signature
                   </Text>
                 )}
               </Flex>

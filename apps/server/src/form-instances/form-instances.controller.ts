@@ -177,6 +177,7 @@ export class FormInstancesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':formInstanceId/sign/:signatureId')
   @ApiOkResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
@@ -185,6 +186,7 @@ export class FormInstancesController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   async signFormInstance(
+    @AuthUser() currentUser: UserEntity,
     @Param('formInstanceId') formInstanceId: string,
     @Param('signatureId') signatureId: string,
   ) {
@@ -193,6 +195,7 @@ export class FormInstancesController {
         await this.formInstancesService.signFormInstance(
           formInstanceId,
           signatureId,
+          currentUser,
         );
       return new FormInstanceEntity(updatedFormInstance);
     } catch (e) {
