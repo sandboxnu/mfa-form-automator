@@ -18,8 +18,8 @@ export const FormCard = ({
   return (
     <>
       <Box
-        w="246px"
-        h="120px"
+        minW="246px"
+        minH="120px"
         borderRadius="5px"
         backgroundColor="#FFFFFF"
         boxShadow="0px 0.5px 3px 1px #D4D4D4"
@@ -32,8 +32,8 @@ export const FormCard = ({
           boxShadow: '0px 0.5px 6px 1px #D4D4D4',
         }}
       >
-        <Box paddingLeft="24px" paddingTop="26px">
-          <Text fontFamily="Hanken Grotesk" fontWeight={800} fontSize="18px">
+        <Box padding="24px" paddingTop="26px">
+          <Text fontFamily="Hanken Grotesk" fontWeight={800} fontSize="18px" isTruncated>
             {formName}
           </Text>
           {/*Dummy values until userSignedBy fixed*/}
