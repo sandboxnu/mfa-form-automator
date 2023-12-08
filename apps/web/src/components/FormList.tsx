@@ -1,5 +1,17 @@
 import { FormRow } from './FormRow';
-import { Box, Button, Flex, Grid, GridItem, Input, InputGroup, InputLeftElement, Select, Text, useDisclosure } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  GridItem,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Select,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
 import { FormInstanceEntity } from '@web/client';
 import { useState } from 'react';
@@ -20,12 +32,13 @@ export const FormList = ({
   const { isOpen, onToggle } = useDisclosure();
   const [showButton, setShowButton] = useState(false);
 
-
-
   const sortedFormInstances = formInstances
     .map((formInstance) => ({
       ...formInstance,
-      levenshteinDistance: distance(searchQuery.toLowerCase(), formInstance.name.toLowerCase()),
+      levenshteinDistance: distance(
+        searchQuery.toLowerCase(),
+        formInstance.name.toLowerCase(),
+      ),
     }))
     .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance);
 
@@ -63,7 +76,11 @@ export const FormList = ({
             >
               <InputGroup marginRight="12px">
                 {isOpen ? (
-                  <InputLeftElement as="button" onClick={onToggle} justifyContent="flex-start">
+                  <InputLeftElement
+                    as="button"
+                    onClick={onToggle}
+                    justifyContent="flex-start"
+                  >
                     <RightSearchIcon color="#595959" w="25px" h="25px" />
                   </InputLeftElement>
                 ) : (
@@ -85,10 +102,10 @@ export const FormList = ({
                   borderBottom="1px solid"
                   borderColor="#B0B0B0"
                   boxShadow="none"
-                  _hover={{ borderColor: "#595959" }}
+                  _hover={{ borderColor: '#595959' }}
                   _focus={{
-                    borderColor: "#595959",
-                    boxShadow: "none",
+                    borderColor: '#595959',
+                    boxShadow: 'none',
                   }}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -117,7 +134,7 @@ export const FormList = ({
               icon={<SortDownArrow />}
               iconSize="10px"
             >
-              <option value="recent">&nbsp;&nbsp;Recent</option>              
+              <option value="recent">&nbsp;&nbsp;Recent</option>
               <option value="option2">&nbsp;&nbsp;Option 2</option>
               <option value="option3">&nbsp;&nbsp;Option 3</option>
             </Select>
@@ -148,13 +165,15 @@ export const FormList = ({
               </Text>
             </GridItem>
           </Grid>
-          {sortedFormInstances.map((formInstance: FormInstanceEntity, index: number) => (
-            <FormRow
-              formInstance={formInstance}
-              key={index}
-              link={'/form-instances/' + formInstance.id}
-            />
-          ))}
+          {sortedFormInstances.map(
+            (formInstance: FormInstanceEntity, index: number) => (
+              <FormRow
+                formInstance={formInstance}
+                key={index}
+                link={'/form-instances/' + formInstance.id}
+              />
+            ),
+          )}
         </Box>
       </Box>
     </>
