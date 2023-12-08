@@ -64,13 +64,7 @@ export const useForm = () => {
           return false;
         }
         
-        // If the first unsigned signature is the current user, return true
-        if (firstUnsignedSignature.signerPositionId === user.positionId) {
-          return true;
-        }
-
-        // Otherwise, return false
-        return false;
+        return firstUnsignedSignature.signerPositionId === user.positionId;
       },
     );
 
