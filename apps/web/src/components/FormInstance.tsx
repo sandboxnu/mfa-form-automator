@@ -7,6 +7,8 @@ import {
   Skeleton,
   Spacer,
   useToast,
+  Divider,
+  GridItem,
 } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
@@ -20,6 +22,7 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
+import { FormInstanceHistory } from './FormInstanceHistory';
 
 const FormInstance = ({
   formInstance,
@@ -188,118 +191,138 @@ const FormInstance = ({
         neque. Suspendisse id semper nunc.
       </Text>
 
-      <Grid templateColumns="1fr 1fr" gap="100px" mt={20}>
-        <Box>
-          <Text
-            color="#000"
-            fontFamily="Hanken Grotesk"
-            fontSize="20px"
-            fontStyle="normal"
-            fontWeight="700"
-            lineHeight="normal"
-            ml="50px"
-          >
-            Form Preview
-          </Text>
-          <Skeleton
-            ml="50px"
-            mt={6}
-            mb="100px"
-            bg="#000"
-            minWidth="436.353px"
-            minHeight="566.219px"
-          />
-        </Box>
-
-        <Box
-          display="flex"
-          flexDirection={'column'}
-          justifyContent={'flex-start'}
-          maxWidth="370px"
-        >
-          <Text
-            color="#000"
-            fontFamily="Hanken Grotesk"
-            fontSize="20px"
-            fontStyle="normal"
-            fontWeight="700"
-            lineHeight="normal"
-          >
-            Assignees
-          </Text>
-          <AssigneeMap
-            assignees={formInstance.signatures.map((signature) => ({
-              name: signature.userSignedBy
-                ? signature.userSignedBy?.firstName +
-                  ' ' +
-                  signature.userSignedBy?.lastName
-                : undefined,
-              signed: signature.userSignedById ? true : false,
-              title: signature.signerPosition.name,
-            }))}
-          />
-          {_userCanSign && (
-            <Button
-              background={formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'}
-              color="#FFF"
-              onClick={async (_) => {
-                toast.promise(_handleFormSign(), {
-                  success: {
-                    title: 'Success',
-                    description: 'Form signed',
-                  },
-                  error: {
-                    title: 'Error',
-                    description: 'Unable to sign form',
-                  },
-                  loading: {
-                    title: 'Pending',
-                    description: 'Please wait',
-                  },
-                });
-              }}
+      <Grid
+        templateRows={'550px 1fr'}
+        templateColumns="repeat(4, 1fr)"
+        templateAreas={`"preview preview assignee assignee"
+                        "history history history none"`}
+        gap="100px"
+        mt={20}
+      >
+        <GridItem area={'preview'}>
+          <Box>
+            <Text
+              color="#000"
+              fontFamily="Hanken Grotesk"
+              fontSize="20px"
+              fontStyle="normal"
+              fontWeight="700"
+              lineHeight="normal"
+              ml="50px"
             >
-              Sign Form
-            </Button>
-          )}
-          {formInstance.completed && (
-            <Flex>
-              <Spacer />
-              <Box pl="350px">
-                <Button
-                  borderRadius="8px"
-                  width="111px"
-                  height="40px"
-                  onClick={async (_) => {
-                    toast.promise(_handleFormApprove(), {
-                      success: {
-                        title: 'Success',
-                        description: 'Form approved',
-                      },
-                      error: {
-                        title: 'Error',
-                        description: 'Unable to approve form',
-                      },
-                      loading: {
-                        title: 'Pending',
-                        description: 'Please wait',
-                      },
-                    });
-                  }}
-                  background={
-                    formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
-                  }
-                  color="#FFF"
-                  cursor={
-                    formInstance.markedCompleted ? 'not-allowed' : 'pointer'
-                  }
-                >
-                  Approve
-                </Button>
-              </Box>
-            </Flex>
-          )}
-        </Box>
+              Form Preview
+            </Text>
+            <Skeleton
+              ml="50px"
+              mt={6}
+              mb="100px"
+              bg="#000"
+              width="436.353px"
+              height="566.219px"
+            />
+          </Box>
+        </GridItem>
+
+        <GridItem area={'assignee'}>
+          <Box
+            display="flex"
+            flexDirection={'column'}
+            justifyContent={'flex-start'}
+            maxWidth="370px"
+          >
+            <Text
+              color="#000"
+              fontFamily="Hanken Grotesk"
+              fontSize="20px"
+              fontStyle="normal"
+              fontWeight="700"
+              lineHeight="normal"
+            >
+              Assignees
+            </Text>
+            <AssigneeMap
+              assignees={formInstance.signatures.map((signature) => ({
+                name: signature.userSignedBy
+                  ? signature.userSignedBy?.firstName +
+                    ' ' +
+                    signature.userSignedBy?.lastName
+                  : undefined,
+                signed: signature.userSignedById ? true : false,
+                title: signature.signerPosition.name,
+              }))}
+            />
+            {_userCanSign && (
+              <Button
+                background={
+                  formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
+                }
+                color="#FFF"
+                onClick={async (_) => {
+                  toast.promise(_handleFormSign(), {
+                    success: {
+                      title: 'Success',
+                      description: 'Form signed',
+                    },
+                    error: {
+                      title: 'Error',
+                      description: 'Unable to sign form',
+                    },
+                    loading: {
+                      title: 'Pending',
+                      description: 'Please wait',
+                    },
+                  });
+                }}
+              >
+                Sign Form
+              </Button>
+            )}
+            {formInstance.completed && (
+              <Flex>
+                <Spacer />
+                <Box pl="350px">
+                  <Button
+                    borderRadius="8px"
+                    width="111px"
+                    height="40px"
+                    onClick={async (_) => {
+                      toast.promise(_handleFormApprove(), {
+                        success: {
+                          title: 'Success',
+                          description: 'Form approved',
+                        },
+                        error: {
+                          title: 'Error',
+                          description: 'Unable to approve form',
+                        },
+                        loading: {
+                          title: 'Pending',
+                          description: 'Please wait',
+                        },
+                      });
+                    }}
+                    background={
+                      formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
+                    }
+                    color="#FFF"
+                    cursor={
+                      formInstance.markedCompleted ? 'not-allowed' : 'pointer'
+                    }
+                  >
+                    Approve
+                  </Button>
+                </Box>
+              </Flex>
+            )}
+          </Box>
+        </GridItem>
+
+        <GridItem area={'history'}>
+          <Box px="4" mx="30px" pb="54px">
+            <Divider minW="500px" />
+            <FormInstanceHistory signatures={formInstance.signatures} />
+          </Box>
+        </GridItem>
       </Grid>
     </Box>
   );

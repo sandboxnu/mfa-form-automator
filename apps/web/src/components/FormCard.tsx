@@ -33,7 +33,12 @@ export const FormCard = ({
         }}
       >
         <Box padding="24px" paddingTop="26px">
-          <Text fontFamily="Hanken Grotesk" fontWeight={800} fontSize="18px" isTruncated>
+          <Text
+            fontFamily="Hanken Grotesk"
+            fontWeight={800}
+            fontSize="18px"
+            isTruncated
+          >
             {formName}
           </Text>
           {/*Dummy values until userSignedBy fixed*/}
