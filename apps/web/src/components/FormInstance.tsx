@@ -4,9 +4,9 @@ import {
   Flex,
   Grid,
   Text,
-  Skeleton,
   Spacer,
   useToast,
+  Stack,
 } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
@@ -14,12 +14,13 @@ import {
   EditUnderlineIcon,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
+import { PDFDocument } from 'pdf-lib';
 
 const FormInstance = ({
   formInstance,
@@ -27,9 +28,45 @@ const FormInstance = ({
   formInstance: FormInstanceEntity;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [pdf, setPdf] = useState<Uint8Array | null>(null);
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
+
+  const getPdf = async () => {
+    const response = await fetch(
+      'https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf',
+    );
+    const pdf = await response.arrayBuffer();
+    setPdf(new Uint8Array(pdf));
+  }
+
+  useEffect(() => {
+    getPdf();
+  }, []);
+
+  const blob = new Blob([pdf!], { type: 'application/pdf' });
+  const blobUrl = URL.createObjectURL(blob);
+
+  const modifyPdf = async () => {
+    if (!pdf) return;
+    const pdfDoc = await PDFDocument.load(pdf!);
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+    const { width, height } = firstPage.getSize();
+    firstPage.drawText('Example Signature', {
+      x: width / 2 - 100,
+      y: height / 2 + 300,
+      size: 25,
+    });
+    const pdfBytes = await pdfDoc.save();
+    setPdf(pdfBytes);
+  }
+
+  const resetPdf = async () => {
+    getPdf();
+  }
+
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
@@ -201,14 +238,35 @@ const FormInstance = ({
           >
             Form Preview
           </Text>
-          <Skeleton
+          <Stack direction="row" spacing={4}>
+            <Button
+              ml="50px"
+              mt={3}
+              colorScheme="blue"
+              variant="outline"
+              size="sm"
+              onClick={modifyPdf}>
+              Add Signature
+            </Button>
+            <Button
+              mt={3}
+              colorScheme="red"
+              variant="outline"
+              size="sm"
+              onClick={resetPdf}>
+              Reset
+            </Button>
+          </Stack>
+          <Box
+            as="iframe"
+            src={blobUrl}
             ml="50px"
-            mt={6}
+            mt={3}
             mb="100px"
             bg="#000"
-            minWidth="436.353px"
-            minHeight="566.219px"
-          />
+            height="100%"
+            width="75%"
+            />
         </Box>
 
         <Box
