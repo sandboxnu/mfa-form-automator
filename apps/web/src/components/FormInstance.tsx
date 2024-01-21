@@ -66,6 +66,8 @@ const FormInstance = ({
     .find((v) => v.userSignedById == null);
   const _userCanSign = _nextSignature?.signerPositionId == user?.positionId;
 
+  console.log('form id', formInstance.originator);
+
   const _handleFormSign = async () => {
     if (_nextSignature == null || !_userCanSign) return;
     signFormInstanceMutation
@@ -262,43 +264,45 @@ const FormInstance = ({
               Sign Form
             </Button>
           )}
-          {formInstance.completed && (
-            <Flex>
-              <Spacer />
-              <Box pl="350px">
-                <Button
-                  borderRadius="8px"
-                  width="111px"
-                  height="40px"
-                  onClick={async (_) => {
-                    toast.promise(_handleFormApprove(), {
-                      success: {
-                        title: 'Success',
-                        description: 'Form approved',
-                      },
-                      error: {
-                        title: 'Error',
-                        description: 'Unable to approve form',
-                      },
-                      loading: {
-                        title: 'Pending',
-                        description: 'Please wait',
-                      },
-                    });
-                  }}
-                  background={
-                    formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
-                  }
-                  color="#FFF"
-                  cursor={
-                    formInstance.markedCompleted ? 'not-allowed' : 'pointer'
-                  }
-                >
-                  Approve
-                </Button>
-              </Box>
-            </Flex>
-          )}
+          {/* if the form instance is completed and we are the person who originated the form, then we can approve it */}
+          {formInstance.completed &&
+            user?.id === formInstance.originator.id && (
+              <Flex>
+                <Spacer />
+                <Box pl="350px">
+                  <Button
+                    borderRadius="8px"
+                    width="111px"
+                    height="40px"
+                    onClick={async (_) => {
+                      toast.promise(_handleFormApprove(), {
+                        success: {
+                          title: 'Success',
+                          description: 'Form approved',
+                        },
+                        error: {
+                          title: 'Error',
+                          description: 'Unable to approve form',
+                        },
+                        loading: {
+                          title: 'Pending',
+                          description: 'Please wait',
+                        },
+                      });
+                    }}
+                    background={
+                      formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
+                    }
+                    color="#FFF"
+                    cursor={
+                      formInstance.markedCompleted ? 'not-allowed' : 'pointer'
+                    }
+                  >
+                    Approve
+                  </Button>
+                </Box>
+              </Flex>
+            )}
         </Box>
       </Grid>
     </Box>
