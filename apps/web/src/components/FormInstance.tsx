@@ -262,43 +262,44 @@ const FormInstance = ({
               Sign Form
             </Button>
           )}
-          {formInstance.completed && (
-            <Flex>
-              <Spacer />
-              <Box pl="350px">
-                <Button
-                  borderRadius="8px"
-                  width="111px"
-                  height="40px"
-                  onClick={async (_) => {
-                    toast.promise(_handleFormApprove(), {
-                      success: {
-                        title: 'Success',
-                        description: 'Form approved',
-                      },
-                      error: {
-                        title: 'Error',
-                        description: 'Unable to approve form',
-                      },
-                      loading: {
-                        title: 'Pending',
-                        description: 'Please wait',
-                      },
-                    });
-                  }}
-                  background={
-                    formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
-                  }
-                  color="#FFF"
-                  cursor={
-                    formInstance.markedCompleted ? 'not-allowed' : 'pointer'
-                  }
-                >
-                  Approve
-                </Button>
-              </Box>
-            </Flex>
-          )}
+          {formInstance.completed &&
+            user?.id === formInstance.originator.id && (
+              <Flex>
+                <Spacer />
+                <Box pl="350px">
+                  <Button
+                    borderRadius="8px"
+                    width="111px"
+                    height="40px"
+                    onClick={async (_) => {
+                      toast.promise(_handleFormApprove(), {
+                        success: {
+                          title: 'Success',
+                          description: 'Form approved',
+                        },
+                        error: {
+                          title: 'Error',
+                          description: 'Unable to approve form',
+                        },
+                        loading: {
+                          title: 'Pending',
+                          description: 'Please wait',
+                        },
+                      });
+                    }}
+                    background={
+                      formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
+                    }
+                    color="#FFF"
+                    cursor={
+                      formInstance.markedCompleted ? 'not-allowed' : 'pointer'
+                    }
+                  >
+                    Approve
+                  </Button>
+                </Box>
+              </Flex>
+            )}
         </Box>
       </Grid>
     </Box>
