@@ -66,8 +66,6 @@ const FormInstance = ({
     .find((v) => v.userSignedById == null);
   const _userCanSign = _nextSignature?.signerPositionId == user?.positionId;
 
-  console.log('form id', formInstance.originator);
-
   const _handleFormSign = async () => {
     if (_nextSignature == null || !_userCanSign) return;
     signFormInstanceMutation
