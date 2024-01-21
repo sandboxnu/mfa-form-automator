@@ -264,7 +264,6 @@ const FormInstance = ({
               Sign Form
             </Button>
           )}
-          {/* if the form instance is completed and we are the person who originated the form, then we can approve it */}
           {formInstance.completed &&
             user?.id === formInstance.originator.id && (
               <Flex>
