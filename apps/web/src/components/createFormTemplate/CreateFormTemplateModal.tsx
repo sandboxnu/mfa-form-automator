@@ -24,6 +24,7 @@ import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
+import PDFUpload from '../../components/createFormTemplate/PdfUpload';
 
 const variants = {
   notDragging: {
@@ -159,25 +160,17 @@ export const CreateFormTemplateModal = ({
             >
               Upload Form
             </Text>
-            <Button
+            {/* <Button
               width="160px"
               height="40px"
               borderRadius="8px"
               border="1px"
               background="white"
               borderColor="#4C658A"
-            >
-              <UploadForm color="#4C658A" width="24px" height="24px" />
-              <Text
-                fontFamily="Hanken Grotesk"
-                fontSize="17px"
-                fontWeight="700"
-                color="#4C658A"
-                pl="10px"
-              >
-                Upload Form
-              </Text>
-            </Button>
+            > */}
+              {/* <UploadForm color="#4C658A" width="24px" height="24px" /> */}
+              <PDFUpload></PDFUpload>
+            {/* </Button> */}
             <Grid templateColumns="repeat(2, 1fr)" gap={75} pt="30px">
               <GridItem w="100%">
                 <Text
