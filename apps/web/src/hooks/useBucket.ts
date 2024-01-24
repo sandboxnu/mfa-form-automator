@@ -9,10 +9,10 @@ export const useBucket = () => {
     },
   });
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File, key: string) => {
     const command = new PutObjectCommand({
       Bucket: process.env.S3_UPLOAD_BUCKET as string,
-      Key: file.name,
+      Key: key,
       Body: file,
     });
 
