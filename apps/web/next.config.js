@@ -5,8 +5,12 @@ const nextConfig = {
     PORT: process.env.PORT,
     S3_UPLOAD_BUCKET: process.env.S3_UPLOAD_BUCKET,
     S3_UPLOAD_REGION: process.env.S3_UPLOAD_REGION,
-    S3_UPLOAD_ACCESS_KEY: process.env.S3_UPLOAD_ACCESS_KEY,
-    S3_UPLOAD_SECRET_KEY: process.env.S3_UPLOAD_SECRET_KEY,
+    S3_UPLOAD_KEY: process.env.S3_UPLOAD_KEY,
+    S3_UPLOAD_SECRET: process.env.S3_UPLOAD_SECRET,
+  },
+  webpack: (config) => {
+    config.resolve.alias.canvas = false;
+    return config;
   },
 };
 
