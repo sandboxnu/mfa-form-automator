@@ -1,13 +1,19 @@
 import { Button } from '@chakra-ui/react';
 import { UploadForm } from '@web/static/icons';
 import { useState } from 'react';
-import { Document, pdfjs, Page } from 'react-pdf';
+import { pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import { Dispatch } from 'react';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-export default function PDFUpload() {
-  const [pdf, setPdf] = useState<string | ArrayBuffer | null>(null);
+export default function PDFUpload({
+  pdf,
+  setPdf,
+}: {
+  pdf: string | ArrayBuffer | null;
+  setPdf: Dispatch<string | ArrayBuffer | null>;
+}) {
   const [pdfName, setPdfName] = useState<string | null>(null);
 
   const blobToUrl = (blob: Blob) => {
@@ -42,7 +48,12 @@ export default function PDFUpload() {
         background="white"
         borderColor="#4C658A"
       >
-        <UploadForm color="#4C658A" width="24px" height="24px" />
+        <UploadForm
+          color="#4C658A"
+          width="24px"
+          height="24px"
+          aria-label="Upload Icon"
+        />
         <label
           htmlFor="pdfInput"
           style={{
@@ -79,11 +90,12 @@ export default function PDFUpload() {
           {pdfName}
         </span>
       )}
-      {pdf && (
+      {/* {pdf && (
         <Document file={pdf} onLoadSuccess={(data) => console.log(data)}>
           <Page pageNumber={1} renderTextLayer={false} />
         </Document>
-      )}
+      )} */}
+      {/* <PDFViewer pdf={pdf}></PDFViewer> */}
     </>
   );
 }

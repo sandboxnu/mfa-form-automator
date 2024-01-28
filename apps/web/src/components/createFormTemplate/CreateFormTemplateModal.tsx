@@ -13,7 +13,6 @@ import {
   ModalOverlay,
   Input,
   useToast,
-  Skeleton,
 } from '@chakra-ui/react';
 import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
@@ -25,6 +24,8 @@ import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
 import PDFUpload from '../../components/createFormTemplate/PdfUpload';
+import { Document, Page } from 'react-pdf';
+import PDFViewer from './PdfViewer';
 
 const variants = {
   notDragging: {
@@ -52,6 +53,8 @@ export const CreateFormTemplateModal = ({
     [],
   );
   let isFormTemplateNameInvalid = formTemplateName === '';
+
+  const [pdf, setPdf] = useState<string | ArrayBuffer | null>(null);
 
   const toast = useToast();
 
@@ -160,17 +163,7 @@ export const CreateFormTemplateModal = ({
             >
               Upload Form
             </Text>
-            {/* <Button
-              width="160px"
-              height="40px"
-              borderRadius="8px"
-              border="1px"
-              background="white"
-              borderColor="#4C658A"
-            > */}
-              {/* <UploadForm color="#4C658A" width="24px" height="24px" /> */}
-              <PDFUpload></PDFUpload>
-            {/* </Button> */}
+            <PDFUpload pdf={pdf} setPdf={setPdf} />
             <Grid templateColumns="repeat(2, 1fr)" gap={75} pt="30px">
               <GridItem w="100%">
                 <Text
@@ -181,7 +174,7 @@ export const CreateFormTemplateModal = ({
                 >
                   Form Preview
                 </Text>
-                <Skeleton w="386px" h="300px" background="gray" />
+                <PDFViewer pdf={pdf} />
               </GridItem>
               <GridItem w="100%" pr="0px">
                 <Text
