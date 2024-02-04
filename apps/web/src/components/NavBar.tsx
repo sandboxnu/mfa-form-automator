@@ -47,12 +47,12 @@ const NavItem = ({
 
   return (
     <Link href={link}>
-      <Box px="8">
+      <Box px="12">
         <Flex
           align="center"
           px="4"
           pl="4"
-          py="3"
+          py="2"
           rounded="8px"
           cursor="pointer"
           color="inherit"
@@ -115,7 +115,7 @@ export const NavBar = ({
         px="4"
         pt="40px"
         pb="32px"
-        pl="8"
+        pl="12"
         rounded="8px"
         cursor="pointer"
         color="inherit"
@@ -161,7 +161,7 @@ export const NavBar = ({
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
-      <Box px={8}>
+      <Box px={12}>
         <Divider mt={'5'} mb={5} borderColor={'gray'} />
       </Box>
       <NavItem icon="history" link="/history">

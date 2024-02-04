@@ -67,62 +67,8 @@ export const FormList = ({
             </Box>
           </Flex>
 
-          <Flex alignItems="flex-end">
-            <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-              transition={{ duration: 0.3 }}
-              onAnimationComplete={() => setShowButton(!isOpen)}
-            >
-              <InputGroup marginRight="12px">
-                {isOpen ? (
-                  <InputLeftElement
-                    as="button"
-                    onClick={onToggle}
-                    justifyContent="flex-start"
-                  >
-                    <RightSearchIcon color="#595959" w="25px" h="25px" />
-                  </InputLeftElement>
-                ) : (
-                  <Button
-                    variant="unstyled"
-                    onClick={onToggle}
-                    display="flex"
-                    alignItems="flex-end"
-                    p={0}
-                  >
-                    <RightSearchIcon color="#595959" w="25px" h="25px" />
-                  </Button>
-                )}
-                <Input
-                  size="16px"
-                  borderRadius="0"
-                  border="none"
-                  marginRight="12px"
-                  borderBottom="1px solid"
-                  borderColor="#B0B0B0"
-                  boxShadow="none"
-                  _hover={{ borderColor: '#595959' }}
-                  _focus={{
-                    borderColor: '#595959',
-                    boxShadow: 'none',
-                  }}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </InputGroup>
-            </motion.div>
-            {showButton && !isOpen && (
-              <Button
-                variant="unstyled"
-                onClick={onToggle}
-                height="32px"
-                alignItems="center"
-                p={0}
-              >
-                <RightSearchIcon color="#595959" w="25px" h="25px" />
-              </Button>
-            )}
+          <Flex alignItems="center" gap="6px" justifyContent="flex-end">
+            <span> Sort by: </span>
             <Select
               minW="100px"
               maxW="100px"
