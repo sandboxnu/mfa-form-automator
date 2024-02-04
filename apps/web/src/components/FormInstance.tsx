@@ -113,9 +113,7 @@ const FormInstance = ({
       <Flex align="center" pl={4} mt={4}>
         <Text
           color="#000"
-          fontFamily="Hanken Grotesk"
           fontSize="27px"
-          fontStyle="normal"
           fontWeight="800"
           lineHeight="normal"
           ml="30px"
@@ -160,12 +158,9 @@ const FormInstance = ({
       </Flex>
       <Text
         color="#000"
-        fontFamily="Hanken Grotesk"
         fontSize="20px"
-        fontStyle="normal"
         fontWeight="700"
         lineHeight="normal"
-        textAlign="left"
         my={4}
         ml="50px"
         mt={12}
@@ -174,12 +169,8 @@ const FormInstance = ({
       </Text>
       <Text
         color="#000"
-        fontFamily="Hanken Grotesk"
         fontSize="16px"
-        fontStyle="normal"
-        fontWeight="normal"
         lineHeight="normal"
-        textAlign="left"
         ml="50px"
         maxW="450px"
       >
@@ -192,9 +183,7 @@ const FormInstance = ({
         <Box>
           <Text
             color="#000"
-            fontFamily="Hanken Grotesk"
             fontSize="20px"
-            fontStyle="normal"
             fontWeight="700"
             lineHeight="normal"
             ml="50px"
@@ -219,9 +208,7 @@ const FormInstance = ({
         >
           <Text
             color="#000"
-            fontFamily="Hanken Grotesk"
             fontSize="20px"
-            fontStyle="normal"
             fontWeight="700"
             lineHeight="normal"
           >
