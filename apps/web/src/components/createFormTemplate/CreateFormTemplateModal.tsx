@@ -174,7 +174,9 @@ export const CreateFormTemplateModal = ({
                 >
                   Form Preview
                 </Text>
-                <PDFViewer pdf={pdf} />
+                <Box maxHeight="7%" overflow="auto" position="relative">
+                  <PDFViewer pdf={pdf} />
+                </Box>
               </GridItem>
               <GridItem w="100%" pr="0px">
                 <Text

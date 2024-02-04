@@ -7,7 +7,10 @@ const PDFViewer = ({ pdf }: { pdf: string | ArrayBuffer | null }) => {
   return (
     <>
       {pdf && (
-        <Document file={pdf} onLoadSuccess={(data) => setNumPages(data.numPages)}>
+        <Document
+          file={pdf}
+          onLoadSuccess={(data) => setNumPages(data.numPages)}
+        >
           {Array.from(new Array(numPages || 0), (_, index) => (
             <Page
               key={index + 1}
