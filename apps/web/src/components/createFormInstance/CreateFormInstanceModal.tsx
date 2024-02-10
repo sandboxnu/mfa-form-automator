@@ -17,6 +17,7 @@ import {
   EditablePreview,
   useEditableControls,
   HStack,
+  Link,
 } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
@@ -33,6 +34,7 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
+// import PDFViewer from './PDFViewer.ts';
 
 // TODO
 // fix form type dropdown bug
@@ -222,13 +224,25 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                   isClearable
                   closeMenuOnSelect
                 />
-                <Skeleton
+                {/* <Skeleton
                   marginBottom="10px"
                   marginTop="10px"
                   w="100%"
                   h="450px"
                   background="gray"
-                />
+                /> */}
+
+                <iframe src='https://www.orimi.com/pdf-test.pdf' height='600px' width='600px'></iframe>
+
+                {/* <ReactPDF
+                  file={{
+                    url: 'http://www.example.com/sample.pdf',
+                  }}
+                /> */}
+                {/* <PDFViewer pdfUrl={"https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"}></PDFViewer> */}
+                {/* <Document file={""}>
+                  <Page pageNumber={1} />
+                </Document> */}
               </Flex>
               {formTypeSelected ? (
                 <Flex flexDirection="column" w="100%">
