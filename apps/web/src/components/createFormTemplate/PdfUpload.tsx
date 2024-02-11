@@ -35,6 +35,7 @@ export default function PDFUpload({
     const file = e.target.files[0];
     const url = (await blobToUrl(file)) as string | ArrayBuffer | null;
     setPdf(url);
+    console.log(url);
     setPdfName(file.name);
   };
 

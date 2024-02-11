@@ -58,6 +58,20 @@ export const CreateFormTemplateModal = ({
 
   const toast = useToast();
 
+  // const bytesToUrl = (byteData: ArrayBuffer): string => {
+  //   const uint8Array = new Uint8Array(byteData);
+  //   const uintArray = Array.from(uint8Array);
+  //   const base64EncodedData = btoa(String.fromCharCode.apply(null, uintArray));
+  //   const urlSafeString = encodeURIComponent(base64EncodedData);
+  //   return urlSafeString;
+  // };
+
+  const blob = new Blob([pdf!], {type: 'application/pdf'});
+  if (pdf) { 
+    const blobUrl = URL.createObjectURL(pdf);
+   }
+  console.log(blobUrl);
+
   const createFormTemplateMutation = useMutation({
     mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
       return FormTemplatesService.formTemplatesControllerCreate(
@@ -175,7 +189,8 @@ export const CreateFormTemplateModal = ({
                   Form Preview
                 </Text>
                 <Box maxHeight="7%" overflow="auto" position="relative">
-                  <PDFViewer pdf={pdf} />
+                <iframe height="400px" src={blobUrl} />
+                  {/* <PDFViewer pdf={pdf} /> */}
                 </Box>
               </GridItem>
               <GridItem w="100%" pr="0px">
