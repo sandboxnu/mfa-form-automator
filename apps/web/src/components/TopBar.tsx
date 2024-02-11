@@ -40,13 +40,13 @@ export const TopBar: React.FC = () => {
       zIndex="sticky"
     >
       <Box minWidth={302}>
-        <Flex px="4" py="5" align="left">
+        <Flex px="7" py="5" align="left">
           <MFALogoIcon height="51px" width="220px" />
         </Flex>
       </Box>
       <Spacer />
 
-      <Flex align="center" pl="10" mr="24px">
+      <Flex align="center" pl="10" mr="32px">
         <Popover placement="bottom-end" closeOnBlur={true}>
           {({ isOpen, onClose }) => (
             <>
@@ -72,18 +72,6 @@ export const TopBar: React.FC = () => {
                       }
                       colorScheme="none"
                     />
-                    <Hide breakpoint="(max-width: 1000px)">
-                      <Flex>
-                        <Text px="10px" fontSize="18">
-                          {user?.firstName + ' ' + user?.lastName}
-                        </Text>
-                        {isOpen ? (
-                          <DropdownUpArrow maxH="8px" alignSelf="center" />
-                        ) : (
-                          <DropdownDownArrow maxH="8px" alignSelf="center" />
-                        )}
-                      </Flex>
-                    </Hide>
                   </Flex>
                 </button>
               </PopoverTrigger>
