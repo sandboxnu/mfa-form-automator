@@ -1,9 +1,22 @@
 import { FormRow } from './FormRow';
-import { Box, Flex, Grid, GridItem, Select, Text } from '@chakra-ui/react';
-import { SortDownArrow } from 'apps/web/src/static/icons';
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  GridItem,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Select,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
+import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
 import { FormInstanceEntity } from '@web/client';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
+import { motion } from 'framer-motion';
 
 // abstracted component for displaying forms in list format
 export const FormList = ({
@@ -16,6 +29,8 @@ export const FormList = ({
   color: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const { isOpen, onToggle } = useDisclosure();
+  const [showButton, setShowButton] = useState(false);
 
   const sortedFormInstances = formInstances
     .map((formInstance) => ({
@@ -52,8 +67,62 @@ export const FormList = ({
             </Box>
           </Flex>
 
-          <Flex alignItems="center" gap="6px" justifyContent="flex-end">
-            <span> Sort by: </span>
+          <Flex alignItems="flex-end">
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+              onAnimationComplete={() => setShowButton(!isOpen)}
+            >
+              <InputGroup marginRight="12px">
+                {isOpen ? (
+                  <InputLeftElement
+                    as="button"
+                    onClick={onToggle}
+                    justifyContent="flex-start"
+                  >
+                    <RightSearchIcon color="#595959" w="25px" h="25px" />
+                  </InputLeftElement>
+                ) : (
+                  <Button
+                    variant="unstyled"
+                    onClick={onToggle}
+                    display="flex"
+                    alignItems="flex-end"
+                    p={0}
+                  >
+                    <RightSearchIcon color="#595959" w="25px" h="25px" />
+                  </Button>
+                )}
+                <Input
+                  size="16px"
+                  borderRadius="0"
+                  border="none"
+                  marginRight="12px"
+                  borderBottom="1px solid"
+                  borderColor="#B0B0B0"
+                  boxShadow="none"
+                  _hover={{ borderColor: '#595959' }}
+                  _focus={{
+                    borderColor: '#595959',
+                    boxShadow: 'none',
+                  }}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </InputGroup>
+            </motion.div>
+            {showButton && !isOpen && (
+              <Button
+                variant="unstyled"
+                onClick={onToggle}
+                height="32px"
+                alignItems="center"
+                p={0}
+              >
+                <RightSearchIcon color="#595959" w="25px" h="25px" />
+              </Button>
+            )}
             <Select
               minW="100px"
               maxW="100px"
