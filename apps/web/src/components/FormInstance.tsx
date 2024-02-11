@@ -7,6 +7,7 @@ import {
   Skeleton,
   Spacer,
   useToast,
+  Heading,
 } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
@@ -100,28 +101,20 @@ const FormInstance = ({
         <LeftArrowIcon
           boxSize={3}
           mr={2}
-          fill="#4C658A"
+          fill="var(--mfa-blue-hex)"
           _groupHover={{ fill: 'var(--chakra-colors-gray-500)' }}
         />
         <Text
-          color="#4C658A"
+          color="var(--mfa-blue-hex)"
           _groupHover={{ color: 'var(--chakra-colors-gray-500)' }}
         >
           Back
         </Text>
       </Flex>
       <Flex align="center" pl={4} mt={4}>
-        <Text
-          color="#000"
-          fontSize="27px"
-          fontWeight="800"
-          lineHeight="normal"
-          ml="30px"
-          mt={4}
-          mr={5}
-        >
+        <Heading as="h1" ml="30px" mt={4} mr={5}>
           {formInstance.name}
-        </Text>
+        </Heading>
         <Button
           variant="link"
           onClick={() => {
@@ -227,7 +220,11 @@ const FormInstance = ({
           />
           {_userCanSign && (
             <Button
-              background={formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'}
+              background={
+                formInstance.markedCompleted
+                  ? 'var(--mfa-gray-hex)'
+                  : 'var(--mfa-blue-hex)'
+              }
               color="#FFF"
               onClick={async (_) => {
                 toast.promise(_handleFormSign(), {
@@ -275,7 +272,9 @@ const FormInstance = ({
                       });
                     }}
                     background={
-                      formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
+                      formInstance.markedCompleted
+                        ? 'var(--mfa-gray-hex)'
+                        : 'var(--mfa-blue-hex)'
                     }
                     color="#FFF"
                     cursor={

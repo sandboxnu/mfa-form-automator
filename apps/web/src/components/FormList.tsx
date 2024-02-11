@@ -1,22 +1,9 @@
 import { FormRow } from './FormRow';
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Select,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
+import { Box, Flex, Grid, GridItem, Select, Text } from '@chakra-ui/react';
+import { SortDownArrow } from 'apps/web/src/static/icons';
 import { FormInstanceEntity } from '@web/client';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
-import { motion } from 'framer-motion';
 
 // abstracted component for displaying forms in list format
 export const FormList = ({
@@ -29,8 +16,6 @@ export const FormList = ({
   color: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const { isOpen, onToggle } = useDisclosure();
-  const [showButton, setShowButton] = useState(false);
 
   const sortedFormInstances = formInstances
     .map((formInstance) => ({
