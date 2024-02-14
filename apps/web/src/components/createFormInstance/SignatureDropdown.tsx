@@ -36,16 +36,17 @@ export const SignatureDropdown = ({
     );
   };
 
-  const formatOptionLabel = ({ value, label }: Option) => (
-    <span>
-      <strong>
-        {getEmployeeName({
-          position: positions?.find((position) => position.id === value),
-        })}
-      </strong>
-      <span style={{ marginLeft: '8px', color: 'gray' }}>{label}</span>
-    </span>
-  );
+  const formatOptionLabel = ({ value, label }: Option) => {
+    const positionEntity = positions?.find((position) => position.id === value);
+    const employeeName = positionEntity?.name ?? '';
+
+    return (
+      <span>
+        <strong>{getEmployeeName({ position: positionEntity })}</strong>
+        <span style={{ marginLeft: '8px', color: 'gray' }}>{employeeName}</span>
+      </span>
+    );
+  };
 
   return (
     <Box w="100%">
@@ -56,9 +57,13 @@ export const SignatureDropdown = ({
         useBasicStyles
         selectedOptionStyle="check"
         options={positions?.map((position) => {
+          const employee = position.employees?.at(0);
+          const fullName =
+            employee?.firstName ?? '' + ' ' + employee?.lastName ?? '';
+          const fullLabel = fullName + ' ' + position.name;
           return {
             value: position.id,
-            label: position.name,
+            label: fullLabel,
           };
         })}
         placeholder={assigneePlaceholderWithIcon}
