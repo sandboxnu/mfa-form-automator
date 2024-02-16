@@ -5,18 +5,18 @@ import {
   ModalContent,
   ModalBody,
   ModalCloseButton,
-  Button,
   Flex,
   Box,
   Text,
   ModalFooter,
   Skeleton,
-  Grid,
   Editable,
   EditableInput,
   EditablePreview,
   useEditableControls,
   HStack,
+  ModalHeader,
+  Button
 } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
@@ -93,7 +93,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         formTemplateId: selectedFormTemplate?.id!,
       })
       .then((response) => {
-        onClose();
+        handleModalClose();
         return response;
       })
       .catch((e) => {
@@ -105,6 +105,14 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       setFormName(selectedFormTemplate.name);
     }
   }, [selectedFormTemplate]);
+
+  const handleModalClose = () => {
+    onClose();
+    setFormName('Create Form');
+    setSelectedFormTemplate(null);
+    setFormTypeSelected(false);
+    setSignaturePositions([]);
+  }
 
   function EditableControls() {
     const { isEditing, getEditButtonProps } = useEditableControls();
@@ -129,156 +137,132 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    // scrollBehavior="inside" and maxHeight is used to make the modal scrollable
+    <Modal isOpen={isOpen} onClose={handleModalClose}>
       <ModalOverlay backdropFilter="blur(2px)" />
-      <ModalContent minWidth="fit-content" height="fit-content">
+      <ModalContent minWidth="936px" minHeight="761px" padding="20px">
         <ModalCloseButton />
+        <ModalHeader>
+          <Editable
+            placeholder="Enter form name"
+            onChange={(value) => {
+              setFormName(value);
+            }}
+            onSubmit={(value) => {
+              setFormName(value);
+            }}
+            onCancel={(value) => {
+              setFormName(value);
+            }}
+            value={formName}
+          >
+            <HStack>
+              <EditablePreview
+                style={{
+                  fontFamily: 'Hanken Grotesk',
+                  fontWeight: 800,
+                  fontSize: '27px',
+                }}
+              />
+              <EditableInput
+                minW="20em"
+                style={{
+                  fontFamily: 'Hanken Grotesk',
+                  fontWeight: 800,
+                  fontSize: '27px',
+                }}
+              />
+              <EditableControls />
+            </HStack>
+          </Editable>
+        </ModalHeader>
         <ModalBody>
-          <Box h="75vh" w="75vw">
-            <Flex alignItems="center" pt="30px" pb="5px">
-              <Editable
-                placeholder="Enter form name"
-                onChange={(value) => {
-                  setFormName(value);
-                }}
-                onSubmit={(value) => {
-                  setFormName(value);
-                }}
-                onCancel={(value) => {
-                  setFormName(value);
-                }}
-                value={formName}
+          <Flex gap="30px">
+            <Box flex="1">
+              <Text
+                fontFamily="Hanken Grotesk"
+                fontSize="17px"
+                fontWeight="700"
+                mb="10px"
               >
-                <HStack>
-                  <EditablePreview
-                    style={{
-                      fontFamily: 'Hanken Grotesk',
-                      fontWeight: 800,
-                      fontSize: '27px',
-                      outline: 'none',
-                      background: 'transparent',
-                      padding: '0',
-                      margin: '0',
-                    }}
-                  />
-                  <EditableInput
-                    minW="20em"
-                    style={{
-                      fontFamily: 'Hanken Grotesk',
-                      fontWeight: 800,
-                      fontSize: '27px',
-                      outline: 'none',
-                      background: 'transparent',
-                      padding: '0',
-                      margin: '0',
-                    }}
-                  />
-                  <EditableControls />
-                </HStack>
-              </Editable>
-            </Flex>
-            <Grid templateColumns="repeat(2, 1fr)" gap={25} pt="30px">
-              <Flex flexDirection="column" marginRight="79px">
+                Form Type
+              </Text>
+              <Select
+                useBasicStyles
+                selectedOptionStyle="check"
+                options={formTemplates}
+                placeholder="Select Form Template"
+                value={selectedFormTemplate}
+                onChange={(option) => {
+                  setSelectedFormTemplate(option);
+                  setFormTypeSelected(option !== null);
+                  if (option !== null) {
+                    setFormName(option?.name);
+                  }
+                }}
+                className="custom-dropdown"
+                components={{
+                  DropdownIndicator: (props: any) => (
+                    <chakraComponents.DropdownIndicator {...props}>
+                      {isFormTypeDropdownOpen ? (
+                        <DropdownUpArrow maxH="7px" />
+                      ) : (
+                        <DropdownDownArrow maxH="7px" />
+                      )}
+                    </chakraComponents.DropdownIndicator>
+                  ),
+                }}
+                onMenuOpen={() => setIsFormTypeDropdownOpen(true)}
+                onMenuClose={() => setIsFormTypeDropdownOpen(false)}
+                isOptionSelected={(option, _) => {
+                  return option.id == selectedFormTemplate?.id;
+                }}
+                getOptionLabel={(option) => option.name}
+                classNamePrefix="react-select"
+                isClearable
+                closeMenuOnSelect
+              />
+              <Skeleton
+                h="518px"
+                background="gray"
+                marginTop="12px"
+              />
+            </Box>
+            {!formTypeSelected && <Flex flex="1" justifyContent="center">
+              <Box width="273px" height="42px">
                 <Text
-                  fontFamily="Hanken Grotesk"
-                  fontSize="17px"
-                  fontWeight="700"
-                  mb="10px"
+                  fontWeight="500"
+                  fontSize="16px"
+                  color="#9D9D9D"
+                  marginTop="40px"
+                  textAlign="center"
                 >
-                  Form Type
+                  Assignees will appear once form type has been selected.
                 </Text>
-                <Select
-                  useBasicStyles
-                  selectedOptionStyle="check"
-                  options={formTemplates}
-                  placeholder="Select Form Template"
-                  value={selectedFormTemplate}
-                  onChange={(option) => {
-                    setSelectedFormTemplate(option);
-                    setFormTypeSelected(option !== null);
-                    if (option !== null) {
-                      setFormName(option?.name);
-                    }
-                  }}
-                  className="custom-dropdown"
-                  components={{
-                    DropdownIndicator: (props: any) => (
-                      <chakraComponents.DropdownIndicator {...props}>
-                        {isFormTypeDropdownOpen ? (
-                          <DropdownUpArrow maxH="7px" />
-                        ) : (
-                          <DropdownDownArrow maxH="7px" />
-                        )}
-                      </chakraComponents.DropdownIndicator>
-                    ),
-                  }}
-                  onMenuOpen={() => setIsFormTypeDropdownOpen(true)}
-                  onMenuClose={() => setIsFormTypeDropdownOpen(false)}
-                  isOptionSelected={(option, _) => {
-                    return option.id == selectedFormTemplate?.id;
-                  }}
-                  getOptionLabel={(option) => option.name}
-                  classNamePrefix="react-select"
-                  isClearable
-                  closeMenuOnSelect
+              </Box>
+            </Flex>}
+
+            {formTypeSelected && <Box flex="1">
+              <Text
+                fontFamily="Hanken Grotesk"
+                fontSize="16px"
+                fontWeight="700"
+                mb="28px"
+              >
+                Assignees
+              </Text>
+              {selectedFormTemplate?.signatureFields.map((field, i) => (
+                <SignatureDropdown
+                  key={field.id}
+                  field={field}
+                  index={i}
+                  positions={positions}
+                  signaturePositions={signaturePositions}
+                  setSignaturePositions={setSignaturePositions}
                 />
-                <Skeleton
-                  marginBottom="10px"
-                  marginTop="10px"
-                  w="100%"
-                  h="450px"
-                  background="gray"
-                />
-              </Flex>
-              {formTypeSelected ? (
-                <Flex flexDirection="column" w="100%">
-                  <Text
-                    fontFamily="Hanken Grotesk"
-                    fontSize="17px"
-                    fontWeight="700"
-                    mb="10px"
-                  >
-                    Assignees
-                  </Text>
-                  <div
-                    className="scrollable-div"
-                    style={{
-                      minHeight: '48.75vh',
-                      maxHeight: '48.75vh',
-                      overflowY: 'auto',
-                      paddingRight: '5px',
-                      scrollbarWidth: 'thin',
-                      scrollbarColor: '#4C658A transparent',
-                      paddingLeft: '5px',
-                    }}
-                  >
-                    {selectedFormTemplate?.signatureFields.map((field, i) => (
-                      <SignatureDropdown
-                        key={field.id}
-                        field={field}
-                        index={i}
-                        positions={positions}
-                        signaturePositions={signaturePositions}
-                        setSignaturePositions={setSignaturePositions}
-                      />
-                    ))}
-                  </div>
-                </Flex>
-              ) : (
-                <Box width="273px" height="42px">
-                  <Text
-                    fontWeight="500"
-                    fontSize="16px"
-                    color="#9D9D9D"
-                    marginTop="40px"
-                    textAlign="center"
-                  >
-                    Assignees will appear once form type has been selected.
-                  </Text>
-                </Box>
-              )}
-            </Grid>
-          </Box>
+              ))}
+            </Box>}
+          </Flex>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -286,15 +270,13 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
             textColor="white"
             width="161px"
             height="40px"
-            position="absolute"
-            bottom="32px"
             onClick={submitFormInstance}
           >
             Create Form
           </Button>
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </Modal >
   );
 };
 
