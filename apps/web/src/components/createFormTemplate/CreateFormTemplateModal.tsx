@@ -13,7 +13,7 @@ import {
   useToast,
   Skeleton,
   ModalHeader,
-  Flex
+  Flex,
 } from '@chakra-ui/react';
 import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
@@ -104,21 +104,15 @@ export const CreateFormTemplateModal = ({
     setFormTemplateName('New Form Template');
     setSignatureFields([]);
     onCloseCreateFormTemplate();
-  }
+  };
 
   return (
-    <Modal
-      isOpen={isCreateFormTemplateOpen}
-      onClose={handleModalClose}
-    >
+    <Modal isOpen={isCreateFormTemplateOpen} onClose={handleModalClose}>
       <ModalOverlay backdropFilter="blur(2px)" />
       <ModalContent minWidth="936px" minHeight="761px" padding="20px">
         <ModalCloseButton />
         <ModalHeader>
-          <Text
-            fontWeight="800"
-            fontSize="27px"
-          >
+          <Text fontWeight="800" fontSize="27px">
             Create Form Template
           </Text>
         </ModalHeader>
@@ -126,10 +120,7 @@ export const CreateFormTemplateModal = ({
           <Flex gap="30px">
             <Box flex="1">
               <Box>
-                <Text
-                  fontSize="17px"
-                  fontWeight="700"
-                >
+                <Text fontSize="17px" fontWeight="700">
                   Form Name
                 </Text>
                 <Input
@@ -145,10 +136,7 @@ export const CreateFormTemplateModal = ({
                 />
               </Box>
               <Box mt="35px">
-                <Text
-                  fontSize="17px"
-                  fontWeight="700"
-                >
+                <Text fontSize="17px" fontWeight="700">
                   Upload Form
                 </Text>
                 <Button
@@ -172,17 +160,10 @@ export const CreateFormTemplateModal = ({
                 </Button>
               </Box>
               <Box mt="35px">
-                <Text
-                  fontSize="17px"
-                  fontWeight="700"
-                >
+                <Text fontSize="17px" fontWeight="700">
                   Add Signature Fields
                 </Text>
-                <Text
-                  fontSize="15px"
-                  fontWeight="400"
-                  mt="14px"
-                >
+                <Text fontSize="15px" fontWeight="400" mt="14px">
                   Enter the role titles of employees that will need to sign this
                   form, and set the order it will be signed in.
                 </Text>
@@ -225,7 +206,7 @@ export const CreateFormTemplateModal = ({
                       _groupHover={{ fill: 'var(--chakra-colors-gray-500)' }}
                     />
                   }
-                  mt={signatureFields.length > 0 ? "14px" : "0px"}
+                  mt={signatureFields.length > 0 ? '14px' : '0px'}
                   padding="0px"
                   data-group
                   _hover={{ bg: 'transparent' }}
@@ -251,10 +232,7 @@ export const CreateFormTemplateModal = ({
               </Box>
             </Box>
             <Box flex="1">
-              <Text
-                fontSize="17px"
-                fontWeight="700"
-              >
+              <Text fontSize="17px" fontWeight="700">
                 Form Preview
               </Text>
               <Skeleton mt="16px" w="400px" h="500px" background="gray" />
