@@ -159,7 +159,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
             <HStack>
               <EditablePreview
                 style={{
-                  fontFamily: 'Hanken Grotesk',
                   fontWeight: 800,
                   fontSize: '27px',
                 }}
@@ -167,7 +166,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
               <EditableInput
                 minW="20em"
                 style={{
-                  fontFamily: 'Hanken Grotesk',
                   fontWeight: 800,
                   fontSize: '27px',
                 }}
@@ -180,7 +178,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
           <Flex gap="30px">
             <Box flex="1">
               <Text
-                fontFamily="Hanken Grotesk"
                 fontSize="17px"
                 fontWeight="700"
                 mb="10px"
@@ -243,7 +240,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
             {formTypeSelected && (
               <Box flex="1">
                 <Text
-                  fontFamily="Hanken Grotesk"
                   fontSize="16px"
                   fontWeight="700"
                   mb="28px"
