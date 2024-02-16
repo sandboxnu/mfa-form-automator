@@ -16,7 +16,7 @@ import {
   useEditableControls,
   HStack,
   ModalHeader,
-  Button
+  Button,
 } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
@@ -112,7 +112,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     setSelectedFormTemplate(null);
     setFormTypeSelected(false);
     setSignaturePositions([]);
-  }
+  };
 
   function EditableControls() {
     const { isEditing, getEditButtonProps } = useEditableControls();
@@ -222,46 +222,46 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 isClearable
                 closeMenuOnSelect
               />
-              <Skeleton
-                h="518px"
-                background="gray"
-                marginTop="12px"
-              />
+              <Skeleton h="518px" background="gray" marginTop="12px" />
             </Box>
-            {!formTypeSelected && <Flex flex="1" justifyContent="center">
-              <Box width="273px" height="42px">
-                <Text
-                  fontWeight="500"
-                  fontSize="16px"
-                  color="#9D9D9D"
-                  marginTop="40px"
-                  textAlign="center"
-                >
-                  Assignees will appear once form type has been selected.
-                </Text>
-              </Box>
-            </Flex>}
+            {!formTypeSelected && (
+              <Flex flex="1" justifyContent="center">
+                <Box width="273px" height="42px">
+                  <Text
+                    fontWeight="500"
+                    fontSize="16px"
+                    color="#9D9D9D"
+                    marginTop="40px"
+                    textAlign="center"
+                  >
+                    Assignees will appear once form type has been selected.
+                  </Text>
+                </Box>
+              </Flex>
+            )}
 
-            {formTypeSelected && <Box flex="1">
-              <Text
-                fontFamily="Hanken Grotesk"
-                fontSize="16px"
-                fontWeight="700"
-                mb="28px"
-              >
-                Assignees
-              </Text>
-              {selectedFormTemplate?.signatureFields.map((field, i) => (
-                <SignatureDropdown
-                  key={field.id}
-                  field={field}
-                  index={i}
-                  positions={positions}
-                  signaturePositions={signaturePositions}
-                  setSignaturePositions={setSignaturePositions}
-                />
-              ))}
-            </Box>}
+            {formTypeSelected && (
+              <Box flex="1">
+                <Text
+                  fontFamily="Hanken Grotesk"
+                  fontSize="16px"
+                  fontWeight="700"
+                  mb="28px"
+                >
+                  Assignees
+                </Text>
+                {selectedFormTemplate?.signatureFields.map((field, i) => (
+                  <SignatureDropdown
+                    key={field.id}
+                    field={field}
+                    index={i}
+                    positions={positions}
+                    signaturePositions={signaturePositions}
+                    setSignaturePositions={setSignaturePositions}
+                  />
+                ))}
+              </Box>
+            )}
           </Flex>
         </ModalBody>
         <ModalFooter>
@@ -276,7 +276,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
           </Button>
         </ModalFooter>
       </ModalContent>
-    </Modal >
+    </Modal>
   );
 };
 
