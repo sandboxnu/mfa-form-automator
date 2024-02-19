@@ -35,7 +35,6 @@ export default function PDFUpload({
     const file = e.target.files[0];
     const url = (await blobToUrl(file)) as string | ArrayBuffer | null;
     setPdf(url);
-    console.log(url);
     setPdfName(file.name);
   };
 
@@ -79,8 +78,6 @@ export default function PDFUpload({
       {pdfName && (
         <span
           style={{
-            color: '#000',
-            fontFamily: 'Hanken Grotesk',
             fontSize: '17px',
             fontStyle: 'italic',
             fontWeight: '400',
@@ -91,12 +88,6 @@ export default function PDFUpload({
           {pdfName}
         </span>
       )}
-      {/* {pdf && (
-        <Document file={pdf} onLoadSuccess={(data) => console.log(data)}>
-          <Page pageNumber={1} renderTextLayer={false} />
-        </Document>
-      )} */}
-      {/* <PDFViewer pdf={pdf}></PDFViewer> */}
     </>
   );
 }

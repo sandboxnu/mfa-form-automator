@@ -9,11 +9,11 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
-  Input,
   useToast,
   Skeleton,
   ModalHeader,
   Flex,
+  Input
 } from '@chakra-ui/react';
 import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
@@ -24,9 +24,6 @@ import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
-import PDFUpload from '../../components/createFormTemplate/PdfUpload';
-import { Document, Page } from 'react-pdf';
-import PDFViewer from './PdfViewer';
 
 const variants = {
   notDragging: {
@@ -56,22 +53,9 @@ export const CreateFormTemplateModal = ({
   let isFormTemplateNameInvalid = formTemplateName === '';
 
   const [pdf, setPdf] = useState<string | ArrayBuffer | null>(null);
+  const [pdfName, setPdfName] = useState<string | null>(null);
 
   const toast = useToast();
-
-  // const bytesToUrl = (byteData: ArrayBuffer): string => {
-  //   const uint8Array = new Uint8Array(byteData);
-  //   const uintArray = Array.from(uint8Array);
-  //   const base64EncodedData = btoa(String.fromCharCode.apply(null, uintArray));
-  //   const urlSafeString = encodeURIComponent(base64EncodedData);
-  //   return urlSafeString;
-  // };
-
-  // const blob = new Blob([pdf!], { type: 'application/pdf' });
-  // if (pdf) {
-  //   const blobUrl = URL.createObjectURL(pdf);
-  // }
-  // console.log(blobUrl);
 
   const createFormTemplateMutation = useMutation({
     mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
@@ -123,7 +107,23 @@ export const CreateFormTemplateModal = ({
     setFormTemplateName('New Form Template');
     setSignatureFields([]);
     onCloseCreateFormTemplate();
+    setPdf(null);
+    setPdfName(null);
   };
+
+  const handlePdfSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    if (!e.target.files) return;
+    try {
+      const file = e.target.files[0];
+      const url = URL.createObjectURL(file);
+      setPdf(url);
+      setPdfName(file.name);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   return (
     <Modal isOpen={isCreateFormTemplateOpen} onClose={handleModalClose}>
@@ -158,25 +158,55 @@ export const CreateFormTemplateModal = ({
                 <Text fontSize="17px" fontWeight="700">
                   Upload Form
                 </Text>
-                <Button
-                  width="160px"
-                  height="40px"
-                  borderRadius="8px"
-                  border="1px"
-                  background="white"
-                  borderColor="#4C658A"
-                  mt="16px"
-                >
-                  <UploadForm color="#4C658A" width="24px" height="24px" />
-                  <Text
-                    fontSize="17px"
-                    fontWeight="700"
-                    color="#4C658A"
-                    pl="10px"
+                <Flex alignItems={'center'} mt="16px">
+                  <label
+                    htmlFor="pdfInput"
+                    style={{
+                      fontSize: '17px',
+                      fontWeight: 700,
+                      color: '#4C658A',
+                      cursor: 'pointer',
+                      paddingLeft: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      border: '1px solid #4C658A',
+                      borderRadius: '10px',
+                      padding: '8px',
+                    }}
                   >
-                    Upload Form
-                  </Text>
-                </Button>
+                    <UploadForm
+                      color="#4C658A"
+                      width="24px"
+                      height="24px"
+                      aria-label="Upload Icon"
+                    />
+                    <span style={{
+                      paddingLeft: '5px',
+                    }}>Upload File</span>
+                  </label>
+
+                  <input
+                    type="file"
+                    id="pdfInput"
+                    accept=".pdf"
+                    style={{ display: 'none' }}
+                    onChange={(e) => handlePdfSubmit(e)}
+                  />
+                  {pdfName && (
+                    <span
+                      style={{
+                        fontSize: '17px',
+                        fontStyle: 'italic',
+                        fontWeight: '400',
+                        lineHeight: 'normal',
+                        paddingLeft: '15px',
+                      }}
+                    >
+                      {pdfName}
+                    </span>
+                  )}
+
+                </Flex>
               </Box>
               <Box mt="35px">
                 <Text fontSize="17px" fontWeight="700">
@@ -239,7 +269,6 @@ export const CreateFormTemplateModal = ({
                   }}
                 >
                   <Text
-                    fontFamily="Hanken Grotesk"
                     fontSize="16px"
                     fontWeight="400"
                     color="#4C658A"
@@ -254,7 +283,19 @@ export const CreateFormTemplateModal = ({
               <Text fontSize="17px" fontWeight="700">
                 Form Preview
               </Text>
-              <Skeleton mt="16px" w="400px" h="500px" background="gray" />
+              {!pdf && <Skeleton mt="16px" w="400px" h="500px" background="gray" />}
+              {pdf && (
+                <embed
+                  src={pdf as string}
+                  type="application/pdf"
+                  width="400px"
+                  height="500px"
+                  style={{
+                    marginTop: '16px',
+                    border: '3px solid black',
+                    borderRadius: '8px',
+                  }} />
+              )}
             </Box>
           </Flex>
         </ModalBody>
@@ -290,6 +331,6 @@ export const CreateFormTemplateModal = ({
           </Button>
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </Modal >
   );
 };
