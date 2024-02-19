@@ -1126,7 +1126,7 @@ describe('FormInstancesController', () => {
 
       jest
         .spyOn(formInstancesService, 'remove')
-        .mockImplementation(async () => {});
+        .mockImplementation(async () => { });
 
       expect(await controller.remove(formInstanceId)).toEqual(undefined);
     });
