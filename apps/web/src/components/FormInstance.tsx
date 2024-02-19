@@ -87,6 +87,11 @@ const FormInstance = ({
     router.push('/');
   };
 
+  function isValidURL(formDocLink: string) {
+    var urlPattern = /^(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?$/;
+    return urlPattern.test(formDocLink);
+  }
+
   return (
     <Box className="main">
       <Flex
@@ -183,14 +188,24 @@ const FormInstance = ({
           >
             Form Preview
           </Text>
-          <Skeleton
-            ml="50px"
-            mt={6}
-            mb="100px"
-            bg="#000"
-            minWidth="436.353px"
-            minHeight="566.219px"
-          />
+
+          {formInstance.formDocLink && isValidURL(formInstance.formDocLink) && (
+            <embed
+              src={formInstance.formDocLink}
+              type="application/pdf"
+              width="400px"
+              height="500px"
+              style={{
+                border: '3px solid black',
+                borderRadius: '8px',
+                marginLeft: '50px',
+                marginTop: '6px',
+                marginBottom: '100px',
+                minWidth: '436.353px',
+                minHeight: '566.219px',
+              }}
+            />
+          )}
         </Box>
 
         <Box
