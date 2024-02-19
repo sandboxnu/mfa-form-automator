@@ -2,8 +2,6 @@ import {
   Box,
   Text,
   Button,
-  Grid,
-  GridItem,
   List,
   Modal,
   ModalBody,
@@ -14,6 +12,8 @@ import {
   Input,
   useToast,
   Skeleton,
+  ModalHeader,
+  Flex,
 } from '@chakra-ui/react';
 import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
@@ -93,155 +93,87 @@ export const CreateFormTemplateModal = ({
         }),
       })
       .then((response) => {
-        onCloseCreateFormTemplate();
+        handleModalClose();
         return response;
       })
       .catch((e) => {
         throw e;
       });
 
+  const handleModalClose = () => {
+    setFormTemplateName('New Form Template');
+    setSignatureFields([]);
+    onCloseCreateFormTemplate();
+  };
+
   return (
-    <Modal
-      isOpen={isCreateFormTemplateOpen}
-      onClose={onCloseCreateFormTemplate}
-    >
+    <Modal isOpen={isCreateFormTemplateOpen} onClose={handleModalClose}>
       <ModalOverlay backdropFilter="blur(2px)" />
-      <ModalContent minWidth="fit-content" height="fit-content">
+      <ModalContent minWidth="936px" minHeight="761px" padding="20px">
         <ModalCloseButton />
+        <ModalHeader>
+          <Text fontWeight="800" fontSize="27px">
+            Create Form Template
+          </Text>
+        </ModalHeader>
         <ModalBody>
-          <Box h="75vh" w="75vw">
-            <Text
-              fontFamily="Hanken Grotesk"
-              fontWeight="800"
-              fontSize="27px"
-              pt="30px"
-              pb="30px"
-            >
-              Create Form Template
-            </Text>
-            <Text
-              fontFamily="Hanken Grotesk"
-              fontSize="17px"
-              fontWeight="700"
-              mb="10px"
-            >
-              Form Name
-            </Text>
-            {isFormTemplateNameInvalid ? (
-              <Text
-                fontFamily="Hanken Grotesk"
-                fontSize="12px"
-                fontWeight="400"
-                color="red"
-              >
-                Please specify a name for the form template
-              </Text>
-            ) : (
-              <></>
-            )}
-            <Input
-              value={formTemplateName}
-              isInvalid={isFormTemplateNameInvalid}
-              onChange={(e) => setFormTemplateName(e.target.value)}
-              placeholder="Form Name"
-              fontFamily="Hanken Grotesk"
-              fontSize="16px"
-              fontWeight="400px"
-              width="386px"
-              height="40px"
-            />
-            <Text
-              pt="40px"
-              pb="8px"
-              fontFamily="Hanken Grotesk"
-              fontSize="17px"
-              fontWeight="700"
-            >
-              Upload Form
-            </Text>
-            <Button
-              width="160px"
-              height="40px"
-              borderRadius="8px"
-              border="1px"
-              background="white"
-              borderColor="#4C658A"
-            >
-              <UploadForm color="#4C658A" width="24px" height="24px" />
-              <Text
-                fontFamily="Hanken Grotesk"
-                fontSize="17px"
-                fontWeight="700"
-                color="#4C658A"
-                pl="10px"
-              >
-                Upload Form
-              </Text>
-            </Button>
-            <Grid templateColumns="repeat(2, 1fr)" gap={75} pt="30px">
-              <GridItem w="100%">
-                <Text
-                  fontFamily="Hanken Grotesk"
-                  fontSize="17px"
-                  fontWeight="700"
-                  mb="5px"
-                >
-                  Form Preview
+          <Flex gap="30px">
+            <Box flex="1">
+              <Box>
+                <Text fontSize="17px" fontWeight="700">
+                  Form Name
                 </Text>
-                <Skeleton w="386px" h="300px" background="gray" />
-              </GridItem>
-              <GridItem w="100%" pr="0px">
-                <Text
-                  fontFamily="Hanken Grotesk"
-                  fontSize="17px"
-                  fontWeight="700"
+                <Input
+                  value={formTemplateName}
+                  isInvalid={isFormTemplateNameInvalid}
+                  onChange={(e) => setFormTemplateName(e.target.value)}
+                  placeholder="Form Name"
+                  fontSize="16px"
+                  fontWeight="400px"
+                  width="386px"
+                  height="40px"
+                  mt="16px"
+                />
+              </Box>
+              <Box mt="35px">
+                <Text fontSize="17px" fontWeight="700">
+                  Upload Form
+                </Text>
+                <Button
+                  width="160px"
+                  height="40px"
+                  borderRadius="8px"
+                  border="1px"
+                  background="white"
+                  borderColor="#4C658A"
+                  mt="16px"
                 >
+                  <UploadForm color="#4C658A" width="24px" height="24px" />
+                  <Text
+                    fontSize="17px"
+                    fontWeight="700"
+                    color="#4C658A"
+                    pl="10px"
+                  >
+                    Upload Form
+                  </Text>
+                </Button>
+              </Box>
+              <Box mt="35px">
+                <Text fontSize="17px" fontWeight="700">
                   Add Signature Fields
                 </Text>
-                <Text
-                  fontFamily="Hanken Grotesk"
-                  fontSize="18px"
-                  fontWeight="400"
-                >
+                <Text fontSize="15px" fontWeight="400" mt="14px">
                   Enter the role titles of employees that will need to sign this
                   form, and set the order it will be signed in.
                 </Text>
-                {signatureFields.length == 0 ? (
-                  <Text
-                    fontFamily="Hanken Grotesk"
-                    fontSize="12px"
-                    fontWeight="400"
-                    color="red"
-                    pt="10px"
-                  >
-                    At least one signature field must be present
-                  </Text>
-                ) : (
-                  <></>
-                )}
                 <List
                   as={Reorder.Group}
-                  overflowY="auto"
-                  maxH="175px"
                   spacing={2}
                   axis="y"
                   values={signatureFields}
                   onReorder={setSignatureFields}
-                  mt="16px"
-                  mb="10px"
-                  pr="5px"
-                  css={{
-                    '&::-webkit-scrollbar': {
-                      width: '4px',
-                    },
-                    '&::-webkit-scrollbar-track': {
-                      width: '6px',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                      background: '#4C658A',
-                      borderRadius: '24px',
-                    },
-                  }}
+                  mt="20px"
                 >
                   {signatureFields.map((signatureField) => (
                     <Reorder.Item
@@ -274,6 +206,7 @@ export const CreateFormTemplateModal = ({
                       _groupHover={{ fill: 'var(--chakra-colors-gray-500)' }}
                     />
                   }
+                  mt={signatureFields.length > 0 ? '14px' : '0px'}
                   padding="0px"
                   data-group
                   _hover={{ bg: 'transparent' }}
@@ -296,9 +229,15 @@ export const CreateFormTemplateModal = ({
                     Add signature field
                   </Text>
                 </Button>
-              </GridItem>
-            </Grid>
-          </Box>
+              </Box>
+            </Box>
+            <Box flex="1">
+              <Text fontSize="17px" fontWeight="700">
+                Form Preview
+              </Text>
+              <Skeleton mt="16px" w="400px" h="500px" background="gray" />
+            </Box>
+          </Flex>
         </ModalBody>
         <ModalFooter>
           <Button
@@ -306,8 +245,6 @@ export const CreateFormTemplateModal = ({
             textColor="white"
             width="161px"
             height="40px"
-            position="absolute"
-            bottom="32px"
             isDisabled={
               isFormTemplateNameInvalid ||
               signatureFields.length == 0 ||
