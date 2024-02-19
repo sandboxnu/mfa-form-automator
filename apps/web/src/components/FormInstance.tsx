@@ -7,6 +7,7 @@ import {
   Skeleton,
   Spacer,
   useToast,
+  Heading,
 } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
@@ -100,30 +101,20 @@ const FormInstance = ({
         <LeftArrowIcon
           boxSize={3}
           mr={2}
-          fill="#4C658A"
+          fill="var(--mfa-blue-hex)"
           _groupHover={{ fill: 'var(--chakra-colors-gray-500)' }}
         />
         <Text
-          color="#4C658A"
+          color="var(--mfa-blue-hex)"
           _groupHover={{ color: 'var(--chakra-colors-gray-500)' }}
         >
           Back
         </Text>
       </Flex>
       <Flex align="center" pl={4} mt={4}>
-        <Text
-          color="#000"
-          fontFamily="Hanken Grotesk"
-          fontSize="27px"
-          fontStyle="normal"
-          fontWeight="800"
-          lineHeight="normal"
-          ml="30px"
-          mt={4}
-          mr={5}
-        >
+        <Heading as="h1" ml="30px" mt={4} mr={5}>
           {formInstance.name}
-        </Text>
+        </Heading>
         <Button
           variant="link"
           onClick={() => {
@@ -160,12 +151,9 @@ const FormInstance = ({
       </Flex>
       <Text
         color="#000"
-        fontFamily="Hanken Grotesk"
         fontSize="20px"
-        fontStyle="normal"
         fontWeight="700"
         lineHeight="normal"
-        textAlign="left"
         my={4}
         ml="50px"
         mt={12}
@@ -174,12 +162,8 @@ const FormInstance = ({
       </Text>
       <Text
         color="#000"
-        fontFamily="Hanken Grotesk"
         fontSize="16px"
-        fontStyle="normal"
-        fontWeight="normal"
         lineHeight="normal"
-        textAlign="left"
         ml="50px"
         maxW="450px"
       >
@@ -192,9 +176,7 @@ const FormInstance = ({
         <Box>
           <Text
             color="#000"
-            fontFamily="Hanken Grotesk"
             fontSize="20px"
-            fontStyle="normal"
             fontWeight="700"
             lineHeight="normal"
             ml="50px"
@@ -219,9 +201,7 @@ const FormInstance = ({
         >
           <Text
             color="#000"
-            fontFamily="Hanken Grotesk"
             fontSize="20px"
-            fontStyle="normal"
             fontWeight="700"
             lineHeight="normal"
           >
@@ -240,7 +220,11 @@ const FormInstance = ({
           />
           {_userCanSign && (
             <Button
-              background={formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'}
+              background={
+                formInstance.markedCompleted
+                  ? 'var(--mfa-gray-hex)'
+                  : 'var(--mfa-blue-hex)'
+              }
               color="#FFF"
               onClick={async (_) => {
                 toast.promise(_handleFormSign(), {
@@ -262,43 +246,46 @@ const FormInstance = ({
               Sign Form
             </Button>
           )}
-          {formInstance.completed && (
-            <Flex>
-              <Spacer />
-              <Box pl="350px">
-                <Button
-                  borderRadius="8px"
-                  width="111px"
-                  height="40px"
-                  onClick={async (_) => {
-                    toast.promise(_handleFormApprove(), {
-                      success: {
-                        title: 'Success',
-                        description: 'Form approved',
-                      },
-                      error: {
-                        title: 'Error',
-                        description: 'Unable to approve form',
-                      },
-                      loading: {
-                        title: 'Pending',
-                        description: 'Please wait',
-                      },
-                    });
-                  }}
-                  background={
-                    formInstance.markedCompleted ? '#e2e8f0' : '#4C658A'
-                  }
-                  color="#FFF"
-                  cursor={
-                    formInstance.markedCompleted ? 'not-allowed' : 'pointer'
-                  }
-                >
-                  Approve
-                </Button>
-              </Box>
-            </Flex>
-          )}
+          {formInstance.completed &&
+            user?.id === formInstance.originator.id && (
+              <Flex>
+                <Spacer />
+                <Box pl="350px">
+                  <Button
+                    borderRadius="8px"
+                    width="111px"
+                    height="40px"
+                    onClick={async (_) => {
+                      toast.promise(_handleFormApprove(), {
+                        success: {
+                          title: 'Success',
+                          description: 'Form approved',
+                        },
+                        error: {
+                          title: 'Error',
+                          description: 'Unable to approve form',
+                        },
+                        loading: {
+                          title: 'Pending',
+                          description: 'Please wait',
+                        },
+                      });
+                    }}
+                    background={
+                      formInstance.markedCompleted
+                        ? 'var(--mfa-gray-hex)'
+                        : 'var(--mfa-blue-hex)'
+                    }
+                    color="#FFF"
+                    cursor={
+                      formInstance.markedCompleted ? 'not-allowed' : 'pointer'
+                    }
+                  >
+                    Approve
+                  </Button>
+                </Box>
+              </Flex>
+            )}
         </Box>
       </Grid>
     </Box>

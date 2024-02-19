@@ -55,15 +55,16 @@ export const useForm = () => {
         });
 
         // Find the first signature that doesn't have a signature
-        const firstUnsignedSignature: SignatureEntity | undefined = signatures.find((signature: SignatureEntity) => {
-          return signature.signed === false;
-        });
+        const firstUnsignedSignature: SignatureEntity | undefined =
+          signatures.find((signature: SignatureEntity) => {
+            return signature.signed === false;
+          });
 
         // If there is no unsigned signature, return false
         if (!firstUnsignedSignature) {
           return false;
         }
-        
+
         return firstUnsignedSignature.signerPositionId === user.positionId;
       },
     );
