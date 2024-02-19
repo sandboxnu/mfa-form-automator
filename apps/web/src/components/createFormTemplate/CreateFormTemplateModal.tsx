@@ -67,11 +67,11 @@ export const CreateFormTemplateModal = ({
   //   return urlSafeString;
   // };
 
-  const blob = new Blob([pdf!], { type: 'application/pdf' });
-  if (pdf) {
-    const blobUrl = URL.createObjectURL(pdf);
-  }
-  console.log(blobUrl);
+  // const blob = new Blob([pdf!], { type: 'application/pdf' });
+  // if (pdf) {
+  //   const blobUrl = URL.createObjectURL(pdf);
+  // }
+  // console.log(blobUrl);
 
   const createFormTemplateMutation = useMutation({
     mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {

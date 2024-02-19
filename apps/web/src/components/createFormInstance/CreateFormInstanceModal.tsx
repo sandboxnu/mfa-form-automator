@@ -177,11 +177,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalBody>
           <Flex gap="30px">
             <Box flex="1">
-              <Text
-                fontSize="17px"
-                fontWeight="700"
-                mb="10px"
-              >
+              <Text fontSize="17px" fontWeight="700" mb="10px">
                 Form Type
               </Text>
               <Select
@@ -239,11 +235,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
 
             {formTypeSelected && (
               <Box flex="1">
-                <Text
-                  fontSize="16px"
-                  fontWeight="700"
-                  mb="28px"
-                >
+                <Text fontSize="16px" fontWeight="700" mb="28px">
                   Assignees
                 </Text>
                 {selectedFormTemplate?.signatureFields.map((field, i) => (
