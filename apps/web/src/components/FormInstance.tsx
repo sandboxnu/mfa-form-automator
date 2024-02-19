@@ -189,7 +189,7 @@ const FormInstance = ({
             Form Preview
           </Text>
 
-          {formInstance.formDocLink && isValidURL(formInstance.formDocLink) && (
+          {formInstance.formDocLink && isValidURL(formInstance.formDocLink) ? (
             <embed
               src={formInstance.formDocLink}
               type="application/pdf"
@@ -204,6 +204,15 @@ const FormInstance = ({
                 minWidth: '436.353px',
                 minHeight: '566.219px',
               }}
+            />
+          ) : (
+            <Skeleton
+              ml="50px"
+              mt={6}
+              mb="100px"
+              bg="#000"
+              minWidth="436.353px"
+              minHeight="566.219px"
             />
           )}
         </Box>
