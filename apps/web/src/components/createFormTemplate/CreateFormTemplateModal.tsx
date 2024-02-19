@@ -13,7 +13,7 @@ import {
   Skeleton,
   ModalHeader,
   Flex,
-  Input
+  Input,
 } from '@chakra-ui/react';
 import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
@@ -123,7 +123,7 @@ export const CreateFormTemplateModal = ({
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   return (
     <Modal isOpen={isCreateFormTemplateOpen} onClose={handleModalClose}>
@@ -180,9 +180,13 @@ export const CreateFormTemplateModal = ({
                       height="24px"
                       aria-label="Upload Icon"
                     />
-                    <span style={{
-                      paddingLeft: '5px',
-                    }}>Upload File</span>
+                    <span
+                      style={{
+                        paddingLeft: '5px',
+                      }}
+                    >
+                      Upload File
+                    </span>
                   </label>
 
                   <input
@@ -205,7 +209,6 @@ export const CreateFormTemplateModal = ({
                       {pdfName}
                     </span>
                   )}
-
                 </Flex>
               </Box>
               <Box mt="35px">
@@ -283,7 +286,9 @@ export const CreateFormTemplateModal = ({
               <Text fontSize="17px" fontWeight="700">
                 Form Preview
               </Text>
-              {!pdf && <Skeleton mt="16px" w="400px" h="500px" background="gray" />}
+              {!pdf && (
+                <Skeleton mt="16px" w="400px" h="500px" background="gray" />
+              )}
               {pdf && (
                 <embed
                   src={pdf as string}
@@ -294,7 +299,8 @@ export const CreateFormTemplateModal = ({
                     marginTop: '16px',
                     border: '3px solid black',
                     borderRadius: '8px',
-                  }} />
+                  }}
+                />
               )}
             </Box>
           </Flex>
@@ -331,6 +337,6 @@ export const CreateFormTemplateModal = ({
           </Button>
         </ModalFooter>
       </ModalContent>
-    </Modal >
+    </Modal>
   );
 };

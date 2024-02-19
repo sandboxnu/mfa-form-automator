@@ -215,7 +215,22 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 isClearable
                 closeMenuOnSelect
               />
-              <Skeleton h="518px" background="gray" marginTop="12px" />
+              {!selectedFormTemplate && (
+                <Skeleton h="518px" background="gray" marginTop="12px" />
+              )}
+              {selectedFormTemplate && (
+                <embed
+                  src={selectedFormTemplate.formDocLink}
+                  type="application/pdf"
+                  width="400px"
+                  height="500px"
+                  style={{
+                    marginTop: '16px',
+                    border: '3px solid black',
+                    borderRadius: '8px',
+                  }}
+                />
+              )}
             </Box>
             {!formTypeSelected && (
               <Flex flex="1" justifyContent="center">
