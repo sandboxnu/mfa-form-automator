@@ -177,11 +177,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalBody>
           <Flex gap="30px">
             <Box flex="1">
-              <Text
-                fontSize="17px"
-                fontWeight="700"
-                mb="10px"
-              >
+              <Text fontSize="17px" fontWeight="700" mb="10px">
                 Form Type
               </Text>
               <Select
@@ -219,7 +215,22 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 isClearable
                 closeMenuOnSelect
               />
-              <Skeleton h="518px" background="gray" marginTop="12px" />
+              {!selectedFormTemplate && (
+                <Skeleton h="518px" background="gray" marginTop="12px" />
+              )}
+              {selectedFormTemplate && (
+                <embed
+                  src={selectedFormTemplate.formDocLink}
+                  type="application/pdf"
+                  width="400px"
+                  height="500px"
+                  style={{
+                    marginTop: '16px',
+                    border: '3px solid black',
+                    borderRadius: '8px',
+                  }}
+                />
+              )}
             </Box>
             {!formTypeSelected && (
               <Flex flex="1" justifyContent="center">
@@ -239,11 +250,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
 
             {formTypeSelected && (
               <Box flex="1">
-                <Text
-                  fontSize="16px"
-                  fontWeight="700"
-                  mb="28px"
-                >
+                <Text fontSize="16px" fontWeight="700" mb="28px">
                   Assignees
                 </Text>
                 {selectedFormTemplate?.signatureFields.map((field, i) => (

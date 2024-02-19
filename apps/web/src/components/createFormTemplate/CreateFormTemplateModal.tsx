@@ -9,11 +9,11 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
-  Input,
   useToast,
   Skeleton,
   ModalHeader,
   Flex,
+  Input,
 } from '@chakra-ui/react';
 import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
@@ -51,6 +51,9 @@ export const CreateFormTemplateModal = ({
     [],
   );
   let isFormTemplateNameInvalid = formTemplateName === '';
+
+  const [pdf, setPdf] = useState<string | ArrayBuffer | null>(null);
+  const [pdfName, setPdfName] = useState<string | null>(null);
 
   const toast = useToast();
 
@@ -104,6 +107,22 @@ export const CreateFormTemplateModal = ({
     setFormTemplateName('New Form Template');
     setSignatureFields([]);
     onCloseCreateFormTemplate();
+    setPdf(null);
+    setPdfName(null);
+  };
+
+  const handlePdfSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    if (!e.target.files) return;
+    try {
+      const file = e.target.files[0];
+      const url = URL.createObjectURL(file);
+      setPdf(url);
+      setPdfName(file.name);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -139,25 +158,58 @@ export const CreateFormTemplateModal = ({
                 <Text fontSize="17px" fontWeight="700">
                   Upload Form
                 </Text>
-                <Button
-                  width="160px"
-                  height="40px"
-                  borderRadius="8px"
-                  border="1px"
-                  background="white"
-                  borderColor="#4C658A"
-                  mt="16px"
-                >
-                  <UploadForm color="#4C658A" width="24px" height="24px" />
-                  <Text
-                    fontSize="17px"
-                    fontWeight="700"
-                    color="#4C658A"
-                    pl="10px"
+                <Flex alignItems={'center'} mt="16px">
+                  <label
+                    htmlFor="pdfInput"
+                    style={{
+                      fontSize: '17px',
+                      fontWeight: 700,
+                      color: '#4C658A',
+                      cursor: 'pointer',
+                      paddingLeft: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      border: '1px solid #4C658A',
+                      borderRadius: '10px',
+                      padding: '8px',
+                    }}
                   >
-                    Upload Form
-                  </Text>
-                </Button>
+                    <UploadForm
+                      color="#4C658A"
+                      width="24px"
+                      height="24px"
+                      aria-label="Upload Icon"
+                    />
+                    <span
+                      style={{
+                        paddingLeft: '5px',
+                      }}
+                    >
+                      Upload File
+                    </span>
+                  </label>
+
+                  <input
+                    type="file"
+                    id="pdfInput"
+                    accept=".pdf"
+                    style={{ display: 'none' }}
+                    onChange={(e) => handlePdfSubmit(e)}
+                  />
+                  {pdfName && (
+                    <span
+                      style={{
+                        fontSize: '17px',
+                        fontStyle: 'italic',
+                        fontWeight: '400',
+                        lineHeight: 'normal',
+                        paddingLeft: '15px',
+                      }}
+                    >
+                      {pdfName}
+                    </span>
+                  )}
+                </Flex>
               </Box>
               <Box mt="35px">
                 <Text fontSize="17px" fontWeight="700">
@@ -220,7 +272,6 @@ export const CreateFormTemplateModal = ({
                   }}
                 >
                   <Text
-                    fontFamily="Hanken Grotesk"
                     fontSize="16px"
                     fontWeight="400"
                     color="#4C658A"
@@ -235,7 +286,22 @@ export const CreateFormTemplateModal = ({
               <Text fontSize="17px" fontWeight="700">
                 Form Preview
               </Text>
-              <Skeleton mt="16px" w="400px" h="500px" background="gray" />
+              {!pdf && (
+                <Skeleton mt="16px" w="400px" h="500px" background="gray" />
+              )}
+              {pdf && (
+                <embed
+                  src={pdf as string}
+                  type="application/pdf"
+                  width="400px"
+                  height="500px"
+                  style={{
+                    marginTop: '16px',
+                    border: '3px solid black',
+                    borderRadius: '8px',
+                  }}
+                />
+              )}
             </Box>
           </Flex>
         </ModalBody>

@@ -165,6 +165,8 @@ async function upsertFormInstance(formInstanceData: FormInstanceData) {
 */
 
 async function main() {
+  const testFormLink =
+    'https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf';
   // form template
   const formTemplate1Id = '1fbccd8a-b00c-472f-a94f-defa8e86e0cf';
   await prisma.formTemplate.upsert({
@@ -173,7 +175,7 @@ async function main() {
     create: {
       id: formTemplate1Id,
       name: 'Form Template 1',
-      formDocLink: 'https://www.mfa.org/',
+      formDocLink: testFormLink,
     },
   });
 
@@ -264,7 +266,7 @@ async function main() {
     {
       id: '855498f1-0a8c-44a8-8159-26e28ab8eca0',
       name: 'First Form Instance',
-      formDocLink: 'mfa.org',
+      formDocLink: testFormLink,
       originatorId: '777c1974-3104-4744-ae31-7a9296e7784a',
       formTemplateId: '1fbccd8a-b00c-472f-a94f-defa8e86e0cf',
       signatures: [
@@ -283,7 +285,7 @@ async function main() {
     {
       id: '1c50e8ed-b6d7-4205-bfd7-dce825c63040',
       name: 'Second Form Instance',
-      formDocLink: 'mfa.org',
+      formDocLink: testFormLink,
       originatorId: '777c1974-3104-4744-ae31-7a9296e7784a',
       formTemplateId: '1fbccd8a-b00c-472f-a94f-defa8e86e0cf',
       signatures: [
@@ -297,7 +299,7 @@ async function main() {
     {
       id: '0affdf33-3c4b-42bf-99af-8ef47d231f41',
       name: 'Third Form Instance',
-      formDocLink: 'mfa.org',
+      formDocLink: testFormLink,
       originatorId: '339cf78e-d13f-4069-b1f7-dee0c64afb31',
       formTemplateId: '1fbccd8a-b00c-472f-a94f-defa8e86e0cf',
       signatures: [

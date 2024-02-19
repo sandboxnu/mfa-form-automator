@@ -38,6 +38,7 @@
     "chakra-react-select": "^4.7.6",
     "husky": "^8.0.3",
     "nestjs-config": "^1.4.11",
+    "react-pdf": "^7.7.0",
     "react-query": "^3.39.3"
   }
 }
