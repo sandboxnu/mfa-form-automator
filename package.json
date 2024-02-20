@@ -29,16 +29,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@chakra-ui/icons": "^2.1.1",
     "@types/node": "^20.8.2",
     "@yarnpkg/cli": "^4.0.0-rc.51",
     "@yarnpkg/core": "^4.0.0-rc.51",
     "@yarnpkg/plugin-git": "^3.0.0-rc",
     "@yarnpkg/plugin-workspace-tools": "^4.0.0-rc.51",
-    "chakra-react-select": "^4.7.6",
-    "husky": "^8.0.3",
-    "nestjs-config": "^1.4.11",
-    "react-pdf": "^7.7.0",
-    "react-query": "^3.39.3"
+    "husky": "^8.0.3"
   }
 }
