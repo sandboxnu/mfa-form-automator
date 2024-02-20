@@ -44,4 +44,4 @@ import { PassportModule } from '@nestjs/passport';
     // },
   ],
 })
-export class AppModule { }
+export class AppModule {}
