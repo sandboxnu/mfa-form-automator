@@ -25,7 +25,7 @@ import { PassportModule } from '@nestjs/passport';
     FormTemplatesModule,
     DepartmentsModule,
     ConfigModule.forRoot({
-      envFilePath: './../../server/.env',
+      envFilePath: '.env',
     }),
     AuthModule,
     PassportModule,
