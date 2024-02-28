@@ -11,12 +11,9 @@ const client = new postmark.ServerClient(process.env.POSTMARK_SERVER_KEY);
 @Injectable()
 export class PostmarkService {
     constructor(
-        private prisma: PrismaService,
-        private formTemplateService: FormTemplatesService,
-        private positionService: PositionsService,
     ) { }
 
-    async create() {
+    async sendEmail() {
         client.sendEmail({
             'From': 'jfrederick@mfa.org',
             'To': 'weigl.a@northeastern.edu',

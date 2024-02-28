@@ -24,8 +24,8 @@ export class PostmarkController {
     @ApiUnprocessableEntityResponse({
         description: AppErrorMessage.UNPROCESSABLE_ENTITY,
     })
-    async create() {
-        const newFormInstance = await this.postmarkService.create();
+    async sendEmail() {
+        const newFormInstance = await this.postmarkService.sendEmail();
         return newFormInstance;
     }
 }

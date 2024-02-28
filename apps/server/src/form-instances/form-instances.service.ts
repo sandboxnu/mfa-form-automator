@@ -15,6 +15,7 @@ import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { UserEntity } from '../auth/entities/user.entity';
+import { PostmarkService } from '@server/postmark/postmark.service';
 
 @Injectable()
 export class FormInstancesService {
@@ -22,6 +23,7 @@ export class FormInstancesService {
     private prisma: PrismaService,
     private formTemplateService: FormTemplatesService,
     private positionService: PositionsService,
+    private postmarkService: PostmarkService,
   ) {}
 
   /**
@@ -106,6 +108,8 @@ export class FormInstancesService {
         },
       },
     });
+    //FIXME
+    this.postmarkService.sendEmail;
     return newFormInstance;
   }
 
