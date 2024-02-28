@@ -14,16 +14,20 @@ export class PostmarkService {
     constructor(
     ) { }
 
-    async sendEmail() {
-        client.sendEmail({
-            'From': 'jfrederick@mfa.org',
-            'To': 'weigl.a@northeastern.edu',
-            'Subject': 'Hello from Postmark',
-           // 'HtmlBody': '<strong>Hello < /strong> dear Postmark user.',
-            'TextBody': 'Hello from Postmark!',
-            'MessageStream': 'outbound'
-        });
-        console.log('email sent');
-        
+    async sendEmail(to: string, subject: string, textBody: string) {
+        try {
+            client.sendEmail({
+                'From': 'jfrederick@mfa.org',
+                'To': to,
+                'Subject': subject,
+                // TODO FIXME when this is uncommented the text body doesn't show up 
+                // 'HtmlBody': '<strong>Hello < /strong> dear Postmark user.',
+                'TextBody': textBody,
+                'MessageStream': 'outbound'
+            });
+            console.log('email sent');
+        } catch (error) {
+            console.error('Error sending email throug postmark:', error);
+        }
     }
 }

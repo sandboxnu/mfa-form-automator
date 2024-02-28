@@ -109,7 +109,7 @@ export class FormInstancesService {
         },
       },
     });
-    this.postmarkService.sendEmail();
+    this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form created', 'this is a test');
     return newFormInstance;
   }
 
@@ -335,10 +335,10 @@ export class FormInstancesService {
           signatures: { include: { signerPosition: true, userSignedBy: true } },
         },
       });
-      this.postmarkService.sendEmail();
+      this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form signed by everyone', 'this is a test');
     }
 
-    this.postmarkService.sendEmail();
+    this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form signed', 'this is a test');
     return updatedFormInstance;
   }
 
@@ -385,7 +385,7 @@ export class FormInstancesService {
       data: { markedCompleted: true, markedCompletedAt: new Date() },
     });
 
-    this.postmarkService.sendEmail();
+    this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form completed', 'this is a test');
     return updatedFormInstance;
   }
 }
