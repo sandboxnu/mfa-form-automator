@@ -16,6 +16,7 @@ import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { UserEntity } from '../auth/entities/user.entity';
 import { PostmarkService } from '@server/postmark/postmark.service';
+import { log } from 'console';
 
 @Injectable()
 export class FormInstancesService {
@@ -108,8 +109,7 @@ export class FormInstancesService {
         },
       },
     });
-    //FIXME
-    this.postmarkService.sendEmail;
+    this.postmarkService.sendEmail();
     return newFormInstance;
   }
 
@@ -335,8 +335,10 @@ export class FormInstancesService {
           signatures: { include: { signerPosition: true, userSignedBy: true } },
         },
       });
+      this.postmarkService.sendEmail();
     }
 
+    this.postmarkService.sendEmail();
     return updatedFormInstance;
   }
 
@@ -383,6 +385,7 @@ export class FormInstancesService {
       data: { markedCompleted: true, markedCompletedAt: new Date() },
     });
 
+    this.postmarkService.sendEmail();
     return updatedFormInstance;
   }
 }

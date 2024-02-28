@@ -1,4 +1,5 @@
 import {
+    ConsoleLogger,
     Injectable,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -18,9 +19,11 @@ export class PostmarkService {
             'From': 'jfrederick@mfa.org',
             'To': 'weigl.a@northeastern.edu',
             'Subject': 'Hello from Postmark',
-            'HtmlBody': '<strong>Hello < /strong> dear Postmark user.',
+           // 'HtmlBody': '<strong>Hello < /strong> dear Postmark user.',
             'TextBody': 'Hello from Postmark!',
             'MessageStream': 'outbound'
         });
+        console.log('email sent');
+        
     }
 }
