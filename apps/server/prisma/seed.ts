@@ -238,7 +238,7 @@ async function main() {
       id: '339cf78e-d13f-4069-b1f7-dee0c64afb31',
       firstName: 'Kai',
       lastName: 'Zheng',
-      email: 'email2@gmail.com',
+      email: 'zheng.kaiy@northeastern.edu',
       positionId: CHIEF_FIN_OFFICER_UUID,
     },
     {

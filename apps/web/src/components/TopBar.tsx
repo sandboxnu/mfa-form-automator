@@ -1,6 +1,5 @@
 import {
   Box,
-  Hide,
   IconButton,
   Text,
   Flex,
@@ -12,16 +11,23 @@ import {
   Divider,
 } from '@chakra-ui/react';
 import {
-  DropdownDownArrow,
-  DropdownUpArrow,
   MFALogoIcon,
   SignoutIcon,
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
+import { useSession, signOut } from 'next-auth/react';
+import { useEffect } from 'react';
 
 export const TopBar: React.FC = () => {
   const { user, logout } = useAuth();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (!session) {
+      logout();
+    }
+  }, [session]);
 
   return (
     <Flex
@@ -86,7 +92,7 @@ export const TopBar: React.FC = () => {
                     </Text>
                   </Box>
                   <Divider />
-                  <button onClick={logout}>
+                  <button onClick={() => signOut()}>
                     <Flex align="center">
                       <Text
                         color="#4C658A"

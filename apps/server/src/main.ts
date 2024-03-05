@@ -22,7 +22,7 @@ async function bootstrap() {
     });
   }
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
 
   const config = new DocumentBuilder()
     .setTitle('MFA Form Automator API')
