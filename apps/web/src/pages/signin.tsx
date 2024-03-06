@@ -1,20 +1,10 @@
 import { Button, Box } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 import { MFALogoIcon } from '@web/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
-import { useSession, signIn, signOut } from 'next-auth/react';
 
 export default function Signin() {
-  const { login } = useAuth();
-  const { data: session } = useSession();
-
-  useEffect(() => {
-    if (session) {
-      const email = session?.user?.email as string;
-      login(email, 'password');
-    }
-  }, [session]);
+  const { session, signIn, signOut } = useAuth();
 
   if (!session) {
     return (

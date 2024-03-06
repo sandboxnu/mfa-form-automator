@@ -228,6 +228,13 @@ async function main() {
   // employees
   const employees = [
     {
+      id: '80ea2a92-cc4a-4962-b2ab-f3d512e90f40',
+      firstName: 'Test',
+      lastName: 'Employee',
+      email: 'email1@kaiyangzhenggmail.onmicrosoft.com',
+      positionId: CHIEF_OF_STAFF_UUID,
+    },
+    {
       id: '777c1974-3104-4744-ae31-7a9296e7784a',
       firstName: 'Helen',
       lastName: 'Miao',

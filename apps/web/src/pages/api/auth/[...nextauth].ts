@@ -71,6 +71,10 @@ export const authOptions = {
       session.user.groups = token.groups;
       session.user.username = token.username;
 
+      if (!session.user.email) {
+        session.user.email = token.username;
+      }
+
       const splittedName = session.user.name.split(' ');
       session.user.firstName = splittedName.length > 0 ? splittedName[0] : null;
       session.user.lastName = splittedName.length > 1 ? splittedName[1] : null;

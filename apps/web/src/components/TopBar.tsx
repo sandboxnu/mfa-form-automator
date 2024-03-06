@@ -16,18 +16,9 @@ import {
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
-import { useSession, signOut } from 'next-auth/react';
-import { useEffect } from 'react';
 
 export const TopBar: React.FC = () => {
-  const { user, logout } = useAuth();
-  const { data: session } = useSession();
-
-  useEffect(() => {
-    if (!session) {
-      logout();
-    }
-  }, [session]);
+  const { user, signOut } = useAuth();
 
   return (
     <Flex
