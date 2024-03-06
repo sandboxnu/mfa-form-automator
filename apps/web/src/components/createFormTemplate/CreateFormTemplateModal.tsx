@@ -24,7 +24,7 @@ import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
-import { useStorage } from '@web/hooks/useStorage';
+import storage from '@web/services/storage.service';
 
 const variants = {
   notDragging: {
@@ -58,7 +58,6 @@ export const CreateFormTemplateModal = ({
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const toast = useToast();
-  const { uploadBlob } = useStorage();
 
   const createFormTemplateMutation = useMutation({
     mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
@@ -87,7 +86,9 @@ export const CreateFormTemplateModal = ({
   };
 
   const submitFormTemplate = async () => {
-    if (!pdfFile) return;
+    if (!pdfFile) {
+      throw new Error('No PDF file uploaded');
+    }
     const uuid = uuidv4();
     createFormTemplateMutation
       .mutateAsync({
@@ -101,13 +102,13 @@ export const CreateFormTemplateModal = ({
         }),
       })
       .then(async (response) => {
+        handleModalClose();
         if (pdfFile) {
-          await uploadBlob(
+          await storage.uploadBlob(
             pdfFile,
             response.name.replaceAll(' ', '_') + '_' + uuid,
           );
         }
-        handleModalClose();
         return response;
       })
       .catch((e) => {

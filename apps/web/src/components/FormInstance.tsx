@@ -32,8 +32,7 @@ const FormInstance = ({
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
-  const { downloadBlob } = useStorage();
-  const [formInstanceBlob, setFormInstanceBlob] = useState<Blob | null>(null);
+  const { formBlob } = useStorage(formInstance);
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
@@ -89,22 +88,6 @@ const FormInstance = ({
 
     router.push('/');
   };
-
-  function isValidURL(formDocLink: string) {
-    var urlPattern = /^(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?$/;
-    return urlPattern.test(formDocLink);
-  }
-
-  useEffect(() => {
-    async function getBlob() {
-      const blob = (await downloadBlob(formInstance?.formDocLink!)) as Blob;
-      const arrayBuffer = await blob.arrayBuffer();
-      setFormInstanceBlob(new Blob([arrayBuffer], { type: 'application/pdf' }));
-    }
-    if (formInstance) {
-      getBlob();
-    }
-  }, [formInstance]);
 
   return (
     <Box className="main">
@@ -203,9 +186,9 @@ const FormInstance = ({
             Form Preview
           </Text>
 
-          {formInstanceBlob ? (
+          {formBlob ? (
             <embed
-              src={URL.createObjectURL(formInstanceBlob!)}
+              src={URL.createObjectURL(formBlob!)}
               type="application/pdf"
               width="400px"
               height="500px"
