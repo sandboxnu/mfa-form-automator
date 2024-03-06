@@ -24,6 +24,7 @@ import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
+import { useStorage } from '@web/hooks/useStorage';
 
 const variants = {
   notDragging: {
@@ -54,8 +55,10 @@ export const CreateFormTemplateModal = ({
 
   const [pdf, setPdf] = useState<string | ArrayBuffer | null>(null);
   const [pdfName, setPdfName] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const toast = useToast();
+  const { uploadBlob } = useStorage();
 
   const createFormTemplateMutation = useMutation({
     mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
@@ -83,11 +86,22 @@ export const CreateFormTemplateModal = ({
     setSignatureFields(tempSignatureFields);
   };
 
-  const submitFormTemplate = async () =>
+  const submitFormTemplate = async () => {
+    if (!pdfFile) return;
+    const uuid = uuidv4();
+    console.log(
+      `https://mfastorage.blob.core.windows.net/forms/${pdfFile.name.replace(
+        ' ',
+        '%20',
+      )}_${uuid}`,
+    );
     createFormTemplateMutation
       .mutateAsync({
         name: formTemplateName,
-        formDocLink: 'mfa.org',
+        formDocLink: `https://mfastorage.blob.core.windows.net/forms/${pdfFile.name.replace(
+          ' ',
+          '_',
+        )}_${uuid}`,
         signatureFields: signatureFields.map((signatureField, i) => {
           return {
             name: signatureField.value,
@@ -95,13 +109,21 @@ export const CreateFormTemplateModal = ({
           };
         }),
       })
-      .then((response) => {
+      .then(async (response) => {
+        if (pdfFile) {
+          await uploadBlob(
+            pdfFile,
+            response.name.replace(' ', '_') + '_' + uuid,
+          );
+        }
         handleModalClose();
         return response;
       })
       .catch((e) => {
         throw e;
+        console.log(e);
       });
+  };
 
   const handleModalClose = () => {
     setFormTemplateName('New Form Template');
@@ -120,6 +142,7 @@ export const CreateFormTemplateModal = ({
       const url = URL.createObjectURL(file);
       setPdf(url);
       setPdfName(file.name);
+      setPdfFile(file);
     } catch (e) {
       console.error(e);
     }
