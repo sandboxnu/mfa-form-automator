@@ -10,5 +10,12 @@ export const useStorage = () => {
     await blockBlobClient.uploadData(file);
   }
 
+  async function downloadBlob(blobLink: string) {
+    const blockBlobClient = blobServiceClient.getBlockBlobClient(blobLink);
+    const downloadBlockBlobResponse = await blockBlobClient.download(0);
+    const blob = await downloadBlockBlobResponse.blobBody;
+    return blob;
+  }
+
   return { uploadBlob };
 };
