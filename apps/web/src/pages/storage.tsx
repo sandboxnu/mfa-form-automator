@@ -11,7 +11,7 @@ export default function Storage() {
       <input
         type="file"
         onChange={(e) => {
-          const file = e.target.files[0];
+          const file = e.target.files?.[0];
           if (file) {
             uploadBlob(file);
           }
