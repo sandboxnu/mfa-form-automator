@@ -15,12 +15,13 @@ import {
   EditUnderlineIcon,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
+import { useStorage } from '@web/hooks/useStorage';
 
 const FormInstance = ({
   formInstance,
@@ -31,6 +32,8 @@ const FormInstance = ({
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
+  const { downloadBlob } = useStorage();
+  const [formInstanceBlob, setFormInstanceBlob] = useState<Blob | null>(null);
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
@@ -91,6 +94,17 @@ const FormInstance = ({
     var urlPattern = /^(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?$/;
     return urlPattern.test(formDocLink);
   }
+
+  useEffect(() => {
+    async function getBlob() {
+      const blob = (await downloadBlob(formInstance?.formDocLink!)) as Blob;
+      const arrayBuffer = await blob.arrayBuffer();
+      setFormInstanceBlob(new Blob([arrayBuffer], { type: 'application/pdf' }));
+    }
+    if (formInstance) {
+      getBlob();
+    }
+  }, [formInstance]);
 
   return (
     <Box className="main">
@@ -189,9 +203,9 @@ const FormInstance = ({
             Form Preview
           </Text>
 
-          {formInstance.formDocLink && isValidURL(formInstance.formDocLink) ? (
+          {formInstanceBlob ? (
             <embed
-              src={formInstance.formDocLink}
+              src={URL.createObjectURL(formInstanceBlob!)}
               type="application/pdf"
               width="400px"
               height="500px"

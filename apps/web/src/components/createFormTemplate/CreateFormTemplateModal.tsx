@@ -89,19 +89,10 @@ export const CreateFormTemplateModal = ({
   const submitFormTemplate = async () => {
     if (!pdfFile) return;
     const uuid = uuidv4();
-    console.log(
-      `https://mfastorage.blob.core.windows.net/forms/${pdfFile.name.replace(
-        ' ',
-        '%20',
-      )}_${uuid}`,
-    );
     createFormTemplateMutation
       .mutateAsync({
         name: formTemplateName,
-        formDocLink: `https://mfastorage.blob.core.windows.net/forms/${pdfFile.name.replace(
-          ' ',
-          '_',
-        )}_${uuid}`,
+        formDocLink: formTemplateName.replaceAll(' ', '_') + '_' + uuid,
         signatureFields: signatureFields.map((signatureField, i) => {
           return {
             name: signatureField.value,
@@ -113,7 +104,7 @@ export const CreateFormTemplateModal = ({
         if (pdfFile) {
           await uploadBlob(
             pdfFile,
-            response.name.replace(' ', '_') + '_' + uuid,
+            response.name.replaceAll(' ', '_') + '_' + uuid,
           );
         }
         handleModalClose();

@@ -14,8 +14,9 @@ export const useStorage = () => {
     const blockBlobClient = blobServiceClient.getBlockBlobClient(blobLink);
     const downloadBlockBlobResponse = await blockBlobClient.download(0);
     const blob = await downloadBlockBlobResponse.blobBody;
+    console.log(blob);
     return blob;
   }
 
-  return { uploadBlob };
+  return { uploadBlob, downloadBlob };
 };

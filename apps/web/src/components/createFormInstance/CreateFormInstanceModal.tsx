@@ -33,6 +33,7 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
+import { useStorage } from '@web/hooks/useStorage';
 
 // TODO
 // fix form type dropdown bug
@@ -42,9 +43,12 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   onClose,
 }) => {
   const { user } = useAuth();
+  const { downloadBlob } = useStorage();
   const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
   const [selectedFormTemplate, setSelectedFormTemplate] =
     useState<FormTemplateEntity | null>(null);
+  const [formTemplateBlob, setFormTemplateBlob] = useState<Blob | null>(null);
+
   const [formTypeSelected, setFormTypeSelected] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
@@ -77,6 +81,19 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     setSignaturePositions(
       new Array(selectedFormTemplate?.signatureFields.length).fill(null),
     );
+  }, [selectedFormTemplate]);
+
+  useEffect(() => {
+    async function getBlob() {
+      const blob = (await downloadBlob(
+        selectedFormTemplate?.formDocLink!,
+      )) as Blob;
+      const arrayBuffer = await blob.arrayBuffer();
+      setFormTemplateBlob(new Blob([arrayBuffer], { type: 'application/pdf' }));
+    }
+    if (selectedFormTemplate) {
+      getBlob();
+    }
   }, [selectedFormTemplate]);
 
   const submitFormInstance = async () => {
@@ -218,9 +235,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
               {!selectedFormTemplate && (
                 <Skeleton h="518px" background="gray" marginTop="12px" />
               )}
-              {selectedFormTemplate && (
+              {formTemplateBlob && !isFormTypeDropdownOpen && (
                 <embed
-                  src={selectedFormTemplate.formDocLink}
+                  src={URL.createObjectURL(formTemplateBlob!)}
                   type="application/pdf"
                   width="400px"
                   height="500px"
