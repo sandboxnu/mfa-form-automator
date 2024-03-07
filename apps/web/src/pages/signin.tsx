@@ -37,5 +37,17 @@ export default function Signin() {
         </Flex>
       </>
     );
+  } else {
+    return (
+      <>
+        <Flex
+          justifyContent={'center'}
+          marginTop={'168px'}
+          marginBottom={'100px'}
+        >
+          <button onClick={signOut}>Sign Out</button>
+        </Flex>
+      </>
+    );
   }
 }
