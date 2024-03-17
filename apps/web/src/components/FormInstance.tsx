@@ -8,11 +8,14 @@ import {
   Spacer,
   useToast,
   Heading,
+  Avatar,
 } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
   PencilIcon,
   EditUnderlineIcon,
+  CheckIcon,
+  UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
 import { useState } from 'react';
@@ -223,6 +226,39 @@ const FormInstance = ({
           justifyContent={'flex-start'}
           maxWidth="370px"
         >
+          <Text
+            color="#000"
+            fontSize="20px"
+            fontWeight="700"
+            lineHeight="normal"
+            marginBottom="15px"
+          >
+            Assigned by
+          </Text>
+          <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+            <UserProfileAvatar
+              firstName={formInstance.originator.firstName}
+              lastName={formInstance.originator.lastName}
+            />
+            <Box minWidth="240px" marginBottom="125px">
+              <Flex width="100%" flexDirection="column">
+                <Text
+                  color="#5E5E5E"
+                  fontFamily="Hanken Grotesk"
+                  fontSize="16px"
+                  fontStyle="normal"
+                  fontWeight="400"
+                  lineHeight="normal"
+                  style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
+                >
+                  {formInstance.originator.firstName +
+                    ' ' +
+                    formInstance.originator.lastName}
+                </Text>
+              </Flex>
+            </Box>
+          </Grid>
+
           <Text
             color="#000"
             fontSize="20px"
