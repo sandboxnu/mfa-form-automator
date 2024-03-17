@@ -22,7 +22,7 @@ export class PositionsService {
     ): CancelablePromise<PositionEntity> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/positions',
+            url: '/api/v1/positions',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -43,7 +43,7 @@ export class PositionsService {
     ): CancelablePromise<Array<PositionEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/positions',
+            url: '/api/v1/positions',
             query: {
                 'limit': limit,
             },
@@ -64,7 +64,7 @@ export class PositionsService {
     ): CancelablePromise<PositionEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/positions/{id}',
+            url: '/api/v1/positions/{id}',
             path: {
                 'id': id,
             },
@@ -88,7 +88,7 @@ export class PositionsService {
     ): CancelablePromise<PositionEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/positions/{id}',
+            url: '/api/v1/positions/{id}',
             path: {
                 'id': id,
             },
@@ -113,7 +113,7 @@ export class PositionsService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/positions/{id}',
+            url: '/api/v1/positions/{id}',
             path: {
                 'id': id,
             },

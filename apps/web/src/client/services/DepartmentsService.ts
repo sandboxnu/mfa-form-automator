@@ -22,7 +22,7 @@ export class DepartmentsService {
     ): CancelablePromise<DepartmentEntity> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/departments',
+            url: '/api/v1/departments',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -43,7 +43,7 @@ export class DepartmentsService {
     ): CancelablePromise<Array<DepartmentEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/departments',
+            url: '/api/v1/departments',
             query: {
                 'limit': limit,
             },
@@ -64,7 +64,7 @@ export class DepartmentsService {
     ): CancelablePromise<DepartmentEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/departments/{id}',
+            url: '/api/v1/departments/{id}',
             path: {
                 'id': id,
             },
@@ -88,7 +88,7 @@ export class DepartmentsService {
     ): CancelablePromise<DepartmentEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/departments/{id}',
+            url: '/api/v1/departments/{id}',
             path: {
                 'id': id,
             },
@@ -113,7 +113,7 @@ export class DepartmentsService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/departments/{id}',
+            url: '/api/v1/departments/{id}',
             path: {
                 'id': id,
             },

@@ -10,36 +10,58 @@ import theme from '../styles/theme';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from './../context/AuthContext';
 import { OpenAPI } from '@web/client';
+import { SessionProvider } from 'next-auth/react';
 
 export const queryClient = new QueryClient();
 
-export default function App({ Component, pageProps, ...appProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+  ...appProps
+}: AppProps) {
   OpenAPI.CREDENTIALS = 'include';
   OpenAPI.WITH_CREDENTIALS = true;
 
   const excludeLayoutPaths = ['/signin'];
+  const authTestingPaths = ['/auth'];
 
-  if (excludeLayoutPaths.includes(appProps.router.pathname)) {
+  if (authTestingPaths.includes(appProps.router.pathname)) {
     return (
-      <AuthProvider>
+      <SessionProvider session={session}>
         <QueryClientProvider client={queryClient}>
           <ChakraProvider theme={theme}>
             <Component {...pageProps} />
           </ChakraProvider>
         </QueryClientProvider>
-      </AuthProvider>
+      </SessionProvider>
+    );
+  }
+
+  if (excludeLayoutPaths.includes(appProps.router.pathname)) {
+    return (
+      <SessionProvider session={session}>
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <ChakraProvider theme={theme}>
+              <Component {...pageProps} />
+            </ChakraProvider>
+          </QueryClientProvider>
+        </AuthProvider>
+      </SessionProvider>
     );
   }
 
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
-        <ChakraProvider theme={theme}>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ChakraProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+    <SessionProvider session={session}>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <ChakraProvider theme={theme}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ChakraProvider>
+        </QueryClientProvider>
+      </AuthProvider>
+    </SessionProvider>
   );
 }
