@@ -11,6 +11,7 @@ import {
   ModalOverlay,
   useToast,
   Skeleton,
+  Heading,
   ModalHeader,
   Flex,
   Input,
@@ -131,9 +132,7 @@ export const CreateFormTemplateModal = ({
       <ModalContent minWidth="936px" minHeight="761px" padding="20px">
         <ModalCloseButton />
         <ModalHeader>
-          <Text fontWeight="800" fontSize="27px">
-            Create Form Template
-          </Text>
+          <Heading as="h1">Create Form Template</Heading>
         </ModalHeader>
         <ModalBody>
           <Flex gap="30px">
@@ -148,6 +147,8 @@ export const CreateFormTemplateModal = ({
                   onChange={(e) => setFormTemplateName(e.target.value)}
                   placeholder="Form Name"
                   fontSize="16px"
+                  paddingLeft="11px"
+                  paddingRight="11px"
                   fontWeight="400px"
                   width="386px"
                   height="40px"

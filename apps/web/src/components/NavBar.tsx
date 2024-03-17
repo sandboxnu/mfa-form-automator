@@ -6,6 +6,7 @@ import {
   Spacer,
   MenuButton,
   Menu,
+  Text,
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
@@ -72,7 +73,7 @@ const NavItem = ({
           transition=".15s ease"
         >
           {icons[icon as keyof typeof icons]}
-          {children}
+          <Text className="p1">{children}</Text>
         </Flex>
       </Box>
     </Link>

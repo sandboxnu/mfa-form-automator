@@ -57,9 +57,9 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 ) : (
                   <Text
                     color="#5E5E5E"
-                    fontSize="16px"
                     fontStyle="italic"
                     style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
+                    className="p3"
                   >
                     Pending Signature
                   </Text>
