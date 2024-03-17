@@ -258,7 +258,6 @@ const FormInstance = ({
                 <Spacer />
                 <Box pl="350px">
                   <Button
-                    borderRadius="8px"
                     width="111px"
                     height="40px"
                     onClick={async (_) => {
