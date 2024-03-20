@@ -138,9 +138,7 @@ export const CreateFormTemplateModal = ({
           <Flex gap="30px">
             <Box flex="1">
               <Box>
-                <Text fontSize="17px" fontWeight="700">
-                  Form Name
-                </Text>
+                <Heading as="h3">Form Name</Heading>
                 <Input
                   value={formTemplateName}
                   isInvalid={isFormTemplateNameInvalid}
@@ -156,9 +154,7 @@ export const CreateFormTemplateModal = ({
                 />
               </Box>
               <Box mt="35px">
-                <Text fontSize="17px" fontWeight="700">
-                  Upload Form
-                </Text>
+                <Heading as="h3">Upload Form</Heading>
                 <Flex alignItems={'center'} mt="16px">
                   <label
                     htmlFor="pdfInput"
@@ -213,9 +209,7 @@ export const CreateFormTemplateModal = ({
                 </Flex>
               </Box>
               <Box mt="35px">
-                <Text fontSize="17px" fontWeight="700">
-                  Add Signature Fields
-                </Text>
+                <Heading as="h3">Add Signature Fields</Heading>
                 <Text fontSize="15px" fontWeight="400" mt="14px">
                   Enter the role titles of employees that will need to sign this
                   form, and set the order it will be signed in.
@@ -284,9 +278,7 @@ export const CreateFormTemplateModal = ({
               </Box>
             </Box>
             <Box flex="1">
-              <Text fontSize="17px" fontWeight="700">
-                Form Preview
-              </Text>
+              <Heading as="h3">Form Preview</Heading>
               {!pdf && (
                 <Skeleton mt="16px" w="400px" h="500px" background="gray" />
               )}
