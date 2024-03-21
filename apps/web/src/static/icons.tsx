@@ -87,8 +87,8 @@ export const UserProfileAvatar: React.FC<UserProfileAvatarProps> = ({
 }) => {
   return (
     <Avatar
-      bg="#4C658A"
-      color="white"
+      bg="#E5E5E5"
+      color="black"
       name={`${firstName} ${lastName}`}
       size="sm"
     ></Avatar>
