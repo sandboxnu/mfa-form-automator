@@ -235,38 +235,45 @@ const FormInstance = ({
           >
             Assigned by
           </Text>
-          <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+          {/* <Grid templateColumns="repeat(3, 1fr)" gap={4}> */}
+          <Flex alignItems="center" flexDirection="row" marginBottom="50px">
             <UserProfileAvatar
               firstName={formInstance.originator.firstName}
               lastName={formInstance.originator.lastName}
             />
-            <Box minWidth="240px" marginBottom="125px">
-              <Flex width="100%" flexDirection="column">
-                <Text
-                  color="#5E5E5E"
-                  fontFamily="Hanken Grotesk"
-                  fontSize="16px"
-                  fontStyle="normal"
-                  fontWeight="400"
-                  lineHeight="normal"
-                  style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
-                >
-                  {formInstance.originator.firstName +
-                    ' ' +
-                    formInstance.originator.lastName}
-                </Text>
-              </Flex>
+            <Box minWidth="350px" marginLeft="10px">
+              <Text
+                color="#5E5E5E"
+                fontFamily="Hanken Grotesk"
+                fontSize="16px"
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                {formInstance.originator.firstName +
+                  ' ' +
+                  formInstance.originator.lastName}{' '}
+              </Text>
             </Box>
-          </Grid>
+          </Flex>
+          {/* </Grid> */}
 
-          <Text
-            color="#000"
-            fontSize="20px"
-            fontWeight="700"
-            lineHeight="normal"
+          <Flex
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            Assignees
-          </Text>
+            <Text color="#000" fontSize="20px" fontWeight="700">
+              Assignees
+            </Text>
+            <Flex alignItems="center">
+              <PencilIcon mr={1} />
+              <Text
+                color="#000"
+                style={{ fontSize: '18px', textDecoration: 'none' }}
+              >
+                Edit
+              </Text>
+            </Flex>
+          </Flex>
           <AssigneeMap
             assignees={formInstance.signatures.map((signature) => ({
               name: signature.userSignedBy
