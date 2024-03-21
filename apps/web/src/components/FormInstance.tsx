@@ -235,26 +235,29 @@ const FormInstance = ({
           >
             Assigned by
           </Text>
-          {/* <Grid templateColumns="repeat(3, 1fr)" gap={4}> */}
           <Flex alignItems="center" flexDirection="row" marginBottom="50px">
             <UserProfileAvatar
               firstName={formInstance.originator.firstName}
               lastName={formInstance.originator.lastName}
             />
-            <Box minWidth="350px" marginLeft="10px">
+            <Box minWidth="250px" marginLeft="10px">
               <Text
-                color="#5E5E5E"
+                color="#000"
                 fontFamily="Hanken Grotesk"
                 fontSize="16px"
                 style={{ whiteSpace: 'nowrap' }}
+                fontWeight="500"
               >
                 {formInstance.originator.firstName +
                   ' ' +
+                  // Need to check if the formInstance originator name matches the person logged in
                   formInstance.originator.lastName}{' '}
               </Text>
             </Box>
+            <Text color="#515151" fontWeight="400">
+              {new Date(formInstance.createdAt).toLocaleDateString()}
+            </Text>
           </Flex>
-          {/* </Grid> */}
 
           <Flex
             flexDirection="row"
@@ -265,9 +268,9 @@ const FormInstance = ({
               Assignees
             </Text>
             <Flex alignItems="center">
-              <PencilIcon mr={1} />
+              <PencilIcon color="#4C658A" mr={1} />
               <Text
-                color="#000"
+                color="#4C658A"
                 style={{ fontSize: '18px', textDecoration: 'none' }}
               >
                 Edit
