@@ -22,14 +22,14 @@ export const FormCard = ({
         minH="120px"
         borderRadius="5px"
         backgroundColor="#FFFFFF"
-        boxShadow="0px 0.5px 3px 1px #D4D4D4"
+        boxShadow="0px 0.5px 3px 1px #DCDCDC"
         background="#FCFCFC"
         cursor="pointer"
         onClick={() => {
           router.push(link);
         }}
         _hover={{
-          boxShadow: '0px 0.5px 6px 1px #D4D4D4',
+          boxShadow: '0px 0.5px 6px 1px #DCDCDC',
         }}
       >
         <Box padding="24px" paddingBottom="27px" paddingTop="27px">

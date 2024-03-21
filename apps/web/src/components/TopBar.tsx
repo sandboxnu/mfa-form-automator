@@ -60,13 +60,11 @@ export const TopBar: React.FC = () => {
                           <UserProfileAvatar
                             firstName={user.firstName}
                             lastName={user.lastName}
-                            boxSize={7}
                           />
                         ) : (
                           <UserProfileAvatar
                             firstName="Default"
                             lastName="User"
-                            boxSize={7}
                           />
                         )
                       }
