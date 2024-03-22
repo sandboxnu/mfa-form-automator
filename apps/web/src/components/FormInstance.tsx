@@ -8,11 +8,14 @@ import {
   Spacer,
   useToast,
   Heading,
+  Avatar,
 } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
   PencilIcon,
   EditUnderlineIcon,
+  CheckIcon,
+  UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
 import { useState } from 'react';
@@ -210,9 +213,69 @@ const FormInstance = ({
           justifyContent={'flex-start'}
           maxWidth="370px"
         >
-          <Heading as="h2" color="#000" lineHeight="normal">
-            Assignees
-          </Heading>
+          <Text
+            color="#000"
+            fontSize="20px"
+            fontWeight="700"
+            lineHeight="normal"
+            marginBottom="15px"
+          >
+            Assigned by
+          </Text>
+          <Flex alignItems="center" flexDirection="row" marginBottom="50px">
+            <UserProfileAvatar
+              firstName={formInstance.originator.firstName}
+              lastName={formInstance.originator.lastName}
+            />
+            <Box minWidth="262px" marginLeft="10px">
+              <Text
+                color="#000"
+                fontFamily="Hanken Grotesk"
+                fontSize="16px"
+                style={{ whiteSpace: 'nowrap' }}
+                fontWeight="500"
+              >
+                {formInstance.originator.firstName +
+                  ' ' +
+                  formInstance.originator.lastName}{' '}
+                {formInstance.originator.id === user?.id && (
+                  <Text
+                    color="#515151"
+                    fontFamily="Hanken Grotesk"
+                    fontSize="16px"
+                    fontWeight="500"
+                    style={{ display: 'inline' }}
+                  >
+                    (you)
+                  </Text>
+                )}
+              </Text>
+            </Box>
+            <Text color="#515151" fontWeight="400">
+              {new Date(formInstance.createdAt).toLocaleDateString()}
+            </Text>
+          </Flex>
+
+          <Box minWidth="380px">
+            <Flex
+              flexDirection="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Text color="#000" fontSize="20px" fontWeight="700">
+                Assignees
+              </Text>
+              <Flex alignItems="center">
+                <PencilIcon color="#4C658A" mr={1} />
+                <Text
+                  color="#4C658A"
+                  style={{ fontSize: '18px', textDecoration: 'none' }}
+                >
+                  Edit
+                </Text>
+              </Flex>
+            </Flex>
+          </Box>
           <AssigneeMap
             assignees={formInstance.signatures.map((signature) => ({
               name: signature.userSignedBy
@@ -222,6 +285,7 @@ const FormInstance = ({
                 : undefined,
               signed: signature.userSignedById ? true : false,
               title: signature.signerPosition.name,
+              updatedAt: signature.updatedAt,
             }))}
           />
           {_userCanSign && (
