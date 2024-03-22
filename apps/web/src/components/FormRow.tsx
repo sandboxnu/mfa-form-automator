@@ -34,7 +34,7 @@ export const FormRow = ({
         onClick={() => router.push(link)}
       >
         <GridItem colSpan={10} h="64px">
-          <Text pl="24px" pt="20px">
+          <Text pl="24px" pt="20px" fontWeight="bold">
             {formInstance.name}
           </Text>
         </GridItem>

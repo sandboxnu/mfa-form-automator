@@ -11,6 +11,7 @@ import {
   ModalOverlay,
   useToast,
   Skeleton,
+  Heading,
   ModalHeader,
   Flex,
   Input,
@@ -146,23 +147,21 @@ export const CreateFormTemplateModal = ({
       <ModalContent minWidth="936px" minHeight="761px" padding="20px">
         <ModalCloseButton />
         <ModalHeader>
-          <Text fontWeight="800" fontSize="27px">
-            Create Form Template
-          </Text>
+          <Heading as="h1">Create Form Template</Heading>
         </ModalHeader>
         <ModalBody>
           <Flex gap="30px">
             <Box flex="1">
               <Box>
-                <Text fontSize="17px" fontWeight="700">
-                  Form Name
-                </Text>
+                <Heading as="h3">Form Name</Heading>
                 <Input
                   value={formTemplateName}
                   isInvalid={isFormTemplateNameInvalid}
                   onChange={(e) => setFormTemplateName(e.target.value)}
                   placeholder="Form Name"
                   fontSize="16px"
+                  paddingLeft="11px"
+                  paddingRight="11px"
                   fontWeight="400px"
                   width="386px"
                   height="40px"
@@ -170,9 +169,7 @@ export const CreateFormTemplateModal = ({
                 />
               </Box>
               <Box mt="35px">
-                <Text fontSize="17px" fontWeight="700">
-                  Upload Form
-                </Text>
+                <Heading as="h3">Upload Form</Heading>
                 <Flex alignItems={'center'} mt="16px">
                   <label
                     htmlFor="pdfInput"
@@ -227,9 +224,7 @@ export const CreateFormTemplateModal = ({
                 </Flex>
               </Box>
               <Box mt="35px">
-                <Text fontSize="17px" fontWeight="700">
-                  Add Signature Fields
-                </Text>
+                <Heading as="h3">Add Signature Fields</Heading>
                 <Text fontSize="15px" fontWeight="400" mt="14px">
                   Enter the role titles of employees that will need to sign this
                   form, and set the order it will be signed in.
@@ -298,9 +293,7 @@ export const CreateFormTemplateModal = ({
               </Box>
             </Box>
             <Box flex="1">
-              <Text fontSize="17px" fontWeight="700">
-                Form Preview
-              </Text>
+              <Heading as="h3">Form Preview</Heading>
               {!pdf && (
                 <Skeleton mt="16px" w="400px" h="500px" background="gray" />
               )}
