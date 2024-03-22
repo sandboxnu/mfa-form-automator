@@ -222,7 +222,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
               {!selectedFormTemplate && (
                 <Skeleton h="518px" background="gray" marginTop="12px" />
               )}
-              {formBlob && !isFormTypeDropdownOpen && (
+              {formBlob && selectedFormTemplate && (
                 <embed
                   src={URL.createObjectURL(formBlob!)}
                   type="application/pdf"
