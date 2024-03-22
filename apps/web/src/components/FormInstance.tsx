@@ -14,11 +14,10 @@ import {
   LeftArrowIcon,
   PencilIcon,
   EditUnderlineIcon,
-  CheckIcon,
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
@@ -35,7 +34,7 @@ const FormInstance = ({
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
-  const { formBlob } = useStorage(formInstance);
+  const { mockBlob: formBlob } = useStorage(formInstance);
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({

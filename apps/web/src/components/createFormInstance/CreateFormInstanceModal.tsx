@@ -34,7 +34,6 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
-import storage from '@web/services/storage.service';
 import { useStorage } from '@web/hooks/useStorage';
 
 // TODO
@@ -48,7 +47,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
   const [selectedFormTemplate, setSelectedFormTemplate] =
     useState<FormTemplateEntity | null>(null);
-  const { formBlob } = useStorage(selectedFormTemplate);
+  const { mockBlob: formBlob } = useStorage(selectedFormTemplate);
   const [formTypeSelected, setFormTypeSelected] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
