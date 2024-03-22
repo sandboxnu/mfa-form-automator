@@ -6,6 +6,7 @@ import {
   Spacer,
   MenuButton,
   Menu,
+  Text,
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
@@ -32,6 +33,16 @@ const icons = {
   formInstance: <FormInstanceIcon marginRight="2" />,
 };
 
+// const coloredIcons = {
+//   overview: <OverViewIcon marginRight="2" color="#263345" />,
+//   todo: <ToDoIcon marginRight="2" color="#263345" />,
+//   pending: <PendingIcon marginRight="2" color="#263345" />,
+//   completed: <CompletedIcon marginRight="2" color="#263345" />,
+//   history: <HistoryIcon marginRight="2" color={'263345'} />,
+//   settings: <SettingsIcon marginRight="2" color="#263345" />,
+//   formInstance: <FormInstanceIcon marginRight="2" color="#263345" />,
+// };
+
 // navigation item abstraction to include the Link and styling
 const NavItem = ({
   children,
@@ -55,7 +66,6 @@ const NavItem = ({
           py="2"
           rounded="8px"
           cursor="pointer"
-          color="inherit"
           _dark={{
             color: 'gray.400',
           }}
@@ -65,14 +75,20 @@ const NavItem = ({
           }}
           style={{
             fontWeight: isActive ? '800' : 'normal',
+            color: isActive ? '#263345' : 'inherit',
           }}
           bg={isActive ? '#EFEFEF' : 'white'}
           role="group"
-          fontWeight="semibold"
           transition=".15s ease"
         >
           {icons[icon as keyof typeof icons]}
-          {children}
+          <Text
+            textColor={isActive ? '#263345 !important' : ''}
+            fontWeight={isActive ? 'bold !important' : 'inherit'}
+            className="p1"
+          >
+            {children}
+          </Text>
         </Flex>
       </Box>
     </Link>

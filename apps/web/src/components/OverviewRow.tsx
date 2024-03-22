@@ -1,4 +1,4 @@
-import { HStack, Flex, Box, Text } from '@chakra-ui/react';
+import { HStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
 import { FormCard } from './FormCard';
 import { RightArrowIcon } from 'apps/web/src/static/icons';
 import Link from 'next/link';
@@ -27,9 +27,7 @@ export const OverviewRow = ({
       <Box w={rowWidth}>
         <Flex justifyContent="space-between" alignItems="center">
           <Flex alignItems="center">
-            <Text fontSize="22px" fontWeight="800">
-              {title}
-            </Text>
+            <Heading as="h2">{title}</Heading>
             <Flex
               marginLeft="13px"
               backgroundColor={color}

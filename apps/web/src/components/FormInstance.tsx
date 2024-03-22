@@ -157,24 +157,17 @@ const FormInstance = ({
           </Flex>
         </Button>
       </Flex>
-      <Text
+      <Heading
+        as="h2"
         color="#000"
-        fontSize="20px"
-        fontWeight="700"
         lineHeight="normal"
         my={4}
         ml="50px"
         mt={12}
       >
         Description
-      </Text>
-      <Text
-        color="#000"
-        fontSize="16px"
-        lineHeight="normal"
-        ml="50px"
-        maxW="450px"
-      >
+      </Heading>
+      <Text color="#000" lineHeight="normal" ml="50px" maxW="450px">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et
         imperdiet enim. Ut enim justo, tincidunt ac enim ut, mollis pulvinar
         neque. Suspendisse id semper nunc.
@@ -182,15 +175,9 @@ const FormInstance = ({
 
       <Grid templateColumns="1fr 1fr" gap="100px" mt={20}>
         <Box>
-          <Text
-            color="#000"
-            fontSize="20px"
-            fontWeight="700"
-            lineHeight="normal"
-            ml="50px"
-          >
+          <Heading as="h2" color="#000" lineHeight="normal" ml="50px">
             Form Preview
-          </Text>
+          </Heading>
 
           {formInstance.formDocLink && isValidURL(formInstance.formDocLink) ? (
             <embed
@@ -335,7 +322,6 @@ const FormInstance = ({
                 <Spacer />
                 <Box pl="350px">
                   <Button
-                    borderRadius="8px"
                     width="111px"
                     height="40px"
                     onClick={async (_) => {
