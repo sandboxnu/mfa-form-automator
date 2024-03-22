@@ -22,17 +22,17 @@ export const FormCard = ({
         minH="120px"
         borderRadius="5px"
         backgroundColor="#FFFFFF"
-        boxShadow="0px 0.5px 3px 1px #D4D4D4"
+        boxShadow="0px 0.5px 3px 1px #DCDCDC"
         background="#FCFCFC"
         cursor="pointer"
         onClick={() => {
           router.push(link);
         }}
         _hover={{
-          boxShadow: '0px 0.5px 6px 1px #D4D4D4',
+          boxShadow: '0px 0.5px 6px 1px #DCDCDC',
         }}
       >
-        <Box padding="24px" paddingTop="26px">
+        <Box padding="24px" paddingBottom="27px" paddingTop="27px">
           <Text
             fontFamily="Hanken Grotesk"
             fontWeight={800}
@@ -42,7 +42,7 @@ export const FormCard = ({
             {formName}
           </Text>
           {/*Dummy values until userSignedBy fixed*/}
-          <AvatarGroup size="sm" max={5} marginTop="10px" spacing={'-3px'}>
+          <AvatarGroup size="sm" max={5} marginTop="9px" spacing={'-3px'}>
             {signatures
               .sort((a, b) => a.order - b.order)
               .map((signature: SignatureEntity, index: number) => {

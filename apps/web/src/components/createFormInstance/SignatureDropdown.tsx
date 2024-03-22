@@ -1,4 +1,4 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Heading, Text } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useState } from 'react';
@@ -50,9 +50,9 @@ export const SignatureDropdown = ({
 
   return (
     <Box w="100%">
-      <Text fontWeight="500" fontSize="16px" color="black" marginTop="40px">
+      <Heading as="h3" color="black" marginTop="40px" paddingBottom="6px">
         {field.name}
-      </Text>
+      </Heading>
       <Select
         useBasicStyles
         selectedOptionStyle="check"
