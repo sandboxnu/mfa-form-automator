@@ -34,6 +34,7 @@ const FormInstance = ({
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
+  console.log(user);
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
@@ -95,6 +96,7 @@ const FormInstance = ({
     return urlPattern.test(formDocLink);
   }
 
+  console.log(formInstance.originator.id, user?.id);
   return (
     <Box className="main">
       <Flex
@@ -240,7 +242,7 @@ const FormInstance = ({
               firstName={formInstance.originator.firstName}
               lastName={formInstance.originator.lastName}
             />
-            <Box minWidth="250px" marginLeft="10px">
+            <Box minWidth="262px" marginLeft="10px">
               <Text
                 color="#000"
                 fontFamily="Hanken Grotesk"
@@ -250,8 +252,18 @@ const FormInstance = ({
               >
                 {formInstance.originator.firstName +
                   ' ' +
-                  // Need to check if the formInstance originator name matches the person logged in
                   formInstance.originator.lastName}{' '}
+                {formInstance.originator.id === user?.id && (
+                  <Text
+                    color="#515151"
+                    fontFamily="Hanken Grotesk"
+                    fontSize="16px"
+                    fontWeight="500"
+                    style={{ display: 'inline' }}
+                  >
+                    (you)
+                  </Text>
+                )}
               </Text>
             </Box>
             <Text color="#515151" fontWeight="400">
@@ -259,24 +271,26 @@ const FormInstance = ({
             </Text>
           </Flex>
 
-          <Flex
-            flexDirection="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Text color="#000" fontSize="20px" fontWeight="700">
-              Assignees
-            </Text>
-            <Flex alignItems="center">
-              <PencilIcon color="#4C658A" mr={1} />
-              <Text
-                color="#4C658A"
-                style={{ fontSize: '18px', textDecoration: 'none' }}
-              >
-                Edit
+          <Box minWidth="380px">
+            <Flex
+              flexDirection="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Text color="#000" fontSize="20px" fontWeight="700">
+                Assignees
               </Text>
+              <Flex alignItems="center">
+                <PencilIcon color="#4C658A" mr={1} />
+                <Text
+                  color="#4C658A"
+                  style={{ fontSize: '18px', textDecoration: 'none' }}
+                >
+                  Edit
+                </Text>
+              </Flex>
             </Flex>
-          </Flex>
+          </Box>
           <AssigneeMap
             assignees={formInstance.signatures.map((signature) => ({
               name: signature.userSignedBy
@@ -286,6 +300,7 @@ const FormInstance = ({
                 : undefined,
               signed: signature.userSignedById ? true : false,
               title: signature.signerPosition.name,
+              updatedAt: signature.updatedAt,
             }))}
           />
           {_userCanSign && (

@@ -5,6 +5,7 @@ type Assignee = {
   name?: string;
   signed: boolean;
   title: string;
+  updatedAt: string;
 };
 
 type AvatarMapProps = {
@@ -47,31 +48,32 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                     {assignee.name ? assignee.name : 'Pending Signature'}
                   </Text>
                   <Text color="#5E5E5E">{assignee.title}</Text>
-                  {/*  */}
                 </Flex>
               </Box>
               <Box minWidth="200px">
                 <Flex width="100%">
                   {assignee.signed ? (
                     <>
-                      <CheckIcon textAlign="right" mr={1} mt={1} />
-                      <Text
-                        style={{ whiteSpace: 'nowrap' }}
-                        mr={2}
-                        color="#008933"
-                      >
-                        Signed
-                      </Text>
+                      <Flex flexDirection="column">
+                        <Flex justifyContent="flex-end">
+                          <CheckIcon textAlign="right" mr={1} mt={1} />
+                          <Text
+                            style={{ whiteSpace: 'nowrap' }}
+                            color="#008933"
+                          >
+                            Signed
+                          </Text>
+                        </Flex>
+                        <Text color="#515151">
+                          {new Date(assignee.updatedAt).toLocaleDateString()}
+                        </Text>
+                      </Flex>
                     </>
                   ) : (
                     awaiting && (
                       <>
                         <AwaitingIcon textAlign="right" mr={1} mt={1} />
-                        <Text
-                          style={{ whiteSpace: 'nowrap' }}
-                          color="#AA6B01"
-                          mr={2}
-                        >
+                        <Text style={{ whiteSpace: 'nowrap' }} color="#AA6B01">
                           Awaiting
                         </Text>
                       </>
