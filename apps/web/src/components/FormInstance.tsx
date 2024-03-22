@@ -34,7 +34,6 @@ const FormInstance = ({
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
-  console.log(user);
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
@@ -96,7 +95,6 @@ const FormInstance = ({
     return urlPattern.test(formDocLink);
   }
 
-  console.log(formInstance.originator.id, user?.id);
   return (
     <Box className="main">
       <Flex
