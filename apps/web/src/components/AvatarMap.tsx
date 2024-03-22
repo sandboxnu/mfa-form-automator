@@ -20,7 +20,9 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
             <Avatar
               name={assignee.name}
               src={undefined} // If you have an image source, provide it here
-              size="md" // Adjust the size as needed
+              size="sm" // Adjust the size as needed
+              h="30px"
+              w="30px"
               color="black"
               bg={assignee.signed ? '#D1F0D4' : '#E5E5E5'}
             />
@@ -57,9 +59,9 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 ) : (
                   <Text
                     color="#5E5E5E"
-                    fontSize="16px"
                     fontStyle="italic"
                     style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
+                    className="p3"
                   >
                     Pending Signature
                   </Text>
@@ -82,8 +84,8 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
           {index < assignees.length - 1 && (
             <Box
               position="absolute"
-              top="100%"
-              left="22px"
+              top="75%"
+              left="15px"
               w="2px"
               h="40px"
               bg="#000"

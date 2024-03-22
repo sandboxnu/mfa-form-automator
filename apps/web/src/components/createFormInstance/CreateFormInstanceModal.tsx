@@ -7,6 +7,7 @@ import {
   ModalCloseButton,
   Flex,
   Box,
+  Heading,
   Text,
   ModalFooter,
   Skeleton,
@@ -177,9 +178,10 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalBody>
           <Flex gap="30px">
             <Box flex="1">
-              <Text fontSize="17px" fontWeight="700" mb="10px">
+              {/* TODO: double check if this is the header we want to be 22px as well*/}
+              <Heading as="h3" mb="10px">
                 Form Type
-              </Text>
+              </Heading>
               <Select
                 useBasicStyles
                 selectedOptionStyle="check"
@@ -250,9 +252,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
 
             {formTypeSelected && (
               <Box flex="1">
-                <Text fontSize="16px" fontWeight="700" mb="28px">
+                <Heading as="h3" mb="28px">
                   Assignees
-                </Text>
+                </Heading>
                 {selectedFormTemplate?.signatureFields.map((field, i) => (
                   <SignatureDropdown
                     key={field.id}
