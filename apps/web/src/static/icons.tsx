@@ -88,6 +88,7 @@ export const RightSearchIcon = createIcon({
   displayName: 'RightSearchIcon',
   viewBox: '0 0 31 32',
   d: 'M20.3509 18.6627H19.3305L18.9688 18.3139C20.2347 16.8414 20.9967 14.9298 20.9967 12.8502C20.9967 8.2131 17.238 4.45435 12.6009 4.45435C7.96383 4.45435 4.20508 8.2131 4.20508 12.8502C4.20508 17.4873 7.96383 21.246 12.6009 21.246C14.6805 21.246 16.5922 20.4839 18.0647 19.2181L18.4134 19.5798V20.6002L24.8717 27.0456L26.7963 25.121L20.3509 18.6627ZM12.6009 18.6627C9.38466 18.6627 6.78841 16.0664 6.78841 12.8502C6.78841 9.63393 9.38466 7.03768 12.6009 7.03768C15.8172 7.03768 18.4134 9.63393 18.4134 12.8502C18.4134 16.0664 15.8172 18.6627 12.6009 18.6627Z',
+});
 
 export const ProfileIcon = createIcon({
   displayName: 'ProfileIcon',
@@ -115,8 +116,8 @@ export const UserProfileAvatar: React.FC<UserProfileAvatarProps> = ({
 }) => {
   return (
     <Avatar
-      bg="#4C658A"
-      color="white"
+      bg="#E5E5E5"
+      color="black"
       variant="dashboard"
       fontWeight="medium"
       h="40px"
