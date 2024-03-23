@@ -6,12 +6,12 @@
 import type { DepartmentEntity } from './DepartmentEntity';
 
 export type PositionBaseEntity = {
-  id: string;
-  name: string;
-  single: boolean;
-  department: DepartmentEntity;
-  departmentId: string;
-  createdAt: string;
-  updatedAt: string;
+    id: string;
+    name: string;
+    single: boolean;
+    department: DepartmentEntity;
+    departmentId: string;
+    createdAt: string;
+    updatedAt: string;
 };
 

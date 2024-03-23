@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 export type UpdateFormTemplateDto = {
-  name?: string;
-  formDocLink?: string;
+    name?: string;
+    formDocLink?: string;
 };
 

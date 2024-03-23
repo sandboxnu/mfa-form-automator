@@ -4,8 +4,8 @@
 /* eslint-disable */
 
 export type UpdateEmployeeDto = {
-  firstName?: string;
-  lastName?: string;
-  positionId?: string;
+    firstName?: string;
+    lastName?: string;
+    positionId?: string;
 };
 

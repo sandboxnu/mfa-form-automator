@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 export type CreatePositionDto = {
-  name: string;
-  departmentId: string;
+    name: string;
+    departmentId: string;
 };
 

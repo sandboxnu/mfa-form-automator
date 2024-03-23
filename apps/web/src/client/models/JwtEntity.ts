@@ -4,6 +4,6 @@
 /* eslint-disable */
 
 export type JwtEntity = {
-  accessToken: string;
+    accessToken: string;
 };
 

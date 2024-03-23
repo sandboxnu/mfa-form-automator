@@ -4,10 +4,10 @@
 /* eslint-disable */
 
 export type FormTemplateBaseEntity = {
-  id: string;
-  name: string;
-  formDocLink: string;
-  createdAt: string;
-  updatedAt: string;
+    id: string;
+    name: string;
+    formDocLink: string;
+    createdAt: string;
+    updatedAt: string;
 };
 

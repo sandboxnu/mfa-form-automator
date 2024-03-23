@@ -4,6 +4,6 @@
 /* eslint-disable */
 
 export type UpdateFormInstanceDto = {
-  name?: string;
+    name?: string;
 };
 

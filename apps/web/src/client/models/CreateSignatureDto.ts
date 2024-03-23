@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 export type CreateSignatureDto = {
-  order: number;
-  signerPositionId: string;
+    order: number;
+    signerPositionId: string;
 };
 
