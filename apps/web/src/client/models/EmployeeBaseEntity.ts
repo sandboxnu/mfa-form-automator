@@ -15,4 +15,3 @@ export type EmployeeBaseEntity = {
     updatedAt: string;
     refreshToken: string | null;
 };
-

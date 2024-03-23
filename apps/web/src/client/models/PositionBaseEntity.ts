@@ -14,4 +14,3 @@ export type PositionBaseEntity = {
     createdAt: string;
     updatedAt: string;
 };
-

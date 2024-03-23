@@ -22,4 +22,3 @@ export type FormInstanceEntity = {
     originatorId: string;
     formTemplateId: string;
 };
-

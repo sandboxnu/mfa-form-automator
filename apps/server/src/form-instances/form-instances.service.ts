@@ -277,6 +277,7 @@ export class FormInstancesService {
       where: { id: formInstanceId },
       include: {
         signatures: { include: { signerPosition: true, userSignedBy: true } },
+        originator: true, 
       },
     });
 
@@ -335,11 +336,10 @@ export class FormInstancesService {
           signatures: { include: { signerPosition: true, userSignedBy: true } },
         },
       });
-      //this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form signed by everyone', 'this is a test');
     }
-    let emailBody: string = `Hi Iris, your form has been signed by user: ${JSON.stringify(currentUser.email)}.`;
-    let emailSubject: string = `Form signed by user ${currentUser.email}`;
-    this.postmarkService.sendEmail('weigl.a@northeastern.edu', emailSubject, emailBody);
+    let emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
+    let emailSubject: string = `${formInstance.name} signed by ${employee.firstName} ${employee.lastName}`;
+    this.postmarkService.sendEmail(formInstance.originator.email, emailSubject, emailBody);
     return updatedFormInstance;
   }
 

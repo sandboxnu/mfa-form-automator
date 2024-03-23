@@ -7,4 +7,3 @@ export type CreateSignatureDto = {
     order: number;
     signerPositionId: string;
 };
-

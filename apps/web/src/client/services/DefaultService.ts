@@ -11,28 +11,28 @@ import { request as __request } from '../core/request';
 export class DefaultService {
 
     /**
-     * @returns string
+     * @returns string 
      * @throws ApiError
      */
     public static appControllerGetHello(): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api',
+            url: '/api/v1',
         });
     }
 
     /**
-     * @param requestBody
-     * @returns JwtEntity
-     * @returns any
+     * @param requestBody 
+     * @returns JwtEntity 
+     * @returns any 
      * @throws ApiError
      */
     public static appControllerLogin(
-        requestBody: any,
-    ): CancelablePromise<JwtEntity | any> {
+requestBody: any,
+): CancelablePromise<JwtEntity | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/auth/login',
+            url: '/api/v1/auth/login',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -44,13 +44,13 @@ export class DefaultService {
     }
 
     /**
-     * @returns JwtEntity
+     * @returns JwtEntity 
      * @throws ApiError
      */
     public static appControllerRefresh(): CancelablePromise<JwtEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/auth/refresh',
+            url: '/api/v1/auth/refresh',
             errors: {
                 400: `Bad Request`,
                 403: `Unauthorized Request`,
@@ -60,13 +60,13 @@ export class DefaultService {
     }
 
     /**
-     * @returns any
+     * @returns any 
      * @throws ApiError
      */
     public static appControllerLogout(): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/auth/logout',
+            url: '/api/v1/auth/logout',
         });
     }
 

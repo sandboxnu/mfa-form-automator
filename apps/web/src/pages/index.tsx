@@ -1,6 +1,5 @@
 import { OverviewRow } from 'apps/web/src/components/OverviewRow';
 import { Box } from '@chakra-ui/react';
-import { useAuth } from './../hooks/useAuth';
 import { useForm } from '@web/hooks/useForm';
 import Error from './../components/Error';
 import FormLoading from './../components/FormLoading';

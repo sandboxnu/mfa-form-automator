@@ -13,16 +13,16 @@ import { request as __request } from '../core/request';
 export class FormTemplatesService {
 
     /**
-     * @param requestBody
-     * @returns FormTemplateEntity
+     * @param requestBody 
+     * @returns FormTemplateEntity 
      * @throws ApiError
      */
     public static formTemplatesControllerCreate(
-        requestBody: CreateFormTemplateDto,
-    ): CancelablePromise<FormTemplateEntity> {
+requestBody: CreateFormTemplateDto,
+): CancelablePromise<FormTemplateEntity> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/form-templates',
+            url: '/api/v1/form-templates',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -34,15 +34,15 @@ export class FormTemplatesService {
 
     /**
      * @param limit Limit on number of form templates to return
-     * @returns FormTemplateEntity
+     * @returns FormTemplateEntity 
      * @throws ApiError
      */
     public static formTemplatesControllerFindAll(
-        limit?: number,
-    ): CancelablePromise<Array<FormTemplateEntity>> {
+limit?: number,
+): CancelablePromise<Array<FormTemplateEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/form-templates',
+            url: '/api/v1/form-templates',
             query: {
                 'limit': limit,
             },
@@ -54,16 +54,16 @@ export class FormTemplatesService {
     }
 
     /**
-     * @param id
-     * @returns FormTemplateEntity
+     * @param id 
+     * @returns FormTemplateEntity 
      * @throws ApiError
      */
     public static formTemplatesControllerFindOne(
-        id: string,
-    ): CancelablePromise<FormTemplateEntity> {
+id: string,
+): CancelablePromise<FormTemplateEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/form-templates/{id}',
+            url: '/api/v1/form-templates/{id}',
             path: {
                 'id': id,
             },
@@ -76,18 +76,18 @@ export class FormTemplatesService {
     }
 
     /**
-     * @param id
-     * @param requestBody
-     * @returns FormTemplateEntity
+     * @param id 
+     * @param requestBody 
+     * @returns FormTemplateEntity 
      * @throws ApiError
      */
     public static formTemplatesControllerUpdate(
-        id: string,
-        requestBody: UpdateFormTemplateDto,
-    ): CancelablePromise<FormTemplateEntity> {
+id: string,
+requestBody: UpdateFormTemplateDto,
+): CancelablePromise<FormTemplateEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/form-templates/{id}',
+            url: '/api/v1/form-templates/{id}',
             path: {
                 'id': id,
             },
@@ -103,16 +103,16 @@ export class FormTemplatesService {
     }
 
     /**
-     * @param id
-     * @returns any
+     * @param id 
+     * @returns any 
      * @throws ApiError
      */
     public static formTemplatesControllerRemove(
-        id: string,
-    ): CancelablePromise<any> {
+id: string,
+): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/form-templates/{id}',
+            url: '/api/v1/form-templates/{id}',
             path: {
                 'id': id,
             },

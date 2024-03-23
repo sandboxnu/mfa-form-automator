@@ -8,4 +8,3 @@ export type UpdateEmployeeDto = {
     lastName?: string;
     positionId?: string;
 };
-

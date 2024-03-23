@@ -18,4 +18,3 @@ export type EmployeeEntity = {
     updatedAt: string;
     refreshToken: string | null;
 };
-

@@ -11,4 +11,3 @@ export type CreateFormInstanceDto = {
     originatorId: string;
     formTemplateId: string;
 };
-

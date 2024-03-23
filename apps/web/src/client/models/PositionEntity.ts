@@ -16,4 +16,3 @@ export type PositionEntity = {
     updatedAt: string;
     employees?: Array<EmployeeBaseEntity>;
 };
-
