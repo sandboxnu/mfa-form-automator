@@ -10,7 +10,8 @@ const app = express();
 const proxy = createProxyMiddleware({
   target: "http://localhost:3000", // all requests to be routed to frontend running on port 3000
   router: {
-    "/api": "http://localhost:8080", // all requests prefixed with "/api" to be routed to backend running on port 3001
+    "/api/auth": "http://localhost:3000",
+    "/api/v1": "http://localhost:8080", // all requests prefixed with "/api" to be routed to backend running on port 3001
   },
   ws: true,
   logLevel: "warn",

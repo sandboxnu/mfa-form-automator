@@ -5,11 +5,10 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { FormTemplatesModule } from '../form-templates/form-templates.module';
 import { PositionsModule } from '../positions/positions.module';
 import { LoggerModule } from '../logger/logger.module';
-import { PostmarkService } from '../postmark/postmark.service';
 
 @Module({
   controllers: [FormInstancesController],
-  providers: [FormInstancesService, PostmarkService],
+  providers: [FormInstancesService],
   exports: [FormInstancesService],
   imports: [PrismaModule, FormTemplatesModule, PositionsModule, LoggerModule],
 })
