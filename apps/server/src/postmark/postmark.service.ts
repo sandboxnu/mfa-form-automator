@@ -25,9 +25,8 @@ export class PostmarkService {
                 'TextBody': textBody,
                 'MessageStream': 'outbound'
             });
-            console.log('email sent');
         } catch (error) {
-            console.error('Error sending email throug postmark:', error);
+            console.error('Error sending email through postmark:', error);
         }
     }
 }

@@ -25,7 +25,7 @@ export class FormInstancesService {
     private formTemplateService: FormTemplatesService,
     private positionService: PositionsService,
     private postmarkService: PostmarkService,
-  ) {}
+  ) { }
 
   /**
    * Create a new form instance.
@@ -109,7 +109,6 @@ export class FormInstancesService {
         },
       },
     });
-   // this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form created', 'this is a test');
     return newFormInstance;
   }
 
@@ -277,7 +276,7 @@ export class FormInstancesService {
       where: { id: formInstanceId },
       include: {
         signatures: { include: { signerPosition: true, userSignedBy: true } },
-        originator: true, 
+        originator: true,
       },
     });
 
@@ -373,7 +372,7 @@ export class FormInstancesService {
     const isAdminInSameDepartment =
       currUser.isAdmin &&
       currUser.position.departmentId ===
-        formInstance.originator.position.departmentId;
+      formInstance.originator.position.departmentId;
 
     if (!isOriginator && !isAdminInSameDepartment) {
       throw new BadRequestException(
@@ -385,8 +384,6 @@ export class FormInstancesService {
       where: { id: formInstanceId },
       data: { markedCompleted: true, markedCompletedAt: new Date() },
     });
-
-    //this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form completed', 'this is a test');
     return updatedFormInstance;
   }
 }
