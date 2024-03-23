@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ServerClient } from 'postmark';
 
-const client = new ServerClient(process.env.POSTMARK_SERVER_KEY || '');
-
 @Injectable()
 export class PostmarkService {
-  constructor() {}
+  client: ServerClient;
+
+  constructor() {
+    this.client = new ServerClient(process.env.POSTMARK_SERVER_KEY as string);
+  }
 
   async sendEmail(to: string, subject: string, textBody: string) {
     try {
-      client.sendEmail({
+      this.client.sendEmail({
         From: 'jfrederick@mfa.org',
         To: to,
         Subject: subject,
