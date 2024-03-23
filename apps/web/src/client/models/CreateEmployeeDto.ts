@@ -4,9 +4,9 @@
 /* eslint-disable */
 
 export type CreateEmployeeDto = {
-    firstName: string;
-    lastName: string;
-    positionId: string;
-    email: string;
-    password: string;
+  firstName: string;
+  lastName: string;
+  positionId: string;
+  email: string;
+  password: string;
 };

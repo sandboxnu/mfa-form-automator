@@ -7,11 +7,11 @@ import type { FormInstanceEntity } from './FormInstanceEntity';
 import type { SignatureFieldEntity } from './SignatureFieldEntity';
 
 export type FormTemplateEntity = {
-    id: string;
-    name: string;
-    formDocLink: string;
-    signatureFields: Array<SignatureFieldEntity>;
-    formInstances: Array<FormInstanceEntity>;
-    createdAt: string;
-    updatedAt: string;
+  id: string;
+  name: string;
+  formDocLink: string;
+  signatureFields: Array<SignatureFieldEntity>;
+  formInstances: Array<FormInstanceEntity>;
+  createdAt: string;
+  updatedAt: string;
 };

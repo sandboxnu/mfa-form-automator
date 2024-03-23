@@ -4,5 +4,5 @@
 /* eslint-disable */
 
 export type CreateDepartmentDto = {
-    name: string;
+  name: string;
 };

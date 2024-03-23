@@ -15,8 +15,6 @@ import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { UserEntity } from '../auth/entities/user.entity';
-import { PostmarkService } from '@server/postmark/postmark.service';
-import { log } from 'console';
 
 @Injectable()
 export class FormInstancesService {
@@ -336,9 +334,7 @@ export class FormInstancesService {
         },
       });
     }
-    let emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
-    let emailSubject: string = `${formInstance.name} signed by ${employee.firstName} ${employee.lastName}`;
-    this.postmarkService.sendEmail(formInstance.originator.email, emailSubject, emailBody);
+
     return updatedFormInstance;
   }
 
@@ -384,6 +380,7 @@ export class FormInstancesService {
       where: { id: formInstanceId },
       data: { markedCompleted: true, markedCompletedAt: new Date() },
     });
+
     return updatedFormInstance;
   }
 }

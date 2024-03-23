@@ -6,8 +6,8 @@
 import type { CreateSignatureDto } from './CreateSignatureDto';
 
 export type CreateFormInstanceDto = {
-    name: string;
-    signatures: Array<CreateSignatureDto>;
-    originatorId: string;
-    formTemplateId: string;
+  name: string;
+  signatures: Array<CreateSignatureDto>;
+  originatorId: string;
+  formTemplateId: string;
 };
