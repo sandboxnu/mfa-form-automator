@@ -65,8 +65,6 @@ jobs:
         run: yarn install
       - name: Test
         run: yarn test
-        env:
-          POSTMARK_SERVER_KEY: fac5b067-b068-488b-abc5-b10c6f8f19ee
   build-backend-image:
     runs-on: ubuntu-latest
     name: Build backend image
