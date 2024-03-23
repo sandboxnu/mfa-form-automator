@@ -18,7 +18,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v3
         with:
-          node-version: '19.x'
+          node-version: "19.x"
           # cache: yarn
           # cache-dependency-path: './apps/web/package-lock.json'
       - name: Install yarn
@@ -38,7 +38,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v3
         with:
-          node-version: '19.x'
+          node-version: "19.x"
           # cache: yarn
           # cache-dependency-path: './apps/web/package-lock.json'
       - name: Install yarn
@@ -56,7 +56,7 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v3
         with:
-          node-version: '19.x'
+          node-version: "19.x"
           # cache: yarn
           # cache-dependency-path: './apps/server/package-lock.json'
       - name: Install yarn

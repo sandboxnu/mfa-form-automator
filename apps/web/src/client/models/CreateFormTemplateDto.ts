@@ -6,7 +6,7 @@
 import type { CreateSignatureFieldDto } from './CreateSignatureFieldDto';
 
 export type CreateFormTemplateDto = {
-    name: string;
-    formDocLink: string;
-    signatureFields: Array<CreateSignatureFieldDto>;
+  name: string;
+  formDocLink: string;
+  signatureFields: Array<CreateSignatureFieldDto>;
 };

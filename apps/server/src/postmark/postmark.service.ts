@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as postmark from 'postmark';
+import postmark from 'postmark';
 
 const client = new postmark.ServerClient(process.env.POSTMARK_SERVER_KEY || '');
 

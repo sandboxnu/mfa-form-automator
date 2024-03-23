@@ -4,8 +4,8 @@
 /* eslint-disable */
 
 export type UpdateSignatureFieldDto = {
-    name?: string;
-    order?: number;
-    signerPositionId?: string;
-    formTemplateId?: string;
+  name?: string;
+  order?: number;
+  signerPositionId?: string;
+  formTemplateId?: string;
 };
