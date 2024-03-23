@@ -22,7 +22,7 @@ export class FormTemplatesService {
     ): CancelablePromise<FormTemplateEntity> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/form-templates',
+            url: '/api/form-templates',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -42,7 +42,7 @@ export class FormTemplatesService {
     ): CancelablePromise<Array<FormTemplateEntity>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/form-templates',
+            url: '/api/form-templates',
             query: {
                 'limit': limit,
             },
@@ -63,7 +63,7 @@ export class FormTemplatesService {
     ): CancelablePromise<FormTemplateEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/form-templates/{id}',
+            url: '/api/form-templates/{id}',
             path: {
                 'id': id,
             },
@@ -87,7 +87,7 @@ export class FormTemplatesService {
     ): CancelablePromise<FormTemplateEntity> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/api/v1/form-templates/{id}',
+            url: '/api/form-templates/{id}',
             path: {
                 'id': id,
             },
@@ -112,7 +112,7 @@ export class FormTemplatesService {
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/form-templates/{id}',
+            url: '/api/form-templates/{id}',
             path: {
                 'id': id,
             },

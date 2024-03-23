@@ -17,7 +17,7 @@ export class DefaultService {
     public static appControllerGetHello(): CancelablePromise<string> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1',
+            url: '/api',
         });
     }
 
@@ -32,7 +32,7 @@ export class DefaultService {
     ): CancelablePromise<JwtEntity | any> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/auth/login',
+            url: '/api/auth/login',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -50,7 +50,7 @@ export class DefaultService {
     public static appControllerRefresh(): CancelablePromise<JwtEntity> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/auth/refresh',
+            url: '/api/auth/refresh',
             errors: {
                 400: `Bad Request`,
                 403: `Unauthorized Request`,
@@ -66,7 +66,7 @@ export class DefaultService {
     public static appControllerLogout(): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/auth/logout',
+            url: '/api/auth/logout',
         });
     }
 
