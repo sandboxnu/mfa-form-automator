@@ -5,6 +5,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  Heading,
   Input,
   InputGroup,
   InputLeftElement,
@@ -46,11 +47,9 @@ export const FormList = ({
     <>
       <Box padding="30px">
         <Flex justifyContent="space-between" pb="20px">
-          <Flex>
-            <Text fontSize="22px" fontWeight="800">
-              {title}
-            </Text>
-            <Box pt="10px">
+          <Flex alignItems="flex-end">
+            <Heading as="h2">{title}</Heading>
+            <Box pb="5px">
               <Flex
                 marginLeft="13px"
                 backgroundColor={color}
