@@ -6,7 +6,7 @@ export class PostmarkService {
   client: ServerClient;
 
   constructor() {
-    this.client = new ServerClient(process.env.POSTMARK_SERVER_KEY as string);
+    this.client = new ServerClient(process.env.POSTMARK_SERVER_KEY || '');
   }
 
   async sendEmail(to: string, subject: string, textBody: string) {
