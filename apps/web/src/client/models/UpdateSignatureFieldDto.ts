@@ -9,3 +9,4 @@ export type UpdateSignatureFieldDto = {
   signerPositionId?: string;
   formTemplateId?: string;
 };
+

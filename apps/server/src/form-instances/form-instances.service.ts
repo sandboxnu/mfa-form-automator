@@ -15,6 +15,7 @@ import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { UserEntity } from '../auth/entities/user.entity';
+import { PostmarkService } from '../postmark/postmark.service';
 
 @Injectable()
 export class FormInstancesService {
@@ -23,7 +24,7 @@ export class FormInstancesService {
     private formTemplateService: FormTemplatesService,
     private positionService: PositionsService,
     private postmarkService: PostmarkService,
-  ) { }
+  ) {}
 
   /**
    * Create a new form instance.
@@ -333,8 +334,17 @@ export class FormInstancesService {
           signatures: { include: { signerPosition: true, userSignedBy: true } },
         },
       });
+      //this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form signed by everyone', 'this is a test');
     }
-
+    const emailBody: string = `Hi Iris, your form has been signed by user: ${JSON.stringify(
+      currentUser.email,
+    )}.`;
+    const emailSubject: string = `Form signed by user ${currentUser.email}`;
+    this.postmarkService.sendEmail(
+      'weigl.a@northeastern.edu',
+      emailSubject,
+      emailBody,
+    );
     return updatedFormInstance;
   }
 
@@ -368,7 +378,7 @@ export class FormInstancesService {
     const isAdminInSameDepartment =
       currUser.isAdmin &&
       currUser.position.departmentId ===
-      formInstance.originator.position.departmentId;
+        formInstance.originator.position.departmentId;
 
     if (!isOriginator && !isAdminInSameDepartment) {
       throw new BadRequestException(

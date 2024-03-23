@@ -6,3 +6,4 @@
 export type JwtEntity = {
   accessToken: string;
 };
+

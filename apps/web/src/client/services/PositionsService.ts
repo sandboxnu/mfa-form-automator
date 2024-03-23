@@ -32,6 +32,7 @@ export class PositionsService {
     });
   }
 
+<<<<<<< HEAD
   /**
    * @param limit Limit on number of positions to return
    * @returns PositionEntity
@@ -101,6 +102,120 @@ export class PositionsService {
       },
     });
   }
+=======
+    /**
+     * @param requestBody
+     * @returns PositionEntity
+     * @throws ApiError
+     */
+    public static positionsControllerCreate(
+        requestBody: CreatePositionDto,
+    ): CancelablePromise<PositionEntity> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/positions',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                422: `Bad Request`,
+            },
+        });
+    }
+
+    /**
+     * @param limit Limit on number of positions to return
+     * @returns PositionEntity
+     * @throws ApiError
+     */
+    public static positionsControllerFindAll(
+        limit?: number,
+    ): CancelablePromise<Array<PositionEntity>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/positions',
+            query: {
+                'limit': limit,
+            },
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+            },
+        });
+    }
+
+    /**
+     * @param id
+     * @returns PositionEntity
+     * @throws ApiError
+     */
+    public static positionsControllerFindOne(
+        id: string,
+    ): CancelablePromise<PositionEntity> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/positions/{id}',
+            path: {
+                'id': id,
+            },
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                404: `Resource not found`,
+            },
+        });
+    }
+
+    /**
+     * @param id
+     * @param requestBody
+     * @returns PositionEntity
+     * @throws ApiError
+     */
+    public static positionsControllerUpdate(
+        id: string,
+        requestBody: UpdatePositionDto,
+    ): CancelablePromise<PositionEntity> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/positions/{id}',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                404: `Resource not found`,
+                422: `Bad Request`,
+            },
+        });
+    }
+
+    /**
+     * @param id
+     * @returns any
+     * @throws ApiError
+     */
+    public static positionsControllerRemove(
+        id: string,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/positions/{id}',
+            path: {
+                'id': id,
+            },
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                404: `Resource not found`,
+            },
+        });
+    }
+>>>>>>> parent of 18fbc16 (dynamic email sending: admin notified when user signs)
 
   /**
    * @param id
