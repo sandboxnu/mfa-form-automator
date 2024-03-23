@@ -1,33 +1,28 @@
-import {
-    ConsoleLogger,
-    Injectable,
-} from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { FormTemplatesService } from '../form-templates/form-templates.service';
-import { PositionsService } from '../positions/positions.service';
+import { Injectable } from '@nestjs/common';
+import * as postmark from 'postmark';
 
-const postmark = require('postmark');
-const client = new postmark.ServerClient(process.env.POSTMARK_SERVER_KEY);
+const client = new postmark.ServerClient(
+  process.env.POSTMARK_SERVER_KEY as string,
+);
 
 @Injectable()
 export class PostmarkService {
-    constructor(
-    ) { }
+  constructor() {}
 
-    async sendEmail(to: string, subject: string, textBody: string) {
-        try {
-            client.sendEmail({
-                'From': 'jfrederick@mfa.org',
-                'To': to,
-                'Subject': subject,
-                // TODO FIXME when this is uncommented the text body doesn't show up 
-                // 'HtmlBody': '<strong>Hello < /strong> dear Postmark user.',
-                'TextBody': textBody,
-                'MessageStream': 'outbound'
-            });
-            console.log('email sent');
-        } catch (error) {
-            console.error('Error sending email throug postmark:', error);
-        }
+  async sendEmail(to: string, subject: string, textBody: string) {
+    try {
+      client.sendEmail({
+        From: 'jfrederick@mfa.org',
+        To: to,
+        Subject: subject,
+        // TODO FIXME when this is uncommented the text body doesn't show up
+        // 'HtmlBody': '<strong>Hello < /strong> dear Postmark user.',
+        TextBody: textBody,
+        MessageStream: 'outbound',
+      });
+      console.log('email sent');
+    } catch (error) {
+      console.error('Error sending email throug postmark:', error);
     }
+  }
 }

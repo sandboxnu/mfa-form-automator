@@ -15,8 +15,7 @@ import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { UserEntity } from '../auth/entities/user.entity';
-import { PostmarkService } from '@server/postmark/postmark.service';
-import { log } from 'console';
+import { PostmarkService } from '../postmark/postmark.service';
 
 @Injectable()
 export class FormInstancesService {
@@ -109,7 +108,7 @@ export class FormInstancesService {
         },
       },
     });
-   // this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form created', 'this is a test');
+    // this.postmarkService.sendEmail('weigl.a@northeastern.edu', 'test email: form created', 'this is a test');
     return newFormInstance;
   }
 
@@ -277,7 +276,7 @@ export class FormInstancesService {
       where: { id: formInstanceId },
       include: {
         signatures: { include: { signerPosition: true, userSignedBy: true } },
-        originator: true, 
+        originator: true,
       },
     });
 
@@ -337,9 +336,13 @@ export class FormInstancesService {
         },
       });
     }
-    let emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
-    let emailSubject: string = `${formInstance.name} signed by ${employee.firstName} ${employee.lastName}`;
-    this.postmarkService.sendEmail(formInstance.originator.email, emailSubject, emailBody);
+    const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
+    const emailSubject: string = `${formInstance.name} signed by ${employee.firstName} ${employee.lastName}`;
+    this.postmarkService.sendEmail(
+      formInstance.originator.email,
+      emailSubject,
+      emailBody,
+    );
     return updatedFormInstance;
   }
 
