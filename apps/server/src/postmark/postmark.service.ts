@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { ServerClient } from 'postmark';
 
-import postmark from 'postmark';
-const client = new postmark.ServerClient(process.env.POSTMARK_SERVER_KEY || '');
+const client = new ServerClient(process.env.POSTMARK_SERVER_KEY || '');
 
 @Injectable()
 export class PostmarkService {
