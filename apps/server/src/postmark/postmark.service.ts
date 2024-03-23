@@ -1,10 +1,7 @@
-import { ConsoleLogger, Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { FormTemplatesService } from '../form-templates/form-templates.service';
-import { PositionsService } from '../positions/positions.service';
+import { Injectable } from '@nestjs/common';
 
-const postmark = require('postmark');
-const client = new postmark.ServerClient(process.env.POSTMARK_SERVER_KEY);
+import postmark from 'postmark';
+const client = new postmark.ServerClient(process.env.POSTMARK_SERVER_KEY || '');
 
 @Injectable()
 export class PostmarkService {
