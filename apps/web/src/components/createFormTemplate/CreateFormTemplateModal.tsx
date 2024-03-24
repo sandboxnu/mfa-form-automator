@@ -124,6 +124,7 @@ export const CreateFormTemplateModal = ({
     onCloseCreateFormTemplate();
     setPdf(null);
     setPdfName(null);
+    setPdfFile(null);
   };
 
   const handlePdfSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
