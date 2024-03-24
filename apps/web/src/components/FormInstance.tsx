@@ -14,7 +14,6 @@ import {
   LeftArrowIcon,
   PencilIcon,
   EditUnderlineIcon,
-  CheckIcon,
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
@@ -24,6 +23,7 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
+import { useStorage } from '@web/hooks/useStorage';
 
 const FormInstance = ({
   formInstance,
@@ -34,6 +34,7 @@ const FormInstance = ({
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
+  const { mockBlob: formBlob } = useStorage(formInstance);
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
@@ -89,11 +90,6 @@ const FormInstance = ({
 
     router.push('/');
   };
-
-  function isValidURL(formDocLink: string) {
-    var urlPattern = /^(http(s)?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ;,./?%&=]*)?$/;
-    return urlPattern.test(formDocLink);
-  }
 
   return (
     <Box className="main">
@@ -179,9 +175,9 @@ const FormInstance = ({
             Form Preview
           </Heading>
 
-          {formInstance.formDocLink && isValidURL(formInstance.formDocLink) ? (
+          {formBlob ? (
             <embed
-              src={formInstance.formDocLink}
+              src={URL.createObjectURL(formBlob!)}
               type="application/pdf"
               width="400px"
               height="500px"

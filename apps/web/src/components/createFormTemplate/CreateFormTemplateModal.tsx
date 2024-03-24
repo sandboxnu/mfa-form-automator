@@ -25,6 +25,7 @@ import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
+import { mockStorage } from '@web/services/storage.service';
 
 const variants = {
   notDragging: {
@@ -55,6 +56,7 @@ export const CreateFormTemplateModal = ({
 
   const [pdf, setPdf] = useState<string | ArrayBuffer | null>(null);
   const [pdfName, setPdfName] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const toast = useToast();
 
@@ -84,11 +86,15 @@ export const CreateFormTemplateModal = ({
     setSignatureFields(tempSignatureFields);
   };
 
-  const submitFormTemplate = async () =>
+  const submitFormTemplate = async () => {
+    if (!pdfFile) {
+      throw new Error('No PDF file uploaded');
+    }
+    const uuid = uuidv4();
     createFormTemplateMutation
       .mutateAsync({
         name: formTemplateName,
-        formDocLink: 'mfa.org',
+        formDocLink: formTemplateName.replaceAll(' ', '_') + '_' + uuid,
         signatureFields: signatureFields.map((signatureField, i) => {
           return {
             name: signatureField.value,
@@ -96,13 +102,21 @@ export const CreateFormTemplateModal = ({
           };
         }),
       })
-      .then((response) => {
+      .then(async (response) => {
         handleModalClose();
+        if (pdfFile) {
+          // change to storage.uploadBlob when storage is set up
+          await mockStorage.uploadBlob(
+            pdfFile,
+            response.name.replaceAll(' ', '_') + '_' + uuid,
+          );
+        }
         return response;
       })
       .catch((e) => {
         throw e;
       });
+  };
 
   const handleModalClose = () => {
     setFormTemplateName('New Form Template');
@@ -110,6 +124,7 @@ export const CreateFormTemplateModal = ({
     onCloseCreateFormTemplate();
     setPdf(null);
     setPdfName(null);
+    setPdfFile(null);
   };
 
   const handlePdfSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,6 +136,7 @@ export const CreateFormTemplateModal = ({
       const url = URL.createObjectURL(file);
       setPdf(url);
       setPdfName(file.name);
+      setPdfFile(file);
     } catch (e) {
       console.error(e);
     }
@@ -305,6 +321,9 @@ export const CreateFormTemplateModal = ({
             width="161px"
             height="40px"
             isDisabled={
+              !pdf ||
+              !pdfName ||
+              !pdfFile ||
               isFormTemplateNameInvalid ||
               signatureFields.length == 0 ||
               signatureFields.some((field) => field.value === '')

@@ -166,7 +166,7 @@ async function upsertFormInstance(formInstanceData: FormInstanceData) {
 
 async function main() {
   const testFormLink =
-    'https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf';
+    'Form_Template Test _547fba69-490e-40af-8f72-70eab3815e0e';
   // form template
   const formTemplate1Id = '1fbccd8a-b00c-472f-a94f-defa8e86e0cf';
   await prisma.formTemplate.upsert({

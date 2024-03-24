@@ -34,6 +34,7 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
+import { useStorage } from '@web/hooks/useStorage';
 
 // TODO
 // fix form type dropdown bug
@@ -46,6 +47,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
   const [selectedFormTemplate, setSelectedFormTemplate] =
     useState<FormTemplateEntity | null>(null);
+  const { mockBlob: formBlob } = useStorage(selectedFormTemplate);
   const [formTypeSelected, setFormTypeSelected] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
@@ -220,9 +222,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
               {!selectedFormTemplate && (
                 <Skeleton h="518px" background="gray" marginTop="12px" />
               )}
-              {selectedFormTemplate && (
+              {formBlob && selectedFormTemplate && (
                 <embed
-                  src={selectedFormTemplate.formDocLink}
+                  src={URL.createObjectURL(formBlob!)}
                   type="application/pdf"
                   width="400px"
                   height="500px"

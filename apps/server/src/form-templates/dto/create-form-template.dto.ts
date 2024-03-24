@@ -1,12 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateSignatureFieldDto } from '../../signature-fields/dto/create-signature-field.dto';
-import {
-  ArrayMinSize,
-  IsArray,
-  IsNotEmpty,
-  IsString,
-  IsUrl,
-} from 'class-validator';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateFormTemplateDto {
   @IsString()
@@ -16,7 +10,6 @@ export class CreateFormTemplateDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsUrl()
   @ApiProperty()
   formDocLink: string;
 
