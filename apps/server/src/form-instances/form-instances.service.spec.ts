@@ -7,7 +7,6 @@ import { Prisma } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
-import { PostmarkService } from '../postmark/postmark.service';
 
 const formInstance1Id = 'formInstanceId1';
 const formInstance2Id = 'formInstanceId2';
@@ -230,7 +229,6 @@ describe('FormInstancesService', () => {
         FormInstancesService,
         FormTemplatesService,
         PositionsService,
-        PostmarkService,
         {
           provide: PrismaService,
           useValue: db,

@@ -1,6 +1,5 @@
 import {
   Box,
-  Hide,
   IconButton,
   Text,
   Flex,
@@ -12,8 +11,6 @@ import {
   Divider,
 } from '@chakra-ui/react';
 import {
-  DropdownDownArrow,
-  DropdownUpArrow,
   MFALogoIcon,
   SignoutIcon,
   UserProfileAvatar,
@@ -21,7 +18,7 @@ import {
 import { useAuth } from '@web/hooks/useAuth';
 
 export const TopBar: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
 
   return (
     <Flex
@@ -84,7 +81,7 @@ export const TopBar: React.FC = () => {
                     </Text>
                   </Box>
                   <Divider />
-                  <button onClick={logout}>
+                  <button onClick={() => signOut()}>
                     <Flex align="center">
                       <Text
                         color="#4C658A"
