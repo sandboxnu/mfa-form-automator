@@ -13,6 +13,7 @@ import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PositionsService } from '../positions/positions.service';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { PostmarkService } from '../postmark/postmark.service';
 
 describe('FormInstancesController', () => {
   let controller: FormInstancesController;
@@ -28,6 +29,7 @@ describe('FormInstancesController', () => {
         PositionsService,
         PrismaService,
         LoggerServiceImpl,
+        PostmarkService,
       ],
     }).compile();
 

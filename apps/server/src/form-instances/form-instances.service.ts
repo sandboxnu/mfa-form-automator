@@ -15,6 +15,7 @@ import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { UserEntity } from '../auth/entities/user.entity';
+import { PostmarkService } from '../postmark/postmark.service';
 
 @Injectable()
 export class FormInstancesService {
@@ -22,6 +23,7 @@ export class FormInstancesService {
     private prisma: PrismaService,
     private formTemplateService: FormTemplatesService,
     private positionService: PositionsService,
+    private postmarkService: PostmarkService,
   ) {}
 
   /**
@@ -273,6 +275,7 @@ export class FormInstancesService {
       where: { id: formInstanceId },
       include: {
         signatures: { include: { signerPosition: true, userSignedBy: true } },
+        originator: true,
       },
     });
 
@@ -332,6 +335,14 @@ export class FormInstancesService {
         },
       });
     }
+
+    const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
+    const emailSubject: string = `${formInstance.name} signed by ${employee.firstName} ${employee.lastName}`;
+    this.postmarkService.sendEmail(
+      formInstance.originator.email,
+      emailSubject,
+      emailBody,
+    );
 
     return updatedFormInstance;
   }
