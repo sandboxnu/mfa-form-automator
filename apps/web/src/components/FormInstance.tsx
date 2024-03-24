@@ -314,42 +314,40 @@ const FormInstance = ({
           )}
           {formInstance.completed &&
             user?.id === formInstance.originator.id && (
-              <Flex>
+              <Box>
                 <Spacer />
-                <Box pl="350px">
-                  <Button
-                    width="111px"
-                    height="40px"
-                    onClick={async (_) => {
-                      toast.promise(_handleFormApprove(), {
-                        success: {
-                          title: 'Success',
-                          description: 'Form approved',
-                        },
-                        error: {
-                          title: 'Error',
-                          description: 'Unable to approve form',
-                        },
-                        loading: {
-                          title: 'Pending',
-                          description: 'Please wait',
-                        },
-                      });
-                    }}
-                    background={
-                      formInstance.markedCompleted
-                        ? 'var(--mfa-gray-hex)'
-                        : 'var(--mfa-blue-hex)'
-                    }
-                    color="#FFF"
-                    cursor={
-                      formInstance.markedCompleted ? 'not-allowed' : 'pointer'
-                    }
-                  >
-                    Approve
-                  </Button>
-                </Box>
-              </Flex>
+                <Button
+                  width="111px"
+                  height="40px"
+                  onClick={async (_) => {
+                    toast.promise(_handleFormApprove(), {
+                      success: {
+                        title: 'Success',
+                        description: 'Form approved',
+                      },
+                      error: {
+                        title: 'Error',
+                        description: 'Unable to approve form',
+                      },
+                      loading: {
+                        title: 'Pending',
+                        description: 'Please wait',
+                      },
+                    });
+                  }}
+                  background={
+                    formInstance.markedCompleted
+                      ? 'var(--mfa-gray-hex)'
+                      : 'var(--mfa-blue-hex)'
+                  }
+                  color="#FFF"
+                  cursor={
+                    formInstance.markedCompleted ? 'not-allowed' : 'pointer'
+                  }
+                >
+                  Approve
+                </Button>
+              </Box>
             )}
         </Box>
       </Grid>
