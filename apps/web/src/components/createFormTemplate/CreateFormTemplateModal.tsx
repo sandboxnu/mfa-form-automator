@@ -321,6 +321,9 @@ export const CreateFormTemplateModal = ({
             width="161px"
             height="40px"
             isDisabled={
+              !pdf ||
+              !pdfName ||
+              !pdfFile ||
               isFormTemplateNameInvalid ||
               signatureFields.length == 0 ||
               signatureFields.some((field) => field.value === '')
