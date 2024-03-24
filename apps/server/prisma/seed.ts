@@ -229,9 +229,9 @@ async function main() {
   const employees = [
     {
       id: '777c1974-3104-4744-ae31-7a9296e7784a',
-      firstName: 'Helen',
-      lastName: 'Miao',
-      email: 'email1@kaiyangzhenggmail.onmicrosoft.com',
+      firstName: 'Iris',
+      lastName: 'Zhang',
+      email: 'zhang.iri@northeastern.edu',
       positionId: CHIEF_OF_STAFF_UUID,
     },
     {
@@ -243,8 +243,8 @@ async function main() {
     },
     {
       id: 'c6de4017-cb1f-44f1-a707-0f38239e0bca',
-      firstName: 'Iris',
-      lastName: 'Zhang',
+      firstName: 'Helen',
+      lastName: 'Miao',
       email: 'email3@kaiyangzhenggmail.onmicrosoft.com',
       positionId: AGG_DIR_UUID,
     },
