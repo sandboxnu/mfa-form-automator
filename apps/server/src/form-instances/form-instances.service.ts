@@ -8,7 +8,7 @@ import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
-import { EmployeesService } from '@server/employees/employees.service';
+import { EmployeesService } from '../employees/employees.service';
 import { FormInstance, Prisma } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';

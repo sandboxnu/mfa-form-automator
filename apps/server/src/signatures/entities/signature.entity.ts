@@ -30,10 +30,10 @@ export class SignatureEntity implements Signature {
   signerPosition: PositionBaseEntity;
 
   @ApiProperty()
-  assignedUserId: string;
+  assignedUserId: string | null;
 
   @ApiProperty()
-  assignedUser: EmployeeBaseEntity;
+  assignedUser: EmployeeBaseEntity | null;
 
   @Exclude()
   formInstanceId: string;
