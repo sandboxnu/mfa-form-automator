@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
@@ -16,6 +17,7 @@ import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { UserEntity } from '../auth/entities/user.entity';
 import { PostmarkService } from '../postmark/postmark.service';
+import { EmployeesService } from '@server/employees/employees.service';
 
 @Injectable()
 export class FormInstancesService {
@@ -24,6 +26,7 @@ export class FormInstancesService {
     private formTemplateService: FormTemplatesService,
     private positionService: PositionsService,
     private postmarkService: PostmarkService,
+    private employeesService: EmployeesService,
   ) {}
 
   /**
@@ -68,13 +71,16 @@ export class FormInstancesService {
         (signature) => signature.assignedUserId,
       ),
     );
-    const assignedUsers = await this.positionService.findAllWithIds(
+    Logger.log('assigned user ids' + assignedUserIds.size);
+    // TODO here
+    const assignedUsers = await this.employeesService.findAllWithIds(
       createFormInstanceDto.signatures.map(
         (signature) => signature.assignedUserId,
       ),
     );
+    Logger.log('assigned users' + assignedUsers.length);
     if (assignedUsers.length != assignedUserIds.size) {
-      throw Error(PositionsErrorMessage.POSITION_NOT_FOUND);
+      throw Error(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
     }
 
     const newFormInstance = await this.prisma.formInstance.create({
@@ -111,14 +117,10 @@ export class FormInstancesService {
       where: {
         signatures: {
           some: {
-            signerPosition: {
-              employees: {
-                some: {
+            assignedUser: {
                   id: {
                     equals: employeeId,
                   },
-                },
-              },
             },
           },
         },

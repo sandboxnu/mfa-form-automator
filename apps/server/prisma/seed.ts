@@ -21,6 +21,10 @@ const CHIEF_LEARNING_ENGAGEMENT_UUID = '693e8455-50e8-49bc-9d06-755eb24a5bcc';
 const CHIEF_SIG_FIELD_UUID = '33b169ed-e98f-4f72-807d-c31c7cb4230d';
 const MANAGER_SIG_FIELD_UUID = '1727a4d2-b22c-42de-b63d-5f553e964d75';
 const DIR_SIG_FIELD_UUID = '6bd5c08b-f309-4226-8914-7fef4ba631c2';
+const IRIS_UUID = '777c1974-3104-4744-ae31-7a9296e7784a';
+const KAI_UUID = '339cf78e-d13f-4069-b1f7-dee0c64afb31';
+const HELEN_UUID = 'c6de4017-cb1f-44f1-a707-0f38239e0bca';
+const ANSHUL_UUID = 'b386ef53-d2d1-4bfd-a44c-55b1750a874e';
 
 // type definition for employee data used in upsertEmployee
 type EmployeeData = {
@@ -228,28 +232,28 @@ async function main() {
   // employees
   const employees = [
     {
-      id: '777c1974-3104-4744-ae31-7a9296e7784a',
+      id: IRIS_UUID,
       firstName: 'Iris',
       lastName: 'Zhang',
       email: 'zhang.iri@northeastern.edu',
       positionId: CHIEF_OF_STAFF_UUID,
     },
     {
-      id: '339cf78e-d13f-4069-b1f7-dee0c64afb31',
+      id: KAI_UUID,
       firstName: 'Kai',
       lastName: 'Zheng',
       email: 'email2@kaiyangzhenggmail.onmicrosoft.com',
       positionId: CHIEF_FIN_OFFICER_UUID,
     },
     {
-      id: 'c6de4017-cb1f-44f1-a707-0f38239e0bca',
+      id: HELEN_UUID,
       firstName: 'Helen',
       lastName: 'Miao',
-      email: 'email3@kaiyangzhenggmail.onmicrosoft.com',
+      email: 'weigl.a@northeastern.edu',
       positionId: AGG_DIR_UUID,
     },
     {
-      id: 'b386ef53-d2d1-4bfd-a44c-55b1750a874e',
+      id: ANSHUL_UUID,
       firstName: 'Anshul',
       lastName: 'Shirude',
       email: 'email4@kaiyangzhenggmail.onmicrosoft.com',
@@ -267,18 +271,18 @@ async function main() {
       id: '855498f1-0a8c-44a8-8159-26e28ab8eca0',
       name: 'First Form Instance',
       formDocLink: testFormLink,
-      originatorId: '777c1974-3104-4744-ae31-7a9296e7784a',
+      originatorId: IRIS_UUID,
       formTemplateId: '1fbccd8a-b00c-472f-a94f-defa8e86e0cf',
       signatures: [
         {
           id: '86e14052-f953-4188-8188-933511d0b1ea',
           order: 0,
-          signerPositionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
+          assignedUserId: ANSHUL_UUID,
         },
         {
           id: 'd4ecf386-1e43-427e-803b-cbb216d84ec5',
           order: 1,
-          signerPositionId: AGG_DIR_UUID,
+          assignedUserId: HELEN_UUID,
         },
       ],
     },
@@ -286,13 +290,13 @@ async function main() {
       id: '1c50e8ed-b6d7-4205-bfd7-dce825c63040',
       name: 'Second Form Instance',
       formDocLink: testFormLink,
-      originatorId: '777c1974-3104-4744-ae31-7a9296e7784a',
+      originatorId: IRIS_UUID,
       formTemplateId: '1fbccd8a-b00c-472f-a94f-defa8e86e0cf',
       signatures: [
         {
           id: '6dadcc5a-06eb-4822-b20c-a53f0978b8c0',
           order: 0,
-          signerPositionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
+          assignedUserId: ANSHUL_UUID,
         },
       ],
     },
@@ -300,13 +304,13 @@ async function main() {
       id: '0affdf33-3c4b-42bf-99af-8ef47d231f41',
       name: 'Third Form Instance',
       formDocLink: testFormLink,
-      originatorId: '339cf78e-d13f-4069-b1f7-dee0c64afb31',
+      originatorId: KAI_UUID,
       formTemplateId: '1fbccd8a-b00c-472f-a94f-defa8e86e0cf',
       signatures: [
         {
           id: '6f104e9b-27db-4c39-9668-acd7e533e115',
           order: 0,
-          signerPositionId: AGG_DIR_UUID,
+          assignedUserId: HELEN_UUID,
         },
       ],
     },

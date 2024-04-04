@@ -68,6 +68,20 @@ export class EmployeesService {
   }
 
   /**
+ * Retrieve all positions with specified ids.
+ * @param ids list of position ids
+ * @returns all matching positions, hydrated
+ */
+  async findAllWithIds(ids: string[]) {
+    const employees = await this.prisma.employee.findMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+    return employees;
+  }
+
+  /**
    * Retrieve an employee by id.
    * @param id the employee id
    * @returns the selected employee, hydrated
