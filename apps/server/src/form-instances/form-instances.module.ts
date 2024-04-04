@@ -6,7 +6,7 @@ import { FormTemplatesModule } from '../form-templates/form-templates.module';
 import { PositionsModule } from '../positions/positions.module';
 import { LoggerModule } from '../logger/logger.module';
 import { PostmarkService } from '../postmark/postmark.service';
-import { EmployeesModule } from '@server/employees/employees.module';
+import { EmployeesModule } from '../employees/employees.module';
 
 @Module({
   controllers: [FormInstancesController],

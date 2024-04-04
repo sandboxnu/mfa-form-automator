@@ -14,6 +14,7 @@ import { Prisma } from '@prisma/client';
 import { PositionsService } from '../positions/positions.service';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { PostmarkService } from '../postmark/postmark.service';
+import { EmployeesService } from '../employees/employees.service';
 
 describe('FormInstancesController', () => {
   let controller: FormInstancesController;
@@ -28,6 +29,7 @@ describe('FormInstancesController', () => {
         FormTemplatesService,
         PositionsService,
         PrismaService,
+        EmployeesService,
         LoggerServiceImpl,
         PostmarkService,
       ],
