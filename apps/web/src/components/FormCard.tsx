@@ -54,21 +54,20 @@ export const FormCard = ({
                     label={
                       <>
                         <Text fontSize="16px" fontWeight="bold">
-                          {signature.signerPosition.name}
+                          {signature.assignedUser?.firstName +
+                            ' ' +
+                            signature.assignedUser?.lastName}
                         </Text>
-                        {signature.userSignedBy && (
-                          <Text>
-                            {signature.userSignedBy?.firstName +
-                              ' ' +
-                              signature.userSignedBy?.lastName}
-                          </Text>
-                        )}
                       </>
                     }
                     key={index}
                   >
                     <Avatar
-                      name={signature.signerPosition.name}
+                      name={
+                        signature.assignedUser?.firstName +
+                        ' ' +
+                        signature.assignedUser?.lastName
+                      }
                       key={index}
                       boxSize="32px"
                       backgroundColor={signature.signed ? '#D1F0D4' : '#DCDCDC'}

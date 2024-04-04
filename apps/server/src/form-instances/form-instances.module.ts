@@ -6,11 +6,18 @@ import { FormTemplatesModule } from '../form-templates/form-templates.module';
 import { PositionsModule } from '../positions/positions.module';
 import { LoggerModule } from '../logger/logger.module';
 import { PostmarkService } from '../postmark/postmark.service';
+import { EmployeesModule } from '@server/employees/employees.module';
 
 @Module({
   controllers: [FormInstancesController],
   providers: [FormInstancesService, PostmarkService],
   exports: [FormInstancesService],
-  imports: [PrismaModule, FormTemplatesModule, PositionsModule, LoggerModule],
+  imports: [
+    PrismaModule,
+    FormTemplatesModule,
+    PositionsModule,
+    LoggerModule,
+    EmployeesModule,
+  ],
 })
 export class FormInstancesModule {}

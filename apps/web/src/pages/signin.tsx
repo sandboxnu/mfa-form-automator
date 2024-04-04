@@ -4,7 +4,7 @@ import { MFALogoIcon } from '@web/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
 
 export default function Signin() {
-  const { session, signIn, signOut } = useAuth();
+  const { session, signIn } = useAuth();
 
   if (!session) {
     return (
@@ -34,18 +34,6 @@ export default function Signin() {
               </Button>
             </Flex>
           </Box>
-        </Flex>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <Flex
-          justifyContent={'center'}
-          marginTop={'168px'}
-          marginBottom={'100px'}
-        >
-          <button onClick={signOut}>Sign Out</button>
         </Flex>
       </>
     );

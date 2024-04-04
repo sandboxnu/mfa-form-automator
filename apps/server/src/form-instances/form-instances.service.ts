@@ -8,6 +8,7 @@ import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
+import { EmployeesService } from '@server/employees/employees.service';
 import { FormInstance, Prisma } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
@@ -23,6 +24,7 @@ export class FormInstancesService {
     private prisma: PrismaService,
     private formTemplateService: FormTemplatesService,
     private positionService: PositionsService,
+    private employeeService: EmployeesService,
     private postmarkService: PostmarkService,
   ) {}
 
@@ -62,19 +64,22 @@ export class FormInstancesService {
       );
     }
 
-    // all positions in signatures should be valid
-    const positionIds = new Set(
-      createFormInstanceDto.signatures.map(
-        (signature) => signature.signerPositionId,
-      ),
-    );
-    const positions = await this.positionService.findAllWithIds(
-      createFormInstanceDto.signatures.map(
-        (signature) => signature.signerPositionId,
-      ),
-    );
-    if (positions.length != positionIds.size) {
-      throw Error(PositionsErrorMessage.POSITION_NOT_FOUND);
+    // check that the assigned user is a valid employee and the user's position is a valid position
+    for (let i = 0; i < createFormInstanceDto.signatures.length; i++) {
+      const userId = createFormInstanceDto.signatures[i].assignedUserId;
+      const positionId = createFormInstanceDto.signatures[i].signerPositionId;
+
+      const position = await this.positionService.findOne(positionId);
+
+      if (!position) {
+        throw new NotFoundException(PositionsErrorMessage.POSITION_NOT_FOUND);
+      }
+
+      const employee = await this.employeeService.findOne(userId);
+
+      if (!employee) {
+        throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
+      }
     }
 
     const newFormInstance = await this.prisma.formInstance.create({
@@ -103,7 +108,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -138,7 +143,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -163,7 +168,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -184,7 +189,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -207,7 +212,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -236,7 +241,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -259,7 +264,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -274,7 +279,7 @@ export class FormInstancesService {
     const formInstance = await this.prisma.formInstance.findUnique({
       where: { id: formInstanceId },
       include: {
-        signatures: { include: { signerPosition: true, userSignedBy: true } },
+        signatures: { include: { signerPosition: true, assignedUser: true } },
         originator: true,
       },
     });
@@ -312,7 +317,7 @@ export class FormInstancesService {
 
     const updatedSignature = await this.prisma.signature.update({
       where: { id: signatureId },
-      data: { signed: true, userSignedById: currentUser.id },
+      data: { signed: true },
     });
 
     formInstance.signatures[signatureIndex] = {
@@ -331,7 +336,7 @@ export class FormInstancesService {
         where: { id: formInstanceId },
         data: { completed: true, completedAt: new Date() },
         include: {
-          signatures: { include: { signerPosition: true, userSignedBy: true } },
+          signatures: { include: { signerPosition: true, assignedUser: true } },
         },
       });
     }

@@ -68,8 +68,8 @@ const FormInstance = ({
 
   const _nextSignature = formInstance.signatures
     .sort((a, b) => a.order - b.order)
-    .find((v) => v.userSignedById == null);
-  const _userCanSign = _nextSignature?.signerPositionId == user?.positionId;
+    .find((v) => v.signed === false);
+  const _userCanSign = _nextSignature?.assignedUserId === user?.id;
 
   const _handleFormSign = async () => {
     if (_nextSignature == null || !_userCanSign) return;
@@ -274,12 +274,11 @@ const FormInstance = ({
           </Box>
           <AssigneeMap
             assignees={formInstance.signatures.map((signature) => ({
-              name: signature.userSignedBy
-                ? signature.userSignedBy?.firstName +
-                  ' ' +
-                  signature.userSignedBy?.lastName
-                : undefined,
-              signed: signature.userSignedById ? true : false,
+              name:
+                signature.assignedUser.firstName +
+                ' ' +
+                signature.assignedUser.lastName,
+              signed: signature.signed,
               title: signature.signerPosition.name,
               updatedAt: signature.updatedAt,
             }))}

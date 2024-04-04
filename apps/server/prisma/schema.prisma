@@ -98,8 +98,9 @@ model Signature {
 
   signerPosition   Position     @relation(fields: [signerPositionId], references: [id])
   signerPositionId String       @db.Uuid
-  userSignedBy     Employee?    @relation(fields: [userSignedById], references: [id])
-  userSignedById   String?      @db.Uuid
+  assignedUser     Employee     @relation(fields: [assignedUserId], references: [id])
+  assignedUserId   String       @db.Uuid
+
   formInstance     FormInstance @relation(fields: [formInstanceId], references: [id])
   formInstanceId   String       @db.Uuid
 }
