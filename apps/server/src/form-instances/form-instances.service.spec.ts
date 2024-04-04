@@ -223,7 +223,6 @@ describe('FormInstancesService', () => {
   let service: FormInstancesService;
   let formTemplateService: FormTemplatesService;
   let positionService: PositionsService;
-  let employeeService: EmployeesService;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
@@ -244,7 +243,6 @@ describe('FormInstancesService', () => {
     service = module.get<FormInstancesService>(FormInstancesService);
     formTemplateService =
       module.get<FormTemplatesService>(FormTemplatesService);
-    employeeService = module.get<EmployeesService>(EmployeesService);
     positionService = module.get<PositionsService>(PositionsService);
     prismaService = module.get<PrismaService>(PrismaService);
   });
