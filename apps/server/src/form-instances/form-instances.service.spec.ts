@@ -8,6 +8,7 @@ import { Prisma } from '@prisma/client';
 // import { FormInstanceErrorMessage } from './form-instance.errors';
 // import { PositionsErrorMessage } from '../positions/positions.errors';
 import { PostmarkService } from '../postmark/postmark.service';
+import { EmployeesService } from '../employees/employees.service';
 
 const formInstance1Id = 'formInstanceId1';
 const formInstance2Id = 'formInstanceId2';
@@ -222,6 +223,7 @@ describe('FormInstancesService', () => {
   let service: FormInstancesService;
   let formTemplateService: FormTemplatesService;
   let positionService: PositionsService;
+  let employeeService: EmployeesService;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
@@ -231,6 +233,7 @@ describe('FormInstancesService', () => {
         FormTemplatesService,
         PositionsService,
         PostmarkService,
+        EmployeesService,
         {
           provide: PrismaService,
           useValue: db,
@@ -241,6 +244,7 @@ describe('FormInstancesService', () => {
     service = module.get<FormInstancesService>(FormInstancesService);
     formTemplateService =
       module.get<FormTemplatesService>(FormTemplatesService);
+    employeeService = module.get<EmployeesService>(EmployeesService);
     positionService = module.get<PositionsService>(PositionsService);
     prismaService = module.get<PrismaService>(PrismaService);
   });
