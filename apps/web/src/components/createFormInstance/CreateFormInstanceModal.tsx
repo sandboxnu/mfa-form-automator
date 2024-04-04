@@ -51,6 +51,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [formTypeSelected, setFormTypeSelected] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
+ >([]);
+  const [signatureAssignedUsers, setSignatureAssignedUsers] = useState<
+    (Option)[]
   >([]);
   const [formName, setFormName] = useState('Create Form');
   const createFormInstanceMutation = useMutation({
@@ -86,10 +89,11 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     createFormInstanceMutation
       .mutateAsync({
         name: formName, // Use the updated form name
-        signatures: signaturePositions.map((pos, i) => {
+        // TODO here
+        signatures: signatureAssignedUsers.map((emp, i) => {
           return {
             order: i,
-            signerPositionId: pos?.value!,
+            assignedUserId: emp.value!,
           };
         }),
         originatorId: user?.id!,
@@ -114,7 +118,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     setFormName('Create Form');
     setSelectedFormTemplate(null);
     setFormTypeSelected(false);
-    setSignaturePositions([]);
+    setSignatureAssignedUsers([]);
   };
 
   function EditableControls() {

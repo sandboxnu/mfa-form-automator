@@ -57,7 +57,7 @@ export class FormInstancesService {
     // number of signatures to be created should be equal to the number of
     // signature fields on the form template
     if (
-      formTemplate.signatureFields .length !=
+      formTemplate.signatureFields.length !=
       createFormInstanceDto.signatures.length
     ) {
       throw Error(
@@ -72,11 +72,13 @@ export class FormInstancesService {
       ),
     );
     Logger.log('assigned user ids' + assignedUserIds.size);
-    // TODO here
+    const ids = createFormInstanceDto.signatures.map(
+      (signature) => signature.assignedUserId,
+    );
+    // TODO here: lists signer position ids? 
+    Logger.log(createFormInstanceDto.signatures);
     const assignedUsers = await this.employeesService.findAllWithIds(
-      createFormInstanceDto.signatures.map(
-        (signature) => signature.assignedUserId,
-      ),
+      ids
     );
     Logger.log('assigned users' + assignedUsers.length);
     if (assignedUsers.length != assignedUserIds.size) {

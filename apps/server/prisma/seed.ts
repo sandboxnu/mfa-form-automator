@@ -130,7 +130,7 @@ async function fetchSignatureFields(
   return signatureFieldsMap;
 }
 
-// type definition for mapping signature field names (ex: 'Director', 'Manager') to their data
+// type definition for mapping form instances to their data
 type FormInstanceData = {
   id: string;
   name: string;
