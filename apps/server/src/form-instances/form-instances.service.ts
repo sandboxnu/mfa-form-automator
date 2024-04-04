@@ -54,7 +54,7 @@ export class FormInstancesService {
     // number of signatures to be created should be equal to the number of
     // signature fields on the form template
     if (
-      formTemplate.signatureFields.length !=
+      formTemplate.signatureFields .length !=
       createFormInstanceDto.signatures.length
     ) {
       throw Error(
@@ -62,18 +62,18 @@ export class FormInstancesService {
       );
     }
 
-    // all positions in signatures should be valid
-    const positionIds = new Set(
+    // all assigned users in signatures should be valid 
+    const assignedUserIds = new Set(
       createFormInstanceDto.signatures.map(
-        (signature) => signature.signerPositionId,
+        (signature) => signature.assignedUserId,
       ),
     );
-    const positions = await this.positionService.findAllWithIds(
+    const assignedUsers = await this.positionService.findAllWithIds(
       createFormInstanceDto.signatures.map(
-        (signature) => signature.signerPositionId,
+        (signature) => signature.assignedUserId,
       ),
     );
-    if (positions.length != positionIds.size) {
+    if (assignedUsers.length != assignedUserIds.size) {
       throw Error(PositionsErrorMessage.POSITION_NOT_FOUND);
     }
 
@@ -98,12 +98,7 @@ export class FormInstancesService {
         formTemplate: true,
         signatures: {
           include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -133,12 +128,7 @@ export class FormInstancesService {
         formTemplate: true,
         signatures: {
           include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -158,12 +148,7 @@ export class FormInstancesService {
         formTemplate: true,
         signatures: {
           include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -179,12 +164,7 @@ export class FormInstancesService {
         formTemplate: true,
         signatures: {
           include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -202,12 +182,7 @@ export class FormInstancesService {
         formTemplate: true,
         signatures: {
           include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -231,12 +206,7 @@ export class FormInstancesService {
         formTemplate: true,
         signatures: {
           include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -254,12 +224,7 @@ export class FormInstancesService {
         formTemplate: true,
         signatures: {
           include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-            userSignedBy: true,
+            assignedUser: true,
           },
         },
       },
@@ -274,7 +239,7 @@ export class FormInstancesService {
     const formInstance = await this.prisma.formInstance.findUnique({
       where: { id: formInstanceId },
       include: {
-        signatures: { include: { signerPosition: true, userSignedBy: true } },
+        signatures: { include: { assignedUser: true } },
         originator: true,
       },
     });
@@ -304,15 +269,15 @@ export class FormInstancesService {
     }
 
     if (
-      employee.positionId !=
-      formInstance.signatures[signatureIndex].signerPositionId
+      employee.id !=
+      formInstance.signatures[signatureIndex].assignedUserId
     ) {
       throw new BadRequestException(SignatureErrorMessage.EMPLOYEE_CANNOT_SIGN);
     }
 
     const updatedSignature = await this.prisma.signature.update({
       where: { id: signatureId },
-      data: { signed: true, userSignedById: currentUser.id },
+      data: { signed: true },
     });
 
     formInstance.signatures[signatureIndex] = {
@@ -331,7 +296,7 @@ export class FormInstancesService {
         where: { id: formInstanceId },
         data: { completed: true, completedAt: new Date() },
         include: {
-          signatures: { include: { signerPosition: true, userSignedBy: true } },
+          signatures: { include: { assignedUser: true } },
         },
       });
     }
