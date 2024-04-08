@@ -250,7 +250,7 @@ async function main() {
       id: HELEN_MIAO_UUID,
       firstName: 'Helen',
       lastName: 'Miao',
-      email: 'email3@kaiyangzhenggmail.onmicrosoft.com',
+      email: 'weigl.a@northeastern.edu',
       positionId: AGG_DIR_UUID,
     },
     {

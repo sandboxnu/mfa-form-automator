@@ -26,7 +26,7 @@ export class FormInstancesService {
     private positionService: PositionsService,
     private employeeService: EmployeesService,
     private postmarkService: PostmarkService,
-  ) {}
+  ) { }
 
   /**
    * Create a new form instance.
@@ -113,6 +113,17 @@ export class FormInstancesService {
         },
       },
     });
+
+    // Notify originator of email creation
+    // TODO: hyperlink  
+    const emailBody: string = `Hi ${newFormInstance.originator.firstName}, you have created a new form: ${newFormInstance.name}.`;
+    const emailSubject: string = `Form ${newFormInstance.name} Created`;
+    this.postmarkService.sendEmail(
+      newFormInstance.originator.email,
+      emailSubject,
+      emailBody,
+    );
+
     return newFormInstance;
   }
 
@@ -339,15 +350,37 @@ export class FormInstancesService {
           signatures: { include: { signerPosition: true, assignedUser: true } },
         },
       });
-    }
 
-    const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
-    const emailSubject: string = `${formInstance.name} signed by ${employee.firstName} ${employee.lastName}`;
-    this.postmarkService.sendEmail(
-      formInstance.originator.email,
-      emailSubject,
-      emailBody,
-    );
+      // Notify originator that form is ready for approval
+      const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} is completed and is ready for your approval: ${formInstance.name}.`;
+      const emailSubject: string = `Form ${formInstance.name} Ready for Approval`;
+      this.postmarkService.sendEmail(
+        formInstance.originator.email,
+        emailSubject,
+        emailBody,
+      );
+    }
+    else {
+      // Notify next user that form is ready to sign 
+      // TODO: hyperlink 
+      const nextUserToSignId = formInstance.signatures[signatureIndex + 1];
+      const emailBod2y: string = `Hi ${formInstance.originator.firstName}, you have a form ready for your signature: ${formInstance.name}.`;
+      const emailSubject2: string = `Form ${formInstance.name} Ready To Sign`;
+      this.postmarkService.sendEmail(
+        nextUserToSignId.assignedUser!.email,
+        emailSubject2,
+        emailBod2y,
+      );
+
+      // Notify originator that form was signed
+      const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
+      const emailSubject: string = `Form ${formInstance.name} signed by ${employee.firstName} ${employee.lastName}`;
+      this.postmarkService.sendEmail(
+        formInstance.originator.email,
+        emailSubject,
+        emailBody,
+      );
+    }
 
     return updatedFormInstance;
   }
@@ -382,7 +415,7 @@ export class FormInstancesService {
     const isAdminInSameDepartment =
       currUser.isAdmin &&
       currUser.position.departmentId ===
-        formInstance.originator.position.departmentId;
+      formInstance.originator.position.departmentId;
 
     if (!isOriginator && !isAdminInSameDepartment) {
       throw new BadRequestException(
