@@ -3,14 +3,13 @@ import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
-import { PrismaService } from '@server/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private employeesService: EmployeesService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   /**
    * Validate an employee's credentials.

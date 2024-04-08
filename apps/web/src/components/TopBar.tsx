@@ -27,7 +27,7 @@ export const TopBar: React.FC = () => {
   });
 
   const userPosition = positions?.find(
-    (position) => position.id === user?.positionId
+    (position) => position.id === user?.positionId,
   );
   // const userPosition = PositionsService.positionsControllerFindOne(user?.positionId);
   // const userPositionName = userPosition.name;
@@ -91,7 +91,9 @@ export const TopBar: React.FC = () => {
                         : 'Firstname Lastname'}
                     </Text>
                     <Text color="#888888" fontSize="18px" cursor="default">
-                      {userPosition && userPosition.name ? userPosition.name : 'Position'}
+                      {userPosition && userPosition.name
+                        ? userPosition.name
+                        : 'Position'}
                     </Text>
                   </Box>
                   <Divider />

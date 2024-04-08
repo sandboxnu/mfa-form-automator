@@ -245,7 +245,7 @@ async function main() {
       id: 'c6de4017-cb1f-44f1-a707-0f38239e0bca',
       firstName: 'Helen',
       lastName: 'Miao',
-      email: 'weigl.a@northeastern.edu',
+      email: 'email3@kaiyangzhenggmail.onmicrosoft.com',
       positionId: AGG_DIR_UUID,
     },
     {
