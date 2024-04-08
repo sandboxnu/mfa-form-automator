@@ -26,7 +26,7 @@ export class FormInstancesService {
     private positionService: PositionsService,
     private employeeService: EmployeesService,
     private postmarkService: PostmarkService,
-  ) { }
+  ) {}
 
   /**
    * Create a new form instance.
@@ -115,7 +115,7 @@ export class FormInstancesService {
     });
 
     // Notify originator of email creation
-    // TODO: hyperlink  
+    // TODO: hyperlink
     const emailBody: string = `Hi ${newFormInstance.originator.firstName}, you have created a new form: ${newFormInstance.name}.`;
     const emailSubject: string = `Form ${newFormInstance.name} Created`;
     this.postmarkService.sendEmail(
@@ -359,10 +359,9 @@ export class FormInstancesService {
         emailSubject,
         emailBody,
       );
-    }
-    else {
-      // Notify next user that form is ready to sign 
-      // TODO: hyperlink 
+    } else {
+      // Notify next user that form is ready to sign
+      // TODO: hyperlink
       const nextUserToSignId = formInstance.signatures[signatureIndex + 1];
       const emailBod2y: string = `Hi ${formInstance.originator.firstName}, you have a form ready for your signature: ${formInstance.name}.`;
       const emailSubject2: string = `Form ${formInstance.name} Ready To Sign`;
@@ -374,7 +373,7 @@ export class FormInstancesService {
 
       // Notify originator that form was signed
       const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
-      const emailSubject: string = `Form ${formInstance.name} signed by ${employee.firstName} ${employee.lastName}`;
+      const emailSubject: string = `Form ${formInstance.name} Signed By ${employee.firstName} ${employee.lastName}`;
       this.postmarkService.sendEmail(
         formInstance.originator.email,
         emailSubject,
@@ -415,7 +414,7 @@ export class FormInstancesService {
     const isAdminInSameDepartment =
       currUser.isAdmin &&
       currUser.position.departmentId ===
-      formInstance.originator.position.departmentId;
+        formInstance.originator.position.departmentId;
 
     if (!isOriginator && !isAdminInSameDepartment) {
       throw new BadRequestException(
