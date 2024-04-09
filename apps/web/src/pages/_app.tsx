@@ -54,17 +54,17 @@ export default function App({
 
   return (
     <>
-      <Head>
-        <link
-          rel="icon"
-          href="https://www.nicepng.com/png/full/181-1819531_blue-triangle-png-blue-flag.png"
-        />
-      </Head>
       <SessionProvider session={session}>
         <AuthProvider>
           <QueryClientProvider client={queryClient}>
             <ChakraProvider theme={theme}>
               <Layout>
+                <Head>
+                  <link
+                    rel="icon"
+                    href="https://www.nicepng.com/png/full/181-1819531_blue-triangle-png-blue-flag.png"
+                  />
+                </Head>
                 <Component {...pageProps} />
               </Layout>
             </ChakraProvider>
