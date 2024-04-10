@@ -118,11 +118,10 @@ export const UserProfileAvatar: React.FC<UserProfileAvatarProps> = ({
     <Avatar
       bg="#E5E5E5"
       color="black"
-      variant="dashboard"
-      fontWeight="medium"
-      h="40px"
-      w="40px"
+      h="30px"
+      w="30px"
       name={`${firstName} ${lastName}`}
+      size="sm"
     ></Avatar>
   );
 };
