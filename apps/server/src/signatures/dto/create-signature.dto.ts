@@ -10,5 +10,10 @@ export class CreateSignatureDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
+  assignedUserId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   signerPositionId: string;
 }

@@ -90,6 +90,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
           return {
             order: i,
             signerPositionId: pos?.value!,
+            assignedUserId: pos?.employeeValue!,
           };
         }),
         originatorId: user?.id!,

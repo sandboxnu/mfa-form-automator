@@ -5,5 +5,6 @@ export interface CreateFormInstanceModalProps {
 
 export interface Option {
   value: string;
+  employeeValue: string;
   label: string;
 }

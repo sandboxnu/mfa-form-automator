@@ -63,6 +63,7 @@ export const SignatureDropdown = ({
           const fullLabel = fullName + ' ' + position.name;
           return {
             value: position.id,
+            employeeValue: employee?.id ?? '', // Ensure employeeValue is always a string
             label: fullLabel,
           };
         })}
