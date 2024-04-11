@@ -11,7 +11,6 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from './../context/AuthContext';
 import { OpenAPI } from '@web/client';
 import { SessionProvider } from 'next-auth/react';
-import Head from 'next/head';
 
 export const queryClient = new QueryClient();
 
@@ -28,27 +27,31 @@ export default function App({
 
   if (authTestingPaths.includes(appProps.router.pathname)) {
     return (
-      <SessionProvider session={session}>
-        <QueryClientProvider client={queryClient}>
-          <ChakraProvider theme={theme}>
-            <Component {...pageProps} />
-          </ChakraProvider>
-        </QueryClientProvider>
-      </SessionProvider>
-    );
-  }
-
-  if (excludeLayoutPaths.includes(appProps.router.pathname)) {
-    return (
-      <SessionProvider session={session}>
-        <AuthProvider>
+      <>
+        <SessionProvider session={session}>
           <QueryClientProvider client={queryClient}>
             <ChakraProvider theme={theme}>
               <Component {...pageProps} />
             </ChakraProvider>
           </QueryClientProvider>
-        </AuthProvider>
-      </SessionProvider>
+        </SessionProvider>
+      </>
+    );
+  }
+
+  if (excludeLayoutPaths.includes(appProps.router.pathname)) {
+    return (
+      <>
+        <SessionProvider session={session}>
+          <AuthProvider>
+            <QueryClientProvider client={queryClient}>
+              <ChakraProvider theme={theme}>
+                <Component {...pageProps} />
+              </ChakraProvider>
+            </QueryClientProvider>
+          </AuthProvider>
+        </SessionProvider>
+      </>
     );
   }
 
@@ -59,12 +62,6 @@ export default function App({
           <QueryClientProvider client={queryClient}>
             <ChakraProvider theme={theme}>
               <Layout>
-                <Head>
-                  <link
-                    rel="icon"
-                    href="https://www.nicepng.com/png/full/181-1819531_blue-triangle-png-blue-flag.png"
-                  />
-                </Head>
                 <Component {...pageProps} />
               </Layout>
             </ChakraProvider>
