@@ -25,27 +25,5 @@ class BlobStorage {
   }
 }
 
-class MockBlobStorage {
-  async uploadBlob(file: File, blobName: string) {
-    console.log('Uploading Blob', blobName);
-  }
-
-  async downloadBlob(blobLink: string) {
-    console.log('Downloading Blob', blobLink);
-
-    async function downloadBlob(blobLink: string) {
-      const response = await fetch(blobLink);
-      const blob = await response.blob();
-      return blob;
-    }
-
-    const blob = await downloadBlob(
-      'https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf',
-    );
-    return blob;
-  }
-}
-
 const storage = new BlobStorage(process.env.STORAGE_BLOB_URL as string);
-const mockStorage = new MockBlobStorage();
-export { storage, mockStorage };
+export { storage };

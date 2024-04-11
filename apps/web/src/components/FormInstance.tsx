@@ -34,7 +34,7 @@ const FormInstance = ({
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
-  const { mockBlob: formBlob } = useStorage(formInstance);
+  const { formBlob } = useStorage(formInstance);
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({

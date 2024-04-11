@@ -25,7 +25,7 @@ import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
-import { mockStorage } from '@web/services/storage.service';
+import { storage } from '@web/services/storage.service';
 
 const variants = {
   notDragging: {
@@ -106,7 +106,7 @@ export const CreateFormTemplateModal = ({
         handleModalClose();
         if (pdfFile) {
           // change to storage.uploadBlob when storage is set up
-          await mockStorage.uploadBlob(
+          await storage.uploadBlob(
             pdfFile,
             response.name.replaceAll(' ', '_') + '_' + uuid,
           );

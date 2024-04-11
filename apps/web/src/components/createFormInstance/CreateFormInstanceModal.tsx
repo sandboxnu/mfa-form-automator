@@ -47,7 +47,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
   const [selectedFormTemplate, setSelectedFormTemplate] =
     useState<FormTemplateEntity | null>(null);
-  const { mockBlob: formBlob } = useStorage(selectedFormTemplate);
+  const { formBlob } = useStorage(selectedFormTemplate);
   const [formTypeSelected, setFormTypeSelected] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
