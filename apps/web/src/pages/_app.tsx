@@ -27,41 +27,47 @@ export default function App({
 
   if (authTestingPaths.includes(appProps.router.pathname)) {
     return (
-      <SessionProvider session={session}>
-        <QueryClientProvider client={queryClient}>
-          <ChakraProvider theme={theme}>
-            <Component {...pageProps} />
-          </ChakraProvider>
-        </QueryClientProvider>
-      </SessionProvider>
-    );
-  }
-
-  if (excludeLayoutPaths.includes(appProps.router.pathname)) {
-    return (
-      <SessionProvider session={session}>
-        <AuthProvider>
+      <>
+        <SessionProvider session={session}>
           <QueryClientProvider client={queryClient}>
             <ChakraProvider theme={theme}>
               <Component {...pageProps} />
             </ChakraProvider>
           </QueryClientProvider>
-        </AuthProvider>
-      </SessionProvider>
+        </SessionProvider>
+      </>
+    );
+  }
+
+  if (excludeLayoutPaths.includes(appProps.router.pathname)) {
+    return (
+      <>
+        <SessionProvider session={session}>
+          <AuthProvider>
+            <QueryClientProvider client={queryClient}>
+              <ChakraProvider theme={theme}>
+                <Component {...pageProps} />
+              </ChakraProvider>
+            </QueryClientProvider>
+          </AuthProvider>
+        </SessionProvider>
+      </>
     );
   }
 
   return (
-    <SessionProvider session={session}>
-      <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <ChakraProvider theme={theme}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </ChakraProvider>
-        </QueryClientProvider>
-      </AuthProvider>
-    </SessionProvider>
+    <>
+      <SessionProvider session={session}>
+        <AuthProvider>
+          <QueryClientProvider client={queryClient}>
+            <ChakraProvider theme={theme}>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ChakraProvider>
+          </QueryClientProvider>
+        </AuthProvider>
+      </SessionProvider>
+    </>
   );
 }
