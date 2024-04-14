@@ -410,7 +410,7 @@ async function main() {
     },
     {
       id: ANGELA_WEIGL_UUID,
-      firstName: 'Anglea',
+      firstName: 'Angela',
       lastName: 'Weigl',
       email: 'weigl.a@northeastern.edu',
       positionId: AGG_DIR_UUID,
