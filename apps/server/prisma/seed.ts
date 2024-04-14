@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
 
@@ -18,14 +19,38 @@ const CHIEF_OF_STAFF_UUID = '5a5b1c25-8bfe-4418-9ba6-b1420d1fedff';
 const CHIEF_FIN_OFFICER_UUID = 'f7c20346-2158-404c-a753-061ba7049f3d';
 const AGG_DIR_UUID = '81983f2c-c2ae-4010-b578-17cd141afbef';
 const CHIEF_LEARNING_ENGAGEMENT_UUID = '693e8455-50e8-49bc-9d06-755eb24a5bcc';
-const CHIEF_SIG_FIELD_UUID = '33b169ed-e98f-4f72-807d-c31c7cb4230d';
-const MANAGER_SIG_FIELD_UUID = '1727a4d2-b22c-42de-b63d-5f553e964d75';
-const DIR_SIG_FIELD_UUID = '6bd5c08b-f309-4226-8914-7fef4ba631c2';
 
 const ANSHUL_SHIRUDE_UUID = 'b386ef53-d2d1-4bfd-a44c-55b1750a874e';
 const HELEN_MIAO_UUID = 'c6de4017-cb1f-44f1-a707-0f38239e0bca';
 const KAI_ZHENG_UUID = '339cf78e-d13f-4069-b1f7-dee0c64afb31';
 const IRIS_ZHANG_UUID = '777c1974-3104-4744-ae31-7a9296e7784a';
+
+const IT_EXIT_FORM_UUID = '584bf9fd-ea8b-4978-b7de-daa96cb35a03';
+const STAFFING_REQUISITION_UUID = 'd0477fb8-bdd1-4811-8e11-203d8e33feba';
+const NETWORK_ADD_CHANGE_UUID = 'e908c556-bc1f-4b02-8dea-372c56e24d5e';
+const MFA_ORACLE_LOGON_REQUEST_UUID = '5231fd06-690e-4fd8-b309-0db21b8cd202';
+const HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID =
+  '5ed47339-3af2-4b31-9a30-c0a06095f680';
+const VPN_REQUEST_UUID = 'dca7eb51-16b0-4e3d-a3b2-64a57ce60ba0';
+const DIGITAL_MFA_ID_BADGE_REQUEST_UUID =
+  'cab76e75-5bc0-468c-a2c4-df8f21f87e25';
+const TRAVEL_AUTHORIZATION_UUID = 'd5fcfa91-2e05-428d-a2ed-314089955555';
+
+const IT_EXIT_FORM_LINK = 'IT_Exit_Form_584bf9fd-ea8b-4978-b7de-daa96cb35a03';
+const STAFFING_REQUISITION_FORM_LINK =
+  'Staffing_Requisition_d0477fb8-bdd1-4811-8e11-203d8e33feba';
+const NETWORK_ADD_CHANGE_FORM_LINK =
+  'Network_Add_Change_Form_e908c556-bc1f-4b02-8dea-372c56e24d5e';
+const MFA_ORACLE_LOGON_REQUEST_FORM_LINK =
+  'MFA_Oracle_Logon_Request_Form_5231fd06-690e-4fd8-b309-0db21b8cd202';
+const HYBRID_AND_REMOTE_WORK_AGREEMENT_FORM_LINK =
+  'Hybrid_and_Remote_Work_Agreement_Form_5ed47339-3af2-4b31-9a30-c0a06095f680';
+const VPN_REQUEST_FORM_LINK =
+  'VPN_Request_Form_dca7eb51-16b0-4e3d-a3b2-64a57ce60ba0';
+const DIGITAL_MFA_ID_BADGE_REQUEST_FORM_LINK =
+  'Digital_MFA_ID_Badge_Request_Form_cab76e75-5bc0-468c-a2c4-df8f21f87e25';
+const TRAVEL_AUTHORIZATION_FORM_LINK =
+  'Travel_Authorization_Form_Excample_d5fcfa91-2e05-428d-a2ed-314089955555';
 
 // type definition for employee data used in upsertEmployee
 type EmployeeData = {
@@ -97,9 +122,9 @@ async function fetchSignatureFields(
   // hard coded signature fields
   const signatureFieldNames = ['Chief', 'Manager', 'Director'];
   const signatureFieldIds: { [key: string]: string } = {
-    Chief: CHIEF_SIG_FIELD_UUID,
-    Manager: MANAGER_SIG_FIELD_UUID,
-    Director: DIR_SIG_FIELD_UUID,
+    Chief: uuidv4(),
+    Manager: uuidv4(),
+    Director: uuidv4(),
   };
 
   const signatureFieldsMap: SignatureFieldMap = {};
@@ -170,19 +195,107 @@ async function upsertFormInstance(formInstanceData: FormInstanceData) {
 */
 
 async function main() {
-  const testFormLink =
-    'Form_Template Test _547fba69-490e-40af-8f72-70eab3815e0e';
   // form template
-  const formTemplate1Id = '1fbccd8a-b00c-472f-a94f-defa8e86e0cf';
   await prisma.formTemplate.upsert({
-    where: { id: formTemplate1Id },
+    where: { id: IT_EXIT_FORM_UUID },
     update: {},
     create: {
-      id: formTemplate1Id,
-      name: 'Form Template 1',
-      formDocLink: testFormLink,
+      id: IT_EXIT_FORM_UUID,
+      name: 'IT Exit Form',
+      formDocLink: IT_EXIT_FORM_LINK,
     },
   });
+
+  await prisma.formTemplate.upsert({
+    where: { id: STAFFING_REQUISITION_UUID },
+    update: {},
+    create: {
+      id: STAFFING_REQUISITION_UUID,
+      name: 'Staffing Requisition',
+      formDocLink: STAFFING_REQUISITION_FORM_LINK,
+    },
+  });
+
+  await prisma.formTemplate.upsert({
+    where: { id: NETWORK_ADD_CHANGE_UUID },
+    update: {},
+    create: {
+      id: NETWORK_ADD_CHANGE_UUID,
+      name: 'Network Add Change',
+      formDocLink: NETWORK_ADD_CHANGE_FORM_LINK,
+    },
+  });
+
+  await prisma.formTemplate.upsert({
+    where: { id: MFA_ORACLE_LOGON_REQUEST_UUID },
+    update: {},
+    create: {
+      id: MFA_ORACLE_LOGON_REQUEST_UUID,
+      name: 'MFA Oracle Logon Request',
+      formDocLink: MFA_ORACLE_LOGON_REQUEST_FORM_LINK,
+    },
+  });
+
+  await prisma.formTemplate.upsert({
+    where: { id: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID },
+    update: {},
+    create: {
+      id: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
+      name: 'Hybrid and Remote Work Agreement',
+      formDocLink: HYBRID_AND_REMOTE_WORK_AGREEMENT_FORM_LINK,
+    },
+  });
+
+  await prisma.formTemplate.upsert({
+    where: { id: VPN_REQUEST_UUID },
+    update: {},
+    create: {
+      id: VPN_REQUEST_UUID,
+      name: 'VPN Request',
+      formDocLink: VPN_REQUEST_FORM_LINK,
+    },
+  });
+
+  await prisma.formTemplate.upsert({
+    where: { id: DIGITAL_MFA_ID_BADGE_REQUEST_UUID },
+    update: {},
+    create: {
+      id: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
+      name: 'Digital MFA ID Badge Request',
+      formDocLink: DIGITAL_MFA_ID_BADGE_REQUEST_FORM_LINK,
+    },
+  });
+
+  await prisma.formTemplate.upsert({
+    where: { id: TRAVEL_AUTHORIZATION_UUID },
+    update: {},
+    create: {
+      id: TRAVEL_AUTHORIZATION_UUID,
+      name: 'Travel Authorization',
+      formDocLink: TRAVEL_AUTHORIZATION_FORM_LINK,
+    },
+  });
+
+  const IT_EXIT_FORM_SIGNATURE_FIELDS =
+    await fetchSignatureFields(IT_EXIT_FORM_UUID);
+  const STAFFING_REQUISITION_SIGNATURE_FIELDS = await fetchSignatureFields(
+    STAFFING_REQUISITION_UUID,
+  );
+  const NETWORK_ADD_CHANGE_SIGNATURE_FIELDS = await fetchSignatureFields(
+    NETWORK_ADD_CHANGE_UUID,
+  );
+  const MFA_ORACLE_LOGON_REQUEST_SIGNATURE_FIELDS = await fetchSignatureFields(
+    MFA_ORACLE_LOGON_REQUEST_UUID,
+  );
+  const HYBRID_AND_REMOTE_WORK_AGREEMENT_SIGNATURE_FIELDS =
+    await fetchSignatureFields(HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID);
+  const VPN_REQUEST_SIGNATURE_FIELDS =
+    await fetchSignatureFields(VPN_REQUEST_UUID);
+  const DIGITAL_MFA_ID_BADGE_REQUEST_SIGNATURE_FIELDS =
+    await fetchSignatureFields(DIGITAL_MFA_ID_BADGE_REQUEST_UUID);
+  const TRAVEL_AUTHORIZATION_SIGNATURE_FIELDS = await fetchSignatureFields(
+    TRAVEL_AUTHORIZATION_UUID,
+  );
 
   // leadership team department
   const departmentLeadershipTeam = await prisma.department.upsert({
@@ -194,35 +307,67 @@ async function main() {
     },
   });
 
-  // signature fields
-  const signatureFieldsMap: SignatureFieldMap =
-    await fetchSignatureFields(formTemplate1Id);
-
   // positions
   const positions = [
     {
       id: CHIEF_OF_STAFF_UUID,
       name: 'Chief of Staff',
       departmentId: departmentLeadershipTeam.id,
-      signatureFields: [signatureFieldsMap['Chief']],
+      signatureFields: [
+        IT_EXIT_FORM_SIGNATURE_FIELDS['Chief'],
+        STAFFING_REQUISITION_SIGNATURE_FIELDS['Chief'],
+        NETWORK_ADD_CHANGE_SIGNATURE_FIELDS['Chief'],
+        MFA_ORACLE_LOGON_REQUEST_SIGNATURE_FIELDS['Chief'],
+        HYBRID_AND_REMOTE_WORK_AGREEMENT_SIGNATURE_FIELDS['Chief'],
+        VPN_REQUEST_SIGNATURE_FIELDS['Chief'],
+        DIGITAL_MFA_ID_BADGE_REQUEST_SIGNATURE_FIELDS['Chief'],
+        TRAVEL_AUTHORIZATION_SIGNATURE_FIELDS['Chief'],
+      ],
     },
     {
       id: CHIEF_FIN_OFFICER_UUID,
       name: 'Chief Financial Officer',
       departmentId: departmentLeadershipTeam.id,
-      signatureFields: [signatureFieldsMap['Chief']],
+      signatureFields: [
+        IT_EXIT_FORM_SIGNATURE_FIELDS['Chief'],
+        STAFFING_REQUISITION_SIGNATURE_FIELDS['Chief'],
+        NETWORK_ADD_CHANGE_SIGNATURE_FIELDS['Chief'],
+        MFA_ORACLE_LOGON_REQUEST_SIGNATURE_FIELDS['Chief'],
+        HYBRID_AND_REMOTE_WORK_AGREEMENT_SIGNATURE_FIELDS['Chief'],
+        VPN_REQUEST_SIGNATURE_FIELDS['Chief'],
+        DIGITAL_MFA_ID_BADGE_REQUEST_SIGNATURE_FIELDS['Chief'],
+        TRAVEL_AUTHORIZATION_SIGNATURE_FIELDS['Chief'],
+      ],
     },
     {
       id: AGG_DIR_UUID,
       name: 'AGG Director',
       departmentId: departmentLeadershipTeam.id,
-      signatureFields: [signatureFieldsMap['Director']],
+      signatureFields: [
+        IT_EXIT_FORM_SIGNATURE_FIELDS['Director'],
+        STAFFING_REQUISITION_SIGNATURE_FIELDS['Director'],
+        NETWORK_ADD_CHANGE_SIGNATURE_FIELDS['Director'],
+        MFA_ORACLE_LOGON_REQUEST_SIGNATURE_FIELDS['Director'],
+        HYBRID_AND_REMOTE_WORK_AGREEMENT_SIGNATURE_FIELDS['Director'],
+        VPN_REQUEST_SIGNATURE_FIELDS['Director'],
+        DIGITAL_MFA_ID_BADGE_REQUEST_SIGNATURE_FIELDS['Director'],
+        TRAVEL_AUTHORIZATION_SIGNATURE_FIELDS['Director'],
+      ],
     },
     {
       id: CHIEF_LEARNING_ENGAGEMENT_UUID,
       name: 'Chief of Learning & Community Engagement',
       departmentId: departmentLeadershipTeam.id,
-      signatureFields: [signatureFieldsMap['Manager']],
+      signatureFields: [
+        IT_EXIT_FORM_SIGNATURE_FIELDS['Manager'],
+        STAFFING_REQUISITION_SIGNATURE_FIELDS['Manager'],
+        NETWORK_ADD_CHANGE_SIGNATURE_FIELDS['Manager'],
+        MFA_ORACLE_LOGON_REQUEST_SIGNATURE_FIELDS['Manager'],
+        HYBRID_AND_REMOTE_WORK_AGREEMENT_SIGNATURE_FIELDS['Manager'],
+        VPN_REQUEST_SIGNATURE_FIELDS['Manager'],
+        DIGITAL_MFA_ID_BADGE_REQUEST_SIGNATURE_FIELDS['Manager'],
+        TRAVEL_AUTHORIZATION_SIGNATURE_FIELDS['Manager'],
+      ],
     },
   ];
 
@@ -257,7 +402,7 @@ async function main() {
       id: ANSHUL_SHIRUDE_UUID,
       firstName: 'Anshul',
       lastName: 'Shirude',
-      email: 'email4@kaiyangzhenggmail.onmicrosoft.com',
+      email: 'email1@kaiyangzhenggmail.onmicrosoft.com',
       positionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
     },
   ];
@@ -270,19 +415,19 @@ async function main() {
   const formInstances = [
     {
       id: '855498f1-0a8c-44a8-8159-26e28ab8eca0',
-      name: 'First Form Instance',
-      formDocLink: testFormLink,
-      originatorId: '777c1974-3104-4744-ae31-7a9296e7784a',
-      formTemplateId: '1fbccd8a-b00c-472f-a94f-defa8e86e0cf',
+      name: 'IT Exit Form Instance',
+      formDocLink: IT_EXIT_FORM_LINK,
+      originatorId: KAI_ZHENG_UUID,
+      formTemplateId: IT_EXIT_FORM_UUID,
       signatures: [
         {
-          id: '86e14052-f953-4188-8188-933511d0b1ea',
+          id: '087229bf-ce86-449b-aa0b-56c83744acf3',
           order: 0,
           signerPositionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
           assignedUserId: ANSHUL_SHIRUDE_UUID,
         },
         {
-          id: 'd4ecf386-1e43-427e-803b-cbb216d84ec5',
+          id: '760b9266-f165-4551-bf8e-53cfae73b67d',
           order: 1,
           signerPositionId: AGG_DIR_UUID,
           assignedUserId: HELEN_MIAO_UUID,
@@ -291,13 +436,13 @@ async function main() {
     },
     {
       id: '1c50e8ed-b6d7-4205-bfd7-dce825c63040',
-      name: 'Second Form Instance',
-      formDocLink: testFormLink,
-      originatorId: '777c1974-3104-4744-ae31-7a9296e7784a',
-      formTemplateId: '1fbccd8a-b00c-472f-a94f-defa8e86e0cf',
+      name: 'Staffing Requisition Form Instance',
+      formDocLink: STAFFING_REQUISITION_FORM_LINK,
+      originatorId: IRIS_ZHANG_UUID,
+      formTemplateId: STAFFING_REQUISITION_UUID,
       signatures: [
         {
-          id: '6dadcc5a-06eb-4822-b20c-a53f0978b8c0',
+          id: 'b3c7c3ce-9d87-4369-b6b5-6c85e151e7fa',
           order: 0,
           signerPositionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
           assignedUserId: ANSHUL_SHIRUDE_UUID,
@@ -306,16 +451,91 @@ async function main() {
     },
     {
       id: '0affdf33-3c4b-42bf-99af-8ef47d231f41',
-      name: 'Third Form Instance',
-      formDocLink: testFormLink,
-      originatorId: '339cf78e-d13f-4069-b1f7-dee0c64afb31',
-      formTemplateId: '1fbccd8a-b00c-472f-a94f-defa8e86e0cf',
+      name: 'Network Add Change Form Instance',
+      formDocLink: NETWORK_ADD_CHANGE_FORM_LINK,
+      originatorId: ANSHUL_SHIRUDE_UUID,
+      formTemplateId: NETWORK_ADD_CHANGE_UUID,
       signatures: [
         {
-          id: '6f104e9b-27db-4c39-9668-acd7e533e115',
+          id: '2c6db7e8-8418-4e84-9621-07805850fb46',
           order: 0,
           signerPositionId: AGG_DIR_UUID,
           assignedUserId: HELEN_MIAO_UUID,
+        },
+      ],
+    },
+    {
+      id: '0ff583fd-8e8c-41c5-9207-51affdf1f677',
+      name: 'MFA Oracle Logon Request Form Instance',
+      formDocLink: MFA_ORACLE_LOGON_REQUEST_FORM_LINK,
+      originatorId: HELEN_MIAO_UUID,
+      formTemplateId: MFA_ORACLE_LOGON_REQUEST_UUID,
+      signatures: [
+        {
+          id: '67a66ebc-4ce8-4e9e-872a-beb81fc7fde4',
+          order: 0,
+          signerPositionId: CHIEF_FIN_OFFICER_UUID,
+          assignedUserId: KAI_ZHENG_UUID,
+        },
+      ],
+    },
+    {
+      id: '0daf753e-25e4-4eea-834b-dccda5bba71c',
+      name: 'Hybrid and Remote Work Agreement Form Instance',
+      formDocLink: HYBRID_AND_REMOTE_WORK_AGREEMENT_FORM_LINK,
+      originatorId: ANSHUL_SHIRUDE_UUID,
+      formTemplateId: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
+      signatures: [
+        {
+          id: '6518fb90-ca64-4b5c-8bec-cf813649cf27',
+          order: 0,
+          signerPositionId: CHIEF_OF_STAFF_UUID,
+          assignedUserId: IRIS_ZHANG_UUID,
+        },
+      ],
+    },
+    {
+      id: 'b91f0c84-f1c0-440a-8a54-8ebc40dd3e9a',
+      name: 'VPN Request Form Instance',
+      formDocLink: VPN_REQUEST_FORM_LINK,
+      originatorId: IRIS_ZHANG_UUID,
+      formTemplateId: VPN_REQUEST_UUID,
+      signatures: [
+        {
+          id: '8a39729d-c41e-4b62-a66f-8eac9e29316b',
+          order: 0,
+          signerPositionId: CHIEF_OF_STAFF_UUID,
+          assignedUserId: IRIS_ZHANG_UUID,
+        },
+      ],
+    },
+    {
+      id: 'c1d27580-77fa-40f6-8ae8-4134b8eb49aa',
+      name: 'Digital MFA ID Badge Request Form Instance',
+      formDocLink: DIGITAL_MFA_ID_BADGE_REQUEST_FORM_LINK,
+      originatorId: KAI_ZHENG_UUID,
+      formTemplateId: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
+      signatures: [
+        {
+          id: '6e3b78b7-78dc-4b77-872b-708392038940',
+          order: 0,
+          signerPositionId: CHIEF_OF_STAFF_UUID,
+          assignedUserId: IRIS_ZHANG_UUID,
+        },
+      ],
+    },
+    {
+      id: 'fa0a3093-acc0-4e93-a96c-adefbd94fcda',
+      name: 'Travel Authorization Form Instance',
+      formDocLink: TRAVEL_AUTHORIZATION_FORM_LINK,
+      originatorId: HELEN_MIAO_UUID,
+      formTemplateId: TRAVEL_AUTHORIZATION_UUID,
+      signatures: [
+        {
+          id: 'dd179a4a-e153-4e8c-93bf-3e3cc975f7d5',
+          order: 0,
+          signerPositionId: CHIEF_OF_STAFF_UUID,
+          assignedUserId: IRIS_ZHANG_UUID,
         },
       ],
     },
