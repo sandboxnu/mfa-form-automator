@@ -16,9 +16,21 @@ import {
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
+import { PositionsService } from '@web/client';
+import { useQuery } from '@tanstack/react-query';
 
 export const TopBar: React.FC = () => {
   const { user, signOut } = useAuth();
+  const { data: positions, error: positionsError } = useQuery({
+    queryKey: ['api', 'positions'],
+    queryFn: () => PositionsService.positionsControllerFindAll(),
+  });
+
+  const userPosition = positions?.find(
+    (position) => position.id === user?.positionId,
+  );
+  // const userPosition = PositionsService.positionsControllerFindOne(user?.positionId);
+  // const userPositionName = userPosition.name;
 
   return (
     <Flex
@@ -74,10 +86,14 @@ export const TopBar: React.FC = () => {
                 <PopoverBody borderRadius="6px" p="0">
                   <Box pl="24px" pb="14px">
                     <Text fontSize="18px" cursor="default" pt="18px">
-                      {user?.firstName + ' ' + user?.lastName}
+                      {user?.firstName && user?.lastName
+                        ? user.firstName + ' ' + user.lastName
+                        : 'Firstname Lastname'}
                     </Text>
                     <Text color="#888888" fontSize="18px" cursor="default">
-                      Position
+                      {userPosition && userPosition.name
+                        ? userPosition.name
+                        : 'Position'}
                     </Text>
                   </Box>
                   <Divider />
