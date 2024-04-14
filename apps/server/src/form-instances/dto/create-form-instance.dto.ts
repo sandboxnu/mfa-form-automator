@@ -25,4 +25,8 @@ export class CreateFormInstanceDto {
   @IsNotEmpty()
   @ApiProperty()
   formTemplateId: string;
+
+  @IsString()
+  @ApiProperty()
+  formDocLink: string;
 }

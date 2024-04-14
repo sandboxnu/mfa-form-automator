@@ -15,8 +15,8 @@ export type SignatureEntity = {
     updatedAt: string;
     signerPositionId: string;
     signerPosition: PositionBaseEntity;
-    assignedUserId: string;
-    assignedUser: EmployeeBaseEntity;
+    assignedUserId: string | null;
+    assignedUser: EmployeeBaseEntity | null;
     formInstanceId: string;
 };
 

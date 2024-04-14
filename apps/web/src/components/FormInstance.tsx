@@ -8,7 +8,6 @@ import {
   Spacer,
   useToast,
   Heading,
-  Avatar,
 } from '@chakra-ui/react';
 import {
   LeftArrowIcon,
@@ -18,12 +17,19 @@ import {
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
 import { useEffect, useState } from 'react';
-import { FormInstanceEntity, FormInstancesService } from '@web/client';
+import {
+  FormInstanceEntity,
+  FormInstancesService,
+  UpdateFormInstanceDto,
+} from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import { useStorage } from '@web/hooks/useStorage';
+import { PDFDocument } from 'pdf-lib';
+import { storage } from '@web/services/storage.service';
+import { v4 as uuidv4 } from 'uuid';
 
 const FormInstance = ({
   formInstance,
@@ -40,6 +46,41 @@ const FormInstance = ({
   useEffect(() => {
     if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
   }, [formBlob]);
+
+  // very temporary solution
+  // TODO: add real signature
+  const addSignature = async () => {
+    if (!formBlob) return;
+    const pdfDoc = await PDFDocument.load(await formBlob.arrayBuffer());
+
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+    const { width, height } = firstPage.getSize();
+
+    const x = width / 2 - 50;
+    const y = Math.random() * height;
+
+    firstPage.drawText(user?.firstName + ' ' + user?.lastName, {
+      x,
+      y,
+      size: 20,
+    });
+
+    firstPage.drawText(new Date().toLocaleDateString(), {
+      x,
+      y: y - 20,
+      size: 20,
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    const newBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+    const newFile = new File([newBlob], formInstance.formDocLink, {
+      type: 'application/pdf',
+    });
+
+    await storage.uploadBlob(newFile, formInstance.formDocLink);
+  };
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
@@ -78,6 +119,7 @@ const FormInstance = ({
 
   const _handleFormSign = async () => {
     if (_nextSignature == null || !_userCanSign) return;
+    await addSignature();
     signFormInstanceMutation
       .mutateAsync({
         formInstanceId: formInstance.id,
@@ -87,6 +129,7 @@ const FormInstance = ({
         throw e;
       });
   };
+
   const _handleFormApprove = async () => {
     if (formInstance.markedCompleted) return;
     completeFormInstanceMutation.mutateAsync(formInstance.id).catch((e) => {
@@ -280,9 +323,9 @@ const FormInstance = ({
           <AssigneeMap
             assignees={formInstance.signatures.map((signature) => ({
               name:
-                signature.assignedUser.firstName +
+                signature?.assignedUser?.firstName +
                 ' ' +
-                signature.assignedUser.lastName,
+                signature?.assignedUser?.lastName,
               signed: signature.signed,
               title: signature.signerPosition.name,
               updatedAt: signature.updatedAt,

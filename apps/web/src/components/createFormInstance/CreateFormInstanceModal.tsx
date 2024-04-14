@@ -35,6 +35,8 @@ import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
 import { useStorage } from '@web/hooks/useStorage';
+import { v4 as uuidv4 } from 'uuid';
+import { storage } from '@web/services/storage.service';
 
 // TODO
 // fix form type dropdown bug
@@ -84,7 +86,13 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   }, [selectedFormTemplate]);
 
   const submitFormInstance = async () => {
-    createFormInstanceMutation
+    if (!selectedFormTemplate) return;
+
+    const uuid = uuidv4();
+    const newFormLink =
+      selectedFormTemplate.name.replaceAll(' ', '_') + '_instance_' + uuid;
+
+    await createFormInstanceMutation
       .mutateAsync({
         name: formName, // Use the updated form name
         signatures: signaturePositions.map((pos, i) => {
@@ -96,6 +104,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         }),
         originatorId: user?.id!,
         formTemplateId: selectedFormTemplate?.id!,
+        formDocLink: newFormLink, // create new form link for each form instance
       })
       .then((response) => {
         handleModalClose();
@@ -104,7 +113,18 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       .catch((e) => {
         throw e;
       });
+
+    const blob = await storage.downloadBlob(selectedFormTemplate?.formDocLink!);
+
+    const newFile = new File([blob!], newFormLink, {
+      type: 'application/pdf',
+    });
+
+    console.log(newFormLink);
+
+    await storage.uploadBlob(newFile, newFormLink);
   };
+
   useEffect(() => {
     if (selectedFormTemplate) {
       setFormName(selectedFormTemplate.name);

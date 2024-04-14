@@ -5,5 +5,6 @@
 
 export type UpdateFormInstanceDto = {
     name?: string;
+    formDocLink?: string;
 };
 
