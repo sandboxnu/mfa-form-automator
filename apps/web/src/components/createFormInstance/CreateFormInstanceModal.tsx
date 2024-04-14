@@ -48,6 +48,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [selectedFormTemplate, setSelectedFormTemplate] =
     useState<FormTemplateEntity | null>(null);
   const { formBlob } = useStorage(selectedFormTemplate);
+  const [formURL, setFormURL] = useState<string | null>(null);
   const [formTypeSelected, setFormTypeSelected] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
@@ -109,6 +110,10 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
       setFormName(selectedFormTemplate.name);
     }
   }, [selectedFormTemplate]);
+
+  useEffect(() => {
+    if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
+  }, [formBlob]);
 
   const handleModalClose = () => {
     onClose();
@@ -223,9 +228,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
               {!selectedFormTemplate && (
                 <Skeleton h="518px" background="gray" marginTop="12px" />
               )}
-              {formBlob && selectedFormTemplate && (
+              {formURL && selectedFormTemplate && (
                 <embed
-                  src={URL.createObjectURL(formBlob!)}
+                  src={formURL}
                   type="application/pdf"
                   width="400px"
                   height="500px"
