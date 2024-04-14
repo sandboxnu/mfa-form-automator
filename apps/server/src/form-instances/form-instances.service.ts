@@ -85,7 +85,7 @@ export class FormInstancesService {
     const newFormInstance = await this.prisma.formInstance.create({
       data: {
         name: createFormInstanceDto.name,
-        formDocLink: formTemplate.formDocLink,
+        formDocLink: createFormInstanceDto.formDocLink,
         signatures: { create: createFormInstanceDto.signatures },
         originator: {
           connect: {
@@ -240,6 +240,7 @@ export class FormInstancesService {
       },
       data: {
         name: updateFormInstanceDto.name,
+        formDocLink: updateFormInstanceDto.formDocLink,
         // signatures: { create: updateFormInstanceDto.signatures },
       },
       include: {

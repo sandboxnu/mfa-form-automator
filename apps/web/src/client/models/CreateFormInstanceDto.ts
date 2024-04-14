@@ -10,5 +10,6 @@ export type CreateFormInstanceDto = {
     signatures: Array<CreateSignatureDto>;
     originatorId: string;
     formTemplateId: string;
+    formDocLink: string;
 };
 
