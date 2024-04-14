@@ -21,7 +21,7 @@ const AGG_DIR_UUID = '81983f2c-c2ae-4010-b578-17cd141afbef';
 const CHIEF_LEARNING_ENGAGEMENT_UUID = '693e8455-50e8-49bc-9d06-755eb24a5bcc';
 
 const ANSHUL_SHIRUDE_UUID = 'b386ef53-d2d1-4bfd-a44c-55b1750a874e';
-const HELEN_MIAO_UUID = 'c6de4017-cb1f-44f1-a707-0f38239e0bca';
+const ANGELA_WEIGL_UUID = 'c6de4017-cb1f-44f1-a707-0f38239e0bca';
 const KAI_ZHENG_UUID = '339cf78e-d13f-4069-b1f7-dee0c64afb31';
 const IRIS_ZHANG_UUID = '777c1974-3104-4744-ae31-7a9296e7784a';
 
@@ -409,9 +409,9 @@ async function main() {
       positionId: CHIEF_FIN_OFFICER_UUID,
     },
     {
-      id: HELEN_MIAO_UUID,
-      firstName: 'Helen',
-      lastName: 'Miao',
+      id: ANGELA_WEIGL_UUID,
+      firstName: 'Anglea',
+      lastName: 'Weigl',
       email: 'weigl.a@northeastern.edu',
       positionId: AGG_DIR_UUID,
     },
@@ -447,7 +447,7 @@ async function main() {
           id: '760b9266-f165-4551-bf8e-53cfae73b67d',
           order: 1,
           signerPositionId: AGG_DIR_UUID,
-          assignedUserId: HELEN_MIAO_UUID,
+          assignedUserId: ANGELA_WEIGL_UUID,
         },
       ],
     },
@@ -477,7 +477,7 @@ async function main() {
           id: '2c6db7e8-8418-4e84-9621-07805850fb46',
           order: 0,
           signerPositionId: AGG_DIR_UUID,
-          assignedUserId: HELEN_MIAO_UUID,
+          assignedUserId: ANGELA_WEIGL_UUID,
         },
       ],
     },
@@ -485,7 +485,7 @@ async function main() {
       id: '0ff583fd-8e8c-41c5-9207-51affdf1f677',
       name: 'MFA Oracle Logon Request Form Instance',
       formDocLink: MFA_ORACLE_LOGON_REQUEST_FORM_LINK_INSTANCE_UUID,
-      originatorId: HELEN_MIAO_UUID,
+      originatorId: ANGELA_WEIGL_UUID,
       formTemplateId: MFA_ORACLE_LOGON_REQUEST_UUID,
       signatures: [
         {
@@ -545,7 +545,7 @@ async function main() {
       id: 'fa0a3093-acc0-4e93-a96c-adefbd94fcda',
       name: 'Travel Authorization Form Instance',
       formDocLink: TRAVEL_AUTHORIZATION_FORM_LINK_INSTANCE_UUID,
-      originatorId: HELEN_MIAO_UUID,
+      originatorId: ANGELA_WEIGL_UUID,
       formTemplateId: TRAVEL_AUTHORIZATION_UUID,
       signatures: [
         {
