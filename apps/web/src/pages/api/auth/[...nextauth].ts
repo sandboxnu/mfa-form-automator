@@ -45,6 +45,7 @@ export const authOptions = {
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET || 'next-auth-secret',
   callbacks: {
     async jwt({ token, account, profile }: any) {
       // Persist the OAuth access_token and or the user id to the token right after signin
@@ -82,7 +83,6 @@ export const authOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || 'next-auth-secret',
 };
 
 export default NextAuth(authOptions);
