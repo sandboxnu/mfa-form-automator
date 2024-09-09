@@ -1,4 +1,4 @@
-import { Button, Box, Text } from '@chakra-ui/react';
+import { Button, Box } from '@chakra-ui/react';
 import { Flex } from '@chakra-ui/react';
 import { MFALogoIcon } from '@web/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
