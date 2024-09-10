@@ -17,7 +17,6 @@ import {
   DeleteIcon,
   DraggerIcon,
 } from '@web/static/icons';
-import { useState } from 'react';
 import { TempSignatureField } from './types';
 
 export const SignatureField = ({
@@ -29,15 +28,8 @@ export const SignatureField = ({
   handleChange: (newSignatureField: TempSignatureField) => void;
   handleDelete: (id: string) => void;
 }) => {
-  const [value, setValue] = useState<TempSignatureField>(field);
-
   const SignatureFieldEditableControls = () => {
-    const {
-      isEditing,
-      getSubmitButtonProps,
-      getCancelButtonProps,
-      getEditButtonProps,
-    } = useEditableControls();
+    const { isEditing, getEditButtonProps } = useEditableControls();
 
     return isEditing ? (
       <Flex justifyContent="center">
@@ -45,8 +37,8 @@ export const SignatureField = ({
           <IconButton
             aria-label="Submit"
             icon={<CompletedIcon />}
-            isDisabled={value.value === ''}
-            onSubmit={() => handleChange(value)}
+            isDisabled={field.value === ''}
+            onSubmit={() => handleChange(field)}
           >
             Submit
           </IconButton>
@@ -67,7 +59,7 @@ export const SignatureField = ({
             size="sm"
             background="transparent"
             icon={<DeleteIcon />}
-            onClick={() => handleDelete(value.id)}
+            onClick={() => handleDelete(field.id)}
           />
         </ButtonGroup>
       </Flex>
@@ -76,7 +68,7 @@ export const SignatureField = ({
 
   return (
     <>
-      {value.value === '' ? (
+      {field.value === '' ? (
         <Text
           fontFamily="Hanken Grotesk"
           fontSize="12px"
@@ -93,7 +85,7 @@ export const SignatureField = ({
         <DraggerIcon />
         <Editable
           fontFamily="Hanken Grotesk"
-          defaultValue={value.value}
+          defaultValue={field.value}
           fontSize="16px"
           fontWeight="400"
           isPreviewFocusable={false}
@@ -101,7 +93,7 @@ export const SignatureField = ({
           justifyContent="space-between"
           alignItems="center"
           w="100%"
-          startWithEditView={value.value === ''}
+          startWithEditView={field.value === ''}
         >
           <Box w="100%" pr="5px">
             <EditablePreview />
@@ -109,7 +101,7 @@ export const SignatureField = ({
               as={EditableInput}
               value={field.value}
               onChange={(e) =>
-                handleChange({ id: value.id, value: e.target.value })
+                handleChange({ id: field.id, value: e.target.value })
               }
               w="100%"
             />

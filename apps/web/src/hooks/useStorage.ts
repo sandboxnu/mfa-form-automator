@@ -8,7 +8,6 @@ export const useStorage = (
 ) => {
   const [formBlob, setFormBlob] = useState<Blob | null>(null);
 
-  // This needs to be uncommented once storage is set up
   useEffect(() => {
     async function fetchFormBlob() {
       const blob = (await storage.downloadBlob(form?.formDocLink!)) as Blob;

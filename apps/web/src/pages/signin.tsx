@@ -43,6 +43,7 @@ export default function Signin() {
               }
             />
             <Input
+              type="password"
               placeholder="Password"
               marginBottom="20px"
               value={loginForm.password}
