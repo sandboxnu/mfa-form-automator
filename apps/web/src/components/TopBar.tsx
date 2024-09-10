@@ -19,7 +19,9 @@ import { useAuth } from '@web/hooks/useAuth';
 import { PositionsService } from '@web/client';
 import { useQuery } from '@tanstack/react-query';
 
-// top bar component for the application
+/**
+ * @returns Top bar component
+ */
 export const TopBar: React.FC = () => {
   const { user, logout } = useAuth();
   const { data: positions, error: positionsError } = useQuery({

@@ -26,6 +26,10 @@ import { useStorage } from '@web/hooks/useStorage';
 import { PDFDocument } from 'pdf-lib';
 import { storage } from '@web/services/storage.service';
 
+/**
+ * @param formInstance - Form instance to display
+ * @returns Component for displaying a form instance
+ */
 const FormInstance = ({
   formInstance,
 }: {
@@ -42,8 +46,6 @@ const FormInstance = ({
     if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
   }, [formBlob]);
 
-  // very temporary solution
-  // TODO: add real signature
   const addSignature = async () => {
     if (!formBlob) return;
     const pdfDoc = await PDFDocument.load(await formBlob.arrayBuffer());

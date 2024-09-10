@@ -13,6 +13,13 @@ const assigneePlaceholderWithIcon = (
   </div>
 );
 
+/**
+ * @param field - Signature field entity
+ * @param index - Index of the signature field in the form
+ * @param positions - List of positions
+ * @param signaturePositions - List of signature positions
+ * @returns Dropdown for selecting a signature assignee
+ */
 export const SignatureDropdown = ({
   field,
   index,

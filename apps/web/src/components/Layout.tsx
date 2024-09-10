@@ -5,7 +5,10 @@ import { CreateFormTemplateModal } from './createFormTemplate/CreateFormTemplate
 import { useAuth } from '@web/hooks/useAuth';
 import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal';
 
-// common layout component for all pages
+/**
+ * @param children - Child components to render
+ * @returns Layout component for the application
+ */
 export const Layout = ({ children }: { children: any }) => {
   const {
     isOpen: isCreateFormTemplateOpen,
@@ -36,7 +39,6 @@ export const Layout = ({ children }: { children: any }) => {
       />
       <Box>
         <TopBar />
-
         <Box as="main" ml="320" pt="96px">
           {children}
         </Box>

@@ -7,6 +7,9 @@ import {
 import { useAuth } from './useAuth';
 import { useQuery } from '@tanstack/react-query';
 
+/**
+ * @returns Form instances assigned to the current user, forms created by the current user that are pending, and forms created by the current user that are completed
+ */
 export const useForm = () => {
   const { user } = useAuth();
 

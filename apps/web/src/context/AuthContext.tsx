@@ -18,6 +18,10 @@ export const AuthContext = createContext<AuthContextType>(
   {} as AuthContextType,
 );
 
+/**
+ * @param children - Children components that will be wrapped by the AuthProvider
+ * @returns Component that provides authentication context, state, and methods
+ */
 export const AuthProvider = ({ children }: any) => {
   const router = useRouter();
   const [user, setUser] = useState<User>();

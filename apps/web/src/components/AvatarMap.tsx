@@ -12,6 +12,10 @@ type AvatarMapProps = {
   assignees: Assignee[];
 };
 
+/**
+ * @param assignees - List of assignees
+ * @returns Component that maps assignees to their respective avatars
+ */
 const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
   let previousSigned = true;
   return (

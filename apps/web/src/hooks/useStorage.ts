@@ -2,7 +2,10 @@ import { FormInstanceEntity, FormTemplateEntity } from '@web/client';
 import { useEffect, useState } from 'react';
 import { storage } from './../services/storage.service';
 
-// hook to fetch form blob from storage
+/**
+ * @param form - Form instance or form template
+ * @returns Form blob for the form instance or form template
+ */
 export const useStorage = (
   form: FormInstanceEntity | FormTemplateEntity | null,
 ) => {

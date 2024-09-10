@@ -4,7 +4,13 @@ import { RightArrowIcon } from 'apps/web/src/static/icons';
 import Link from 'next/link';
 import { FormInstanceEntity } from '@web/client';
 
-// abstraction for a row of cards in the overview page
+/**
+ * @param title - Title of the overview row
+ * @param color - Color of the overview row
+ * @param link - Link to the overview row
+ * @param formInstances - List of form instances
+ * @returns Row of form instances to be displayed in a form list on the dashboard
+ */
 export const OverviewRow = ({
   title,
   color,

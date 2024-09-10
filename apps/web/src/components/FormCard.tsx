@@ -2,7 +2,12 @@ import { Box, Text, Avatar, AvatarGroup, Tooltip } from '@chakra-ui/react';
 import { SignatureEntity } from './../../../web/src/client';
 import { useRouter } from 'next/router';
 
-// form component for displaying a card in a list of forms
+/**
+ * @param formName - Name of the form
+ * @param signatures - List of signatures for the form
+ * @param link - Link to the form
+ * @returns COmponent that displays a form card on the dashboard
+ */
 export const FormCard = ({
   formName,
   signatures,

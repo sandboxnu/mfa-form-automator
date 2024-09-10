@@ -19,7 +19,12 @@ import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { motion } from 'framer-motion';
 
-// abstracted component for displaying forms in list format
+/**
+ * @param title - Title of the form list
+ * @param formInstances - List of form instances
+ * @param color - Color of the form list
+ * @returns A list of forms for a specific category of forms (Todo, Pending, Completed)
+ */
 export const FormList = ({
   title,
   formInstances,

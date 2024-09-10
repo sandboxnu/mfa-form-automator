@@ -33,7 +33,12 @@ const icons = {
   formInstance: <FormInstanceIcon marginRight="2" />,
 };
 
-// navigation item abstraction to include the Link and styling
+/**
+ * @param children - Children of the nav item
+ * @param icon - Icon of the nav item
+ * @param link - Link of the nav item
+ * @returns Nav item component
+ */
 const NavItem = ({
   children,
   icon,
@@ -85,7 +90,13 @@ const NavItem = ({
   );
 };
 
-// Navbar component
+/**
+ *
+ * @param onOpenCreateFormTemplate - Function to open the create form template modal
+ * @param onOpenCreateFormInstance - Function to open the create form instance modal
+ * @param props - Props of the nav bar
+ * @returns Nav bar component
+ */
 export const NavBar = ({
   onOpenCreateFormTemplate,
   onOpenCreateFormInstance,

@@ -1,7 +1,9 @@
 import React from 'react';
 import { ErrorIcon } from 'apps/web/src/static/icons';
 
-// error component for when the page fails to load
+/**
+ * @returns Error component to display when the page fails to load
+ */
 const Error: React.FC = () => {
   return (
     <div style={{ textAlign: 'center', paddingTop: '144px' }}>

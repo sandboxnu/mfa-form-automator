@@ -1,7 +1,9 @@
 import React from 'react';
 import styles from '../styles/Home.module.css';
 
-// loading spinner for form components
+/**
+ * @returns Loading component to display when forms are loading
+ */
 const FormLoading: React.FC = () => {
   return (
     <div

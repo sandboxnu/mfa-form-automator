@@ -38,6 +38,11 @@ import { useStorage } from '@web/hooks/useStorage';
 import { v4 as uuidv4 } from 'uuid';
 import { storage } from '@web/services/storage.service';
 
+/**
+ * @param isOpen - Modal open state
+ * @param onClose - Function to close the modal
+ * @returns Modal for creating a new form instance
+ */
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   isOpen,
   onClose,
