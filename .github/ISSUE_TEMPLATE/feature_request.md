@@ -2,9 +2,8 @@
 name: Feature request
 about: Suggest a new feature for the project
 title: "[FEATURE]"
-labels: ''
-assignees: ''
-
+labels: ""
+assignees: ""
 ---
 
 **Is your feature request related to a problem? Please describe.**
@@ -18,3 +17,6 @@ A clear and concise description of any alternative solutions or features you've 
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
+
+**Dependencies**
+Add issues that this issue depends on
