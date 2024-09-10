@@ -38,9 +38,6 @@ import { useStorage } from '@web/hooks/useStorage';
 import { v4 as uuidv4 } from 'uuid';
 import { storage } from '@web/services/storage.service';
 
-// TODO
-// fix form type dropdown bug
-
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   isOpen,
   onClose,

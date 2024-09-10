@@ -19,6 +19,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { PositionsService } from '@web/client';
 import { useQuery } from '@tanstack/react-query';
 
+// top bar component for the application
 export const TopBar: React.FC = () => {
   const { user, signOut } = useAuth();
   const { data: positions, error: positionsError } = useQuery({
@@ -29,8 +30,6 @@ export const TopBar: React.FC = () => {
   const userPosition = positions?.find(
     (position) => position.id === user?.positionId,
   );
-  // const userPosition = PositionsService.positionsControllerFindOne(user?.positionId);
-  // const userPositionName = userPosition.name;
 
   return (
     <Flex

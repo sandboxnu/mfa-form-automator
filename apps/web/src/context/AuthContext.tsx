@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useMemo, useState } from 'react';
-import { User, jwtPayload } from './../utils/types';
+import { User, jwtPayload } from './types';
 import { useRouter } from 'next/router';
 import { DefaultService, EmployeesService, JwtEntity } from '@web/client';
 import { jwtDecode } from 'jwt-decode';
@@ -43,26 +43,9 @@ export const AuthProvider = ({ children }: any) => {
     setUser(user);
   };
 
-  // TODO: implement this in future to get user data from MS Graph
-  // const MS_GRAPH_ME_ENDPOINT = 'https://graph.microsoft.com/v1.0/me';
-  // const { session } = useAuth();
-
-  // useEffect(() => {
-  //   if (session) {
-  //     fetch(MS_GRAPH_ME_ENDPOINT, {
-  //       headers: {
-  //         Authorization: `Bearer ${session.accessToken}`,
-  //       },
-  //     })
-  //       .then((response) => response.json())
-  //       .then((data) => console.log(data));
-  //   }
-  // }, [session]);
-
   // login when session is active
   useEffect(() => {
     if (session) {
-      console.log(session);
       const email = session?.user?.email as string;
       login(email, 'password');
     }

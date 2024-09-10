@@ -17,11 +17,7 @@ import {
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
 import { useEffect, useState } from 'react';
-import {
-  FormInstanceEntity,
-  FormInstancesService,
-  UpdateFormInstanceDto,
-} from '@web/client';
+import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
@@ -29,7 +25,6 @@ import { useAuth } from '@web/hooks/useAuth';
 import { useStorage } from '@web/hooks/useStorage';
 import { PDFDocument } from 'pdf-lib';
 import { storage } from '@web/services/storage.service';
-import { v4 as uuidv4 } from 'uuid';
 
 const FormInstance = ({
   formInstance,
@@ -169,9 +164,7 @@ const FormInstance = ({
         </Heading>
         <Button
           variant="link"
-          onClick={() => {
-            // handle edit action here
-          }}
+          onClick={() => {}}
           color="black"
           fontWeight="normal"
           textAlign="left"

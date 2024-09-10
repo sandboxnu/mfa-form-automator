@@ -2,8 +2,7 @@ import { Box, Text, Avatar, AvatarGroup, Tooltip } from '@chakra-ui/react';
 import { SignatureEntity } from './../../../web/src/client';
 import { useRouter } from 'next/router';
 
-// Overview Form component for displaying forms in the dashboard
-// will probably have to change the types once the backend is finished
+// form component for displaying a card in a list of forms
 export const FormCard = ({
   formName,
   signatures,
@@ -41,7 +40,6 @@ export const FormCard = ({
           >
             {formName}
           </Text>
-          {/*Dummy values until userSignedBy fixed*/}
           <AvatarGroup size="sm" max={5} marginTop="9px" spacing={'-3px'}>
             {signatures
               .sort((a, b) => a.order - b.order)

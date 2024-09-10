@@ -33,16 +33,6 @@ const icons = {
   formInstance: <FormInstanceIcon marginRight="2" />,
 };
 
-// const coloredIcons = {
-//   overview: <OverViewIcon marginRight="2" color="#263345" />,
-//   todo: <ToDoIcon marginRight="2" color="#263345" />,
-//   pending: <PendingIcon marginRight="2" color="#263345" />,
-//   completed: <CompletedIcon marginRight="2" color="#263345" />,
-//   history: <HistoryIcon marginRight="2" color={'263345'} />,
-//   settings: <SettingsIcon marginRight="2" color="#263345" />,
-//   formInstance: <FormInstanceIcon marginRight="2" color="#263345" />,
-// };
-
 // navigation item abstraction to include the Link and styling
 const NavItem = ({
   children,
