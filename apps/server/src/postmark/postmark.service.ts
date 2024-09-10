@@ -10,6 +10,11 @@ export class PostmarkService {
   }
 
   async sendEmail(to: string, subject: string, textBody: string) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Email:', { to, subject, textBody });
+      return;
+    }
+
     try {
       this.client.sendEmail({
         From: 'jfrederick@mfa.org',

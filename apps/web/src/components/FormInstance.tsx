@@ -46,43 +46,6 @@ const FormInstance = ({
     if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
   }, [formBlob]);
 
-  /**
-   * @sideEffects - Uploads the signed form to the storage service
-   * @returns None
-   */
-  const _addSignature = async () => {
-    if (!formBlob) return;
-    const pdfDoc = await PDFDocument.load(await formBlob.arrayBuffer());
-
-    const pages = pdfDoc.getPages();
-    const firstPage = pages[0];
-    const { width, height } = firstPage.getSize();
-
-    const x = width / 2 - 50;
-    const y = Math.random() * height;
-
-    firstPage.drawText(user?.firstName + ' ' + user?.lastName, {
-      x,
-      y,
-      size: 20,
-    });
-
-    firstPage.drawText(new Date().toLocaleDateString(), {
-      x,
-      y: y - 20,
-      size: 20,
-    });
-
-    const pdfBytes = await pdfDoc.save();
-    const newBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-    const newFile = new File([newBlob], formInstance.formDocLink, {
-      type: 'application/pdf',
-    });
-
-    await storage.uploadBlob(newFile, formInstance.formDocLink);
-  };
-
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
       formInstanceId,
@@ -120,7 +83,6 @@ const FormInstance = ({
 
   const _handleFormSign = async () => {
     if (_nextSignature == null || !_userCanSign) return;
-    await _addSignature();
     signFormInstanceMutation
       .mutateAsync({
         formInstanceId: formInstance.id,

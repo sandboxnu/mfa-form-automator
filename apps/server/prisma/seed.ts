@@ -419,7 +419,7 @@ async function main() {
       id: ANSHUL_SHIRUDE_UUID,
       firstName: 'Anshul',
       lastName: 'Shirude',
-      email: 'email1@kaiyangzhenggmail.onmicrosoft.com',
+      email: 'shirude.a@northeastern.edu',
       positionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
     },
   ];
