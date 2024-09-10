@@ -13,7 +13,7 @@ class BlobStorage {
   /**
    * @param file - File to upload
    * @param blobName - Name of the blob
-   * @sideeffect - Uploads the file to the blob storage
+   * @sideEffects - Uploads the file to the blob storage
    * @returns - None
    */
   async uploadBlob(file: File, blobName: string) {

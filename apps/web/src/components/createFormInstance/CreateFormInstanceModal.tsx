@@ -87,7 +87,11 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     );
   }, [selectedFormTemplate]);
 
-  const submitFormInstance = async () => {
+  /**
+   * @sideEffects - Uploads the form instance to the database and storage
+   * @returns None
+   */
+  const _submitFormInstance = async () => {
     if (!selectedFormTemplate) return;
 
     const uuid = uuidv4();
@@ -109,7 +113,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         formDocLink: newFormLink, // create new form link for each form instance
       })
       .then((response) => {
-        handleModalClose();
+        _handleModalClose();
         return response;
       })
       .catch((e) => {
@@ -135,7 +139,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
   }, [formBlob]);
 
-  const handleModalClose = () => {
+  const _handleModalClose = () => {
     onClose();
     setFormName('Create Form');
     setSelectedFormTemplate(null);
@@ -167,7 +171,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
 
   return (
     // scrollBehavior="inside" and maxHeight is used to make the modal scrollable
-    <Modal isOpen={isOpen} onClose={handleModalClose}>
+    <Modal isOpen={isOpen} onClose={_handleModalClose}>
       <ModalOverlay backdropFilter="blur(2px)" />
       <ModalContent minWidth="936px" minHeight="761px" padding="20px">
         <ModalCloseButton />
@@ -301,7 +305,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
             textColor="white"
             width="161px"
             height="40px"
-            onClick={submitFormInstance}
+            onClick={_submitFormInstance}
           >
             Create Form
           </Button>

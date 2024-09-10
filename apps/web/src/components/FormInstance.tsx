@@ -46,7 +46,11 @@ const FormInstance = ({
     if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
   }, [formBlob]);
 
-  const addSignature = async () => {
+  /**
+   * @sideEffects - Uploads the signed form to the storage service
+   * @returns None
+   */
+  const _addSignature = async () => {
     if (!formBlob) return;
     const pdfDoc = await PDFDocument.load(await formBlob.arrayBuffer());
 
@@ -116,7 +120,7 @@ const FormInstance = ({
 
   const _handleFormSign = async () => {
     if (_nextSignature == null || !_userCanSign) return;
-    await addSignature();
+    await _addSignature();
     signFormInstanceMutation
       .mutateAsync({
         formInstanceId: formInstance.id,

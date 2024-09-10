@@ -19,6 +19,11 @@ import {
 } from '@web/static/icons';
 import { TempSignatureField } from './types';
 
+/**
+ * @param field - Signature field object
+ * @param handleChange - Function to handle changes to the signature field
+ * @param handleDelete - Function to handle deletion of the signature field
+ */
 export const SignatureField = ({
   field,
   handleChange,
