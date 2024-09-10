@@ -43,7 +43,9 @@ const FormInstance = ({
   const [formURL, setFormURL] = useState<string | null>(null);
 
   useEffect(() => {
-    if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
+    // only update the form URL if the formBlob is not null and has a size greater than 0
+    if (formBlob && formBlob.size > 0)
+      setFormURL(URL.createObjectURL(formBlob!));
   }, [formBlob]);
 
   const signFormInstanceMutation = useMutation({
@@ -81,6 +83,10 @@ const FormInstance = ({
     .find((v) => v.signed === false);
   const _userCanSign = _nextSignature?.assignedUserId === user?.id;
 
+  /**
+   * @sideEffects Updates the form instance to mark it as signed with the next signature
+   * @returns None
+   */
   const _handleFormSign = async () => {
     if (_nextSignature == null || !_userCanSign) return;
     signFormInstanceMutation
@@ -93,6 +99,10 @@ const FormInstance = ({
       });
   };
 
+  /**
+   * @sideEffects Updates the form instance to mark it as completed and redirects to the home page
+   * @returns None
+   */
   const _handleFormApprove = async () => {
     if (formInstance.markedCompleted) return;
     completeFormInstanceMutation.mutateAsync(formInstance.id).catch((e) => {
