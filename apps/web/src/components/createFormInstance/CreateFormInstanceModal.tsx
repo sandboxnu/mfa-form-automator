@@ -203,7 +203,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalBody>
           <Flex gap="30px">
             <Box flex="1">
-              {/* TODO: double check if this is the header we want to be 22px as well*/}
               <Heading as="h3" mb="10px">
                 Form Type
               </Heading>

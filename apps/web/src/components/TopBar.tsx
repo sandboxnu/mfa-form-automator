@@ -21,7 +21,7 @@ import { useQuery } from '@tanstack/react-query';
 
 // top bar component for the application
 export const TopBar: React.FC = () => {
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
   const { data: positions, error: positionsError } = useQuery({
     queryKey: ['api', 'positions'],
     queryFn: () => PositionsService.positionsControllerFindAll(),
@@ -96,7 +96,7 @@ export const TopBar: React.FC = () => {
                     </Text>
                   </Box>
                   <Divider />
-                  <button onClick={() => signOut()}>
+                  <button onClick={() => logout()}>
                     <Flex align="center">
                       <Text
                         color="#4C658A"
