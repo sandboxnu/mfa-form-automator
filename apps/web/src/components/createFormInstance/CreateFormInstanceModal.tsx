@@ -136,7 +136,8 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   }, [selectedFormTemplate]);
 
   useEffect(() => {
-    if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
+    if (formBlob && formBlob.size > 0)
+      setFormURL(URL.createObjectURL(formBlob!));
   }, [formBlob]);
 
   const _handleModalClose = () => {
@@ -170,7 +171,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   }
 
   return (
-    // scrollBehavior="inside" and maxHeight is used to make the modal scrollable
     <Modal isOpen={isOpen} onClose={_handleModalClose}>
       <ModalOverlay backdropFilter="blur(2px)" />
       <ModalContent minWidth="936px" minHeight="761px" padding="20px">
