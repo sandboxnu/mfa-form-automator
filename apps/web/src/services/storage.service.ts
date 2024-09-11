@@ -21,7 +21,9 @@ class BlobStorage {
         this.blobUrl,
       ).getBlockBlobClient(blobName);
       await blockBlobClient.uploadData(file);
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   /**
@@ -37,6 +39,7 @@ class BlobStorage {
       const blob = await downloadBlockBlobResponse.blobBody;
       return blob;
     } catch (e) {
+      console.error(e);
       return new Blob();
     }
   }
