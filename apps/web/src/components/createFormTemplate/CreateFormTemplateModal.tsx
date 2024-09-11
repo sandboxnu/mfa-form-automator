@@ -40,6 +40,11 @@ const variants = {
   },
 };
 
+/**
+ * @param isCreateFormTemplateOpen - boolean to determine if the modal is open
+ * @param onCloseCreateFormTemplate - function to close the modal
+ * @returns  a modal to create a form template
+ */
 export const CreateFormTemplateModal = ({
   isCreateFormTemplateOpen,
   onCloseCreateFormTemplate,
@@ -71,14 +76,20 @@ export const CreateFormTemplateModal = ({
     },
   });
 
-  const deleteSignatureField = (id: string) => {
+  /**
+   * Delete a signature field given an id
+   */
+  const _deleteSignatureField = (id: string) => {
     let newSignatureFields = signatureFields.filter((item) => {
       return item.id !== id;
     });
     setSignatureFields(newSignatureFields);
   };
 
-  const handleChange = (newSignatureField: TempSignatureField) => {
+  /**
+   * Add a signature field
+   */
+  const _handleChange = (newSignatureField: TempSignatureField) => {
     let tempSignatureFields = signatureFields.slice(0);
     tempSignatureFields.filter(
       (value) => value.id === newSignatureField.id,
@@ -86,7 +97,10 @@ export const CreateFormTemplateModal = ({
     setSignatureFields(tempSignatureFields);
   };
 
-  const submitFormTemplate = async () => {
+  /**
+   * Upload and create a form template
+   */
+  const _submitFormTemplate = async () => {
     if (!pdfFile) {
       throw new Error('No PDF file uploaded');
     }
@@ -103,9 +117,8 @@ export const CreateFormTemplateModal = ({
         }),
       })
       .then(async (response) => {
-        handleModalClose();
+        _handleModalClose();
         if (pdfFile) {
-          // change to storage.uploadBlob when storage is set up
           await storage.uploadBlob(
             pdfFile,
             response.name.replaceAll(' ', '_') + '_' + uuid,
@@ -118,7 +131,10 @@ export const CreateFormTemplateModal = ({
       });
   };
 
-  const handleModalClose = () => {
+  /**
+   * Close the modal and reset the form template name, signature fields, and pdf
+   */
+  const _handleModalClose = () => {
     setFormTemplateName('New Form Template');
     setSignatureFields([]);
     onCloseCreateFormTemplate();
@@ -127,7 +143,10 @@ export const CreateFormTemplateModal = ({
     setPdfFile(null);
   };
 
-  const handlePdfSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /**
+   * Set pdf state when a file is uploaded
+   */
+  const _handlePdfSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     if (!e.target.files) return;
@@ -143,7 +162,7 @@ export const CreateFormTemplateModal = ({
   };
 
   return (
-    <Modal isOpen={isCreateFormTemplateOpen} onClose={handleModalClose}>
+    <Modal isOpen={isCreateFormTemplateOpen} onClose={_handleModalClose}>
       <ModalOverlay backdropFilter="blur(2px)" />
       <ModalContent minWidth="936px" minHeight="761px" padding="20px">
         <ModalCloseButton />
@@ -207,7 +226,7 @@ export const CreateFormTemplateModal = ({
                     id="pdfInput"
                     accept=".pdf"
                     style={{ display: 'none' }}
-                    onChange={(e) => handlePdfSubmit(e)}
+                    onChange={(e) => _handlePdfSubmit(e)}
                   />
                   {pdfName && (
                     <span
@@ -255,8 +274,8 @@ export const CreateFormTemplateModal = ({
                     >
                       <SignatureField
                         field={signatureField}
-                        handleChange={handleChange}
-                        handleDelete={deleteSignatureField}
+                        handleChange={_handleChange}
+                        handleDelete={_deleteSignatureField}
                       />
                     </Reorder.Item>
                   ))}
@@ -328,8 +347,8 @@ export const CreateFormTemplateModal = ({
               signatureFields.length == 0 ||
               signatureFields.some((field) => field.value === '')
             }
-            onClick={async (e) => {
-              toast.promise(submitFormTemplate(), {
+            onClick={(_) => {
+              toast.promise(_submitFormTemplate(), {
                 success: {
                   title: 'Success',
                   description: 'Form template created',

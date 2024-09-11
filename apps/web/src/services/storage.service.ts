@@ -1,6 +1,8 @@
 import { ContainerClient } from '@azure/storage-blob';
 
-// class to handle storage operations
+/**
+ * BlobStorage class to handle uploading and downloading blobs
+ */
 class BlobStorage {
   blobUrl: string;
 
@@ -8,6 +10,11 @@ class BlobStorage {
     this.blobUrl = blobUrl;
   }
 
+  /**
+   * @param file - the file to upload
+   * @param blobName - the name of the blob
+   * Uploads a blob to the blob storage
+   */
   async uploadBlob(file: File, blobName: string) {
     const blockBlobClient = new ContainerClient(
       this.blobUrl,
@@ -15,6 +22,10 @@ class BlobStorage {
     await blockBlobClient.uploadData(file);
   }
 
+  /**
+   * @param blobLink - the link of the blob
+   * Downloads a blob from the blob storage
+   */
   async downloadBlob(blobLink: string) {
     const blockBlobClient = new ContainerClient(
       this.blobUrl,

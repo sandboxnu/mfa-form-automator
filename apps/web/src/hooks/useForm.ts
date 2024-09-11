@@ -7,6 +7,9 @@ import {
 import { useAuth } from './useAuth';
 import { useQuery } from '@tanstack/react-query';
 
+/**
+ * @returns an object containing the todo, pending, and completed forms
+ */
 export const useForm = () => {
   const { user } = useAuth();
 

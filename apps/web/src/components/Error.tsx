@@ -1,6 +1,9 @@
 import React from 'react';
 import { ErrorIcon } from 'apps/web/src/static/icons';
 
+/**
+ * @returns an error message when the page fails to load the forms
+ */
 const Error: React.FC = () => {
   return (
     <div style={{ textAlign: 'center', paddingTop: '144px' }}>

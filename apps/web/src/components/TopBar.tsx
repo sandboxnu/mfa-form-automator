@@ -19,9 +19,12 @@ import { useAuth } from '@web/hooks/useAuth';
 import { PositionsService } from '@web/client';
 import { useQuery } from '@tanstack/react-query';
 
+/**
+ * @returns the top bar of the application
+ */
 export const TopBar: React.FC = () => {
-  const { user, signOut } = useAuth();
-  const { data: positions, error: positionsError } = useQuery({
+  const { user, logout } = useAuth();
+  const { data: positions } = useQuery({
     queryKey: ['api', 'positions'],
     queryFn: () => PositionsService.positionsControllerFindAll(),
   });
@@ -29,8 +32,6 @@ export const TopBar: React.FC = () => {
   const userPosition = positions?.find(
     (position) => position.id === user?.positionId,
   );
-  // const userPosition = PositionsService.positionsControllerFindOne(user?.positionId);
-  // const userPositionName = userPosition.name;
 
   return (
     <Flex
@@ -97,7 +98,7 @@ export const TopBar: React.FC = () => {
                     </Text>
                   </Box>
                   <Divider />
-                  <button onClick={() => signOut()}>
+                  <button onClick={() => logout()}>
                     <Flex align="center">
                       <Text
                         color="#4C658A"

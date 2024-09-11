@@ -1,4 +1,4 @@
-import { Box, Heading, Text } from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useState } from 'react';
@@ -13,6 +13,14 @@ const assigneePlaceholderWithIcon = (
   </div>
 );
 
+/**
+ * @param field - the signature field
+ * @param index - the index of the signature field
+ * @param positions - the positions to choose from
+ * @param signaturePositions - the signature positions
+ * @param setSignaturePositions - function to set the signature positions
+ * @returns a dropdown to select the assignee for the signature field
+ */
 export const SignatureDropdown = ({
   field,
   index,
@@ -28,7 +36,10 @@ export const SignatureDropdown = ({
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const getEmployeeName = ({ position }: { position?: PositionEntity }) => {
+  /**
+   * Get the employee name from the position
+   */
+  const _getEmployeeName = ({ position }: { position?: PositionEntity }) => {
     return (
       (position?.employees?.at(0)?.firstName ?? '') +
       ' ' +
@@ -36,13 +47,16 @@ export const SignatureDropdown = ({
     );
   };
 
-  const formatOptionLabel = ({ value, label }: Option) => {
+  /**
+   * Format the option label
+   */
+  const _formatOptionLabel = ({ value }: Option) => {
     const positionEntity = positions?.find((position) => position.id === value);
     const employeeName = positionEntity?.name ?? '';
 
     return (
       <span>
-        <strong>{getEmployeeName({ position: positionEntity })}</strong>
+        <strong>{_getEmployeeName({ position: positionEntity })}</strong>
         <span style={{ marginLeft: '8px', color: 'gray' }}>{employeeName}</span>
       </span>
     );
@@ -89,7 +103,7 @@ export const SignatureDropdown = ({
         }}
         onMenuOpen={() => setIsDropdownOpen(true)}
         onMenuClose={() => setIsDropdownOpen(false)}
-        formatOptionLabel={formatOptionLabel}
+        formatOptionLabel={_formatOptionLabel}
         classNamePrefix="react-select"
         isClearable
         closeMenuOnSelect

@@ -33,17 +33,12 @@ const icons = {
   formInstance: <FormInstanceIcon marginRight="2" />,
 };
 
-// const coloredIcons = {
-//   overview: <OverViewIcon marginRight="2" color="#263345" />,
-//   todo: <ToDoIcon marginRight="2" color="#263345" />,
-//   pending: <PendingIcon marginRight="2" color="#263345" />,
-//   completed: <CompletedIcon marginRight="2" color="#263345" />,
-//   history: <HistoryIcon marginRight="2" color={'263345'} />,
-//   settings: <SettingsIcon marginRight="2" color="#263345" />,
-//   formInstance: <FormInstanceIcon marginRight="2" color="#263345" />,
-// };
-
-// navigation item abstraction to include the Link and styling
+/**
+ * @param children - the children of the nav item
+ * @param icon - the icon of the nav item
+ * @param link - the link of the nav item
+ * @returns a nav item for the left sidebar
+ */
 const NavItem = ({
   children,
   icon,
@@ -95,7 +90,11 @@ const NavItem = ({
   );
 };
 
-// Navbar component
+/**
+ * @param onOpenCreateFormTemplate - the function to open the create form template modal
+ * @param onOpenCreateFormInstance - the function to open the create form instance modal
+ * @returns  the nav bar for the left sidebar
+ */
 export const NavBar = ({
   onOpenCreateFormTemplate,
   onOpenCreateFormInstance,

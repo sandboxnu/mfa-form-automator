@@ -2,13 +2,16 @@ import { FormInstanceEntity, FormTemplateEntity } from '@web/client';
 import { useEffect, useState } from 'react';
 import { storage } from './../services/storage.service';
 
-// hook to fetch form blob from storage
+/**
+ * @param form - the form instance or form template
+ * @returns an object containing the form blob and form URL
+ */
 export const useStorage = (
   form: FormInstanceEntity | FormTemplateEntity | null,
 ) => {
   const [formBlob, setFormBlob] = useState<Blob | null>(null);
+  const [formURL, setFormURL] = useState<string | null>(null);
 
-  // This needs to be uncommented once storage is set up
   useEffect(() => {
     async function fetchFormBlob() {
       const blob = (await storage.downloadBlob(form?.formDocLink!)) as Blob;
@@ -21,7 +24,15 @@ export const useStorage = (
     }
   }, [form]);
 
+  useEffect(() => {
+    if (formBlob) {
+      const url = URL.createObjectURL(formBlob);
+      setFormURL(url);
+    }
+  }, [formBlob]);
+
   return {
     formBlob,
+    formURL,
   };
 };
