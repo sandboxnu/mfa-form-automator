@@ -25,21 +25,29 @@ NextJS, NestJS, Prisma, PostgreSQL
 1. Create a .env file in `apps/web` and `apps/server` and configure environment variables using the provided example files.
 
    `apps/server/.env`
-   | VARIABLE           | VALUE                                                                                                                           |   |   |   |
+   | VARIABLE | VALUE | | | |
    |--------------------|---------------------------------------------------------------------------------------------------------------------------------|---|---|---|
-   | DOMAIN             | <http://localhost>                                                                                                              |   |   |   |
-   | BACKEND_PORT       | 8080                                                                                                                            |   |   |   |
-   | SALT_ROUNDS        | 10                                                                                                                              |   |   |   |
-   | DATABASE_URL       | postgresql://user:pass@localhost:5432/db?schema=public                                                                          |   |   |   |
-   | JWT_SECRET         | Execute the following to generate a random secret key: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" |   |   |   |
-   | JWT_VALID_DURATION | 600                                                                                                                             |   |   |   |
-   | FRONTEND_DOMAIN    | <http://localhost:3002>                                                                                                         |   |   |   |
+   | DOMAIN | <http://localhost> | | | |
+   | BACKEND_PORT | 8080 | | | |
+   | SALT_ROUNDS | 10 | | | |
+   | DATABASE_URL | postgresql://user:pass@localhost:5432/db?schema=public | | | |
+   | JWT_SECRET | Execute the following to generate a random secret key: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" | | | |
+   | JWT_VALID_DURATION | 600 | | | |
+   | JWT_REFRESH_VALID_DURATION | 604800 | | | |
+   | FRONTEND_DOMAIN | <http://localhost:3002> | | | |
+   | POSTMARK_SERVER_KEY | | | | |
+   | NODE_ENV | development | | | |
 
    `apps/web/.env`
-   | VARIABLE           | VALUE                                                                                                                           |   |   |   |
+   | VARIABLE | VALUE | | | |
    |--------------------|---------------------------------------------------------------------------------------------------------------------------------|---|---|---|
-   | DOMAIN             | <http://localhost>                                                                                                              |   |   |   |
-   | FRONTEND_PORT      | 3000                                                                                                                            |   |   |   |
+   | FRONTEND_PORT | 3000 | | | |
+   | AZURE_AD_CLIENT_ID | | | | |
+   | AZURE_AD_CLIENT_SECRET | | | | |
+   | AZURE_AD_TENANT_ID | | | | |
+   | STORAGE_BLOB_URL | | | | |
+   | NEXTAUTH_SECRET | | | | |
+   | NEXTAUTH_URL | http://localhost:3002 | | | |
 
 2. Install yarn dependencies. We currently use Yarn and Yarn workspaces to manage dependencies.
 
