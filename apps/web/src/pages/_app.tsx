@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import '@fontsource/hanken-grotesk';
 import '@fontsource/hanken-grotesk/800.css';
+import '@fontsource/hanken-grotesk/700.css';
 import '@fontsource/hanken-grotesk/400.css';
 import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
@@ -23,38 +24,40 @@ export default function App({
 
   const excludeLayoutPaths = ['/signin'];
 
-  const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  const head = (
+    <Head>
+      <title>MFA Forms</title>
+      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    </Head>
+  );
+
+  if (excludeLayoutPaths.includes(appProps.router.pathname)) {
     return (
       <>
-        <Head>
-          <title>MFA Forms</title>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
-          />
-        </Head>
+        {head}
         <AuthProvider>
           <QueryClientProvider client={queryClient}>
-            <ChakraProvider theme={theme}>{children}</ChakraProvider>
+            <ChakraProvider theme={theme}>
+              <Component {...pageProps} />
+            </ChakraProvider>
           </QueryClientProvider>
         </AuthProvider>
       </>
     );
-  };
-
-  if (excludeLayoutPaths.includes(appProps.router.pathname)) {
-    return (
-      <Wrapper>
-        <Component {...pageProps} />
-      </Wrapper>
-    );
   }
 
   return (
-    <Wrapper>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </Wrapper>
+    <>
+      {head}
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <ChakraProvider theme={theme}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </ChakraProvider>
+        </QueryClientProvider>
+      </AuthProvider>
+    </>
   );
 }
