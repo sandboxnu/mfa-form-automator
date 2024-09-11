@@ -39,7 +39,7 @@ NextJS, NestJS, Prisma, PostgreSQL
    | NODE_ENV | development |
 
    `apps/web/.env`
-   | VARIABLE | VALUE | | | |
+   | VARIABLE | VALUE |
    |--------------------|---------------------------------------------------------------------------------------------------------------------------------|
    | FRONTEND_PORT | 3000 |
    | AZURE_AD_CLIENT_ID | |
