@@ -131,9 +131,7 @@ const FormInstance = ({
         </Heading>
         <Button
           variant="link"
-          onClick={() => {
-            // handle edit action here
-          }}
+          onClick={() => {}}
           color="black"
           fontWeight="normal"
           textAlign="left"

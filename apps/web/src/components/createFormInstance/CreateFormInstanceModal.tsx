@@ -234,10 +234,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 isClearable
                 closeMenuOnSelect
               />
-              {!selectedFormTemplate && (
-                <Skeleton h="518px" background="gray" marginTop="12px" />
-              )}
-              {formURL && selectedFormTemplate && (
+              {formURL ? (
                 <embed
                   src={formURL}
                   type="application/pdf"
@@ -249,6 +246,8 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                     borderRadius: '8px',
                   }}
                 />
+              ) : (
+                <Skeleton h="518px" background="gray" marginTop="12px" />
               )}
             </Box>
             {!formTypeSelected && (

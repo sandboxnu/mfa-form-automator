@@ -25,7 +25,7 @@ export const useStorage = (
   }, [form]);
 
   useEffect(() => {
-    if (formBlob) {
+    if (formBlob && formBlob.size > 0) {
       const url = URL.createObjectURL(formBlob);
       setFormURL(url);
     }
