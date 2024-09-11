@@ -40,14 +40,14 @@ NextJS, NestJS, Prisma, PostgreSQL
 
    `apps/web/.env`
    | VARIABLE | VALUE | | | |
-   |--------------------|---------------------------------------------------------------------------------------------------------------------------------|---|---|---|
-   | FRONTEND_PORT | 3000 | | | |
-   | AZURE_AD_CLIENT_ID | | | | |
-   | AZURE_AD_CLIENT_SECRET | | | | |
-   | AZURE_AD_TENANT_ID | | | | |
-   | STORAGE_BLOB_URL | | | | |
-   | NEXTAUTH_SECRET | | | | |
-   | NEXTAUTH_URL | http://localhost:3002 | | | |
+   |--------------------|---------------------------------------------------------------------------------------------------------------------------------|
+   | FRONTEND_PORT | 3000 |
+   | AZURE_AD_CLIENT_ID | |
+   | AZURE_AD_CLIENT_SECRET | |
+   | AZURE_AD_TENANT_ID | |
+   | STORAGE_BLOB_URL | |
+   | NEXTAUTH_SECRET | |
+   | NEXTAUTH_URL | http://localhost:3002 |
 
 2. Install yarn dependencies. We currently use Yarn and Yarn workspaces to manage dependencies.
 
