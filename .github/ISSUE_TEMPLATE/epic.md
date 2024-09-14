@@ -1,23 +1,20 @@
 ---
-name: Feature request
-about: Suggest a new feature for the project
-title: "[FEATURE]"
+name: Epic
+about: Create larger project that can be broken down into several tasks
+title: "[EPIC]"
 labels: ''
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
+**Description**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-**Describe the solution you'd like**
+**Acceptance Criteria**
 A clear and concise description of what you want to happen.
 
-**Describe alternatives you've considered**
+**Issues**
 A clear and concise description of any alternative solutions or features you've considered.
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
-
-**Dependencies**
-Add issues that this issue depends on
