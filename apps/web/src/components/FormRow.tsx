@@ -9,7 +9,10 @@ import {
 import { FormInstanceEntity, SignatureEntity } from '@web/client';
 import { useRouter } from 'next/router';
 
-// form component for displaying a row in a list of forms
+/**
+ * @param formInstance - the form instance
+ * @returns a row for a form
+ */
 export const FormRow = ({
   formInstance,
   last,
@@ -63,7 +66,6 @@ export const FormRow = ({
         <GridItem colSpan={5} h="64px">
           <Flex pt="15px">
             <AvatarGroup size="sm" max={5}>
-              {/*Dummy values until userSignedBy fixed*/}
               {formInstance.signatures
                 .sort((a, b) => a.order - b.order)
                 .map((signature: SignatureEntity, index: number) => {

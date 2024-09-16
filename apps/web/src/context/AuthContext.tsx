@@ -1,20 +1,10 @@
 import React, { createContext, useEffect, useMemo, useState } from 'react';
-import { User, jwtPayload } from './../utils/types';
+import { User, jwtPayload, AuthContextType } from './types';
 import { useRouter } from 'next/router';
 import { DefaultService, EmployeesService, JwtEntity } from '@web/client';
 import { jwtDecode } from 'jwt-decode';
-import { useSession, signIn, signOut } from 'next-auth/react';
 
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
-
-interface AuthContextType {
-  user?: User;
-  loading: boolean;
-  error?: any;
-  session: any;
-  signIn: any;
-  signOut: any;
-}
 
 export const AuthContext = createContext<AuthContextType>(
   {} as AuthContextType,
@@ -22,7 +12,6 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider = ({ children }: any) => {
   const router = useRouter();
-  const { data: session } = useSession();
   const [user, setUser] = useState<User>();
   const [error, setError] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -42,38 +31,6 @@ export const AuthProvider = ({ children }: any) => {
     };
     setUser(user);
   };
-
-  // TODO: implement this in future to get user data from MS Graph
-  // const MS_GRAPH_ME_ENDPOINT = 'https://graph.microsoft.com/v1.0/me';
-  // const { session } = useAuth();
-
-  // useEffect(() => {
-  //   if (session) {
-  //     fetch(MS_GRAPH_ME_ENDPOINT, {
-  //       headers: {
-  //         Authorization: `Bearer ${session.accessToken}`,
-  //       },
-  //     })
-  //       .then((response) => response.json())
-  //       .then((data) => console.log(data));
-  //   }
-  // }, [session]);
-
-  // login when session is active
-  useEffect(() => {
-    if (session) {
-      console.log(session);
-      const email = session?.user?.email as string;
-      login(email, 'password');
-    }
-  }, [session]);
-
-  // logout when session is inactive
-  useEffect(() => {
-    if (!session) {
-      logout();
-    }
-  }, [session]);
 
   // Reset the error state if we change page
   useEffect(() => {
@@ -142,7 +99,8 @@ export const AuthProvider = ({ children }: any) => {
   // from the state.
   const logout = () => {
     DefaultService.appControllerLogout().then(() => setUser(undefined));
-    router.push('/signin');
+    // Don't redirect if we are already on the signin page since it will cause a loop
+    if (router.pathname !== '/signin') router.push('/signin');
   };
 
   // Make the provider update only when it should.
@@ -159,11 +117,10 @@ export const AuthProvider = ({ children }: any) => {
       user,
       loading,
       error,
-      session,
-      signIn,
-      signOut,
+      login,
+      logout,
     }),
-    [user, loading, error, session],
+    [user, loading, error],
   );
 
   return (

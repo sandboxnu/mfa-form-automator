@@ -1,12 +1,13 @@
 import { Box, useDisclosure } from '@chakra-ui/react';
-
 import { NavBar } from './NavBar';
 import { TopBar } from './TopBar';
 import { CreateFormTemplateModal } from './createFormTemplate/CreateFormTemplateModal';
-import { useAuth } from '@web/hooks/useAuth';
 import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal';
 
-// Common layout component for all pages
+/**
+ * @param children - the children of the layout
+ * @returns overall layout of the application
+ */
 export const Layout = ({ children }: { children: any }) => {
   const {
     isOpen: isCreateFormTemplateOpen,
@@ -19,8 +20,6 @@ export const Layout = ({ children }: { children: any }) => {
     onOpen: onOpenCreateFormInstance,
     onClose: onCloseCreateFormInstance,
   } = useDisclosure();
-
-  useAuth();
 
   return (
     <Box

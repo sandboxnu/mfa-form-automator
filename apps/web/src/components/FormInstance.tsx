@@ -16,21 +16,18 @@ import {
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
-import { useEffect, useState } from 'react';
-import {
-  FormInstanceEntity,
-  FormInstancesService,
-  UpdateFormInstanceDto,
-} from '@web/client';
+import { useState } from 'react';
+import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import { useStorage } from '@web/hooks/useStorage';
-import { PDFDocument } from 'pdf-lib';
-import { storage } from '@web/services/storage.service';
-import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * @param formInstance - the form instance
+ * @returns a form instance page
+ */
 const FormInstance = ({
   formInstance,
 }: {
@@ -40,47 +37,7 @@ const FormInstance = ({
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
-  const { formBlob } = useStorage(formInstance);
-  const [formURL, setFormURL] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
-  }, [formBlob]);
-
-  // very temporary solution
-  // TODO: add real signature
-  const addSignature = async () => {
-    if (!formBlob) return;
-    const pdfDoc = await PDFDocument.load(await formBlob.arrayBuffer());
-
-    const pages = pdfDoc.getPages();
-    const firstPage = pages[0];
-    const { width, height } = firstPage.getSize();
-
-    const x = width / 2 - 50;
-    const y = Math.random() * height;
-
-    firstPage.drawText(user?.firstName + ' ' + user?.lastName, {
-      x,
-      y,
-      size: 20,
-    });
-
-    firstPage.drawText(new Date().toLocaleDateString(), {
-      x,
-      y: y - 20,
-      size: 20,
-    });
-
-    const pdfBytes = await pdfDoc.save();
-    const newBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-
-    const newFile = new File([newBlob], formInstance.formDocLink, {
-      type: 'application/pdf',
-    });
-
-    await storage.uploadBlob(newFile, formInstance.formDocLink);
-  };
+  const { formURL } = useStorage(formInstance);
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
@@ -117,9 +74,11 @@ const FormInstance = ({
     .find((v) => v.signed === false);
   const _userCanSign = _nextSignature?.assignedUserId === user?.id;
 
+  /**
+   * Update the form instance with the next signature
+   */
   const _handleFormSign = async () => {
     if (_nextSignature == null || !_userCanSign) return;
-    await addSignature();
     signFormInstanceMutation
       .mutateAsync({
         formInstanceId: formInstance.id,
@@ -130,6 +89,9 @@ const FormInstance = ({
       });
   };
 
+  /**
+   * Update the form instance to be marked as completed
+   */
   const _handleFormApprove = async () => {
     if (formInstance.markedCompleted) return;
     completeFormInstanceMutation.mutateAsync(formInstance.id).catch((e) => {
@@ -169,9 +131,7 @@ const FormInstance = ({
         </Heading>
         <Button
           variant="link"
-          onClick={() => {
-            // handle edit action here
-          }}
+          onClick={() => {}}
           color="black"
           fontWeight="normal"
           textAlign="left"

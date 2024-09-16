@@ -1,10 +1,15 @@
-import { Button, Box } from '@chakra-ui/react';
+import { Button, Box, Input } from '@chakra-ui/react';
 import { Flex } from '@chakra-ui/react';
 import { MFALogoIcon } from '@web/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
+import { useState } from 'react';
 
 export default function Signin() {
-  const { signIn } = useAuth();
+  const { login } = useAuth();
+  const [loginForm, setLoginForm] = useState({
+    email: '',
+    password: '',
+  });
 
   return (
     <>
@@ -23,13 +28,35 @@ export default function Signin() {
           <Flex justifyContent={'center'}>
             <MFALogoIcon width="150px" height="30px" marginBottom="20px" />
           </Flex>
-          <Flex justifyContent="center" marginTop="32px" marginBottom="48px">
+          <Flex
+            justifyContent="center"
+            marginTop="32px"
+            marginBottom="48px"
+            flexDirection={'column'}
+          >
+            <Input
+              placeholder="Email"
+              marginBottom="20px"
+              value={loginForm.email}
+              onChange={(e) =>
+                setLoginForm({ ...loginForm, email: e.target.value })
+              }
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              marginBottom="20px"
+              value={loginForm.password}
+              onChange={(e) =>
+                setLoginForm({ ...loginForm, password: e.target.value })
+              }
+            />
             <Button
               background="#4C658A"
               color="#FFF"
-              onClick={async () => signIn('azure-ad')}
+              onClick={async () => login(loginForm.email, loginForm.password)}
             >
-              Sign In with Azure Entra SSO
+              Sign In
             </Button>
           </Flex>
         </Box>

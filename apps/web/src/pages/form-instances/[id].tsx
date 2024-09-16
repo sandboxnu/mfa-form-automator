@@ -5,6 +5,9 @@ import FormInstance from '@web/components/FormInstance';
 import FormLoading from './../../components/FormLoading';
 import ErrorComponent from './../../components/Error';
 
+/**
+ * @returns a view of a form instance
+ */
 export default function FormInstanceView() {
   const router = useRouter();
 

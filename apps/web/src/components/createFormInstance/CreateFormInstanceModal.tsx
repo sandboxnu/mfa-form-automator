@@ -35,12 +35,12 @@ import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
 import { useStorage } from '@web/hooks/useStorage';
-import { v4 as uuidv4 } from 'uuid';
-import { storage } from '@web/services/storage.service';
 
-// TODO
-// fix form type dropdown bug
-
+/**
+ * @param isOpen - boolean to determine if the modal is open
+ * @param onClose - function to close the modal
+ * @returns a modal to create a form instance
+ */
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   isOpen,
   onClose,
@@ -49,8 +49,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
   const [selectedFormTemplate, setSelectedFormTemplate] =
     useState<FormTemplateEntity | null>(null);
-  const { formBlob } = useStorage(selectedFormTemplate);
-  const [formURL, setFormURL] = useState<string | null>(null);
+  const { formURL } = useStorage(selectedFormTemplate);
   const [formTypeSelected, setFormTypeSelected] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
@@ -67,34 +66,34 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     },
   });
 
-  // Fetch form templates data
-  const { data: formTemplates, error: formTemplatesError } = useQuery({
+  const { data: formTemplates } = useQuery({
     queryKey: ['api', 'form-templates'],
     queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
   });
 
-  // Fetch positions data
-  const { data: positions, error: positionsError } = useQuery({
+  const { data: positions } = useQuery({
     queryKey: ['api', 'positions'],
     queryFn: () => PositionsService.positionsControllerFindAll(),
   });
 
+  /**
+   * Reset signature positions when form template changes
+   */
   useEffect(() => {
     setSignaturePositions(
       new Array(selectedFormTemplate?.signatureFields.length).fill(null),
     );
   }, [selectedFormTemplate]);
 
-  const submitFormInstance = async () => {
+  /**
+   * Updates form instance with the selected form template, form name, and signature positions
+   */
+  const _submitFormInstance = async () => {
     if (!selectedFormTemplate) return;
-
-    const uuid = uuidv4();
-    const newFormLink =
-      selectedFormTemplate.name.replaceAll(' ', '_') + '_instance_' + uuid;
 
     await createFormInstanceMutation
       .mutateAsync({
-        name: formName, // Use the updated form name
+        name: formName,
         signatures: signaturePositions.map((pos, i) => {
           return {
             order: i,
@@ -104,38 +103,30 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         }),
         originatorId: user?.id!,
         formTemplateId: selectedFormTemplate?.id!,
-        formDocLink: newFormLink, // create new form link for each form instance
+        formDocLink: '',
       })
       .then((response) => {
-        handleModalClose();
+        _handleModalClose();
         return response;
       })
       .catch((e) => {
         throw e;
       });
-
-    const blob = await storage.downloadBlob(selectedFormTemplate?.formDocLink!);
-
-    const newFile = new File([blob!], newFormLink, {
-      type: 'application/pdf',
-    });
-
-    console.log(newFormLink);
-
-    await storage.uploadBlob(newFile, newFormLink);
   };
 
+  /**
+   * Sets the form name when a form template is selected
+   */
   useEffect(() => {
     if (selectedFormTemplate) {
       setFormName(selectedFormTemplate.name);
     }
   }, [selectedFormTemplate]);
 
-  useEffect(() => {
-    if (formBlob) setFormURL(URL.createObjectURL(formBlob!));
-  }, [formBlob]);
-
-  const handleModalClose = () => {
+  /**
+   * Closes the modal and resets the form name, selected form template, and signature positions
+   */
+  const _handleModalClose = () => {
     onClose();
     setFormName('Create Form');
     setSelectedFormTemplate(null);
@@ -166,8 +157,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   }
 
   return (
-    // scrollBehavior="inside" and maxHeight is used to make the modal scrollable
-    <Modal isOpen={isOpen} onClose={handleModalClose}>
+    <Modal isOpen={isOpen} onClose={_handleModalClose}>
       <ModalOverlay backdropFilter="blur(2px)" />
       <ModalContent minWidth="936px" minHeight="761px" padding="20px">
         <ModalCloseButton />
@@ -206,7 +196,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         <ModalBody>
           <Flex gap="30px">
             <Box flex="1">
-              {/* TODO: double check if this is the header we want to be 22px as well*/}
               <Heading as="h3" mb="10px">
                 Form Type
               </Heading>
@@ -245,10 +234,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 isClearable
                 closeMenuOnSelect
               />
-              {!selectedFormTemplate && (
-                <Skeleton h="518px" background="gray" marginTop="12px" />
-              )}
-              {formURL && selectedFormTemplate && (
+              {formURL ? (
                 <embed
                   src={formURL}
                   type="application/pdf"
@@ -260,6 +246,8 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                     borderRadius: '8px',
                   }}
                 />
+              ) : (
+                <Skeleton h="518px" background="gray" marginTop="12px" />
               )}
             </Box>
             {!formTypeSelected && (
@@ -303,7 +291,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
             textColor="white"
             width="161px"
             height="40px"
-            onClick={submitFormInstance}
+            onClick={_submitFormInstance}
           >
             Create Form
           </Button>

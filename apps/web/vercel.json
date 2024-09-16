@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/api/v1/:path*",
-      "destination": "https://mfa-form-automator.onrender.com/api/v1/:path*"
+      "source": "/api/:path*",
+      "destination": "https://mfa-form-automator.onrender.com/api/:path*"
     }
   ]
 }

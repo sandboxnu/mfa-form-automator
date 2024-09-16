@@ -1,17 +1,11 @@
 import { Avatar, Box, Flex, Grid, Text } from '@chakra-ui/react';
 import { AwaitingIcon, CheckIcon } from 'apps/web/src/static/icons';
+import { AvatarMapProps } from './types';
 
-type Assignee = {
-  name?: string;
-  signed: boolean;
-  title: string;
-  updatedAt: string;
-};
-
-type AvatarMapProps = {
-  assignees: Assignee[];
-};
-
+/**
+ * @param assignees - an array of assignees
+ * @returns a map of assignees with their avatars
+ */
 const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
   let previousSigned = true;
   return (

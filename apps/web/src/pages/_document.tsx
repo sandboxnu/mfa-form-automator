@@ -5,7 +5,6 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <link rel="icon" href="/mfa_favicon.svg" />
-        <title key="title">MFA Forms</title>
       </Head>
       <body>
         <Main />
