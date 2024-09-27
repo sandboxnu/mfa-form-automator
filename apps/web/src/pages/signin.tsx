@@ -3,6 +3,7 @@ import { Flex } from '@chakra-ui/react';
 import { MFALogoIcon } from '@web/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
 import { useState } from 'react';
+import { AzureSignin } from '@web/components/AzureSignin';
 
 export default function Signin() {
   const { login } = useAuth();
@@ -31,7 +32,6 @@ export default function Signin() {
           <Flex
             justifyContent="center"
             marginTop="32px"
-            marginBottom="48px"
             flexDirection={'column'}
           >
             <Input
@@ -54,10 +54,12 @@ export default function Signin() {
             <Button
               background="#4C658A"
               color="#FFF"
-              onClick={async () => login(loginForm.email, loginForm.password)}
+              marginBottom="20px"
+              onClick={() => login(loginForm.email, loginForm.password)}
             >
-              Sign In
+              Sign in
             </Button>
+            <AzureSignin />
           </Flex>
         </Box>
       </Flex>
