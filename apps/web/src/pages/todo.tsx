@@ -12,6 +12,9 @@ export default function Todo() {
         title={'Todo'}
         formInstances={todoForms}
         color={'#FFDFDE'}
+        extended={true}
+        link={'/'}
+        border={true}
       ></FormList>
     </>
   );

@@ -3,7 +3,7 @@ import { Box } from '@chakra-ui/react';
 import { useForm } from '@web/hooks/useForm';
 import Error from './../components/Error';
 import FormLoading from './../components/FormLoading';
-
+import { FormList } from './../components/FormList';
 export default function Overview() {
   const {
     todoForms,
@@ -39,15 +39,14 @@ export default function Overview() {
             rowWidth={rowWidth}
           />
         </Box>
-        <Box marginTop="32px">
-          <OverviewRow
-            title="Pending"
-            color="#FFECCC"
-            link="/pending"
-            formInstances={pendingForms}
-            rowWidth={rowWidth}
-          />
-        </Box>
+        <FormList
+          title={'Pending'}
+          formInstances={pendingForms}
+          color={'#FFECCC'}
+          extended={false}
+          link={'/pending'}
+          border={false}
+      ></FormList>
         <Box marginTop="32px">
           <OverviewRow
             title="Completed"

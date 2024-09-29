@@ -18,21 +18,33 @@ import { FormInstanceEntity } from '@web/client';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { RightArrowIcon } from 'apps/web/src/static/icons';
+
 
 /**
  * @param title - the title of the form list
  * @param formInstances - an array of form instances
  * @param color - the color of the form list
+ * @param extended - whether search and sort options are enabled 
+ * @param link - link to page for category
+ * @param border - if true should have border
  * @returns a list of forms for the dashboard
  */
 export const FormList = ({
   title,
   formInstances,
   color,
+  extended,
+  link,
+  border
 }: {
   title: string;
   formInstances: FormInstanceEntity[];
   color: string;
+  extended: boolean;
+  link: string;
+  border: boolean;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { isOpen, onToggle } = useDisclosure();
@@ -48,29 +60,39 @@ export const FormList = ({
     }))
     .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance);
 
-  return (
-    <>
-      <Box padding="30px">
-        <Flex justifyContent="space-between" pb="20px">
-          <Flex alignItems="flex-end">
-            <Heading as="h2">{title}</Heading>
-            <Box pb="5px">
-              <Flex
-                marginLeft="13px"
-                backgroundColor={color}
-                height="18px"
-                width="32px"
-                borderRadius="12"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Text fontSize="14px" fontWeight="700" color="#756160">
-                  {formInstances.length}
-                </Text>
-              </Flex>
-            </Box>
-          </Flex>
+  const OptionDisplay = () => {
+    if(extended) {
+      return <SearchAndRecent/>;
+    }
+    else {
+      return <ViewAll/>
+    }
+  }
 
+  const ViewAll = () => {
+    return <>
+      <Link href={link}>
+        <Flex alignItems="center">
+          <Text fontWeight="500" fontSize="16px" color="#4C658A">
+            See all {title}
+          </Text>
+          <RightArrowIcon width="10px" height="10px" marginLeft="4px" />
+        </Flex>
+      </Link>
+    </>
+  }
+
+  const showPadding = () => {
+    if(border) {
+      return "30px 30px 30px 30px";
+    }
+    else {
+      return "30px 30px 0px 0px"
+    }
+  }
+
+  const SearchAndRecent = () => {
+    return <>
           <Flex alignItems="flex-end">
             <motion.div
               initial={{ width: 0, opacity: 0 }}
@@ -143,6 +165,32 @@ export const FormList = ({
               <option value="option3">&nbsp;&nbsp;Option 3</option>
             </Select>
           </Flex>
+        </>
+  };
+
+  return (
+    <>
+      <Box padding={showPadding()}>
+        <Flex justifyContent="space-between" pb="20px">
+          <Flex alignItems="flex-end">
+                <Heading as="h2">{title}</Heading>
+                <Box pb="5px">
+                  <Flex
+                    marginLeft="13px"
+                    backgroundColor={color}
+                    height="18px"
+                    width="32px"
+                    borderRadius="12"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Text fontSize="14px" fontWeight="700" color="#756160">
+                      {formInstances.length}
+                    </Text>
+                  </Flex>
+                </Box>
+              </Flex>
+              <OptionDisplay/>
         </Flex>
         <Box>
           <Grid

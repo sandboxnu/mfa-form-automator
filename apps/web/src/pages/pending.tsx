@@ -10,6 +10,9 @@ export default function Pending() {
         title={'Pending'}
         formInstances={pendingForms}
         color={'#FFECCC'}
+        extended={true}
+        link={'/'}
+        border={true}
       ></FormList>
     </>
   );
