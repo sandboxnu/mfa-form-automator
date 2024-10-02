@@ -8,25 +8,29 @@ import { useAuth } from '@web/hooks/useAuth';
  * @returns a button that allows users to sign in with Azure
  */
 export const AzureSignin: React.FC = () => {
-  const { instance, accounts } = useMsal();
+  const { instance } = useMsal();
   const { login } = useAuth();
 
   /**
    * Login to Azure through a popup and set the user's session
    */
-  const handleLogin = async () => {
+  const handleLogin = () => {
     try {
-      const loginResponse = await instance.loginPopup(loginRequest);
-      if (loginResponse) {
-        login(loginResponse.account.username, 'password');
-      }
+      instance
+        .loginPopup(loginRequest)
+        .then((response) => {
+          login(response.account.username, 'password');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <Button background="#2596be" color="#FFF" onClick={handleLogin}>
+    <Button color="#FFF" background="#2596be" onClick={handleLogin}>
       Sign in with Azure
     </Button>
   );

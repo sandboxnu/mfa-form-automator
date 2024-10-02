@@ -15,6 +15,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { PositionsService } from '@web/client';
 import { useQuery } from '@tanstack/react-query';
 import { AzureSignout } from './AzureSignout';
+import { SignOut } from './SignOut';
 
 /**
  * @returns the top bar of the application
@@ -91,6 +92,7 @@ export const TopBar: React.FC = () => {
               </Box>
               <Divider />
               <AzureSignout />
+              <SignOut />
             </PopoverBody>
           </PopoverContent>
         </Popover>

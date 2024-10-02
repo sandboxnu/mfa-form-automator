@@ -11,50 +11,42 @@ export const AzureSignout: React.FC = () => {
   const { logout } = useAuth();
   const { instance, accounts } = useMsal();
 
-  const handleLogout = async () => {
+  /**
+   * Logout of Azure through a popup and clear the user's session
+   */
+  const handleLogout = () => {
     const logoutRequest = {
       account: accounts[0],
     };
     try {
-      await instance.logoutPopup(logoutRequest);
-      logout();
+      instance
+        .logoutPopup(logoutRequest)
+        .then(() => {
+          logout();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <>
-      <button onClick={logout}>
-        <Flex align="center">
-          <Text
-            color="#4C658A"
-            fontSize="18px"
-            fontWeight="500"
-            pl="24px"
-            pr="12px"
-            py="10px"
-          >
-            Sign out
-          </Text>
-          <SignoutIcon />
-        </Flex>
-      </button>
-      <button onClick={handleLogout}>
-        <Flex align="center">
-          <Text
-            color="#4C658A"
-            fontSize="18px"
-            fontWeight="500"
-            pl="24px"
-            pr="12px"
-            py="10px"
-          >
-            Sign out with Azure
-          </Text>
-          <SignoutIcon />
-        </Flex>
-      </button>
-    </>
+    <button onClick={handleLogout}>
+      <Flex align="center">
+        <Text
+          color="#4C658A"
+          fontSize="18px"
+          fontWeight="500"
+          pl="24px"
+          pr="12px"
+          py="10px"
+        >
+          Sign out with Azure
+        </Text>
+        <SignoutIcon />
+      </Flex>
+    </button>
   );
 };
