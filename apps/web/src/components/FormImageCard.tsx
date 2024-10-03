@@ -28,9 +28,9 @@ export const FormImageCard = ({
 }) => {
   const router = useRouter();
   const { formURL } = useStorage(formInstance);
-  
+
   pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-  
+
   let daysBetween = (date1: string, date2: string) => {
     if (date1) {
       const d1 = new Date(date1);

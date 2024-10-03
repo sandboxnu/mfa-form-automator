@@ -12,14 +12,11 @@ export const useStorage = (
   const [formBlob, setFormBlob] = useState<Blob | null>(null);
   const [formURL, setFormURL] = useState<string | null>(null);
 
-
   useEffect(() => {
     async function fetchFormBlob() {
       const blob = (await storage.downloadBlob(form?.formDocLink!)) as Blob;
       const arrayBuffer = await blob.arrayBuffer();
       setFormBlob(new Blob([arrayBuffer], { type: 'application/pdf' }));
-      
-      
     }
 
     if (form) {
@@ -33,11 +30,10 @@ export const useStorage = (
       // let url = 'http://localhost:3002/test.pdf';
       setFormURL(url);
     }
-     
-   }, [formBlob]);
+  }, [formBlob]);
 
   return {
     formBlob,
-    formURL,    
+    formURL,
   };
 };
