@@ -32,7 +32,7 @@ export default function Overview() {
       <Box marginLeft="40px" height="100vh">
         <Box marginTop="32px">
           <OverviewRow
-            title="To Do"
+            title="To-Do"
             color="#FFDFDE"
             link="/todo"
             formInstances={todoForms}

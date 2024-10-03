@@ -37,13 +37,13 @@ export const OverviewRow = ({
       <Box w={rowWidth}>
         <Flex justifyContent="space-between" alignItems="center">
           <Flex alignItems="center">
-            <Heading as="h2">
-              {title == 'To Do'
+            <Heading as="h2" color="#32353B" fontSize="24px" fontWeight="600">
+              {title == 'To-Do'
                 ? `You have ${formInstances.length} forms waiting for you.`
                 : title}
             </Heading>
 
-            {title != 'To Do' ? (
+            {title != 'To-Do' && (
               <Flex
                 marginLeft="13px"
                 backgroundColor={color}
@@ -57,8 +57,6 @@ export const OverviewRow = ({
                   {formInstances.length}
                 </Text>
               </Flex>
-            ) : (
-              <></>
             )}
           </Flex>
 
@@ -74,7 +72,7 @@ export const OverviewRow = ({
         <HStack spacing="16px" marginTop="20px">
           {displayFormInstances.map(
             (formInstance: FormInstanceEntity, index: number) => {
-              return title == 'To Do' ? (
+              return title == 'To-Do' ? (
                 <FormImageCard
                   key={index}
                   formInstance={formInstance}
@@ -90,7 +88,6 @@ export const OverviewRow = ({
               );
             },
           )}
-          ,
         </HStack>
       </Box>
     </>
