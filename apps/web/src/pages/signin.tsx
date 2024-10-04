@@ -1,16 +1,10 @@
-import { Button, Box, Input } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { Flex } from '@chakra-ui/react';
 import { MFALogoIcon } from '@web/static/icons';
-import { useAuth } from '@web/hooks/useAuth';
-import { useState } from 'react';
+import { AzureSignin } from '@web/components/AzureSignin';
+import { SignIn } from '@web/components/SignIn';
 
 export default function Signin() {
-  const { login } = useAuth();
-  const [loginForm, setLoginForm] = useState({
-    email: '',
-    password: '',
-  });
-
   return (
     <>
       <Flex
@@ -31,33 +25,10 @@ export default function Signin() {
           <Flex
             justifyContent="center"
             marginTop="32px"
-            marginBottom="48px"
             flexDirection={'column'}
           >
-            <Input
-              placeholder="Email"
-              marginBottom="20px"
-              value={loginForm.email}
-              onChange={(e) =>
-                setLoginForm({ ...loginForm, email: e.target.value })
-              }
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              marginBottom="20px"
-              value={loginForm.password}
-              onChange={(e) =>
-                setLoginForm({ ...loginForm, password: e.target.value })
-              }
-            />
-            <Button
-              background="#4C658A"
-              color="#FFF"
-              onClick={async () => login(loginForm.email, loginForm.password)}
-            >
-              Sign In
-            </Button>
+            <SignIn />
+            <AzureSignin />
           </Flex>
         </Box>
       </Flex>
