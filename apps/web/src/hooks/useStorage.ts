@@ -25,12 +25,12 @@ export const useStorage = (
   }, [form]);
 
   useEffect(() => {
-    if (formBlob && formBlob.size > 0) {
-      const url = URL.createObjectURL(formBlob);
-      // let url = 'http://localhost:3002/test.pdf';
-      setFormURL(url);
-    }
-  }, [formBlob]);
+    // if (formBlob && formBlob.size > 0) {
+    // const url = URL.createObjectURL(formBlob);
+    let url = 'http://localhost:3002/test.pdf';
+    setFormURL(url);
+    // }
+  }, []);
 
   return {
     formBlob,
