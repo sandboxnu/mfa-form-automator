@@ -33,7 +33,7 @@ export const FormImageCard = ({
 
   return (
     <Box
-      width="272px"
+      width="246px"
       borderRadius="5px"
       backgroundColor="#FFFFFF"
       boxShadow="0px 0.5px 3px 1px #DCDCDC"
@@ -57,7 +57,6 @@ export const FormImageCard = ({
         >
           <Document file={formURL}>
             <Page
-              width={264}
               renderAnnotationLayer={false}
               renderTextLayer={false}
               pageNumber={1}
@@ -65,10 +64,11 @@ export const FormImageCard = ({
           </Document>
         </Box>
       </Box>
-      <Flex margin="15px" flexDirection="column" gap="12px">
+      <Flex padding="12px" flexDirection="column" gap="12px">
         <Text
           padding={0}
           margin={0}
+          color="#0C0C0C"
           fontFamily="Hanken Grotesk"
           fontWeight={500}
           fontSize="15px"
