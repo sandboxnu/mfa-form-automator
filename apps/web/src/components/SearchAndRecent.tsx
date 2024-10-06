@@ -13,8 +13,10 @@ import { useState } from 'react';
 import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
 import { motion } from 'framer-motion';
 
-
-export const SearchAndRecent = () => {
+/**
+ * @returns a search bar and sort by dropdown
+ */
+export const SearchAndSort = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const { isOpen, onToggle } = useDisclosure();
     const [showButton, setShowButton] = useState(false);

@@ -20,7 +20,7 @@ import { distance } from 'fastest-levenshtein';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { RightArrowIcon } from 'apps/web/src/static/icons';
-import { SearchAndRecent } from 'apps/web/src/components/SearchAndRecent';
+import { SearchAndSort } from 'apps/web/src/components/SearchAndRecent';
 import { ViewAll } from 'apps/web/src/components/ViewAll'
 
 /**
@@ -64,7 +64,7 @@ export const FormList = ({
   const OptionDisplay = () => {
     return (<>
       {extended
-      ? <SearchAndRecent/>
+      ? <SearchAndSort/>
       : <ViewAll title={title} link={link}/>
       }
       </>);
