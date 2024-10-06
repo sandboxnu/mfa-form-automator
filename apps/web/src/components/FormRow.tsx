@@ -31,13 +31,13 @@ export const FormRow = ({
         background="white"
         borderBottomRadius={last ? '5px' : '0px'}
         boxShadow="0px 0px 1px 1px #f7f7f7"
-        _hover={{ boxShadow: '0px 0px 1px 1px #dbdbdb' }}
-        mb={'2px'}
+        _hover={{ boxShadow: '0px 0px 4px 0px #1367EA' }}
+        mb={'4px'}
         cursor="pointer"
         onClick={() => router.push(link)}
       >
         <GridItem colSpan={10} h="64px">
-          <Text pl="24px" pt="20px" fontWeight="bold">
+          <Text pl="24px" pt="20px" fontWeight={400}>
             {formInstance.name}
           </Text>
         </GridItem>

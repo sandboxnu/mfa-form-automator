@@ -20,7 +20,7 @@ import { distance } from 'fastest-levenshtein';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { RightArrowIcon } from 'apps/web/src/static/icons';
-
+import { SearchAndRecent } from 'apps/web/src/components/SearchAndRecent';
 
 /**
  * @param title - the title of the form list
@@ -61,19 +61,20 @@ export const FormList = ({
     .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance);
 
   const OptionDisplay = () => {
-    if(extended) {
-      return <SearchAndRecent/>;
-    }
-    else {
-      return <ViewAll/>
-    }
+    return (<>
+      {
+      extended 
+      ? <SearchAndRecent/>
+      : <ViewAll/>
+      }
+      </>);
   }
 
   const ViewAll = () => {
     return <>
       <Link href={link}>
         <Flex alignItems="center">
-          <Text fontWeight="500" fontSize="16px" color="#4C658A">
+          <Text fontWeight="500" fontSize="15px" color="#1367EA">
             See all {title}
           </Text>
           <RightArrowIcon width="10px" height="10px" marginLeft="4px" />
@@ -83,108 +84,30 @@ export const FormList = ({
   }
 
   const showPadding = () => {
-    if(border) {
-      return "30px 30px 30px 30px";
-    }
-    else {
-      return "30px 30px 0px 0px"
-    }
+    return (
+      border
+      ? "12px 30px 12px 30px"
+      : "12px 30px 12px 0px"
+    );
   }
-
-  const SearchAndRecent = () => {
-    return <>
-          <Flex alignItems="flex-end">
-            <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-              transition={{ duration: 0.3 }}
-              onAnimationComplete={() => setShowButton(!isOpen)}
-            >
-              <InputGroup marginRight="12px">
-                {isOpen ? (
-                  <InputLeftElement
-                    as="button"
-                    onClick={onToggle}
-                    justifyContent="flex-start"
-                  >
-                    <RightSearchIcon color="#595959" w="25px" h="25px" />
-                  </InputLeftElement>
-                ) : (
-                  <Button
-                    variant="unstyled"
-                    onClick={onToggle}
-                    display="flex"
-                    alignItems="flex-end"
-                    p={0}
-                  >
-                    <RightSearchIcon color="#595959" w="25px" h="25px" />
-                  </Button>
-                )}
-                <Input
-                  size="16px"
-                  borderRadius="0"
-                  border="none"
-                  marginRight="12px"
-                  borderBottom="1px solid"
-                  borderColor="#B0B0B0"
-                  boxShadow="none"
-                  _hover={{ borderColor: '#595959' }}
-                  _focus={{
-                    borderColor: '#595959',
-                    boxShadow: 'none',
-                  }}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </InputGroup>
-            </motion.div>
-            {showButton && !isOpen && (
-              <Button
-                variant="unstyled"
-                onClick={onToggle}
-                height="32px"
-                alignItems="center"
-                p={0}
-              >
-                <RightSearchIcon color="#595959" w="25px" h="25px" />
-              </Button>
-            )}
-            <Select
-              minW="100px"
-              maxW="100px"
-              minH="32px"
-              maxH="32px"
-              backgroundColor="white"
-              borderRadius="md"
-              size="16px"
-              icon={<SortDownArrow />}
-              iconSize="10px"
-            >
-              <option value="recent">&nbsp;&nbsp;Recent</option>
-              <option value="option2">&nbsp;&nbsp;Option 2</option>
-              <option value="option3">&nbsp;&nbsp;Option 3</option>
-            </Select>
-          </Flex>
-        </>
-  };
 
   return (
     <>
       <Box padding={showPadding()}>
         <Flex justifyContent="space-between" pb="20px">
           <Flex alignItems="flex-end">
-                <Heading as="h2">{title}</Heading>
-                <Box pb="5px">
+                <Heading as="h2" textColor="#363940">{title}</Heading>
+                <Box pb="0px">
                   <Flex
-                    marginLeft="13px"
+                    marginLeft="11px"
                     backgroundColor={color}
-                    height="18px"
-                    width="32px"
-                    borderRadius="12"
+                    height="25px"
+                    width="41px"
+                    borderRadius="20"
                     justifyContent="center"
                     alignItems="center"
                   >
-                    <Text fontSize="14px" fontWeight="700" color="#756160">
+                    <Text fontSize="16px" fontWeight="700" color="#4C483D">
                       {formInstances.length}
                     </Text>
                   </Flex>
@@ -199,20 +122,20 @@ export const FormList = ({
             background="white"
             borderTopRadius={'5px'}
             boxShadow="0px 0px 1px 1px #f7f7f7"
-            textColor={'#8B8B8B'}
+            textColor={'#5E5E5E'}
           >
             <GridItem colSpan={10} h="48px">
-              <Text fontSize="16px" fontWeight="800" pl="24px" pt="10px">
+              <Text fontSize="15px" fontWeight="700" pl="24px" pt="10px">
                 Form
               </Text>
             </GridItem>
             <GridItem colSpan={5} h="48px">
-              <Text fontSize="16px" fontWeight="800" pt="10px">
+              <Text fontSize="15px" fontWeight="700" pt="10px">
                 Originator
               </Text>
             </GridItem>
             <GridItem colSpan={5} h="48px">
-              <Text fontSize="16px" fontWeight="800" pt="10px">
+              <Text fontSize="15px" fontWeight="700" pt="10px">
                 Assignees
               </Text>
             </GridItem>
