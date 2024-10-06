@@ -23,25 +23,40 @@ export const FormRow = ({
   link: string;
 }) => {
   const router = useRouter();
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const formatDate = (str : string) => {
+    const ymd = formInstance.createdAt.split('T').map((str) => {return str + "-"}).toString()
+    .split("-").toSpliced(3);
+    const year = ymd[0];
+    const month = ymd[1];
+    const date = ymd[2];
+    return months[Number(month) - 1] + " " + date + ", " + year;
+  }
   return (
     <>
       <Grid
         templateColumns="repeat(20, 1fr)"
         gap={0}
+        z-index={0}
         background="white"
-        borderBottomRadius={last ? '5px' : '0px'}
-        boxShadow="0px 0px 1px 1px #f7f7f7"
-        _hover={{ boxShadow: '0px 0px 4px 0px #1367EA' }}
-        mb={'4px'}
+        borderBottomRadius={last ? '8px' : '0px'}
+        boxShadow="0px 0px 1px 1px #d4d4d4"
+        _hover={{ boxShadow: '0px 0px 4px 0px #1367EA', position:'relative', zIndex:'3000'}}
+        mb={'0px'}
         cursor="pointer"
         onClick={() => router.push(link)}
       >
-        <GridItem colSpan={10} h="64px">
+        <GridItem colSpan={8} h="64px">
           <Text pl="24px" pt="20px" fontWeight={400}>
             {formInstance.name}
           </Text>
         </GridItem>
-        <GridItem colSpan={5} h="64px">
+        <GridItem colSpan={3} h="64px">
+          <Text pt="20px" fontWeight={400}>
+            {formatDate(formInstance.createdAt)}
+          </Text>
+        </GridItem>
+        <GridItem colSpan={4} h="64px">
           <Flex alignItems="center" pt="15px">
             <Avatar
               name={

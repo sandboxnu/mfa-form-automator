@@ -47,15 +47,6 @@ export default function Overview() {
           link={'/pending'}
           border={false}
       ></FormList>
-        <Box marginTop="32px">
-          <OverviewRow
-            title="Completed"
-            color="#D0F0DC"
-            link="/completed"
-            formInstances={completedForms}
-            rowWidth={rowWidth}
-          />
-        </Box>
       </Box>
     </>
   );

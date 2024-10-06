@@ -117,7 +117,7 @@ h1 {
 }
 
 h2 {
-  font-size: 22px !important;
+  font-size: 22px;
   font-weight: var(--mfa-extra-bold) !important;
 }
 

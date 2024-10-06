@@ -21,6 +21,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { RightArrowIcon } from 'apps/web/src/static/icons';
 import { SearchAndRecent } from 'apps/web/src/components/SearchAndRecent';
+import { ViewAll } from 'apps/web/src/components/ViewAll'
 
 /**
  * @param title - the title of the form list
@@ -62,25 +63,11 @@ export const FormList = ({
 
   const OptionDisplay = () => {
     return (<>
-      {
-      extended 
+      {extended
       ? <SearchAndRecent/>
-      : <ViewAll/>
+      : <ViewAll title={title} link={link}/>
       }
       </>);
-  }
-
-  const ViewAll = () => {
-    return <>
-      <Link href={link}>
-        <Flex alignItems="center">
-          <Text fontWeight="500" fontSize="15px" color="#1367EA">
-            See all {title}
-          </Text>
-          <RightArrowIcon width="10px" height="10px" marginLeft="4px" />
-        </Flex>
-      </Link>
-    </>
   }
 
   const showPadding = () => {
@@ -91,12 +78,20 @@ export const FormList = ({
     );
   }
 
+  const headingSize = () => {
+    return (
+      extended 
+      ? "24px"
+      : "19px"
+    )
+  }
+
   return (
     <>
       <Box padding={showPadding()}>
         <Flex justifyContent="space-between" pb="20px">
           <Flex alignItems="flex-end">
-                <Heading as="h2" textColor="#363940">{title}</Heading>
+                <Heading as="h2" textColor="#363940" fontSize={headingSize()}>{title}</Heading>
                 <Box pb="0px">
                   <Flex
                     marginLeft="11px"
@@ -120,16 +115,21 @@ export const FormList = ({
             templateColumns="repeat(20, 1fr)"
             gap={0}
             background="white"
-            borderTopRadius={'5px'}
-            boxShadow="0px 0px 1px 1px #f7f7f7"
+            borderTopRadius={'8px'}
+            boxShadow="0px 0px 1px 1px #d4d4d4"
             textColor={'#5E5E5E'}
           >
-            <GridItem colSpan={10} h="48px">
+            <GridItem colSpan={8} h="48px">
               <Text fontSize="15px" fontWeight="700" pl="24px" pt="10px">
                 Form
               </Text>
             </GridItem>
-            <GridItem colSpan={5} h="48px">
+            <GridItem colSpan={3} h="48px">
+              <Text fontSize="15px" fontWeight="700" pt="10px">
+                Date Assigned
+              </Text>
+            </GridItem>
+            <GridItem colSpan={4} h="48px">
               <Text fontSize="15px" fontWeight="700" pt="10px">
                 Originator
               </Text>
@@ -144,7 +144,7 @@ export const FormList = ({
             (formInstance: FormInstanceEntity, index: number) => (
               <FormRow
                 formInstance={formInstance}
-                key={index}
+                last={index === sortedFormInstances.length - 1}
                 link={'/form-instances/' + formInstance.id}
               />
             ),
