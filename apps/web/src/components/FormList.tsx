@@ -137,6 +137,7 @@ export const FormList = ({
             (formInstance: FormInstanceEntity, index: number) => (
               <FormRow
                 formInstance={formInstance}
+                key={index}
                 last={index === sortedFormInstances.length - 1}
                 link={'/form-instances/' + formInstance.id}
               />
