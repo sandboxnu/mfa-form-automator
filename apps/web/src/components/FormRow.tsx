@@ -23,15 +23,34 @@ export const FormRow = ({
   link: string;
 }) => {
   const router = useRouter();
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const formatDate = (str : string) => {
-    const ymd = formInstance.createdAt.split('T').map((str) => {return str + "-"}).toString()
-    .split("-").toSpliced(3);
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  const formatDate = (str: string) => {
+    const ymd = formInstance.createdAt
+      .split('T')
+      .map((str) => {
+        return str + '-';
+      })
+      .toString()
+      .split('-')
+      .toSpliced(3);
     const year = ymd[0];
     const month = ymd[1];
     const date = ymd[2];
-    return months[Number(month) - 1] + " " + date + ", " + year;
-  }
+    return months[Number(month) - 1] + ' ' + date + ', ' + year;
+  };
   return (
     <>
       <Grid
@@ -41,7 +60,11 @@ export const FormRow = ({
         background="white"
         borderBottomRadius={last ? '8px' : '0px'}
         boxShadow="0px 0px 1px 1px #d4d4d4"
-        _hover={{ boxShadow: '0px 0px 4px 0px #1367EA', position:'relative', zIndex:'3000'}}
+        _hover={{
+          boxShadow: '0px 0px 4px 0px #1367EA',
+          position: 'relative',
+          zIndex: '3000',
+        }}
         mb={'0px'}
         cursor="pointer"
         onClick={() => router.push(link)}

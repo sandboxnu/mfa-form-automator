@@ -21,13 +21,13 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { RightArrowIcon } from 'apps/web/src/static/icons';
 import { SearchAndSort } from 'apps/web/src/components/SearchAndRecent';
-import { ViewAll } from 'apps/web/src/components/ViewAll'
+import { ViewAll } from 'apps/web/src/components/ViewAll';
 
 /**
  * @param title - the title of the form list
  * @param formInstances - an array of form instances
  * @param color - the color of the form list
- * @param extended - whether search and sort options are enabled 
+ * @param extended - whether search and sort options are enabled
  * @param link - link to page for category
  * @param border - if true should have border
  * @returns a list of forms for the dashboard
@@ -38,7 +38,7 @@ export const FormList = ({
   color,
   extended,
   link,
-  border
+  border,
 }: {
   title: string;
   formInstances: FormInstanceEntity[];
@@ -62,53 +62,46 @@ export const FormList = ({
     .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance);
 
   const OptionDisplay = () => {
-    return (<>
-      {extended
-      ? <SearchAndSort/>
-      : <ViewAll title={title} link={link}/>
-      }
-      </>);
-  }
+    return (
+      <>
+        {extended ? <SearchAndSort /> : <ViewAll title={title} link={link} />}
+      </>
+    );
+  };
 
   const showPadding = () => {
-    return (
-      border
-      ? "12px 30px 12px 30px"
-      : "12px 30px 12px 0px"
-    );
-  }
+    return border ? '12px 30px 12px 30px' : '12px 30px 12px 0px';
+  };
 
   const headingSize = () => {
-    return (
-      extended 
-      ? "24px"
-      : "19px"
-    )
-  }
+    return extended ? '24px' : '19px';
+  };
 
   return (
     <>
       <Box padding={showPadding()}>
         <Flex justifyContent="space-between" pb="20px">
           <Flex alignItems="flex-end">
-                <Heading as="h2" textColor="#363940" fontSize={headingSize()}>{title}</Heading>
-                <Box pb="0px">
-                  <Flex
-                    marginLeft="11px"
-                    backgroundColor={color}
-                    height="25px"
-                    width="41px"
-                    borderRadius="20"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Text fontSize="16px" fontWeight="700" color="#4C483D">
-                      {formInstances.length}
-                    </Text>
-                  </Flex>
-                </Box>
+            <Heading as="h2" textColor="#363940" fontSize={headingSize()}>
+              {title}
+            </Heading>
+            <Box pb="0px">
+              <Flex
+                marginLeft="11px"
+                backgroundColor={color}
+                height="25px"
+                width="41px"
+                borderRadius="20"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Text fontSize="16px" fontWeight="700" color="#4C483D">
+                  {formInstances.length}
+                </Text>
               </Flex>
-              <OptionDisplay/>
+            </Box>
+          </Flex>
+          <OptionDisplay />
         </Flex>
         <Box>
           <Grid
