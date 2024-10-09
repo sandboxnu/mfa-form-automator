@@ -23,7 +23,6 @@ export class AuthService {
     pass: string,
   ): Promise<EmployeeEntity | null> {
     const user = await this.employeesService.findOneByEmail(email);
-
     if (!user) {
       const newUser: CreateEmployeeDto = {
         email,

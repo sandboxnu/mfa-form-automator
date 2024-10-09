@@ -62,7 +62,6 @@ export class AppController {
     @Request() req: any,
     @Res({ passthrough: true }) response: ResponseType,
   ) {
-    console.log(req.user);
     const tokens = await this.authService.login(req.user);
 
     // set the employee's refresh token
