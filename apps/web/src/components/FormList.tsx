@@ -20,35 +20,31 @@ import { distance } from 'fastest-levenshtein';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { RightArrowIcon } from 'apps/web/src/static/icons';
-import { SearchAndSort } from 'apps/web/src/components/SearchAndRecent';
+import { SearchAndSort } from 'apps/web/src/components/SearchAndSort';
 import { ViewAll } from 'apps/web/src/components/ViewAll';
 
 /**
  * @param title - the title of the form list
  * @param formInstances - an array of form instances
  * @param color - the color of the form list
- * @param extended - whether search and sort options are enabled
+ * @param isDashboard - whether component is displayed on index page
  * @param link - link to page for category
- * @param border - if true should have border
  * @returns a list of forms for the dashboard
  */
 export const FormList = ({
   title,
   formInstances,
   color,
-  extended,
+  isDashboard,
   link,
-  border,
 }: {
   title: string;
   formInstances: FormInstanceEntity[];
   color: string;
-  extended: boolean;
-  link: string;
-  border: boolean;
+  isDashboard: boolean,
+  link?: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const { isOpen, onToggle } = useDisclosure();
   const [showButton, setShowButton] = useState(false);
 
   const sortedFormInstances = formInstances
@@ -61,28 +57,12 @@ export const FormList = ({
     }))
     .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance);
 
-  const OptionDisplay = () => {
-    return (
-      <>
-        {extended ? <SearchAndSort /> : <ViewAll title={title} link={link} />}
-      </>
-    );
-  };
-
-  const showPadding = () => {
-    return border ? '12px 30px 12px 30px' : '12px 30px 12px 0px';
-  };
-
-  const headingSize = () => {
-    return extended ? '24px' : '19px';
-  };
-
   return (
     <>
-      <Box padding={showPadding()}>
+      <Box padding={isDashboard ? '12px 30px 12px 0px' : '12px 30px 12px 30px'}>
         <Flex justifyContent="space-between" pb="20px">
           <Flex alignItems="flex-end">
-            <Heading as="h2" textColor="#363940" fontSize={headingSize()}>
+            <Heading as="h2" textColor="#363940" fontSize={isDashboard ? '19px' : '24px'}>
               {title}
             </Heading>
             <Box pb="0px">
@@ -101,7 +81,10 @@ export const FormList = ({
               </Flex>
             </Box>
           </Flex>
-          <OptionDisplay />
+          <>
+            {isDashboard ? <ViewAll title={title} link={link || '/'} /> :  
+            <SearchAndSort searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
+          </>
         </Flex>
         <Box>
           <Grid

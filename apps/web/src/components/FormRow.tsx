@@ -23,33 +23,13 @@ export const FormRow = ({
   link: string;
 }) => {
   const router = useRouter();
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-  const formatDate = (str: string) => {
-    const ymd = formInstance.createdAt
-      .split('T')
-      .map((str) => {
-        return str + '-';
-      })
-      .toString()
-      .split('-')
-      .toSpliced(3);
-    const year = ymd[0];
-    const month = ymd[1];
-    const date = ymd[2];
-    return months[Number(month) - 1] + ' ' + date + ', ' + year;
+  
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
   };
   return (
     <>
@@ -70,7 +50,7 @@ export const FormRow = ({
         onClick={() => router.push(link)}
       >
         <GridItem colSpan={8} h="64px">
-          <Text pl="24px" pt="20px" fontWeight={400}>
+          <Text pl="24px" pt="20px" fontWeight={500} isTruncated>
             {formInstance.name}
           </Text>
         </GridItem>

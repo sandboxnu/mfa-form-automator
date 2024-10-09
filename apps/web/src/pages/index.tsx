@@ -43,9 +43,8 @@ export default function Overview() {
           title={'Pending'}
           formInstances={pendingForms}
           color={'#FFECCC'}
-          extended={false}
+          isDashboard={true}
           link={'/pending'}
-          border={false}
         ></FormList>
       </Box>
     </>

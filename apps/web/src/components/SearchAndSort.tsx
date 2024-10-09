@@ -1,4 +1,3 @@
-import { FormRow } from './FormRow';
 import {
   Button,
   Flex,
@@ -16,8 +15,13 @@ import { motion } from 'framer-motion';
 /**
  * @returns a search bar and sort by dropdown
  */
-export const SearchAndSort = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+export const SearchAndSort = ({
+  searchQuery,
+  setSearchQuery,
+}: {
+  searchQuery: string;
+  setSearchQuery: (searchQuery: string) => void;
+}) => {
   const { isOpen, onToggle } = useDisclosure();
   const [showButton, setShowButton] = useState(false);
 

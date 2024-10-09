@@ -10,9 +10,7 @@ export default function Completed() {
         title={'Completed'}
         formInstances={completedForms}
         color={'#D0F0DC'}
-        extended={true}
-        link={'/'}
-        border={true}
+        isDashboard={false}
       ></FormList>
     </>
   );
