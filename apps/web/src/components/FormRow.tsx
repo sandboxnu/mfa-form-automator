@@ -23,7 +23,7 @@ export const FormRow = ({
   link: string;
 }) => {
   const router = useRouter();
-  
+
   const formatDate = (date: string) => {
     return new Date(date).toLocaleString('en-US', {
       year: 'numeric',

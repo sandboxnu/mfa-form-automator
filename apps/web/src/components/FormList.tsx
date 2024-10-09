@@ -41,7 +41,7 @@ export const FormList = ({
   title: string;
   formInstances: FormInstanceEntity[];
   color: string;
-  isDashboard: boolean,
+  isDashboard: boolean;
   link?: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,7 +62,11 @@ export const FormList = ({
       <Box padding={isDashboard ? '12px 30px 12px 0px' : '12px 30px 12px 30px'}>
         <Flex justifyContent="space-between" pb="20px">
           <Flex alignItems="flex-end">
-            <Heading as="h2" textColor="#363940" fontSize={isDashboard ? '19px' : '24px'}>
+            <Heading
+              as="h2"
+              textColor="#363940"
+              fontSize={isDashboard ? '19px' : '24px'}
+            >
               {title}
             </Heading>
             <Box pb="0px">
@@ -82,8 +86,14 @@ export const FormList = ({
             </Box>
           </Flex>
           <>
-            {isDashboard ? <ViewAll title={title} link={link || '/'} /> :  
-            <SearchAndSort searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
+            {isDashboard ? (
+              <ViewAll title={title} link={link || '/'} />
+            ) : (
+              <SearchAndSort
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
+            )}
           </>
         </Flex>
         <Box>
