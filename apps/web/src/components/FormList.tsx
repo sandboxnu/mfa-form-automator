@@ -1,25 +1,9 @@
+import React, { useEffect } from 'react';
 import { FormRow } from './FormRow';
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Select,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
+import { Box, Flex, Grid, GridItem, Heading, Text } from '@chakra-ui/react';
 import { FormInstanceEntity } from '@web/client';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { RightArrowIcon } from 'apps/web/src/static/icons';
 import { SearchAndSort } from 'apps/web/src/components/SearchAndSort';
 import { ViewAll } from 'apps/web/src/components/ViewAll';
 
@@ -45,17 +29,21 @@ export const FormList = ({
   link?: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [showButton, setShowButton] = useState(false);
+  const [sortedFormInstances, setSortedFormInstances] = useState(formInstances);
 
-  const sortedFormInstances = formInstances
-    .map((formInstance) => ({
-      ...formInstance,
-      levenshteinDistance: distance(
-        searchQuery.toLowerCase(),
-        formInstance.name.toLowerCase(),
-      ),
-    }))
-    .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance);
+  useEffect(() => {
+    setSortedFormInstances(
+      formInstances
+        .map((formInstance) => ({
+          ...formInstance,
+          levenshteinDistance: distance(
+            searchQuery.toLowerCase(),
+            formInstance.name.toLowerCase(),
+          ),
+        }))
+        .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance),
+    );
+  }, [searchQuery, formInstances]);
 
   return (
     <>
