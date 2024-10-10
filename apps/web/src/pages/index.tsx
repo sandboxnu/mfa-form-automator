@@ -29,10 +29,10 @@ export default function Overview() {
 
   return (
     <>
-      <Box marginLeft="40px" height="100vh">
-        <Box marginTop="32px">
+      <Box marginLeft="40px" height="100vh" marginTop="36px">
+        <Box marginBottom="40px">
           <OverviewRow
-            title="To-Do"
+            title="To-do"
             color="#FFDFDE"
             link="/todo"
             formInstances={todoForms}
