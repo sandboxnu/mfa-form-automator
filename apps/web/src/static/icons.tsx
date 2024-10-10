@@ -133,7 +133,7 @@ export const RightArrowIcon = createIcon({
     <>
       <path
         d="M0.330127 0.5L7.83013 4.83013L0.330127 9.16025L0.330127 0.5Z"
-        fill="#4C658A"
+        fill="#1367EA"
       />
     </>
   ),
