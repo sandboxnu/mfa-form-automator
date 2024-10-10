@@ -3,6 +3,8 @@ import { FormCard } from './FormCard';
 import { RightArrowIcon } from 'apps/web/src/static/icons';
 import Link from 'next/link';
 import { FormInstanceEntity } from '@web/client';
+import React from 'react';
+import { FormImageCard } from './FormImageCard';
 
 /**
  * @param title - the title of the overview row
@@ -29,26 +31,35 @@ export const OverviewRow = ({
     0,
     Math.min(4, formInstances.length),
   );
+
   return (
     <>
       <Box w={rowWidth}>
         <Flex justifyContent="space-between" alignItems="center">
           <Flex alignItems="center">
-            <Heading as="h2">{title}</Heading>
-            <Flex
-              marginLeft="13px"
-              backgroundColor={color}
-              height="18px"
-              width="32px"
-              borderRadius="12"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Text fontSize="14px" fontWeight="700" color="#756160">
-                {formInstances.length}
-              </Text>
-            </Flex>
+            <Heading as="h2" color="#32353B" fontSize="24px" fontWeight="600">
+              {title == 'To-Do'
+                ? `You have ${formInstances.length} forms waiting for you.`
+                : title}
+            </Heading>
+
+            {title != 'To-Do' && (
+              <Flex
+                marginLeft="13px"
+                backgroundColor={color}
+                height="18px"
+                width="32px"
+                borderRadius="12"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Text fontSize="14px" fontWeight="700" color="#756160">
+                  {formInstances.length}
+                </Text>
+              </Flex>
+            )}
           </Flex>
+
           <Link href={link}>
             <Flex alignItems="center">
               <Text fontWeight="500" fontSize="16px" color="#4C658A">
@@ -61,11 +72,17 @@ export const OverviewRow = ({
         <HStack spacing="16px" marginTop="20px">
           {displayFormInstances.map(
             (formInstance: FormInstanceEntity, index: number) => {
-              return (
+              return title == 'To-Do' ? (
+                <FormImageCard
+                  key={index}
+                  formInstance={formInstance}
+                  link={'/form-instances/' + formInstance.id}
+                />
+              ) : (
                 <FormCard
+                  key={index}
                   formName={formInstance.name}
                   signatures={formInstance.signatures}
-                  key={index}
                   link={'/form-instances/' + formInstance.id}
                 />
               );

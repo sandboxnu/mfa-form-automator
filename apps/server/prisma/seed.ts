@@ -405,7 +405,7 @@ async function main() {
       id: KAI_ZHENG_UUID,
       firstName: 'Kai',
       lastName: 'Zheng',
-      email: 'zheng.kaiy@northeastern.edu',
+      email: 'zheng.kaiy@mfabostondev.onmicrosoft.com',
       positionId: CHIEF_FIN_OFFICER_UUID,
     },
     {
