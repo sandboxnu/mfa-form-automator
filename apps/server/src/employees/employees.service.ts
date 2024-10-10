@@ -33,7 +33,10 @@ export class EmployeesService {
         },
       },
     });
-    newEmployee.pswdHash = null;
+    newEmployee.pswdHash = bcrypt.hashSync(
+      createEmployeeDto.password,
+      Number(process.env.SALT_ROUNDS) || 10,
+    );
     return newEmployee;
   }
 
@@ -116,7 +119,7 @@ export class EmployeesService {
    * @returns the selected employee, hydrated
    */
   async findOneByEmail(email: string) {
-    const employee = await this.prisma.employee.findFirstOrThrow({
+    const employee = await this.prisma.employee.findFirst({
       where: {
         email: email,
       },
