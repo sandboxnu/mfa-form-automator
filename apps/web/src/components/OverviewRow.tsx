@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FormInstanceEntity } from '@web/client';
 import React from 'react';
 import { FormImageCard } from './FormImageCard';
+import { ViewAll } from './ViewAll';
 
 /**
  * @param title - the title of the overview row
@@ -38,12 +39,12 @@ export const OverviewRow = ({
         <Flex justifyContent="space-between" alignItems="center">
           <Flex alignItems="center">
             <Heading as="h2" color="#32353B" fontSize="24px" fontWeight="600">
-              {title == 'To-Do'
+              {title == 'To-do'
                 ? `You have ${formInstances.length} forms waiting for you.`
                 : title}
             </Heading>
 
-            {title != 'To-Do' && (
+            {title != 'To-do' && (
               <Flex
                 marginLeft="13px"
                 backgroundColor={color}
@@ -59,20 +60,12 @@ export const OverviewRow = ({
               </Flex>
             )}
           </Flex>
-
-          <Link href={link}>
-            <Flex alignItems="center">
-              <Text fontWeight="500" fontSize="16px" color="#4C658A">
-                See all {title}
-              </Text>
-              <RightArrowIcon width="10px" height="10px" marginLeft="4px" />
-            </Flex>
-          </Link>
+          <ViewAll title={title} link={link} />
         </Flex>
         <HStack spacing="16px" marginTop="20px">
           {displayFormInstances.map(
             (formInstance: FormInstanceEntity, index: number) => {
-              return title == 'To-Do' ? (
+              return title == 'To-do' ? (
                 <FormImageCard
                   key={index}
                   formInstance={formInstance}

@@ -34,9 +34,9 @@ export const FormImageCard = ({
   return (
     <Box
       width="246px"
-      borderRadius="5px"
+      borderRadius="8px"
       backgroundColor="#FFFFFF"
-      boxShadow="0px 0.5px 3px 1px #DCDCDC"
+      border="1px solid #D4D4D4"
       background="#FCFCFC"
       cursor="pointer"
       onClick={() => {
