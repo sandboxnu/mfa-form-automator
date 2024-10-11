@@ -3,6 +3,9 @@ import { User, jwtPayload, AuthContextType } from './types';
 import { useRouter } from 'next/router';
 import { DefaultService, EmployeesService, JwtEntity } from '@web/client';
 import { jwtDecode } from 'jwt-decode';
+import { useMsal } from '@azure/msal-react';
+import { loginRequest } from '@web/authConfig';
+import { callMsGraph } from '@web/graph';
 
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
@@ -12,8 +15,9 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider = ({ children }: any) => {
   const router = useRouter();
+  const { instance: msalInstance, accounts: msalAccounts } = useMsal();
   const [user, setUser] = useState<User>();
-  const [error, setError] = useState<any>();
+  const [error, setError] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
 
@@ -30,6 +34,27 @@ export const AuthProvider = ({ children }: any) => {
       isAdmin: decoded.isAdmin,
     };
     setUser(user);
+  };
+
+  // Request the profile data from the Microsoft Graph API
+  const requestProfileData = () => {
+    msalInstance
+      .acquireTokenSilent({
+        ...loginRequest,
+        account: msalAccounts[0],
+      })
+      .then((response) => {
+        callMsGraph(response.accessToken).then((response) => {
+          // register or update the user in the database
+          console.log(response);
+        });
+      });
+  };
+
+  // Parse the user from the JWT and request the profile data
+  const handlePostLogin = (jwt: JwtEntity) => {
+    parseUser(jwt);
+    requestProfileData();
   };
 
   // Reset the error state if we change page
@@ -61,7 +86,7 @@ export const AuthProvider = ({ children }: any) => {
         setUser(undefined);
         DefaultService.appControllerRefresh()
           .then((response) => {
-            parseUser(response);
+            handlePostLogin(response);
           })
           .catch((_error) => {
             logout();
@@ -86,7 +111,7 @@ export const AuthProvider = ({ children }: any) => {
       password: password,
     })
       .then((response) => {
-        parseUser(response);
+        handlePostLogin(response);
         router.push('/');
       })
       .catch((error) => {
