@@ -55,6 +55,27 @@ export class PositionsService {
     }
 
     /**
+     * @param requestBody
+     * @returns PositionEntity
+     * @throws ApiError
+     */
+    public static positionsControllerCreateWithDepartment(
+        requestBody: CreatePositionDto,
+    ): CancelablePromise<PositionEntity> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/positions/department',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                422: `Bad Request`,
+            },
+        });
+    }
+
+    /**
      * @param id
      * @returns PositionEntity
      * @throws ApiError
@@ -116,6 +137,33 @@ export class PositionsService {
             url: '/api/positions/{id}',
             path: {
                 'id': id,
+            },
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                404: `Resource not found`,
+            },
+        });
+    }
+
+    /**
+     * @param name
+     * @param departmentId
+     * @returns PositionEntity
+     * @throws ApiError
+     */
+    public static positionsControllerFindOneByNameInDepartment(
+        name: string,
+        departmentId: string,
+    ): CancelablePromise<PositionEntity> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/positions/name/{name}',
+            path: {
+                'name': name,
+            },
+            query: {
+                'departmentId': departmentId,
             },
             errors: {
                 400: `Bad Request`,

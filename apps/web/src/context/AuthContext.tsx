@@ -1,13 +1,23 @@
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { User, jwtPayload, AuthContextType } from './types';
 import { useRouter } from 'next/router';
-import { DefaultService, EmployeesService, JwtEntity } from '@web/client';
+import {
+  DefaultService,
+  EmployeesService,
+  PositionsService,
+  DepartmentsService,
+  JwtEntity,
+} from '@web/client';
 import { jwtDecode } from 'jwt-decode';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@web/authConfig';
 import { callMsGraph } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
-import { CreateEmployeeDto } from '@web/client';
+import {
+  CreateEmployeeDto,
+  CreatePositionDto,
+  CreateDepartmentDto,
+} from '@web/client';
 
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
@@ -26,6 +36,18 @@ export const AuthProvider = ({ children }: any) => {
   const createEmployeeMutation = useMutation({
     mutationFn: async (employee: CreateEmployeeDto) => {
       return EmployeesService.employeesControllerCreate(employee);
+    },
+  });
+
+  const createPositionMutation = useMutation({
+    mutationFn: async (position: CreatePositionDto) => {
+      return PositionsService.positionsControllerCreate(position);
+    },
+  });
+
+  const createDepartmentMutation = useMutation({
+    mutationFn: async (department: CreateDepartmentDto) => {
+      return DepartmentsService.departmentsControllerCreate(department);
     },
   });
 
@@ -132,9 +154,15 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
+  // Register the user in the database
   const register = async (email: string, password: string) => {
     try {
       const userData = await requestProfileData();
+      const departmentName = userData.department;
+      const positionName = userData.jobTitle;
+
+      // todo create department + position if they don't exist
+
       const employee: CreateEmployeeDto = {
         email: email,
         firstName: userData.givenName || userData.displayName.split(' ')[0],
@@ -143,7 +171,7 @@ export const AuthProvider = ({ children }: any) => {
         positionId: '5a5b1c25-8bfe-4418-9ba6-b1420d1fedff',
       };
 
-      createEmployeeMutation.mutate(employee);
+      // createEmployeeMutation.mutate(employee);
     } catch (error) {
       console.error('Error during registration:', error);
     }

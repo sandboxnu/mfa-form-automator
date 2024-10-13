@@ -49,6 +49,21 @@ export class DepartmentsService {
   }
 
   /**
+   * Retrieve a department by name.
+   * @param name the department name
+   * @returns the selected department, hydrated
+   */
+  async findOneByName(name: string) {
+    const department = await this.prisma.department.findFirstOrThrow({
+      where: {
+        name: name,
+      },
+    });
+
+    return department;
+  }
+
+  /**
    * Update a department.
    * @param id the department id
    * @param updateDepartmentDto update department dto

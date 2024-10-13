@@ -44,5 +44,6 @@ export const loginRequest = {
 };
 
 export const graphConfig = {
-  graphMeEndpoint: 'https://graph.microsoft.com/v1.0/me',
+  graphMeEndpoint:
+    'https://graph.microsoft.com/v1.0/me?$select=id,displayName,department,jobTitle,givenName,surname,userPrincipalName',
 };

@@ -27,6 +27,7 @@ import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { PositionsErrorMessage } from './positions.errors';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { CreateDepartmentDto } from '@server/departments/dto/create-department.dto';
 
 @ApiTags('positions')
 @Controller('positions')
@@ -45,6 +46,24 @@ export class PositionsController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async create(@Body() createPositionDto: CreatePositionDto) {
     const newPosition = await this.positionsService.create(createPositionDto);
+    return new PositionEntity(newPosition);
+  }
+
+  @Post('department')
+  @ApiCreatedResponse({ type: PositionEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async createWithDepartment(
+    @Body() createPositionDto: CreatePositionDto,
+    @Body() createDepartmentDto: CreateDepartmentDto,
+  ) {
+    const newPosition = await this.positionsService.createWithDepartment(
+      createPositionDto,
+      createDepartmentDto,
+    );
     return new PositionEntity(newPosition);
   }
 
@@ -70,6 +89,28 @@ export class PositionsController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findOne(@Param('id') id: string) {
     const position = await this.positionsService.findOne(id);
+    if (position == null) {
+      this.loggerService.error(PositionsErrorMessage.POSITION_NOT_FOUND);
+      throw new NotFoundException(
+        PositionsErrorMessage.POSITION_NOT_FOUND_CLIENT,
+      );
+    }
+    return new PositionEntity(position);
+  }
+
+  @Get('name/:name')
+  @ApiOkResponse({ type: PositionEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findOneByNameInDepartment(
+    @Param('name') name: string,
+    @Query('departmentId') departmentId: string,
+  ) {
+    const position = await this.positionsService.findOneByNameInDepartment(
+      name,
+      departmentId,
+    );
     if (position == null) {
       this.loggerService.error(PositionsErrorMessage.POSITION_NOT_FOUND);
       throw new NotFoundException(
