@@ -106,11 +106,11 @@ const WrapperComponent = memo(({ children }: { children: ReactNode }) => {
     <>
       {head}
       <MsalProvider instance={publicClientApplication}>
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
             <ChakraProvider theme={theme}>{children}</ChakraProvider>
-          </QueryClientProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </QueryClientProvider>
       </MsalProvider>
     </>
   );

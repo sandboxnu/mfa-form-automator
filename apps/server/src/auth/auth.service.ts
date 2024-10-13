@@ -3,7 +3,6 @@ import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
-import { CreateEmployeeDto } from '../employees/dto/create-employee.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,17 +22,6 @@ export class AuthService {
     pass: string,
   ): Promise<EmployeeEntity | null> {
     const user = await this.employeesService.findOneByEmail(email);
-    if (!user) {
-      const newUser: CreateEmployeeDto = {
-        email,
-        password: pass,
-        firstName: 'New',
-        lastName: 'User',
-        positionId: '5a5b1c25-8bfe-4418-9ba6-b1420d1fedff',
-      };
-
-      return this.employeesService.create(newUser);
-    }
 
     if (user?.pswdHash && !(await bcrypt.compare(pass, user.pswdHash!))) {
       return null;

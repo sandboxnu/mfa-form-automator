@@ -119,7 +119,7 @@ export class EmployeesService {
    * @returns the selected employee, hydrated
    */
   async findOneByEmail(email: string) {
-    const employee = await this.prisma.employee.findFirst({
+    const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         email: email,
       },
