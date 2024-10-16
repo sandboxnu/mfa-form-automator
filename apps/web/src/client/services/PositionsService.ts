@@ -55,27 +55,6 @@ export class PositionsService {
     }
 
     /**
-     * @param requestBody
-     * @returns PositionEntity
-     * @throws ApiError
-     */
-    public static positionsControllerCreateWithDepartment(
-        requestBody: string,
-    ): CancelablePromise<PositionEntity> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/positions/department',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                400: `Bad Request`,
-                403: `Unauthorized Request`,
-                422: `Bad Request`,
-            },
-        });
-    }
-
-    /**
      * @param id
      * @returns PositionEntity
      * @throws ApiError

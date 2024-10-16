@@ -27,7 +27,6 @@ import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { PositionsErrorMessage } from './positions.errors';
 import { LoggerServiceImpl } from '../logger/logger.service';
-import { CreateDepartmentDto } from '@server/departments/dto/create-department.dto';
 
 @ApiTags('positions')
 @Controller('positions')
@@ -46,24 +45,6 @@ export class PositionsController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async create(@Body() createPositionDto: CreatePositionDto) {
     const newPosition = await this.positionsService.create(createPositionDto);
-    return new PositionEntity(newPosition);
-  }
-
-  @Post('department')
-  @ApiCreatedResponse({ type: PositionEntity })
-  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
-  @ApiUnprocessableEntityResponse({
-    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
-  })
-  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async createWithDepartment(
-    @Body() positionName: string,
-    @Body() createDepartmentDto: CreateDepartmentDto,
-  ) {
-    const newPosition = await this.positionsService.createWithDepartment(
-      positionName,
-      createDepartmentDto,
-    );
     return new PositionEntity(newPosition);
   }
 

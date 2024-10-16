@@ -1,24 +1,13 @@
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { User, jwtPayload, AuthContextType } from './types';
 import { useRouter } from 'next/router';
-import {
-  DefaultService,
-  EmployeesService,
-  PositionsService,
-  DepartmentsService,
-  JwtEntity,
-} from '@web/client';
+import { DefaultService, EmployeesService, JwtEntity } from '@web/client';
 import { jwtDecode } from 'jwt-decode';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@web/authConfig';
 import { callMsGraph } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
-import {
-  CreateEmployeeDto,
-  CreatePositionDto,
-  CreateDepartmentDto,
-} from '@web/client';
-import { position } from '@chakra-ui/react';
+import { RegisterEmployeeDto } from '@web/client';
 
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
@@ -34,21 +23,9 @@ export const AuthProvider = ({ children }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
 
-  const createEmployeeMutation = useMutation({
-    mutationFn: async (employee: CreateEmployeeDto) => {
-      return EmployeesService.employeesControllerCreate(employee);
-    },
-  });
-
-  const createPositionMutation = useMutation({
-    mutationFn: async (position: CreatePositionDto) => {
-      return PositionsService.positionsControllerCreate(position);
-    },
-  });
-
-  const createDepartmentMutation = useMutation({
-    mutationFn: async (department: CreateDepartmentDto) => {
-      return DepartmentsService.departmentsControllerCreate(department);
+  const registerEmployeeMutation = useMutation({
+    mutationFn: async (employee: RegisterEmployeeDto) => {
+      return DefaultService.appControllerRegister(employee);
     },
   });
 
@@ -161,57 +138,16 @@ export const AuthProvider = ({ children }: any) => {
     const departmentName = userData.department || 'Test Department';
     const positionName = userData.jobTitle || 'Test Position';
 
-    let departmentId: string;
-
-    try {
-      const department =
-        await DepartmentsService.departmentsControllerFindOneByName(
-          departmentName,
-        );
-      departmentId = department.id;
-    } catch (error) {
-      const newDepartment: CreateDepartmentDto = { name: departmentName };
-
-      departmentId = await new Promise((resolve, reject) => {
-        createDepartmentMutation.mutate(newDepartment, {
-          onSuccess: (data) => resolve(data.id),
-          onError: (err) => reject(err),
-        });
-      });
-    }
-
-    let positionId: string;
-
-    try {
-      const position =
-        await PositionsService.positionsControllerFindOneByNameInDepartment(
-          positionName,
-          departmentId,
-        );
-      positionId = position.id;
-    } catch (error) {
-      const newPosition: CreatePositionDto = {
-        name: positionName,
-        departmentId: departmentId,
-      };
-
-      positionId = await new Promise((resolve, reject) => {
-        createPositionMutation.mutate(newPosition, {
-          onSuccess: (data) => resolve(data.id),
-          onError: (err) => reject(err),
-        });
-      });
-    }
-
-    const employee: CreateEmployeeDto = {
+    const employee: RegisterEmployeeDto = {
       email: email,
+      password: password,
       firstName: userData.givenName || userData.displayName.split(' ')[0],
       lastName: userData.surname || userData.displayName.split(' ')[1],
-      password: password,
-      positionId: positionId,
+      departmentName: departmentName,
+      positionName: positionName,
     };
 
-    createEmployeeMutation.mutate(employee, {
+    registerEmployeeMutation.mutate(employee, {
       onSuccess: () => {
         login(email, password);
       },

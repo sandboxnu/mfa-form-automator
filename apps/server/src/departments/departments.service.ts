@@ -64,6 +64,25 @@ export class DepartmentsService {
   }
 
   /**
+   * Retrieve a department by name or create it if it doesn't exist.
+   * @param name the department name
+   * @returns the selected or created department, hydrated
+   */
+  async findOrCreateOneByName(name: string) {
+    let department = await this.prisma.department.findFirst({
+      where: {
+        name: name,
+      },
+    });
+
+    if (!department) {
+      department = await this.create({ name });
+    }
+
+    return department;
+  }
+
+  /**
    * Update a department.
    * @param id the department id
    * @param updateDepartmentDto update department dto

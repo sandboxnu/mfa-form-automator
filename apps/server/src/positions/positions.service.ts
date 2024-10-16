@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateDepartmentDto } from '@server/departments/dto/create-department.dto';
 import { DepartmentsService } from '@server/departments/departments.service';
 
 @Injectable()
@@ -22,39 +21,6 @@ export class PositionsService {
       data: {
         name: createPositionDto.name,
         departmentId: createPositionDto.departmentId,
-      },
-      include: {
-        employees: true,
-      },
-    });
-    return newPosition;
-  }
-
-  /**
-   * Create a new position with a department.
-   * @param positionName the position name
-   * @param createDepartmentDto create department dto
-   * @returns the created position, hydrated
-   */
-  async createWithDepartment(
-    positionName: string,
-    createDepartmentDto: CreateDepartmentDto,
-  ) {
-    const { name: departmentName } = createDepartmentDto;
-    const department =
-      await this.departmentsService.findOneByName(departmentName);
-    let departmentId: string | undefined = department?.id;
-
-    if (!department) {
-      const newDepartment =
-        await this.departmentsService.create(createDepartmentDto);
-      departmentId = newDepartment.id;
-    }
-
-    const newPosition = await this.prisma.position.create({
-      data: {
-        name: positionName,
-        departmentId: departmentId,
       },
       include: {
         employees: true,
@@ -131,6 +97,21 @@ export class PositionsService {
         employees: true,
       },
     });
+    return position;
+  }
+
+  async findOrCreateOneByNameInDepartment(name: string, departmentId: string) {
+    let position = await this.prisma.position.findFirst({
+      where: {
+        name: name,
+        departmentId: departmentId,
+      },
+    });
+
+    if (!position) {
+      position = await this.create({ name, departmentId });
+    }
+
     return position;
   }
 
