@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { DepartmentsService } from '@server/departments/departments.service';
 
 @Injectable()
 export class PositionsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private departmentsService: DepartmentsService,
+  ) {}
 
   /**
    * Create a new position.
@@ -77,6 +81,36 @@ export class PositionsService {
         employees: true,
       },
     });
+    return position;
+  }
+
+  /**
+   * Retrieve a position in a department by name.
+   */
+  async findOneByNameInDepartment(name: string, departmentId: string) {
+    const position = await this.prisma.position.findFirstOrThrow({
+      where: {
+        name: name,
+        departmentId: departmentId,
+      },
+      include: {
+        employees: true,
+      },
+    });
+    return position;
+  }
+
+  async findOrCreateOneByNameInDepartment(name: string, departmentId: string) {
+    let position = await this.prisma.position.findFirst({
+      where: {
+        name: name,
+        departmentId: departmentId,
+      },
+    });
+
+    if (!position) {
+      position = await this.create({ name, departmentId });
+    }
 
     return position;
   }

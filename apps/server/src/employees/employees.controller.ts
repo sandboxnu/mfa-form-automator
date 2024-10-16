@@ -28,7 +28,6 @@ import { EmployeeEntity } from './entities/employee.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { EmployeeErrorMessage } from './employees.errors';
-import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { AuthUser } from '../auth/auth.decorators';
 import { UserEntity } from '../auth/entities/user.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -42,7 +41,6 @@ export class EmployeesController {
     private readonly loggerService: LoggerServiceImpl,
   ) {}
 
-  @UseGuards(AdminAuthGuard)
   @Post()
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: EmployeeEntity })

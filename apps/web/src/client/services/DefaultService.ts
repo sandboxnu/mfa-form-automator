@@ -2,7 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { EmployeeEntity } from '../models/EmployeeEntity';
 import type { JwtEntity } from '../models/JwtEntity';
+import type { RegisterEmployeeDto } from '../models/RegisterEmployeeDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -51,6 +53,27 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/auth/refresh',
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                422: `Bad Request`,
+            },
+        });
+    }
+
+    /**
+     * @param requestBody
+     * @returns EmployeeEntity
+     * @throws ApiError
+     */
+    public static appControllerRegister(
+        requestBody: RegisterEmployeeDto,
+    ): CancelablePromise<EmployeeEntity> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/auth/register',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 400: `Bad Request`,
                 403: `Unauthorized Request`,

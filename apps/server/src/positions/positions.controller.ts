@@ -79,6 +79,28 @@ export class PositionsController {
     return new PositionEntity(position);
   }
 
+  @Get('name/:name')
+  @ApiOkResponse({ type: PositionEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findOneByNameInDepartment(
+    @Param('name') name: string,
+    @Query('departmentId') departmentId: string,
+  ) {
+    const position = await this.positionsService.findOneByNameInDepartment(
+      name,
+      departmentId,
+    );
+    if (position == null) {
+      this.loggerService.error(PositionsErrorMessage.POSITION_NOT_FOUND);
+      throw new NotFoundException(
+        PositionsErrorMessage.POSITION_NOT_FOUND_CLIENT,
+      );
+    }
+    return new PositionEntity(position);
+  }
+
   @Patch(':id')
   @ApiOkResponse({ type: PositionEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
