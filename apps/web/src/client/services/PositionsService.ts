@@ -60,7 +60,7 @@ export class PositionsService {
      * @throws ApiError
      */
     public static positionsControllerCreateWithDepartment(
-        requestBody: CreatePositionDto,
+        requestBody: string,
     ): CancelablePromise<PositionEntity> {
         return __request(OpenAPI, {
             method: 'POST',

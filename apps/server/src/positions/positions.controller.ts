@@ -57,11 +57,11 @@ export class PositionsController {
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async createWithDepartment(
-    @Body() createPositionDto: CreatePositionDto,
+    @Body() positionName: string,
     @Body() createDepartmentDto: CreateDepartmentDto,
   ) {
     const newPosition = await this.positionsService.createWithDepartment(
-      createPositionDto,
+      positionName,
       createDepartmentDto,
     );
     return new PositionEntity(newPosition);

@@ -18,6 +18,7 @@ import {
   CreatePositionDto,
   CreateDepartmentDto,
 } from '@web/client';
+import { position } from '@chakra-ui/react';
 
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
@@ -156,25 +157,68 @@ export const AuthProvider = ({ children }: any) => {
 
   // Register the user in the database
   const register = async (email: string, password: string) => {
+    const userData = await requestProfileData();
+    const departmentName = userData.department || 'Test Department';
+    const positionName = userData.jobTitle || 'Test Position';
+
+    let departmentId: string;
+
     try {
-      const userData = await requestProfileData();
-      const departmentName = userData.department;
-      const positionName = userData.jobTitle;
+      const department =
+        await DepartmentsService.departmentsControllerFindOneByName(
+          departmentName,
+        );
+      departmentId = department.id;
+    } catch (error) {
+      const newDepartment: CreateDepartmentDto = { name: departmentName };
 
-      // todo create department + position if they don't exist
+      departmentId = await new Promise((resolve, reject) => {
+        createDepartmentMutation.mutate(newDepartment, {
+          onSuccess: (data) => resolve(data.id),
+          onError: (err) => reject(err),
+        });
+      });
+    }
 
-      const employee: CreateEmployeeDto = {
-        email: email,
-        firstName: userData.givenName || userData.displayName.split(' ')[0],
-        lastName: userData.surname || userData.displayName.split(' ')[1],
-        password: password,
-        positionId: '5a5b1c25-8bfe-4418-9ba6-b1420d1fedff',
+    let positionId: string;
+
+    try {
+      const position =
+        await PositionsService.positionsControllerFindOneByNameInDepartment(
+          positionName,
+          departmentId,
+        );
+      positionId = position.id;
+    } catch (error) {
+      const newPosition: CreatePositionDto = {
+        name: positionName,
+        departmentId: departmentId,
       };
 
-      // createEmployeeMutation.mutate(employee);
-    } catch (error) {
-      console.error('Error during registration:', error);
+      positionId = await new Promise((resolve, reject) => {
+        createPositionMutation.mutate(newPosition, {
+          onSuccess: (data) => resolve(data.id),
+          onError: (err) => reject(err),
+        });
+      });
     }
+
+    const employee: CreateEmployeeDto = {
+      email: email,
+      firstName: userData.givenName || userData.displayName.split(' ')[0],
+      lastName: userData.surname || userData.displayName.split(' ')[1],
+      password: password,
+      positionId: positionId,
+    };
+
+    createEmployeeMutation.mutate(employee, {
+      onSuccess: () => {
+        login(email, password);
+      },
+      onError: (error) => {
+        setError(error);
+      },
+    });
   };
 
   // Call the logout endpoint and then remove the user

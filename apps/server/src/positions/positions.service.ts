@@ -32,27 +32,29 @@ export class PositionsService {
 
   /**
    * Create a new position with a department.
-   * @param createPositionDto
-   * @param createDepartmentDto
+   * @param positionName the position name
+   * @param createDepartmentDto create department dto
    * @returns the created position, hydrated
    */
   async createWithDepartment(
-    createPositionDto: CreatePositionDto,
+    positionName: string,
     createDepartmentDto: CreateDepartmentDto,
   ) {
     const { name: departmentName } = createDepartmentDto;
-    const department = this.departmentsService.findOneByName(departmentName);
+    const department =
+      await this.departmentsService.findOneByName(departmentName);
+    let departmentId: string | undefined = department?.id;
 
     if (!department) {
       const newDepartment =
         await this.departmentsService.create(createDepartmentDto);
-      createPositionDto.departmentId = newDepartment.id;
+      departmentId = newDepartment.id;
     }
 
     const newPosition = await this.prisma.position.create({
       data: {
-        name: createPositionDto.name,
-        departmentId: createPositionDto.departmentId,
+        name: positionName,
+        departmentId: departmentId,
       },
       include: {
         employees: true,
