@@ -54,6 +54,12 @@ export const FormImageCard = ({
           overflow="hidden"
           height="full"
           filter="blur(2px)"
+          transition="filter 0.05s ease-in-out"
+          _hover={
+            {
+              filter: 'none',
+            } as any
+          }
         >
           <Document file={formURL}>
             <Page
