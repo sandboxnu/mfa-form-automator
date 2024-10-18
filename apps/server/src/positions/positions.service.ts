@@ -2,14 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { DepartmentsService } from '../departments/departments.service';
 
 @Injectable()
 export class PositionsService {
-  constructor(
-    private prisma: PrismaService,
-    private departmentsService: DepartmentsService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   /**
    * Create a new position.
