@@ -33,7 +33,10 @@ export class EmployeesService {
         },
       },
     });
-    newEmployee.pswdHash = null;
+    newEmployee.pswdHash = bcrypt.hashSync(
+      createEmployeeDto.password,
+      Number(process.env.SALT_ROUNDS) || 10,
+    );
     return newEmployee;
   }
 

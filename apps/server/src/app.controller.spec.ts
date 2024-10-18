@@ -5,6 +5,8 @@ import { AuthService } from './auth/auth.service';
 import { EmployeesService } from './employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from './prisma/prisma.service';
+import { DepartmentsService } from './departments/departments.service';
+import { PositionsService } from './positions/positions.service';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -16,6 +18,8 @@ describe('AppController', () => {
         AppService,
         AuthService,
         EmployeesService,
+        DepartmentsService,
+        PositionsService,
         JwtService,
         PrismaService,
       ],

@@ -8,6 +8,7 @@ import {
   Req,
   HttpException,
   HttpStatus,
+  Body,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import {
@@ -28,6 +29,8 @@ import { JwtRefreshAuthGuard } from './auth/guards/jwt-refresh.guard';
 import { Request as RequestType } from 'express';
 import { EmployeesService } from './employees/employees.service';
 import { jwtDecode } from 'jwt-decode';
+import { RegisterEmployeeDto } from './auth/dto/register-employee.dto';
+import { CreateEmployeeDto } from './employees/dto/create-employee.dto';
 
 @Controller()
 export class AppController {
@@ -112,6 +115,34 @@ export class AppController {
       `refresh=${tokens.refreshToken}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_VALID_DURATION}`,
     ]);
     return tokens;
+  }
+
+  @Post('/auth/register')
+  @ApiOkResponse({ type: EmployeeEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async register(@Body() registerEmployeeDto: RegisterEmployeeDto) {
+    const { positionName, departmentName, ...employeeDto } =
+      registerEmployeeDto;
+
+    const createEmployeeDtoInstance: CreateEmployeeDto = {
+      firstName: employeeDto.firstName,
+      lastName: employeeDto.lastName,
+      email: employeeDto.email,
+      password: employeeDto.password,
+      positionId: '',
+    };
+
+    const newEmployee = await this.authService.register(
+      createEmployeeDtoInstance,
+      positionName,
+      departmentName,
+    );
+
+    return new EmployeeEntity(newEmployee);
   }
 
   @Get('/auth/logout')

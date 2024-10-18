@@ -6,6 +6,8 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
 import { PositionBaseEntity } from '../positions/entities/position.entity';
+import { DepartmentsService } from '../departments/departments.service';
+import { PositionsService } from '../positions/positions.service';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -14,7 +16,14 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, EmployeesService, PrismaService, JwtService],
+      providers: [
+        AuthService,
+        EmployeesService,
+        DepartmentsService,
+        PositionsService,
+        PrismaService,
+        JwtService,
+      ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);

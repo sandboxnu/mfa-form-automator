@@ -3,6 +3,11 @@ import { User, jwtPayload, AuthContextType } from './types';
 import { useRouter } from 'next/router';
 import { DefaultService, EmployeesService, JwtEntity } from '@web/client';
 import { jwtDecode } from 'jwt-decode';
+import { useMsal } from '@azure/msal-react';
+import { loginRequest } from '@web/authConfig';
+import { callMsGraph } from '@web/graph';
+import { useMutation } from '@tanstack/react-query';
+import { RegisterEmployeeDto } from '@web/client';
 
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
@@ -12,10 +17,17 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider = ({ children }: any) => {
   const router = useRouter();
+  const { instance: msalInstance, accounts: msalAccounts } = useMsal();
   const [user, setUser] = useState<User>();
-  const [error, setError] = useState<any>();
+  const [error, setError] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
+
+  const registerEmployeeMutation = useMutation({
+    mutationFn: async (employee: RegisterEmployeeDto) => {
+      return DefaultService.appControllerRegister(employee);
+    },
+  });
 
   const parseUser = (jwt: JwtEntity) => {
     const token = jwt.accessToken;
@@ -35,6 +47,7 @@ export const AuthProvider = ({ children }: any) => {
   // Reset the error state if we change page
   useEffect(() => {
     if (error) setError(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname]);
 
   // Check if there is a currently active session
@@ -68,6 +81,7 @@ export const AuthProvider = ({ children }: any) => {
           });
       })
       .finally(() => setLoadingInitial(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Flags the component loading state and posts the login
@@ -91,8 +105,56 @@ export const AuthProvider = ({ children }: any) => {
       })
       .catch((error) => {
         setError(error);
+
+        if (error.status === 401) {
+          // handle password was incorrect
+        }
+
+        if (error.status === 500) {
+          register(email, password);
+        }
       })
       .finally(() => setLoading(false));
+  };
+
+  // Request the profile data from the Microsoft Graph API
+  const requestProfileData = async () => {
+    try {
+      const response = await msalInstance.acquireTokenSilent({
+        ...loginRequest,
+        account: msalAccounts[0],
+      });
+      const profileData = await callMsGraph(response.accessToken);
+      return profileData;
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+      throw error; // Optional: rethrow if you want to handle this upstream
+    }
+  };
+
+  // Register the user in the database
+  const register = async (email: string, password: string) => {
+    const userData = await requestProfileData();
+    const departmentName = userData.department || 'Default Department';
+    const positionName = userData.jobTitle || 'Default Position';
+
+    const employee: RegisterEmployeeDto = {
+      email: email,
+      password: password,
+      firstName: userData.givenName || userData.displayName.split(' ')[0],
+      lastName: userData.surname || userData.displayName.split(' ')[1],
+      departmentName: departmentName,
+      positionName: positionName,
+    };
+
+    registerEmployeeMutation.mutate(employee, {
+      onSuccess: () => {
+        login(email, password);
+      },
+      onError: (error) => {
+        setError(error);
+      },
+    });
   };
 
   // Call the logout endpoint and then remove the user
@@ -120,6 +182,7 @@ export const AuthProvider = ({ children }: any) => {
       login,
       logout,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [user, loading, error],
   );
 

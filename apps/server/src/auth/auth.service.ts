@@ -3,11 +3,17 @@ import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
+import { CreateEmployeeDto } from '../employees/dto/create-employee.dto';
+import { DepartmentsService } from '../departments/departments.service';
+import { PositionsService } from '../positions/positions.service';
+import { Department, Position } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
     private employeesService: EmployeesService,
+    private departmentsService: DepartmentsService,
+    private positionsService: PositionsService,
     private jwtService: JwtService,
   ) {}
 
@@ -22,6 +28,7 @@ export class AuthService {
     pass: string,
   ): Promise<EmployeeEntity | null> {
     const user = await this.employeesService.findOneByEmail(email);
+
     if (user?.pswdHash && !(await bcrypt.compare(pass, user.pswdHash!))) {
       return null;
     }
@@ -60,5 +67,31 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  /**
+   * Register a new employee.
+   * @param createEmployeeDto the employee's data
+   * @param positionName the employee's position name
+   * @param departmentName the employee's department name
+   * @returns the new employee
+   */
+  async register(
+    createEmployeeDto: CreateEmployeeDto,
+    positionName: string,
+    departmentName: string,
+  ) {
+    const department: Department =
+      await this.departmentsService.findOrCreateOneByName(departmentName);
+
+    const position: Position =
+      await this.positionsService.findOrCreateOneByNameInDepartment(
+        positionName,
+        department.id,
+      );
+
+    createEmployeeDto.positionId = position.id;
+    const newEmployee = await this.employeesService.create(createEmployeeDto);
+    return newEmployee;
   }
 }
