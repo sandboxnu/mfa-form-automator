@@ -135,8 +135,8 @@ export const AuthProvider = ({ children }: any) => {
   // Register the user in the database
   const register = async (email: string, password: string) => {
     const userData = await requestProfileData();
-    const departmentName = userData.department || 'Test Department';
-    const positionName = userData.jobTitle || 'Test Position';
+    const departmentName = userData.department || 'Default Department';
+    const positionName = userData.jobTitle || 'Default Position';
 
     const employee: RegisterEmployeeDto = {
       email: email,
