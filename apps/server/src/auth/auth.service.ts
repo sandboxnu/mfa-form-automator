@@ -3,9 +3,9 @@ import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
-import { CreateEmployeeDto } from '@server/employees/dto/create-employee.dto';
-import { DepartmentsService } from '@server/departments/departments.service';
-import { PositionsService } from '@server/positions/positions.service';
+import { CreateEmployeeDto } from '../employees/dto/create-employee.dto';
+import { DepartmentsService } from '../departments/departments.service';
+import { PositionsService } from '../positions/positions.service';
 import { Department, Position } from '@prisma/client';
 
 @Injectable()
