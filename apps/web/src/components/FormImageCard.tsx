@@ -33,7 +33,7 @@ export const FormImageCard = ({
 
   return (
     <Box
-      width="246px"
+      width="272px"
       borderRadius="8px"
       backgroundColor="#FFFFFF"
       border="1px solid #D4D4D4"

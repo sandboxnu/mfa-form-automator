@@ -35,34 +35,41 @@ export const OverviewRow = ({
 
   return (
     <>
-      <Box w={rowWidth}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Flex alignItems="center">
-            <Heading as="h2" color="#32353B" fontSize="24px" fontWeight="600">
-              {title == 'To-do'
-                ? `You have ${formInstances.length} forms waiting for you.`
-                : title}
-            </Heading>
+      <Flex justifyContent="space-between">
+        <Flex alignItems="center">
+          <Heading as="h2" color="#32353B" fontSize="24px" fontWeight="600">
+            {title == 'To-do'
+              ? `You have ${formInstances.length} forms waiting for you.`
+              : title}
+          </Heading>
 
-            {title != 'To-do' && (
-              <Flex
-                marginLeft="13px"
-                backgroundColor={color}
-                height="18px"
-                width="32px"
-                borderRadius="12"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Text fontSize="14px" fontWeight="700" color="#756160">
-                  {formInstances.length}
-                </Text>
-              </Flex>
-            )}
-          </Flex>
+          {title != 'To-do' && (
+            <Flex
+              marginLeft="13px"
+              backgroundColor={color}
+              height="18px"
+              width="32px"
+              borderRadius="12"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Text fontSize="14px" fontWeight="700" color="#756160">
+                {formInstances.length}
+              </Text>
+            </Flex>
+          )}
+        </Flex>
+        <Flex pr="30px">
           <ViewAll title={title} link={link} />
         </Flex>
-        <HStack spacing="16px" marginTop="20px">
+      </Flex>
+      <Flex>
+        <HStack
+          marginTop="20px"
+          justifyContent="space-between"
+          width="100vw"
+          pr="30px"
+        >
           {displayFormInstances.map(
             (formInstance: FormInstanceEntity, index: number) => {
               return title == 'To-do' ? (
@@ -82,7 +89,7 @@ export const OverviewRow = ({
             },
           )}
         </HStack>
-      </Box>
+      </Flex>
     </>
   );
 };
