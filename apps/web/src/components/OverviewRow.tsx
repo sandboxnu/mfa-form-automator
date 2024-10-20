@@ -35,7 +35,9 @@ export const OverviewRow = ({
         <Flex alignItems="center">
           <Heading as="h2" color="#32353B" fontSize="24px" fontWeight="600">
             {title == 'To-do'
-              ? `You have ${formInstances.length} forms waiting for you.`
+              ? `You have ${formInstances.length} ${
+                  formInstances.length == 1 ? 'form' : 'forms'
+                } waiting for you.`
               : title}
           </Heading>
 
