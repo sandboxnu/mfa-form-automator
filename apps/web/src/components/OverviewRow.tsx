@@ -1,7 +1,5 @@
 import { HStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
 import { FormCard } from './FormCard';
-import { RightArrowIcon } from 'apps/web/src/static/icons';
-import Link from 'next/link';
 import { FormInstanceEntity } from '@web/client';
 import React from 'react';
 import { FormImageCard } from './FormImageCard';
@@ -20,13 +18,11 @@ export const OverviewRow = ({
   color,
   link,
   formInstances,
-  rowWidth,
 }: {
   title: string;
   color: string;
   link: string;
   formInstances: FormInstanceEntity[];
-  rowWidth: number;
 }) => {
   let displayFormInstances: FormInstanceEntity[] = formInstances.slice(
     0,
