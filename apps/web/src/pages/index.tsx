@@ -19,14 +19,6 @@ export default function Overview() {
 
   if (assignedFIError || createdFIError) return <Error />;
 
-  const rowWidth = Math.max(
-    260 * 1.5,
-    Math.min(
-      4,
-      Math.max(todoForms.length, pendingForms.length, completedForms.length),
-    ) * 260,
-  );
-
   return (
     <>
       <Box marginLeft="40px" height="100vh" marginTop="36px">
@@ -36,7 +28,6 @@ export default function Overview() {
             color="#FFDFDE"
             link="/todo"
             formInstances={todoForms}
-            rowWidth={rowWidth}
           />
         </Box>
         <FormList
