@@ -1,7 +1,5 @@
 import { HStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
 import { FormCard } from './FormCard';
-import { RightArrowIcon } from 'apps/web/src/static/icons';
-import Link from 'next/link';
 import { FormInstanceEntity } from '@web/client';
 import React from 'react';
 import { FormImageCard } from './FormImageCard';
@@ -20,13 +18,11 @@ export const OverviewRow = ({
   color,
   link,
   formInstances,
-  rowWidth,
 }: {
   title: string;
   color: string;
   link: string;
   formInstances: FormInstanceEntity[];
-  rowWidth: number;
 }) => {
   let displayFormInstances: FormInstanceEntity[] = formInstances.slice(
     0,
@@ -35,54 +31,62 @@ export const OverviewRow = ({
 
   return (
     <>
-      <Box w={rowWidth}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Flex alignItems="center">
-            <Heading as="h2" color="#32353B" fontSize="24px" fontWeight="600">
-              {title == 'To-do'
-                ? `You have ${formInstances.length} forms waiting for you.`
-                : title}
-            </Heading>
+      <Flex justifyContent="space-between">
+        <Flex alignItems="center">
+          <Heading as="h2" color="#32353B" fontSize="24px" fontWeight="600">
+            {title == 'To-do'
+              ? `You have ${formInstances.length} ${
+                  formInstances.length == 1 ? 'form' : 'forms'
+                } waiting for you.`
+              : title}
+          </Heading>
 
-            {title != 'To-do' && (
-              <Flex
-                marginLeft="13px"
-                backgroundColor={color}
-                height="18px"
-                width="32px"
-                borderRadius="12"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Text fontSize="14px" fontWeight="700" color="#756160">
-                  {formInstances.length}
-                </Text>
-              </Flex>
-            )}
-          </Flex>
+          {title != 'To-do' && (
+            <Flex
+              marginLeft="13px"
+              backgroundColor={color}
+              height="18px"
+              width="32px"
+              borderRadius="12"
+              justifyItems="center"
+              alignItems="center"
+            >
+              <Text fontSize="14px" fontWeight="700" color="#756160">
+                {formInstances.length}
+              </Text>
+            </Flex>
+          )}
+        </Flex>
+        <Flex pr="30px">
           <ViewAll title={title} link={link} />
         </Flex>
-        <HStack spacing="16px" marginTop="20px">
-          {displayFormInstances.map(
-            (formInstance: FormInstanceEntity, index: number) => {
-              return title == 'To-do' ? (
-                <FormImageCard
-                  key={index}
-                  formInstance={formInstance}
-                  link={'/form-instances/' + formInstance.id}
-                />
-              ) : (
-                <FormCard
-                  key={index}
-                  formName={formInstance.name}
-                  signatures={formInstance.signatures}
-                  link={'/form-instances/' + formInstance.id}
-                />
-              );
-            },
-          )}
-        </HStack>
-      </Box>
+      </Flex>
+      <HStack
+        marginTop="20px"
+        flexDirection="row"
+        justifyContent="space-between"
+        wrap="wrap"
+        pr="30px"
+      >
+        {displayFormInstances.map(
+          (formInstance: FormInstanceEntity, index: number) => {
+            return title == 'To-do' ? (
+              <FormImageCard
+                key={index}
+                formInstance={formInstance}
+                link={'/form-instances/' + formInstance.id}
+              />
+            ) : (
+              <FormCard
+                key={index}
+                formName={formInstance.name}
+                signatures={formInstance.signatures}
+                link={'/form-instances/' + formInstance.id}
+              />
+            );
+          },
+        )}
+      </HStack>
     </>
   );
 };
