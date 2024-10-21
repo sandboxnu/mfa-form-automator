@@ -48,7 +48,7 @@ export const OverviewRow = ({
               height="18px"
               width="32px"
               borderRadius="12"
-              justifyContent="center"
+              justifyItems="center"
               alignItems="center"
             >
               <Text fontSize="14px" fontWeight="700" color="#756160">
@@ -61,33 +61,32 @@ export const OverviewRow = ({
           <ViewAll title={title} link={link} />
         </Flex>
       </Flex>
-      <Flex>
-        <HStack
-          marginTop="20px"
-          justifyContent="space-between"
-          width="100vw"
-          pr="30px"
-        >
-          {displayFormInstances.map(
-            (formInstance: FormInstanceEntity, index: number) => {
-              return title == 'To-do' ? (
-                <FormImageCard
-                  key={index}
-                  formInstance={formInstance}
-                  link={'/form-instances/' + formInstance.id}
-                />
-              ) : (
-                <FormCard
-                  key={index}
-                  formName={formInstance.name}
-                  signatures={formInstance.signatures}
-                  link={'/form-instances/' + formInstance.id}
-                />
-              );
-            },
-          )}
-        </HStack>
-      </Flex>
+      <HStack
+        marginTop="20px"
+        flexDirection="row"
+        justifyContent="space-between"
+        wrap="wrap"
+        pr="30px"
+      >
+        {displayFormInstances.map(
+          (formInstance: FormInstanceEntity, index: number) => {
+            return title == 'To-do' ? (
+              <FormImageCard
+                key={index}
+                formInstance={formInstance}
+                link={'/form-instances/' + formInstance.id}
+              />
+            ) : (
+              <FormCard
+                key={index}
+                formName={formInstance.name}
+                signatures={formInstance.signatures}
+                link={'/form-instances/' + formInstance.id}
+              />
+            );
+          },
+        )}
+      </HStack>
     </>
   );
 };
