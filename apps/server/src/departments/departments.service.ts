@@ -53,12 +53,16 @@ export class DepartmentsService {
    * @param name the department name
    * @returns the selected department, hydrated
    */
-  async findOneByName(name: string) {
-    const department = await this.prisma.department.findFirstOrThrow({
+  async findOneByName(name: string, throwOnNotFound = true) {
+    const department = await this.prisma.department.findFirst({
       where: {
         name: name,
       },
     });
+
+    if (!department && throwOnNotFound) {
+      throw new Error(`Department with name ${name} not found`);
+    }
 
     return department;
   }
@@ -69,11 +73,7 @@ export class DepartmentsService {
    * @returns the selected or created department, hydrated
    */
   async findOrCreateOneByName(name: string) {
-    let department = await this.prisma.department.findFirst({
-      where: {
-        name: name,
-      },
-    });
+    let department = await this.findOneByName(name, false);
 
     if (!department) {
       department = await this.create({ name });

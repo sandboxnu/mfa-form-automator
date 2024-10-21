@@ -82,9 +82,17 @@ export class PositionsService {
 
   /**
    * Retrieve a position in a department by name.
+   * @param name the position name
+   * @param departmentId the department id
+   * @param throwOnNotFound whether to throw an error if the position is not found
+   * @returns the selected position, hydrated
    */
-  async findOneByNameInDepartment(name: string, departmentId: string) {
-    const position = await this.prisma.position.findFirstOrThrow({
+  async findOneByNameInDepartment(
+    name: string,
+    departmentId: string,
+    throwOnNotFound = true,
+  ) {
+    const position = await this.prisma.position.findFirst({
       where: {
         name: name,
         departmentId: departmentId,
@@ -93,16 +101,28 @@ export class PositionsService {
         employees: true,
       },
     });
+
+    if (!position && throwOnNotFound) {
+      throw new Error(
+        `Position with name ${name} not found in department ${departmentId}`,
+      );
+    }
+
     return position;
   }
 
+  /**
+   * Retrieve a position by name or create it if it doesn't exist.
+   * @param name the position name
+   * @param departmentId the department id
+   * @returns the position if it exists, otherwise create it
+   */
   async findOrCreateOneByNameInDepartment(name: string, departmentId: string) {
-    let position = await this.prisma.position.findFirst({
-      where: {
-        name: name,
-        departmentId: departmentId,
-      },
-    });
+    let position = await this.findOneByNameInDepartment(
+      name,
+      departmentId,
+      false,
+    );
 
     if (!position) {
       position = await this.create({ name, departmentId });
