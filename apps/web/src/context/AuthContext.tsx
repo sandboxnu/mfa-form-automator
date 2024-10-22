@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }: any) => {
   // Reset the error state if we change page
   useEffect(() => {
     if (error) setError(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname]);
 
   // Check if there is a currently active session
@@ -68,6 +69,7 @@ export const AuthProvider = ({ children }: any) => {
           });
       })
       .finally(() => setLoadingInitial(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Flags the component loading state and posts the login
@@ -120,6 +122,7 @@ export const AuthProvider = ({ children }: any) => {
       login,
       logout,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [user, loading, error],
   );
 
