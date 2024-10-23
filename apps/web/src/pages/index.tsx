@@ -29,11 +29,11 @@ export default function Overview() {
 
   return (
     <>
-      <Box marginLeft="40px" height="100vh">
+      <Box marginLeft="32px" height="100vh">
         <Box marginTop="32px">
           <OverviewRow
             title="To Do"
-            color="#FFDFDE"
+            color="#F8F9FA"
             link="/todo"
             formInstances={todoForms}
             rowWidth={rowWidth}

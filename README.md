@@ -22,7 +22,7 @@ NextJS, NestJS, Prisma, PostgreSQL
 
 ## Getting Started (Local Development)
 
-1. Create a .env file in `apps/web` and `apps/server` and configure environment variables using the provided example files.
+1. Create a .env file in `apps/web` and `apps/server` and configure environment variables using the provided example files``.
 
    `apps/server/.env`
    | VARIABLE | VALUE |
