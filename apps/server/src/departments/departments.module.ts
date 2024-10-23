@@ -8,5 +8,6 @@ import { LoggerModule } from '../logger/logger.module';
   controllers: [DepartmentsController],
   providers: [DepartmentsService],
   imports: [PrismaModule, LoggerModule],
+  exports: [DepartmentsService],
 })
 export class DepartmentsModule {}

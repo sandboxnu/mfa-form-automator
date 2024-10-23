@@ -11,13 +11,41 @@ import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from './../context/AuthContext';
 import { OpenAPI } from '@web/client';
 import Head from 'next/head';
-import { ReactNode } from 'react';
 import { PublicClientApplication } from '@azure/msal-browser';
-import { MsalProvider } from '@azure/msal-react';
 import { msalConfig } from '@web/authConfig';
+import { MsalProvider } from '@azure/msal-react';
+import { ReactNode, useMemo, memo } from 'react';
 
 export const queryClient = new QueryClient();
 const publicClientApplication = new PublicClientApplication(msalConfig);
+
+// WrapperComponent is memoized because MsalProvider causes a re-render on every navigation
+const WrapperComponent = memo(({ children }: { children: ReactNode }) => {
+  const head = useMemo(
+    () => (
+      <Head>
+        <title>MFA Forms</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+    ),
+    [],
+  );
+
+  return (
+    <>
+      {head}
+      <MsalProvider instance={publicClientApplication}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <ChakraProvider theme={theme}>{children}</ChakraProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </MsalProvider>
+    </>
+  );
+});
+
+WrapperComponent.displayName = 'WrapperComponent';
 
 export default function App({
   Component,
@@ -36,28 +64,13 @@ export default function App({
     </Head>
   );
 
-  const WrapperComponent = ({ children }: { children: ReactNode }) => {
-    return (
-      <>
-        {head}
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            <ChakraProvider theme={theme}>
-              <MsalProvider instance={publicClientApplication}>
-                {children}
-              </MsalProvider>
-            </ChakraProvider>
-          </QueryClientProvider>
-        </AuthProvider>
-      </>
-    );
-  };
-
   if (excludeLayoutPaths.includes(appProps.router.pathname)) {
     return (
-      <WrapperComponent>
-        <Component {...pageProps} />
-      </WrapperComponent>
+      <>
+        <WrapperComponent>
+          <Component {...pageProps} />
+        </WrapperComponent>
+      </>
     );
   }
 

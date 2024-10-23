@@ -14,7 +14,7 @@ datasource db {
 // `Departments` represent the various departments that employees could work in.
 model Department {
   id        String   @id @default(uuid()) @db.Uuid
-  name      String   @db.VarChar(255)
+  name      String   @db.VarChar(255) @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -56,6 +56,8 @@ model Position {
 
   department   Department @relation(fields: [departmentId], references: [id])
   departmentId String     @db.Uuid
+
+  @@unique([name, departmentId])
 }
 
 // `SignatureFields` represent each signature field that is required on a given form.

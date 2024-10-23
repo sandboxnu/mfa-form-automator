@@ -75,6 +75,24 @@ export class DepartmentsController {
     return new DepartmentEntity(department);
   }
 
+  @Get('name/:name')
+  @ApiOkResponse({ type: DepartmentEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async findOneByName(@Param('name') name: string) {
+    const department = await this.departmentsService.findOneByName(name);
+
+    if (department == null) {
+      this.loggerService.error(DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND);
+      throw new NotFoundException(
+        DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND_CLIENT,
+      );
+    }
+
+    return new DepartmentEntity(department);
+  }
+
   @Patch(':id')
   @ApiOkResponse({ type: DepartmentEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
