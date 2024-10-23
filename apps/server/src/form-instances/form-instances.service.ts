@@ -412,12 +412,8 @@ export class FormInstancesService {
     }
 
     const isOriginator = formInstance.originator.id === employeeId;
-    const isAdminInSameDepartment =
-      currUser.isAdmin &&
-      currUser.position.departmentId ===
-        formInstance.originator.position.departmentId;
 
-    if (!isOriginator && !isAdminInSameDepartment) {
+    if (!isOriginator) {
       throw new BadRequestException(
         FormInstanceErrorMessage.FORM_INSTANCE_INVALID_MARKED_COMPLETED,
       );
