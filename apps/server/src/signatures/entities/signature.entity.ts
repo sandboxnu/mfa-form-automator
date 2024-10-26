@@ -3,7 +3,7 @@ import { $Enums, Signature } from '@prisma/client';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 import { PositionBaseEntity } from '../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
-import { DepartmentEntity } from '@server/departments/entities/department.entity';
+import { DepartmentEntity } from '../../departments/entities/department.entity';
 
 export class SignatureEntity implements Signature {
   @ApiProperty()
