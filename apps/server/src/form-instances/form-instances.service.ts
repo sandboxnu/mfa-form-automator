@@ -40,6 +40,16 @@ export class FormInstancesService {
       );
     }
 
+    // check that the form template and form instance have the same number of signatures
+    if (
+      createFormInstanceDto.signatures.length !==
+      formTemplate.signatureFields.length
+    ) {
+      throw new BadRequestException(
+        FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_SIGNATURES,
+      );
+    }
+
     const newFormInstance = await this.prisma.formInstance.create({
       data: {
         name: createFormInstanceDto.name,
