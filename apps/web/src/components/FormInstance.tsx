@@ -23,6 +23,7 @@ import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import { useStorage } from '@web/hooks/useStorage';
+import { getNameFromSignature } from '@web/utils/formInstanceUtils';
 
 /**
  * @param formInstance - the form instance
@@ -282,12 +283,8 @@ const FormInstance = ({
           </Box>
           <AssigneeMap
             assignees={formInstance.signatures.map((signature) => ({
-              name:
-                signature?.assignedUser?.firstName +
-                ' ' +
-                signature?.assignedUser?.lastName,
               signed: signature.signed,
-              title: signature.signerPosition.name,
+              title: getNameFromSignature(signature),
               updatedAt: signature.updatedAt,
             }))}
           />

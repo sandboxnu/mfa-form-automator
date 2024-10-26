@@ -17,7 +17,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
           <Flex key={index} position="relative" my={4}>
             <Grid templateColumns="repeat(3, 1fr)" gap={4}>
               <Avatar
-                name={assignee.name}
+                name={assignee.title}
                 size="sm"
                 color="black"
                 bg={
@@ -35,7 +35,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                     lineHeight="normal"
                     style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
                   >
-                    {assignee.name}
+                    {assignee.title}
                   </Text>
                   <Text color="#5E5E5E">{assignee.title}</Text>
                 </Flex>

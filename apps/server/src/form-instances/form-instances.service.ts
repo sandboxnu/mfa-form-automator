@@ -15,6 +15,7 @@ import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { UserEntity } from '../auth/entities/user.entity';
 import { PostmarkService } from '../postmark/postmark.service';
+import { SignerType } from '@prisma/client';
 
 @Injectable()
 export class FormInstancesService {
@@ -290,6 +291,10 @@ export class FormInstancesService {
       where: { id: currentUser.id },
     });
 
+    const position = await this.prisma.position.findFirstOrThrow({
+      where: { id: employee.positionId },
+    });
+
     const signatureIndex = formInstance.signatures.findIndex(
       (sig) => sig.id === signatureId,
     );
@@ -303,10 +308,15 @@ export class FormInstancesService {
         throw new BadRequestException(SignatureErrorMessage.SIGNATURE_NOT_NEXT);
       }
     }
+    const signature = formInstance.signatures[signatureIndex];
 
     if (
-      employee.positionId !=
-      formInstance.signatures[signatureIndex].signerPositionId
+      (signature.signerType === SignerType.USER &&
+        signature.assignedUserId !== employee.id) ||
+      (signature.signerType === SignerType.POSITION &&
+        signature.signerPositionId !== employee.positionId) ||
+      (signature.signerType === SignerType.DEPARTMENT &&
+        signature.signerDepartmentId !== position.departmentId)
     ) {
       throw new BadRequestException(SignatureErrorMessage.EMPLOYEE_CANNOT_SIGN);
     }
