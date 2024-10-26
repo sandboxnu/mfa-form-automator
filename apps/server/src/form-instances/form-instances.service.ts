@@ -7,12 +7,10 @@ import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
 import { UpdateFormInstanceDto } from './dto/update-form-instance.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
-import { PositionsService } from '../positions/positions.service';
 import { EmployeesService } from '../employees/employees.service';
-import { FormInstance, Prisma } from '@prisma/client';
+import { FormInstance } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
-import { PositionsErrorMessage } from '../positions/positions.errors';
 import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { UserEntity } from '../auth/entities/user.entity';
@@ -23,63 +21,23 @@ export class FormInstancesService {
   constructor(
     private prisma: PrismaService,
     private formTemplateService: FormTemplatesService,
-    private positionService: PositionsService,
     private employeeService: EmployeesService,
     private postmarkService: PostmarkService,
   ) {}
 
   /**
    * Create a new form instance.
-   * @param createFormInstanceDto
+   * @param createFormInstanceDto createFormInstanceDto
    */
   async create(createFormInstanceDto: CreateFormInstanceDto) {
-    const formTemplate = await (async () => {
-      try {
-        return await this.formTemplateService.findOne(
-          createFormInstanceDto.formTemplateId,
-        );
-      } catch (e) {
-        if (e instanceof Prisma.PrismaClientKnownRequestError) {
-          if (e.code === 'P2025') {
-            return null;
-          }
-        }
-        throw e;
-      }
-    })();
+    const formTemplate = await this.formTemplateService.findOne(
+      createFormInstanceDto.formTemplateId,
+    );
 
-    // form template should be valid
-    if (formTemplate == null) {
-      throw Error(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND);
-    }
-
-    // number of signatures to be created should be equal to the number of
-    // signature fields on the form template
-    if (
-      formTemplate.signatureFields.length !=
-      createFormInstanceDto.signatures.length
-    ) {
-      throw Error(
-        FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_SIGNATURES,
+    if (!formTemplate) {
+      throw new NotFoundException(
+        FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
       );
-    }
-
-    // check that the assigned user is a valid employee and the user's position is a valid position
-    for (let i = 0; i < createFormInstanceDto.signatures.length; i++) {
-      const userId = createFormInstanceDto.signatures[i].assignedUserId;
-      const positionId = createFormInstanceDto.signatures[i].signerPositionId;
-
-      const position = await this.positionService.findOne(positionId);
-
-      if (!position) {
-        throw new NotFoundException(PositionsErrorMessage.POSITION_NOT_FOUND);
-      }
-
-      const employee = await this.employeeService.findOne(userId);
-
-      if (!employee) {
-        throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
-      }
     }
 
     const newFormInstance = await this.prisma.formInstance.create({
@@ -108,6 +66,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
+            signerDepartment: true,
             assignedUser: true,
           },
         },
@@ -115,7 +74,6 @@ export class FormInstancesService {
     });
 
     // Notify originator of email creation
-    // TODO: hyperlink
     const emailBody: string = `Hi ${newFormInstance.originator.firstName}, you have created a new form: ${newFormInstance.name}.`;
     const emailSubject: string = `Form ${newFormInstance.name} Created`;
     this.postmarkService.sendEmail(
@@ -128,19 +86,30 @@ export class FormInstancesService {
   }
 
   async findAssignedTo(employeeId: string) {
+    const employee = await this.employeeService.findOne(employeeId);
+
+    if (!employee) {
+      throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
+    }
+
     const formInstances = await this.prisma.formInstance.findMany({
       where: {
         signatures: {
           some: {
-            signerPosition: {
-              employees: {
-                some: {
-                  id: {
-                    equals: employeeId,
-                  },
-                },
+            OR: [
+              {
+                signerType: 'POSITION',
+                signerPositionId: employee.positionId,
               },
-            },
+              {
+                signerType: 'DEPARTMENT',
+                signerDepartmentId: employee.position.departmentId,
+              },
+              {
+                signerType: 'USER',
+                assignedUserId: employeeId,
+              },
+            ],
           },
         },
       },
@@ -154,11 +123,13 @@ export class FormInstancesService {
                 department: true,
               },
             },
+            signerDepartment: true,
             assignedUser: true,
           },
         },
       },
     });
+
     return formInstances;
   }
 
@@ -179,6 +150,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
+            signerDepartment: true,
             assignedUser: true,
           },
         },
@@ -200,6 +172,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
+            signerDepartment: true,
             assignedUser: true,
           },
         },
@@ -223,6 +196,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
+            signerDepartment: true,
             assignedUser: true,
           },
         },
@@ -241,7 +215,6 @@ export class FormInstancesService {
       data: {
         name: updateFormInstanceDto.name,
         formDocLink: updateFormInstanceDto.formDocLink,
-        // signatures: { create: updateFormInstanceDto.signatures },
       },
       include: {
         originator: true,
@@ -253,6 +226,7 @@ export class FormInstancesService {
                 department: true,
               },
             },
+            signerDepartment: true,
             assignedUser: true,
           },
         },

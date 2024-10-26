@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { $Enums } from '@prisma/client';
 import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateSignatureDto {
@@ -10,10 +11,20 @@ export class CreateSignatureDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  assignedUserId: string;
+  assignedUserId: string | null;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  signerPositionId: string;
+  signerPositionId: string | null;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  signerDepartmentId: string | null;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  signerType: $Enums.SignerType;
 }
