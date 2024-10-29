@@ -8,6 +8,7 @@ import { loginRequest } from '@web/authConfig';
 import { callMsGraph } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
 import { RegisterEmployeeDto } from '@web/client';
+import { redirect } from 'next/dist/server/api-utils';
 
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
@@ -101,7 +102,7 @@ export const AuthProvider = ({ children }: any) => {
     })
       .then((response) => {
         parseUser(response);
-        router.push('/');
+        router.push('/register');
       })
       .catch((error) => {
         setError(error);
@@ -109,7 +110,6 @@ export const AuthProvider = ({ children }: any) => {
         if (error.status === 401) {
           // handle password was incorrect
         }
-
         if (error.status === 500) {
           register(email, password);
         }
@@ -135,8 +135,12 @@ export const AuthProvider = ({ children }: any) => {
   // Register the user in the database
   const register = async (email: string, password: string) => {
     const userData = await requestProfileData();
-    const departmentName = userData.department || 'Default Department';
-    const positionName = userData.jobTitle || 'Default Position';
+    const departmentName = userData.department;
+    const positionName = userData.jobTitle;
+
+    if(departmentName.isEmpty() || positionName.isEmpty()) {
+      router.push('/register');
+    }
 
     const employee: RegisterEmployeeDto = {
       email: email,
