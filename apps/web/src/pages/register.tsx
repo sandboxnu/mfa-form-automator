@@ -71,7 +71,7 @@ export default function Register (
 
     // Complete submission once user 
     function submit() {
-        f
+        
     }
 
     return (<>
@@ -83,7 +83,7 @@ export default function Register (
         >
             Select Department
         </Heading> 
-        <Select placeholder="Select Department" disabled={departmentName}>
+        <Select defaultValue={departmentName ? departmentName : "SelectDepartment"} disabled={departmentName}>
             {
             departments.map((key, value) => {
                 return <option value={value}>{key.name}</option>
@@ -97,7 +97,7 @@ export default function Register (
         >
             Select Positions
         </Heading> 
-        <Select id="positionDropdown" placeholder="Select Position" disabled={positionName}>
+        <Select id="positionDropdown" defaultValue={positionName ? positionName : "SelectPosition"} disabled={positionName}>
             {
             positions.map((key, value) => {
                 return <option value={value}>{key.name}</option>
@@ -106,7 +106,7 @@ export default function Register (
         </Select>
         <Button 
             marginTop="20px"
-            disabled={!currentDepartment || !currentPosition}>
+            disabled={!(currentDepartment && currentPosition)}>
             Submit
         </Button>
     </>);
