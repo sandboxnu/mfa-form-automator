@@ -76,6 +76,21 @@ export default function Register (
 
     return (
     <>
+        <Heading
+            as="h2"
+            textColor="#363940"
+            fontSize="30px"
+            padding="50px"
+        >
+            Hi there, it looks like you aren't registered yet.
+        </Heading>
+        <Heading
+            as="h3"
+            textColor="#363940"
+            pl="50px"
+        >
+            Please specify your department and position below
+        </Heading>
         <Flex
             padding={'50px'}
             width={'80vw'}
@@ -85,6 +100,7 @@ export default function Register (
                 as="h2"
                 textColor="#363940"
                 fontSize="24px"
+                width='200px'
             >
                 Select Department
             </Heading> 
@@ -106,6 +122,7 @@ export default function Register (
                 as="h2"
                 textColor="#363940"
                 fontSize="24px"
+                width='200px'
             >
                 Select Positions
             </Heading> 
@@ -120,7 +137,8 @@ export default function Register (
        </Flex>
         <Button 
             alignSelf={'center'}
-            margin="100px"
+            marginLeft="50px"
+            
             disabled={!(currentDepartment && currentPosition)}>
             Submit
         </Button>
