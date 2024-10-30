@@ -1,9 +1,10 @@
 import { OverviewRow } from 'apps/web/src/components/OverviewRow';
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import { useForm } from '@web/hooks/useForm';
 import Error from './../components/Error';
 import FormLoading from './../components/FormLoading';
 import { FormList } from './../components/FormList';
+import { useAuth } from '@web/hooks/useAuth';
 
 export default function Overview() {
   const {
@@ -15,6 +16,8 @@ export default function Overview() {
     createdFIError,
   } = useForm();
 
+  const { user } = useAuth();
+
   if (assignedFILoading || createdFILoading) return <FormLoading />;
 
   if (assignedFIError || createdFIError) return <Error />;
@@ -22,6 +25,14 @@ export default function Overview() {
   return (
     <>
       <Box marginLeft="40px" height="100vh" marginTop="36px">
+        <Text
+          fontSize="30px"
+          fontWeight="700"
+          lineHeight="38px"
+          marginBottom="5px"
+        >
+          Hello, {user?.firstName}!
+        </Text>
         <Box marginBottom="40px">
           <OverviewRow
             title="To-do"
