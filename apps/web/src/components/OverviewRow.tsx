@@ -64,9 +64,10 @@ export const OverviewRow = ({
       <HStack
         marginTop="20px"
         flexDirection="row"
-        justifyContent="space-between"
         wrap="wrap"
         pr="30px"
+        spacing="20px"
+        width="100%"
       >
         {displayFormInstances.map(
           (formInstance: FormInstanceEntity, index: number) => {

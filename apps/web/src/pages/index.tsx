@@ -9,7 +9,6 @@ export default function Overview() {
   const {
     todoForms,
     pendingForms,
-    completedForms,
     assignedFILoading,
     assignedFIError,
     createdFILoading,
