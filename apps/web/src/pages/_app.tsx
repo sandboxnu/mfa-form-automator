@@ -55,7 +55,8 @@ export default function App({
   OpenAPI.CREDENTIALS = 'include';
   OpenAPI.WITH_CREDENTIALS = true;
 
-  const excludeLayoutPaths = ['/signin'];
+  const excludeLayoutPaths = ['/signin', '/register'];
+  
 
   const head = (
     <Head>

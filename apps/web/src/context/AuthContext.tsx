@@ -8,8 +8,6 @@ import { loginRequest } from '@web/authConfig';
 import { callMsGraph } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
 import { RegisterEmployeeDto } from '@web/client';
-import { redirect } from 'next/dist/server/api-utils';
-
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -75,6 +73,7 @@ export const AuthProvider = ({ children }: any) => {
         setUser(undefined);
         DefaultService.appControllerRefresh()
           .then((response) => {
+            
             parseUser(response);
           })
           .catch((_error) => {
@@ -101,8 +100,8 @@ export const AuthProvider = ({ children }: any) => {
       password: password,
     })
       .then((response) => {
-        parseUser(response);
         router.push('/register');
+        parseUser(response);
       })
       .catch((error) => {
         setError(error);
@@ -138,9 +137,8 @@ export const AuthProvider = ({ children }: any) => {
     const departmentName = userData.department;
     const positionName = userData.jobTitle;
 
-    if(departmentName.isEmpty() || positionName.isEmpty()) {
-      router.push('/register');
-    }
+    router.push("/register");
+  
 
     const employee: RegisterEmployeeDto = {
       email: email,

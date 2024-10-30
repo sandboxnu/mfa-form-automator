@@ -16,8 +16,8 @@ export default function Register (
     const [positions, setPositions] = useState<PositionEntity[]>([]);
     const [departments, setDepartments] = useState<DepartmentEntity[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    let currentDepartment = departmentName;
-    let currentPosition = positionName;
+    const [currentDepartment, setCurrentDepartment] = useState(departmentName);
+    const [currentPosition, setCurrentPosition] = useState(positionName);
 
     // fetch list of all positions
     useEffect(() => {
@@ -70,42 +70,57 @@ export default function Register (
     }
 
     // Complete submission once user 
-    function submit() {
-        
+    function handleSubmit() {
+        return "apple";
     }
 
-    return (<>
+    return (
+    <>
+        <Flex
+            padding={'50px'}
+            width={'80vw'}
+            justifyContent={'center'}
+            alignItems={'center'}>
+            <Heading
+                as="h2"
+                textColor="#363940"
+                fontSize="24px"
+            >
+                Select Department
+            </Heading> 
+            <Select defaultValue={departmentName ? departmentName : "Select Department"} //disabled={departmentName}
+                onChange={(e) => console.log(e.target.value)}
+            >
+                {
+                departments.map((key, value:number) => {
+                    return <option value={key.name}>{key.name}</option>
+                })}       
+            </Select>
+        </Flex>
+       <Flex
+            padding={'50px'}
+            width={'80vw'}
+            justifyContent={'center'}
+            alignItems={'center'}>
         <Heading
-            pt="50px"
-            as="h2"
-            textColor="#363940"
-            fontSize="24px"
-        >
-            Select Department
-        </Heading> 
-        <Select defaultValue={departmentName ? departmentName : "SelectDepartment"} disabled={departmentName}>
-            {
-            departments.map((key, value) => {
-                return <option value={value}>{key.name}</option>
-            })}       
-        </Select>
-        <Heading
-            pt="50px"
-            as="h2"
-            textColor="#363940"
-            fontSize="24px"
-        >
-            Select Positions
-        </Heading> 
-        <Select id="positionDropdown" defaultValue={positionName ? positionName : "SelectPosition"} disabled={positionName}>
-            {
-            positions.map((key, value) => {
-                return <option value={value}>{key.name}</option>
-            })
-            }
-        </Select>
+                as="h2"
+                textColor="#363940"
+                fontSize="24px"
+            >
+                Select Positions
+            </Heading> 
+            <Select id="positionDropdown" defaultValue={positionName ? positionName : "Select Position"}// disabled={positionName}
+            onChange={(e) => console.log(e.target.value)}>
+                {
+                positions.map((key, value:number) => {
+                    return <option value={key.name}>{key.name}</option>
+                })
+                }
+            </Select>
+       </Flex>
         <Button 
-            marginTop="20px"
+            alignSelf={'center'}
+            margin="100px"
             disabled={!(currentDepartment && currentPosition)}>
             Submit
         </Button>
