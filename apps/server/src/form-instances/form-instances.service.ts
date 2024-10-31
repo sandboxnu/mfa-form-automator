@@ -28,7 +28,7 @@ export class FormInstancesService {
 
   /**
    * Create a new form instance.
-   * @param createFormInstanceDto createFormInstanceDto
+   * @param createFormInstanceDto
    */
   async create(createFormInstanceDto: CreateFormInstanceDto) {
     const formTemplate = await this.formTemplateService.findOne(
@@ -96,6 +96,11 @@ export class FormInstancesService {
     return newFormInstance;
   }
 
+  /**
+   * Find all form instances assigned to an employee.
+   * @param employeeId the employee id
+   * @returns all form instances assigned to the employee, employees are assigned to a form instance if their id, position id, or department id matches the signer
+   */
   async findAssignedTo(employeeId: string) {
     const employee = await this.employeeService.findOne(employeeId);
 
@@ -144,6 +149,11 @@ export class FormInstancesService {
     return formInstances;
   }
 
+  /**
+   * Finds all form instances created by an employee.
+   * @param employeeId the employee id
+   * @returns all form instances created by the employee
+   */
   async findCreatedBy(employeeId: string) {
     const formInstances = await this.prisma.formInstance.findMany({
       where: {
@@ -170,6 +180,11 @@ export class FormInstancesService {
     return formInstances;
   }
 
+  /**
+   * Find all form instances.
+   * @param limit the number of form instances to retrieve
+   * @returns all form instances, hydrated
+   */
   async findAll(limit?: number) {
     const formInstances = await this.prisma.formInstance.findMany({
       take: limit,
@@ -192,6 +207,11 @@ export class FormInstancesService {
     return formInstances;
   }
 
+  /**
+   * Find a form instance by id.
+   * @param id the form instance id
+   * @returns the selected form instance, hydrated
+   */
   async findOne(id: string) {
     const formInstance = await this.prisma.formInstance.findFirst({
       where: {
@@ -216,9 +236,13 @@ export class FormInstancesService {
     return formInstance;
   }
 
+  /**
+   * Update a form instance.
+   * @param id the form instance id
+   * @param updateFormInstanceDto the updated form instance
+   * @returns the updated form instance, hydrated
+   */
   async update(id: string, updateFormInstanceDto: UpdateFormInstanceDto) {
-    // TODO: How do we support updating signatures?
-
     const updatedFormInstance = this.prisma.formInstance.update({
       where: {
         id: id,
@@ -246,6 +270,10 @@ export class FormInstancesService {
     return updatedFormInstance;
   }
 
+  /**
+   * Remove a form instance.
+   * @param id the form instance id
+   */
   async remove(id: string) {
     await this.prisma.formInstance.delete({
       where: {
@@ -268,6 +296,13 @@ export class FormInstancesService {
     });
   }
 
+  /**
+   * Sign a form instance.
+   * @param formInstanceId the form instance id
+   * @param signatureId the signature id
+   * @param currentUser the current user to sign the form
+   * @returns the updated form instance, hydrated
+   */
   async signFormInstance(
     formInstanceId: string,
     signatureId: string,
@@ -356,7 +391,6 @@ export class FormInstancesService {
       );
     } else {
       // Notify next user that form is ready to sign
-      // TODO: hyperlink
       const nextUserToSignId = formInstance.signatures[signatureIndex + 1];
       const emailBod2y: string = `Hi ${formInstance.originator.firstName}, you have a form ready for your signature: ${formInstance.name}.`;
       const emailSubject2: string = `Form ${formInstance.name} Ready To Sign`;
@@ -379,6 +413,12 @@ export class FormInstancesService {
     return updatedFormInstance;
   }
 
+  /**
+   * Mark a form instance as completed.
+   * @param employeeId the employee id marking the form as completed
+   * @param formInstanceId the form instance id to mark as completed
+   * @returns the updated form instance, hydrated
+   */
   async markFormInstanceAsCompleted(
     employeeId: string,
     formInstanceId: string,
