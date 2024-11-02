@@ -17,7 +17,6 @@ export class SignatureFieldsService {
       data: {
         name: createSignatureFieldDto.name,
         order: createSignatureFieldDto.order,
-        signerPositionId: createSignatureFieldDto.signerPositionId,
         formTemplateId: createSignatureFieldDto.formTemplateId,
       },
     });

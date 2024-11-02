@@ -23,6 +23,7 @@ import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import { useStorage } from '@web/hooks/useStorage';
+import { getNameFromSignature } from '@web/utils/formInstanceUtils';
 
 /**
  * @param formInstance - the form instance
@@ -102,7 +103,7 @@ const FormInstance = ({
   };
 
   return (
-    <Box className="main">
+    <Box>
       <Flex
         ml="50px"
         as="button"
@@ -210,87 +211,88 @@ const FormInstance = ({
             />
           )}
         </Box>
-
-        <Box
-          display="flex"
-          flexDirection={'column'}
-          justifyContent={'flex-start'}
-          maxWidth="370px"
-        >
-          <Text
-            color="#000"
-            fontSize="20px"
-            fontWeight="700"
-            lineHeight="normal"
-            marginBottom="15px"
-          >
-            Assigned by
-          </Text>
-          <Flex alignItems="center" flexDirection="row" marginBottom="50px">
-            <UserProfileAvatar
-              firstName={formInstance.originator.firstName}
-              lastName={formInstance.originator.lastName}
-            />
-            <Box minWidth="262px" marginLeft="10px">
-              <Text
-                color="#000"
-                fontFamily="Hanken Grotesk"
-                fontSize="16px"
-                style={{ whiteSpace: 'nowrap' }}
-                fontWeight="500"
-              >
-                {formInstance.originator.firstName +
-                  ' ' +
-                  formInstance.originator.lastName}{' '}
-                {formInstance.originator.id === user?.id && (
-                  <Text
-                    color="#515151"
-                    fontFamily="Hanken Grotesk"
-                    fontSize="16px"
-                    fontWeight="500"
-                    style={{ display: 'inline' }}
-                  >
-                    (you)
-                  </Text>
-                )}
-              </Text>
-            </Box>
-            <Text color="#515151" fontWeight="400">
-              {new Date(formInstance.createdAt).toLocaleDateString()}
-            </Text>
-          </Flex>
-
-          <Box minWidth="380px">
-            <Flex
-              flexDirection="row"
-              justifyContent="space-between"
-              alignItems="center"
+        <Box maxWidth="400px">
+          <Box>
+            <Text
+              color="#000"
+              fontSize="20px"
+              fontWeight="700"
+              lineHeight="normal"
+              marginBottom="15px"
             >
-              <Text color="#000" fontSize="20px" fontWeight="700">
-                Assignees
-              </Text>
+              Assigned by
+            </Text>
+            <Flex
+              alignItems="center"
+              flexDirection="row"
+              marginBottom="50px"
+              minWidth="380px"
+              justifyContent="space-between"
+            >
               <Flex alignItems="center">
-                <PencilIcon color="#4C658A" mr={1} />
+                <UserProfileAvatar
+                  firstName={formInstance.originator.firstName}
+                  lastName={formInstance.originator.lastName}
+                />
                 <Text
-                  color="#4C658A"
-                  style={{ fontSize: '18px', textDecoration: 'none' }}
+                  color="#000"
+                  fontFamily="Hanken Grotesk"
+                  fontSize="16px"
+                  style={{ whiteSpace: 'nowrap' }}
+                  fontWeight="500"
+                  marginLeft="10px"
                 >
-                  Edit
+                  {formInstance.originator.firstName +
+                    ' ' +
+                    formInstance.originator.lastName}{' '}
+                  {formInstance.originator.id === user?.id && (
+                    <Text
+                      color="#515151"
+                      fontFamily="Hanken Grotesk"
+                      fontSize="16px"
+                      fontWeight="500"
+                      style={{ display: 'inline' }}
+                    >
+                      (you)
+                    </Text>
+                  )}
                 </Text>
               </Flex>
+              <Text color="#515151" fontWeight="400">
+                {new Date(formInstance.createdAt).toLocaleDateString()}
+              </Text>
             </Flex>
+
+            <Box>
+              <Flex
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Text color="#000" fontSize="20px" fontWeight="700">
+                  Assignees
+                </Text>
+                <Flex alignItems="center">
+                  <PencilIcon color="#4C658A" mr={1} />
+                  <Text
+                    color="#4C658A"
+                    style={{ fontSize: '18px', textDecoration: 'none' }}
+                  >
+                    Edit
+                  </Text>
+                </Flex>
+              </Flex>
+
+              <AssigneeMap
+                assignees={formInstance.signatures.map((signature) => ({
+                  signed: signature.signed,
+                  title: getNameFromSignature(signature),
+                  signerType: signature.signerType as any,
+                  updatedAt: signature.updatedAt,
+                }))}
+              />
+            </Box>
           </Box>
-          <AssigneeMap
-            assignees={formInstance.signatures.map((signature) => ({
-              name:
-                signature?.assignedUser?.firstName +
-                ' ' +
-                signature?.assignedUser?.lastName,
-              signed: signature.signed,
-              title: signature.signerPosition.name,
-              updatedAt: signature.updatedAt,
-            }))}
-          />
           {_userCanSign && (
             <Button
               background={
