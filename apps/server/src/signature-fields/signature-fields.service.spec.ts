@@ -38,7 +38,8 @@ describe('SignatureFieldsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SignatureFieldsService,
+      providers: [
+        SignatureFieldsService,
         { provide: PrismaService, useValue: mockPrismaService },
       ],
     }).compile();
@@ -66,18 +67,22 @@ describe('SignatureFieldsService', () => {
         updatedAt: new Date(),
       };
 
-      mockPrismaService.signatureField.create.mockResolvedValue(createdSignatureField);
+      mockPrismaService.signatureField.create.mockResolvedValue(
+        createdSignatureField,
+      );
 
       const result = await service.create(createSignatureFieldDTO);
 
-      expect(result).toEqual(expect.objectContaining({
-        ...createSignatureFieldDTO,
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-      }));
+      expect(result).toEqual(
+        expect.objectContaining({
+          ...createSignatureFieldDTO,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        }),
+      );
 
       expect(mockPrismaService.signatureField.create).toHaveBeenCalledWith({
-        data: createSignatureFieldDTO
+        data: createSignatureFieldDTO,
       });
     });
   });
@@ -86,25 +91,33 @@ describe('SignatureFieldsService', () => {
     it('should return all signature fields when no limit is provided', async () => {
       const signatureFields = [signatureField1, signatureField2];
 
-      mockPrismaService.signatureField.findMany.mockResolvedValue(signatureFields);
+      mockPrismaService.signatureField.findMany.mockResolvedValue(
+        signatureFields,
+      );
 
       const result = await service.findAll();
 
       expect(result).toEqual(signatureFields);
 
-      expect(mockPrismaService.signatureField.findMany).toHaveBeenCalledWith({ take: undefined });
+      expect(mockPrismaService.signatureField.findMany).toHaveBeenCalledWith({
+        take: undefined,
+      });
     });
 
     it('should return a specific number of signature fields when a limit is provided', async () => {
       const signatureFields = [signatureField1];
 
-      mockPrismaService.signatureField.findMany.mockResolvedValue(signatureFields);
+      mockPrismaService.signatureField.findMany.mockResolvedValue(
+        signatureFields,
+      );
 
       const result = await service.findAll(1);
 
       expect(result).toEqual(signatureFields);
 
-      expect(mockPrismaService.signatureField.findMany).toHaveBeenCalledWith({ take: 1 });
+      expect(mockPrismaService.signatureField.findMany).toHaveBeenCalledWith({
+        take: 1,
+      });
     });
 
     it('should return an empty arra if no signature fields are found', async () => {
@@ -121,25 +134,33 @@ describe('SignatureFieldsService', () => {
     it('should find a signature field by id', async () => {
       const id = '1';
 
-      mockPrismaService.signatureField.findFirstOrThrow.mockResolvedValue(signatureField1);
+      mockPrismaService.signatureField.findFirstOrThrow.mockResolvedValue(
+        signatureField1,
+      );
 
       const result = await service.findOne(id);
 
-      expect(mockPrismaService.signatureField.findFirstOrThrow).toHaveBeenCalledWith({
+      expect(
+        mockPrismaService.signatureField.findFirstOrThrow,
+      ).toHaveBeenCalledWith({
         where: { id },
       });
 
-      expect(result).toEqual(expect.objectContaining({
-        ...signatureField1,
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-      }));
+      expect(result).toEqual(
+        expect.objectContaining({
+          ...signatureField1,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        }),
+      );
     });
 
     it('should throw an error if the signature field is not found', async () => {
       const id = 'fakeId';
 
-      mockPrismaService.signatureField.findFirstOrThrow.mockRejectedValue(new NotFoundException());
+      mockPrismaService.signatureField.findFirstOrThrow.mockRejectedValue(
+        new NotFoundException(),
+      );
 
       await expect(service.findOne(id)).rejects.toThrow(NotFoundException);
     });
@@ -162,7 +183,9 @@ describe('SignatureFieldsService', () => {
         updatedAt: new Date(),
       };
 
-      mockPrismaService.signatureField.update.mockResolvedValue(updatedSignatureField);
+      mockPrismaService.signatureField.update.mockResolvedValue(
+        updatedSignatureField,
+      );
 
       const result = await service.update(id, updateSignatureFieldDto);
 
@@ -171,11 +194,13 @@ describe('SignatureFieldsService', () => {
         data: updateSignatureFieldDto,
       });
 
-      expect(result).toEqual(expect.objectContaining({
-        ...updatedSignatureField,
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
-      }));
+      expect(result).toEqual(
+        expect.objectContaining({
+          ...updatedSignatureField,
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        }),
+      );
     });
 
     it('should update the updatedAt field after updating', async () => {
@@ -185,25 +210,40 @@ describe('SignatureFieldsService', () => {
         updatedAt: new Date(beforeUpdate.getTime() + 1000),
       };
 
-      mockPrismaService.signatureField.update.mockResolvedValue(updatedSignatureField);
+      mockPrismaService.signatureField.update.mockResolvedValue(
+        updatedSignatureField,
+      );
 
-      const result = await service.update(signatureField1.id, updateSignatureFieldDto);
+      const result = await service.update(
+        signatureField1.id,
+        updateSignatureFieldDto,
+      );
 
-      expect(result.updatedAt.getTime()).toBeGreaterThan(beforeUpdate.getTime());
-    })
+      expect(result.updatedAt.getTime()).toBeGreaterThan(
+        beforeUpdate.getTime(),
+      );
+    });
 
     it('should throw an error if updating fails', async () => {
-      mockPrismaService.signatureField.update.mockRejectedValue(new Error('Update failed'));
+      mockPrismaService.signatureField.update.mockRejectedValue(
+        new Error('Update failed'),
+      );
 
-      await expect(service.update(id, updateSignatureFieldDto)).rejects.toThrow('Update failed');
+      await expect(service.update(id, updateSignatureFieldDto)).rejects.toThrow(
+        'Update failed',
+      );
     });
 
     it('should throw an error if updating fails from trying to update nonexistent signature field', async () => {
-      mockPrismaService.signatureField.update.mockRejectedValue(new NotFoundException());
+      mockPrismaService.signatureField.update.mockRejectedValue(
+        new NotFoundException(),
+      );
 
       const id = 'Fake Signature Field';
 
-      await expect(service.update(id, updateSignatureFieldDto)).rejects.toThrow(NotFoundException);
+      await expect(service.update(id, updateSignatureFieldDto)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -221,13 +261,17 @@ describe('SignatureFieldsService', () => {
     });
 
     it('should throw an error if deltion fails', async () => {
-      mockPrismaService.signatureField.delete.mockRejectedValue(new Error('Delete failed'));
+      mockPrismaService.signatureField.delete.mockRejectedValue(
+        new Error('Delete failed'),
+      );
 
       await expect(service.remove(id)).rejects.toThrow('Delete failed');
     });
 
     it('should throw an error if remove fails from trying to remove nonexistent signature field', async () => {
-      mockPrismaService.signatureField.delete.mockRejectedValue(new NotFoundException());
+      mockPrismaService.signatureField.delete.mockRejectedValue(
+        new NotFoundException(),
+      );
 
       const id = 'Fake Signature Field';
 
@@ -235,4 +279,3 @@ describe('SignatureFieldsService', () => {
     });
   });
 });
-
