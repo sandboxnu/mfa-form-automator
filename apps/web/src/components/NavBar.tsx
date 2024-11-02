@@ -192,7 +192,7 @@ export const NavBar = ({
         Completed
       </NavItem>
       <Box
-        paddingLeft="40px"
+        paddingLeft="32px"
         fontSize="14px"
         position="absolute"
         bottom="130px"
