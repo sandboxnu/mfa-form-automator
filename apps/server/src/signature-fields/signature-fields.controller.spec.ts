@@ -5,6 +5,7 @@ import { LoggerServiceImpl } from '../logger/logger.service';
 import { SignatureFieldEntity } from './entities/signature-field.entity';
 import { NotFoundException } from '@nestjs/common';
 import { SignatureFieldErrorMessage } from './signature-fields.errors';
+import { CreateSignatureFieldDto } from './dto/create-signature-field.dto';
 
 describe('SignatureFieldsController', () => {
   let controller: SignatureFieldsController;
@@ -28,7 +29,6 @@ describe('SignatureFieldsController', () => {
     order: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
-    signerPositionId: 'Chief',
     formTemplateId: '123',
   };
 
@@ -38,7 +38,6 @@ describe('SignatureFieldsController', () => {
     order: 2,
     createdAt: new Date(),
     updatedAt: new Date(),
-    signerPositionId: 'Manager',
     formTemplateId: '456',
   };
 
@@ -68,7 +67,6 @@ describe('SignatureFieldsController', () => {
     const createSignatureFieldDTO = {
       name: 'Signature Field 1',
       order: 1,
-      signerPositionId: 'Chief',
       formTemplateId: '3',
     };
 
@@ -97,7 +95,6 @@ describe('SignatureFieldsController', () => {
         controller.create({
           name: '',
           order: -1,
-          signerPositionId: '',
           formTemplateId: '',
         }),
       ).rejects.toThrow();
@@ -126,10 +123,9 @@ describe('SignatureFieldsController', () => {
   });
 
   describe('findOne', () => {
-    const createSignatureFieldDTO = {
+    const createSignatureFieldDTO: CreateSignatureFieldDto = {
       name: 'Signature Field 1',
       order: 1,
-      signerPositionId: 'Chief',
       formTemplateId: '3',
     };
 

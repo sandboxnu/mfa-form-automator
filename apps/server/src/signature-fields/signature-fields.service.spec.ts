@@ -22,7 +22,6 @@ describe('SignatureFieldsService', () => {
     order: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
-    signerPositionId: 'Chief',
     formTemplateId: '123',
   };
 
@@ -32,7 +31,6 @@ describe('SignatureFieldsService', () => {
     order: 2,
     createdAt: new Date(),
     updatedAt: new Date(),
-    signerPositionId: 'Manager',
     formTemplateId: '456',
   };
 
@@ -56,7 +54,6 @@ describe('SignatureFieldsService', () => {
       const createSignatureFieldDTO = {
         name: 'Signature Field 1',
         order: 1,
-        signerPositionId: 'Chief',
         formTemplateId: '3',
       };
 
@@ -171,7 +168,6 @@ describe('SignatureFieldsService', () => {
     const updateSignatureFieldDto = {
       name: 'Signature Field 1 Updated',
       order: 2,
-      signerPositionId: 'Manager',
       formTemplateId: '789',
     };
 
