@@ -97,8 +97,10 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         signatures: signaturePositions.map((pos, i) => {
           return {
             order: i,
-            signerPositionId: pos?.value!,
             assignedUserId: pos?.employeeValue!,
+            signerType: 'USER' as any as Record<string, any>,
+            signerDepartmentId: null,
+            signerPositionId: null,
           };
         }),
         originatorId: user?.id!,

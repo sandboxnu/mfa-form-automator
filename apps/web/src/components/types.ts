@@ -3,6 +3,7 @@ export type Assignee = {
   signed: boolean;
   title: string;
   updatedAt: string;
+  signerType: string;
 };
 
 export type AvatarMapProps = {

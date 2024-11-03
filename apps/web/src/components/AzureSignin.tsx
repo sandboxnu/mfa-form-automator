@@ -11,9 +11,6 @@ export const AzureSignin: React.FC = () => {
   const { instance } = useMsal();
   const { login } = useAuth();
 
-  /**
-   * Login to Azure through a popup and set the user's session
-   */
   const handleLogin = () => {
     try {
       instance
