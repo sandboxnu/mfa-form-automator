@@ -1,4 +1,9 @@
-import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import {
+  FormInstanceEntity,
+  PositionsService,
+  SignatureEntity,
+} from '@web/client';
+import { User } from '@web/context/types';
 
 /**
  * Determines if a form instance is fully signed
@@ -82,4 +87,24 @@ export const nextSigner = (formInstance: FormInstanceEntity) => {
   );
 
   return firstUnsignedSignature;
+};
+
+/**
+ * Determines if a signature's next signer is the current user
+ *
+ * @param signature the signature to check
+ * @param user the current user
+ * @returns true if the next signer is the current user, false otherwise
+ */
+export const signerIsUser = (signature: SignatureEntity, user: User) => {
+  if (!signature) return false;
+
+  const signerType = signature.signerType as any;
+  return (
+    (signerType === 'USER' && signature.assignedUserId === user?.id) ||
+    (signerType === 'POSITION' &&
+      signature.signerPositionId === user?.positionId) ||
+    (signerType === 'DEPARTMENT' &&
+      user?.departmentId === signature.signerDepartmentId)
+  );
 };

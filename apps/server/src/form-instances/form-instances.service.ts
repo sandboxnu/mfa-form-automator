@@ -392,13 +392,18 @@ export class FormInstancesService {
     } else {
       // Notify next user that form is ready to sign
       const nextUserToSignId = formInstance.signatures[signatureIndex + 1];
-      const emailBod2y: string = `Hi ${formInstance.originator.firstName}, you have a form ready for your signature: ${formInstance.name}.`;
-      const emailSubject2: string = `Form ${formInstance.name} Ready To Sign`;
-      this.postmarkService.sendEmail(
-        nextUserToSignId.assignedUser!.email,
-        emailSubject2,
-        emailBod2y,
-      );
+
+      if (nextUserToSignId.signerType === SignerType.USER) {
+        const emailBod2y: string = `Hi ${formInstance.originator.firstName}, you have a form ready for your signature: ${formInstance.name}.`;
+        const emailSubject2: string = `Form ${formInstance.name} Ready To Sign`;
+        this.postmarkService.sendEmail(
+          nextUserToSignId.assignedUser!.email,
+          emailSubject2,
+          emailBod2y,
+        );
+      } else {
+        // TODO: Implement sending email to department or position
+      }
 
       // Notify originator that form was signed
       const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;

@@ -23,7 +23,10 @@ import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import { useStorage } from '@web/hooks/useStorage';
-import { getNameFromSignature } from '@web/utils/formInstanceUtils';
+import {
+  getNameFromSignature,
+  signerIsUser,
+} from '@web/utils/formInstanceUtils';
 
 /**
  * @param formInstance - the form instance
@@ -73,7 +76,7 @@ const FormInstance = ({
   const _nextSignature = formInstance.signatures
     .sort((a, b) => a.order - b.order)
     .find((v) => v.signed === false);
-  const _userCanSign = _nextSignature?.assignedUserId === user?.id;
+  const _userCanSign = signerIsUser(_nextSignature!, user!);
 
   /**
    * Update the form instance with the next signature

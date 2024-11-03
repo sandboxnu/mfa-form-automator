@@ -159,7 +159,7 @@ export const NavBar = ({
             Create
           </MenuButton>
           <MenuButton padding="8px 22px 8px 16px"></MenuButton>
-          <MenuList minW="0px" w={'124px'} p="5px">
+          <MenuList>
             <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
               Form
             </MenuItem>

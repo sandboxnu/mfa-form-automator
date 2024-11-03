@@ -55,6 +55,10 @@ export const FormImageCard = ({
           overflow="hidden"
           height="full"
           filter="blur(2px)"
+          transition="filter 0.3s ease" // Smooth transition for the blur effect
+          _hover={{
+            filter: 'blur(0px)',
+          }}
         >
           <Document file={formURL}>
             <Page
