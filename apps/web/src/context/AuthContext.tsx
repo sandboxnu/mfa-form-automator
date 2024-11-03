@@ -99,8 +99,8 @@ export const AuthProvider = ({ children }: any) => {
       password: password,
     })
       .then((response) => {
-        router.push('/');
         parseUser(response);
+        router.push('/');
       })
       .catch((error) => {
         setError(error);
@@ -108,6 +108,7 @@ export const AuthProvider = ({ children }: any) => {
         if (error.status === 401) {
           // handle password was incorrect
         }
+        
         if (error.status === 500) {
           register(email, password);
         }
