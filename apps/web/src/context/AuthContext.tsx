@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }: any) => {
         if (error.status === 401) {
           // handle password was incorrect
         }
-        
+
         if (error.status === 500) {
           register(email, password);
         }
