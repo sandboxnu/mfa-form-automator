@@ -22,5 +22,6 @@ export interface AuthContextType {
   loading: boolean;
   error?: any;
   login: (email: string, password: string) => void;
+  completeRegistration: (userData: any, email: string, password: string, position: string, department: string) => void;
   logout: () => void;
 }

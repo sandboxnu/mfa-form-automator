@@ -4,12 +4,14 @@ import { Select } from "@chakra-ui/react";
 import { DepartmentsService, PositionsService } from '@web/client';
 import { DepartmentEntity } from '@web/client';
 import { PositionEntity } from '@web/client';
-import FormInstance from '@web/components/FormInstance';
 import { useEffect, useState } from 'react';
-import { format } from 'util';
-import ReactDOMServer from 'react-dom/server';
+import { useRouter } from 'next/router'
+import { useAuth } from '@web/hooks/useAuth';
 
 export default function Register (
+    userData : any,
+    email : string, 
+    password : string,
     departmentName : any,
     positionName : any
 ) {
@@ -18,6 +20,8 @@ export default function Register (
     const [isLoading, setIsLoading] = useState(true);
     const [currentDepartment, setCurrentDepartment] = useState(departmentName);
     const [currentPosition, setCurrentPosition] = useState(positionName);
+    const router = useRouter();
+    const { completeRegistration } = useAuth();
 
     // fetch list of all positions
     useEffect(() => {
@@ -51,27 +55,20 @@ export default function Register (
         }
         fetchDepartments();
     }, []);
-
-    // Formats the array as a set of option elements with the names of the elements in the array
-    // expects elements in the Array have a name property
-    function format(arr:Array<any>) {
-        return (<>
-            {
-                arr.map((key, value) => {
-                    <option value={value}>{key.name}</option>
-                })
-            }
-        </>)
-    }
     
     // If loading, wait to render 
     if(isLoading) {
         return <div>Loading...</div>;
     }
 
-    // Complete submission once user 
-    function handleSubmit() {
-        return "apple";
+    // when button is submitted to finalize department and position,
+    // register employee with current position and department 
+    // and route to home page
+    const clickResponse = () => {
+        // complete registration 
+        completeRegistration(userData, email, password, currentDepartment, currentPosition);
+        // redirect to main page
+        router.push('/');
     }
 
     return (
@@ -92,10 +89,10 @@ export default function Register (
             Please specify your department and position below
         </Heading>
         <Flex
-            padding={'50px'}
-            width={'80vw'}
-            justifyContent={'center'}
-            alignItems={'center'}>
+            padding='50px'
+            width='80vw'
+            justifyContent='center'
+            alignItems='center'>
             <Heading
                 as="h2"
                 textColor="#363940"
@@ -104,20 +101,19 @@ export default function Register (
             >
                 Select Department
             </Heading> 
-            <Select defaultValue={departmentName ? departmentName : "Select Department"} //disabled={departmentName}
-                onChange={(e) => console.log(e.target.value)}
+            <Select defaultValue={departmentName ? departmentName : "Select Department"} disabled={departmentName}
+                onChange={(e) => setCurrentDepartment(e.target.value)}
             >
-                {
-                departments.map((key, value:number) => {
+                {departments.map((key, value:number) => {
                     return <option value={key.name}>{key.name}</option>
                 })}       
             </Select>
         </Flex>
        <Flex
-            padding={'50px'}
-            width={'80vw'}
-            justifyContent={'center'}
-            alignItems={'center'}>
+            padding='50px'
+            width='80vw'
+            justifyContent='center'
+            alignItems='center'>
         <Heading
                 as="h2"
                 textColor="#363940"
@@ -126,19 +122,18 @@ export default function Register (
             >
                 Select Positions
             </Heading> 
-            <Select id="positionDropdown" defaultValue={positionName ? positionName : "Select Position"}// disabled={positionName}
-            onChange={(e) => console.log(e.target.value)}>
-                {
-                positions.map((key, value:number) => {
+            <Select id="positionDropdown" defaultValue={positionName ? positionName : "Select Position"} disabled={positionName != null}
+            onChange={(e) => setCurrentPosition(e.target.value)}>
+                {positions.map((key, value:number) => {
                     return <option value={key.name}>{key.name}</option>
                 })
                 }
             </Select>
        </Flex>
         <Button 
-            alignSelf={'center'}
+            alignSelf='center'
             marginLeft="50px"
-            
+            onClick={clickResponse}
             disabled={!(currentDepartment && currentPosition)}>
             Submit
         </Button>

@@ -73,7 +73,6 @@ export const AuthProvider = ({ children }: any) => {
         setUser(undefined);
         DefaultService.appControllerRefresh()
           .then((response) => {
-            
             parseUser(response);
           })
           .catch((_error) => {
@@ -100,7 +99,7 @@ export const AuthProvider = ({ children }: any) => {
       password: password,
     })
       .then((response) => {
-        router.push('/register');
+        router.push('/');
         parseUser(response);
       })
       .catch((error) => {
@@ -131,24 +130,33 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
-  // Register the user in the database
+  // Direct registering a user in the database to either fill positon + department 
+  // fields, or proceed to completeRegistration
   const register = async (email: string, password: string) => {
     const userData = await requestProfileData();
     const departmentName = userData.department;
     const positionName = userData.jobTitle;
 
-    router.push("/register");
-  
+    if(!departmentName || !positionName) {
+      router.push("/register");
+    }  else {
+        completeRegistration(userData, email, password, departmentName, positionName);
+    }
 
+   
+  } 
+
+  // Register a user with provided information to the database
+  const completeRegistration =  (userData: any, email: string, password: string, department: string, position: string) => {
     const employee: RegisterEmployeeDto = {
       email: email,
       password: password,
       firstName: userData.givenName || userData.displayName.split(' ')[0],
       lastName: userData.surname || userData.displayName.split(' ')[1],
-      departmentName: departmentName,
-      positionName: positionName,
+      departmentName: department,
+      positionName: position,
     };
-
+  
     registerEmployeeMutation.mutate(employee, {
       onSuccess: () => {
         login(email, password);
@@ -182,6 +190,7 @@ export const AuthProvider = ({ children }: any) => {
       loading,
       error,
       login,
+      completeRegistration,
       logout,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
