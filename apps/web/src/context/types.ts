@@ -4,6 +4,7 @@ import { IPublicClientApplication } from '@azure/msal-browser';
 export type User = {
   id: string;
   positionId: string;
+  departmentId: string;
   email: string;
   firstName: string;
   lastName: string;

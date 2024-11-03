@@ -1,7 +1,12 @@
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { User, jwtPayload, AuthContextType } from './types';
 import { useRouter } from 'next/router';
-import { DefaultService, EmployeesService, JwtEntity } from '@web/client';
+import {
+  DefaultService,
+  EmployeesService,
+  JwtEntity,
+  PositionsService,
+} from '@web/client';
 import { jwtDecode } from 'jwt-decode';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@web/authConfig';
@@ -29,18 +34,27 @@ export const AuthProvider = ({ children }: any) => {
     },
   });
 
-  const parseUser = (jwt: JwtEntity) => {
+  const parseUser = async (jwt: JwtEntity) => {
     const token = jwt.accessToken;
     const decoded = jwtDecode(token) as jwtPayload;
 
     const user: User = {
       id: decoded.sub,
       positionId: decoded.positionId,
+      departmentId: '',
       email: decoded.email,
       firstName: decoded.firstName,
       lastName: decoded.lastName,
       isAdmin: decoded.isAdmin,
     };
+
+    // temporary fix for the user object
+    const position = await PositionsService.positionsControllerFindOne(
+      decoded.positionId,
+    );
+
+    user['departmentId'] = position.departmentId;
+
     setUser(user);
   };
 
@@ -60,10 +74,16 @@ export const AuthProvider = ({ children }: any) => {
   useEffect(() => {
     setLoadingInitial(true);
     EmployeesService.employeesControllerFindMe()
-      .then((employee) => {
+      .then(async (employee) => {
+        // temporary fix for the user object
+        const position = await PositionsService.positionsControllerFindOne(
+          employee.position.id,
+        );
+
         setUser({
           id: employee.id,
           positionId: employee.position.id,
+          departmentId: position.department.id,
           email: employee.email,
           firstName: employee.firstName,
           lastName: employee.lastName,
