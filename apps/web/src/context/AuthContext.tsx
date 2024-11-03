@@ -17,7 +17,7 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider = ({ children }: any) => {
   const router = useRouter();
-  const { instance: msalInstance, accounts: msalAccounts } = useMsal();
+  const { instance } = useMsal();
   const [user, setUser] = useState<User>();
   const [error, setError] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -117,12 +117,23 @@ export const AuthProvider = ({ children }: any) => {
       .finally(() => setLoading(false));
   };
 
+  const azureLogin = () => {
+    instance
+      .loginPopup(loginRequest)
+      .then((response) => {
+        login(response.account.username, 'password');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   // Request the profile data from the Microsoft Graph API
   const requestProfileData = async () => {
     try {
-      const response = await msalInstance.acquireTokenSilent({
+      const response = await instance.acquireTokenSilent({
         ...loginRequest,
-        account: msalAccounts[0],
+        account: instance.getAllAccounts()[0],
       });
       const profileData = await callMsGraph(response.accessToken);
       return profileData;
@@ -180,6 +191,7 @@ export const AuthProvider = ({ children }: any) => {
       loading,
       error,
       login,
+      azureLogin,
       logout,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

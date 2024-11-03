@@ -1,3 +1,5 @@
+import { IPublicClientApplication } from '@azure/msal-browser';
+
 // for storage in context
 export type User = {
   id: string;
@@ -22,5 +24,6 @@ export interface AuthContextType {
   loading: boolean;
   error?: any;
   login: (email: string, password: string) => void;
+  azureLogin: () => void;
   logout: () => void;
 }
