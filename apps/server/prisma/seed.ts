@@ -100,13 +100,11 @@ type PositionData = {
   id: string;
   name: string;
   departmentId: string;
-  signatureFields: { id: string }[];
 };
 
 // update or insert position into database based on position id
 async function upsertPosition(data: PositionData) {
-  const { id, name, departmentId, signatureFields } = data;
-  const connections = signatureFields.map((sigField) => ({ id: sigField.id }));
+  const { id, name, departmentId } = data;
 
   return prisma.position.upsert({
     where: { id },
@@ -115,9 +113,6 @@ async function upsertPosition(data: PositionData) {
       id,
       name,
       departmentId,
-      signatureFields: {
-        connect: connections,
-      },
     },
   });
 }
@@ -440,14 +435,14 @@ async function main() {
         {
           id: '087229bf-ce86-449b-aa0b-56c83744acf3',
           order: 0,
-          signerPositionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
-          assignedUserId: ANSHUL_SHIRUDE_UUID,
+          signerType: 'POSITION',
+          signerPositionId: CHIEF_OF_STAFF_UUID,
         },
         {
           id: '760b9266-f165-4551-bf8e-53cfae73b67d',
           order: 1,
-          signerPositionId: AGG_DIR_UUID,
-          assignedUserId: ANGELA_WEIGL_UUID,
+          signerType: 'POSITION',
+          signerPositionId: CHIEF_FIN_OFFICER_UUID,
         },
       ],
     },
@@ -461,8 +456,8 @@ async function main() {
         {
           id: 'b3c7c3ce-9d87-4369-b6b5-6c85e151e7fa',
           order: 0,
-          signerPositionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
-          assignedUserId: ANSHUL_SHIRUDE_UUID,
+          signerType: 'USER',
+          assignedUserId: KAI_ZHENG_UUID,
         },
       ],
     },
@@ -476,8 +471,8 @@ async function main() {
         {
           id: '2c6db7e8-8418-4e84-9621-07805850fb46',
           order: 0,
-          signerPositionId: AGG_DIR_UUID,
-          assignedUserId: ANGELA_WEIGL_UUID,
+          signerType: 'DEPARTMENT',
+          signerDepartmentId: LEADERSHIP_TEAM_UUID,
         },
       ],
     },
@@ -491,8 +486,8 @@ async function main() {
         {
           id: '67a66ebc-4ce8-4e9e-872a-beb81fc7fde4',
           order: 0,
-          signerPositionId: CHIEF_FIN_OFFICER_UUID,
-          assignedUserId: KAI_ZHENG_UUID,
+          signerType: 'DEPARTMENT',
+          signerDepartmentId: LEADERSHIP_TEAM_UUID,
         },
       ],
     },
@@ -506,8 +501,8 @@ async function main() {
         {
           id: '6518fb90-ca64-4b5c-8bec-cf813649cf27',
           order: 0,
-          signerPositionId: CHIEF_OF_STAFF_UUID,
-          assignedUserId: IRIS_ZHANG_UUID,
+          signerType: 'USER',
+          assignedUserId: KAI_ZHENG_UUID,
         },
       ],
     },
@@ -521,8 +516,8 @@ async function main() {
         {
           id: '8a39729d-c41e-4b62-a66f-8eac9e29316b',
           order: 0,
-          signerPositionId: CHIEF_OF_STAFF_UUID,
-          assignedUserId: IRIS_ZHANG_UUID,
+          signerType: 'USER',
+          assignedUserId: KAI_ZHENG_UUID,
         },
       ],
     },
@@ -536,8 +531,8 @@ async function main() {
         {
           id: '6e3b78b7-78dc-4b77-872b-708392038940',
           order: 0,
-          signerPositionId: CHIEF_OF_STAFF_UUID,
-          assignedUserId: IRIS_ZHANG_UUID,
+          signerType: 'DEPARTMENT',
+          signerDepartmentId: LEADERSHIP_TEAM_UUID,
         },
       ],
     },
@@ -551,8 +546,8 @@ async function main() {
         {
           id: 'dd179a4a-e153-4e8c-93bf-3e3cc975f7d5',
           order: 0,
-          signerPositionId: CHIEF_OF_STAFF_UUID,
-          assignedUserId: IRIS_ZHANG_UUID,
+          signerType: 'POSITION',
+          signerPositionId: AGG_DIR_UUID,
         },
       ],
     },
@@ -577,11 +572,7 @@ main()
     const departments = await prisma.department.findMany();
     console.log('Departments:', departments);
 
-    const allPositions = await prisma.position.findMany({
-      include: {
-        signatureFields: true,
-      },
-    });
+    const allPositions = await prisma.position.findMany();
     console.log('Positions:', JSON.stringify(allPositions, null, 2));
 
     const allEmployees = await prisma.employee.findMany({

@@ -1,170 +1,115 @@
+import React, { useEffect } from 'react';
 import { FormRow } from './FormRow';
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  GridItem,
-  Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Select,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
+import { Box, Flex, Grid, GridItem, Heading, Text } from '@chakra-ui/react';
 import { FormInstanceEntity } from '@web/client';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
-import { motion } from 'framer-motion';
+import { SearchAndSort } from 'apps/web/src/components/SearchAndSort';
+import { ViewAll } from 'apps/web/src/components/ViewAll';
 
 /**
  * @param title - the title of the form list
  * @param formInstances - an array of form instances
  * @param color - the color of the form list
+ * @param isDashboard - whether component is displayed on index page
+ * @param link - link to page for category
  * @returns a list of forms for the dashboard
  */
 export const FormList = ({
   title,
   formInstances,
   color,
+  isDashboard,
+  link,
 }: {
   title: string;
   formInstances: FormInstanceEntity[];
   color: string;
+  isDashboard: boolean;
+  link?: string;
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const { isOpen, onToggle } = useDisclosure();
-  const [showButton, setShowButton] = useState(false);
+  const [sortedFormInstances, setSortedFormInstances] = useState(formInstances);
 
-  const sortedFormInstances = formInstances
-    .map((formInstance) => ({
-      ...formInstance,
-      levenshteinDistance: distance(
-        searchQuery.toLowerCase(),
-        formInstance.name.toLowerCase(),
-      ),
-    }))
-    .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance);
+  useEffect(() => {
+    setSortedFormInstances(
+      formInstances
+        .map((formInstance) => ({
+          ...formInstance,
+          levenshteinDistance: distance(
+            searchQuery.toLowerCase(),
+            formInstance.name.toLowerCase(),
+          ),
+        }))
+        .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance),
+    );
+  }, [searchQuery, formInstances]);
 
   return (
     <>
-      <Box padding="30px">
+      <Box padding={isDashboard ? '12px 30px 12px 0px' : '12px 30px 12px 30px'}>
         <Flex justifyContent="space-between" pb="20px">
-          <Flex alignItems="flex-end">
-            <Heading as="h2">{title}</Heading>
-            <Box pb="5px">
+          <Flex alignItems="center">
+            <Text
+              textColor="#363940"
+              fontSize={isDashboard ? '19px' : '24px'}
+              fontWeight="700"
+            >
+              {title}
+            </Text>
+            <Box pb="0px">
               <Flex
-                marginLeft="13px"
+                marginLeft="11px"
                 backgroundColor={color}
-                height="18px"
-                width="32px"
-                borderRadius="12"
+                height="25px"
+                width="41px"
+                borderRadius="20"
                 justifyContent="center"
                 alignItems="center"
               >
-                <Text fontSize="14px" fontWeight="700" color="#756160">
+                <Text fontSize="16px" fontWeight="700" color="#4C483D">
                   {formInstances.length}
                 </Text>
               </Flex>
             </Box>
           </Flex>
-
-          <Flex alignItems="flex-end">
-            <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-              transition={{ duration: 0.3 }}
-              onAnimationComplete={() => setShowButton(!isOpen)}
-            >
-              <InputGroup marginRight="12px">
-                {isOpen ? (
-                  <InputLeftElement
-                    as="button"
-                    onClick={onToggle}
-                    justifyContent="flex-start"
-                  >
-                    <RightSearchIcon color="#595959" w="25px" h="25px" />
-                  </InputLeftElement>
-                ) : (
-                  <Button
-                    variant="unstyled"
-                    onClick={onToggle}
-                    display="flex"
-                    alignItems="flex-end"
-                    p={0}
-                  >
-                    <RightSearchIcon color="#595959" w="25px" h="25px" />
-                  </Button>
-                )}
-                <Input
-                  size="16px"
-                  borderRadius="0"
-                  border="none"
-                  marginRight="12px"
-                  borderBottom="1px solid"
-                  borderColor="#B0B0B0"
-                  boxShadow="none"
-                  _hover={{ borderColor: '#595959' }}
-                  _focus={{
-                    borderColor: '#595959',
-                    boxShadow: 'none',
-                  }}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </InputGroup>
-            </motion.div>
-            {showButton && !isOpen && (
-              <Button
-                variant="unstyled"
-                onClick={onToggle}
-                height="32px"
-                alignItems="center"
-                p={0}
-              >
-                <RightSearchIcon color="#595959" w="25px" h="25px" />
-              </Button>
+          <>
+            {isDashboard ? (
+              <ViewAll title={title} link={link || '/'} />
+            ) : (
+              <SearchAndSort
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
             )}
-            <Select
-              minW="100px"
-              maxW="100px"
-              minH="32px"
-              maxH="32px"
-              backgroundColor="white"
-              borderRadius="md"
-              size="16px"
-              icon={<SortDownArrow />}
-              iconSize="10px"
-            >
-              <option value="recent">&nbsp;&nbsp;Recent</option>
-              <option value="option2">&nbsp;&nbsp;Option 2</option>
-              <option value="option3">&nbsp;&nbsp;Option 3</option>
-            </Select>
-          </Flex>
+          </>
         </Flex>
         <Box>
           <Grid
             templateColumns="repeat(20, 1fr)"
             gap={0}
             background="white"
-            borderTopRadius={'5px'}
-            boxShadow="0px 0px 1px 1px #f7f7f7"
-            textColor={'#8B8B8B'}
+            borderTopRadius={'8px'}
+            boxShadow="0px 0px 1px 1px #d4d4d4"
+            textColor={'#5E5E5E'}
           >
-            <GridItem colSpan={10} h="48px">
-              <Text fontSize="16px" fontWeight="800" pl="24px" pt="10px">
+            <GridItem colSpan={8} h="48px">
+              <Text fontSize="15px" fontWeight="700" pl="24px" pt="10px">
                 Form
               </Text>
             </GridItem>
-            <GridItem colSpan={5} h="48px">
-              <Text fontSize="16px" fontWeight="800" pt="10px">
+            <GridItem colSpan={3} h="48px">
+              <Text fontSize="15px" fontWeight="700" pt="10px">
+                Date Assigned
+              </Text>
+            </GridItem>
+            <GridItem colSpan={4} h="48px">
+              <Text fontSize="15px" fontWeight="700" pt="10px">
                 Originator
               </Text>
             </GridItem>
             <GridItem colSpan={5} h="48px">
-              <Text fontSize="16px" fontWeight="800" pt="10px">
+              <Text fontSize="15px" fontWeight="700" pt="10px">
                 Assignees
               </Text>
             </GridItem>
@@ -174,6 +119,7 @@ export const FormList = ({
               <FormRow
                 formInstance={formInstance}
                 key={index}
+                last={index === sortedFormInstances.length - 1}
                 link={'/form-instances/' + formInstance.id}
               />
             ),

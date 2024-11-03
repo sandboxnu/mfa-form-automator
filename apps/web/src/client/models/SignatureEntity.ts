@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
+import type { DepartmentEntity } from './DepartmentEntity';
 import type { EmployeeBaseEntity } from './EmployeeBaseEntity';
 import type { PositionBaseEntity } from './PositionBaseEntity';
 
@@ -13,10 +14,13 @@ export type SignatureEntity = {
     signedDocLink: string | null;
     createdAt: string;
     updatedAt: string;
-    signerPositionId: string;
-    signerPosition: PositionBaseEntity;
+    signerPositionId: string | null;
+    signerPosition: PositionBaseEntity | null;
+    signerDepartmentId: string | null;
+    signerDepartment: DepartmentEntity | null;
     assignedUserId: string | null;
     assignedUser: EmployeeBaseEntity | null;
+    signerType: Record<string, any>;
     formInstanceId: string;
 };
 

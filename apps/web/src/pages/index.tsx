@@ -1,62 +1,53 @@
 import { OverviewRow } from 'apps/web/src/components/OverviewRow';
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import { useForm } from '@web/hooks/useForm';
 import Error from './../components/Error';
 import FormLoading from './../components/FormLoading';
+import { FormList } from './../components/FormList';
+import { useAuth } from '@web/hooks/useAuth';
 
 export default function Overview() {
   const {
     todoForms,
     pendingForms,
-    completedForms,
     assignedFILoading,
     assignedFIError,
     createdFILoading,
     createdFIError,
   } = useForm();
 
+  const { user } = useAuth();
+
   if (assignedFILoading || createdFILoading) return <FormLoading />;
 
   if (assignedFIError || createdFIError) return <Error />;
 
-  const rowWidth = Math.max(
-    260 * 1.5,
-    Math.min(
-      4,
-      Math.max(todoForms.length, pendingForms.length, completedForms.length),
-    ) * 260,
-  );
-
   return (
     <>
-      <Box marginLeft="32px" height="100vh">
-        <Box marginTop="32px">
+      <Box marginLeft="40px" height="100vh" marginTop="36px">
+        <Text
+          fontSize="30px"
+          fontWeight="700"
+          lineHeight="38px"
+          marginBottom="5px"
+        >
+          Hello, {user?.firstName}!
+        </Text>
+        <Box marginBottom="40px">
           <OverviewRow
-            title="To Do"
-            color="#F8F9FA"
+            title="To-do"
+            color="#FFDFDE"
             link="/todo"
             formInstances={todoForms}
-            rowWidth={rowWidth}
           />
         </Box>
-        <Box marginTop="32px">
-          <OverviewRow
-            title="Pending"
-            color="#FFECCC"
-            link="/pending"
-            formInstances={pendingForms}
-            rowWidth={rowWidth}
-          />
-        </Box>
-        <Box marginTop="32px">
-          <OverviewRow
-            title="Completed"
-            color="#D0F0DC"
-            link="/completed"
-            formInstances={completedForms}
-            rowWidth={rowWidth}
-          />
-        </Box>
+        <FormList
+          title={'Pending'}
+          formInstances={pendingForms}
+          color={'#FFECCC'}
+          isDashboard={true}
+          link={'/pending'}
+        ></FormList>
       </Box>
     </>
   );

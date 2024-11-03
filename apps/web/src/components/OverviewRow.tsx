@@ -1,8 +1,9 @@
 import { HStack, Flex, Box, Text, Heading } from '@chakra-ui/react';
 import { FormCard } from './FormCard';
-import { RightArrowIcon } from 'apps/web/src/static/icons';
-import Link from 'next/link';
 import { FormInstanceEntity } from '@web/client';
+import React from 'react';
+import { FormImageCard } from './FormImageCard';
+import { ViewAll } from './ViewAll';
 
 /**
  * @param title - the title of the overview row
@@ -17,62 +18,76 @@ export const OverviewRow = ({
   color,
   link,
   formInstances,
-  rowWidth,
 }: {
   title: string;
   color: string;
   link: string;
   formInstances: FormInstanceEntity[];
-  rowWidth: number;
 }) => {
   let displayFormInstances: FormInstanceEntity[] = formInstances.slice(
     0,
     Math.min(4, formInstances.length),
   );
+
   return (
     <>
-      <Box w={rowWidth}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Flex alignItems="center">
-            <Heading as="h2">{title}</Heading>
+      <Flex justifyContent="space-between">
+        <Flex alignItems="center">
+          <Text color="#32353B" fontSize="24px" fontWeight="500">
+            {title == 'To-do'
+              ? `You have ${formInstances.length} ${
+                  formInstances.length == 1 ? 'form' : 'forms'
+                } waiting for you.`
+              : title}
+          </Text>
+
+          {title != 'To-do' && (
             <Flex
               marginLeft="13px"
               backgroundColor={color}
               height="18px"
               width="32px"
               borderRadius="12"
-              justifyContent="center"
+              justifyItems="center"
               alignItems="center"
             >
               <Text fontSize="14px" fontWeight="700" color="#756160">
                 {formInstances.length}
               </Text>
             </Flex>
-          </Flex>
-          <Link href={link}>
-            <Flex alignItems="center">
-              <Text fontWeight="500" fontSize="16px" color="#4C658A">
-                See all {title}
-              </Text>
-              <RightArrowIcon width="10px" height="10px" marginLeft="4px" />
-            </Flex>
-          </Link>
-        </Flex>
-        <HStack spacing="16px" marginTop="20px">
-          {displayFormInstances.map(
-            (formInstance: FormInstanceEntity, index: number) => {
-              return (
-                <FormCard
-                  formName={formInstance.name}
-                  signatures={formInstance.signatures}
-                  key={index}
-                  link={'/form-instances/' + formInstance.id}
-                />
-              );
-            },
           )}
-        </HStack>
-      </Box>
+        </Flex>
+        <Flex pr="30px">
+          <ViewAll title={title} link={link} />
+        </Flex>
+      </Flex>
+      <HStack
+        marginTop="20px"
+        flexDirection="row"
+        wrap="wrap"
+        pr="30px"
+        spacing="20px"
+        width="100%"
+      >
+        {displayFormInstances.map(
+          (formInstance: FormInstanceEntity, index: number) => {
+            return title == 'To-do' ? (
+              <FormImageCard
+                key={index}
+                formInstance={formInstance}
+                link={'/form-instances/' + formInstance.id}
+              />
+            ) : (
+              <FormCard
+                key={index}
+                formName={formInstance.name}
+                signatures={formInstance.signatures}
+                link={'/form-instances/' + formInstance.id}
+              />
+            );
+          },
+        )}
+      </HStack>
     </>
   );
 };

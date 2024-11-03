@@ -20,15 +20,7 @@ export class FormTemplatesService {
         signatureFields: { create: createFormTemplateDto.signatureFields },
       },
       include: {
-        signatureFields: {
-          include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-          },
-        },
+        signatureFields: true,
         formInstances: {
           include: {
             formTemplate: true,
@@ -40,6 +32,7 @@ export class FormTemplatesService {
                     department: true,
                   },
                 },
+                signerDepartment: true,
                 assignedUser: true,
               },
             },
@@ -60,15 +53,7 @@ export class FormTemplatesService {
       ? await this.prisma.formTemplate.findMany({
           take: limit,
           include: {
-            signatureFields: {
-              include: {
-                signerPosition: {
-                  include: {
-                    department: true,
-                  },
-                },
-              },
-            },
+            signatureFields: true,
             formInstances: {
               include: {
                 formTemplate: true,
@@ -80,6 +65,7 @@ export class FormTemplatesService {
                         department: true,
                       },
                     },
+                    signerDepartment: true,
                     assignedUser: true,
                   },
                 },
@@ -89,15 +75,7 @@ export class FormTemplatesService {
         })
       : await this.prisma.formTemplate.findMany({
           include: {
-            signatureFields: {
-              include: {
-                signerPosition: {
-                  include: {
-                    department: true,
-                  },
-                },
-              },
-            },
+            signatureFields: true,
             formInstances: {
               include: {
                 formTemplate: true,
@@ -109,6 +87,7 @@ export class FormTemplatesService {
                         department: true,
                       },
                     },
+                    signerDepartment: true,
                     assignedUser: true,
                   },
                 },
@@ -130,15 +109,7 @@ export class FormTemplatesService {
         id: id,
       },
       include: {
-        signatureFields: {
-          include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-          },
-        },
+        signatureFields: true,
         formInstances: {
           include: {
             formTemplate: true,
@@ -150,6 +121,7 @@ export class FormTemplatesService {
                     department: true,
                   },
                 },
+                signerDepartment: true,
                 assignedUser: true,
               },
             },
@@ -178,15 +150,7 @@ export class FormTemplatesService {
         formDocLink: updateFormTemplateDto.formDocLink,
       },
       include: {
-        signatureFields: {
-          include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-          },
-        },
+        signatureFields: true,
         formInstances: {
           include: {
             formTemplate: true,
@@ -198,6 +162,7 @@ export class FormTemplatesService {
                     department: true,
                   },
                 },
+                signerDepartment: true,
                 assignedUser: true,
               },
             },

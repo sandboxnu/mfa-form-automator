@@ -2,8 +2,6 @@ import {
   Box,
   Button,
   Flex,
-  Divider,
-  Spacer,
   MenuButton,
   Menu,
   Text,
@@ -12,30 +10,26 @@ import {
 } from '@chakra-ui/react';
 import {
   OverViewIcon,
-  OverViewIconActive,
   ToDoIcon,
-  ToDoIconActive,
   PendingIcon,
-  PendingIconActive,
   CompletedIcon,
-  CompletedIconActive,
   HistoryIcon,
   SettingsIcon,
   PlusIcon,
-  FormInstanceIcon
+  FormInstanceIcon,
 } from 'apps/web/src/static/icons';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 const icons = {
   overview: <OverViewIcon marginRight="2" />,
-  overviewActive: <OverViewIconActive marginRight="2" />,
+  overviewActive: <OverViewIcon marginRight="2" />,
   todo: <ToDoIcon marginRight="2" />,
-  todoActive: <ToDoIconActive marginRight="2" />,
+  todoActive: <ToDoIcon marginRight="2" />,
   pending: <PendingIcon marginRight="2" />,
-  pendingActive: <PendingIconActive marginRight="2" />,
+  pendingActive: <PendingIcon marginRight="2" />,
   completed: <CompletedIcon marginRight="2" />,
-  completedActive: <CompletedIconActive marginRight="2" />,
+  completedActive: <CompletedIcon marginRight="2" />,
   history: <HistoryIcon marginRight="2" />,
   settings: <SettingsIcon marginRight="2" />,
   formInstance: <FormInstanceIcon marginRight="2" />,
@@ -58,7 +52,7 @@ const NavItem = ({
 }) => {
   const router = useRouter();
   const isActive = router.pathname === link;
-  const iconKey = isActive ? `${icon}Active` : icon; 
+  const iconKey = isActive ? `${icon}Active` : icon;
 
   return (
     <Link href={link}>
@@ -98,7 +92,6 @@ const NavItem = ({
       </Box>
     </Link>
   );
-  
 };
 
 /**
@@ -115,7 +108,6 @@ export const NavBar = ({
   onOpenCreateFormInstance: () => void;
   props?: {};
 }) => {
-
   return (
     <Box
       as="nav"
@@ -131,7 +123,6 @@ export const NavBar = ({
       bg="#FEFEFE"
       _dark={{
         bg: 'gray.800',
-        
       }}
       border="true"
       color="inherit"
@@ -140,7 +131,8 @@ export const NavBar = ({
       {...props}
     >
       <Flex
-        align="center"
+        alignItems={'center'}
+        justifyContent={'center'}
         px="4"
         pt="40px"
         pb="32px"
@@ -168,7 +160,6 @@ export const NavBar = ({
           </MenuButton>
           <MenuButton padding="8px 22px 8px 16px"></MenuButton>
           <MenuList minW="0px" w={'124px'} p="5px">
-            {/* add form instance prop in the menu item below when ready */}
             <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
               Form
             </MenuItem>
@@ -191,15 +182,6 @@ export const NavBar = ({
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
-      <Box
-        paddingLeft="32px"
-        fontSize="14px"
-        position="absolute"
-        bottom="130px"
-      >
-        Museum of Fine Arts, Boston
-      </Box>
-      <Spacer minH="30vh" />
     </Box>
   );
 };

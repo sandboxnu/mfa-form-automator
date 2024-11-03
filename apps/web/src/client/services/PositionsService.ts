@@ -125,4 +125,31 @@ export class PositionsService {
         });
     }
 
+    /**
+     * @param name
+     * @param departmentId
+     * @returns PositionEntity
+     * @throws ApiError
+     */
+    public static positionsControllerFindOneByNameInDepartment(
+        name: string,
+        departmentId: string,
+    ): CancelablePromise<PositionEntity> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/positions/name/{name}',
+            path: {
+                'name': name,
+            },
+            query: {
+                'departmentId': departmentId,
+            },
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                404: `Resource not found`,
+            },
+        });
+    }
+
 }

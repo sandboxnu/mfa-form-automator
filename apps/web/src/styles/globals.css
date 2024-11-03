@@ -117,7 +117,7 @@ h1 {
 }
 
 h2 {
-  font-size: 22px !important;
+  font-size: 22px;
   font-weight: var(--mfa-extra-bold) !important;
 }
 
@@ -166,4 +166,10 @@ h3 {
 .scrollable-div::-webkit-scrollbar-thumb {
   background: #4c658a;
   border-radius: 24px;
+}
+
+.react-pdf__Page__canvas {
+  margin: 0 auto;
+  width: 100% !important;
+  height: 100% !important;
 }

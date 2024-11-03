@@ -125,4 +125,26 @@ export class DepartmentsService {
         });
     }
 
+    /**
+     * @param name
+     * @returns DepartmentEntity
+     * @throws ApiError
+     */
+    public static departmentsControllerFindOneByName(
+        name: string,
+    ): CancelablePromise<DepartmentEntity> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/departments/name/{name}',
+            path: {
+                'name': name,
+            },
+            errors: {
+                400: `Bad Request`,
+                403: `Unauthorized Request`,
+                404: `Resource not found`,
+            },
+        });
+    }
+
 }
