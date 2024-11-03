@@ -2,8 +2,6 @@ import {
   Box,
   Button,
   Flex,
-  Divider,
-  Spacer,
   MenuButton,
   Menu,
   Text,
@@ -25,14 +23,18 @@ import Link from 'next/link';
 
 const icons = {
   overview: <OverViewIcon marginRight="2" />,
+  overviewActive: <OverViewIcon marginRight="2" />,
   todo: <ToDoIcon marginRight="2" />,
+  todoActive: <ToDoIcon marginRight="2" />,
   pending: <PendingIcon marginRight="2" />,
+  pendingActive: <PendingIcon marginRight="2" />,
   completed: <CompletedIcon marginRight="2" />,
+  completedActive: <CompletedIcon marginRight="2" />,
   history: <HistoryIcon marginRight="2" />,
   settings: <SettingsIcon marginRight="2" />,
   formInstance: <FormInstanceIcon marginRight="2" />,
 };
-
+type IconKeys = keyof typeof icons;
 /**
  * @param children - the children of the nav item
  * @param icon - the icon of the nav item
@@ -50,33 +52,35 @@ const NavItem = ({
 }) => {
   const router = useRouter();
   const isActive = router.pathname === link;
+  const iconKey = isActive ? `${icon}Active` : icon;
 
   return (
     <Link href={link}>
-      <Box px="12">
+      <Box
+        px="12"
+        _hover={{
+          bg: '#EFEFEF !important',
+          color: '#0C0C0C',
+        }}
+        bg={isActive ? '#EFEFEF' : 'white'}
+        transition=".15s ease"
+      >
         <Flex
           align="center"
           px="4"
           pl="4"
           py="2"
-          rounded="8px"
           cursor="pointer"
           _dark={{
             color: 'gray.400',
-          }}
-          _hover={{
-            bg: '#EFEFEF !important',
-            color: 'gray.900',
           }}
           style={{
             fontWeight: isActive ? '800' : 'normal',
             color: isActive ? '#263345' : 'inherit',
           }}
-          bg={isActive ? '#EFEFEF' : 'white'}
           role="group"
-          transition=".15s ease"
         >
-          {icons[icon as keyof typeof icons]}
+          {icons[iconKey as IconKeys]}
           <Text
             textColor={isActive ? '#263345 !important' : ''}
             fontWeight={isActive ? 'bold !important' : 'inherit'}
@@ -108,25 +112,27 @@ export const NavBar = ({
     <Box
       as="nav"
       pos="fixed"
-      top="96px"
+      top="64px"
       left="0"
       zIndex="sticky"
       h="full"
       pb="10"
       overflowX="hidden"
       overflowY="auto"
-      bg="white"
+      boxShadow="1px 0px 4px #E5E5E5"
+      bg="#FEFEFE"
       _dark={{
         bg: 'gray.800',
       }}
       border="true"
       color="inherit"
       borderRightWidth="1px"
-      width="80"
+      width="224"
       {...props}
     >
       <Flex
-        align="center"
+        alignItems={'center'}
+        justifyContent={'center'}
         px="4"
         pt="40px"
         pb="32px"
@@ -146,14 +152,14 @@ export const NavBar = ({
             as={Button}
             h="40px"
             w="124px"
-            backgroundColor="#4C658A"
+            backgroundColor="#1367EA"
             textColor="white"
             leftIcon={<PlusIcon />}
           >
             Create
           </MenuButton>
+          <MenuButton padding="8px 22px 8px 16px"></MenuButton>
           <MenuList minW="0px" w={'124px'} p="5px">
-            {/* add form instance prop in the menu item below when ready */}
             <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
               Form
             </MenuItem>
@@ -165,7 +171,7 @@ export const NavBar = ({
       </Flex>
 
       <NavItem icon="overview" link="/">
-        Overview
+        Dashboard
       </NavItem>
       <NavItem icon="todo" link="/todo">
         To do
@@ -176,24 +182,6 @@ export const NavBar = ({
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
-      <Box px={12}>
-        <Divider mt={'5'} mb={5} borderColor={'gray'} />
-      </Box>
-      <NavItem icon="history" link="/history">
-        History
-      </NavItem>
-      <NavItem icon="settings" link="/settings">
-        Settings
-      </NavItem>
-      <Box
-        paddingLeft="40px"
-        fontSize="14px"
-        position="absolute"
-        bottom="130px"
-      >
-        Museum of Fine Arts, Boston
-      </Box>
-      <Spacer minH="30vh" />
     </Box>
   );
 };
