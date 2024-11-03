@@ -23,7 +23,7 @@ export const AzureSignin: React.FC = () => {
         })
         .catch((error) => {
           console.error(error);
-        })
+        });
     } catch (error) {
       console.error(error);
     }

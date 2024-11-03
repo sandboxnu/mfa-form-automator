@@ -130,24 +130,34 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
-  // Direct registering a user in the database to either fill positon + department 
+  // Direct registering a user in the database to either fill positon + department
   // fields, or proceed to completeRegistration
   const register = async (email: string, password: string) => {
     const userData = await requestProfileData();
     const departmentName = userData.department;
     const positionName = userData.jobTitle;
 
-    if(!departmentName || !positionName) {
-      router.push("/register");
-    }  else {
-        completeRegistration(userData, email, password, departmentName, positionName);
+    if (!departmentName || !positionName) {
+      router.push('/register');
+    } else {
+      completeRegistration(
+        userData,
+        email,
+        password,
+        departmentName,
+        positionName,
+      );
     }
-
-   
-  } 
+  };
 
   // Register a user with provided information to the database
-  const completeRegistration =  (userData: any, email: string, password: string, department: string, position: string) => {
+  const completeRegistration = (
+    userData: any,
+    email: string,
+    password: string,
+    department: string,
+    position: string,
+  ) => {
     const employee: RegisterEmployeeDto = {
       email: email,
       password: password,
@@ -156,7 +166,7 @@ export const AuthProvider = ({ children }: any) => {
       departmentName: department,
       positionName: position,
     };
-  
+
     registerEmployeeMutation.mutate(employee, {
       onSuccess: () => {
         login(email, password);
