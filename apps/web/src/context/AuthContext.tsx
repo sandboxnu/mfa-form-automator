@@ -22,6 +22,12 @@ export const AuthProvider = ({ children }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
 
+  const [userData, setUserData] = useState<any>(undefined);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [position, setPosition] = useState<string>('');
+  const [department, setDepartment] = useState<string>('');
+
   const registerEmployeeMutation = useMutation({
     mutationFn: async (employee: RegisterEmployeeDto) => {
       return DefaultService.appControllerRegister(employee);
@@ -134,38 +140,36 @@ export const AuthProvider = ({ children }: any) => {
   // Direct registering a user in the database to either fill positon + department
   // fields, or proceed to completeRegistration
   const register = async (email: string, password: string) => {
-    const userData = await requestProfileData();
-    const departmentName = userData.department;
-    const positionName = userData.jobTitle;
+    setEmail(email);
+    setPassword(password);
+    setUserData(await requestProfileData());
+    setDepartment(userData.department);
+    setPosition(userData.position);
 
-    if (!departmentName || !positionName) {
+    // check if either department or position is null, if so, push to register
+    if (department == null || position == null) {
       router.push('/register');
     } else {
-      completeRegistration(
-        userData,
-        email,
-        password,
-        departmentName,
-        positionName,
-      );
+      completeRegistration();
     }
   };
 
   // Register a user with provided information to the database
-  const completeRegistration = (
-    userData: any,
-    email: string,
-    password: string,
-    department: string,
-    position: string,
-  ) => {
+  const completeRegistration = (position?: string, department?: string) => {
+    if (
+      (userData.department == null && department == null) ||
+      (userData.position == null && position == null)
+    ) {
+      setError('Error finding defined position and department');
+    }
+
     const employee: RegisterEmployeeDto = {
       email: email,
       password: password,
       firstName: userData.givenName || userData.displayName.split(' ')[0],
       lastName: userData.surname || userData.displayName.split(' ')[1],
-      departmentName: department,
-      positionName: position,
+      departmentName: userData.department || department,
+      positionName: userData.position || position,
     };
 
     registerEmployeeMutation.mutate(employee, {
@@ -200,6 +204,11 @@ export const AuthProvider = ({ children }: any) => {
       user,
       loading,
       error,
+      userData,
+      email,
+      password,
+      position,
+      department,
       login,
       completeRegistration,
       logout,

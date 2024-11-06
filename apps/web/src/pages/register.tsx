@@ -8,20 +8,22 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@web/hooks/useAuth';
 
-export default function Register(
-  userData: any,
-  email: string,
-  password: string,
-  departmentName: any,
-  positionName: any,
-) {
+export default function Register() {
+  // setup
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const { completeRegistration } = useAuth();
+  // the department and position associated currently with the user's account
+  const authPosition = useAuth().position;
+  const authDept = useAuth().department;
+  // the lists of all possible positions and departments in the mfa
   const [positions, setPositions] = useState<PositionEntity[]>([]);
   const [departments, setDepartments] = useState<DepartmentEntity[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentDepartment, setCurrentDepartment] = useState(departmentName);
-  const [currentPosition, setCurrentPosition] = useState(positionName);
-  const router = useRouter();
-  const { completeRegistration } = useAuth();
+  // whether the page is loading
+  // the currently selected position and department for this page, which will eventually
+  // be set to associate their account with
+  const [currentDepartment, setCurrentDepartment] = useState(authDept);
+  const [currentPosition, setCurrentPosition] = useState(authPosition);
 
   // fetch list of all positions
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function Register(
       }
     }
     fetchPositions();
-  }, []);
+  }, [positions]);
 
   // fetch list of all departments
   useEffect(() => {
@@ -56,25 +58,18 @@ export default function Register(
       }
     }
     fetchDepartments();
-  }, []);
+  }, [departments]);
 
   // If loading, wait to render
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  // when button is submitted to finalize department and position,
-  // register employee with current position and department
-  // and route to home page
+  // when button is submitted to finalize department and position, register employee
+  // with current position and department and route to home page
   const clickResponse = () => {
     // complete registration
-    completeRegistration(
-      userData,
-      email,
-      password,
-      currentDepartment,
-      currentPosition,
-    );
+    completeRegistration(currentDepartment, currentPosition);
     // redirect to main page
     router.push('/');
   };
@@ -97,8 +92,10 @@ export default function Register(
           Select Department
         </Heading>
         <Select
-          defaultValue={departmentName ? departmentName : 'Select Department'}
-          disabled={departmentName}
+          placeholder={
+            authDept != null ? authDept.toString() : 'Select Department'
+          }
+          disabled={authDept != null}
           onChange={(e) => setCurrentDepartment(e.target.value)}
         >
           {departments.map((department: DepartmentEntity, index: number) => {
@@ -121,8 +118,10 @@ export default function Register(
         </Heading>
         <Select
           id="positionDropdown"
-          defaultValue={positionName ? positionName : 'Select Position'}
-          disabled={positionName}
+          placeholder={
+            authPosition != null ? authPosition.toString() : 'Select Position'
+          }
+          disabled={authPosition != null}
           onChange={(e) => setCurrentPosition(e.target.value)}
         >
           {positions.map((position: PositionEntity, index: number) => {
