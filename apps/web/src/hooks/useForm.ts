@@ -6,7 +6,11 @@ import {
 } from './../../../web/src/client';
 import { useAuth } from './useAuth';
 import { useQuery } from '@tanstack/react-query';
-import { isFullySigned, nextSigner } from '@web/utils/formInstanceUtils';
+import {
+  isFullySigned,
+  nextSigner,
+  signerIsUser,
+} from '@web/utils/formInstanceUtils';
 
 /**
  * @returns an object containing the todo, pending, and completed forms
@@ -75,7 +79,7 @@ export const useForm = () => {
     // Forms assigned to current user that they still need to sign
     const todoForms: FormInstanceEntity[] = assignedFIData.filter(
       (formInstance: FormInstanceEntity) => {
-        return nextSigner(formInstance)?.assignedUserId === user?.id;
+        return signerIsUser(nextSigner(formInstance)!, user);
       },
     );
 
@@ -95,7 +99,7 @@ export const useForm = () => {
       (formInstance: FormInstanceEntity) => {
         return (
           !isFullySigned(formInstance) &&
-          nextSigner(formInstance)?.assignedUserId !== user?.id
+          !signerIsUser(nextSigner(formInstance)!, user)
         );
       },
     );

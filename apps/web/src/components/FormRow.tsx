@@ -7,6 +7,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import {
+  getInitialsFromSignature,
+  getNameFromSignature,
+} from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
 
 /**
@@ -31,6 +35,7 @@ export const FormRow = ({
       day: 'numeric',
     });
   };
+
   return (
     <>
       <Grid
@@ -89,7 +94,7 @@ export const FormRow = ({
                 .map((signature: SignatureEntity, index: number) => {
                   return (
                     <Avatar
-                      name={signature.signerPosition.name}
+                      name={getInitialsFromSignature(signature)}
                       key={index}
                       boxSize="36px"
                       backgroundColor={signature.signed ? '#D0F0DC' : '#DCDCDC'}

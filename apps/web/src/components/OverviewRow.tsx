@@ -33,13 +33,13 @@ export const OverviewRow = ({
     <>
       <Flex justifyContent="space-between">
         <Flex alignItems="center">
-          <Heading as="h2" color="#32353B" fontSize="24px" fontWeight="600">
+          <Text color="#32353B" fontSize="24px" fontWeight="500">
             {title == 'To-do'
               ? `You have ${formInstances.length} ${
                   formInstances.length == 1 ? 'form' : 'forms'
                 } waiting for you.`
               : title}
-          </Heading>
+          </Text>
 
           {title != 'To-do' && (
             <Flex
@@ -64,9 +64,10 @@ export const OverviewRow = ({
       <HStack
         marginTop="20px"
         flexDirection="row"
-        justifyContent="space-between"
         wrap="wrap"
         pr="30px"
+        spacing="20px"
+        width="100%"
       >
         {displayFormInstances.map(
           (formInstance: FormInstanceEntity, index: number) => {

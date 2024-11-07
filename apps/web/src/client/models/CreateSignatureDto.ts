@@ -5,7 +5,9 @@
 
 export type CreateSignatureDto = {
     order: number;
-    assignedUserId: string;
-    signerPositionId: string;
+    assignedUserId: string | null;
+    signerPositionId: string | null;
+    signerDepartmentId: string | null;
+    signerType: Record<string, any>;
 };
 

@@ -14,10 +14,5 @@ export class CreateSignatureFieldDto {
   @IsString()
   @IsOptional()
   @ApiPropertyOptional()
-  signerPositionId: string;
-
-  @IsString()
-  @IsOptional()
-  @ApiPropertyOptional()
   formTemplateId: string;
 }

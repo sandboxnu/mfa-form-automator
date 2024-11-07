@@ -7,69 +7,60 @@ import { PositionEntity } from '@web/client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@web/hooks/useAuth';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Register() {
-  // setup
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const { completeRegistration } = useAuth();
-  // the department and position associated currently with the user's account
-  const authPosition = useAuth().position;
-  const authDept = useAuth().department;
-  // the lists of all possible positions and departments in the mfa
-  const [positions, setPositions] = useState<PositionEntity[]>([]);
-  const [departments, setDepartments] = useState<DepartmentEntity[]>([]);
-  // whether the page is loading
-  // the currently selected position and department for this page, which will eventually
-  // be set to associate their account with
-  const [currentDepartment, setCurrentDepartment] = useState(authDept);
-  const [currentPosition, setCurrentPosition] = useState(authPosition);
+  const { completeRegistration, userData } = useAuth();
+  const [loadingUserData, setLoadingUserData] = useState<boolean>(true);
+  const [currentDepartment, setCurrentDepartment] = useState<string>('');
+  const [currentPosition, setCurrentPosition] = useState<string>('');
 
-  // fetch list of all positions
   useEffect(() => {
-    async function fetchPositions() {
-      setIsLoading(true);
-      try {
-        const request: PositionEntity[] =
-          await PositionsService.positionsControllerFindAll(1000);
-        setPositions(request);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
+    if (userData) {
+      setCurrentDepartment(userData.department);
+      setCurrentPosition(userData.position);
+      setLoadingUserData(false);
     }
-    fetchPositions();
-  }, [positions]);
+  }, [userData]);
 
-  // fetch list of all departments
-  useEffect(() => {
-    async function fetchDepartments() {
-      setIsLoading(true);
-      try {
-        const request: DepartmentEntity[] =
-          await DepartmentsService.departmentsControllerFindAll(1000);
-        setDepartments(request);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-        console.log(departments);
-      }
-    }
-    fetchDepartments();
-  }, [departments]);
+  const {
+    isLoading: positionsLoading,
+    error: positionsError,
+    data: positionsData,
+  } = useQuery({
+    queryKey: ['api', 'positions'],
+    queryFn: () => PositionsService.positionsControllerFindAll(1000),
+  });
+
+  const {
+    isLoading: departmentsLoading,
+    error: departmentsError,
+    data: departmentsData,
+  } = useQuery({
+    queryKey: ['api', 'departments'],
+    queryFn: () => DepartmentsService.departmentsControllerFindAll(1000),
+  });
 
   // If loading, wait to render
-  if (isLoading) {
+  if (positionsLoading || departmentsLoading || loadingUserData) {
     return <div>Loading...</div>;
   }
 
   // when button is submitted to finalize department and position, register employee
   // with current position and department and route to home page
   const clickResponse = () => {
+    if (!currentDepartment || !currentPosition) {
+      return;
+    }
+
     // complete registration
-    completeRegistration(currentDepartment, currentPosition);
+    completeRegistration(
+      userData.email,
+      userData.password,
+      currentPosition,
+      currentDepartment,
+    );
     // redirect to main page
     router.push('/');
   };
@@ -93,18 +84,21 @@ export default function Register() {
         </Heading>
         <Select
           placeholder={
-            authDept != null ? authDept.toString() : 'Select Department'
+            currentDepartment
+              ? currentDepartment.toString()
+              : 'Select Department'
           }
-          disabled={authDept != null}
           onChange={(e) => setCurrentDepartment(e.target.value)}
         >
-          {departments.map((department: DepartmentEntity, index: number) => {
-            return (
-              <option key={index} value={department.name}>
-                {department.name}
-              </option>
-            );
-          })}
+          {departmentsData?.map(
+            (department: DepartmentEntity, index: number) => {
+              return (
+                <option key={index} value={department.name}>
+                  {department.name}
+                </option>
+              );
+            },
+          )}
         </Select>
       </Flex>
       <Flex
@@ -119,12 +113,11 @@ export default function Register() {
         <Select
           id="positionDropdown"
           placeholder={
-            authPosition != null ? authPosition.toString() : 'Select Position'
+            currentPosition ? currentPosition.toString() : 'Select Position'
           }
-          disabled={authPosition != null}
           onChange={(e) => setCurrentPosition(e.target.value)}
         >
-          {positions.map((position: PositionEntity, index: number) => {
+          {positionsData?.map((position: PositionEntity, index: number) => {
             return (
               <option key={index} value={position.name}>
                 {position.name}
