@@ -16,7 +16,7 @@ import {
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
-import { useState } from 'react';
+import { LegacyRef, useRef, useState } from 'react';
 import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
@@ -68,6 +68,15 @@ const FormInstance = ({
       });
     },
   });
+
+  const pdfRef = useRef<HTMLEmbedElement>(null);
+
+  const handleSaveWithChanges = async () => {
+    if (pdfRef.current) {
+      console.log(pdfRef.current.textContent)
+
+    }
+};
 
   const _nextSignature = formInstance.signatures
     .sort((a, b) => a.order - b.order)
@@ -184,7 +193,9 @@ const FormInstance = ({
           </Heading>
 
           {formURL ? (
+            <>
             <embed
+              ref={pdfRef}
               src={formURL}
               type="application/pdf"
               width="400px"
@@ -199,6 +210,8 @@ const FormInstance = ({
                 minHeight: '566.219px',
               }}
             />
+            <button onClick={handleSaveWithChanges}>Save with Changes</button>
+            </>
           ) : (
             <Skeleton
               ml="50px"
