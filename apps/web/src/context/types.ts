@@ -23,8 +23,15 @@ export type jwtPayload = {
 export interface AuthContextType {
   user?: User;
   loading: boolean;
+  userData: any;
   error?: any;
   login: (email: string, password: string) => void;
   azureLogin: () => void;
+  completeRegistration: (
+    email: string,
+    password: string,
+    position: string,
+    department: string,
+  ) => void;
   logout: () => void;
 }

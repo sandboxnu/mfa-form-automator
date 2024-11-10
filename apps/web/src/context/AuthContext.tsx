@@ -13,7 +13,6 @@ import { loginRequest } from '@web/authConfig';
 import { callMsGraph } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
 import { RegisterEmployeeDto } from '@web/client';
-
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -27,10 +26,20 @@ export const AuthProvider = ({ children }: any) => {
   const [error, setError] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
+  const [userData, setUserData] = useState<any>(undefined);
 
   const registerEmployeeMutation = useMutation({
     mutationFn: async (employee: RegisterEmployeeDto) => {
       return DefaultService.appControllerRegister(employee);
+    },
+  });
+
+  const requestProfileDataMutation = useMutation({
+    mutationFn: async () => {
+      return requestProfileData();
+    },
+    onSuccess: (data) => {
+      setUserData(data);
     },
   });
 
@@ -163,20 +172,43 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
-  // Register the user in the database
+  // Direct registering a user in the database to either fill positon + department
+  // fields, or proceed to completeRegistration
   const register = async (email: string, password: string) => {
-    const userData = await requestProfileData();
-    const departmentName = userData.department || 'Default Department';
-    const positionName = userData.jobTitle || 'Default Position';
+    const userData = await requestProfileDataMutation.mutateAsync();
 
+    // check if either department or position is null, if so, push to register
+    if (userData.department == null || userData.position == null) {
+      userData.email = email;
+      userData.password = password;
+      router.push('/register');
+    } else {
+      completeRegistration(
+        email,
+        password,
+        userData.position,
+        userData.department,
+      );
+    }
+  };
+
+  // Register a user with provided information to the database
+  const completeRegistration = (
+    email: string,
+    password: string,
+    position: string,
+    department: string,
+  ) => {
     const employee: RegisterEmployeeDto = {
       email: email,
       password: password,
       firstName: userData.givenName || userData.displayName.split(' ')[0],
       lastName: userData.surname || userData.displayName.split(' ')[1],
-      departmentName: departmentName,
-      positionName: positionName,
+      departmentName: department,
+      positionName: position,
     };
+
+    console.log(employee);
 
     registerEmployeeMutation.mutate(employee, {
       onSuccess: () => {
@@ -210,8 +242,10 @@ export const AuthProvider = ({ children }: any) => {
       user,
       loading,
       error,
+      userData,
       login,
       azureLogin,
+      completeRegistration,
       logout,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
