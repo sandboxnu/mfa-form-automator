@@ -1,6 +1,7 @@
 import {
   Avatar,
   AvatarGroup,
+  Divider,
   Flex,
   Grid,
   GridItem,
@@ -12,6 +13,7 @@ import {
   getNameFromSignature,
 } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
+import { ProfileHover } from './ProfileHover';
 
 /**
  * @param formInstance - the form instance
@@ -93,7 +95,8 @@ export const FormRow = ({
                 .sort((a, b) => a.order - b.order)
                 .map((signature: SignatureEntity, index: number) => {
                   return (
-                    <Avatar
+                    <>
+                      <Avatar
                       name={getInitialsFromSignature(signature)}
                       key={index}
                       boxSize="36px"
@@ -102,7 +105,10 @@ export const FormRow = ({
                       color="black"
                       fontWeight={400}
                       fontSize="12px"
-                    />
+                      />
+                    </>
+                    
+
                   );
                 })}
             </AvatarGroup>
