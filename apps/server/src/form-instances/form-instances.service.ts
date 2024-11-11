@@ -85,12 +85,10 @@ export class FormInstancesService {
     });
 
     // Notify originator of email creation
-    const emailBody: string = `Hi ${newFormInstance.originator.firstName}, you have created a new form: ${newFormInstance.name}.`;
-    const emailSubject: string = `Form ${newFormInstance.name} Created`;
-    this.postmarkService.sendEmail(
+    this.postmarkService.sendFormCreatedEmail(
       newFormInstance.originator.email,
-      emailSubject,
-      emailBody,
+      newFormInstance.originator.firstName,
+      newFormInstance.name,
     );
 
     return newFormInstance;

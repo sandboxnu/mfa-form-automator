@@ -37,6 +37,23 @@ export class PostmarkService {
   }
 
   /**
+   * Send an email to the originator that a form has been created
+   * @param to email address to send to
+   * @param originatorName the name of the originator
+   * @param formName the name of the form
+   */
+  async sendFormCreatedEmail(
+    to: string,
+    originatorName: string,
+    formName: string,
+  ) {
+    const subject: string = `Hi ${originatorName}, you have created a new form: ${formName}.`;
+    const body: string = `Hi ${originatorName}, you have created a new form: ${formName}.`;
+
+    await this.sendEmail(to, subject, body);
+  }
+
+  /**
    * Send an email to a signer that a form is ready for their signature
    * @param to email address to send to
    * @param signerFirstName the name of the signer
