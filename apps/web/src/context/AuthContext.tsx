@@ -50,19 +50,12 @@ export const AuthProvider = ({ children }: any) => {
     const user: User = {
       id: decoded.sub,
       positionId: decoded.positionId,
-      departmentId: '',
+      departmentId: decoded.departmentId,
       email: decoded.email,
       firstName: decoded.firstName,
       lastName: decoded.lastName,
       isAdmin: decoded.isAdmin,
     };
-
-    // temporary fix for the user object
-    const position = await PositionsService.positionsControllerFindOne(
-      decoded.positionId,
-    );
-
-    user['departmentId'] = position.departmentId;
 
     setUser(user);
   };
