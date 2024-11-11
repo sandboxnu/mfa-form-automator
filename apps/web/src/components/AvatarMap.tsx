@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex, Grid, Text } from '@chakra-ui/react';
+import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
 import { AwaitingIcon, CheckIcon } from 'apps/web/src/static/icons';
 import { AvatarMapProps } from './types';
 
@@ -8,78 +8,90 @@ import { AvatarMapProps } from './types';
  */
 const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
   let previousSigned = true;
+
+  const getInitialsFromTitle = (title: string, signerType: string) => {
+    if (signerType === 'DEPARTMENT') {
+      return 'D';
+    } else if (signerType === 'POSITION') {
+      return 'P';
+    } else {
+      return title;
+    }
+  };
+
   return (
-    <Flex my={2} position="relative" flexDirection="column" mr={650}>
+    <Flex marginTop="4px" flexDirection="column">
       {assignees.map((assignee, index) => {
-        let awaiting = previousSigned && !assignee.signed;
+        const awaiting = previousSigned && !assignee.signed;
         previousSigned = assignee.signed;
+
         return (
-          <Flex key={index} position="relative" my={4}>
-            <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+          <Flex key={index} align="center" my={4} position="relative">
+            <Flex align="center" flex="1" zIndex={1}>
               <Avatar
-                name={assignee.name}
+                name={getInitialsFromTitle(assignee.title, assignee.signerType)}
                 size="sm"
                 color="black"
                 bg={
                   assignee.signed ? '#D1F0D4' : awaiting ? '#FFF2D9' : '#E5E5E5'
                 }
+                mr={4}
               />
-              <Box minWidth="240px">
-                <Flex width="100%" flexDirection="column">
-                  <Text
-                    color="#5E5E5E"
-                    fontFamily="Hanken Grotesk"
-                    fontSize="16px"
-                    fontStyle="normal"
-                    fontWeight="400"
-                    lineHeight="normal"
-                    style={{ whiteSpace: 'nowrap', marginTop: '2px' }}
-                  >
-                    {assignee.name}
+              <Flex flexDirection="column">
+                <Text
+                  color="#5E5E5E"
+                  fontFamily="Hanken Grotesk"
+                  fontSize="16px"
+                  fontWeight="400"
+                  whiteSpace="nowrap"
+                >
+                  {assignee.title}
+                </Text>
+
+                <Text
+                  color="#5E5E5E"
+                  fontFamily="Hanken Grotesk"
+                  fontSize="16px"
+                  fontWeight="400"
+                  whiteSpace="nowrap"
+                >
+                  {assignee.signerType}
+                </Text>
+              </Flex>
+            </Flex>
+
+            <Flex>
+              {assignee.signed ? (
+                <Flex align="center">
+                  <CheckIcon mr={1} mt={1} />
+                  <Text color="#008933" whiteSpace="nowrap">
+                    Signed
                   </Text>
-                  <Text color="#5E5E5E">{assignee.title}</Text>
+                  <Text color="#515151" ml={2}>
+                    {new Date(assignee.updatedAt).toLocaleDateString()}
+                  </Text>
                 </Flex>
-              </Box>
-              <Box minWidth="200px">
-                <Flex width="100%">
-                  {assignee.signed ? (
-                    <>
-                      <Flex flexDirection="column">
-                        <Flex justifyContent="flex-end">
-                          <CheckIcon textAlign="right" mr={1} mt={1} />
-                          <Text
-                            style={{ whiteSpace: 'nowrap' }}
-                            color="#008933"
-                          >
-                            Signed
-                          </Text>
-                        </Flex>
-                        <Text color="#515151">
-                          {new Date(assignee.updatedAt).toLocaleDateString()}
-                        </Text>
-                      </Flex>
-                    </>
-                  ) : (
-                    awaiting && (
-                      <>
-                        <AwaitingIcon textAlign="right" mr={1} mt={1} />
-                        <Text style={{ whiteSpace: 'nowrap' }} color="#AA6B01">
-                          Awaiting
-                        </Text>
-                      </>
-                    )
-                  )}
-                </Flex>
-              </Box>
-            </Grid>
+              ) : (
+                awaiting && (
+                  <Flex align="center">
+                    <AwaitingIcon mr={1} />
+                    <Text color="#AA6B01" whiteSpace="nowrap">
+                      Awaiting
+                    </Text>
+                  </Flex>
+                )
+              )}
+            </Flex>
+
             {index < assignees.length - 1 && (
               <Box
                 position="absolute"
                 top="32px"
                 left="15px"
                 w="1px"
-                h="80px"
+                h="60px"
                 bg="#000"
+                zIndex={0}
                 color={assignee.signed ? '#D1F0D4' : '#E5E5E5'}
               />
             )}

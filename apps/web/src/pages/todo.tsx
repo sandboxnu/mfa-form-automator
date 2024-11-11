@@ -3,7 +3,6 @@ import { useAuth } from './../hooks/useAuth';
 import { useForm } from '@web/hooks/useForm';
 
 export default function Todo() {
-  useAuth();
   const { todoForms } = useForm();
 
   return (

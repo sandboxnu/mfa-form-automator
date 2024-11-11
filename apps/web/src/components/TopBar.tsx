@@ -38,18 +38,28 @@ export const TopBar: React.FC = () => {
       pos="fixed"
       w="full"
       px="4"
-      bg="white"
+      bg="#FEFEFE"
       _dark={{
         bg: 'gray.800',
       }}
       borderBottomWidth="1px"
       color="inherit"
-      h="96px"
+      h="64px"
       zIndex="sticky"
     >
       <Box minWidth={302}>
-        <Flex px="7" py="5" align="left">
-          <MFALogoIcon height="51px" width="220px" />
+        <Flex px="8" py="5" align="left">
+          {/* Triangle */}
+          <Box
+            width="0"
+            height="0"
+            borderLeft="10px solid transparent"
+            borderRight="10px solid transparent"
+            borderBottom="20px solid #ED2324"
+            transform="rotate(90deg)"
+            alignSelf="center"
+          />
+          <MFALogoIcon height="24px" width="140px" ml="-3" />
         </Flex>
       </Box>
       <Spacer />

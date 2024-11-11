@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { useStorage } from '@web/hooks/useStorage';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { isFullySigned } from '@web/utils/formInstanceUtils';
 
 /**
  * @param formName - the name of the form
@@ -29,7 +28,7 @@ export const FormImageCard = ({
     const d2 = new Date(date2);
     const diffInTime = d2.getTime() - d1.getTime();
     const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
-    return diffInDays == 0 ? 'today' : `${diffInDays}d ago`;
+    return diffInDays == 0 ? 'today' : `${diffInDays} days ago`;
   };
 
   return (
@@ -56,12 +55,10 @@ export const FormImageCard = ({
           overflow="hidden"
           height="full"
           filter="blur(2px)"
-          transition="filter 0.05s ease-in-out"
-          _hover={
-            {
-              filter: 'none',
-            } as any
-          }
+          transition="filter 0.3s ease" // Smooth transition for the blur effect
+          _hover={{
+            filter: 'blur(0px)',
+          }}
         >
           <Document file={formURL}>
             <Page
@@ -97,7 +94,7 @@ export const FormImageCard = ({
             borderRadius="20px"
             padding="3px 12px"
           >
-            {isFullySigned(formInstance) ? 'NEEDS APPROVAL' : 'TO DO'}
+            TO DO
           </Text>
           <Text
             textAlign="center"

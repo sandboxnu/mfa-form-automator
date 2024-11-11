@@ -50,13 +50,13 @@ export const FormList = ({
       <Box padding={isDashboard ? '12px 30px 12px 0px' : '12px 30px 12px 30px'}>
         <Flex justifyContent="space-between" pb="20px">
           <Flex alignItems="center">
-            <Heading
-              as="h2"
+            <Text
               textColor="#363940"
               fontSize={isDashboard ? '19px' : '24px'}
+              fontWeight="700"
             >
               {title}
-            </Heading>
+            </Text>
             <Box pb="0px">
               <Flex
                 marginLeft="11px"
