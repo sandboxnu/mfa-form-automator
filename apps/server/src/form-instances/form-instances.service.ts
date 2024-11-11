@@ -125,6 +125,14 @@ export class FormInstancesService {
                 signerType: 'USER',
                 assignedUserId: employeeId,
               },
+              {
+                signerType: 'USER_LIST',
+                assignedUserList: {
+                  some: {
+                    id: employeeId,
+                  },
+                },
+              },
             ],
           },
         },
