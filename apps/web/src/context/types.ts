@@ -14,6 +14,7 @@ export type User = {
 export type jwtPayload = {
   sub: string;
   positionId: string;
+  departmentId: string;
   email: string;
   firstName: string;
   lastName: string;
