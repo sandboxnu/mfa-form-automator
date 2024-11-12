@@ -4,12 +4,17 @@ import { PDFDocument, rgb } from 'pdf-lib';
 
 import { Button } from '@chakra-ui/react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
-import { PageCallback } from 'react-pdf/dist/cjs/shared/types.js';
 import DraggableText from '../DraggableText';
 import DraggableSignature from '../DraggableSignature';
 import PagingControl from '../PagingControl';
+import { PDFPageProxy } from 'pdfjs-dist';
 
-
+type PageCallback = PDFPageProxy & {
+  width: number;
+  height: number;
+  originalWidth: number;
+  originalHeight: number;
+}
 
 
 //approach: if text field, x = form.createCheckBox(name), x.addToPage(page, {coords, (and other styling values etc)})
@@ -39,7 +44,7 @@ export const AssignInput = () => {
       marginTop: 8,
     },
   };
-  const [pdf, setPdf] = useState(null);
+  const [pdf, setPdf] = useState("http://localhost:3002/test.pdf");
   const [signatureURL, setSignatureURL] = useState(null);
   const [position, setPosition] = useState<{
     x: number;
@@ -240,7 +245,7 @@ export const AssignInput = () => {
                   pageNumber={pageNum + 1}
                   width={800}
                   height={1200}
-                  onLoadSuccess={(data) => {
+                  onLoadSuccess={(data: PageCallback) => {
                     setPageDetails(data);
                   }}
                 />
