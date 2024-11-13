@@ -435,8 +435,15 @@ async function main() {
         {
           id: '087229bf-ce86-449b-aa0b-56c83744acf3',
           order: 0,
-          signerType: 'POSITION',
-          signerPositionId: CHIEF_OF_STAFF_UUID,
+          signerType: 'USER_LIST',
+          assignedUserList: {
+            connect: [
+              { id: IRIS_ZHANG_UUID },
+              { id: KAI_ZHENG_UUID },
+              { id: ANGELA_WEIGL_UUID },
+              { id: ANSHUL_SHIRUDE_UUID },
+            ],
+          },
         },
         {
           id: '760b9266-f165-4551-bf8e-53cfae73b67d',

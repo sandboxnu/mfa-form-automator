@@ -6,6 +6,7 @@
 export type CreateSignatureDto = {
     order: number;
     assignedUserId: string | null;
+    assignedUserIds: Array<string>;
     signerPositionId: string | null;
     signerDepartmentId: string | null;
     signerType: Record<string, any>;

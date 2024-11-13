@@ -79,6 +79,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -149,6 +150,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -181,6 +183,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -208,6 +211,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -237,6 +241,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -271,6 +276,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -319,7 +325,13 @@ export class FormInstancesService {
     const formInstance = await this.prisma.formInstance.findUnique({
       where: { id: formInstanceId },
       include: {
-        signatures: { include: { signerPosition: true, assignedUser: true } },
+        signatures: {
+          include: {
+            signerPosition: true,
+            assignedUser: true,
+            assignedUserList: true,
+          },
+        },
         originator: true,
       },
     });
@@ -359,7 +371,10 @@ export class FormInstancesService {
       (signature.signerType === SignerType.POSITION &&
         signature.signerPositionId !== employee.positionId) ||
       (signature.signerType === SignerType.DEPARTMENT &&
-        signature.signerDepartmentId !== position.departmentId)
+        signature.signerDepartmentId !== position.departmentId) ||
+      (signature.signerType === SignerType.USER_LIST &&
+        signature.assignedUserList &&
+        !signature.assignedUserList.some((user) => user.id === employee.id))
     ) {
       throw new BadRequestException(SignatureErrorMessage.EMPLOYEE_CANNOT_SIGN);
     }

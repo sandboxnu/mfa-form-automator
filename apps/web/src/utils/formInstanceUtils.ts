@@ -24,7 +24,10 @@ export const isFullySigned = (formInstance: FormInstanceEntity) => {
  * @param signature the signature to check
  * @returns the name of the signer
  */
-export const getNameFromSignature = (signature: SignatureEntity) => {
+export const getNameFromSignature = (
+  signature: SignatureEntity,
+  user: User,
+) => {
   const signerType = signature.signerType as any;
   if (signerType === 'USER') {
     return (
@@ -36,6 +39,15 @@ export const getNameFromSignature = (signature: SignatureEntity) => {
     return signature.signerDepartment?.name!;
   } else if (signerType === 'POSITION') {
     return signature.signerPosition?.name!;
+  } else if (signerType === 'USER_LIST') {
+    return (
+      signature.assignedUserList
+        ?.map((employee) => {
+          return employee.firstName + ' ' + employee.lastName;
+        })
+        .join(', ')
+        .slice(0, 30) + '...'
+    );
   }
   return '';
 };
@@ -57,6 +69,8 @@ export const getInitialsFromSignature = (signature: SignatureEntity) => {
     return 'D';
   } else if (signerType === 'POSITION') {
     return 'P';
+  } else if (signerType === 'USER_LIST') {
+    return 'U';
   }
   return '';
 };
@@ -101,6 +115,8 @@ export const signerIsUser = (signature: SignatureEntity, user: User) => {
     (signerType === 'POSITION' &&
       signature.signerPositionId === user?.positionId) ||
     (signerType === 'DEPARTMENT' &&
-      user?.departmentId === signature.signerDepartmentId)
+      user?.departmentId === signature.signerDepartmentId) ||
+    (signerType === 'USER_LIST' &&
+      signature.assignedUserList?.some((employee) => employee.id === user?.id))
   );
 };
