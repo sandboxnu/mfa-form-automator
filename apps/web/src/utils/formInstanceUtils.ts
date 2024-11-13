@@ -40,6 +40,13 @@ export const getNameFromSignature = (
   } else if (signerType === 'POSITION') {
     return signature.signerPosition?.name!;
   } else if (signerType === 'USER_LIST') {
+    if (signature.signed) {
+      return (
+        signature.assignedUser?.firstName! +
+        ' ' +
+        signature.assignedUser?.lastName!
+      );
+    }
     return (
       signature.assignedUserList
         ?.map((employee) => {
