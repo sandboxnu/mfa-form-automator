@@ -1,12 +1,17 @@
-import Draggable, { DraggableEventHandler } from "react-draggable";
+import Draggable, { DraggableEventHandler } from 'react-draggable';
 
 import { useState, useEffect, useRef } from 'react';
 
-export default function DraggableText({ onEnd, onSet, onCancel, initialText }: {
-  onEnd: DraggableEventHandler,
-  onSet: (text: string) => void,
-  onCancel: () => void
-  initialText: string | null,
+export default function DraggableText({
+  onEnd,
+  onSet,
+  onCancel,
+  initialText,
+}: {
+  onEnd: DraggableEventHandler;
+  onSet: (text: string) => void;
+  onCancel: () => void;
+  initialText: string | null;
 }) {
   const [text, setText] = useState('Text');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -24,16 +29,16 @@ export default function DraggableText({ onEnd, onSet, onCancel, initialText }: {
 
   const styles = {
     container: {
-      Position: 'absolute',
+      position: 'absolute',
       zIndex: 100000,
       border: `2px solid`,
     },
     controls: {
-      Position: 'absolute',
+      position: 'absolute',
       right: 0,
       display: 'inline-block',
-      backgroundColor: 'white',
-      // borderRadius: 4,
+      backgroundColor: 'red',
+      borderRadius: 4,
     },
     smallButton: {
       display: 'inline-block',
@@ -50,13 +55,25 @@ export default function DraggableText({ onEnd, onSet, onCancel, initialText }: {
   };
   return (
     <Draggable onStop={onEnd}>
-      <div style={styles.container}>
-        <div style={styles.controls}>
+      <div
+        style={{
+          position: 'absolute',
+          zIndex: 100000,
+          border: `2px solid`,
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            right: 0,
+            display: 'inline-block',
+            backgroundColor: 'red',
+            borderRadius: 4,
+          }}
+        >
           {/* add text  */}
-          <div style={styles.smallButton} onClick={() => onSet(text)}>
-          </div>
-          <div style={styles.smallButton} onClick={onCancel}>
-          </div>
+          <div style={styles.smallButton} onClick={() => onSet(text)}>Confirm</div>
+          <div style={styles.smallButton} onClick={onCancel}>Delete </div>
         </div>
         <input
           ref={inputRef}

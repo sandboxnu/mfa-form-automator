@@ -14,15 +14,14 @@ type PageCallback = PDFPageProxy & {
   height: number;
   originalWidth: number;
   originalHeight: number;
-}
-
+};
 
 //approach: if text field, x = form.createCheckBox(name), x.addToPage(page, {coords, (and other styling values etc)})
 // if we want to access the coords, query the widgets in the page/form (don't know exactly how to do this )
 // widget = represents each field
 
 export const AssignInput = () => {
-    pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
   const styles = {
     container: {
       maxWidth: 900,
@@ -44,7 +43,8 @@ export const AssignInput = () => {
       marginTop: 8,
     },
   };
-  const [pdf, setPdf] = useState("http://localhost:3002/test.pdf");
+
+  const [pdf, setPdf] = useState('http://localhost:3002/test.pdf');
   const [signatureURL, setSignatureURL] = useState(null);
   const [position, setPosition] = useState<{
     x: number;
@@ -58,6 +58,13 @@ export const AssignInput = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [pageDetails, setPageDetails] = useState<PageCallback | null>(null);
   const documentRef = useRef<HTMLDivElement>(null);
+
+  const setUrl = (formBlob: Blob) => {
+    if (formBlob) {
+      const url = URL.createObjectURL(formBlob);
+      setPdf(url);
+    }
+  };
 
   return (
     <div>
@@ -86,7 +93,7 @@ export const AssignInput = () => {
                   setTextInputVisible(false);
                   setSignatureDialogVisible(false);
                   setSignatureURL(null);
-                  setPdf(null);
+                  // setPdf(null);
                   setTotalPages(0);
                   setPageNum(0);
                   setPageDetails(null);
@@ -124,42 +131,52 @@ export const AssignInput = () => {
                     ) {
                       const { originalHeight, originalWidth } = pageDetails;
                       const scale =
-                        originalWidth / documentRef.current.clientWidth;
+                        position.x / documentRef.current.clientWidth;
+                      console.log("Original", documentRef.current.clientWidth);
+                      console.log("Original", documentRef.current.clientHeight);
+                      console.log(position)
+                      // const y =
+                      //   documentRef.current.clientHeight -
+                      //   (position.y +
+                      //     12 * scale -
+                      //     // position.offsetY -
+                      //     documentRef.current.offsetTop);
+                      // const x =
+                      //   position.x -
+                      //   166 -
+                      //   // position.offsetX -
+                      //   documentRef.current.offsetLeft;
 
-                      const y =
-                        documentRef.current.clientHeight -
-                        (position.y +
-                          12 * scale -
-                          position.offsetY -
-                          documentRef.current.offsetTop);
-                      const x =
-                        position.x -
-                        166 -
-                        position.offsetX -
-                        documentRef.current.offsetLeft;
+                      // // new XY in relation to actual document size
+                      // const newY =
+                      //   (y * originalHeight) / documentRef.current.clientHeight;
+                      // const newX =
+                      //   (x * originalWidth) / documentRef.current.clientWidth;
 
-                      // new XY in relation to actual document size
-                      const newY =
-                        (y * originalHeight) / documentRef.current.clientHeight;
-                      const newX =
-                        (x * originalWidth) / documentRef.current.clientWidth;
+                      
+                      const existingPdfBytes = await fetch(pdf).then((res) =>
+                        res.arrayBuffer(),
+                      );
+                      var bytes = new Uint8Array(existingPdfBytes);
+                      const pdfDoc = await PDFDocument.load(bytes);
 
-                      const pdfDoc = await PDFDocument.load(pdf);
+            
 
                       const pages = pdfDoc.getPages();
                       const firstPage = pages[pageNum];
-
+                      const { width, height } = firstPage.getSize();
+                      console.log(scale * width, height - scale * height)
                       firstPage.drawText(text, {
-                        x: newX,
-                        y: newY,
-                        size: 20 * scale,
+                        x: scale * width,
+                        y: height - scale * height,
+                        size: 20,
+                        color: rgb(0.95, 0.1, 0.1),
                       });
 
                       const pdfBytes = await pdfDoc.save();
-                      const blob = new Blob([new Uint8Array(pdfBytes)]);
 
-                      // const URL = await blobToURL(blob);
-                      // setPdf(URL);
+                      const blob = new Blob([new Uint8Array(pdfBytes)]);
+                      setUrl(blob);
                       setPosition(null);
                       setTextInputVisible(false);
                     }
@@ -242,9 +259,9 @@ export const AssignInput = () => {
                 }}
               >
                 <Page
+                  renderAnnotationLayer={false}
+                  renderTextLayer={false}
                   pageNumber={pageNum + 1}
-                  width={800}
-                  height={1200}
                   onLoadSuccess={(data: PageCallback) => {
                     setPageDetails(data);
                   }}
@@ -261,5 +278,4 @@ export const AssignInput = () => {
       </div>
     </div>
   );
-}
-
+};
