@@ -48,10 +48,12 @@ export default function Overview() {
           color={'#FFECCC'}
           isDashboard={true}
           link={'/pending'}
-        ></FormList><ProfileHover
-                        firstName={"Lauren"} 
-                        lastName={"Brissette"} 
-                        position={"a very super long position"}/>
+        ></FormList>
+        <ProfileHover
+          firstName={'Lauren'}
+          lastName={'Brissette'}
+          position={'a very super long position'}
+        />
       </Box>
     </>
   );

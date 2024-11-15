@@ -97,18 +97,18 @@ export const FormRow = ({
                   return (
                     <>
                       <Avatar
-                      name={getInitialsFromSignature(signature)}
-                      key={index}
-                      boxSize="36px"
-                      backgroundColor={signature.signed ? '#D0F0DC' : '#DCDCDC'}
-                      border="1px solid #FFFFFF"
-                      color="black"
-                      fontWeight={400}
-                      fontSize="12px"
+                        name={getInitialsFromSignature(signature)}
+                        key={index}
+                        boxSize="36px"
+                        backgroundColor={
+                          signature.signed ? '#D0F0DC' : '#DCDCDC'
+                        }
+                        border="1px solid #FFFFFF"
+                        color="black"
+                        fontWeight={400}
+                        fontSize="12px"
                       />
                     </>
-                    
-
                   );
                 })}
             </AvatarGroup>
