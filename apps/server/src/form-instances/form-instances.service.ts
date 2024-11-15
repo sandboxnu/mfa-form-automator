@@ -68,7 +68,15 @@ export class FormInstancesService {
         },
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -130,7 +138,15 @@ export class FormInstancesService {
         },
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -162,7 +178,15 @@ export class FormInstancesService {
         },
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -189,7 +213,15 @@ export class FormInstancesService {
     const formInstances = await this.prisma.formInstance.findMany({
       take: limit,
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -218,7 +250,15 @@ export class FormInstancesService {
         id: id,
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -252,7 +292,15 @@ export class FormInstancesService {
         formDocLink: updateFormInstanceDto.formDocLink,
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
