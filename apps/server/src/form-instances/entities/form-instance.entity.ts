@@ -89,7 +89,7 @@ export class FormInstanceEntity implements FormInstance {
   originatorId: string;
 
   @ApiProperty()
-  originator: Employee;
+  originator: EmployeeEntity;
 
   @Exclude()
   formTemplateId: string;
