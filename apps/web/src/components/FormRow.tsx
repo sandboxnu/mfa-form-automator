@@ -1,10 +1,4 @@
-import {
-  AvatarGroup,
-  Flex,
-  Grid,
-  GridItem,
-  Text,
-} from '@chakra-ui/react';
+import { AvatarGroup, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
 
 import { FormInstanceEntity, SignatureEntity } from '@web/client';
 import { useRouter } from 'next/router';
@@ -63,11 +57,16 @@ export const FormRow = ({
         </GridItem>
         <GridItem colSpan={4} h="64px">
           <Flex alignItems="center" pt="15px">
-          <HoverableAvatar 
-                      name={formInstance.originator.firstName + ' ' + formInstance.originator.lastName}
-                      position={formInstance.originator.position}
-                      backgroundColor={'#DCDCDC'}
-                      index={0}/>
+            <HoverableAvatar
+              name={
+                formInstance.originator.firstName +
+                ' ' +
+                formInstance.originator.lastName
+              }
+              position={formInstance.originator.position}
+              backgroundColor={'#DCDCDC'}
+              index={0}
+            />
             <Text pl="8px">
               {formInstance.originator.firstName}{' '}
               {formInstance.originator.lastName}
@@ -82,12 +81,19 @@ export const FormRow = ({
                 .map((signature: SignatureEntity, index: number) => {
                   return (
                     <>
-                    <HoverableAvatar 
-                      name={formInstance.originator.firstName + ' ' + formInstance.originator.lastName}
-                      position={formInstance.originator.position}
-                      backgroundColor={signature.signed ? '#D0F0DC' : '#DCDCDC'}
-                      signed={signature.signed}
-                      index={index}/>
+                      <HoverableAvatar
+                        name={
+                          formInstance.originator.firstName +
+                          ' ' +
+                          formInstance.originator.lastName
+                        }
+                        position={formInstance.originator.position}
+                        backgroundColor={
+                          signature.signed ? '#D0F0DC' : '#DCDCDC'
+                        }
+                        signed={signature.signed}
+                        index={index}
+                      />
                     </>
                   );
                 })}
