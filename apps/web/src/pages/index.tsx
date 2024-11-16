@@ -49,11 +49,6 @@ export default function Overview() {
           isDashboard={true}
           link={'/pending'}
         ></FormList>
-        <ProfileHover
-          firstName={'Lauren'}
-          lastName={'Brissette'}
-          position={'a very super long position'}
-        />
       </Box>
     </>
   );
