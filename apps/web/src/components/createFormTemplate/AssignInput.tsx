@@ -9,6 +9,14 @@ import DraggableSignature from '../DraggableSignature';
 import PagingControl from '../PagingControl';
 import { PDFPageProxy } from 'pdfjs-dist';
 
+enum FormFieldType {
+    Signature, 
+    TextField,
+    Checkbox,
+
+}
+
+
 type PageCallback = PDFPageProxy & {
   width: number;
   height: number;
@@ -58,6 +66,8 @@ export const AssignInput = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [pageDetails, setPageDetails] = useState<PageCallback | null>(null);
   const documentRef = useRef<HTMLDivElement>(null);
+  const [formType, setFormType] = useState<FormFieldType>(FormFieldType.TextField);
+
 
   const setUrl = (formBlob: Blob) => {
     if (formBlob) {
@@ -65,6 +75,7 @@ export const AssignInput = () => {
       setPdf(url);
     }
   };
+
 
   return (
     <div>
@@ -131,45 +142,26 @@ export const AssignInput = () => {
                     ) {
                       const { originalHeight, originalWidth } = pageDetails;
                       const scale =
-                        position.x / documentRef.current.clientWidth;
-                      console.log("Original", documentRef.current.clientWidth);
-                      console.log("Original", documentRef.current.clientHeight);
-                      console.log(position)
-                      // const y =
-                      //   documentRef.current.clientHeight -
-                      //   (position.y +
-                      //     12 * scale -
-                      //     // position.offsetY -
-                      //     documentRef.current.offsetTop);
-                      // const x =
-                      //   position.x -
-                      //   166 -
-                      //   // position.offsetX -
-                      //   documentRef.current.offsetLeft;
-
-                      // // new XY in relation to actual document size
-                      // const newY =
-                      //   (y * originalHeight) / documentRef.current.clientHeight;
-                      // const newX =
-                      //   (x * originalWidth) / documentRef.current.clientWidth;
-
-                      
+                      originalWidth / documentRef.current.clientWidth;
+                      console.log(scale)
+                   
                       const existingPdfBytes = await fetch(pdf).then((res) =>
                         res.arrayBuffer(),
                       );
                       var bytes = new Uint8Array(existingPdfBytes);
                       const pdfDoc = await PDFDocument.load(bytes);
 
-            
-
                       const pages = pdfDoc.getPages();
+                      const form = pdfDoc.getForm()
+
                       const firstPage = pages[pageNum];
-                      const { width, height } = firstPage.getSize();
-                      console.log(scale * width, height - scale * height)
+                      const size = 20
+                      const newField = form.createTextField('')
+
                       firstPage.drawText(text, {
-                        x: scale * width,
-                        y: height - scale * height,
-                        size: 20,
+                        x: scale * position.x,
+                        y: originalHeight - scale * position.y - size,
+                        size: size,
                         color: rgb(0.95, 0.1, 0.1),
                       });
 
