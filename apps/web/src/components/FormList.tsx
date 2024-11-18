@@ -128,7 +128,6 @@ export const FormList = ({
                 )
                   .toLowerCase()
                   .includes(searchQuery.toLowerCase()) ||
-                // get the list of all names, reduce and check if any of them contain the key word
                 formInstance.signatures
                   .map((signature: SignatureEntity, index: number) =>
                     getNameFromSignature(signature),
