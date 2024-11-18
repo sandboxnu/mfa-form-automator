@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { FormRow } from './FormRow';
 import { Box, Flex, Grid, GridItem, Heading, Text } from '@chakra-ui/react';
-import { FormInstanceEntity } from '@web/client';
+import { FormInstanceEntity, SignatureEntity } from '@web/client';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { SearchAndSort } from 'apps/web/src/components/SearchAndSort';
 import { ViewAll } from 'apps/web/src/components/ViewAll';
+import { getNameFromSignature } from '@web/utils/formInstanceUtils';
 
 /**
  * @param title - the title of the form list
@@ -120,9 +121,24 @@ export const FormList = ({
                 formInstance.name
                   .toLowerCase()
                   .includes(searchQuery.toLowerCase()) ||
-                formInstance.originator.name
+                (
+                  formInstance.originator.firstName +
+                  ' ' +
+                  formInstance.originator.lastName
+                )
                   .toLowerCase()
-                  .contains(searchQuery.toLowerCase()),
+                  .includes(searchQuery.toLowerCase()) ||
+                // get the list of all names, reduce and check if any of them contain the key word
+                formInstance.signatures
+                  .map((signature: SignatureEntity, index: number) =>
+                    getNameFromSignature(signature),
+                  )
+                  .reduce((contained: boolean, name: String) => {
+                    return (
+                      contained ||
+                      name.toLowerCase().includes(searchQuery.toLowerCase())
+                    );
+                  }, false),
             )
             .map((formInstance: FormInstanceEntity, index: number) => (
               <FormRow
