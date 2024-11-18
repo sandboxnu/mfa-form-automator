@@ -114,16 +114,24 @@ export const FormList = ({
               </Text>
             </GridItem>
           </Grid>
-          {sortedFormInstances.map(
-            (formInstance: FormInstanceEntity, index: number) => (
+          {sortedFormInstances
+            .filter(
+              (formInstance: FormInstanceEntity) =>
+                formInstance.name
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase()) ||
+                formInstance.originator.name
+                  .toLowerCase()
+                  .contains(searchQuery.toLowerCase()),
+            )
+            .map((formInstance: FormInstanceEntity, index: number) => (
               <FormRow
                 formInstance={formInstance}
                 key={index}
                 last={index === sortedFormInstances.length - 1}
                 link={'/form-instances/' + formInstance.id}
               />
-            ),
-          )}
+            ))}
         </Box>
       </Box>
     </>
