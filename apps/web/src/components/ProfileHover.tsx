@@ -16,6 +16,7 @@ export const ProfileHover = ({
       gap="10px"
       borderRadius="6px"
       boxShadow="1px 1px 4px 0px #D4D4D4"
+      zIndex={20}
     >
       <Flex width="158px" height="25px" alignItems={'center'}>
           <Text
