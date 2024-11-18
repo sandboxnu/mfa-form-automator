@@ -55,7 +55,16 @@ export class FormInstancesService {
       data: {
         name: createFormInstanceDto.name,
         formDocLink: createFormInstanceDto.formDocLink,
-        signatures: { create: createFormInstanceDto.signatures },
+        signatures: {
+          create: createFormInstanceDto.signatures.map((signature) => ({
+            ...signature,
+            assignedUserList: {
+              connect: signature.assignedUserList.map((user) => ({
+                id: user.id,
+              })),
+            },
+          })),
+        },
         originator: {
           connect: {
             id: createFormInstanceDto.originatorId,
@@ -79,6 +88,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -125,6 +135,14 @@ export class FormInstancesService {
                 signerType: 'USER',
                 assignedUserId: employeeId,
               },
+              {
+                signerType: 'USER_LIST',
+                assignedUserList: {
+                  some: {
+                    id: employeeId,
+                  },
+                },
+              },
             ],
           },
         },
@@ -141,6 +159,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -173,6 +192,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -200,6 +220,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -229,6 +250,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -263,6 +285,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -311,7 +334,13 @@ export class FormInstancesService {
     const formInstance = await this.prisma.formInstance.findUnique({
       where: { id: formInstanceId },
       include: {
-        signatures: { include: { signerPosition: true, assignedUser: true } },
+        signatures: {
+          include: {
+            signerPosition: true,
+            assignedUser: true,
+            assignedUserList: true,
+          },
+        },
         originator: true,
       },
     });
@@ -351,14 +380,17 @@ export class FormInstancesService {
       (signature.signerType === SignerType.POSITION &&
         signature.signerPositionId !== employee.positionId) ||
       (signature.signerType === SignerType.DEPARTMENT &&
-        signature.signerDepartmentId !== position.departmentId)
+        signature.signerDepartmentId !== position.departmentId) ||
+      (signature.signerType === SignerType.USER_LIST &&
+        signature.assignedUserList &&
+        !signature.assignedUserList.some((user) => user.id === employee.id))
     ) {
       throw new BadRequestException(SignatureErrorMessage.EMPLOYEE_CANNOT_SIGN);
     }
 
     const updatedSignature = await this.prisma.signature.update({
       where: { id: signatureId },
-      data: { signed: true },
+      data: { signed: true, assignedUserId: employee.id },
     });
 
     formInstance.signatures[signatureIndex] = {

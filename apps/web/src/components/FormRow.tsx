@@ -7,10 +7,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { FormInstanceEntity, SignatureEntity } from '@web/client';
-import {
-  getInitialsFromSignature,
-  getNameFromSignature,
-} from '@web/utils/formInstanceUtils';
+import { getInitialsFromSignature } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
 
 /**

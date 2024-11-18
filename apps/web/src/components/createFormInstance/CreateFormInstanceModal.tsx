@@ -101,6 +101,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
             signerType: 'USER' as any as Record<string, any>,
             signerDepartmentId: null,
             signerPositionId: null,
+            assignedUserList: [],
           };
         }),
         originatorId: user?.id!,
