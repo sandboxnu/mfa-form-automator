@@ -1,8 +1,9 @@
-import { AvatarGroup, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
+import { Avatar, AvatarGroup, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
 
 import { FormInstanceEntity, SignatureEntity } from '@web/client';
 import { useRouter } from 'next/router';
 import { HoverableAvatar } from './HoverableAvatar';
+import { getInitialsFromSignature, getNameFromSignature } from '@web/utils/formInstanceUtils';
 
 /**
  * @param formInstance - the form instance
@@ -26,7 +27,6 @@ export const FormRow = ({
       day: 'numeric',
     });
   };
-
   return (
     <>
       <Grid
@@ -57,15 +57,19 @@ export const FormRow = ({
         </GridItem>
         <GridItem colSpan={4} h="64px">
           <Flex alignItems="center" pt="15px">
-            <HoverableAvatar
+            <Avatar
               name={
                 formInstance.originator.firstName +
                 ' ' +
                 formInstance.originator.lastName
               }
-              position={formInstance.originator.position}
+              boxSize="36px"
               backgroundColor={'#DCDCDC'}
-              index={0}
+              border="1px solid #FFFFFF"
+              color="black"
+              fontWeight={400}
+              fontSize="14px"
+              size="sm"
             />
             <Text pl="8px">
               {formInstance.originator.firstName}{' '}
@@ -83,11 +87,8 @@ export const FormRow = ({
                     <>
                       <HoverableAvatar
                         name={
-                          formInstance.originator.firstName +
-                          ' ' +
-                          formInstance.originator.lastName
+                          getNameFromSignature(signature)
                         }
-                        position={formInstance.originator.position}
                         backgroundColor={
                           signature.signed ? '#D0F0DC' : '#DCDCDC'
                         }

@@ -1,9 +1,11 @@
+import { useQuery } from '@tanstack/react-query';
 import {
   FormInstanceEntity,
   PositionsService,
   SignatureEntity,
 } from '@web/client';
 import { User } from '@web/context/types';
+import { useState } from 'react';
 
 /**
  * Determines if a form instance is fully signed
@@ -107,4 +109,6 @@ export const signerIsUser = (signature: SignatureEntity, user: User) => {
     (signerType === 'DEPARTMENT' &&
       user?.departmentId === signature.signerDepartmentId)
   );
+
 };
+

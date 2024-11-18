@@ -6,23 +6,20 @@ import {
   PopoverTrigger,
 } from '@chakra-ui/react';
 import { ProfileHover } from './ProfileHover';
-import { PositionEntity } from '@web/client';
 
 export const HoverableAvatar = ({
   name,
-  position,
   signed,
   backgroundColor,
   index,
 }: {
   name: string;
-  position: PositionEntity;
-  signed?: boolean;
+  signed: boolean;
   backgroundColor: any;
   index: any;
 }) => {
   return (
-    <Popover trigger="hover">
+    <Popover trigger="hover" openDelay={800} closeDelay={0} >
       <PopoverTrigger>
         <Avatar
           name={name}
@@ -36,9 +33,9 @@ export const HoverableAvatar = ({
           size="sm"
         />
       </PopoverTrigger>
-      <PopoverContent boxSize={'fit-content'}>
+      <PopoverContent boxSize={'fit-content'} position={"relative"}>
         <PopoverArrow />
-        <ProfileHover name={name} position={position.name} signed={signed} />
+        <ProfileHover name={name} signed={signed} />
       </PopoverContent>
     </Popover>
   );

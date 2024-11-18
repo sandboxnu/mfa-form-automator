@@ -40,7 +40,7 @@ export default function Register() {
   } = useQuery({
     queryKey: ['api', 'departments'],
     queryFn: () => DepartmentsService.departmentsControllerFindAll(1000),
-  });
+  }); 
 
   // If loading, wait to render
   if (positionsLoading || departmentsLoading || loadingUserData) {
