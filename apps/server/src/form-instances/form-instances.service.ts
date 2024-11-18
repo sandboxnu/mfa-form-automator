@@ -95,12 +95,10 @@ export class FormInstancesService {
     });
 
     // Notify originator of email creation
-    const emailBody: string = `Hi ${newFormInstance.originator.firstName}, you have created a new form: ${newFormInstance.name}.`;
-    const emailSubject: string = `Form ${newFormInstance.name} Created`;
-    this.postmarkService.sendEmail(
+    this.postmarkService.sendFormCreatedEmail(
       newFormInstance.originator.email,
-      emailSubject,
-      emailBody,
+      newFormInstance.originator.firstName,
+      newFormInstance.name,
     );
 
     return newFormInstance;
@@ -414,36 +412,40 @@ export class FormInstancesService {
       });
 
       // Notify originator that form is ready for approval
-      const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} is completed and is ready for your approval: ${formInstance.name}.`;
-      const emailSubject: string = `Form ${formInstance.name} Ready for Approval`;
-      this.postmarkService.sendEmail(
+      this.postmarkService.sendReadyForApprovalEmail(
         formInstance.originator.email,
-        emailSubject,
-        emailBody,
+        formInstance.originator.firstName,
+        formInstance.name,
       );
     } else {
       // Notify next user that form is ready to sign
       const nextUserToSignId = formInstance.signatures[signatureIndex + 1];
 
       if (nextUserToSignId.signerType === SignerType.USER) {
-        const emailBod2y: string = `Hi ${formInstance.originator.firstName}, you have a form ready for your signature: ${formInstance.name}.`;
-        const emailSubject2: string = `Form ${formInstance.name} Ready To Sign`;
-        this.postmarkService.sendEmail(
+        this.postmarkService.sendReadyForSignatureToUserEmail(
           nextUserToSignId.assignedUser!.email,
-          emailSubject2,
-          emailBod2y,
+          nextUserToSignId.assignedUser!.firstName,
+          formInstance.name,
         );
-      } else {
-        // TODO: Implement sending email to department or position
+      } else if (nextUserToSignId.signerType === SignerType.POSITION) {
+        this.postmarkService.sendReadyForSignatureToPositionEmail(
+          nextUserToSignId.signerPositionId!,
+          formInstance.name,
+        );
+      } else if (nextUserToSignId.signerType === SignerType.DEPARTMENT) {
+        this.postmarkService.sendReadyForSignatureToDepartmentEmail(
+          nextUserToSignId.signerDepartmentId!,
+          formInstance.name,
+        );
       }
 
       // Notify originator that form was signed
-      const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
-      const emailSubject: string = `Form ${formInstance.name} Signed By ${employee.firstName} ${employee.lastName}`;
-      this.postmarkService.sendEmail(
+      this.postmarkService.sendSignedEmail(
         formInstance.originator.email,
-        emailSubject,
-        emailBody,
+        formInstance.originator.firstName,
+        employee.firstName,
+        employee.lastName,
+        formInstance.name,
       );
     }
 
