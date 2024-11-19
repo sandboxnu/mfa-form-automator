@@ -9,16 +9,20 @@ import { AvatarMapProps } from './types';
 const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
   let previousSigned = true;
 
-  const getInitialsFromTitle = (title: string, signerType: string) => {
-    if (signerType === 'DEPARTMENT') {
+  const getInitialsFromTitle = (
+    title: string,
+    signerType: string,
+    isSigned: boolean,
+  ) => {
+    if (isSigned) {
+      return title;
+    } else if (signerType === 'DEPARTMENT') {
       return 'D';
     } else if (signerType === 'POSITION') {
       return 'P';
     } else if (signerType === 'USER_LIST') {
       return 'U';
     }
-
-    return title;
   };
 
   return (
@@ -31,7 +35,11 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
           <Flex key={index} align="center" my={4} position="relative">
             <Flex align="center" flex="1" zIndex={1}>
               <Avatar
-                name={getInitialsFromTitle(assignee.title, assignee.signerType)}
+                name={getInitialsFromTitle(
+                  assignee.title,
+                  assignee.signerType,
+                  assignee.signed,
+                )}
                 size="sm"
                 color="black"
                 bg={

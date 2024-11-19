@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ServerClient } from 'postmark';
+import { Employee } from '@prisma/client';
 
 @Injectable()
 export class PostmarkService {
@@ -121,6 +122,24 @@ export class PostmarkService {
   }
 
   /**
+   * Send an email to a list of users that a form is ready for their signature
+   * @param to the list of email addresses to send to
+   * @param formName
+   */
+  async sendReadyForSignatureToUserListEmail(
+    userList: Employee[],
+    formName: string,
+  ) {
+    userList.forEach(async (user) => {
+      await this.sendReadyForSignatureToUserEmail(
+        user.email,
+        `${user.firstName} ${user.lastName}`,
+        formName,
+      );
+    });
+  }
+
+  /**
    * Send an email to the originator that a form has been signed
    * @param to email address to send to
    * @param originatorName the name of the originator
@@ -131,12 +150,11 @@ export class PostmarkService {
   async sendSignedEmail(
     to: string,
     originatorName: string,
-    signerFirstName: string,
-    signerLastName: string,
+    signerName: string,
     formName: string,
   ) {
-    const subject: string = `Form ${formName} Signed By ${signerFirstName} ${signerLastName}`;
-    const body: string = `Hi ${originatorName}, your form ${formName} has been signed by user: ${signerFirstName} ${signerLastName}.`;
+    const subject: string = `Form ${formName} Signed By ${signerName}`;
+    const body: string = `Hi ${originatorName}, your form ${formName} has been signed by user: ${signerName}.`;
 
     await this.sendEmail(to, subject, body);
   }

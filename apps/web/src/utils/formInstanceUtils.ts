@@ -24,12 +24,10 @@ export const isFullySigned = (formInstance: FormInstanceEntity) => {
  * @param signature the signature to check
  * @returns the name of the signer
  */
-export const getNameFromSignature = (
-  signature: SignatureEntity,
-  user: User,
-) => {
+export const getNameFromSignature = (signature: SignatureEntity) => {
   const signerType = signature.signerType as any;
-  if (signerType === 'USER') {
+
+  if (signature.signed || signerType === 'USER') {
     return (
       signature.assignedUser?.firstName! +
       ' ' +
@@ -66,7 +64,8 @@ export const getNameFromSignature = (
  */
 export const getInitialsFromSignature = (signature: SignatureEntity) => {
   const signerType = signature.signerType as any;
-  if (signerType === 'USER') {
+
+  if (signature.signed || signerType === 'USER') {
     return (
       signature.assignedUser?.firstName! +
       ' ' +

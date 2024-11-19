@@ -289,7 +289,7 @@ const FormInstance = ({
               <AssigneeMap
                 assignees={formInstance.signatures.map((signature) => ({
                   signed: signature.signed,
-                  title: getNameFromSignature(signature, user!),
+                  title: getNameFromSignature(signature),
                   signerType: signature.signerType as any,
                   updatedAt: signature.updatedAt,
                 }))}
