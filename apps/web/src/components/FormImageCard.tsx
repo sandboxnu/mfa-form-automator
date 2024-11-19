@@ -1,9 +1,13 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
 import { FormInstanceEntity } from './../../../web/src/client';
 import { useRouter } from 'next/router';
-import React from 'react';
 import { useStorage } from '@web/hooks/useStorage';
-import { Document, Page, pdfjs } from 'react-pdf';
+import React, { FC, useMemo } from 'react';
+import { pdfjs, Document, Page } from 'react-pdf';
+import 'react-pdf/dist/Page/TextLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+
+
 
 /**
  * @param formName - the name of the form

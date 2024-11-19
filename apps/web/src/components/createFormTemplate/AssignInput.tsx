@@ -1,5 +1,5 @@
 import { LegacyRef, useRef, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page, pdfjs , } from 'react-pdf';
 import { PDFDocument, rgb } from 'pdf-lib';
 
 import { Button } from '@chakra-ui/react';
@@ -8,14 +8,8 @@ import DraggableText from '../DraggableText';
 import DraggableSignature from '../DraggableSignature';
 import PagingControl from '../PagingControl';
 import { PDFPageProxy } from 'pdfjs-dist';
-
-enum FormFieldType {
-    Signature, 
-    TextField,
-    Checkbox,
-
-}
-
+import { v4 as uuidv4 } from 'uuid';
+import { Position, ResizableDelta } from 'react-rnd';
 
 type PageCallback = PDFPageProxy & {
   width: number;
@@ -23,13 +17,20 @@ type PageCallback = PDFPageProxy & {
   originalWidth: number;
   originalHeight: number;
 };
+enum FormFieldType {
+  Signature,
+  TextField,
+  Checkbox,
+}
+type ResizeDirection = "top" | "right" | "bottom" | "left" | "topRight" | "bottomRight" | "bottomLeft" | "topLeft"
 
 //approach: if text field, x = form.createCheckBox(name), x.addToPage(page, {coords, (and other styling values etc)})
 // if we want to access the coords, query the widgets in the page/form (don't know exactly how to do this )
 // widget = represents each field
 
 export const AssignInput = () => {
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+  console.log(pdfjs.version)
+  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
   const styles = {
     container: {
       maxWidth: 900,
@@ -66,8 +67,9 @@ export const AssignInput = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [pageDetails, setPageDetails] = useState<PageCallback | null>(null);
   const documentRef = useRef<HTMLDivElement>(null);
-  const [formType, setFormType] = useState<FormFieldType>(FormFieldType.TextField);
-
+  const [formType, setFormType] = useState<FormFieldType>(
+    FormFieldType.TextField,
+  );
 
   const setUrl = (formBlob: Blob) => {
     if (formBlob) {
@@ -75,7 +77,6 @@ export const AssignInput = () => {
       setPdf(url);
     }
   };
-
 
   return (
     <div>
@@ -125,7 +126,7 @@ export const AssignInput = () => {
                 <DraggableText
                   initialText={null}
                   onCancel={() => setTextInputVisible(false)}
-                  onEnd={(e: DraggableEvent, data: DraggableData) =>
+                  onEndDrag={(e: DraggableEvent, data: DraggableData) =>
                     setPosition({
                       offsetX: data.deltaX,
                       offsetY: data.deltaY,
@@ -133,7 +134,15 @@ export const AssignInput = () => {
                       y: data.y,
                     })
                   }
-                  onSet={async (text: string) => {
+                  onEndResize={(e: MouseEvent | TouchEvent, dir: ResizeDirection, elementRef: HTMLElement, delta: ResizableDelta, position: Position) =>
+                    setPosition({
+                      offsetX: delta.width,
+                      offsetY: delta.height,
+                      x: position.x,
+                      y: position.y,
+                    })
+                  }
+                  onSet={async () => {
                     if (
                       pageDetails &&
                       documentRef &&
@@ -142,29 +151,27 @@ export const AssignInput = () => {
                     ) {
                       const { originalHeight, originalWidth } = pageDetails;
                       const scale =
-                      originalWidth / documentRef.current.clientWidth;
-                      console.log(scale)
-                   
+                        originalWidth / documentRef.current.clientWidth;
+                      console.log(scale);
+
                       const existingPdfBytes = await fetch(pdf).then((res) =>
                         res.arrayBuffer(),
                       );
                       var bytes = new Uint8Array(existingPdfBytes);
                       const pdfDoc = await PDFDocument.load(bytes);
-
+                        
                       const pages = pdfDoc.getPages();
-                      const form = pdfDoc.getForm()
+                      const form = pdfDoc.getForm();
 
                       const firstPage = pages[pageNum];
-                      const size = 20
-                      const newField = form.createTextField('')
-
-                      firstPage.drawText(text, {
+                      const size = 20;
+                      const myUUID = uuidv4();
+                      const newField = form.createTextField(myUUID);
+                      newField.addToPage(firstPage, {
                         x: scale * position.x,
                         y: originalHeight - scale * position.y - size,
-                        size: size,
-                        color: rgb(0.95, 0.1, 0.1),
-                      });
-
+                        height: 20
+                        });
                       const pdfBytes = await pdfDoc.save();
 
                       const blob = new Blob([new Uint8Array(pdfBytes)]);
@@ -245,7 +252,7 @@ export const AssignInput = () => {
                 />
               ) : null}
               <Document
-                file={pdf}
+                file={"http://localhost:3002/test.pdf"}
                 onLoadSuccess={(data) => {
                   setTotalPages(data.numPages);
                 }}
@@ -254,8 +261,8 @@ export const AssignInput = () => {
                   renderAnnotationLayer={false}
                   renderTextLayer={false}
                   pageNumber={pageNum + 1}
-                  onLoadSuccess={(data: PageCallback) => {
-                    setPageDetails(data);
+                  onLoadSuccess={(page: PageCallback) => {
+                    setPageDetails(page);
                   }}
                 />
               </Document>

@@ -1,31 +1,22 @@
-import Draggable, { DraggableEventHandler } from 'react-draggable';
+import {Rnd, RndResizeCallback} from "react-rnd"
 
 import { useState, useEffect, useRef } from 'react';
+import { DraggableEventHandler } from "react-draggable";
 
 export default function DraggableText({
-  onEnd,
+  onEndDrag,
+  onEndResize, 
   onSet,
   onCancel,
-  initialText,
 }: {
-  onEnd: DraggableEventHandler;
-  onSet: (text: string) => void;
+  onEndDrag: DraggableEventHandler;
+  onEndResize: RndResizeCallback;
+  onSet: () => void;
   onCancel: () => void;
   initialText: string | null;
 }) {
-  const [text, setText] = useState('Text');
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (initialText) {
-      setText(initialText);
-    } else {
-      if (inputRef && inputRef.current) {
-        inputRef.current.focus();
-        inputRef.current.select();
-      }
-    }
-  }, [initialText]);
+  
 
   const styles = {
     container: {
@@ -54,7 +45,7 @@ export default function DraggableText({
     },
   };
   return (
-    <Draggable onStop={onEnd}>
+    <Rnd onStop={onEndDrag} onResizeStop={onEndResize}>
       <div
         style={{
           position: 'absolute',
@@ -72,17 +63,11 @@ export default function DraggableText({
           }}
         >
           {/* add text  */}
-          <div style={styles.smallButton} onClick={() => onSet(text)}>Confirm</div>
+          <div style={styles.smallButton} onClick={onSet}>Confirm</div>
           <div style={styles.smallButton} onClick={onCancel}>Delete </div>
         </div>
-        <input
-          ref={inputRef}
-          style={styles.input}
-          value={text}
-          placeholder={'Text'}
-          onChange={(e) => setText(e.target.value)}
-        />
+        
       </div>
-    </Draggable>
+    </Rnd>
   );
 }
