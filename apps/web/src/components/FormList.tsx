@@ -129,7 +129,7 @@ export const FormList = ({
                   .toLowerCase()
                   .includes(searchQuery.toLowerCase()) ||
                 formInstance.signatures
-                  .map((signature: SignatureEntity, index: number) =>
+                  .map((signature: SignatureEntity) =>
                     getNameFromSignature(signature),
                   )
                   .reduce((contained: boolean, name: String) => {
