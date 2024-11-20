@@ -1,10 +1,17 @@
-import { OverviewRow } from 'apps/web/src/components/OverviewRow';
 import { Box, Text } from '@chakra-ui/react';
 import { useForm } from '@web/hooks/useForm';
 import Error from './../components/Error';
 import FormLoading from './../components/FormLoading';
 import { FormList } from './../components/FormList';
 import { useAuth } from '@web/hooks/useAuth';
+import dynamic from 'next/dynamic';
+import { OverviewRow } from '@web/components/OverviewRow';
+
+// const OverviewRow = dynamic(
+//   () => import('../components/OverviewRow.tsx').then(mod => mod.OverviewRow),
+//   { ssr: false }
+// )
+
 
 export default function Overview() {
   const {

@@ -33,7 +33,6 @@ export default function DraggableSignature({ onEnd, onSet, onCancel, url}: {
           <div style={styles.smallButton} onClick={onSet}>Set </div>
           <div style={styles.smallButton} onClick={onCancel}>Cancel</div>
         </div>
-        <img src={url} width={200} draggable={false} />
       </div>
     </Draggable>
   );

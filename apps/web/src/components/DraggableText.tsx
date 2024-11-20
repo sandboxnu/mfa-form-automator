@@ -1,23 +1,20 @@
-import {Rnd, RndResizeCallback} from "react-rnd"
+import { Rnd, RndResizeCallback } from 'react-rnd';
 
 import { useState, useEffect, useRef } from 'react';
-import { DraggableEventHandler } from "react-draggable";
+import { DraggableEventHandler } from 'react-draggable';
 
 export default function DraggableText({
-  onEndDrag,
-  onEndResize, 
-  onSet,
+  onStop,
+  onResizeStop,
   onCancel,
+  color,
 }: {
-  onEndDrag: DraggableEventHandler;
-  onEndResize: RndResizeCallback;
-  onSet: () => void;
+  onStop: DraggableEventHandler;
+  onResizeStop: RndResizeCallback;
   onCancel: () => void;
   initialText: string | null;
+  color: string;
 }) {
-
-  
-
   const styles = {
     container: {
       position: 'absolute',
@@ -45,29 +42,17 @@ export default function DraggableText({
     },
   };
   return (
-    <Rnd onStop={onEndDrag} onResizeStop={onEndResize}>
-      <div
-        style={{
-          position: 'absolute',
-          zIndex: 100000,
-          border: `2px solid`,
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            right: 0,
-            display: 'inline-block',
-            backgroundColor: 'red',
-            borderRadius: 4,
-          }}
-        >
-          {/* add text  */}
-          <div style={styles.smallButton} onClick={onSet}>Confirm</div>
-          <div style={styles.smallButton} onClick={onCancel}>Delete </div>
-        </div>
-        
-      </div>
-    </Rnd>
+    <Rnd
+      minWidth={80}
+      minHeight={20}
+      style={{
+        position: 'absolute',
+        zIndex: 100000,
+        background: 'transparent',
+        border: `solid 1px ${color}`,
+      }}
+      onStop={onStop}
+      onResizeStop={onResizeStop}
+    ></Rnd>
   );
 }
