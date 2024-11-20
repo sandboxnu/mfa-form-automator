@@ -6,12 +6,10 @@ import { DraggableEventHandler } from 'react-draggable';
 export default function DraggableText({
   onStop,
   onResizeStop,
-  onCancel,
   color,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
-  onCancel: () => void;
   initialText: string | null;
   color: string;
 }) {
@@ -43,6 +41,7 @@ export default function DraggableText({
   };
   return (
     <Rnd
+      bounds="parent"
       minWidth={80}
       minHeight={20}
       style={{

@@ -75,10 +75,9 @@ export const AssignInput = () => {
   const [formFieldGroups, setFormFieldGroups] = useState<
     Map<string, { fields: Map<string, TextFieldPosition>; color: string }>
   >(new Map());
-  const [currentGroup, setCurrentGroup] = useState<string>();
+  const [currentGroup, setCurrentGroup] = useState<string>('');
 
   const [signatureDialogVisible, setSignatureDialogVisible] = useState(false);
-  const [textInputVisible, setTextInputVisible] = useState(false);
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [pageDetails, setPageDetails] = useState<PageCallback | null>(null);
@@ -86,13 +85,6 @@ export const AssignInput = () => {
   const [formType, setFormType] = useState<FormFieldType>(
     FormFieldType.TextField,
   );
-  const addGroup = () => {
-    const myuuid = uuidv4();
-    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-    let mapCpy = new Map(formFieldGroups);
-    mapCpy.set(myuuid, { fields: new Map(), color: randomColor });
-    setFormFieldGroups(mapCpy);
-  };
 
   useEffect(() => {
     const myuuid = uuidv4();
@@ -109,10 +101,10 @@ export const AssignInput = () => {
   //     setPdf(url);
   //   }
   // };
-  console.log(formFieldGroups)
+  console.log(formFieldGroups);
   return (
     <div>
-      {formFieldGroups.entries().map(([key, value], index) => (
+      {Array.from(formFieldGroups.entries()).map(([key, value], index) => (
         <Button
           key={index}
           onClick={() => {
@@ -131,7 +123,7 @@ export const AssignInput = () => {
           let mapCpy = new Map(formFieldGroups);
           mapCpy.set(myuuid, { fields: new Map(), color: randomColor });
           setFormFieldGroups(mapCpy);
-          console.log(mapCpy)
+          console.log(mapCpy);
         }}
       >
         Add New Group
@@ -140,7 +132,6 @@ export const AssignInput = () => {
         {pdf ? (
           <div>
             <div style={styles.controls}>
-              
               {!signatureURL ? (
                 <Button
                   marginRight={8}
@@ -150,14 +141,25 @@ export const AssignInput = () => {
               ) : null}
               <Button
                 marginRight={8}
-                title={'Add Text'}
-                onClick={() => setTextInputVisible(true)}
+                title={'Add TextField'}
+                onClick={() => {
+                  const myUUID = uuidv4();
+                  let formFieldCopy = new Map(formFieldGroups);
+                  formFieldCopy
+                    .get(currentGroup)
+                    ?.fields.set(myUUID, {
+                      x: 100,
+                      y: 100,
+                      width: 80,
+                      height: 30,
+                    });
+                  setFormFieldGroups(formFieldCopy);
+                }}
               />
               <Button
                 marginRight={8}
                 title={'Reset'}
                 onClick={() => {
-                  setTextInputVisible(false);
                   setSignatureDialogVisible(false);
                   setSignatureURL(null);
                   // setPdf(null);
@@ -177,11 +179,12 @@ export const AssignInput = () => {
               ) : null} */}
             </div>
             <div ref={documentRef} style={styles.documentBlock}>
-              {textInputVisible ? (
+              {Array.from(formFieldGroups.entries()).map(([], index) => (
                 <DraggableText
+                key={index}
                   color={formFieldGroups.get(currentGroup!)?.color ?? '#000'}
                   initialText={null}
-                  onCancel={() => setTextInputVisible(false)}
+                
                   onStop={(e: DraggableEvent, data: DraggableData) =>
                     setPosition({
                       width: data.deltaX,
@@ -205,47 +208,14 @@ export const AssignInput = () => {
                       y: position.y,
                     });
                   }}
-                  // onSet={async () => {
-                  //   if (
-                  //     pageDetails &&
-                  //     documentRef &&
-                  //     documentRef.current &&
-                  //     position
-                  //   ) {
-                  //     const { originalHeight, originalWidth } = pageDetails;
-                  //     const scale =
-                  //       originalWidth / documentRef.current.clientWidth;
-                  //     console.log(scale);
-
-                  //     const existingPdfBytes = await fetch(pdf).then((res) =>
-                  //       res.arrayBuffer(),
-                  //     );
-                  //     var bytes = new Uint8Array(existingPdfBytes);
-                  //     const pdfDoc = await PDFDocument.load(bytes);
-
-                  //     const pages = pdfDoc.getPages();
-                  //     const form = pdfDoc.getForm();
-
-                  //     const firstPage = pages[pageNum];
-                  //     const size = 20;
-                  //     const myUUID = uuidv4();
-                  //     const newField = form.createTextField(myUUID);
-                  //     newField.addToPage(firstPage, {
-                  //       x: scale * position.x,
-                  //       y: originalHeight - scale * position.y - size,
-                  //       height: 20
-                  //       });
-                  //     const pdfBytes = await pdfDoc.save();
-
-                  //     const blob = new Blob([new Uint8Array(pdfBytes)]);
-                  //     setUrl(blob);
-                  //     setPosition(null);
-                  //     setTextInputVisible(false);
-                  //   }
-                  // }}
-                />
-              ) : null}
-              {signatureURL ? (
+                  /> ))
+                  
+                }
+                
+                
+              
+            
+              {/* {signatureURL ? (
                 <DraggableSignature
                   url={signatureURL}
                   onCancel={() => {
@@ -313,7 +283,7 @@ export const AssignInput = () => {
                     })
                   }
                 />
-              ) : null}
+              ) : null} */}
               <Document
                 file={'http://localhost:3002/test.pdf'}
                 onLoadSuccess={(data) => {
@@ -335,8 +305,7 @@ export const AssignInput = () => {
               setPageNum={setPageNum}
               totalPages={totalPages}
             />
-          </div>
-        ) : null}
+          </div> ) : null}
       </div>
     </div>
   );
