@@ -36,39 +36,6 @@ const DIGITAL_MFA_ID_BADGE_REQUEST_UUID =
   'cab76e75-5bc0-468c-a2c4-df8f21f87e25';
 const TRAVEL_AUTHORIZATION_UUID = 'd5fcfa91-2e05-428d-a2ed-314089955555';
 
-const IT_EXIT_FORM_LINK = 'IT_Exit_Form_584bf9fd-ea8b-4978-b7de-daa96cb35a03';
-const STAFFING_REQUISITION_FORM_LINK =
-  'Staffing_Requisition_d0477fb8-bdd1-4811-8e11-203d8e33feba';
-const NETWORK_ADD_CHANGE_FORM_LINK =
-  'Network_Add_Change_Form_e908c556-bc1f-4b02-8dea-372c56e24d5e';
-const MFA_ORACLE_LOGON_REQUEST_FORM_LINK =
-  'MFA_Oracle_Logon_Request_Form_5231fd06-690e-4fd8-b309-0db21b8cd202';
-const HYBRID_AND_REMOTE_WORK_AGREEMENT_FORM_LINK =
-  'Hybrid_and_Remote_Work_Agreement_Form_5ed47339-3af2-4b31-9a30-c0a06095f680';
-const VPN_REQUEST_FORM_LINK =
-  'VPN_Request_Form_dca7eb51-16b0-4e3d-a3b2-64a57ce60ba0';
-const DIGITAL_MFA_ID_BADGE_REQUEST_FORM_LINK =
-  'Digital_MFA_ID_Badge_Request_Form_cab76e75-5bc0-468c-a2c4-df8f21f87e25';
-const TRAVEL_AUTHORIZATION_FORM_LINK =
-  'Travel_Authorization_Form_Excample_d5fcfa91-2e05-428d-a2ed-314089955555';
-
-const IT_EXIT_FORM_LINK_INSTANCE_UUID =
-  'IT_Exit_Form_instance_5f349017-94c8-4943-8383-fb610c5aa762';
-const STAFFING_REQUISITION_FORM_LINK_INSTANCE_UUID =
-  'Staffing_Requisition_instance_fd7e21c5-1edb-4566-8484-c49e9c116f0c';
-const NETWORK_ADD_CHANGE_FORM_LINK_INSTANCE_UUID =
-  'Network_Add_Change_instance_6965a025-8229-4d76-9635-e3d87487ef85';
-const MFA_ORACLE_LOGON_REQUEST_FORM_LINK_INSTANCE_UUID =
-  'MFA_Oracle_Logon_Request_instance_effdf802-a915-4561-92fb-20611f14fc13';
-const HYBRID_AND_REMOTE_WORK_AGREEMENT_FORM_LINK_INSTANCE_UUID =
-  'Hybrid_and_Remote_Work_Agreement_instance_32ae0a2c-77c3-4b8c-af6a-4505a3360e1e';
-const VPN_REQUEST_FORM_LINK_INSTANCE_UUID =
-  'VPN_Request_instance_0f53bc91-789a-4b5a-80f5-db40b86b1420';
-const DIGITAL_MFA_ID_BADGE_REQUEST_FORM_LINK_INSTANCE_UUID =
-  'Digital_MFA_ID_Badge_Request_instance_a388e3e4-35bd-4fc7-bd85-d08f4afeb8e1';
-const TRAVEL_AUTHORIZATION_FORM_LINK_INSTANCE_UUID =
-  'Travel_Authorization_instance_2acd0e6b-871f-4993-aa9d-c36a20f4864c';
-
 // type definition for employee data used in upsertEmployee
 type EmployeeData = {
   id: string;
@@ -172,7 +139,6 @@ async function fetchSignatureFields(
 type FormInstanceData = {
   id: string;
   name: string;
-  formDocLink: string;
   originatorId: string;
   formTemplateId: string;
   signatures: any[];
@@ -180,7 +146,7 @@ type FormInstanceData = {
 
 // upsert new form instances
 async function upsertFormInstance(formInstanceData: FormInstanceData) {
-  const { id, name, formDocLink, originatorId, formTemplateId, signatures } =
+  const { id, name, originatorId, formTemplateId, signatures } =
     formInstanceData;
   await prisma.formInstance.upsert({
     where: { id },
@@ -188,7 +154,6 @@ async function upsertFormInstance(formInstanceData: FormInstanceData) {
     create: {
       id,
       name,
-      formDocLink,
       originatorId,
       formTemplateId,
       signatures: {
@@ -214,7 +179,6 @@ async function main() {
     create: {
       id: IT_EXIT_FORM_UUID,
       name: 'IT Exit Form',
-      formDocLink: IT_EXIT_FORM_LINK,
     },
   });
 
@@ -224,7 +188,6 @@ async function main() {
     create: {
       id: STAFFING_REQUISITION_UUID,
       name: 'Staffing Requisition',
-      formDocLink: STAFFING_REQUISITION_FORM_LINK,
     },
   });
 
@@ -234,7 +197,6 @@ async function main() {
     create: {
       id: NETWORK_ADD_CHANGE_UUID,
       name: 'Network Add Change',
-      formDocLink: NETWORK_ADD_CHANGE_FORM_LINK,
     },
   });
 
@@ -244,7 +206,6 @@ async function main() {
     create: {
       id: MFA_ORACLE_LOGON_REQUEST_UUID,
       name: 'MFA Oracle Logon Request',
-      formDocLink: MFA_ORACLE_LOGON_REQUEST_FORM_LINK,
     },
   });
 
@@ -254,7 +215,6 @@ async function main() {
     create: {
       id: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
       name: 'Hybrid and Remote Work Agreement',
-      formDocLink: HYBRID_AND_REMOTE_WORK_AGREEMENT_FORM_LINK,
     },
   });
 
@@ -264,7 +224,6 @@ async function main() {
     create: {
       id: VPN_REQUEST_UUID,
       name: 'VPN Request',
-      formDocLink: VPN_REQUEST_FORM_LINK,
     },
   });
 
@@ -274,7 +233,6 @@ async function main() {
     create: {
       id: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
       name: 'Digital MFA ID Badge Request',
-      formDocLink: DIGITAL_MFA_ID_BADGE_REQUEST_FORM_LINK,
     },
   });
 
@@ -284,7 +242,6 @@ async function main() {
     create: {
       id: TRAVEL_AUTHORIZATION_UUID,
       name: 'Travel Authorization',
-      formDocLink: TRAVEL_AUTHORIZATION_FORM_LINK,
     },
   });
 
@@ -428,7 +385,6 @@ async function main() {
     {
       id: '855498f1-0a8c-44a8-8159-26e28ab8eca0',
       name: 'IT Exit Form Instance',
-      formDocLink: IT_EXIT_FORM_LINK_INSTANCE_UUID,
       originatorId: KAI_ZHENG_UUID,
       formTemplateId: IT_EXIT_FORM_UUID,
       signatures: [
@@ -449,7 +405,6 @@ async function main() {
     {
       id: '1c50e8ed-b6d7-4205-bfd7-dce825c63040',
       name: 'Staffing Requisition Form Instance',
-      formDocLink: STAFFING_REQUISITION_FORM_LINK_INSTANCE_UUID,
       originatorId: IRIS_ZHANG_UUID,
       formTemplateId: STAFFING_REQUISITION_UUID,
       signatures: [
@@ -464,7 +419,6 @@ async function main() {
     {
       id: '0affdf33-3c4b-42bf-99af-8ef47d231f41',
       name: 'Network Add Change Form Instance',
-      formDocLink: NETWORK_ADD_CHANGE_FORM_LINK_INSTANCE_UUID,
       originatorId: ANSHUL_SHIRUDE_UUID,
       formTemplateId: NETWORK_ADD_CHANGE_UUID,
       signatures: [
@@ -479,7 +433,6 @@ async function main() {
     {
       id: '0ff583fd-8e8c-41c5-9207-51affdf1f677',
       name: 'MFA Oracle Logon Request Form Instance',
-      formDocLink: MFA_ORACLE_LOGON_REQUEST_FORM_LINK_INSTANCE_UUID,
       originatorId: ANGELA_WEIGL_UUID,
       formTemplateId: MFA_ORACLE_LOGON_REQUEST_UUID,
       signatures: [
@@ -494,7 +447,6 @@ async function main() {
     {
       id: '0daf753e-25e4-4eea-834b-dccda5bba71c',
       name: 'Hybrid and Remote Work Agreement Form Instance',
-      formDocLink: HYBRID_AND_REMOTE_WORK_AGREEMENT_FORM_LINK_INSTANCE_UUID,
       originatorId: ANSHUL_SHIRUDE_UUID,
       formTemplateId: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
       signatures: [
@@ -509,7 +461,6 @@ async function main() {
     {
       id: 'b91f0c84-f1c0-440a-8a54-8ebc40dd3e9a',
       name: 'VPN Request Form Instance',
-      formDocLink: VPN_REQUEST_FORM_LINK_INSTANCE_UUID,
       originatorId: IRIS_ZHANG_UUID,
       formTemplateId: VPN_REQUEST_UUID,
       signatures: [
@@ -524,7 +475,6 @@ async function main() {
     {
       id: 'c1d27580-77fa-40f6-8ae8-4134b8eb49aa',
       name: 'Digital MFA ID Badge Request Form Instance',
-      formDocLink: DIGITAL_MFA_ID_BADGE_REQUEST_FORM_LINK_INSTANCE_UUID,
       originatorId: KAI_ZHENG_UUID,
       formTemplateId: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
       signatures: [
@@ -539,7 +489,6 @@ async function main() {
     {
       id: 'fa0a3093-acc0-4e93-a96c-adefbd94fcda',
       name: 'Travel Authorization Form Instance',
-      formDocLink: TRAVEL_AUTHORIZATION_FORM_LINK_INSTANCE_UUID,
       originatorId: ANGELA_WEIGL_UUID,
       formTemplateId: TRAVEL_AUTHORIZATION_UUID,
       signatures: [

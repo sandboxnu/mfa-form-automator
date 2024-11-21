@@ -124,13 +124,15 @@ model Signature {
 model FormInstance {
   id                String    @id @default(uuid()) @db.Uuid
   name              String    @db.VarChar(255)
-  formDocLink       String    @db.VarChar(255)
   completed         Boolean   @default(false)
   markedCompleted   Boolean   @default(false)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   completedAt       DateTime?
   markedCompletedAt DateTime?
+
+  document       Document? @relation(fields: [documentId], references: [id])
+  documentId     String?   @db.Uuid
 
   signatures Signature[]
 
@@ -144,10 +146,23 @@ model FormInstance {
 model FormTemplate {
   id          String   @id @default(uuid()) @db.Uuid
   name        String   @db.VarChar(255)
-  formDocLink String   @db.VarChar(255)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   signatureFields SignatureField[]
   formInstances   FormInstance[]
+
+  document     Document? @relation(fields: [documentId], references: [id])
+  documentId   String?   @unique @db.Uuid
+}
+
+model Document {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String       @db.VarChar(255)
+  byteData    Bytes        @db.ByteA
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  formTemplate FormTemplate?
+  formInstance FormInstance[]
 }
