@@ -44,7 +44,6 @@ type TextFieldPosition = {
 // widget = represents each field
 
 export const AssignInput = () => {
-  console.log(pdfjs.version);
   pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
   const styles = {
     container: {
@@ -101,7 +100,6 @@ export const AssignInput = () => {
   //     setPdf(url);
   //   }
   // };
-  console.log(formFieldGroups);
   return (
     <div>
       {Array.from(formFieldGroups.entries()).map(([key, value], index) => (
@@ -123,7 +121,7 @@ export const AssignInput = () => {
           let mapCpy = new Map(formFieldGroups);
           mapCpy.set(myuuid, { fields: new Map(), color: randomColor });
           setFormFieldGroups(mapCpy);
-          console.log(mapCpy);
+          setCurrentGroup(myuuid);
         }}
       >
         Add New Group
@@ -132,30 +130,23 @@ export const AssignInput = () => {
         {pdf ? (
           <div>
             <div style={styles.controls}>
-              {!signatureURL ? (
-                <Button
-                  marginRight={8}
-                  title={'Add signature'}
-                  onClick={() => setSignatureDialogVisible(true)}
-                />
-              ) : null}
               <Button
                 marginRight={8}
-                title={'Add TextField'}
                 onClick={() => {
-                  const myUUID = uuidv4();
+                  const fieldId = uuidv4();
                   let formFieldCopy = new Map(formFieldGroups);
-                  formFieldCopy
-                    .get(currentGroup)
-                    ?.fields.set(myUUID, {
-                      x: 100,
-                      y: 100,
-                      width: 80,
-                      height: 30,
-                    });
+                  formFieldCopy.get(currentGroup)?.fields.set(fieldId, {
+                    x: 0,
+                    y: 0,
+                    width: 80,
+                    height: 30,
+                  });
                   setFormFieldGroups(formFieldCopy);
                 }}
-              />
+              >
+                Add Text Field
+              </Button>
+
               <Button
                 marginRight={8}
                 title={'Reset'}
@@ -179,42 +170,70 @@ export const AssignInput = () => {
               ) : null} */}
             </div>
             <div ref={documentRef} style={styles.documentBlock}>
-              {Array.from(formFieldGroups.entries()).map(([], index) => (
-                <DraggableText
-                key={index}
-                  color={formFieldGroups.get(currentGroup!)?.color ?? '#000'}
-                  initialText={null}
-                
-                  onStop={(e: DraggableEvent, data: DraggableData) =>
-                    setPosition({
-                      width: data.deltaX,
-                      height: data.deltaY,
-                      x: data.x,
-                      y: data.y,
-                    })
-                  }
-                  onResizeStop={(
-                    e: MouseEvent | TouchEvent,
-                    dir: ResizeDirection,
-                    elementRef: HTMLElement,
-                    delta: ResizableDelta,
-                    position: Position,
-                  ) => {
-                    console.log(position.x, position.y);
-                    setPosition({
-                      width: parseFloat(elementRef.style.width),
-                      height: parseFloat(elementRef.style.height),
-                      x: position.x,
-                      y: position.y,
-                    });
-                  }}
-                  /> ))
-                  
-                }
-                
-                
-              
-            
+              {Array.from(formFieldGroups.entries()).map(
+                ([groupId, groupValues], index) => (
+                  <>
+                    {Array.from(groupValues.fields.entries()).map(
+                      ([fieldId, pos], index) => (
+                        <DraggableText
+                          key={index}
+                          color={groupValues.color ?? '#000'}
+                          initialText={null}
+                          onStop={(e: DraggableEvent, data: DraggableData) => {
+                            let formFieldCpy = new Map(formFieldGroups);
+                            formFieldCpy
+                              .get(currentGroup)
+                              ?.fields.set(fieldId, {
+                                width: data.deltaX,
+                                height: data.deltaY,
+                                x: data.x,
+                                y: data.y,
+                              });
+                            console.log({
+                              width: data.deltaX,
+                              height: data.deltaY,
+                              x: data.x,
+                              y: data.y,
+                            });
+                            setFormFieldGroups(formFieldCpy);
+                          }}
+                          onResizeStop={(
+                            e: MouseEvent | TouchEvent,
+                            dir: ResizeDirection,
+                            elementRef: HTMLElement,
+                            delta: ResizableDelta,
+                            position: Position,
+                          ) => {
+                            let formFieldCpy = new Map(formFieldGroups);
+                            formFieldCpy
+                              .get(currentGroup)
+                              ?.fields.set(fieldId, {
+                                width: parseFloat(elementRef.style.width),
+                                height: parseFloat(elementRef.style.height),
+                                x: position.x,
+                                y: position.y,
+                              });
+                            console.log({
+                              width: parseFloat(elementRef.style.width),
+                              height: parseFloat(elementRef.style.height),
+                              x: position.x,
+                              y: position.y,
+                            });
+                            setFormFieldGroups(formFieldCpy);
+                            setPosition({
+                              width: parseFloat(elementRef.style.width),
+                              height: parseFloat(elementRef.style.height),
+                              x: position.x,
+                              y: position.y,
+                            });
+                          }}
+                        />
+                      ),
+                    )}
+                  </>
+                ),
+              )}
+
               {/* {signatureURL ? (
                 <DraggableSignature
                   url={signatureURL}
@@ -305,7 +324,8 @@ export const AssignInput = () => {
               setPageNum={setPageNum}
               totalPages={totalPages}
             />
-          </div> ) : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );

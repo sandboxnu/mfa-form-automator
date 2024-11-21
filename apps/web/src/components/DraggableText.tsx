@@ -50,7 +50,7 @@ export default function DraggableText({
         background: 'transparent',
         border: `solid 1px ${color}`,
       }}
-      onStop={onStop}
+      onDragStop={onStop}
       onResizeStop={onResizeStop}
     ></Rnd>
   );
