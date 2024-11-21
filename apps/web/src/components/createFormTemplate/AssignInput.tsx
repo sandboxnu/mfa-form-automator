@@ -84,7 +84,7 @@ export const AssignInput = () => {
   const [formType, setFormType] = useState<FormFieldType>(
     FormFieldType.TextField,
   );
-
+  // generate random id and color for initial textbox/group
   useEffect(() => {
     const myuuid = uuidv4();
     const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -94,12 +94,6 @@ export const AssignInput = () => {
     setFormFieldGroups(mapCpy);
   }, []);
 
-  // const setUrl = (formBlob: Blob) => {
-  //   if (formBlob) {
-  //     const url = URL.createObjectURL(formBlob);
-  //     setPdf(url);
-  //   }
-  // };
   return (
     <div>
       {Array.from(formFieldGroups.entries()).map(([key, value], index) => (
@@ -159,15 +153,6 @@ export const AssignInput = () => {
                   setPageDetails(null);
                 }}
               />
-              {/* {pdf ? (
-                <Button
-                  marginRight={8}
-                  title={'Download'}
-                  onClick={() => {
-                    downloadURI(pdf, 'file.pdf');
-                  }}
-                />
-              ) : null} */}
             </div>
             <div ref={documentRef} style={styles.documentBlock}>
               {Array.from(formFieldGroups.entries()).map(
@@ -181,14 +166,13 @@ export const AssignInput = () => {
                           initialText={null}
                           onStop={(e: DraggableEvent, data: DraggableData) => {
                             let formFieldCpy = new Map(formFieldGroups);
-                            formFieldCpy
-                              .get(currentGroup)
-                              ?.fields.set(fieldId, {
-                                width: data.deltaX,
-                                height: data.deltaY,
-                                x: data.x,
-                                y: data.y,
-                              });
+
+                            formFieldCpy.get(groupId)?.fields.set(fieldId, {
+                              width: pos.width,
+                              height: pos.height,
+                              x: data.x,
+                              y: data.y,
+                            });
                             console.log({
                               width: data.deltaX,
                               height: data.deltaY,
@@ -327,6 +311,7 @@ export const AssignInput = () => {
           </div>
         ) : null}
       </div>
+
     </div>
   );
 };
