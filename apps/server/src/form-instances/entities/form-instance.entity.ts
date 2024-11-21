@@ -13,9 +13,6 @@ export class FormInstanceBaseEntity implements FormInstance {
   name: string;
 
   @Exclude()
-  formDocLink: string;
-
-  @Exclude()
   completed: boolean;
 
   @Exclude()
