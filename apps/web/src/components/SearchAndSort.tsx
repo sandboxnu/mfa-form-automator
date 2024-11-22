@@ -67,6 +67,7 @@ export const SearchAndSort = ({
                 borderColor: '#595959',
                 boxShadow: 'none',
               }}
+              placeholder="Search for forms"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />

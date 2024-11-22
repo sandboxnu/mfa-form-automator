@@ -16,6 +16,7 @@ import { getNameFromSignature } from '@web/utils/formInstanceUtils';
  * @param link - link to page for category
  * @returns a list of forms for the dashboard
  */
+
 export const FormList = ({
   title,
   formInstances,
@@ -38,8 +39,8 @@ export const FormList = ({
         .map((formInstance) => ({
           ...formInstance,
           levenshteinDistance: distance(
-            searchQuery.toLowerCase(),
-            formInstance.name.toLowerCase(),
+            searchQuery.toLowerCase().slice(0, 10),
+            formInstance.name.toLowerCase().slice(0, 10),
           ),
         }))
         .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance),
@@ -115,38 +116,16 @@ export const FormList = ({
               </Text>
             </GridItem>
           </Grid>
-          {sortedFormInstances
-            .filter(
-              (formInstance: FormInstanceEntity) =>
-                formInstance.name
-                  .toLowerCase()
-                  .includes(searchQuery.toLowerCase()) ||
-                (
-                  formInstance.originator.firstName +
-                  ' ' +
-                  formInstance.originator.lastName
-                )
-                  .toLowerCase()
-                  .includes(searchQuery.toLowerCase()) ||
-                formInstance.signatures
-                  .map((signature: SignatureEntity) =>
-                    getNameFromSignature(signature),
-                  )
-                  .reduce((contained: boolean, name: String) => {
-                    return (
-                      contained ||
-                      name.toLowerCase().includes(searchQuery.toLowerCase())
-                    );
-                  }, false),
-            )
-            .map((formInstance: FormInstanceEntity, index: number) => (
+          {sortedFormInstances.map(
+            (formInstance: FormInstanceEntity, index: number) => (
               <FormRow
                 formInstance={formInstance}
                 key={index}
                 last={index === sortedFormInstances.length - 1}
                 link={'/form-instances/' + formInstance.id}
               />
-            ))}
+            ),
+          )}
         </Box>
       </Box>
     </>
