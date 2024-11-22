@@ -4,6 +4,7 @@ import { FormTemplateBaseEntity } from '../../form-templates/entities/form-templ
 import { Exclude } from 'class-transformer';
 import { SignatureEntity } from '../../signatures/entities/signature.entity';
 import { EmployeeEntity } from '../../employees/entities/employee.entity';
+import { DocumentEntity } from '@server/documents/entities/document.entity';
 
 export class FormInstanceBaseEntity implements FormInstance {
   @ApiProperty()
@@ -45,6 +46,12 @@ export class FormInstanceBaseEntity implements FormInstance {
   @Exclude()
   signatures: SignatureEntity[];
 
+  @Exclude()
+  documentId: string | null;
+
+  @Exclude()
+  document: DocumentEntity | null;
+
   constructor(partial: Partial<FormInstanceEntity>) {
     Object.assign(this, partial);
   }
@@ -56,9 +63,6 @@ export class FormInstanceEntity implements FormInstance {
 
   @ApiProperty()
   name: string;
-
-  @ApiProperty()
-  formDocLink: string;
 
   @ApiProperty()
   completed: boolean;
@@ -93,6 +97,12 @@ export class FormInstanceEntity implements FormInstance {
 
   @ApiProperty()
   formTemplate: FormTemplateBaseEntity;
+
+  @Exclude()
+  documentId: string | null;
+
+  @ApiProperty()
+  document: DocumentEntity | null;
 
   @ApiProperty({
     isArray: true,

@@ -9,9 +9,8 @@ export class CreateFormTemplateDto {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
   @ApiProperty()
-  formDocLink: string;
+  documentId: string | null;
 
   @IsArray()
   @ArrayMinSize(1)

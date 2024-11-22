@@ -28,5 +28,5 @@ export class CreateFormInstanceDto {
 
   @IsString()
   @ApiProperty()
-  formDocLink: string;
+  documentId: string | null;
 }

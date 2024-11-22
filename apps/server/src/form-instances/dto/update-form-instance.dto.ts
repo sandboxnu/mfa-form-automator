@@ -6,5 +6,6 @@ export class UpdateFormInstanceDto extends PartialType(
     'signatures',
     'originatorId',
     'formTemplateId',
+    'documentId',
   ] as const),
 ) {}

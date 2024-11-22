@@ -6,6 +6,7 @@ import {
   FormInstanceBaseEntity,
   FormInstanceEntity,
 } from './../../form-instances/entities/form-instance.entity';
+import { DocumentEntity } from '@server/documents/entities/document.entity';
 
 export class FormTemplateBaseEntity implements FormTemplate {
   @ApiProperty()
@@ -14,14 +15,17 @@ export class FormTemplateBaseEntity implements FormTemplate {
   @ApiProperty()
   name: string;
 
-  @ApiProperty()
-  formDocLink: string;
-
   @Exclude()
   createdAt: Date;
 
   @Exclude()
   updatedAt: Date;
+
+  @Exclude()
+  documentId: string | null;
+
+  @Exclude()
+  document: DocumentEntity | null;
 
   constructor(partial: Partial<FormTemplateEntity>) {
     Object.assign(this, partial);

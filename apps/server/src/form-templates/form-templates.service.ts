@@ -16,7 +16,6 @@ export class FormTemplatesService {
     const newFormTemplate = await this.prisma.formTemplate.create({
       data: {
         name: createFormTemplateDto.name,
-        formDocLink: createFormTemplateDto.formDocLink,
         signatureFields: { create: createFormTemplateDto.signatureFields },
       },
       include: {
@@ -58,6 +57,7 @@ export class FormTemplatesService {
               include: {
                 formTemplate: true,
                 originator: true,
+                document: true,
                 signatures: {
                   include: {
                     signerPosition: {
@@ -114,6 +114,7 @@ export class FormTemplatesService {
           include: {
             formTemplate: true,
             originator: true,
+            document: true,
             signatures: {
               include: {
                 signerPosition: {
@@ -147,7 +148,6 @@ export class FormTemplatesService {
       },
       data: {
         name: updateFormTemplateDto.name,
-        formDocLink: updateFormTemplateDto.formDocLink,
       },
       include: {
         signatureFields: true,
@@ -155,6 +155,7 @@ export class FormTemplatesService {
           include: {
             formTemplate: true,
             originator: true,
+            document: true,
             signatures: {
               include: {
                 signerPosition: {
