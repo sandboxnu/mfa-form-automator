@@ -16,7 +16,6 @@ async function bootstrap() {
 
   const frontendUrl = process.env.FRONTEND_DOMAIN;
   if (frontendUrl) {
-    console.log(`CORS enabled for ${frontendUrl}`);
     app.enableCors({
       origin: frontendUrl,
       credentials: true,
