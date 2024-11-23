@@ -25,7 +25,7 @@ import { SignatureField } from './SignatureField';
 import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
-import { storage } from '@web/services/storage.service';
+import { useBlob } from '@web/hooks/useBlob';
 
 const variants = {
   notDragging: {
@@ -58,10 +58,14 @@ export const CreateFormTemplateModal = ({
     [],
   );
   let isFormTemplateNameInvalid = formTemplateName === '';
-
-  const [pdf, setPdf] = useState<string | ArrayBuffer | null>(null);
-  const [pdfName, setPdfName] = useState<string | null>(null);
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const {
+    inputFileRef,
+    uploadFile,
+    uploadLocalFile,
+    clearLocalBlob,
+    localBlobData: { blob: localBlob, url: localBlobUrl, name: localBlobName },
+    hasLocalBlob,
+  } = useBlob();
 
   const toast = useToast();
 
@@ -101,14 +105,14 @@ export const CreateFormTemplateModal = ({
    * Upload and create a form template
    */
   const _submitFormTemplate = async () => {
-    if (!pdfFile) {
+    if (!hasLocalBlob) {
       throw new Error('No PDF file uploaded');
     }
-    const uuid = uuidv4();
+
     createFormTemplateMutation
       .mutateAsync({
         name: formTemplateName,
-        formDocLink: formTemplateName.replaceAll(' ', '_') + '_' + uuid,
+        formDocLink: 'http://localhost:3002/test.pdf',
         signatureFields: signatureFields.map((signatureField, i) => {
           return {
             name: signatureField.value,
@@ -118,17 +122,38 @@ export const CreateFormTemplateModal = ({
       })
       .then(async (response) => {
         _handleModalClose();
-        if (pdfFile) {
-          await storage.uploadBlob(
-            pdfFile,
-            response.name.replaceAll(' ', '_') + '_' + uuid,
-          );
-        }
+        await uploadFile(response, 'template');
         return response;
       })
       .catch((e) => {
         throw e;
       });
+
+    // const uuid = uuidv4();
+    // createFormTemplateMutation
+    //   .mutateAsync({
+    //     name: formTemplateName,
+    //     formDocLink: formTemplateName.replaceAll(' ', '_') + '_' + uuid,
+    //     signatureFields: signatureFields.map((signatureField, i) => {
+    //       return {
+    //         name: signatureField.value,
+    //         order: i,
+    //       };
+    //     }),
+    //   })
+    //   .then(async (response) => {
+    //     _handleModalClose();
+    //     if (pdfFile) {
+    //       await storage.uploadBlob(
+    //         pdfFile,
+    //         response.name.replaceAll(' ', '_') + '_' + uuid,
+    //       );
+    //     }
+    //     return response;
+    //   })
+    //   .catch((e) => {
+    //     throw e;
+    //   });
   };
 
   /**
@@ -138,27 +163,7 @@ export const CreateFormTemplateModal = ({
     setFormTemplateName('New Form Template');
     setSignatureFields([]);
     onCloseCreateFormTemplate();
-    setPdf(null);
-    setPdfName(null);
-    setPdfFile(null);
-  };
-
-  /**
-   * Set pdf state when a file is uploaded
-   */
-  const _handlePdfSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-
-    if (!e.target.files) return;
-    try {
-      const file = e.target.files[0];
-      const url = URL.createObjectURL(file);
-      setPdf(url);
-      setPdfName(file.name);
-      setPdfFile(file);
-    } catch (e) {
-      console.error(e);
-    }
+    clearLocalBlob();
   };
 
   return (
@@ -226,9 +231,10 @@ export const CreateFormTemplateModal = ({
                     id="pdfInput"
                     accept=".pdf"
                     style={{ display: 'none' }}
-                    onChange={(e) => _handlePdfSubmit(e)}
+                    ref={inputFileRef}
+                    onChange={uploadLocalFile}
                   />
-                  {pdfName && (
+                  {hasLocalBlob && (
                     <span
                       style={{
                         fontSize: '17px',
@@ -238,7 +244,7 @@ export const CreateFormTemplateModal = ({
                         paddingLeft: '15px',
                       }}
                     >
-                      {pdfName}
+                      {localBlobName}
                     </span>
                   )}
                 </Flex>
@@ -314,12 +320,12 @@ export const CreateFormTemplateModal = ({
             </Box>
             <Box flex="1">
               <Heading as="h3">Form Preview</Heading>
-              {!pdf && (
+              {!hasLocalBlob && (
                 <Skeleton mt="16px" w="400px" h="500px" background="gray" />
               )}
-              {pdf && (
+              {hasLocalBlob && (
                 <embed
-                  src={pdf as string}
+                  src={localBlobUrl as string}
                   type="application/pdf"
                   width="400px"
                   height="500px"
@@ -340,9 +346,7 @@ export const CreateFormTemplateModal = ({
             width="161px"
             height="40px"
             isDisabled={
-              !pdf ||
-              !pdfName ||
-              !pdfFile ||
+              !hasLocalBlob ||
               isFormTemplateNameInvalid ||
               signatureFields.length == 0 ||
               signatureFields.some((field) => field.value === '')

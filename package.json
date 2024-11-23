@@ -34,8 +34,6 @@
     "@yarnpkg/core": "^4.0.0-rc.51",
     "@yarnpkg/plugin-git": "^3.0.0-rc",
     "@yarnpkg/plugin-workspace-tools": "^4.0.0-rc.51",
-    "husky": "^8.0.3",
-    "pdfjs-dist": "^3.11.174",
-    "react-pdf": "^9.1.1"
+    "husky": "^8.0.3"
   }
 }
