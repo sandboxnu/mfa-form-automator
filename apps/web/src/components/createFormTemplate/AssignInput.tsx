@@ -3,6 +3,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import { PDFDocument, rgb } from 'pdf-lib';
 
 import { Button } from '@chakra-ui/react';
+import { TextIcon, PlusSign } from 'apps/web/src/static/icons';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import DraggableText from '../DraggableText';
 import DraggableSignature from '../DraggableSignature';
@@ -10,6 +11,7 @@ import PagingControl from '../PagingControl';
 import { PDFPageProxy } from 'pdfjs-dist';
 import { v4 as uuidv4 } from 'uuid';
 import { Position, ResizableDelta } from 'react-rnd';
+
 
 type PageCallback = PDFPageProxy & {
   width: number;
@@ -98,15 +100,31 @@ export const AssignInput = () => {
     <div>
       {Array.from(formFieldGroups.entries()).map(([key, value], index) => (
         <Button
+        backgroundColor="white"
+        border="1px solid #1367EA"
           key={index}
           onClick={() => {
             setCurrentGroup(key);
           }}
         >
+          <span
+      style={{
+        fontFamily: 'Hanken Grotesk',
+        fontSize: '16px',
+        color: "#1367EA",
+        fontWeight: 600,
+        lineHeight: '22px',
+        textAlign: 'left',
+      }}
+        >
           Group {index + 1}
+        </span>
         </Button>
       ))}
       <Button
+      backgroundColor="white"
+      border="1px solid #1367EA"
+      //Add New Group
         onClick={() => {
           const myuuid = uuidv4();
           const randomColor = `#${Math.floor(Math.random() * 16777215).toString(
@@ -118,7 +136,20 @@ export const AssignInput = () => {
           setCurrentGroup(myuuid);
         }}
       >
-        Add New Group
+        {PlusSign}
+        <span
+        style={{
+        fontFamily: 'Hanken Grotesk',
+        fontSize: '16px',
+        color: "#1367EA",
+        fontWeight: 600,
+        lineHeight: '22px',
+        textAlign: 'left',
+        marginLeft: '6px'
+    }}
+  >
+    Add group
+  </span>
       </Button>
       <div style={styles.container}>
         {pdf ? (
@@ -126,6 +157,7 @@ export const AssignInput = () => {
             <div style={styles.controls}>
               <Button
                 marginRight={8}
+                backgroundColor="#1367EA"
                 onClick={() => {
                   const fieldId = uuidv4();
                   let formFieldCopy = new Map(formFieldGroups);
@@ -136,9 +168,10 @@ export const AssignInput = () => {
                     height: 30,
                   });
                   setFormFieldGroups(formFieldCopy);
+                  //Add Text Field
                 }}
               >
-                Add Text Field
+                {TextIcon}
               </Button>
 
               <Button
