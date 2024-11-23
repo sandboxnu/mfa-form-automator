@@ -6,7 +6,6 @@ import {
   PopoverTrigger,
 } from '@chakra-ui/react';
 import { ProfileHover } from './ProfileHover';
-import { useState } from 'react';
 
 export const HoverableAvatar = ({
   name,
@@ -19,8 +18,9 @@ export const HoverableAvatar = ({
   backgroundColor: any;
   index: any;
 }) => {
+
   return (
-    <Popover trigger="hover" openDelay={800} closeOnBlur={true} placement="bottom">
+    <Popover trigger='hover' openDelay={400} closeDelay={0}>
       <PopoverTrigger>
         <Avatar
           name={name}
@@ -32,10 +32,10 @@ export const HoverableAvatar = ({
           fontWeight={400}
           fontSize="14px"
           size="sm"
-          zIndex={10}
+          cursor="pointer"
         />
       </PopoverTrigger>
-      <PopoverContent boxSize={'fit-content'} position={"relative"}>
+      <PopoverContent boxSize={'fit-content'}>
         <PopoverArrow />
         <ProfileHover name={name} signed={signed} />
       </PopoverContent>

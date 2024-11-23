@@ -38,11 +38,11 @@ export const FormRow = ({
         boxShadow="0px 0px 1px 1px #d4d4d4"
         _hover={{
           boxShadow: '0px 0px 4px 0px #1367EA',
-          position: 'relative',
-          zIndex: '3000',
+          zIndex: '1000',
         }}
         mb={'0px'}
         cursor="pointer"
+        position="relative"
         onClick={() => router.push(link)}
       >
         <GridItem colSpan={8} h="64px">
