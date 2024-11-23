@@ -37,7 +37,6 @@ const nextConfig = {
     AZURE_TENANT_ID: process.env.AZURE_TENANT_ID,
     AZURE_REDIRECT_URI: process.env.AZURE_REDIRECT_URI,
     BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
-    BACKEND_URL: process.env.BACKEND_URL,
   },
 };
 
