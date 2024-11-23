@@ -34,7 +34,6 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
-import { useStorage } from '@web/hooks/useStorage';
 
 /**
  * @param isOpen - boolean to determine if the modal is open
@@ -49,7 +48,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
   const [selectedFormTemplate, setSelectedFormTemplate] =
     useState<FormTemplateEntity | null>(null);
-  const { formURL } = useStorage(selectedFormTemplate);
   const [formTypeSelected, setFormTypeSelected] = useState(false);
   const [signaturePositions, setSignaturePositions] = useState<
     (Option | null)[]
@@ -69,6 +67,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const { data: formTemplates } = useQuery({
     queryKey: ['api', 'form-templates'],
     queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
+    refetchInterval: 1000, // refetch every 1000 ms to check for form link updates,
   });
 
   const { data: positions } = useQuery({
@@ -106,7 +105,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
         }),
         originatorId: user?.id!,
         formTemplateId: selectedFormTemplate?.id!,
-        formDocLink: '',
+        formDocLink: selectedFormTemplate?.formDocLink!,
       })
       .then((response) => {
         _handleModalClose();
@@ -210,10 +209,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 value={selectedFormTemplate}
                 onChange={(option) => {
                   setSelectedFormTemplate(option);
-                  setFormTypeSelected(option !== null);
-                  if (option !== null) {
-                    setFormName(option?.name);
-                  }
+                  setFormTypeSelected(true);
                 }}
                 className="custom-dropdown"
                 components={{
@@ -237,9 +233,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 isClearable
                 closeMenuOnSelect
               />
-              {formURL ? (
+              {selectedFormTemplate ? (
                 <embed
-                  src={formURL}
+                  src={selectedFormTemplate.formDocLink}
                   type="application/pdf"
                   width="400px"
                   height="500px"

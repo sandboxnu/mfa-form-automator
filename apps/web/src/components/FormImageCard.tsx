@@ -1,17 +1,7 @@
-'user client';
-
 import { Box, Text, Flex } from '@chakra-ui/react';
 import { FormInstanceEntity } from '../client';
 import { useRouter } from 'next/router';
-import React from 'react';
-import dynamic from 'next/dynamic';
-
-const DynamicPDFDocument = dynamic(
-  () => import('./PDFDocument').then((mod) => mod.PDFDocument),
-  {
-    ssr: false,
-  },
-);
+import { PDFDocument } from './PDFDocument';
 
 /**
  * @param formName - the name of the form
@@ -65,7 +55,7 @@ export const FormImageCard = ({
             filter: 'blur(0px)',
           }}
         >
-          <DynamicPDFDocument />
+          <PDFDocument formLink={formInstance.formDocLink} />
         </Box>
       </Box>
       <Flex padding="12px" flexDirection="column" gap="12px">

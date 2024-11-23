@@ -4,7 +4,6 @@ import {
   Flex,
   Grid,
   Text,
-  Skeleton,
   Spacer,
   useToast,
   Heading,
@@ -22,7 +21,6 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
-import { useStorage } from '@web/hooks/useStorage';
 import {
   getNameFromSignature,
   signerIsUser,
@@ -41,7 +39,6 @@ const FormInstance = ({
   const router = useRouter();
   const toast = useToast();
   const { user } = useAuth();
-  const { formURL } = useStorage(formInstance);
 
   const signFormInstanceMutation = useMutation({
     mutationFn: async ({
@@ -187,32 +184,21 @@ const FormInstance = ({
             Form Preview
           </Heading>
 
-          {formURL ? (
-            <embed
-              src={formURL}
-              type="application/pdf"
-              width="400px"
-              height="500px"
-              style={{
-                border: '3px solid black',
-                borderRadius: '8px',
-                marginLeft: '50px',
-                marginTop: '6px',
-                marginBottom: '100px',
-                minWidth: '436.353px',
-                minHeight: '566.219px',
-              }}
-            />
-          ) : (
-            <Skeleton
-              ml="50px"
-              mt={6}
-              mb="100px"
-              bg="#000"
-              minWidth="436.353px"
-              minHeight="566.219px"
-            />
-          )}
+          <embed
+            src={formInstance.formDocLink}
+            type="application/pdf"
+            width="400px"
+            height="500px"
+            style={{
+              border: '3px solid black',
+              borderRadius: '8px',
+              marginLeft: '50px',
+              marginTop: '6px',
+              marginBottom: '100px',
+              minWidth: '436.353px',
+              minHeight: '566.219px',
+            }}
+          />
         </Box>
         <Box maxWidth="400px">
           <Box>
