@@ -36,6 +36,8 @@ const DIGITAL_MFA_ID_BADGE_REQUEST_UUID =
   'cab76e75-5bc0-468c-a2c4-df8f21f87e25';
 const TRAVEL_AUTHORIZATION_UUID = 'd5fcfa91-2e05-428d-a2ed-314089955555';
 
+const DEV_FORM_DOC_LINK = 'http://localhost:3002/test.pdf';
+
 // type definition for employee data used in upsertEmployee
 type EmployeeData = {
   id: string;
@@ -181,7 +183,7 @@ async function main() {
     create: {
       id: IT_EXIT_FORM_UUID,
       name: 'IT Exit Form',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
     },
   });
 
@@ -191,7 +193,7 @@ async function main() {
     create: {
       id: STAFFING_REQUISITION_UUID,
       name: 'Staffing Requisition',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
     },
   });
 
@@ -201,7 +203,7 @@ async function main() {
     create: {
       id: NETWORK_ADD_CHANGE_UUID,
       name: 'Network Add Change',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
     },
   });
 
@@ -211,7 +213,7 @@ async function main() {
     create: {
       id: MFA_ORACLE_LOGON_REQUEST_UUID,
       name: 'MFA Oracle Logon Request',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
     },
   });
 
@@ -221,7 +223,7 @@ async function main() {
     create: {
       id: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
       name: 'Hybrid and Remote Work Agreement',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
     },
   });
 
@@ -231,7 +233,7 @@ async function main() {
     create: {
       id: VPN_REQUEST_UUID,
       name: 'VPN Request',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
     },
   });
 
@@ -241,7 +243,7 @@ async function main() {
     create: {
       id: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
       name: 'Digital MFA ID Badge Request',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
     },
   });
 
@@ -251,7 +253,7 @@ async function main() {
     create: {
       id: TRAVEL_AUTHORIZATION_UUID,
       name: 'Travel Authorization',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
     },
   });
 
@@ -395,7 +397,7 @@ async function main() {
     {
       id: '855498f1-0a8c-44a8-8159-26e28ab8eca0',
       name: 'IT Exit Form Instance',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
       originatorId: KAI_ZHENG_UUID,
       formTemplateId: IT_EXIT_FORM_UUID,
       signatures: [
@@ -423,7 +425,7 @@ async function main() {
     {
       id: '1c50e8ed-b6d7-4205-bfd7-dce825c63040',
       name: 'Staffing Requisition Form Instance',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
       originatorId: IRIS_ZHANG_UUID,
       formTemplateId: STAFFING_REQUISITION_UUID,
       signatures: [
@@ -438,7 +440,7 @@ async function main() {
     {
       id: '0affdf33-3c4b-42bf-99af-8ef47d231f41',
       name: 'Network Add Change Form Instance',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
       originatorId: ANSHUL_SHIRUDE_UUID,
       formTemplateId: NETWORK_ADD_CHANGE_UUID,
       signatures: [
@@ -453,7 +455,7 @@ async function main() {
     {
       id: '0ff583fd-8e8c-41c5-9207-51affdf1f677',
       name: 'MFA Oracle Logon Request Form Instance',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
       originatorId: ANGELA_WEIGL_UUID,
       formTemplateId: MFA_ORACLE_LOGON_REQUEST_UUID,
       signatures: [
@@ -468,7 +470,7 @@ async function main() {
     {
       id: '0daf753e-25e4-4eea-834b-dccda5bba71c',
       name: 'Hybrid and Remote Work Agreement Form Instance',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
       originatorId: ANSHUL_SHIRUDE_UUID,
       formTemplateId: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
       signatures: [
@@ -483,7 +485,7 @@ async function main() {
     {
       id: 'b91f0c84-f1c0-440a-8a54-8ebc40dd3e9a',
       name: 'VPN Request Form Instance',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
       originatorId: IRIS_ZHANG_UUID,
       formTemplateId: VPN_REQUEST_UUID,
       signatures: [
@@ -498,7 +500,7 @@ async function main() {
     {
       id: 'c1d27580-77fa-40f6-8ae8-4134b8eb49aa',
       name: 'Digital MFA ID Badge Request Form Instance',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
       originatorId: KAI_ZHENG_UUID,
       formTemplateId: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
       signatures: [
@@ -513,7 +515,7 @@ async function main() {
     {
       id: 'fa0a3093-acc0-4e93-a96c-adefbd94fcda',
       name: 'Travel Authorization Form Instance',
-      formDocLink: 'http://localhost:3002/test.pdf',
+      formDocLink: DEV_FORM_DOC_LINK,
       originatorId: ANGELA_WEIGL_UUID,
       formTemplateId: TRAVEL_AUTHORIZATION_UUID,
       signatures: [
