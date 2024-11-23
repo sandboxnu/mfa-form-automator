@@ -14,39 +14,16 @@ export default async function handler(
     const jsonResponse = await handleUpload({
       body,
       request,
-      onBeforeGenerateToken: async (pathName, clientPayload) => {
-        const { formId, formType } = JSON.parse(clientPayload as string);
-        console.log(pathName, formId, formType);
+      onBeforeGenerateToken: async (pathName) => {
         return {
           allowedContentTypes: ['application/pdf'],
           tokenPayload: JSON.stringify({
             pathName,
-            formId,
-            formType,
           }),
         };
       },
-      onUploadCompleted: async ({ blob, tokenPayload }) => {
-        const { formId, formType } = JSON.parse(tokenPayload as string);
-        try {
-          if (formType === 'template') {
-            await axios.patch(
-              `${process.env.BACKEND_URL}/api/form-templates/` + formId,
-              {
-                formDocLink: blob.url,
-              },
-            );
-          } else if (formType === 'instance') {
-            await axios.patch(
-              `${process.env.BACKEND_URL}/api/form-instances/` + formId,
-              {
-                formDocLink: blob.url,
-              },
-            );
-          }
-        } catch (error) {
-          console.error('Error parsing token payload:', error);
-        }
+      onUploadCompleted: async ({ blob }) => {
+        console.log('Blob uploaded:', blob);
       },
     });
 

@@ -109,10 +109,11 @@ export const CreateFormTemplateModal = ({
       throw new Error('No PDF file uploaded');
     }
 
+    const blob = await uploadFile();
     createFormTemplateMutation
       .mutateAsync({
         name: formTemplateName,
-        formDocLink: 'http://localhost:3002/test.pdf',
+        formDocLink: blob.url,
         signatureFields: signatureFields.map((signatureField, i) => {
           return {
             name: signatureField.value,
@@ -120,40 +121,13 @@ export const CreateFormTemplateModal = ({
           };
         }),
       })
-      .then(async (response) => {
+      .then((response) => {
         _handleModalClose();
-        await uploadFile(response, 'template');
         return response;
       })
       .catch((e) => {
         throw e;
       });
-
-    // const uuid = uuidv4();
-    // createFormTemplateMutation
-    //   .mutateAsync({
-    //     name: formTemplateName,
-    //     formDocLink: formTemplateName.replaceAll(' ', '_') + '_' + uuid,
-    //     signatureFields: signatureFields.map((signatureField, i) => {
-    //       return {
-    //         name: signatureField.value,
-    //         order: i,
-    //       };
-    //     }),
-    //   })
-    //   .then(async (response) => {
-    //     _handleModalClose();
-    //     if (pdfFile) {
-    //       await storage.uploadBlob(
-    //         pdfFile,
-    //         response.name.replaceAll(' ', '_') + '_' + uuid,
-    //       );
-    //     }
-    //     return response;
-    //   })
-    //   .catch((e) => {
-    //     throw e;
-    //   });
   };
 
   /**

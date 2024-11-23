@@ -49,10 +49,7 @@ export const useBlob = () => {
     setHasLocalBlob(false);
   };
 
-  const uploadFile = async (
-    form: FormTemplateEntity | FormInstanceEntity,
-    formType: 'template' | 'instance',
-  ) => {
+  const uploadFile = async () => {
     if (!inputFileRef.current?.files) {
       throw new Error('No file selected');
     }
@@ -61,14 +58,31 @@ export const useBlob = () => {
     const newBlob = await upload(file.name, file, {
       access: 'public',
       handleUploadUrl: 'api/upload',
-      clientPayload: JSON.stringify({
-        formId: form?.id,
-        formType,
-      }),
     });
 
     setBlob(newBlob);
+    return newBlob;
   };
+
+  // const uploadFile = async (
+  //   form: FormTemplateEntity | FormInstanceEntity,
+  //   formType: 'template' | 'instance',
+  // ) => {
+  //   if (!inputFileRef.current?.files) {
+  //     throw new Error('No file selected');
+  //   }
+
+  //   const file = inputFileRef.current.files[0];
+  //   const newBlob = await upload(file.name, file, {
+  //     access: 'public',
+  //     handleUploadUrl: 'api/upload',
+  //     clientPayload: JSON.stringify({
+  //       formId: form?.id,
+  //       formType,
+  //     }),
+  //   });
+  //   setBlob(newBlob);
+  // };
 
   return {
     inputFileRef,
