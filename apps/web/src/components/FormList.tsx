@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { FormRow } from './FormRow';
 import { Box, Flex, Grid, GridItem, Heading, Text } from '@chakra-ui/react';
-import { FormInstanceEntity } from '@web/client';
+import { FormInstanceEntity, SignatureEntity } from '@web/client';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { SearchAndSort } from 'apps/web/src/components/SearchAndSort';
 import { ViewAll } from 'apps/web/src/components/ViewAll';
+import { getNameFromSignature } from '@web/utils/formInstanceUtils';
 
 /**
  * @param title - the title of the form list
@@ -15,6 +16,7 @@ import { ViewAll } from 'apps/web/src/components/ViewAll';
  * @param link - link to page for category
  * @returns a list of forms for the dashboard
  */
+
 export const FormList = ({
   title,
   formInstances,
@@ -37,8 +39,8 @@ export const FormList = ({
         .map((formInstance) => ({
           ...formInstance,
           levenshteinDistance: distance(
-            searchQuery.toLowerCase(),
-            formInstance.name.toLowerCase(),
+            searchQuery.toLowerCase().slice(0, 10),
+            formInstance.name.toLowerCase().slice(0, 10),
           ),
         }))
         .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance),
