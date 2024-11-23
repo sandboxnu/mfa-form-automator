@@ -1,9 +1,16 @@
-import { Avatar, AvatarGroup, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
+import {
+  Avatar,
+  AvatarGroup,
+  Flex,
+  Grid,
+  GridItem,
+  Text,
+} from '@chakra-ui/react';
 
 import { FormInstanceEntity, SignatureEntity } from '@web/client';
 import { useRouter } from 'next/router';
 import { HoverableAvatar } from './HoverableAvatar';
-import { getInitialsFromSignature, getNameFromSignature } from '@web/utils/formInstanceUtils';
+import { getNameFromSignature } from '@web/utils/formInstanceUtils';
 
 /**
  * @param formInstance - the form instance
@@ -30,6 +37,9 @@ export const FormRow = ({
   return (
     <>
       <Grid
+        // z index must remain safely less than the 1500 of profile hover popover
+        // to ensure when it fades out that it remains on top of all form rows,
+        // hovered or unhovered
         templateColumns="repeat(20, 1fr)"
         gap={0}
         z-index={0}
@@ -38,7 +48,7 @@ export const FormRow = ({
         boxShadow="0px 0px 1px 1px #d4d4d4"
         _hover={{
           boxShadow: '0px 0px 4px 0px #1367EA',
-          zIndex: '1000',
+          zIndex: '400',
         }}
         mb={'0px'}
         cursor="pointer"
@@ -86,12 +96,7 @@ export const FormRow = ({
                   return (
                     <>
                       <HoverableAvatar
-                        name={
-                          getNameFromSignature(signature)
-                        }
-                        backgroundColor={
-                          signature.signed ? '#D0F0DC' : '#DCDCDC'
-                        }
+                        name={getNameFromSignature(signature)}
                         signed={signature.signed}
                         index={index}
                       />

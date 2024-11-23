@@ -109,6 +109,4 @@ export const signerIsUser = (signature: SignatureEntity, user: User) => {
     (signerType === 'DEPARTMENT' &&
       user?.departmentId === signature.signerDepartmentId)
   );
-
 };
-

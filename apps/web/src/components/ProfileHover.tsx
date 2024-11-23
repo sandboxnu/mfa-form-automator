@@ -19,18 +19,18 @@ export const ProfileHover = ({
       zIndex={20}
     >
       <Flex width="158px" height="25px" alignItems={'center'}>
-          <Text
-            fontSize="15px"
-            fontWeight="700"
-            lineHeight="16px"
-            overflow={'hidden'}
-            width="185px"
-            margin="0"
-            whiteSpace={'nowrap'}
-            textOverflow={'ellipsis'}
-          >
-            {name}
-          </Text>
+        <Text
+          fontSize="15px"
+          fontWeight="700"
+          lineHeight="16px"
+          overflow={'hidden'}
+          width="185px"
+          margin="0"
+          whiteSpace={'nowrap'}
+          textOverflow={'ellipsis'}
+        >
+          {name}
+        </Text>
         <Flex
           width="100%"
           height="25px"
