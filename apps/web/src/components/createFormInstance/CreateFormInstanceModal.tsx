@@ -67,7 +67,6 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const { data: formTemplates } = useQuery({
     queryKey: ['api', 'form-templates'],
     queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
-    refetchInterval: 1000, // refetch every 1000 ms to check for form link updates,
   });
 
   const { data: positions } = useQuery({
