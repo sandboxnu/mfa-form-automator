@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Employee, FormInstance } from '@prisma/client';
+import { FormInstance } from '@prisma/client';
 import { FormTemplateBaseEntity } from '../../form-templates/entities/form-template.entity';
 import { Exclude } from 'class-transformer';
 import { SignatureEntity } from '../../signatures/entities/signature.entity';
@@ -37,7 +37,7 @@ export class FormInstanceBaseEntity implements FormInstance {
   originatorId: string;
 
   @Exclude()
-  originator: Employee;
+  originator: EmployeeEntity;
 
   @Exclude()
   formTemplateId: string;
@@ -89,7 +89,7 @@ export class FormInstanceEntity implements FormInstance {
   originatorId: string;
 
   @ApiProperty()
-  originator: Employee;
+  originator: EmployeeEntity;
 
   @Exclude()
   formTemplateId: string;

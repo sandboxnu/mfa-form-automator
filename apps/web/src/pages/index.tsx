@@ -5,6 +5,7 @@ import Error from './../components/Error';
 import FormLoading from './../components/FormLoading';
 import { FormList } from './../components/FormList';
 import { useAuth } from '@web/hooks/useAuth';
+import { ProfileHover } from '@web/components/ProfileHover';
 
 export default function Overview() {
   const {

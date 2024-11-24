@@ -6,9 +6,14 @@ import {
   GridItem,
   Text,
 } from '@chakra-ui/react';
+
 import { FormInstanceEntity, SignatureEntity } from '@web/client';
-import { getInitialsFromSignature } from '@web/utils/formInstanceUtils';
+import {
+  getInitialsFromSignature,
+  getNameFromSignature,
+} from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
+import { HoverableAvatar } from './HoverableAvatar';
 
 /**
  * @param formInstance - the form instance
@@ -32,10 +37,12 @@ export const FormRow = ({
       day: 'numeric',
     });
   };
-
   return (
     <>
       <Grid
+        // z index must remain safely less than the 1500 of profile hover popover
+        // to ensure when it fades out that it remains on top of all form rows,
+        // hovered or unhovered
         templateColumns="repeat(20, 1fr)"
         gap={0}
         z-index={0}
@@ -44,11 +51,11 @@ export const FormRow = ({
         boxShadow="0px 0px 1px 1px #d4d4d4"
         _hover={{
           boxShadow: '0px 0px 4px 0px #1367EA',
-          position: 'relative',
-          zIndex: '3000',
+          zIndex: '400',
         }}
         mb={'0px'}
         cursor="pointer"
+        position="relative"
         onClick={() => router.push(link)}
       >
         <GridItem colSpan={8} h="64px">
@@ -90,16 +97,13 @@ export const FormRow = ({
                 .sort((a, b) => a.order - b.order)
                 .map((signature: SignatureEntity, index: number) => {
                   return (
-                    <Avatar
-                      name={getInitialsFromSignature(signature)}
-                      key={index}
-                      boxSize="36px"
-                      backgroundColor={signature.signed ? '#D0F0DC' : '#DCDCDC'}
-                      border="1px solid #FFFFFF"
-                      color="black"
-                      fontWeight={400}
-                      fontSize="12px"
-                    />
+                    <>
+                      <HoverableAvatar
+                        name={getNameFromSignature(signature)}
+                        signed={signature.signed}
+                        index={index}
+                      />
+                    </>
                   );
                 })}
             </AvatarGroup>

@@ -24,7 +24,15 @@ export class FormTemplatesService {
         formInstances: {
           include: {
             formTemplate: true,
-            originator: true,
+            originator: {
+              include: {
+                position: {
+                  include: {
+                    department: true,
+                  },
+                },
+              },
+            },
             signatures: {
               include: {
                 signerPosition: {
@@ -58,7 +66,15 @@ export class FormTemplatesService {
             formInstances: {
               include: {
                 formTemplate: true,
-                originator: true,
+                originator: {
+                  include: {
+                    position: {
+                      include: {
+                        department: true,
+                      },
+                    },
+                  },
+                },
                 signatures: {
                   include: {
                     signerPosition: {
@@ -81,7 +97,15 @@ export class FormTemplatesService {
             formInstances: {
               include: {
                 formTemplate: true,
-                originator: true,
+                originator: {
+                  include: {
+                    position: {
+                      include: {
+                        department: true,
+                      },
+                    },
+                  },
+                },
                 signatures: {
                   include: {
                     signerPosition: {
@@ -116,7 +140,15 @@ export class FormTemplatesService {
         formInstances: {
           include: {
             formTemplate: true,
-            originator: true,
+            originator: {
+              include: {
+                position: {
+                  include: {
+                    department: true,
+                  },
+                },
+              },
+            },
             signatures: {
               include: {
                 signerPosition: {
@@ -158,7 +190,15 @@ export class FormTemplatesService {
         formInstances: {
           include: {
             formTemplate: true,
-            originator: true,
+            originator: {
+              include: {
+                position: {
+                  include: {
+                    department: true,
+                  },
+                },
+              },
+            },
             signatures: {
               include: {
                 signerPosition: {
