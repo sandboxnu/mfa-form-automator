@@ -9,13 +9,19 @@ import { AvatarMapProps } from './types';
 const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
   let previousSigned = true;
 
-  const getInitialsFromTitle = (title: string, signerType: string) => {
-    if (signerType === 'DEPARTMENT') {
+  const getInitialsFromTitle = (
+    title: string,
+    signerType: string,
+    isSigned: boolean,
+  ) => {
+    if (isSigned || signerType === 'USER') {
+      return title;
+    } else if (signerType === 'DEPARTMENT') {
       return 'D';
     } else if (signerType === 'POSITION') {
       return 'P';
-    } else {
-      return title;
+    } else if (signerType === 'USER_LIST') {
+      return 'U';
     }
   };
 
@@ -29,7 +35,11 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
           <Flex key={index} align="center" my={4} position="relative">
             <Flex align="center" flex="1" zIndex={1}>
               <Avatar
-                name={getInitialsFromTitle(assignee.title, assignee.signerType)}
+                name={getInitialsFromTitle(
+                  assignee.title,
+                  assignee.signerType,
+                  assignee.signed,
+                )}
                 size="sm"
                 color="black"
                 bg={
@@ -43,7 +53,6 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                   fontFamily="Hanken Grotesk"
                   fontSize="16px"
                   fontWeight="400"
-                  whiteSpace="nowrap"
                 >
                   {assignee.title}
                 </Text>
@@ -89,7 +98,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 top="32px"
                 left="15px"
                 w="1px"
-                h="60px"
+                h={`${(assignees.length - 1) * 60}px`}
                 bg="#000"
                 zIndex={0}
                 color={assignee.signed ? '#D1F0D4' : '#E5E5E5'}

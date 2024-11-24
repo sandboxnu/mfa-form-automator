@@ -49,6 +49,7 @@ export class AuthService {
       lastName: user.lastName,
       sub: user.id,
       positionId: user.positionId,
+      departmentId: user.position.departmentId,
       isAdmin: user.isAdmin,
     };
 

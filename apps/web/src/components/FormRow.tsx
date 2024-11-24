@@ -8,9 +8,9 @@ import {
 } from '@chakra-ui/react';
 
 import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import { getInitialsFromSignature, getNameFromSignature } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
 import { HoverableAvatar } from './HoverableAvatar';
-import { getNameFromSignature } from '@web/utils/formInstanceUtils';
 
 /**
  * @param formInstance - the form instance

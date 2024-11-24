@@ -55,7 +55,16 @@ export class FormInstancesService {
       data: {
         name: createFormInstanceDto.name,
         formDocLink: createFormInstanceDto.formDocLink,
-        signatures: { create: createFormInstanceDto.signatures },
+        signatures: {
+          create: createFormInstanceDto.signatures.map((signature) => ({
+            ...signature,
+            assignedUserList: {
+              connect: signature.assignedUserList.map((user) => ({
+                id: user.id,
+              })),
+            },
+          })),
+        },
         originator: {
           connect: {
             id: createFormInstanceDto.originatorId,
@@ -87,18 +96,17 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
     });
 
     // Notify originator of email creation
-    const emailBody: string = `Hi ${newFormInstance.originator.firstName}, you have created a new form: ${newFormInstance.name}.`;
-    const emailSubject: string = `Form ${newFormInstance.name} Created`;
-    this.postmarkService.sendEmail(
+    this.postmarkService.sendFormCreatedEmail(
       newFormInstance.originator.email,
-      emailSubject,
-      emailBody,
+      `${newFormInstance.originator.firstName} ${newFormInstance.originator.lastName}`,
+      newFormInstance.name,
     );
 
     return newFormInstance;
@@ -133,6 +141,14 @@ export class FormInstancesService {
                 signerType: 'USER',
                 assignedUserId: employeeId,
               },
+              {
+                signerType: 'USER_LIST',
+                assignedUserList: {
+                  some: {
+                    id: employeeId,
+                  },
+                },
+              },
             ],
           },
         },
@@ -157,6 +173,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -197,6 +214,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -232,6 +250,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -269,6 +288,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -311,6 +331,7 @@ export class FormInstancesService {
             },
             signerDepartment: true,
             assignedUser: true,
+            assignedUserList: true,
           },
         },
       },
@@ -359,7 +380,13 @@ export class FormInstancesService {
     const formInstance = await this.prisma.formInstance.findUnique({
       where: { id: formInstanceId },
       include: {
-        signatures: { include: { signerPosition: true, assignedUser: true } },
+        signatures: {
+          include: {
+            signerPosition: true,
+            assignedUser: true,
+            assignedUserList: true,
+          },
+        },
         originator: true,
       },
     });
@@ -399,14 +426,17 @@ export class FormInstancesService {
       (signature.signerType === SignerType.POSITION &&
         signature.signerPositionId !== employee.positionId) ||
       (signature.signerType === SignerType.DEPARTMENT &&
-        signature.signerDepartmentId !== position.departmentId)
+        signature.signerDepartmentId !== position.departmentId) ||
+      (signature.signerType === SignerType.USER_LIST &&
+        signature.assignedUserList &&
+        !signature.assignedUserList.some((user) => user.id === employee.id))
     ) {
       throw new BadRequestException(SignatureErrorMessage.EMPLOYEE_CANNOT_SIGN);
     }
 
     const updatedSignature = await this.prisma.signature.update({
       where: { id: signatureId },
-      data: { signed: true },
+      data: { signed: true, assignedUserId: employee.id },
     });
 
     formInstance.signatures[signatureIndex] = {
@@ -430,36 +460,48 @@ export class FormInstancesService {
       });
 
       // Notify originator that form is ready for approval
-      const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} is completed and is ready for your approval: ${formInstance.name}.`;
-      const emailSubject: string = `Form ${formInstance.name} Ready for Approval`;
-      this.postmarkService.sendEmail(
+      this.postmarkService.sendReadyForApprovalEmail(
         formInstance.originator.email,
-        emailSubject,
-        emailBody,
+        `${formInstance.originator.firstName} ${formInstance.originator.lastName}`,
+        formInstance.name,
       );
     } else {
       // Notify next user that form is ready to sign
       const nextUserToSignId = formInstance.signatures[signatureIndex + 1];
 
       if (nextUserToSignId.signerType === SignerType.USER) {
-        const emailBod2y: string = `Hi ${formInstance.originator.firstName}, you have a form ready for your signature: ${formInstance.name}.`;
-        const emailSubject2: string = `Form ${formInstance.name} Ready To Sign`;
-        this.postmarkService.sendEmail(
+        this.postmarkService.sendReadyForSignatureToUserEmail(
           nextUserToSignId.assignedUser!.email,
-          emailSubject2,
-          emailBod2y,
+          nextUserToSignId.assignedUser!.firstName,
+          formInstance.name,
         );
-      } else {
-        // TODO: Implement sending email to department or position
+      } else if (nextUserToSignId.signerType === SignerType.POSITION) {
+        this.postmarkService.sendReadyForSignatureToPositionEmail(
+          nextUserToSignId.signerPositionId!,
+          formInstance.name,
+        );
+      } else if (nextUserToSignId.signerType === SignerType.DEPARTMENT) {
+        this.postmarkService.sendReadyForSignatureToDepartmentEmail(
+          nextUserToSignId.signerDepartmentId!,
+          formInstance.name,
+        );
+      } else if (nextUserToSignId.signerType === SignerType.USER_LIST) {
+        this.postmarkService.sendReadyForSignatureToUserListEmail(
+          nextUserToSignId.assignedUserList!,
+          formInstance.name,
+        );
       }
 
       // Notify originator that form was signed
-      const emailBody: string = `Hi ${formInstance.originator.firstName}, your form ${formInstance.name} has been signed by user: ${employee.firstName} ${employee.lastName}.`;
-      const emailSubject: string = `Form ${formInstance.name} Signed By ${employee.firstName} ${employee.lastName}`;
-      this.postmarkService.sendEmail(
+      this.postmarkService.sendSignedEmail(
         formInstance.originator.email,
-        emailSubject,
-        emailBody,
+        `${
+          formInstance.originator.firstName +
+          ' ' +
+          formInstance.originator.lastName
+        }`,
+        `${employee.firstName} ${employee.lastName}`,
+        formInstance.name,
       );
     }
 

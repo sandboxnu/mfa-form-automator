@@ -43,6 +43,9 @@ export class SignatureEntity implements Signature {
   assignedUser: EmployeeBaseEntity | null;
 
   @ApiProperty()
+  assignedUserList: EmployeeBaseEntity[];
+
+  @ApiProperty()
   signerType: $Enums.SignerType;
 
   @Exclude()
