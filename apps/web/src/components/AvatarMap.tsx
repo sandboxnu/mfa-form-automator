@@ -14,7 +14,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
     signerType: string,
     isSigned: boolean,
   ) => {
-    if (isSigned) {
+    if (isSigned || signerType === 'USER') {
       return title;
     } else if (signerType === 'DEPARTMENT') {
       return 'D';
