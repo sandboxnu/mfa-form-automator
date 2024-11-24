@@ -466,6 +466,19 @@ async function main() {
           signerType: 'USER',
           assignedUserId: KAI_ZHENG_UUID,
         },
+        {
+          id: 'f9f9a4a4-4c0d-4f7e-8c2e-6b1e9b9b0e3b',
+          order: 1,
+          signerType: 'USER_LIST',
+          assignedUserList: {
+            connect: [
+              { id: IRIS_ZHANG_UUID },
+              { id: KAI_ZHENG_UUID },
+              { id: ANGELA_WEIGL_UUID },
+              { id: ANSHUL_SHIRUDE_UUID },
+            ],
+          },
+        },
       ],
     },
     {
