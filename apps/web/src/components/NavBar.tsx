@@ -108,6 +108,7 @@ export const NavBar = ({
   onOpenCreateFormInstance: () => void;
   props?: {};
 }) => {
+  const router = useRouter();
   return (
     <Box
       as="nav"
@@ -163,7 +164,7 @@ export const NavBar = ({
             <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
               Form
             </MenuItem>
-            <MenuItem rounded="8px" onClick={onOpenCreateFormTemplate}>
+            <MenuItem rounded="8px" onClick={() => {router.push('upload')}}>
               Template
             </MenuItem>
           </MenuList>
