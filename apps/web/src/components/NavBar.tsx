@@ -164,7 +164,12 @@ export const NavBar = ({
             <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
               Form
             </MenuItem>
-            <MenuItem rounded="8px" onClick={() => {router.push('upload')}}>
+            <MenuItem
+              rounded="8px"
+              onClick={() => {
+                router.push('upload');
+              }}
+            >
               Template
             </MenuItem>
           </MenuList>
