@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { ChangeEvent, MouseEvent, useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
-
 export default function Upload() {
   const router = useRouter();
   const [pdf, setPdf] = useState<string | ArrayBuffer | null>(null);
@@ -15,10 +14,10 @@ export default function Upload() {
   const [disabled, setDisabled] = useState<boolean | null>(true);
 
   const onDrop = useCallback((acceptedFiles: any) => {
-    if(!acceptedFiles) return;
-    saveFileData(acceptedFiles)
-  }, [])
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop});
+    if (!acceptedFiles) return;
+    saveFileData(acceptedFiles);
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   /**
    * Set pdf state when a file is uploaded
@@ -31,7 +30,7 @@ export default function Upload() {
     }
   };
 
-  const saveFileData = (files:FileList) => {
+  const saveFileData = (files: FileList) => {
     try {
       const file = files[0];
       const url = URL.createObjectURL(file);
@@ -43,7 +42,7 @@ export default function Upload() {
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   /**
    * Clear pdf information when a file "x" is clicked
@@ -180,6 +179,10 @@ export default function Upload() {
                   textAlign="center"
                   fontSize="14px"
                   fontWeight={500}
+                  overflow={'hidden'}
+                  whiteSpace="nowrap"
+                  maxWidth={'320px'}
+                  textOverflow={'ellipsis'}
                 >
                   {pdfName}
                 </Text>

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 export const SideCreateForm = ({ curStep }: { curStep: number }) => {
   const router = useRouter();
-  
+
   const textStyle = {
     color: '#010101',
     fontSize: '16px',
@@ -13,26 +13,35 @@ export const SideCreateForm = ({ curStep }: { curStep: number }) => {
   };
 
   const lineStyle = {
-    marginLeft: "11px",
-    marginTop: "2px",
-    marginBottom: "2px",
+    marginLeft: '11px',
+    marginTop: '2px',
+    marginBottom: '2px',
     borderLeftWidth: '1px',
-    borderLeftColor: "#A1A1A1",
-    height: "28px"
-  }
+    borderLeftColor: '#A1A1A1',
+    height: '28px',
+  };
 
   const Item = ({ num }: { num: number }) => {
-    return (<Flex gap="10px">
-              {curStep < num ?  <NumberCircle num={num}/> : <BlueCheck/>}
-              <Text 
-                color={num <= curStep ? '#010101' : '#808080'}
-                fontSize='16px'
-                fontWeight='500'
-                lineHeight='21px'
-              >{
-                num === 1 ? 'Upload PDF' : num === 2 ? 'Enter details' : num === 3 ? 'Add input fields' : 'Review'}</Text>
-    </Flex>);
-  }
+    return (
+      <Flex gap="10px">
+        {curStep < num ? <NumberCircle num={num} /> : <BlueCheck />}
+        <Text
+          color={num <= curStep ? '#010101' : '#808080'}
+          fontSize="16px"
+          fontWeight="500"
+          lineHeight="21px"
+        >
+          {num === 1
+            ? 'Upload PDF'
+            : num === 2
+            ? 'Enter details'
+            : num === 3
+            ? 'Add input fields'
+            : 'Review'}
+        </Text>
+      </Flex>
+    );
+  };
 
   const BlueCheck = () => {
     return (
@@ -54,27 +63,28 @@ export const SideCreateForm = ({ curStep }: { curStep: number }) => {
 
   const NumberCircle = ({ num }: { num: number }) => {
     return (
-        <Flex
-            width="24px"
-            height="24px"
-            padding="4px"
-            flexDirection="column"
-            justifyContent={'center'}
-            alignItems={'center'}
-            gap="10px"
-            borderRadius="40px"
-            border="1px solid #A1A1A1"
-            >
-                <Text
-                    color="#808080"
-                    fontSize="15px"
-                    fontWeight={500}
-                    lineHeight="21px">
-                        {num}
-                </Text>
-        </Flex>
-    )
-  }
+      <Flex
+        width="24px"
+        height="24px"
+        padding="4px"
+        flexDirection="column"
+        justifyContent={'center'}
+        alignItems={'center'}
+        gap="10px"
+        borderRadius="40px"
+        border="1px solid #A1A1A1"
+      >
+        <Text
+          color="#808080"
+          fontSize="15px"
+          fontWeight={500}
+          lineHeight="21px"
+        >
+          {num}
+        </Text>
+      </Flex>
+    );
+  };
 
   return (
     <Box
@@ -125,27 +135,25 @@ export const SideCreateForm = ({ curStep }: { curStep: number }) => {
             }}
           >
             <Flex alignItems={'center'} gap="8px">
-                <BlueTriangle width="7.5px" height="8.75px"/>
-            <Text
-              color="#1367EA"
-              textAlign="right"
-              fontSize="15px"
-              fontWeight={500}
-            >
-              Back To Dashboard
-            </Text>
-
+              <BlueTriangle width="7.5px" height="8.75px" />
+              <Text
+                color="#1367EA"
+                textAlign="right"
+                fontSize="15px"
+                fontWeight={500}
+              >
+                Back To Dashboard
+              </Text>
             </Flex>
-            
           </Link>
           <Box height="192px" flexShrink="0px" alignSelf="stretch">
-            <Item num={1}/>
+            <Item num={1} />
             <Flex {...lineStyle}></Flex>
-            <Item num={2}/>
+            <Item num={2} />
             <Flex {...lineStyle}></Flex>
-            <Item num={3}/>
+            <Item num={3} />
             <Flex {...lineStyle}></Flex>
-            <Item num={4}/>
+            <Item num={4} />
           </Box>
         </Flex>
       </Flex>

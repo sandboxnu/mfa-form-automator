@@ -444,8 +444,6 @@ export const WhiteCheck = createIcon({
 
 export const BlueTriangle = createIcon({
   displayName: 'BlueTriangle',
-  viewBox: "0 0 8 10", 
-  path: (
-    <path d="M7.5 0.625L0 5L7.5 9.375L7.5 0.625Z" fill="#1367EA"/>
-  )
-})
+  viewBox: '0 0 8 10',
+  path: <path d="M7.5 0.625L0 5L7.5 9.375L7.5 0.625Z" fill="#1367EA" />,
+});
