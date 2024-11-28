@@ -2,7 +2,9 @@ import { Flex, Text, Heading, Button, Box } from '@chakra-ui/react';
 import { SideCreateForm } from '@web/components/SideCreateForm';
 import { CloseIcon, PDFIcon, UploadIcon } from '@web/static/icons';
 import { useRouter } from 'next/router';
-import { MouseEvent, useState } from 'react';
+import { ChangeEvent, MouseEvent, useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+
 
 export default function Upload() {
   const router = useRouter();
@@ -12,15 +14,26 @@ export default function Upload() {
   const [pdfSize, setPdfSize] = useState<string | null>(null);
   const [disabled, setDisabled] = useState<boolean | null>(true);
 
+  const onDrop = useCallback((acceptedFiles: any) => {
+    if(!acceptedFiles) return;
+    saveFileData(acceptedFiles)
+  }, [])
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop});
+
   /**
    * Set pdf state when a file is uploaded
    */
   const _handlePdfSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-
     if (!e.target.files) return;
+    else {
+      saveFileData(e.target.files);
+    }
+  };
+
+  const saveFileData = (files:FileList) => {
     try {
-      const file = e.target.files[0];
+      const file = files[0];
       const url = URL.createObjectURL(file);
       setPdf(url);
       setPdfName(file.name);
@@ -30,7 +43,7 @@ export default function Upload() {
     } catch (e) {
       console.error(e);
     }
-  };
+  }
 
   /**
    * Clear pdf information when a file "x" is clicked
@@ -93,6 +106,7 @@ export default function Upload() {
           justifyContent={'center'}
           alignItems={'center'}
           backgroundColor={pdfName ? '#F1F7FF' : '#FFF'}
+          {...getRootProps()}
         >
           <UploadIcon
             /* upload icon */
@@ -138,6 +152,7 @@ export default function Upload() {
             accept=".pdf"
             style={{ display: 'none' }}
             onChange={(e) => _handlePdfSubmit(e)}
+            {...getInputProps()}
           />
         </Flex>
         {pdfName && (
