@@ -60,8 +60,6 @@ export const AssignInput = () => {
     documentBlock: {
       maxWidth: 800,
       margin: '20px auto',
-      marginTop: 8,
-      border: '1px solid #999',
     },
     controls: {
       maxWidth: 800,
@@ -184,11 +182,14 @@ export const AssignInput = () => {
           background="#F6F5F5"
           borderRadius="8px"
           border="1px #E5E5E5 solid"
+          height="525"
           position="relative"
+          
         >
           <Text
             borderTop="2px white solid"
             borderTopRadius="8px"
+            borderBottom="1px #E5E5E5 solid "
             color="#101010"
             font-size="14px"
             font-family="Hanken Grotesk"
@@ -202,12 +203,11 @@ export const AssignInput = () => {
           >
             {formName}
           </Text>
-          {/* <Box> */}
           {pdf ? (
-            <>
+            <Box display="flex" justifyContent="center">
               <Box
                 position="absolute"
-                left="50px"
+                left="24px"
                 top="69px"
                 background="white"
                 padding="6px"
@@ -249,12 +249,14 @@ export const AssignInput = () => {
                 </button>
               </Box>
               <Box
+                marginTop="1px"
+                
                 // paddingLeft="50px"
                 // paddingRight="50px"
-                maxHeight="525px"
+                maxHeight="472px"
+                maxWidth="662px"
                 overflow="scroll"
                 ref={documentRef}
-                style={styles.documentBlock}
               >
                 {/* {signatureURL ? (
                 <DraggableSignature
@@ -332,6 +334,7 @@ export const AssignInput = () => {
                   }}
                 >
                   <Page
+                    
                     renderAnnotationLayer={false}
                     renderTextLayer={false}
                     pageNumber={pageNum + 1}
@@ -418,7 +421,7 @@ export const AssignInput = () => {
                   </Page>
                 </Document>
               </Box>
-            </>
+            </Box>
           ) : null}
           {/* </Box> */}
         </Box>
