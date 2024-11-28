@@ -1,4 +1,5 @@
 import { Flex, Text, Heading, Button, Box } from '@chakra-ui/react';
+import { SideCreateForm } from '@web/components/SideCreateForm';
 import { CloseIcon, PDFIcon, UploadIcon } from '@web/static/icons';
 import { useRouter } from 'next/router';
 import { MouseEvent, useState } from 'react';
@@ -45,6 +46,10 @@ export default function Upload() {
 
   return (
     <Box height="100vh" marginTop="36px">
+      <Flex position="absolute" margin="0px" zIndex={5000}>
+        <SideCreateForm curStep={1} />
+      </Flex>
+
       <Heading
         color="#2A2B2D"
         fontSize="30px"
@@ -89,43 +94,51 @@ export default function Upload() {
           alignItems={'center'}
           backgroundColor={pdfName ? '#F1F7FF' : '#FFF'}
         >
-              <UploadIcon
-                /* upload icon */
-                height="48px" width="66px" />
-              <Flex 
-                /* all text below icon*/
-                flexDirection={'column'} alignItems={'center'}>
-                <Flex  
-                  /* drag file here or browse line */
-                  gap="3px">
-                  <Text fontWeight={500} size="16px" height="21px" align="center">
-                    Drag file here or
-                  </Text>
-                  <label htmlFor="pdfInput">
-                    <span>
-                      <Text
-                        textDecoration={'underline'}
-                        align="center"
-                        color="#1367EA"
-                      >
-                        browse
-                      </Text>
-                    </span>
-                  </label>
-                </Flex>
-              <Text 
-                /* pdf qualifier */
-                fontSize="14px" color="#808080" fontWeight={500}>
-                PDFs Only
+          <UploadIcon
+            /* upload icon */
+            height="48px"
+            width="66px"
+          />
+          <Flex
+            /* all text below icon*/
+            flexDirection={'column'}
+            alignItems={'center'}
+          >
+            <Flex
+              /* drag file here or browse line */
+              gap="3px"
+            >
+              <Text fontWeight={500} size="16px" height="21px" align="center">
+                Drag file here or
               </Text>
+              <label htmlFor="pdfInput">
+                <span>
+                  <Text
+                    textDecoration={'underline'}
+                    align="center"
+                    color="#1367EA"
+                  >
+                    browse
+                  </Text>
+                </span>
+              </label>
             </Flex>
-            <input
-              type="file"
-              id="pdfInput"
-              accept=".pdf"
-              style={{ display: 'none' }}
-              onChange={(e) => _handlePdfSubmit(e)}
-            />
+            <Text
+              /* pdf qualifier */
+              fontSize="14px"
+              color="#808080"
+              fontWeight={500}
+            >
+              PDFs Only
+            </Text>
+          </Flex>
+          <input
+            type="file"
+            id="pdfInput"
+            accept=".pdf"
+            style={{ display: 'none' }}
+            onChange={(e) => _handlePdfSubmit(e)}
+          />
         </Flex>
         {pdfName && (
           <Flex
@@ -220,9 +233,13 @@ export default function Upload() {
         <Button
           borderRadius="6px"
           alignContent={'center'}
-          background={disabled ? "linear-gradient(0deg, rgba(223, 223, 223, 0.50) 0%, rgba(223, 223, 223, 0.50) 100%), #1367EA;" : '#1367EA'}
+          background={
+            disabled
+              ? 'linear-gradient(0deg, rgba(223, 223, 223, 0.50) 0%, rgba(223, 223, 223, 0.50) 100%), #1367EA;'
+              : '#1367EA'
+          }
           _hover={{
-            background: 'auto'
+            background: 'auto',
           }}
           marginLeft="12px"
           marginRight="36px"

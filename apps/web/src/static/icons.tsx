@@ -430,3 +430,22 @@ export const CloseIcon = createIcon({
     />
   ),
 });
+
+export const WhiteCheck = createIcon({
+  displayName: 'WhiteCheck',
+  viewBox: '0 0 12 10',
+  path: (
+    <path
+      d="M3.70457 7.92743L1.21934 5.30596C0.940018 5.01133 0.488809 5.01133 0.20949 5.30596C-0.0698299 5.6006 -0.0698299 6.07654 0.20949 6.37117L3.20322 9.52903C3.48254 9.82366 3.93375 9.82366 4.21307 9.52903L11.7905 1.53618C12.0698 1.24155 12.0698 0.765606 11.7905 0.470974C11.5112 0.176342 11.06 0.176342 10.7807 0.470974L3.70457 7.92743Z"
+      fill="white"
+    />
+  ),
+});
+
+export const BlueTriangle = createIcon({
+  displayName: 'BlueTriangle',
+  viewBox: "0 0 8 10", 
+  path: (
+    <path d="M7.5 0.625L0 5L7.5 9.375L7.5 0.625Z" fill="#1367EA"/>
+  )
+})
