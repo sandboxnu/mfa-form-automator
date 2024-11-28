@@ -24,7 +24,7 @@ export const SideCreateForm = ({ curStep }: { curStep: number }) => {
   const Item = ({ num }: { num: number }) => {
     return (
       <Flex gap="10px">
-        {curStep < num ? <NumberCircle num={num} /> : <BlueCheck />}
+        {curStep <= num ? <NumberCircle num={num} /> : <BlueCheck />}
         <Text
           color={num <= curStep ? '#010101' : '#808080'}
           fontSize="16px"
@@ -72,10 +72,11 @@ export const SideCreateForm = ({ curStep }: { curStep: number }) => {
         alignItems={'center'}
         gap="10px"
         borderRadius="40px"
-        border="1px solid #A1A1A1"
+        border={num === curStep ? 'none' : '1px solid #A1A1A1'}
+        backgroundColor={num === curStep ? '#1367EA' : 'transparent'}
       >
         <Text
-          color="#808080"
+          color={num === curStep ? 'white' : '#808080'}
           fontSize="15px"
           fontWeight={500}
           lineHeight="21px"

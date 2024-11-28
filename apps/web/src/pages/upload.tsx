@@ -1,5 +1,6 @@
 import { Flex, Text, Heading, Button, Box } from '@chakra-ui/react';
-import { SideCreateForm } from '@web/components/SideCreateForm';
+import { FormTemButtons } from '@web/components/createFormTemplate/FormTemButtons';
+import { SideCreateForm } from '@web/components/createFormTemplate/SideCreateForm';
 import { CloseIcon, PDFIcon, UploadIcon } from '@web/static/icons';
 import { useRouter } from 'next/router';
 import { ChangeEvent, MouseEvent, useCallback, useState } from 'react';
@@ -205,76 +206,12 @@ export default function Upload() {
           </Flex>
         )}
       </Flex>
-      <Button
-        borderRadius="6px"
-        borderWidth="1.5px"
-        borderStyle={'solid'}
-        borderColor="#E23F40"
-        alignContent={'center'}
-        bgColor={'transparent'}
-        _hover={{
-          bgColor: 'transparent',
-        }}
-        marginLeft="36px"
-      >
-        <Text
-          color="#E23F40"
-          fontWeight="600px"
-          fontSize="18px"
-          lineHeight="22px"
-          onClick={(e) => _handlePdfDelete(e)}
-        >
-          Delete
-        </Text>
-      </Button>
-      <Flex float="right" justifyContent={'space-between'}>
-        <Button
-          borderRadius="6px"
-          borderWidth="1.5px"
-          borderStyle={'solid'}
-          borderColor="#1367EA"
-          alignContent={'center'}
-          bgColor={'transparent'}
-          _hover={{
-            bgColor: 'transparent',
-          }}
-        >
-          <Text
-            color="#1367EA"
-            fontWeight="600px"
-            fontSize="18px"
-            lineHeight="22px"
-          >
-            Back
-          </Text>
-        </Button>
-        <Button
-          borderRadius="6px"
-          alignContent={'center'}
-          background={
-            disabled
-              ? 'linear-gradient(0deg, rgba(223, 223, 223, 0.50) 0%, rgba(223, 223, 223, 0.50) 100%), #1367EA;'
-              : '#1367EA'
-          }
-          _hover={{
-            background: 'auto',
-          }}
-          marginLeft="12px"
-          marginRight="36px"
-          onClick={() => {
-            router.push('');
-          }}
-        >
-          <Text
-            color="#FCFCFC"
-            fontWeight="600px"
-            fontSize="18px"
-            lineHeight="22px"
-          >
-            Save & Continue
-          </Text>
-        </Button>
-      </Flex>
+      <FormTemButtons
+        deleteFunction={_handlePdfDelete}
+        submitLink="/"
+        backLink="/"
+        disabled={disabled === null ? true : disabled}
+      />
     </Box>
   );
 }
