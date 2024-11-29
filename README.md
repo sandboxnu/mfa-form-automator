@@ -45,7 +45,7 @@ NextJS, NestJS, Prisma, PostgreSQL
    | AZURE_AD_CLIENT_ID | |
    | AZURE_AD_CLIENT_SECRET | |
    | AZURE_AD_TENANT_ID | |
-   | STORAGE_BLOB_URL | |
+   | BLOB_READ_WRITE_TOKEN | |
    | NEXTAUTH_SECRET | |
    | NEXTAUTH_URL | http://localhost:3002 |
 

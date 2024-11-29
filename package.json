@@ -38,5 +38,6 @@
     "pdfjs-dist": "^3.11.174",
     "react-dropzone": "^14.3.5",
     "react-pdf": "^9.1.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

@@ -1,5 +1,11 @@
-import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import { useQuery } from '@tanstack/react-query';
+import {
+  FormInstanceEntity,
+  PositionsService,
+  SignatureEntity,
+} from '@web/client';
 import { User } from '@web/context/types';
+import { useState } from 'react';
 
 /**
  * Determines if a form instance is fully signed
@@ -24,12 +30,10 @@ export const isFullySigned = (formInstance: FormInstanceEntity) => {
  * @param signature the signature to check
  * @returns the name of the signer
  */
-export const getNameFromSignature = (
-  signature: SignatureEntity,
-  user: User,
-) => {
+export const getNameFromSignature = (signature: SignatureEntity) => {
   const signerType = signature.signerType as any;
-  if (signerType === 'USER') {
+
+  if (signature.signed || signerType === 'USER') {
     return (
       signature.assignedUser?.firstName! +
       ' ' +
@@ -66,7 +70,8 @@ export const getNameFromSignature = (
  */
 export const getInitialsFromSignature = (signature: SignatureEntity) => {
   const signerType = signature.signerType as any;
-  if (signerType === 'USER') {
+
+  if (signature.signed || signerType === 'USER') {
     return (
       signature.assignedUser?.firstName! +
       ' ' +

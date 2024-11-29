@@ -77,7 +77,15 @@ export class FormInstancesService {
         },
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -97,7 +105,7 @@ export class FormInstancesService {
     // Notify originator of email creation
     this.postmarkService.sendFormCreatedEmail(
       newFormInstance.originator.email,
-      newFormInstance.originator.firstName,
+      `${newFormInstance.originator.firstName} ${newFormInstance.originator.lastName}`,
       newFormInstance.name,
     );
 
@@ -146,7 +154,15 @@ export class FormInstancesService {
         },
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -179,7 +195,15 @@ export class FormInstancesService {
         },
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -207,7 +231,15 @@ export class FormInstancesService {
     const formInstances = await this.prisma.formInstance.findMany({
       take: limit,
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -237,7 +269,15 @@ export class FormInstancesService {
         id: id,
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -272,7 +312,15 @@ export class FormInstancesService {
         formDocLink: updateFormInstanceDto.formDocLink,
       },
       include: {
-        originator: true,
+        originator: {
+          include: {
+            position: {
+              include: {
+                department: true,
+              },
+            },
+          },
+        },
         formTemplate: true,
         signatures: {
           include: {
@@ -414,7 +462,7 @@ export class FormInstancesService {
       // Notify originator that form is ready for approval
       this.postmarkService.sendReadyForApprovalEmail(
         formInstance.originator.email,
-        formInstance.originator.firstName,
+        `${formInstance.originator.firstName} ${formInstance.originator.lastName}`,
         formInstance.name,
       );
     } else {
@@ -437,14 +485,22 @@ export class FormInstancesService {
           nextUserToSignId.signerDepartmentId!,
           formInstance.name,
         );
+      } else if (nextUserToSignId.signerType === SignerType.USER_LIST) {
+        this.postmarkService.sendReadyForSignatureToUserListEmail(
+          nextUserToSignId.assignedUserList!,
+          formInstance.name,
+        );
       }
 
       // Notify originator that form was signed
       this.postmarkService.sendSignedEmail(
         formInstance.originator.email,
-        formInstance.originator.firstName,
-        employee.firstName,
-        employee.lastName,
+        `${
+          formInstance.originator.firstName +
+          ' ' +
+          formInstance.originator.lastName
+        }`,
+        `${employee.firstName} ${employee.lastName}`,
         formInstance.name,
       );
     }
