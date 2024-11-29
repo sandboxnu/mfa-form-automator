@@ -184,17 +184,16 @@ export const AssignInput = () => {
           border="1px #E5E5E5 solid"
           height="525"
           position="relative"
-          
         >
           <Text
             borderTop="2px white solid"
             borderTopRadius="8px"
             borderBottom="1px #E5E5E5 solid "
             color="#101010"
-            font-size="14px"
-            font-family="Hanken Grotesk"
-            font-weight="600"
-            line-height="21px"
+            fontSize="14px"
+            fontFamily="Hanken Grotesk"
+            fontWeight="600"
+            lineHeight="21px"
             paddingTop="12px"
             paddingBottom="12px"
             wordBreak="break-word"
@@ -250,11 +249,10 @@ export const AssignInput = () => {
               </Box>
               <Box
                 marginTop="1px"
-                
                 // paddingLeft="50px"
                 // paddingRight="50px"
-                maxHeight="472px"
-                maxWidth="662px"
+                height="475px"
+                width="662px"
                 overflow="scroll"
                 ref={documentRef}
               >
@@ -334,7 +332,6 @@ export const AssignInput = () => {
                   }}
                 >
                   <Page
-                    
                     renderAnnotationLayer={false}
                     renderTextLayer={false}
                     pageNumber={pageNum + 1}
