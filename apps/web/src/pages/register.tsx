@@ -10,7 +10,6 @@ import { useAuth } from '@web/hooks/useAuth';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export default function Register() {
-  const router = useRouter();
   const { completeRegistration, userData } = useAuth();
   const [currentDepartmentName, setCurrentDepartmentName] =
     useState<string>('');
