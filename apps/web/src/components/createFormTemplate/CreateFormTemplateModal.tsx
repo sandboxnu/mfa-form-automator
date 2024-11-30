@@ -206,7 +206,7 @@ export const CreateFormTemplateModal = ({
                     accept=".pdf"
                     style={{ display: 'none' }}
                     ref={inputFileRef}
-                    onChange={uploadLocalFile}
+                    onChange={(e) => uploadLocalFile(e.target?.files?.[0])}
                   />
                   {hasLocalBlob && (
                     <span
