@@ -7,6 +7,7 @@ type LocalBlobData = {
   blob: Blob | null;
   url: string | null;
   name: string | null;
+  size: string | null;
 };
 
 // https://vercel.com/docs/storage/vercel-blob/client-upload
@@ -19,15 +20,10 @@ export const useBlob = () => {
     blob: null,
     url: null,
     name: null,
+    size: null,
   });
 
-  const uploadLocalFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files) return;
-
-    const inputElement = event.target;
-
-    const file = inputElement?.files?.[0];
-
+  const uploadLocalFile = (file: File) => {
     if (file) {
       const blob: Blob = new Blob([file], { type: file.type });
       const url = URL.createObjectURL(blob);
@@ -35,6 +31,7 @@ export const useBlob = () => {
         blob,
         url,
         name: file.name,
+        size: (file.size / 1000000).toFixed(2),
       });
       setHasLocalBlob(true);
     }
@@ -45,6 +42,7 @@ export const useBlob = () => {
       blob: null,
       url: null,
       name: null,
+      size: null,
     });
     setHasLocalBlob(false);
   };
