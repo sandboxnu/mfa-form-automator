@@ -7,19 +7,25 @@ import { useState } from 'react';
  * The upload page in the form template creation flow, where users add their pdf.
  */
 export default function Description() {
-    const [name, setName] = useState<string | null>(null);
-    const [description, setDescription] = useState<string | null>(null);
-  
+  const [name, setName] = useState<string | null>(null);
+  const [description, setDescription] = useState<string | null>(null);
+  const blob = useBlob();
+
   return (
     <FormTemplateLayout
       pageNumber={2}
       subheading={'Give your form template a name and short description'}
-      boxContent={<NameAndDescriptionBox 
-            name={name} 
-            setName={setName}
-            description={description}
-            setDescription={setDescription}/>}
-      deleteFunction={() => {setName(null); setDescription(null)}}
+      boxContent={
+        <NameAndDescriptionBox
+          formLink={blob.localBlobData.url ? blob.localBlobData.url : ''}
+          setName={setName}
+          setDescription={setDescription}
+        />
+      }
+      deleteFunction={() => {
+        setName(null);
+        setDescription(null);
+      }}
       submitLink={'/'}
       backLink={'/upload'}
       disabled={!name}
