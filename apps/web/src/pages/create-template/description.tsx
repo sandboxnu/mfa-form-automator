@@ -26,7 +26,7 @@ export default function Description() {
         setName(null);
         setDescription(null);
       }}
-      submitLink={'/'}
+      submitLink={'/inputFields'}
       backLink={'/upload'}
       disabled={!name}
     />
