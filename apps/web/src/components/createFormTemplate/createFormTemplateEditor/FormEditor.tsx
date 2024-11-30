@@ -185,6 +185,47 @@ export const FormEditor = ({
                 renderTextLayer={false}
                 onLoadSuccess={(page: PageCallback) => setPageDetails(page)}
               >
+                {/* {Array.from(formFieldGroups.entries()).map(
+                  ([groupId, group], index) =>
+                    Array.from(group.fields.entries()).map(
+                      ([fieldId, field]) => {
+                        // make a span at the position of the field
+                        if (!pageDetails) {
+                          return null;
+                        }
+
+                        const pageWidth = pageDetails.width;
+                        const pageHeight = pageDetails.height;
+                        const x =
+                          (field.x / pageDetails.originalWidth) * pageWidth;
+                        const y =
+                          (field.y / pageDetails.originalHeight) * pageHeight;
+                        const width =
+                          (field.width / pageDetails.originalWidth) * pageWidth;
+                        const height =
+                          (field.height / pageDetails.originalHeight) *
+                          pageHeight;
+
+                        return (
+                          <Box
+                            key={fieldId}
+                            style={{
+                              position: 'absolute',
+                              left: x,
+                              top: y,
+                              width,
+                              height,
+                              borderRadius: '4px',
+                              padding: '4px',
+                              zIndex: 100000,
+                              backgroundColor: group.color,
+                            }}
+                          />
+                        );
+                      },
+                    ),
+                )} */}
+
                 {Array.from(formFieldGroups.entries()).map(
                   ([groupId, group], index) =>
                     Array.from(group.fields.entries()).map(
