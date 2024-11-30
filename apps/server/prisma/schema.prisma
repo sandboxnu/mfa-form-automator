@@ -15,6 +15,7 @@ enum SignerType {
   POSITION
   DEPARTMENT
   USER
+  USER_LIST
 }
 
 // `Departments` represent the various departments that employees could work in.
@@ -48,6 +49,8 @@ model Employee {
 
   position   Position @relation(fields: [positionId], references: [id])
   positionId String   @db.Uuid
+
+  Signature Signature[] @relation("AssignedUserList")
 }
 
 // `Positions` represent the various positions that employees at the MFA can hold.
@@ -108,6 +111,7 @@ model Signature {
   signerDepartmentId String?   @db.Uuid
   assignedUser     Employee?     @relation(fields: [assignedUserId], references: [id])
   assignedUserId   String?       @db.Uuid
+  assignedUserList Employee[]   @relation("AssignedUserList")
   signerType       SignerType
   
   formInstance     FormInstance @relation(fields: [formInstanceId], references: [id])

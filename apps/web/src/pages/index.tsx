@@ -4,14 +4,7 @@ import Error from './../components/Error';
 import FormLoading from './../components/FormLoading';
 import { FormList } from './../components/FormList';
 import { useAuth } from '@web/hooks/useAuth';
-import dynamic from 'next/dynamic';
-import { OverviewRow } from '@web/components/OverviewRow';
-
-// const OverviewRow = dynamic(
-//   () => import('../components/OverviewRow.tsx').then(mod => mod.OverviewRow),
-//   { ssr: false }
-// )
-
+import { ProfileHover } from '@web/components/ProfileHover';
 
 export default function Overview() {
   const {

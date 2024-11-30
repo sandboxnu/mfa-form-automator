@@ -7,6 +7,7 @@ import { PositionsModule } from '../positions/positions.module';
 import { LoggerModule } from '../logger/logger.module';
 import { PostmarkService } from '../postmark/postmark.service';
 import { EmployeesModule } from '../employees/employees.module';
+import { PostmarkModule } from '../postmark/postmark.module';
 
 @Module({
   controllers: [FormInstancesController],
@@ -18,6 +19,7 @@ import { EmployeesModule } from '../employees/employees.module';
     PositionsModule,
     LoggerModule,
     EmployeesModule,
+    PostmarkModule,
   ],
 })
 export class FormInstancesModule {}

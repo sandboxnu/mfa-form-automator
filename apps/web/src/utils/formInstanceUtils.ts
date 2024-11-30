@@ -1,5 +1,11 @@
-import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import { useQuery } from '@tanstack/react-query';
+import {
+  FormInstanceEntity,
+  PositionsService,
+  SignatureEntity,
+} from '@web/client';
 import { User } from '@web/context/types';
+import { useState } from 'react';
 
 /**
  * Determines if a form instance is fully signed
@@ -26,7 +32,8 @@ export const isFullySigned = (formInstance: FormInstanceEntity) => {
  */
 export const getNameFromSignature = (signature: SignatureEntity) => {
   const signerType = signature.signerType as any;
-  if (signerType === 'USER') {
+
+  if (signature.signed || signerType === 'USER') {
     return (
       signature.assignedUser?.firstName! +
       ' ' +
@@ -36,6 +43,22 @@ export const getNameFromSignature = (signature: SignatureEntity) => {
     return signature.signerDepartment?.name!;
   } else if (signerType === 'POSITION') {
     return signature.signerPosition?.name!;
+  } else if (signerType === 'USER_LIST') {
+    if (signature.signed) {
+      return (
+        signature.assignedUser?.firstName! +
+        ' ' +
+        signature.assignedUser?.lastName!
+      );
+    }
+    return (
+      signature.assignedUserList
+        ?.map((employee) => {
+          return employee.firstName + ' ' + employee.lastName;
+        })
+        .join(', ')
+        .slice(0, 30) + '...'
+    );
   }
   return '';
 };
@@ -47,7 +70,8 @@ export const getNameFromSignature = (signature: SignatureEntity) => {
  */
 export const getInitialsFromSignature = (signature: SignatureEntity) => {
   const signerType = signature.signerType as any;
-  if (signerType === 'USER') {
+
+  if (signature.signed || signerType === 'USER') {
     return (
       signature.assignedUser?.firstName! +
       ' ' +
@@ -57,6 +81,8 @@ export const getInitialsFromSignature = (signature: SignatureEntity) => {
     return 'D';
   } else if (signerType === 'POSITION') {
     return 'P';
+  } else if (signerType === 'USER_LIST') {
+    return 'U';
   }
   return '';
 };
@@ -101,6 +127,8 @@ export const signerIsUser = (signature: SignatureEntity, user: User) => {
     (signerType === 'POSITION' &&
       signature.signerPositionId === user?.positionId) ||
     (signerType === 'DEPARTMENT' &&
-      user?.departmentId === signature.signerDepartmentId)
+      user?.departmentId === signature.signerDepartmentId) ||
+    (signerType === 'USER_LIST' &&
+      signature.assignedUserList?.some((employee) => employee.id === user?.id))
   );
 };

@@ -1,13 +1,7 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { FormInstanceEntity } from './../../../web/src/client';
+import { FormInstanceEntity } from '../client';
 import { useRouter } from 'next/router';
-import { useStorage } from '@web/hooks/useStorage';
-import React, { FC, useMemo } from 'react';
-import { pdfjs, Document, Page } from 'react-pdf';
-import 'react-pdf/dist/Page/TextLayer.css';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-
-
+import { PDFDocument } from './PDFDocument';
 
 /**
  * @param formName - the name of the form
@@ -23,9 +17,6 @@ export const FormImageCard = ({
   link: string;
 }) => {
   const router = useRouter();
-  const { formURL } = useStorage(formInstance);
-
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
   const daysAgo = (date1: string, date2: string) => {
     const d1 = new Date(date1);
@@ -64,13 +55,7 @@ export const FormImageCard = ({
             filter: 'blur(0px)',
           }}
         >
-          <Document file={formURL}>
-            <Page
-              renderAnnotationLayer={false}
-              renderTextLayer={false}
-              pageNumber={1}
-            />
-          </Document>
+          <PDFDocument formLink={formInstance.formDocLink} />
         </Box>
       </Box>
       <Flex padding="12px" flexDirection="column" gap="12px">

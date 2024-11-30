@@ -7,6 +7,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { ConnectEmployeeDto } from './models/ConnectEmployeeDto';
 export type { CreateDepartmentDto } from './models/CreateDepartmentDto';
 export type { CreateEmployeeDto } from './models/CreateEmployeeDto';
 export type { CreateFormInstanceDto } from './models/CreateFormInstanceDto';
