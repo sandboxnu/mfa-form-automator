@@ -7,50 +7,55 @@ import { PositionEntity } from '@web/client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@web/hooks/useAuth';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 export default function Register() {
-  const router = useRouter();
   const { completeRegistration, userData } = useAuth();
+  const [currentDepartmentName, setCurrentDepartmentName] =
+    useState<string>('');
+  const [currentPositionName, setCurrentPositionName] = useState<string>('');
   const [loadingUserData, setLoadingUserData] = useState<boolean>(true);
-  const [currentDepartment, setCurrentDepartment] = useState<string>('');
-  const [currentPosition, setCurrentPosition] = useState<string>('');
 
   useEffect(() => {
     if (userData) {
-      setCurrentDepartment(userData.department);
-      setCurrentPosition(userData.position);
+      setCurrentDepartmentName(userData.departmentId);
+      setCurrentPositionName(userData.positionId);
       setLoadingUserData(false);
     }
   }, [userData]);
 
   const {
-    isLoading: positionsLoading,
-    error: positionsError,
-    data: positionsData,
-  } = useQuery({
-    queryKey: ['api', 'positions'],
-    queryFn: () => PositionsService.positionsControllerFindAll(1000),
-  });
-
-  const {
     isLoading: departmentsLoading,
     error: departmentsError,
-    data: departmentsData,
+    data: departmentsData = [],
   } = useQuery({
     queryKey: ['api', 'departments'],
     queryFn: () => DepartmentsService.departmentsControllerFindAll(1000),
   });
 
+  const {
+    isLoading: positionsLoading,
+    error: positionsError,
+    data: positionsData = [],
+  } = useQuery({
+    queryKey: ['api', 'positions', currentDepartmentName],
+    queryFn: () =>
+      PositionsService.positionsControllerFindAllInDepartmentName(
+        currentDepartmentName,
+        1000,
+      ),
+    enabled: !!currentDepartmentName,
+  });
+
   // If loading, wait to render
-  if (positionsLoading || departmentsLoading || loadingUserData) {
+  if (loadingUserData) {
     return <div>Loading...</div>;
   }
 
   // when button is submitted to finalize department and position, register employee
   // with current position and department and route to home page
   const clickResponse = () => {
-    if (!currentDepartment || !currentPosition) {
+    if (!currentDepartmentName || !currentPositionName) {
       return;
     }
 
@@ -58,11 +63,9 @@ export default function Register() {
     completeRegistration(
       userData.email,
       userData.password,
-      currentPosition,
-      currentDepartment,
+      currentPositionName,
+      currentDepartmentName,
     );
-    // redirect to main page
-    router.push('/');
   };
 
   return (
@@ -83,17 +86,17 @@ export default function Register() {
           Select Department
         </Heading>
         <Select
-          placeholder={
-            currentDepartment
-              ? currentDepartment.toString()
-              : 'Select Department'
-          }
-          onChange={(e) => setCurrentDepartment(e.target.value)}
+          placeholder="Select Department"
+          onChange={(e) => setCurrentDepartmentName(e.target.value)}
         >
           {departmentsData?.map(
             (department: DepartmentEntity, index: number) => {
               return (
-                <option key={index} value={department.name}>
+                <option
+                  key={index}
+                  value={department.name}
+                  selected={department.name === currentDepartmentName}
+                >
                   {department.name}
                 </option>
               );
@@ -112,14 +115,17 @@ export default function Register() {
         </Heading>
         <Select
           id="positionDropdown"
-          placeholder={
-            currentPosition ? currentPosition.toString() : 'Select Position'
-          }
-          onChange={(e) => setCurrentPosition(e.target.value)}
+          placeholder={'Select Position'}
+          onChange={(e) => setCurrentPositionName(e.target.value)}
+          disabled={!currentDepartmentName}
         >
           {positionsData?.map((position: PositionEntity, index: number) => {
             return (
-              <option key={index} value={position.name}>
+              <option
+                key={index}
+                value={position.name}
+                selected={position.name === currentPositionName}
+              >
                 {position.name}
               </option>
             );
@@ -130,7 +136,7 @@ export default function Register() {
         alignSelf="center"
         marginLeft="50px"
         onClick={clickResponse}
-        disabled={!(currentDepartment && currentPosition)}
+        disabled={!(currentDepartmentName && currentPositionName)}
       >
         Submit
       </Button>

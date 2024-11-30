@@ -201,8 +201,6 @@ export const AuthProvider = ({ children }: any) => {
       positionName: position,
     };
 
-    console.log(employee);
-
     registerEmployeeMutation.mutate(employee, {
       onSuccess: () => {
         login(email, password);
