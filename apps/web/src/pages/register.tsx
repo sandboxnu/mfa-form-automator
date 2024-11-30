@@ -28,7 +28,7 @@ export default function Register() {
   const {
     isLoading: departmentsLoading,
     error: departmentsError,
-    data: departmentsData,
+    data: departmentsData = [],
   } = useQuery({
     queryKey: ['api', 'departments'],
     queryFn: () => DepartmentsService.departmentsControllerFindAll(1000),
@@ -37,7 +37,7 @@ export default function Register() {
   const {
     isLoading: positionsLoading,
     error: positionsError,
-    data: positionsData,
+    data: positionsData = [],
   } = useQuery({
     queryKey: ['api', 'positions', currentDepartmentName],
     queryFn: () =>
@@ -49,7 +49,7 @@ export default function Register() {
   });
 
   // If loading, wait to render
-  if (positionsLoading || departmentsLoading || loadingUserData) {
+  if (loadingUserData) {
     return <div>Loading...</div>;
   }
 
