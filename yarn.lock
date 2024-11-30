@@ -13304,7 +13304,7 @@ react-dom@^18.3.1:
 
 react-draggable@4.4.6, react-draggable@^4.4.6:
   version "4.4.6"
-  resolved "https://registry.npmjs.org/react-draggable/-/react-draggable-4.4.6.tgz"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.4.6.tgz#63343ee945770881ca1256a5b6fa5c9f5983fe1e"
   integrity sha512-LtY5Xw1zTPqHkVmtM3X8MUOxNDOUhv/khTgBgrUvwaS064bwVvxT+q5El0uUFNx5IEPKXuRejr7UqLwBIg5pdw==
   dependencies:
     clsx "^1.1.1"
@@ -13331,6 +13331,11 @@ react-focus-lock@^2.9.4:
     react-clientside-effect "^1.2.6"
     use-callback-ref "^1.3.0"
     use-sidecar "^1.1.2"
+
+react-icons@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-5.3.0.tgz#ccad07a30aebd40a89f8cfa7d82e466019203f1c"
+  integrity sha512-DnUk8aFbTyQPSkCfF8dbX6kQjXA9DktMeJqfjrg6cK9vwQVMxmcA3BfP4QoiztVmEHtwlTgLFsPuH2NskKT6eg==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
@@ -13406,7 +13411,7 @@ react-remove-scroll@^2.5.6:
 
 react-rnd@^10.4.13:
   version "10.4.13"
-  resolved "https://registry.npmjs.org/react-rnd/-/react-rnd-10.4.13.tgz"
+  resolved "https://registry.yarnpkg.com/react-rnd/-/react-rnd-10.4.13.tgz#7a18c2785b4226ba3d3852d4a577cc45e477350b"
   integrity sha512-Vgbf0iihspcQ6nkaFhpOGWfmnuVbhkhoB0hBbYl8aRDA4horsQHESc4E1z7O/P27kFFjK2aqM0u5CGzfr9gEZA==
   dependencies:
     re-resizable "6.10.0"
