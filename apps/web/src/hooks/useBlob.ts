@@ -23,7 +23,7 @@ export const useBlob = () => {
     size: null,
   });
 
-  const uploadLocalFile = (file: File) => {
+  const uploadLocalFile = (file: File | undefined) => {
     if (file) {
       const blob: Blob = new Blob([file], { type: file.type });
       const url = URL.createObjectURL(blob);
