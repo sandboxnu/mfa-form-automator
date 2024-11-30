@@ -13,7 +13,7 @@ export default function Upload() {
       subheading={'Upload your form PDF'}
       boxContent={<UploadBox blob={blob} />}
       deleteFunction={blob.clearLocalBlob}
-      submitLink={'/'}
+      submitLink={'/create-template/description'}
       backLink={'/'}
       disabled={!blob.hasLocalBlob}
     />

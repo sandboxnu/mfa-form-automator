@@ -167,7 +167,7 @@ export const NavBar = ({
             <MenuItem
               rounded="8px"
               onClick={() => {
-                router.push('upload');
+                router.push('create-template/upload');
               }}
             >
               Template
