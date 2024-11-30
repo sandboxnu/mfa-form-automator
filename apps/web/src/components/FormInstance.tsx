@@ -15,7 +15,7 @@ import {
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
-import { LegacyRef, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { FormInstanceEntity, FormInstancesService } from '@web/client';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
@@ -69,14 +69,6 @@ const FormInstance = ({
       });
     },
   });
-
-  const pdfRef = useRef<HTMLEmbedElement>(null);
-
-  const handleSaveWithChanges = async () => {
-    if (pdfRef.current) {
-      console.log(pdfRef.current.textContent);
-    }
-  };
 
   const _nextSignature = formInstance.signatures
     .sort((a, b) => a.order - b.order)
