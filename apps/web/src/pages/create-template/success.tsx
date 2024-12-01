@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 /**
  * The upload page in the form template creation flow, where users add their pdf.
  */
-export default function Review() {
+export default function Success() {
   const router = useRouter();
   return (
     <>
