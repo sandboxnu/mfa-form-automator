@@ -1,5 +1,4 @@
-import { Text, Flex } from '@chakra-ui/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Box, Text, Flex } from '@chakra-ui/react';
 
 /**
  * The contents of the white box for the page (step 2) that asks the user for the form's name and
@@ -9,24 +8,46 @@ import { Dispatch, SetStateAction } from 'react';
  * @param setDescription function to save the inputted description of the form
  * @param formLink link to form to preview
  */
-export const NameAndDescriptionBox = ({
-  setName,
-  setDescription,
-  formLink,
-}: {
-  setName: Dispatch<SetStateAction<string | null>>;
-  setDescription: Dispatch<SetStateAction<string | null>>;
-  formLink: string;
-}) => {
+export const ReviewBox = ({ formLink }: { formLink: string }) => {
   const textInputStyle = {
-    padding: '8px 10px',
     alignSelf: 'stretch',
     alignItems: 'flex-start',
     borderRadius: '4px',
     border: '1px solid #E5E5E5',
-    background: '#F5F7FA',
     outlineColor: 'transparent',
     borderColor: 'transparent',
+  };
+  // TODO: these groups should instead be taken from state
+  const groups: string[] = ['Group 1', 'Group 2', 'Group 3'];
+
+  const GroupItem = ({ num }: { num: number }) => {
+    return num <= groups.length ? (
+      <Flex gap="10px">
+        <Box
+          width="24px"
+          height="24px"
+          {...(num === 1
+            ? {
+                border: '1px solid var(--Blue, #1367EA)',
+                background: '#EEF5FF',
+              }
+            : num === 2
+            ? {
+                border: '1px solid #BD21CA',
+                background: '#FDEAFF',
+              }
+            : num === 3
+            ? {
+                border: '1px solid #7645E8',
+                background: '#ECE4FF',
+              }
+            : {})}
+        ></Box>
+        <Text>{groups[num - 1]}</Text>
+      </Flex>
+    ) : (
+      <></>
+    );
   };
 
   return (
@@ -43,26 +64,22 @@ export const NameAndDescriptionBox = ({
         width="480px"
         alignItems={'flex-start'}
       >
-        <Flex gap="10px" flexDirection="column" width="480px">
-          <Text>Name</Text>
-          <input
-            type="text"
-            onChange={(e) => setName(e.target.value)}
-            style={{ ...textInputStyle }}
-          />
+        <Flex gap="8px" flexDirection="column" width="480px">
+          <Text fontWeight={600}>Name</Text>
+          <Text {...textInputStyle}>This is where the name will go</Text>
         </Flex>
-        <Flex gap="10px" flexDirection="column" width="480px">
-          <Text>Description (optional)</Text>
+        <Flex gap="8px" flexDirection="column" width="480px">
+          <Text fontWeight={600}>Description</Text>
+          <Text {...textInputStyle}>This is where the description will go</Text>
+        </Flex>
 
-          <textarea
-            onChange={(e) => setDescription(e.target.value)}
-            style={{
-              ...textInputStyle,
-              height: '120px',
-              resize: 'none',
-            }}
-            placeholder="For HR processing lorem ipsum dolor sit"
-          />
+        <Flex flexDirection={'column'} gap="12px">
+          <Flex gap="12px" flexDirection="column" width="480px">
+            <Text fontWeight={600}>Input Field Groups</Text>
+          </Flex>
+          <GroupItem num={1} />
+          <GroupItem num={2} />
+          <GroupItem num={3} />
         </Flex>
       </Flex>
       <Flex

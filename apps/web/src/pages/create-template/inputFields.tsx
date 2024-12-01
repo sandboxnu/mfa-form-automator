@@ -14,7 +14,7 @@ export default function InputFields() {
       // TODO replace box content with the pdf editor component
       boxContent={<Flex></Flex>}
       deleteFunction={() => {}}
-      submitLink={'/'}
+      submitLink={'/create-template/review'}
       backLink={'/create-template/description'}
       // TODO set disabled based on some state in the pdf editor component
       disabled={false}

@@ -7,43 +7,53 @@ import { useRouter } from 'next/router';
  * @param submitLink page router will push on click of 'save & continue'
  * @param backLink page router will push on click of 'back'
  * @param disabled whether the 'save & continue' button should be activated
+ * @param review if review page, there is no delete/clear button and the Save & Continue becomes Create Form Template 
  */
 export const FormTemplateButtons = ({
   deleteFunction,
   submitLink,
   backLink,
   disabled,
+  review,
 }: {
   deleteFunction: Function;
   submitLink: string;
   backLink: string;
   disabled: boolean;
+  review?: boolean;
 }) => {
+
   const router = useRouter();
+  
   return (
     <>
-      <Button
-        borderRadius="6px"
-        borderWidth="1.5px"
-        borderStyle={'solid'}
-        borderColor="#E23F40"
-        alignContent={'center'}
-        bgColor={'transparent'}
-        _hover={{
-          bgColor: 'transparent',
-        }}
-        marginLeft="36px"
-      >
-        <Text
-          color="#E23F40"
-          fontWeight="600px"
-          fontSize="18px"
-          lineHeight="22px"
-          onClick={(e) => deleteFunction(e)}
+      {!review ? (
+        <Button
+          borderRadius="6px"
+          borderWidth="1.5px"
+          borderStyle={'solid'}
+          borderColor="#E23F40"
+          alignContent={'center'}
+          bgColor={'transparent'}
+          _hover={{
+            bgColor: 'transparent',
+          }}
+          marginLeft="36px"
         >
-          Delete
-        </Text>
-      </Button>
+          <Text
+            color="#E23F40"
+            fontWeight="600px"
+            fontSize="18px"
+            lineHeight="22px"
+            onClick={(e) => deleteFunction(e)}
+          >
+            Delete
+          </Text>
+        </Button>
+      ) : (
+        <></>
+      )}
+
       <Flex float="right" justifyContent={'space-between'}>
         <Button
           borderRadius="6px"
@@ -91,7 +101,7 @@ export const FormTemplateButtons = ({
             fontSize="18px"
             lineHeight="22px"
           >
-            Save & Continue
+            {review ? 'Create Form Template' : 'Save & Continue'}
           </Text>
         </Button>
       </Flex>
