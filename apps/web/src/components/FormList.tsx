@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { SearchAndSort } from 'apps/web/src/components/SearchAndSort';
 import { ViewAll } from 'apps/web/src/components/ViewAll';
-import { getNameFromSignature } from '@web/utils/formInstanceUtils';
+import { NoForms } from '@web/static/icons';
 
 /**
  * @param title - the title of the form list
@@ -125,6 +125,56 @@ export const FormList = ({
                 link={'/form-instances/' + formInstance.id}
               />
             ),
+          )}
+          {sortedFormInstances.length === 0 ? (
+            <Flex
+              height="392px"
+              padding="12px 24px"
+              justifyContent={'center'}
+              alignItems={'center'}
+              gap="24px"
+              alignSelf={'stretch'}
+              borderRadius="0px 0px 8px 8px"
+              border="1px solid #D4D4D4"
+              background="#FFF"
+            >
+              <Flex
+                flexDirection="column"
+                gap="24px"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Flex
+                  width="200px"
+                  height="200px"
+                  padding="37.5px 47px"
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  borderRadius="200px"
+                  background="#ECF0F2"
+                >
+                  <NoForms width="106" height="125" />
+                </Flex>
+                <Flex flexDirection={'column'} alignItems={'center'} gap="8px">
+                  <Text color="#32353B" fontSize="21px" fontWeight={500}>
+                    {"You're all caught up!"}
+                  </Text>
+                  <Text
+                    color="#7F8185"
+                    fontSize="16px"
+                    fontWeight={400}
+                    lineHeight="21px"
+                    width="296px"
+                    textAlign={'center'}
+                  >
+                    It appears there are no forms requiring your attention at
+                    the moment.
+                  </Text>
+                </Flex>
+              </Flex>
+            </Flex>
+          ) : (
+            <></>
           )}
         </Box>
       </Box>
