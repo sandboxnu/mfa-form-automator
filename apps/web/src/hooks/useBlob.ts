@@ -1,7 +1,6 @@
 import { upload } from '@vercel/blob/client';
 import { useState, useRef } from 'react';
 import { type PutBlobResult } from '@vercel/blob';
-import { FormInstanceEntity, FormTemplateEntity } from '@web/client';
 
 type LocalBlobData = {
   blob: Blob | null;
@@ -47,12 +46,7 @@ export const useBlob = () => {
     setHasLocalBlob(false);
   };
 
-  const uploadFile = async () => {
-    if (!inputFileRef.current?.files) {
-      throw new Error('No file selected');
-    }
-
-    const file = inputFileRef.current.files[0];
+  const uploadFile = async (file: File) => {
     const newBlob = await upload(file.name, file, {
       access: 'public',
       handleUploadUrl: 'api/upload',
@@ -62,10 +56,20 @@ export const useBlob = () => {
     return newBlob;
   };
 
+  const uploadFileRef = async () => {
+    if (!inputFileRef.current?.files) {
+      throw new Error('No file selected');
+    }
+
+    const file = inputFileRef.current.files[0];
+    return uploadFile(file);
+  };
+
   return {
     inputFileRef,
     blob,
     localBlobData,
+    uploadFileRef,
     uploadFile,
     uploadLocalFile,
     clearLocalBlob,
