@@ -95,16 +95,13 @@ const NavItem = ({
 };
 
 /**
- * @param onOpenCreateFormTemplate - the function to open the create form template modal
  * @param onOpenCreateFormInstance - the function to open the create form instance modal
  * @returns  the nav bar for the left sidebar
  */
 export const NavBar = ({
-  onOpenCreateFormTemplate,
   onOpenCreateFormInstance,
   ...props
 }: {
-  onOpenCreateFormTemplate: () => void;
   onOpenCreateFormInstance: () => void;
   props?: {};
 }) => {

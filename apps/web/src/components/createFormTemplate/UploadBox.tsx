@@ -1,24 +1,45 @@
 import { Flex, Text, Heading, Button, Box } from '@chakra-ui/react';
 import { CloseIcon, PDFIcon, UploadIcon } from '@web/static/icons';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 /**
- * The content that will be in the white box for the upload step.  This is a drop box and a file preview.
+ * The content that will be in the white box for the upload step. This is a drop box and a file preview.
  * @param blob the useBlob() instance we are using to store the data
  */
 export const UploadBox = ({
-  // TODO: rather than importing useBlob as type any, it should be stored in universally
-  blob,
+  hasLocalBlob,
+  localBlobData,
+  clearLocalBlob,
+  uploadLocalFile,
 }: {
-  blob: any;
+  hasLocalBlob: boolean;
+  localBlobData: { name: string; size: string };
+  clearLocalBlob: () => void;
+  uploadLocalFile: (file: File) => void;
 }) => {
-  const onDrop = useCallback((acceptedFiles: any) => {
-    if (!acceptedFiles) return;
-    blob.uploadLocalFile(acceptedFiles[0]);
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (!acceptedFiles || acceptedFiles.length === 0) return;
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+      const file = acceptedFiles[0];
+
+      // Ensure the file is a PDF
+      if (file.type === 'application/pdf') {
+        uploadLocalFile(file);
+      } else {
+        alert('Please upload a valid PDF file.');
+      }
+    },
+    [uploadLocalFile],
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'application/pdf': ['.pdf'], // Restrict file types to PDFs only
+    },
+  });
 
   return (
     <Flex flexDirection="column" gap="20px">
@@ -32,16 +53,17 @@ export const UploadBox = ({
         flexDirection={'column'}
         justifyContent={'center'}
         alignItems={'center'}
-        backgroundColor={blob.hasLocalBlob ? '#F1F7FF' : '#FFF'}
+        backgroundColor={hasLocalBlob ? '#F1F7FF' : '#FFF'}
         {...getRootProps()}
       >
+        <input {...getInputProps()} />
         <UploadIcon
           /* upload icon */
           height="48px"
           width="66px"
         />
         <Flex
-          /* all text below icon*/
+          /* all text below icon */
           flexDirection={'column'}
           alignItems={'center'}
         >
@@ -52,17 +74,16 @@ export const UploadBox = ({
             <Text fontWeight={500} size="16px" height="21px" align="center">
               Drag file here or
             </Text>
-            <label htmlFor="pdfInput">
-              <span>
-                <Text
-                  textDecoration={'underline'}
-                  align="center"
-                  color="#1367EA"
-                >
-                  browse
-                </Text>
-              </span>
-            </label>
+            <Text
+              fontWeight={500}
+              size="16px"
+              height="21px"
+              align="center"
+              textDecoration="underline"
+              color="#1367EA"
+            >
+              Browse
+            </Text>
           </Flex>
           <Text
             /* pdf qualifier */
@@ -73,15 +94,8 @@ export const UploadBox = ({
             PDFs Only
           </Text>
         </Flex>
-        <input
-          type="file"
-          id="pdfInput"
-          accept=".pdf"
-          style={{ display: 'none' }}
-          {...getInputProps()}
-        />
       </Flex>
-      {blob.hasLocalBlob && (
+      {hasLocalBlob && (
         <Flex
           /* box that shows pdf information */
           width="414px"
@@ -111,7 +125,7 @@ export const UploadBox = ({
                 maxWidth={'320px'}
                 textOverflow={'ellipsis'}
               >
-                {blob.localBlobData.name}
+                {localBlobData.name}
               </Text>
               <Text
                 color="#808080"
@@ -119,7 +133,7 @@ export const UploadBox = ({
                 fontSize="12px"
                 fontWeight={500}
               >
-                {blob.localBlobData.size} mb
+                {(parseFloat(localBlobData.size) / 1024 / 1024).toFixed(2)} MB
               </Text>
             </Flex>
           </Flex>
@@ -127,7 +141,7 @@ export const UploadBox = ({
             height="16px"
             width="16px"
             marginLeft="auto"
-            onClick={() => blob.clearLocalBlob()}
+            onClick={clearLocalBlob}
           />
         </Flex>
       )}

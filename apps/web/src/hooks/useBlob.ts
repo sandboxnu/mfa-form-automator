@@ -1,7 +1,6 @@
 import { upload } from '@vercel/blob/client';
 import { useState, useRef } from 'react';
 import { type PutBlobResult } from '@vercel/blob';
-import { FormInstanceEntity, FormTemplateEntity } from '@web/client';
 
 type LocalBlobData = {
   blob: Blob | null;
