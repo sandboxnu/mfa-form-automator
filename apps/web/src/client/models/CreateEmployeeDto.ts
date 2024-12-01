@@ -9,5 +9,6 @@ export type CreateEmployeeDto = {
     positionId: string;
     email: string;
     password: string;
+    signatureLink: string;
 };
 

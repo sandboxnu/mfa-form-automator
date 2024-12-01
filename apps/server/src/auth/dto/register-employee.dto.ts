@@ -32,4 +32,9 @@ export class RegisterEmployeeDto {
   @IsNotEmpty()
   @ApiProperty()
   departmentName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  signatureLink: string;
 }

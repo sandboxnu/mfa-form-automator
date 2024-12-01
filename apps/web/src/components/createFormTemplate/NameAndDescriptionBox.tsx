@@ -10,11 +10,15 @@ import { Dispatch, SetStateAction } from 'react';
  * @param formLink link to form to preview
  */
 export const NameAndDescriptionBox = ({
+  name,
   setName,
+  description,
   setDescription,
   formLink,
 }: {
+  name: string | null;
   setName: Dispatch<SetStateAction<string | null>>;
+  description: string | null;
   setDescription: Dispatch<SetStateAction<string | null>>;
   formLink: string;
 }) => {
@@ -49,6 +53,8 @@ export const NameAndDescriptionBox = ({
             type="text"
             onChange={(e) => setName(e.target.value)}
             style={{ ...textInputStyle }}
+            placeholder="Form Template Name"
+            value={name!!}
           />
         </Flex>
         <Flex gap="10px" flexDirection="column" width="480px">
@@ -62,6 +68,7 @@ export const NameAndDescriptionBox = ({
               resize: 'none',
             }}
             placeholder="For HR processing lorem ipsum dolor sit"
+            value={description!!}
           />
         </Flex>
       </Flex>

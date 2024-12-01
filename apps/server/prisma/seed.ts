@@ -39,6 +39,7 @@ const DIGITAL_MFA_ID_BADGE_REQUEST_UUID = uuidv4();
 const TRAVEL_AUTHORIZATION_UUID = uuidv4();
 
 const DEV_FORM_DOC_LINK = 'http://localhost:3002/test.pdf';
+const DEV_SIGNATURE_LINK = 'http://localhost:3002/signature.png';
 
 // type definition for employee data used in upsertEmployee
 type EmployeeData = {
@@ -47,6 +48,7 @@ type EmployeeData = {
   lastName: string;
   email: string;
   positionId: string;
+  signatureLink: string;
 };
 
 // update or insert employee to database based on the employee id
@@ -59,6 +61,7 @@ async function upsertEmployee(empData: EmployeeData) {
       firstName: empData.firstName,
       lastName: empData.lastName,
       email: empData.email,
+      signatureLink: empData.signatureLink,
       position: {
         connect: { id: empData.positionId },
       },
@@ -383,6 +386,7 @@ async function main() {
       lastName: 'Zhang',
       email: 'zhang.iri@northeastern.edu',
       positionId: CHIEF_OF_STAFF_UUID,
+      signatureLink: DEV_SIGNATURE_LINK,
     },
     {
       id: KAI_ZHENG_UUID,
@@ -390,6 +394,7 @@ async function main() {
       lastName: 'Zheng',
       email: 'zheng.kaiy@northeastern.edu',
       positionId: CHIEF_FIN_OFFICER_UUID,
+      signatureLink: DEV_SIGNATURE_LINK,
     },
     {
       id: ANGELA_WEIGL_UUID,
@@ -397,6 +402,7 @@ async function main() {
       lastName: 'Weigl',
       email: 'weigl.a@northeastern.edu',
       positionId: AGG_DIR_UUID,
+      signatureLink: DEV_SIGNATURE_LINK,
     },
     {
       id: ANSHUL_SHIRUDE_UUID,
@@ -404,6 +410,7 @@ async function main() {
       lastName: 'Shirude',
       email: 'shirude.a@northeastern.edu',
       positionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
+      signatureLink: DEV_SIGNATURE_LINK,
     },
   ];
 

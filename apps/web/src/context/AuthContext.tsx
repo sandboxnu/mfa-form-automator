@@ -174,15 +174,8 @@ export const AuthProvider = ({ children }: any) => {
     if (userData.department == null || userData.position == null) {
       userData.email = email;
       userData.password = password;
-      router.push('/register');
-    } else {
-      completeRegistration(
-        email,
-        password,
-        userData.position,
-        userData.department,
-      );
     }
+    router.push('/register');
   };
 
   // Register a user with provided information to the database
@@ -191,6 +184,7 @@ export const AuthProvider = ({ children }: any) => {
     password: string,
     position: string,
     department: string,
+    signatureLink: string,
   ) => {
     const employee: RegisterEmployeeDto = {
       email: email,
@@ -199,6 +193,7 @@ export const AuthProvider = ({ children }: any) => {
       lastName: userData.surname || userData.displayName.split(' ')[1],
       departmentName: department,
       positionName: position,
+      signatureLink: signatureLink,
     };
 
     registerEmployeeMutation.mutate(employee, {
