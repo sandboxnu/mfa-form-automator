@@ -31,6 +31,7 @@ describe('EmployeesController', () => {
           firstName: 'John',
           lastName: 'Doe',
           positionId: 'position-id',
+          signatureLink: 'signature-link',
           position: {
             id: 'position-id',
             name: 'position-name',
@@ -57,6 +58,7 @@ describe('EmployeesController', () => {
           firstName: 'Bilbo',
           lastName: 'Baggins',
           positionId: 'position-id',
+          signatureLink: 'signature-link',
           position: {
             id: 'position-id',
             name: 'position-name',
@@ -86,6 +88,7 @@ describe('EmployeesController', () => {
           firstName: 'John',
           lastName: 'Doe',
           positionId: 'position-id',
+          signatureLink: 'signature-link',
           position: {
             id: 'position-id',
             name: 'position-name',
@@ -112,6 +115,7 @@ describe('EmployeesController', () => {
           firstName: 'Bilbo',
           lastName: 'Baggins',
           positionId: 'position-id',
+          signatureLink: 'signature-link',
           position: {
             id: 'position-id',
             name: 'position-name',

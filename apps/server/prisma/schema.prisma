@@ -38,6 +38,7 @@ model Employee {
   firstName    String   @db.VarChar(255)
   lastName     String   @db.VarChar(255)
   email        String   @unique @db.VarChar(255)
+  signatureLink String  @db.VarChar(255)
   isAdmin      Boolean  @default(false) @db.Boolean
   pswdHash     String?  @db.VarChar(255)
   createdAt    DateTime @default(now())

@@ -133,6 +133,7 @@ export class AppController {
       lastName: employeeDto.lastName,
       email: employeeDto.email,
       password: employeeDto.password,
+      signatureLink: employeeDto.signatureLink,
       positionId: '',
     };
 

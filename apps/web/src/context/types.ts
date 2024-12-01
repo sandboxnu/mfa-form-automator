@@ -33,6 +33,7 @@ export interface AuthContextType {
     password: string,
     position: string,
     department: string,
+    signatureLink: string,
   ) => void;
   logout: () => void;
 }
