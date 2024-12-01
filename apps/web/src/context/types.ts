@@ -1,4 +1,4 @@
-import { Ref } from 'react';
+import { Dispatch, Ref, SetStateAction } from 'react';
 
 // for storage in context
 export type User = {
@@ -38,10 +38,9 @@ export interface AuthContextType {
 }
 
 export interface CreateFormTemplateContextType {
-  formTemplateName: string;
-  formTemplateDescription: string;
-  localBlobData: any;
-  blobInputRef: Ref<HTMLInputElement>;
-  setFormTemplateName: (formTemplateName: string) => void;
-  setFormTemplateDescription: (formTemplateDescription: string) => void;
+  formTemplateName: string | null;
+  formTemplateDescription: string | null;
+  setFormTemplateName: Dispatch<SetStateAction<string | null>>;
+  setFormTemplateDescription: Dispatch<SetStateAction<string | null>>;
+  useBlob: any;
 }
