@@ -1,4 +1,4 @@
-import { Flex, Box, Text, Select, Button, HStack } from '@chakra-ui/react';
+import { Flex, Box, Text, Select, Button } from '@chakra-ui/react';
 import { DepartmentsService, PositionsService } from '@web/client';
 import { DepartmentEntity } from '@web/client/models/DepartmentEntity';
 import { PositionEntity } from '@web/client/models/PositionEntity';
