@@ -22,6 +22,7 @@ export const Layout = ({ children }: { children: any }) => {
         bg: 'gray.700',
       }}
       minH="100vh"
+      height="100%"
     >
       <NavBar onOpenCreateFormInstance={onOpenCreateFormInstance} />
       <Box>
