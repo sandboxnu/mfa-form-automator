@@ -451,3 +451,28 @@ export const PlusSign = (
     />
   </svg>
 );
+
+export const PageSwitcherArrowLeft = (
+  <svg
+    width="8"
+    height="10"
+    viewBox="0 0 8 10"
+    fill="none"
+    transform="scale(-1)"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M0.5 9.375L8 5L0.5 0.625V9.375Z" fill="#343436" />
+  </svg>
+);
+
+export const PageSwitcherArrowRight = (
+  <svg
+    width="8"
+    height="10"
+    viewBox="0 0 8 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M0.5 9.375L8 5L0.5 0.625V9.375Z" fill="#343436" />
+  </svg>
+);

@@ -1,6 +1,9 @@
-import { Button } from '@chakra-ui/react';
+import { Box, Text, Button } from '@chakra-ui/react';
+import {
+  PageSwitcherArrowLeft,
+  PageSwitcherArrowRight,
+} from '@web/static/icons';
 import { Dispatch, SetStateAction } from 'react';
-import { RiArrowRightLine, RiArrowLeftLine } from 'react-icons/ri';
 
 export default function PagingControl({
   totalPages,
@@ -28,35 +31,31 @@ export default function PagingControl({
     },
   };
 
-  const viewLeft = () => {
-    if (pageNum === 0) {
-      setPageNum(totalPages - 1);
-    } else {
-      setPageNum(pageNum - 1);
-    }
-  };
-
-  const viewRight = () => {
-    if (pageNum === totalPages - 1) {
-      setPageNum(0);
-    } else {
-      setPageNum(pageNum + 1);
-    }
+  const changePage = (direction: number) => () => {
+    if (pageNum > 0 || pageNum < totalPages) setPageNum(pageNum + direction);
   };
 
   return (
-    <div style={styles.container}>
+    <Box>
       <div style={styles.inlineFlex}>
-        <Button onClick={viewLeft} variant={'outline'}>
-          <RiArrowLeftLine />
+        <Button
+          onClick={changePage(-1)}
+          variant={'unstyled'}
+          isDisabled={pageNum == 0}
+        >
+          {PageSwitcherArrowLeft}
         </Button>
-        <div style={styles.pageInfo}>
-          Page: {pageNum + 1}/{totalPages}
-        </div>
-        <Button onClick={viewRight} variant={'outline'}>
-          <RiArrowRightLine />
+        <Text>
+          {pageNum + 1} / {totalPages}
+        </Text>
+        <Button
+          variant={'unstyled'}
+          onClick={changePage(1)}
+          isDisabled={pageNum == totalPages - 1}
+        >
+          {PageSwitcherArrowRight}
         </Button>
       </div>
-    </div>
+    </Box>
   );
 }

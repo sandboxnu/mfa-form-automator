@@ -1,31 +1,14 @@
+import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import { Box, Button } from '@chakra-ui/react';
-import { useState, useRef } from 'react';
-import DraggableText from './DraggableText';
+
+import { Box, Text, Button } from '@chakra-ui/react';
+import { TextIcon, PlusSign } from 'apps/web/src/static/icons';
+import { DraggableData, DraggableEvent } from 'react-draggable';
+
+import PagingControl from './PagingControl';
 import { PDFPageProxy } from 'pdfjs-dist';
 import { v4 as uuidv4 } from 'uuid';
-import PagingControl from './PagingControl';
-import { PlusSign, TextIcon } from './../../../static/icons';
-import 'react-pdf/dist/Page/TextLayer.css';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
-type FormEditorProps = {
-  pdfUrl: string; // URL of the PDF to load
-  initialFormFieldGroups?: Map<
-    string,
-    { fields: Map<string, TextFieldPosition>; color: string }
-  >; // Optional initial fields
-  onFieldsUpdate?: (
-    formFieldGroups: Map<
-      string,
-      { fields: Map<string, TextFieldPosition>; color: string }
-    >,
-  ) => void; // Callback for field updates
-  currentPage?: number; // Initial page to display
-  onPageChange?: (pageNumber: number) => void; // Callback for page changes
-  allowFieldAdd?: boolean; // Control if new fields can be added
-};
+import DraggableText from './DraggableText';
 
 type PageCallback = PDFPageProxy & {
   width: number;
@@ -34,43 +17,69 @@ type PageCallback = PDFPageProxy & {
   originalHeight: number;
 };
 
-type TextFieldPosition = {
+export type TextFieldPosition = {
   x: number;
   y: number;
   width: number;
   height: number;
 };
 
-export const FormEditor = ({
-  pdfUrl,
-  initialFormFieldGroups = new Map(),
-  currentPage = 0,
-  allowFieldAdd = true,
-}: FormEditorProps) => {
-  const [formFieldGroups, setFormFieldGroups] = useState(
-    initialFormFieldGroups,
-  );
-  const [pageNum, setPageNum] = useState(currentPage);
-  const [totalPages, setTotalPages] = useState(0);
-  const [pageDetails, setPageDetails] = useState<PageCallback | null>(null);
+type groupId = string;
+type fieldId = string;
+type colorHex = string;
+
+type FieldGroups = Map<groupId, colorHex>;
+
+// index = page num (zero indexing)
+type FormFields = Map<
+  fieldId,
+  { position: TextFieldPosition; groupId: string }
+>[];
+
+//! TEMP FORM NAME
+const formName = 'Authorization Form ';
+
+export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
+  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+  const [formFields, setFormFields] = useState<FormFields>([]);
+  const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
   const [currentGroup, setCurrentGroup] = useState<string>('');
+  const [pageNum, setPageNum] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  // const [pageDetails, setPageDetails] = useState<PageCallback | null>(null);
   const documentRef = useRef<HTMLDivElement>(null);
+  const [groupNum, setGroupNum] = useState(0);
+
+  //colors for group buttons: colors[0] = border/text color, colors[1] = background color
+  const groupColors = [
+    ['#1367EA', '#EEF5FF'],
+    ['#BD21CA', '#FDEAFF'],
+    ['#7645E8', '#ECE4FF'],
+    ['#567E26', '#EDFFD6'],
+    ['#A16308', '#FFFDDB'],
+  ];
 
   const handleAddField = () => {
-    if (!allowFieldAdd || !currentGroup || !pageDetails) {
-      return;
+    if (fieldGroups.size > 0) {
+      const fieldId = uuidv4();
+      let formFieldsCopy = [...formFields];
+      formFieldsCopy[pageNum].set(fieldId, {
+        position: {
+          x: 0,
+          y: 0,
+          width: 80,
+          height: 30,
+        },
+        groupId: currentGroup,
+      });
+      setFormFields(formFieldsCopy);
     }
+  };
 
-    const fieldId = uuidv4();
-    const updatedGroups = new Map(formFieldGroups);
-    updatedGroups.get(currentGroup)?.fields.set(fieldId, {
-      x: 0,
-      y: 0,
-      width: 80,
-      height: 30,
-    });
-
-    setFormFieldGroups(updatedGroups);
+  const handleRemoveField = (fieldId: string) => {
+    const updatedFields = [...formFields];
+    updatedFields[pageNum].delete(fieldId);
+    setFormFields(updatedFields);
   };
 
   const handleFieldUpdate = (
@@ -78,21 +87,28 @@ export const FormEditor = ({
     fieldId: string,
     pos: TextFieldPosition,
   ) => {
-    const updatedGroups = new Map(formFieldGroups);
-    updatedGroups.get(groupId)?.fields.set(fieldId, pos);
-    setFormFieldGroups(updatedGroups);
+    let updatedFormFields = [...formFields];
+    updatedFormFields[pageNum].set(fieldId, {
+      position: {
+        width: pos.width,
+        height: pos.height,
+        x: pos.x,
+        y: pos.y,
+      },
+      groupId: groupId,
+    });
+    setFormFields(updatedFormFields);
   };
 
   const addGroup = () => {
     const myuuid = uuidv4();
-    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-    const newFormFieldGroups = new Map(formFieldGroups);
-    newFormFieldGroups.set(myuuid, {
-      fields: new Map(),
-      color: randomColor,
-    });
-    setFormFieldGroups(newFormFieldGroups);
-    setCurrentGroup(myuuid);
+    let mapCpy = new Map(fieldGroups);
+    if (groupNum != 5) {
+      mapCpy.set(myuuid, groupColors[groupNum][1]);
+      setFieldGroups(mapCpy);
+      setGroupNum(groupNum + 1);
+      setCurrentGroup(myuuid);
+    }
   };
 
   return (
@@ -106,12 +122,19 @@ export const FormEditor = ({
       gap="20px"
     >
       <Box display="flex" gap="12px">
-        {Array.from(formFieldGroups.entries()).map(([key, value], index) => (
+        {Array.from(fieldGroups.entries()).map(([key, value], index) => (
           <Button
             key={index}
             onClick={() => setCurrentGroup(key)}
-            variant={currentGroup === key ? 'solid' : 'outline'}
-            colorScheme="blue"
+            variant={'solid'}
+            border={'solid 1px'}
+            backgroundColor={
+              currentGroup === key ? groupColors[index][1] : 'white'
+            }
+            borderColor={
+              currentGroup === key ? groupColors[index][0] : '#1367EA'
+            }
+            textColor={currentGroup === key ? groupColors[index][0] : '#1367EA'}
           >
             Group {index + 1}
           </Button>
@@ -142,130 +165,193 @@ export const FormEditor = ({
         background="#F6F5F5"
         borderRadius="8px"
         border="1px #E5E5E5 solid"
-        height="525px"
+        height="525"
         position="relative"
       >
+        <Text
+          borderTopRadius="8px"
+          borderBottom="1px #E5E5E5 solid "
+          fontSize="14px"
+          fontFamily="Hanken Grotesk"
+          fontWeight="600"
+          paddingTop="12px"
+          paddingBottom="12px"
+          textAlign="center"
+          background="white"
+        >
+          {formName}
+        </Text>
         <Box display="flex" justifyContent="center">
-          {allowFieldAdd && (
-            <Box
-              position="absolute"
-              left="24px"
-              top="69px"
-              background="white"
-              padding="6px"
-              boxShadow="0px 1px 4px #E5E5E5"
-              borderRadius="5px"
-              border="1px #E5E5E5 solid"
-            >
-              <Button
-                width="32px"
-                height="32px"
-                backgroundColor="#1367EA"
-                color="white"
-                onClick={handleAddField}
-              >
-                {TextIcon}
-              </Button>
-            </Box>
-          )}
           <Box
-            marginTop="1px"
-            height="475px"
-            width="662px"
+            position="absolute"
+            left="24px"
+            top="69px"
+            background="white"
+            padding="6px"
+            boxShadow="0px 1px 4px #E5E5E5"
+            borderRadius="5px"
+            border="1px #E5E5E5 solid"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            gap="8px"
+            display="flex"
+          >
+            <Button
+              position="relative"
+              width="40px"
+              height="40px"
+              backgroundColor="#1367EA"
+              borderRadius="4px"
+              border="1px #E5E5E5 solid"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              isDisabled={fieldGroups.size == 0}
+              onClick={handleAddField}
+            >
+              <div>{TextIcon}</div>
+            </Button>
+          </Box>
+          <Box
+            height="474px"
+            width="1000px"
             overflow="scroll"
             ref={documentRef}
+            display="flex"
+            flexDirection="column"
           >
+            {/* {signatureURL ? (
+                <DraggableSignature
+                  url={signatureURL}
+                  onCancel={() => {
+                    setSignatureURL(null);
+                  }}
+                  onSet={async () => {
+                    if (
+                      pageDetails &&
+                      documentRef &&
+                      documentRef.current &&
+                      position
+                    ) {
+                      const { originalHeight, originalWidth } = pageDetails;
+                      const scale =
+                        originalWidth / documentRef.current.clientWidth;
+
+                      const y =
+                        documentRef.current.clientHeight -
+                        (position.y -
+                          position.height +
+                          64 -
+                          documentRef.current.offsetTop);
+                      const x =
+                        position.x -
+                        160 -
+                        position.width -
+                        documentRef.current.offsetLeft;
+
+                      // new XY in relation to actual document size
+                      const newY =
+                        (y * originalHeight) / documentRef.current.clientHeight;
+                      const newX =
+                        (x * originalWidth) / documentRef.current.clientWidth;
+
+                      const pdfDoc = await PDFDocument.load(pdf);
+
+                      const pages = pdfDoc.getPages();
+                      const firstPage = pages[pageNum];
+
+                      const pngImage = await pdfDoc.embedPng(signatureURL);
+                      const pngDims = pngImage.scale(scale * 0.3);
+
+                      firstPage.drawImage(pngImage, {
+                        x: newX,
+                        y: newY,
+                        width: pngDims.width,
+                        height: pngDims.height,
+                      });
+
+                      const pdfBytes = await pdfDoc.save();
+                      const blob = new Blob([new Uint8Array(pdfBytes)]);
+
+                      // const URL = await blobToURL(blob);
+                      // setPdf(URL);
+                      setPosition(null);
+                      setSignatureURL(null);
+                    }
+                  }}
+                  onEnd={(e: DraggableEvent, data: DraggableData) =>
+                    setPosition({
+                      width: data.deltaX,
+                      height: data.deltaY,
+                      x: data.x,
+                      y: data.y,
+                    })
+                  }
+                />
+              ) : null} */}
             <Document
               file={pdfUrl}
-              onLoadSuccess={(data) => setTotalPages(data.numPages)}
+              onLoadSuccess={(data) => {
+                setTotalPages(data.numPages);
+                let arr = [];
+                for (let i = 0; i <= data.numPages; i++) {
+                  arr.push(new Map());
+                }
+                setFormFields(arr);
+              }}
             >
               <Page
-                pageNumber={pageNum + 1}
+                width={1000}
                 renderAnnotationLayer={false}
                 renderTextLayer={false}
-                onLoadSuccess={(page: PageCallback) => setPageDetails(page)}
+                pageNumber={pageNum + 1}
+                onLoadSuccess={(page: PageCallback) => {
+                  // setPageDetails(page);
+                }}
               >
-                {/* {Array.from(formFieldGroups.entries()).map(
-                  ([groupId, group], index) =>
-                    Array.from(group.fields.entries()).map(
-                      ([fieldId, field]) => {
-                        // make a span at the position of the field
-                        if (!pageDetails) {
-                          return null;
-                        }
-
-                        const pageWidth = pageDetails.width;
-                        const pageHeight = pageDetails.height;
-                        const x =
-                          (field.x / pageDetails.originalWidth) * pageWidth;
-                        const y =
-                          (field.y / pageDetails.originalHeight) * pageHeight;
-                        const width =
-                          (field.width / pageDetails.originalWidth) * pageWidth;
-                        const height =
-                          (field.height / pageDetails.originalHeight) *
-                          pageHeight;
-
-                        return (
-                          <Box
-                            key={fieldId}
-                            style={{
-                              position: 'absolute',
-                              left: x,
-                              top: y,
-                              width,
-                              height,
-                              borderRadius: '4px',
-                              padding: '4px',
-                              zIndex: 100000,
-                              backgroundColor: group.color,
-                            }}
-                          />
-                        );
-                      },
+                {formFields[pageNum] &&
+                  Array.from(formFields[pageNum].entries()).map(
+                    ([fieldId, { position, groupId }], index) => (
+                      <DraggableText
+                        currentPosition={position}
+                        onRemove={() => {
+                          handleRemoveField(fieldId);
+                        }}
+                        key={index}
+                        color={fieldGroups.get(groupId) ?? '#000'}
+                        initialText={null}
+                        onStop={(e: DraggableEvent, data: DraggableData) => {
+                          handleFieldUpdate(groupId, fieldId, {
+                            width: position.width,
+                            height: position.height,
+                            x: data.x,
+                            y: data.y,
+                          });
+                        }}
+                        onResizeStop={(
+                          e: MouseEvent | TouchEvent,
+                          dir,
+                          elementRef,
+                          delta,
+                          pos,
+                        ) => {
+                          let newWidth = parseFloat(elementRef.style.width);
+                          let newHeight = parseFloat(elementRef.style.height);
+                          handleFieldUpdate(groupId, fieldId, {
+                            width: Number.isNaN(newWidth)
+                              ? position.width
+                              : newWidth,
+                            height: Number.isNaN(newHeight)
+                              ? position.height
+                              : newHeight,
+                            x: pos.x,
+                            y: pos.y,
+                          });
+                        }}
+                      />
                     ),
-                )} */}
-
-                {Array.from(formFieldGroups.entries()).map(
-                  ([groupId, group], index) =>
-                    Array.from(group.fields.entries()).map(
-                      ([fieldId, field]) => (
-                        <DraggableText
-                          key={fieldId}
-                          color={group.color}
-                          onRemove={() => {
-                            const updatedGroups = new Map(formFieldGroups);
-                            updatedGroups.get(groupId)?.fields.delete(fieldId);
-                            setFormFieldGroups(updatedGroups);
-                          }}
-                          onStop={(e, data) => {
-                            handleFieldUpdate(groupId, fieldId, {
-                              ...field,
-                              x: data.x,
-                              y: data.y,
-                            });
-                          }}
-                          onResizeStop={(
-                            e,
-                            dir,
-                            elementRef,
-                            delta,
-                            position,
-                          ) => {
-                            handleFieldUpdate(groupId, fieldId, {
-                              ...field,
-                              width: parseFloat(elementRef.style.width),
-                              height: parseFloat(elementRef.style.height),
-                              x: position.x,
-                              y: position.y,
-                            });
-                          }}
-                          initialText={''}
-                          {...field}
-                        />
-                      ),
-                    ),
-                )}
+                  )}
               </Page>
             </Document>
           </Box>
