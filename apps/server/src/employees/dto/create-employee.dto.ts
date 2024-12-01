@@ -33,4 +33,9 @@ export class CreateEmployeeDto {
   @MinLength(5)
   @ApiProperty()
   password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  signatureLink: string;
 }
