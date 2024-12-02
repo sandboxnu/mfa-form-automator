@@ -8,12 +8,6 @@ import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModa
  * @returns overall layout of the application
  */
 export const Layout = ({ children }: { children: any }) => {
-  const {
-    isOpen: isCreateFormInstanceOpen,
-    onOpen: onOpenCreateFormInstance,
-    onClose: onCloseCreateFormInstance,
-  } = useDisclosure();
-
   return (
     <Box
       as="section"
@@ -24,7 +18,7 @@ export const Layout = ({ children }: { children: any }) => {
       minH="100vh"
       height="100%"
     >
-      <NavBar onOpenCreateFormInstance={onOpenCreateFormInstance} />
+      <NavBar />
       <Box>
         <TopBar />
 
@@ -32,10 +26,6 @@ export const Layout = ({ children }: { children: any }) => {
           {children}
         </Box>
       </Box>
-      <CreateFormInstanceModal
-        isOpen={isCreateFormInstanceOpen}
-        onClose={onCloseCreateFormInstance}
-      />
     </Box>
   );
 };

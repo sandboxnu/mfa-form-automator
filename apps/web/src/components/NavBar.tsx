@@ -98,13 +98,7 @@ const NavItem = ({
  * @param onOpenCreateFormInstance - the function to open the create form instance modal
  * @returns  the nav bar for the left sidebar
  */
-export const NavBar = ({
-  onOpenCreateFormInstance,
-  ...props
-}: {
-  onOpenCreateFormInstance: () => void;
-  props?: {};
-}) => {
+export const NavBar = ({ ...props }: { props?: {} }) => {
   const router = useRouter();
   return (
     <Box
@@ -158,7 +152,12 @@ export const NavBar = ({
           </MenuButton>
           <MenuButton padding="8px 22px 8px 16px"></MenuButton>
           <MenuList>
-            <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
+            <MenuItem
+              rounded="8px"
+              onClick={() => {
+                router.push('create-instance/select-template');
+              }}
+            >
               Form
             </MenuItem>
             <MenuItem
