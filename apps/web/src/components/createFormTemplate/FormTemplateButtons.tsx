@@ -1,4 +1,12 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
+import { useMutation } from '@tanstack/react-query';
+import {
+  CreateFormTemplateDto,
+  CreateSignatureFieldDto,
+  FormTemplatesService,
+} from '@web/client';
+import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
+import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
 
 /**
@@ -7,7 +15,7 @@ import { useRouter } from 'next/router';
  * @param submitLink page router will push on click of 'save & continue'
  * @param backLink page router will push on click of 'back'
  * @param disabled whether the 'save & continue' button should be activated
- * @param review if review page, there is no delete/clear button and the Save & Continue becomes Create Form Template 
+ * @param review if review page, there is no delete/clear button and the Save & Continue becomes Create Form Template
  */
 export const FormTemplateButtons = ({
   deleteFunction,
@@ -22,9 +30,57 @@ export const FormTemplateButtons = ({
   disabled: boolean;
   review?: boolean;
 }) => {
-
   const router = useRouter();
-  
+  const { formTemplateName, formTemplateDescription, useBlob } =
+    useCreateFormTemplate();
+
+  const { localBlobData, hasLocalBlob } = useBlob;
+
+  /**
+   * Upload and create a form template
+   */
+  const _submitFormTemplate = async () => {
+    if (disabled == true) {
+      return;
+    }
+    if (!review) {
+      router.push(submitLink);
+      return;
+    }
+    if (!hasLocalBlob) {
+      throw new Error('No PDF file uploaded');
+    }
+    const signatures: CreateSignatureFieldDto[] = 
+    [{
+      name: "Signature Field 1",
+      order: 1,
+    }];
+    createFormTemplateMutation
+      .mutateAsync({
+        name: formTemplateName ? formTemplateName : '',
+        formDocLink: localBlobData.url,
+        signatureFields: signatures,
+      })
+      .then((response) => {
+        return response;
+      })
+      .catch((e) => {
+        throw e;
+      });
+      router.push(submitLink);
+  };
+
+  const createFormTemplateMutation = useMutation({
+    mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
+      return FormTemplatesService.formTemplatesControllerCreate(
+        newFormTemplate,
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['api', 'form-templates'] });
+    },
+  });
+
   return (
     <>
       {!review ? (
@@ -91,9 +147,7 @@ export const FormTemplateButtons = ({
           }}
           marginLeft="12px"
           marginRight="36px"
-          onClick={() => {
-            disabled === false ? router.push(submitLink) : null;
-          }}
+          onClick={(_) => {_submitFormTemplate()}}
         >
           <Text
             color="#FCFCFC"

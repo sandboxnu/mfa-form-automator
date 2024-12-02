@@ -8,7 +8,15 @@ import { Box, Text, Flex } from '@chakra-ui/react';
  * @param setDescription function to save the inputted description of the form
  * @param formLink link to form to preview
  */
-export const ReviewBox = ({ formLink }: { formLink: string }) => {
+export const ReviewBox = ({
+  formLink,
+  name,
+  description,
+}: {
+  formLink: string;
+  name: string;
+  description: string;
+}) => {
   const textInputStyle = {
     alignSelf: 'stretch',
     alignItems: 'flex-start',
@@ -66,11 +74,11 @@ export const ReviewBox = ({ formLink }: { formLink: string }) => {
       >
         <Flex gap="8px" flexDirection="column" width="480px">
           <Text fontWeight={600}>Name</Text>
-          <Text {...textInputStyle}>This is where the name will go</Text>
+          <Text {...textInputStyle}>{name}</Text>
         </Flex>
         <Flex gap="8px" flexDirection="column" width="480px">
           <Text fontWeight={600}>Description</Text>
-          <Text {...textInputStyle}>This is where the description will go</Text>
+          <Text {...textInputStyle}>{description}</Text>
         </Flex>
 
         <Flex flexDirection={'column'} gap="12px">

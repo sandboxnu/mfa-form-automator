@@ -56,7 +56,7 @@ export default function App({
   OpenAPI.CREDENTIALS = 'include';
   OpenAPI.WITH_CREDENTIALS = true;
 
-  const excludeLayoutPaths = ['/signin', '/register'];
+  const excludeLayoutPaths = ['/signin', '/register', '/create-template/success'];
   const createFormTemplatePath = '/create-template';
 
   const head = (
