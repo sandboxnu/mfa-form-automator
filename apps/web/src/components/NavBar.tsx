@@ -195,7 +195,7 @@ export const NavBar = ({
             borderBottomWidth="1px"
             borderColor="gray.200"
           ></Box>
-          <NavItem icon="test" link="/test">
+          <NavItem icon="test" link="/sandbox">
             Test
           </NavItem>
         </Box>
