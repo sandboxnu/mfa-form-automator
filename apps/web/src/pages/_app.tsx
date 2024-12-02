@@ -9,6 +9,7 @@ import { Layout } from 'apps/web/src/components/Layout';
 import theme from '../styles/theme';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from './../context/AuthContext';
+import { CreateFormTemplateProvider } from '@web/context/CreateFormTemplateContext';
 import { OpenAPI } from '@web/client';
 import Head from 'next/head';
 import { PublicClientApplication } from '@azure/msal-browser';
@@ -56,6 +57,7 @@ export default function App({
   OpenAPI.WITH_CREDENTIALS = true;
 
   const excludeLayoutPaths = ['/signin', '/register'];
+  const createFormTemplatePath = '/create-template';
 
   const head = (
     <Head>
@@ -69,6 +71,20 @@ export default function App({
       <>
         <WrapperComponent>
           <Component {...pageProps} />
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(createFormTemplatePath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <CreateFormTemplateProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </CreateFormTemplateProvider>
         </WrapperComponent>
       </>
     );

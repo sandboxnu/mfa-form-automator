@@ -47,6 +47,46 @@ export class PositionsService {
   }
 
   /**
+   * Retrieve all positions in a department.
+   * @param departmentId the department id
+   * @returns all positions in the department, hydrated
+   */
+  async findAllInDepartment(departmentId: string, limit?: number) {
+    const positions = await this.prisma.position.findMany({
+      take: limit,
+      where: {
+        departmentId: departmentId,
+      },
+      include: {
+        employees: true,
+      },
+    });
+    return positions;
+  }
+
+  /**
+   * Retrieve all positions in a department by name.
+   * @param department the department name
+   * @param limit the number of positions we want to retrieve (optional)
+   * @returns all positions in the department, hydrated
+   */
+  async findAllInDepartmentName(department: string, limit?: number) {
+    const positions = await this.prisma.position.findMany({
+      take: limit,
+      where: {
+        department: {
+          name: department,
+        },
+      },
+      include: {
+        employees: true,
+      },
+    });
+
+    return positions;
+  }
+
+  /**
    * Retrieve all positions with specified ids.
    * @param ids list of position ids
    * @returns all matching positions, hydrated
@@ -81,6 +121,25 @@ export class PositionsService {
   }
 
   /**
+   * Retrieve a position in a department by id.
+   * @param id the position id
+   * @param departmentId the department id
+   * @returns the selected position, hydrated
+   */
+  async findOneInDepartment(id: string, departmentId: string) {
+    const position = await this.prisma.position.findFirstOrThrow({
+      where: {
+        id: id,
+        departmentId: departmentId,
+      },
+      include: {
+        employees: true,
+      },
+    });
+    return position;
+  }
+
+  /**
    * Retrieve a position in a department by name.
    * @param name the position name
    * @param departmentId the department id
@@ -106,6 +165,21 @@ export class PositionsService {
       throw new Error(
         `Position with name ${name} not found in department ${departmentId}`,
       );
+    }
+
+    return position;
+  }
+
+  /**
+   * Retrieve a position by name.
+   * @param name the position name
+   * @returns the selected position, hydrated
+   */
+  async findOrCreateOneInDepartment(id: string, departmentId: string) {
+    let position = await this.findOneInDepartment(id, departmentId);
+
+    if (!position) {
+      position = await this.create({ name: id, departmentId });
     }
 
     return position;

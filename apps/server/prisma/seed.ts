@@ -14,29 +14,32 @@ Hard coded UUIDs for:
 - manager signature field 
 - director signature field 
 */
-const LEADERSHIP_TEAM_UUID = '3f08fe46-a243-4b33-84fa-6702a74f3a5d';
-const CHIEF_OF_STAFF_UUID = '5a5b1c25-8bfe-4418-9ba6-b1420d1fedff';
-const CHIEF_FIN_OFFICER_UUID = 'f7c20346-2158-404c-a753-061ba7049f3d';
-const AGG_DIR_UUID = '81983f2c-c2ae-4010-b578-17cd141afbef';
-const CHIEF_LEARNING_ENGAGEMENT_UUID = '693e8455-50e8-49bc-9d06-755eb24a5bcc';
 
-const ANSHUL_SHIRUDE_UUID = 'b386ef53-d2d1-4bfd-a44c-55b1750a874e';
-const ANGELA_WEIGL_UUID = 'c6de4017-cb1f-44f1-a707-0f38239e0bca';
-const KAI_ZHENG_UUID = '339cf78e-d13f-4069-b1f7-dee0c64afb31';
-const IRIS_ZHANG_UUID = '777c1974-3104-4744-ae31-7a9296e7784a';
+const LEADERSHIP_TEAM_UUID = uuidv4();
+const CHIEF_OF_STAFF_UUID = uuidv4();
+const CHIEF_FIN_OFFICER_UUID = uuidv4();
+const AGG_DIR_UUID = uuidv4();
+const CHIEF_LEARNING_ENGAGEMENT_UUID = uuidv4();
 
-const IT_EXIT_FORM_UUID = '584bf9fd-ea8b-4978-b7de-daa96cb35a03';
-const STAFFING_REQUISITION_UUID = 'd0477fb8-bdd1-4811-8e11-203d8e33feba';
-const NETWORK_ADD_CHANGE_UUID = 'e908c556-bc1f-4b02-8dea-372c56e24d5e';
-const MFA_ORACLE_LOGON_REQUEST_UUID = '5231fd06-690e-4fd8-b309-0db21b8cd202';
-const HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID =
-  '5ed47339-3af2-4b31-9a30-c0a06095f680';
-const VPN_REQUEST_UUID = 'dca7eb51-16b0-4e3d-a3b2-64a57ce60ba0';
-const DIGITAL_MFA_ID_BADGE_REQUEST_UUID =
-  'cab76e75-5bc0-468c-a2c4-df8f21f87e25';
-const TRAVEL_AUTHORIZATION_UUID = 'd5fcfa91-2e05-428d-a2ed-314089955555';
+const TEST_TEAM_UUID = uuidv4();
+const TEST_TEAM_POSITION_UUID = uuidv4();
+
+const ANSHUL_SHIRUDE_UUID = uuidv4();
+const ANGELA_WEIGL_UUID = uuidv4();
+const KAI_ZHENG_UUID = uuidv4();
+const IRIS_ZHANG_UUID = uuidv4();
+
+const IT_EXIT_FORM_UUID = uuidv4();
+const STAFFING_REQUISITION_UUID = uuidv4();
+const NETWORK_ADD_CHANGE_UUID = uuidv4();
+const MFA_ORACLE_LOGON_REQUEST_UUID = uuidv4();
+const HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID = uuidv4();
+const VPN_REQUEST_UUID = uuidv4();
+const DIGITAL_MFA_ID_BADGE_REQUEST_UUID = uuidv4();
+const TRAVEL_AUTHORIZATION_UUID = uuidv4();
 
 const DEV_FORM_DOC_LINK = 'http://localhost:3002/test.pdf';
+const DEV_SIGNATURE_LINK = 'http://localhost:3002/signature.png';
 
 // type definition for employee data used in upsertEmployee
 type EmployeeData = {
@@ -45,6 +48,7 @@ type EmployeeData = {
   lastName: string;
   email: string;
   positionId: string;
+  signatureLink: string;
 };
 
 // update or insert employee to database based on the employee id
@@ -57,6 +61,7 @@ async function upsertEmployee(empData: EmployeeData) {
       firstName: empData.firstName,
       lastName: empData.lastName,
       email: empData.email,
+      signatureLink: empData.signatureLink,
       position: {
         connect: { id: empData.positionId },
       },
@@ -288,7 +293,7 @@ async function main() {
     },
   });
 
-  // positions
+  // leadership team positions
   const positions = [
     {
       id: CHIEF_OF_STAFF_UUID,
@@ -356,6 +361,23 @@ async function main() {
     await upsertPosition(positionData);
   }
 
+  // test team department
+  await prisma.department.upsert({
+    where: { id: TEST_TEAM_UUID },
+    update: {},
+    create: {
+      id: TEST_TEAM_UUID,
+      name: 'Test Team',
+    },
+  });
+
+  // test team positions
+  await upsertPosition({
+    id: TEST_TEAM_POSITION_UUID,
+    name: 'Test Position',
+    departmentId: TEST_TEAM_UUID,
+  });
+
   // employees
   const employees = [
     {
@@ -364,6 +386,7 @@ async function main() {
       lastName: 'Zhang',
       email: 'zhang.iri@northeastern.edu',
       positionId: CHIEF_OF_STAFF_UUID,
+      signatureLink: DEV_SIGNATURE_LINK,
     },
     {
       id: KAI_ZHENG_UUID,
@@ -371,6 +394,7 @@ async function main() {
       lastName: 'Zheng',
       email: 'zheng.kaiy@northeastern.edu',
       positionId: CHIEF_FIN_OFFICER_UUID,
+      signatureLink: DEV_SIGNATURE_LINK,
     },
     {
       id: ANGELA_WEIGL_UUID,
@@ -378,6 +402,7 @@ async function main() {
       lastName: 'Weigl',
       email: 'weigl.a@northeastern.edu',
       positionId: AGG_DIR_UUID,
+      signatureLink: DEV_SIGNATURE_LINK,
     },
     {
       id: ANSHUL_SHIRUDE_UUID,
@@ -385,6 +410,7 @@ async function main() {
       lastName: 'Shirude',
       email: 'shirude.a@northeastern.edu',
       positionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
+      signatureLink: DEV_SIGNATURE_LINK,
     },
   ];
 
@@ -395,14 +421,14 @@ async function main() {
   // form instances
   const formInstances = [
     {
-      id: '855498f1-0a8c-44a8-8159-26e28ab8eca0',
+      id: uuidv4(),
       name: 'IT Exit Form Instance',
       formDocLink: DEV_FORM_DOC_LINK,
       originatorId: KAI_ZHENG_UUID,
       formTemplateId: IT_EXIT_FORM_UUID,
       signatures: [
         {
-          id: '087229bf-ce86-449b-aa0b-56c83744acf3',
+          id: uuidv4(),
           order: 0,
           signerType: 'USER_LIST',
           assignedUserList: {
@@ -415,7 +441,7 @@ async function main() {
           },
         },
         {
-          id: '760b9266-f165-4551-bf8e-53cfae73b67d',
+          id: uuidv4(),
           order: 1,
           signerType: 'POSITION',
           signerPositionId: CHIEF_FIN_OFFICER_UUID,
@@ -423,20 +449,20 @@ async function main() {
       ],
     },
     {
-      id: '1c50e8ed-b6d7-4205-bfd7-dce825c63040',
+      id: uuidv4(),
       name: 'Staffing Requisition Form Instance',
       formDocLink: DEV_FORM_DOC_LINK,
       originatorId: IRIS_ZHANG_UUID,
       formTemplateId: STAFFING_REQUISITION_UUID,
       signatures: [
         {
-          id: 'b3c7c3ce-9d87-4369-b6b5-6c85e151e7fa',
+          id: uuidv4(),
           order: 0,
           signerType: 'USER',
           assignedUserId: KAI_ZHENG_UUID,
         },
         {
-          id: 'f9f9a4a4-4c0d-4f7e-8c2e-6b1e9b9b0e3b',
+          id: uuidv4(),
           order: 1,
           signerType: 'USER_LIST',
           assignedUserList: {
@@ -451,14 +477,14 @@ async function main() {
       ],
     },
     {
-      id: '0affdf33-3c4b-42bf-99af-8ef47d231f41',
+      id: uuidv4(),
       name: 'Network Add Change Form Instance',
       formDocLink: DEV_FORM_DOC_LINK,
       originatorId: ANSHUL_SHIRUDE_UUID,
       formTemplateId: NETWORK_ADD_CHANGE_UUID,
       signatures: [
         {
-          id: '2c6db7e8-8418-4e84-9621-07805850fb46',
+          id: uuidv4(),
           order: 0,
           signerType: 'DEPARTMENT',
           signerDepartmentId: LEADERSHIP_TEAM_UUID,
@@ -466,14 +492,14 @@ async function main() {
       ],
     },
     {
-      id: '0ff583fd-8e8c-41c5-9207-51affdf1f677',
+      id: uuidv4(),
       name: 'MFA Oracle Logon Request Form Instance',
       formDocLink: DEV_FORM_DOC_LINK,
       originatorId: ANGELA_WEIGL_UUID,
       formTemplateId: MFA_ORACLE_LOGON_REQUEST_UUID,
       signatures: [
         {
-          id: '67a66ebc-4ce8-4e9e-872a-beb81fc7fde4',
+          id: uuidv4(),
           order: 0,
           signerType: 'DEPARTMENT',
           signerDepartmentId: LEADERSHIP_TEAM_UUID,
@@ -481,14 +507,14 @@ async function main() {
       ],
     },
     {
-      id: '0daf753e-25e4-4eea-834b-dccda5bba71c',
+      id: uuidv4(),
       name: 'Hybrid and Remote Work Agreement Form Instance',
       formDocLink: DEV_FORM_DOC_LINK,
       originatorId: ANSHUL_SHIRUDE_UUID,
       formTemplateId: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
       signatures: [
         {
-          id: '6518fb90-ca64-4b5c-8bec-cf813649cf27',
+          id: uuidv4(),
           order: 0,
           signerType: 'USER',
           assignedUserId: KAI_ZHENG_UUID,
@@ -496,14 +522,14 @@ async function main() {
       ],
     },
     {
-      id: 'b91f0c84-f1c0-440a-8a54-8ebc40dd3e9a',
+      id: uuidv4(),
       name: 'VPN Request Form Instance',
       formDocLink: DEV_FORM_DOC_LINK,
       originatorId: IRIS_ZHANG_UUID,
       formTemplateId: VPN_REQUEST_UUID,
       signatures: [
         {
-          id: '8a39729d-c41e-4b62-a66f-8eac9e29316b',
+          id: uuidv4(),
           order: 0,
           signerType: 'USER',
           assignedUserId: KAI_ZHENG_UUID,
@@ -511,14 +537,14 @@ async function main() {
       ],
     },
     {
-      id: 'c1d27580-77fa-40f6-8ae8-4134b8eb49aa',
+      id: uuidv4(),
       name: 'Digital MFA ID Badge Request Form Instance',
       formDocLink: DEV_FORM_DOC_LINK,
       originatorId: KAI_ZHENG_UUID,
       formTemplateId: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
       signatures: [
         {
-          id: '6e3b78b7-78dc-4b77-872b-708392038940',
+          id: uuidv4(),
           order: 0,
           signerType: 'DEPARTMENT',
           signerDepartmentId: LEADERSHIP_TEAM_UUID,
@@ -526,14 +552,14 @@ async function main() {
       ],
     },
     {
-      id: 'fa0a3093-acc0-4e93-a96c-adefbd94fcda',
+      id: uuidv4(),
       name: 'Travel Authorization Form Instance',
       formDocLink: DEV_FORM_DOC_LINK,
       originatorId: ANGELA_WEIGL_UUID,
       formTemplateId: TRAVEL_AUTHORIZATION_UUID,
       signatures: [
         {
-          id: 'dd179a4a-e153-4e8c-93bf-3e3cc975f7d5',
+          id: uuidv4(),
           order: 0,
           signerType: 'POSITION',
           signerPositionId: AGG_DIR_UUID,

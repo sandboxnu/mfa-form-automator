@@ -1,7 +1,6 @@
 import { Box, useDisclosure } from '@chakra-ui/react';
 import { NavBar } from './NavBar';
 import { TopBar } from './TopBar';
-import { CreateFormTemplateModal } from './createFormTemplate/CreateFormTemplateModal';
 import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal';
 
 /**
@@ -9,12 +8,6 @@ import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModa
  * @returns overall layout of the application
  */
 export const Layout = ({ children }: { children: any }) => {
-  const {
-    isOpen: isCreateFormTemplateOpen,
-    onOpen: onOpenCreateFormTemplate,
-    onClose: onCloseCreateFormTemplate,
-  } = useDisclosure();
-
   const {
     isOpen: isCreateFormInstanceOpen,
     onOpen: onOpenCreateFormInstance,
@@ -29,11 +22,9 @@ export const Layout = ({ children }: { children: any }) => {
         bg: 'gray.700',
       }}
       minH="100vh"
+      height="100%"
     >
-      <NavBar
-        onOpenCreateFormTemplate={onOpenCreateFormTemplate}
-        onOpenCreateFormInstance={onOpenCreateFormInstance}
-      />
+      <NavBar onOpenCreateFormInstance={onOpenCreateFormInstance} />
       <Box>
         <TopBar />
 
@@ -41,10 +32,6 @@ export const Layout = ({ children }: { children: any }) => {
           {children}
         </Box>
       </Box>
-      <CreateFormTemplateModal
-        isCreateFormTemplateOpen={isCreateFormTemplateOpen}
-        onCloseCreateFormTemplate={onCloseCreateFormTemplate}
-      />
       <CreateFormInstanceModal
         isOpen={isCreateFormInstanceOpen}
         onClose={onCloseCreateFormInstance}
