@@ -50,11 +50,12 @@ export const FormTemplateButtons = ({
     if (!hasLocalBlob) {
       throw new Error('No PDF file uploaded');
     }
-    const signatures: CreateSignatureFieldDto[] = 
-    [{
-      name: "Signature Field 1",
-      order: 1,
-    }];
+    const signatures: CreateSignatureFieldDto[] = [
+      {
+        name: 'Signature Field 1',
+        order: 1,
+      },
+    ];
     createFormTemplateMutation
       .mutateAsync({
         name: formTemplateName ? formTemplateName : '',
@@ -67,7 +68,7 @@ export const FormTemplateButtons = ({
       .catch((e) => {
         throw e;
       });
-      router.push(submitLink);
+    router.push(submitLink);
   };
 
   const createFormTemplateMutation = useMutation({
@@ -147,7 +148,9 @@ export const FormTemplateButtons = ({
           }}
           marginLeft="12px"
           marginRight="36px"
-          onClick={(_) => {_submitFormTemplate()}}
+          onClick={(_) => {
+            _submitFormTemplate();
+          }}
         >
           <Text
             color="#FCFCFC"
