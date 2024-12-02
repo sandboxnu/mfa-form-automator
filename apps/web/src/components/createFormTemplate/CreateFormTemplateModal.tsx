@@ -60,7 +60,7 @@ export const CreateFormTemplateModal = ({
   let isFormTemplateNameInvalid = formTemplateName === '';
   const {
     inputFileRef,
-    uploadFileRef,
+    uploadFile,
     uploadLocalFile,
     clearLocalBlob,
     localBlobData: { blob: localBlob, url: localBlobUrl, name: localBlobName },
@@ -109,7 +109,7 @@ export const CreateFormTemplateModal = ({
       throw new Error('No PDF file uploaded');
     }
 
-    const blob = await uploadFileRef();
+    const blob = await uploadFile();
     createFormTemplateMutation
       .mutateAsync({
         name: formTemplateName,
@@ -206,7 +206,7 @@ export const CreateFormTemplateModal = ({
                     accept=".pdf"
                     style={{ display: 'none' }}
                     ref={inputFileRef}
-                    onChange={(e) => uploadLocalFile(e.target?.files?.[0])}
+                    onChange={uploadLocalFile}
                   />
                   {hasLocalBlob && (
                     <span

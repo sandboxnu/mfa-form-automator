@@ -22,9 +22,6 @@ export class EmployeeBaseEntity implements Employee {
   @ApiProperty()
   isAdmin: boolean;
 
-  @ApiProperty()
-  signatureLink: string;
-
   @Exclude()
   pswdHash: string | null;
 

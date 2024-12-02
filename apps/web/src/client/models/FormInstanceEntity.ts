@@ -3,7 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { EmployeeEntity } from './EmployeeEntity';
 import type { FormTemplateBaseEntity } from './FormTemplateBaseEntity';
 import type { SignatureEntity } from './SignatureEntity';
 
@@ -17,7 +16,7 @@ export type FormInstanceEntity = {
     updatedAt: string;
     completedAt?: string | null;
     markedCompletedAt?: string | null;
-    originator: EmployeeEntity;
+    originator: Record<string, any>;
     formTemplate: FormTemplateBaseEntity;
     signatures: Array<SignatureEntity>;
     originatorId: string;

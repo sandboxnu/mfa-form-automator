@@ -7,6 +7,5 @@ export type UpdateEmployeeDto = {
     firstName?: string;
     lastName?: string;
     positionId?: string;
-    signatureLink?: string;
 };
 

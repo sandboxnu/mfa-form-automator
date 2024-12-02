@@ -1,4 +1,4 @@
-import { Dispatch, Ref, SetStateAction } from 'react';
+import { IPublicClientApplication } from '@azure/msal-browser';
 
 // for storage in context
 export type User = {
@@ -33,15 +33,6 @@ export interface AuthContextType {
     password: string,
     position: string,
     department: string,
-    signatureLink: string,
   ) => void;
   logout: () => void;
-}
-
-export interface CreateFormTemplateContextType {
-  formTemplateName: string | null;
-  formTemplateDescription: string | null;
-  setFormTemplateName: Dispatch<SetStateAction<string | null>>;
-  setFormTemplateDescription: Dispatch<SetStateAction<string | null>>;
-  useBlob: any;
 }

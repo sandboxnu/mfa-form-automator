@@ -11,7 +11,6 @@ export type EmployeeEntity = {
     lastName: string;
     email: string;
     isAdmin: boolean;
-    signatureLink: string;
     position: PositionBaseEntity;
     positionId: string;
     pswdHash: string | null;

@@ -55,60 +55,6 @@ export class PositionsService {
     }
 
     /**
-     * @param departmentId
-     * @param limit Limit on number of positions to return
-     * @returns PositionEntity
-     * @throws ApiError
-     */
-    public static positionsControllerFindAllInDepartment(
-        departmentId: string,
-        limit?: number,
-    ): CancelablePromise<Array<PositionEntity>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/positions/department/{departmentId}',
-            path: {
-                'departmentId': departmentId,
-            },
-            query: {
-                'limit': limit,
-            },
-            errors: {
-                400: `Bad Request`,
-                403: `Unauthorized Request`,
-                404: `Resource not found`,
-            },
-        });
-    }
-
-    /**
-     * @param departmentName
-     * @param limit
-     * @returns PositionEntity
-     * @throws ApiError
-     */
-    public static positionsControllerFindAllInDepartmentName(
-        departmentName: string,
-        limit: number,
-    ): CancelablePromise<Array<PositionEntity>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/positions/departmentName/{departmentName}',
-            path: {
-                'departmentName': departmentName,
-            },
-            query: {
-                'limit': limit,
-            },
-            errors: {
-                400: `Bad Request`,
-                403: `Unauthorized Request`,
-                404: `Resource not found`,
-            },
-        });
-    }
-
-    /**
      * @param id
      * @returns PositionEntity
      * @throws ApiError

@@ -173,9 +173,3 @@ h3 {
   width: 100% !important;
   height: 100% !important;
 }
-@font-face {
-  font-family: 'TheChairman';
-  src: url('/TheChairman-Regular.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-}

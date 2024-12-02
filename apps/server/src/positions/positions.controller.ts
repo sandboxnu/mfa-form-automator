@@ -63,44 +63,6 @@ export class PositionsController {
     return positions.map((position) => new PositionEntity(position));
   }
 
-  @Get('department/:departmentId')
-  @ApiOkResponse({ type: [PositionEntity] })
-  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
-  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
-  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  @ApiQuery({
-    name: 'limit',
-    type: Number,
-    description: 'Limit on number of positions to return',
-    required: false,
-  })
-  async findAllInDepartment(
-    @Param('departmentId') departmentId: string,
-    @Query('limit') limit?: number,
-  ) {
-    const positions = await this.positionsService.findAllInDepartment(
-      departmentId,
-      limit,
-    );
-    return positions.map((position) => new PositionEntity(position));
-  }
-
-  @Get('departmentName/:departmentName')
-  @ApiOkResponse({ type: [PositionEntity] })
-  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
-  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
-  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async findAllInDepartmentName(
-    @Param('departmentName') departmentName: string,
-    @Query('limit') limit?: number,
-  ) {
-    const positions = await this.positionsService.findAllInDepartmentName(
-      departmentName,
-      limit,
-    );
-    return positions.map((position) => new PositionEntity(position));
-  }
-
   @Get(':id')
   @ApiOkResponse({ type: PositionEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })

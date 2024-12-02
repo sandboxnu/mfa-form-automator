@@ -44,7 +44,6 @@ describe('AuthService', () => {
       firstName: 'First',
       lastName: 'Last',
       positionId: 'positionId',
-      signatureLink: 'signatureLink',
       position: {
         id: 'positionId',
         name: 'Manager',
@@ -73,7 +72,6 @@ describe('AuthService', () => {
         firstName: 'First',
         lastName: 'Last',
         positionId: 'positionId',
-        signatureLink: 'signatureLink',
         position: {
           id: 'positionId',
           name: 'Manager',
@@ -152,7 +150,6 @@ describe('AuthService', () => {
         createdAt: new Date(0),
         updatedAt: new Date(0),
         refreshToken: null,
-        signatureLink: 'signatureLink',
       };
       const result = await service.login(user);
       const decodedAccessToken = jwtService.decode(result.accessToken);

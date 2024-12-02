@@ -16,7 +16,7 @@ export default async function handler(
       request,
       onBeforeGenerateToken: async (pathName) => {
         return {
-          allowedContentTypes: ['application/pdf', 'image/jpeg', 'image/png'],
+          allowedContentTypes: ['application/pdf'],
           tokenPayload: JSON.stringify({
             pathName,
           }),
