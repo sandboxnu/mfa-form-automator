@@ -24,7 +24,7 @@ export default function Overview() {
 
   return (
     <>
-      <Box marginLeft="40px" height="100vh" marginTop="36px">
+      <Box marginLeft="40px" height="100%" marginTop="36px">
         <Text
           fontSize="30px"
           fontWeight="700"
@@ -33,21 +33,21 @@ export default function Overview() {
         >
           Hello, {user?.firstName}!
         </Text>
-        <Box marginBottom="40px">
+        <Box>
           <OverviewRow
             title="To-do"
             color="#FFDFDE"
             link="/todo"
             formInstances={todoForms}
           />
+          <FormList
+            title={'Pending'}
+            formInstances={pendingForms}
+            color={'#FFECCC'}
+            isDashboard={true}
+            link={'/pending'}
+          />
         </Box>
-        <FormList
-          title={'Pending'}
-          formInstances={pendingForms}
-          color={'#FFECCC'}
-          isDashboard={true}
-          link={'/pending'}
-        ></FormList>
       </Box>
     </>
   );

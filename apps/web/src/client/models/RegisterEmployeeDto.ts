@@ -10,5 +10,6 @@ export type RegisterEmployeeDto = {
     password: string;
     positionName: string;
     departmentName: string;
+    signatureLink: string;
 };
 
