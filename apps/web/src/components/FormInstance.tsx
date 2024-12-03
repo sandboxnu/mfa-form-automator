@@ -28,7 +28,7 @@ import {
 
 /**
  * @param formInstance - the form instance
- * @returns a form instance page
+ * @returns a form instance page with all content in a side panel
  */
 const FormInstance = ({
   formInstance,
@@ -50,7 +50,7 @@ const FormInstance = ({
     }) => {
       return FormInstancesService.formInstancesControllerSignFormInstance(
         formInstanceId,
-        signatureId,
+        signatureId
       );
     },
     onSuccess: () => {
@@ -126,229 +126,119 @@ const FormInstance = ({
           Back
         </Text>
       </Flex>
-      <Flex align="center" pl={4} mt={4}>
-        <Heading as="h1" ml="30px" mt={4} mr={5}>
-          {formInstance.name}
-        </Heading>
-        <Button
-          variant="link"
-          onClick={() => {}}
-          color="black"
-          fontWeight="normal"
-          textAlign="left"
-          _hover={{ textDecoration: 'none' }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <Flex flexDirection="column">
-            <Flex>
-              <PencilIcon mr={1} mt={6} />
-              <Text
-                color="#000"
-                style={{ fontSize: '18px', textDecoration: 'none' }}
-                mt={5}
-              >
-                Edit
-              </Text>
-            </Flex>
-            {isHovered && (
-              <EditUnderlineIcon
-                stroke="black"
-                width="52px"
-                height="2"
-                fill="none"
-              />
-            )}
-          </Flex>
-        </Button>
-      </Flex>
-      <Heading
-        as="h2"
-        color="#000"
-        lineHeight="normal"
-        my={4}
-        ml="50px"
-        mt={12}
-      >
-        Description
-      </Heading>
-      <Text color="#000" lineHeight="normal" ml="50px" maxW="450px">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et
-        imperdiet enim. Ut enim justo, tincidunt ac enim ut, mollis pulvinar
-        neque. Suspendisse id semper nunc.
-      </Text>
 
-      <Grid templateColumns="1fr 1fr" gap="100px" mt={20}>
+      <Box
+        position="fixed"
+        top="0"
+        right="0"
+        height="100vh"
+        width="800px"
+        bg="gray.100"
+        boxShadow="lg"
+        padding="20px"
+        overflowY="auto"
+      >
+
+        <Flex justifyContent="space-between" alignItems="center" mb={4}>
+          <Heading as="h1" ml="30px" mt={4} mr={5}>
+            {formInstance.name}
+          </Heading>
+          <Button
+            variant="link"
+            color="black"
+            fontWeight="normal"
+            textAlign="left"
+            _hover={{ textDecoration: 'none' }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <Flex flexDirection="column">
+              <Flex>
+                <PencilIcon mr={1} mt={6} />
+                <Text
+                  color="#000"
+                  style={{ fontSize: '18px', textDecoration: 'none' }}
+                  mt={5}
+                >
+                  Edit
+                </Text>
+              </Flex>
+              {isHovered && (
+                <EditUnderlineIcon
+                  stroke="black"
+                  width="52px"
+                  height="2"
+                  fill="none"
+                />
+              )}
+            </Flex>
+          </Button>
+        </Flex>
+
+        <Heading
+          as="h2"
+          color="#000"
+          lineHeight="normal"
+          my={4}
+          ml="30px"
+          mt={12}
+        >
+          Description
+        </Heading>
+        <Text color="#000" lineHeight="normal" ml="30px" maxW="350px">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et
+          imperdiet enim. Ut enim justo, tincidunt ac enim ut, mollis pulvinar
+          neque. Suspendisse id semper nunc.
+        </Text>
+
         <Box>
-          <Heading as="h2" color="#000" lineHeight="normal" ml="50px">
+          <Heading as="h2" color="#000" lineHeight="normal" ml="30px" mt={4}>
             Form Preview
           </Heading>
-
           <embed
             src={formInstance.formDocLink}
             type="application/pdf"
-            width="400px"
+            width="350px"
             height="500px"
             style={{
               border: '3px solid black',
               borderRadius: '8px',
-              marginLeft: '50px',
+              marginLeft: '30px',
               marginTop: '6px',
               marginBottom: '100px',
-              minWidth: '436.353px',
-              minHeight: '566.219px',
             }}
           />
         </Box>
-        <Box maxWidth="400px">
+
+        <Text fontSize="lg" fontWeight="bold" mb={2} ml="30px">
+          Assigned by
+        </Text>
+        <Flex justifyContent="space-between" alignItems="center" mb={6} ml="30px">
           <Box>
-            <Text
-              color="#000"
-              fontSize="20px"
-              fontWeight="700"
-              lineHeight="normal"
-              marginBottom="15px"
-            >
-              Assigned by
+            <Text fontWeight="bold">
+              {formInstance.originator.firstName} {formInstance.originator.lastName}
             </Text>
-            <Flex
-              alignItems="center"
-              flexDirection="row"
-              marginBottom="50px"
-              minWidth="380px"
-              justifyContent="space-between"
-            >
-              <Flex alignItems="center">
-                <UserProfileAvatar
-                  firstName={formInstance.originator.firstName}
-                  lastName={formInstance.originator.lastName}
-                />
-                <Text
-                  color="#000"
-                  fontFamily="Hanken Grotesk"
-                  fontSize="16px"
-                  style={{ whiteSpace: 'nowrap' }}
-                  fontWeight="500"
-                  marginLeft="10px"
-                >
-                  {formInstance.originator.firstName +
-                    ' ' +
-                    formInstance.originator.lastName}{' '}
-                  {formInstance.originator.id === user?.id && (
-                    <Text
-                      color="#515151"
-                      fontFamily="Hanken Grotesk"
-                      fontSize="16px"
-                      fontWeight="500"
-                      style={{ display: 'inline' }}
-                    >
-                      (you)
-                    </Text>
-                  )}
-                </Text>
-              </Flex>
-              <Text color="#515151" fontWeight="400">
-                {new Date(formInstance.createdAt).toLocaleDateString()}
-              </Text>
-            </Flex>
-
-            <Box>
-              <Flex
-                flexDirection="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Text color="#000" fontSize="20px" fontWeight="700">
-                  Assignees
-                </Text>
-                <Flex alignItems="center">
-                  <PencilIcon color="#4C658A" mr={1} />
-                  <Text
-                    color="#4C658A"
-                    style={{ fontSize: '18px', textDecoration: 'none' }}
-                  >
-                    Edit
-                  </Text>
-                </Flex>
-              </Flex>
-
-              <AssigneeMap
-                assignees={formInstance.signatures.map((signature) => ({
-                  signed: signature.signed,
-                  title: getNameFromSignature(signature),
-                  signerType: signature.signerType as any,
-                  updatedAt: signature.updatedAt,
-                }))}
-              />
-            </Box>
+            <Text fontSize="sm" color="gray.500">
+              {formInstance.originator.id === user?.id ? 'You' : ''}
+            </Text>
           </Box>
-          {_userCanSign && (
-            <Button
-              background={
-                formInstance.markedCompleted
-                  ? 'var(--mfa-gray-hex)'
-                  : 'var(--mfa-blue-hex)'
-              }
-              color="#FFF"
-              onClick={async (_) => {
-                toast.promise(_handleFormSign(), {
-                  success: {
-                    title: 'Success',
-                    description: 'Form signed',
-                  },
-                  error: {
-                    title: 'Error',
-                    description: 'Unable to sign form',
-                  },
-                  loading: {
-                    title: 'Pending',
-                    description: 'Please wait',
-                  },
-                });
-              }}
-            >
-              Sign Form
-            </Button>
-          )}
-          {formInstance.completed &&
-            user?.id === formInstance.originator.id && (
-              <Box>
-                <Spacer />
-                <Button
-                  width="111px"
-                  height="40px"
-                  onClick={async (_) => {
-                    toast.promise(_handleFormApprove(), {
-                      success: {
-                        title: 'Success',
-                        description: 'Form approved',
-                      },
-                      error: {
-                        title: 'Error',
-                        description: 'Unable to approve form',
-                      },
-                      loading: {
-                        title: 'Pending',
-                        description: 'Please wait',
-                      },
-                    });
-                  }}
-                  background={
-                    formInstance.markedCompleted
-                      ? 'var(--mfa-gray-hex)'
-                      : 'var(--mfa-blue-hex)'
-                  }
-                  color="#FFF"
-                  cursor={
-                    formInstance.markedCompleted ? 'not-allowed' : 'pointer'
-                  }
-                >
-                  Approve
-                </Button>
-              </Box>
-            )}
-        </Box>
-      </Grid>
+          <Text color="gray.500" fontSize="sm">
+            {new Date(formInstance.createdAt).toLocaleDateString()}
+          </Text>
+        </Flex>
+
+        <Text fontSize="lg" fontWeight="bold" mb={2} ml="30px">
+          Assignees
+        </Text>
+        <AssigneeMap
+          assignees={formInstance.signatures.map((signature) => ({
+            signed: signature.signed,
+            title: getNameFromSignature(signature),
+            signerType: signature.signerType as any,
+            updatedAt: signature.updatedAt,
+          }))}
+        />
+      </Box>
     </Box>
   );
 };
