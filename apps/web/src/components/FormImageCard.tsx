@@ -35,9 +35,6 @@ export const FormImageCard = ({
       border="1px solid #D4D4D4"
       background="#FCFCFC"
       cursor="pointer"
-      onClick={() => {
-        router.push(link);
-      }}
       _hover={{
         boxShadow: '0px 0.5px 6px 1px #DCDCDC',
       }}

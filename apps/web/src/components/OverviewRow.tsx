@@ -105,7 +105,7 @@ export const OverviewRow = ({
 
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent maxWidth="1152px" width="1024px">
         <DrawerHeader>Form Details</DrawerHeader>
         <DrawerBody>
           {selectedFormInstance ? (

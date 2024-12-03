@@ -1,21 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Box, Flex, Grid, GridItem, Text, Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, useDisclosure } from '@chakra-ui/react';
 import { FormRow } from './FormRow';
-import { Box, Flex, Grid, GridItem, Heading, Text } from '@chakra-ui/react';
-import { FormInstanceEntity, SignatureEntity } from '@web/client';
-import { useState } from 'react';
+import { FormInstanceEntity } from '@web/client';
 import { distance } from 'fastest-levenshtein';
 import { SearchAndSort } from 'apps/web/src/components/SearchAndSort';
 import { ViewAll } from 'apps/web/src/components/ViewAll';
 import { NoForms } from '@web/static/icons';
-
-/**
- * @param title - the title of the form list
- * @param formInstances - an array of form instances
- * @param color - the color of the form list
- * @param isDashboard - whether component is displayed on index page
- * @param link - link to page for category
- * @returns a list of forms for the dashboard
- */
+import FormInstance from './FormInstance'; //added this
 
 export const FormList = ({
   title,
@@ -32,6 +23,8 @@ export const FormList = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortedFormInstances, setSortedFormInstances] = useState(formInstances);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedFormInstance, setSelectedFormInstance] = useState<FormInstanceEntity | null>(null);
 
   useEffect(() => {
     setSortedFormInstances(
@@ -46,6 +39,11 @@ export const FormList = ({
         .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance),
     );
   }, [searchQuery, formInstances]);
+
+  const handleOpenDrawer = (formInstance: FormInstanceEntity) => {
+    setSelectedFormInstance(formInstance);
+    onOpen();
+  };
 
   return (
     <>
@@ -116,17 +114,20 @@ export const FormList = ({
               </Text>
             </GridItem>
           </Grid>
-          {sortedFormInstances.map(
-            (formInstance: FormInstanceEntity, index: number) => (
+          {sortedFormInstances.map((formInstance, index) => (
+            <Box
+              key={index}
+              onClick={() => handleOpenDrawer(formInstance)}
+              cursor="pointer"
+            >
               <FormRow
                 formInstance={formInstance}
-                key={index}
                 last={index === sortedFormInstances.length - 1}
-                link={'/form-instances/' + formInstance.id}
+                link="#"
               />
-            ),
-          )}
-          {sortedFormInstances.length === 0 ? (
+            </Box>
+          ))}
+          {sortedFormInstances.length === 0 && (
             <Flex
               height="392px"
               padding="12px 24px"
@@ -173,11 +174,23 @@ export const FormList = ({
                 </Flex>
               </Flex>
             </Flex>
-          ) : (
-            <></>
           )}
         </Box>
       </Box>
+
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent maxWidth="1152px" width="1024px">
+          <DrawerHeader>Form Details</DrawerHeader>
+          <DrawerBody>
+            {selectedFormInstance ? (
+              <FormInstance formInstance={selectedFormInstance} onClose={onClose} />
+            ) : (
+              <Text>No form selected</Text>
+            )}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 };
