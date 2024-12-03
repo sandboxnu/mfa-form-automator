@@ -180,8 +180,8 @@ export const FormList = ({
 
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent maxWidth="1152px" width="1024px">
-          <DrawerHeader>Form Details</DrawerHeader>
+        <DrawerContent bg="#f8f9fa" maxWidth="1375px" borderRadius="16px 0 0 16px">
+          
           <DrawerBody>
             {selectedFormInstance ? (
               <FormInstance formInstance={selectedFormInstance} onClose={onClose} />
