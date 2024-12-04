@@ -1,4 +1,8 @@
-import { Dispatch, Ref, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
+import {
+  FormFields,
+  FieldGroups,
+} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
 
 // for storage in context
 export type User = {
@@ -44,4 +48,8 @@ export interface CreateFormTemplateContextType {
   setFormTemplateName: Dispatch<SetStateAction<string | null>>;
   setFormTemplateDescription: Dispatch<SetStateAction<string | null>>;
   useBlob: any;
+  formFields: FormFields;
+  setFormFields: Dispatch<SetStateAction<FormFields>>;
+  fieldGroups: FieldGroups;
+  setFieldGroups: Dispatch<SetStateAction<FieldGroups>>;
 }

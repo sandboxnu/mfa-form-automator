@@ -1,4 +1,6 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
+import { FormEditor, FieldGroups } from './createFormTemplateEditor/FormEditor';
+import { useCreateFormTemplate } from '../../context/CreateFormTemplateContext';
 
 /**
  * The contents of the white box for the page (step 2) that asks the user for the form's name and
@@ -12,10 +14,12 @@ export const ReviewBox = ({
   formLink,
   name,
   description,
+  fieldGroups,
 }: {
   formLink: string;
   name: string;
   description: string;
+  fieldGroups: FieldGroups;
 }) => {
   const textInputStyle = {
     alignSelf: 'stretch',
@@ -25,36 +29,28 @@ export const ReviewBox = ({
     outlineColor: 'transparent',
     borderColor: 'transparent',
   };
-  // TODO: these groups should instead be taken from state
-  const groups: string[] = ['Group 1', 'Group 2', 'Group 3'];
 
-  const GroupItem = ({ num }: { num: number }) => {
-    return num <= groups.length ? (
-      <Flex gap="10px">
+  const { formFields } = useCreateFormTemplate();
+
+  const GroupItem = ({
+    num,
+    color,
+    border,
+  }: {
+    num: number;
+    color: string;
+    border: string;
+  }) => {
+    return (
+      <Flex gap="10px" alignItems="center">
         <Box
           width="24px"
           height="24px"
-          {...(num === 1
-            ? {
-                border: '1px solid var(--Blue, #1367EA)',
-                background: '#EEF5FF',
-              }
-            : num === 2
-            ? {
-                border: '1px solid #BD21CA',
-                background: '#FDEAFF',
-              }
-            : num === 3
-            ? {
-                border: '1px solid #7645E8',
-                background: '#ECE4FF',
-              }
-            : {})}
-        ></Box>
-        <Text>{groups[num - 1]}</Text>
+          backgroundColor={color}
+          border={`1px solid ${border}`}
+        />
+        <Text>Group {num}</Text>
       </Flex>
-    ) : (
-      <></>
     );
   };
 
@@ -85,9 +81,20 @@ export const ReviewBox = ({
           <Flex gap="12px" flexDirection="column" width="480px">
             <Text fontWeight={600}>Input Field Groups</Text>
           </Flex>
-          <GroupItem num={1} />
-          <GroupItem num={2} />
-          <GroupItem num={3} />
+          {Object.keys(Object.fromEntries(fieldGroups)).map((key, index) => {
+            const { border, background } = fieldGroups.get(key) as {
+              border: string;
+              background: string;
+            };
+            return (
+              <GroupItem
+                key={index}
+                num={index + 1}
+                color={background}
+                border={border}
+              />
+            );
+          })}
         </Flex>
       </Flex>
       <Flex
@@ -104,20 +111,10 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <embed
-          src={formLink}
-          type="application/pdf"
-          width="400px"
-          height="500px"
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'stretch',
-            border: '1px solid #E5E5E5',
-            borderRadius: '8px',
-            width: '100%',
-          }}
+        <FormEditor
+          formTemplateName={name}
+          pdfUrl={formLink}
+          disableEdit={true}
         />
       </Flex>
     </Flex>

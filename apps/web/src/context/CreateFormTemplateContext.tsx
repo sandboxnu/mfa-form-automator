@@ -1,6 +1,12 @@
 import React, { createContext, useContext, useState } from 'react';
 import { CreateFormTemplateContextType } from './types';
 import { useBlob } from '@web/hooks/useBlob';
+import {
+  FormFields,
+  FieldGroups,
+} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 export const CreateFormTemplateContext =
   createContext<CreateFormTemplateContextType>(
@@ -13,6 +19,18 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   const [formTemplateDescription, setFormTemplateDescription] = useState<
     string | null
   >(null);
+  const [formFields, setFormFields] = useState<FormFields>({});
+  const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
+  const router = useRouter();
+
+  useEffect(() => {
+    if (
+      !blobHook.localBlobData.url &&
+      router.pathname !== '/create-template/upload'
+    ) {
+      router.push('/create-template/upload');
+    }
+  }, [blobHook.localBlobData.url]);
 
   return (
     <CreateFormTemplateContext.Provider
@@ -22,6 +40,10 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFormTemplateName,
         setFormTemplateDescription,
         useBlob: blobHook,
+        formFields,
+        setFormFields,
+        fieldGroups,
+        setFieldGroups,
       }}
     >
       {children}

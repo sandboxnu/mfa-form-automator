@@ -402,6 +402,65 @@ export const UploadIcon = createIcon({
   ),
 });
 
+export const TextIcon = (
+  <svg
+    width="14"
+    height="16"
+    viewBox="0 0 14 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M5 15H7M7 15H9M7 15V1M7 1H1V2M7 1H13V2"
+      stroke="white"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+export const PlusSign = (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 14 14"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M1.38493 6.55339L1.38493 6.55339C1.26753 6.6708 1.20119 6.82972 1.2002 6.99565C1.19757 7.07891 1.21255 7.16181 1.24417 7.23891C1.27627 7.31719 1.32478 7.38768 1.38643 7.44563L1.38643 7.44563C1.44808 7.50358 1.52143 7.54765 1.60155 7.57485C1.67819 7.60088 1.75931 7.6109 1.83991 7.60434H6.36929V12.1686C6.36929 12.3359 6.43574 12.4964 6.55403 12.6147C6.67232 12.733 6.83276 12.7994 7.00004 12.7994C7.16733 12.7994 7.32777 12.733 7.44606 12.6147C7.56435 12.4964 7.6308 12.3359 7.6308 12.1686V7.63018H12.1691C12.3364 7.63018 12.4969 7.56373 12.6152 7.44543C12.7334 7.32714 12.7999 7.1667 12.7999 6.99941C12.7999 6.83213 12.7334 6.67169 12.6152 6.55339C12.4969 6.4351 12.3364 6.36865 12.1691 6.36865H7.6308V1.83018C7.6308 1.66289 7.56435 1.50246 7.44606 1.38416C7.32777 1.26587 7.16733 1.19941 7.00004 1.19941C6.83275 1.19941 6.67232 1.26587 6.55403 1.38416C6.43574 1.50246 6.36929 1.66289 6.36929 1.83018V6.36865H1.83094C1.66365 6.36865 1.50322 6.4351 1.38493 6.55339Z"
+      fill="#1367EA"
+      stroke="#1367EA"
+      stroke-width="0.4"
+    />
+  </svg>
+);
+
+export const PageSwitcherArrowLeft = (
+  <svg
+    width="8"
+    height="10"
+    viewBox="0 0 8 10"
+    fill="none"
+    transform="scale(-1)"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M0.5 9.375L8 5L0.5 0.625V9.375Z" fill="#343436" />
+  </svg>
+);
+
+export const PageSwitcherArrowRight = (
+  <svg
+    width="8"
+    height="10"
+    viewBox="0 0 8 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M0.5 9.375L8 5L0.5 0.625V9.375Z" fill="#343436" />
+  </svg>
+);
 export const UnsignedX = createIcon({
   displayName: 'UnsignedX',
   viewBox: '0 0 14 15',

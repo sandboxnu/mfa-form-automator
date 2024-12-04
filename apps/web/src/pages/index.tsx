@@ -1,10 +1,10 @@
-import { OverviewRow } from 'apps/web/src/components/OverviewRow';
 import { Box, Text } from '@chakra-ui/react';
 import { useForm } from '@web/hooks/useForm';
 import Error from './../components/Error';
 import FormLoading from './../components/FormLoading';
 import { FormList } from './../components/FormList';
 import { useAuth } from '@web/hooks/useAuth';
+import { OverviewRow } from '@web/components/OverviewRow';
 
 export default function Overview() {
   const {
