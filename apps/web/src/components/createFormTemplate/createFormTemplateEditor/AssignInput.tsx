@@ -19,7 +19,10 @@ export const AssignInput = () => {
           Select an assignee group and drag to add input fields for each
         </Text>
       </Box>
-      <FormEditor pdfUrl={'http://localhost:3002/test.pdf'} />
+      <FormEditor
+        formTemplateName="Authorization Form"
+        pdfUrl={'http://localhost:3002/test.pdf'}
+      />
     </Box>
   );
 };

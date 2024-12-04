@@ -10,13 +10,6 @@ import { PDFPageProxy } from 'pdfjs-dist';
 import { v4 as uuidv4 } from 'uuid';
 import DraggableText from './DraggableText';
 
-type PageCallback = PDFPageProxy & {
-  width: number;
-  height: number;
-  originalWidth: number;
-  originalHeight: number;
-};
-
 export type TextFieldPosition = {
   x: number;
   y: number;
@@ -27,23 +20,27 @@ export type TextFieldPosition = {
 type groupId = string;
 type fieldId = string;
 type colorHex = string;
-
-type FieldGroups = Map<groupId, colorHex>;
+export type FieldGroups = Map<groupId, colorHex>;
 
 // index = page num (zero indexing)
-type FormFields = Map<
+export type FormFields = Map<
   fieldId,
   { position: TextFieldPosition; groupId: string }
 >[];
 
-export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
+export const FormEditor = ({
+  formTemplateName,
+  pdfUrl,
+}: {
+  formTemplateName: string;
+  pdfUrl: string;
+}) => {
   pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
   const [formFields, setFormFields] = useState<FormFields>([]);
   const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
   const [currentGroup, setCurrentGroup] = useState<string>('');
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const formName = 'Authorization Form ';
   const documentRef = useRef<HTMLDivElement>(null);
   const [groupNum, setGroupNum] = useState(0);
 
@@ -112,9 +109,8 @@ export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
   return (
     <Box
       background="white"
-      padding="24px"
       borderRadius="12px"
-      border="1px #E5E5E5 solid"
+      width="100%"
       display="flex"
       flexDir="column"
       gap="20px"
@@ -177,7 +173,7 @@ export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
           textAlign="center"
           background="white"
         >
-          {formName}
+          {formTemplateName}
         </Text>
         <Box display="flex" justifyContent="center">
           <Box
