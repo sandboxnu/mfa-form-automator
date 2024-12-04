@@ -5,13 +5,6 @@ import { useRouter } from 'next/router';
 export const SideCreateForm = ({ curStep }: { curStep: number }) => {
   const router = useRouter();
 
-  const textStyle = {
-    color: '#010101',
-    fontSize: '16px',
-    fontWeight: '500',
-    lineHeight: '21px',
-  };
-
   const lineStyle = {
     marginLeft: '11px',
     marginTop: '2px',

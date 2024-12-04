@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
  * @param backLink page router will push on click of 'back'
  * @param disabled whether the 'save & continue' button should be activated
  */
-export const FormTemplateButtons = ({
+export const CreateFormButtons = ({
   deleteFunction,
   submitLink,
   backLink,

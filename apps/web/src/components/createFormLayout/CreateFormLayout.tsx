@@ -1,7 +1,7 @@
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import { ReactJSXElement } from 'node_modules/@emotion/react/dist/declarations/types/jsx-namespace';
 import { SideCreateForm } from './SideCreateForm';
-import { FormTemplateButtons } from './FormTemplateButtons';
+import { CreateFormButtons } from './CreateFormButtons';
 
 /**
  * The layout for a page in the create form template onboarding flow.  Used in pages.
@@ -14,22 +14,22 @@ import { FormTemplateButtons } from './FormTemplateButtons';
  * @param disabled the boolean to determine whether the submit functionality is disabled (may be toggled by other pages)
  * @returns the formatted content of a form template creation page.
  */
-export const FormTemplateLayout = ({
+export const CreateFormLayout = ({
   pageNumber,
   subheading,
-  boxContent,
   deleteFunction,
   submitLink,
   backLink,
   disabled,
+  children,
 }: {
   pageNumber: number;
   subheading: string;
-  boxContent: ReactJSXElement;
   deleteFunction: Function;
   submitLink: string;
   backLink: string;
   disabled: boolean;
+  children: ReactJSXElement;
 }) => {
   return (
     <Box height="100vh" marginTop="36px">
@@ -69,9 +69,9 @@ export const FormTemplateLayout = ({
         backgroundColor="#FFF"
         alignContent={'center'}
       >
-        {boxContent}
+        {children}
       </Flex>
-      <FormTemplateButtons
+      <CreateFormButtons
         deleteFunction={deleteFunction}
         submitLink={submitLink}
         backLink={backLink}
