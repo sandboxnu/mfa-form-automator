@@ -17,7 +17,7 @@ import { useRouter } from 'next/router';
  * @param disabled whether the 'save & continue' button should be activated
  * @param review if review page, there is no delete/clear button and the Save & Continue becomes Create Form Template
  */
-export const CreateFormButtons = ({
+export const CreateFormTemplateButtons = ({
   deleteFunction,
   submitLink,
   backLink,

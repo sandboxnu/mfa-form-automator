@@ -15,6 +15,8 @@ export const SideCreateForm = ({ curStep }: { curStep: number }) => {
   };
 
   const Item = ({ num }: { num: number }) => {
+    const isCreateTemplate = router.pathname.includes('create-template');
+
     return (
       <Flex gap="10px">
         {curStep <= num ? <NumberCircle num={num} /> : <BlueCheck />}
@@ -24,12 +26,20 @@ export const SideCreateForm = ({ curStep }: { curStep: number }) => {
           fontWeight="500"
           lineHeight="21px"
         >
-          {num === 1
-            ? 'Upload PDF'
+          {isCreateTemplate
+            ? num === 1
+              ? 'Upload PDF'
+              : num === 2
+              ? 'Enter details'
+              : num === 3
+              ? 'Add input fields'
+              : 'Review'
+            : num === 1
+            ? 'Select template'
             : num === 2
-            ? 'Enter details'
+            ? 'Edit details'
             : num === 3
-            ? 'Add input fields'
+            ? 'Assign groups'
             : 'Review'}
         </Text>
       </Flex>

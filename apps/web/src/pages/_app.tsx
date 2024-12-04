@@ -63,13 +63,6 @@ export default function App({
   ];
   const createFormTemplatePath = '/create-template';
 
-  const head = (
-    <Head>
-      <title>MFA Forms</title>
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    </Head>
-  );
-
   if (excludeLayoutPaths.includes(appProps.router.pathname)) {
     return (
       <>

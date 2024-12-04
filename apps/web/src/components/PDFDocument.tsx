@@ -8,7 +8,7 @@ export function PDFDocument({ formLink }: { formLink: string }) {
   return (
     <>
       <Document file={formLink}>
-        <Page pageNumber={1} />
+        <Page pageNumber={1} renderTextLayer={false} />
       </Document>
     </>
   );

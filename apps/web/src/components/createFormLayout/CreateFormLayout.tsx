@@ -1,7 +1,8 @@
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import { ReactJSXElement } from 'node_modules/@emotion/react/dist/declarations/types/jsx-namespace';
 import { SideCreateForm } from './SideCreateForm';
-import { CreateFormButtons } from './CreateFormButtons';
+import { CreateFormTemplateButtons } from '../createFormTemplate/CreateFormTemplateButtons';
+import { usePathname } from 'next/navigation';
 
 /**
  * The layout for a page in the create form template onboarding flow.  Used in pages.
@@ -34,6 +35,9 @@ export const CreateFormLayout = ({
   children: ReactJSXElement;
   review?: boolean;
 }) => {
+  const pathname = usePathname();
+  const isCreateTemplate = pathname.includes('create-template');
+
   return (
     <Box height="100vh" marginTop="36px">
       <Flex position="absolute" margin="0px" zIndex={5000}>
@@ -47,7 +51,7 @@ export const CreateFormLayout = ({
         lineHeight="38px"
         marginLeft="36px"
       >
-        Create form template
+        Create form {isCreateTemplate ? 'template' : 'instance'}
       </Heading>
       <Text
         color="#4B4C4F"
@@ -74,13 +78,17 @@ export const CreateFormLayout = ({
       >
         {children}
       </Flex>
-      <CreateFormButtons
-        deleteFunction={deleteFunction}
-        submitLink={submitLink}
-        backLink={backLink}
-        disabled={disabled}
-        review={review}
-      />
+      {isCreateTemplate ? (
+        <CreateFormTemplateButtons
+          deleteFunction={deleteFunction}
+          submitLink={submitLink}
+          backLink={backLink}
+          disabled={disabled}
+          review={review}
+        />
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };
