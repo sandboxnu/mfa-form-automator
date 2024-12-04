@@ -54,8 +54,6 @@ export const ReviewBox = ({
     );
   };
 
-  console.log(formFields);
-
   return (
     <Flex
       flexDirection={'row'}
