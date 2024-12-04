@@ -18,12 +18,7 @@ export default function InputFields() {
       subheading={
         'Select an assignee group and drag to add input fields for each'
       }
-      boxContent={
-        <FormEditor
-          formTemplateName={formTemplateName ?? ''}
-          pdfUrl={localBlobData.url}
-        />
-      }
+      boxContent={<FormEditor />}
       deleteFunction={() => {}}
       submitLink={'/create-template/review'}
       backLink={'/create-template/description'}

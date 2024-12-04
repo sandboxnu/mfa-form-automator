@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 
-import { Box, Text, Button } from '@chakra-ui/react';
+import { Box, Text, Button, background } from '@chakra-ui/react';
 import { TextIcon, PlusSign } from 'apps/web/src/static/icons';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 
@@ -9,6 +9,7 @@ import PagingControl from './PagingControl';
 import { PDFPageProxy } from 'pdfjs-dist';
 import { v4 as uuidv4 } from 'uuid';
 import DraggableText from './DraggableText';
+import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 export type TextFieldPosition = {
   x: number;
@@ -19,8 +20,10 @@ export type TextFieldPosition = {
 
 type groupId = string;
 type fieldId = string;
-type colorHex = string;
-export type FieldGroups = Map<groupId, colorHex>;
+export type FieldGroups = Map<
+  groupId,
+  { borderColor: string; backgroundColor: string }
+>;
 
 // index = page num (zero indexing)
 export type FormFields = Map<
@@ -28,29 +31,33 @@ export type FormFields = Map<
   { position: TextFieldPosition; groupId: string }
 >[];
 
-export const FormEditor = ({
-  formTemplateName,
-  pdfUrl,
-}: {
-  formTemplateName: string;
-  pdfUrl: string;
-}) => {
+export const FormEditor = () => {
   pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-  const [formFields, setFormFields] = useState<FormFields>([]);
-  const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
+
   const [currentGroup, setCurrentGroup] = useState<string>('');
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const documentRef = useRef<HTMLDivElement>(null);
   const [groupNum, setGroupNum] = useState(0);
 
+  const {
+    useBlob,
+    formTemplateName,
+    fieldGroups,
+    setFieldGroups,
+    formFields,
+    setFormFields,
+  } = useCreateFormTemplate();
+
+  const { localBlobData } = useBlob;
+  console.log(formFields);
   //colors for group buttons: colors[0] = border/text color, colors[1] = background color
   const groupColors = [
-    ['#1367EA', '#EEF5FF'],
-    ['#BD21CA', '#FDEAFF'],
-    ['#7645E8', '#ECE4FF'],
-    ['#567E26', '#EDFFD6'],
-    ['#A16308', '#FFFDDB'],
+    { borderColor: '#1367EA', backgroundColor: '#EEF5FF' },
+    { borderColor: '#BD21CA', backgroundColor: '#FDEAFF' },
+    { borderColor: '#7645E8', backgroundColor: '#ECE4FF' },
+    { borderColor: '#567E26', backgroundColor: '#EDFFD6' },
+    { borderColor: '#A16308', backgroundColor: '#FFFDDB' },
   ];
 
   const handleAddField = () => {
@@ -99,7 +106,10 @@ export const FormEditor = ({
     let newFieldGroups = new Map(fieldGroups);
     if (groupNum != 5) {
       const myuuid = uuidv4();
-      newFieldGroups.set(myuuid, groupColors[groupNum][1]);
+      newFieldGroups.set(myuuid, {
+        borderColor: groupColors[groupNum].borderColor,
+        backgroundColor: groupColors[groupNum].backgroundColor,
+      });
       setFieldGroups(newFieldGroups);
       setGroupNum(groupNum + 1);
       setCurrentGroup(myuuid);
@@ -123,12 +133,16 @@ export const FormEditor = ({
             variant={'solid'}
             border={'solid 1px'}
             backgroundColor={
-              currentGroup === key ? groupColors[index][1] : 'white'
+              currentGroup === key
+                ? groupColors[index].backgroundColor
+                : 'white'
             }
             borderColor={
-              currentGroup === key ? groupColors[index][0] : '#1367EA'
+              currentGroup === key ? groupColors[index].borderColor : '#1367EA'
             }
-            textColor={currentGroup === key ? groupColors[index][0] : '#1367EA'}
+            textColor={
+              currentGroup === key ? groupColors[index].borderColor : '#1367EA'
+            }
           >
             Group {index + 1}
           </Button>
@@ -216,7 +230,7 @@ export const FormEditor = ({
             flexDirection="column"
           >
             <Document
-              file={pdfUrl}
+              file={localBlobData.url}
               onLoadSuccess={(data) => {
                 setTotalPages(data.numPages);
                 let arr = [];
@@ -241,7 +255,9 @@ export const FormEditor = ({
                           handleRemoveField(fieldId);
                         }}
                         key={index}
-                        color={fieldGroups.get(groupId) ?? '#000'}
+                        color={
+                          fieldGroups.get(groupId)?.backgroundColor ?? '#0000'
+                        }
                         initialText={null}
                         onStop={(e: DraggableEvent, data: DraggableData) => {
                           handleFieldUpdate(groupId, fieldId, {

@@ -1,4 +1,6 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
+import { FieldGroups, FormFields } from './createFormTemplateEditor/FormEditor';
+import { group } from 'console';
 
 /**
  * The contents of the white box for the page (step 2) that asks the user for the form's name and
@@ -12,10 +14,14 @@ export const ReviewBox = ({
   formLink,
   name,
   description,
+  groups,
+  fields,
 }: {
   formLink: string;
   name: string;
   description: string;
+  groups: FieldGroups;
+  fields: FormFields;
 }) => {
   const textInputStyle = {
     alignSelf: 'stretch',
@@ -26,32 +32,18 @@ export const ReviewBox = ({
     borderColor: 'transparent',
   };
   // TODO: these groups should instead be taken from state
-  const groups: string[] = ['Group 1', 'Group 2', 'Group 3'];
 
-  const GroupItem = ({ num }: { num: number }) => {
-    return num <= groups.length ? (
+  const GroupItem = ({ num, groupId }: { num: number; groupId: string }) => {
+    console.log(groups.get(groupId))
+    return num <= groups.size ? (
       <Flex gap="10px">
         <Box
           width="24px"
           height="24px"
-          {...(num === 1
-            ? {
-                border: '1px solid var(--Blue, #1367EA)',
-                background: '#EEF5FF',
-              }
-            : num === 2
-            ? {
-                border: '1px solid #BD21CA',
-                background: '#FDEAFF',
-              }
-            : num === 3
-            ? {
-                border: '1px solid #7645E8',
-                background: '#ECE4FF',
-              }
-            : {})}
+          backgroundColor={groups.get(groupId)?.backgroundColor}
+          borderColor={groups.get(groupId)?.borderColor}
         ></Box>
-        <Text>{groups[num - 1]}</Text>
+        <Text>Group {num + 1}</Text>
       </Flex>
     ) : (
       <></>
@@ -85,9 +77,9 @@ export const ReviewBox = ({
           <Flex gap="12px" flexDirection="column" width="480px">
             <Text fontWeight={600}>Input Field Groups</Text>
           </Flex>
-          <GroupItem num={1} />
-          <GroupItem num={2} />
-          <GroupItem num={3} />
+          {Array.from(groups.entries()).map(([key, value], i) => (
+            <GroupItem key={i} num={i} groupId={key} />
+          ))}
         </Flex>
       </Flex>
       <Flex

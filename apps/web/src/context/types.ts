@@ -1,3 +1,7 @@
+import {
+  FieldGroups,
+  FormFields,
+} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
 import { Dispatch, Ref, SetStateAction } from 'react';
 
 // for storage in context
@@ -44,4 +48,8 @@ export interface CreateFormTemplateContextType {
   setFormTemplateName: Dispatch<SetStateAction<string | null>>;
   setFormTemplateDescription: Dispatch<SetStateAction<string | null>>;
   useBlob: any;
+  formFields: FormFields;
+  setFormFields: React.Dispatch<React.SetStateAction<FormFields>>;
+  fieldGroups: FieldGroups;
+  setFieldGroups: React.Dispatch<React.SetStateAction<FieldGroups>>;
 }
