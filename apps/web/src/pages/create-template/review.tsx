@@ -1,4 +1,4 @@
-import { FormTemplateLayout } from '@web/components/createFormTemplate/FormTemplateLayout';
+import { CreateFormLayout } from '@web/components/createFormLayout/CreateFormLayout';
 import { ReviewBox } from '@web/components/createFormTemplate/ReviewBox';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
@@ -11,21 +11,20 @@ export default function Review() {
 
   const { localBlobData } = useBlob;
   return (
-    <FormTemplateLayout
+    <CreateFormLayout
       pageNumber={4}
       subheading={'Review your form template'}
-      boxContent={
-        <ReviewBox
-          formLink={localBlobData.url}
-          name={formTemplateName ? formTemplateName : ''}
-          description={formTemplateDescription ? formTemplateDescription : ''}
-        />
-      }
       deleteFunction={() => {}}
       submitLink={'/create-template/success'}
-      backLink={'/create-template/inputFields'}
+      backLink={'/create-template/input-fields'}
       disabled={false}
       review={true}
-    />
+    >
+      <ReviewBox
+        formLink={localBlobData.url}
+        name={formTemplateName ? formTemplateName : ''}
+        description={formTemplateDescription ? formTemplateDescription : ''}
+      />
+    </CreateFormLayout>
   );
 }
