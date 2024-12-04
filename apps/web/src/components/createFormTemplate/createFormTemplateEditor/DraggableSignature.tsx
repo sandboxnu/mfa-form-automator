@@ -22,7 +22,6 @@ export default function DraggableSignature({
       right: 0,
       display: 'inline-block',
       backgroundColor: 'white',
-      // borderRadius: 4,
     },
     smallButton: {
       display: 'inline-block',

@@ -36,9 +36,6 @@ type FormFields = Map<
   { position: TextFieldPosition; groupId: string }
 >[];
 
-//! TEMP FORM NAME
-const formName = 'Authorization Form ';
-
 export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
   pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
   const [formFields, setFormFields] = useState<FormFields>([]);
@@ -46,7 +43,7 @@ export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
   const [currentGroup, setCurrentGroup] = useState<string>('');
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  // const [pageDetails, setPageDetails] = useState<PageCallback | null>(null);
+  const formName = 'Authorization Form ';
   const documentRef = useRef<HTMLDivElement>(null);
   const [groupNum, setGroupNum] = useState(0);
 
@@ -61,18 +58,24 @@ export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
 
   const handleAddField = () => {
     if (fieldGroups.size > 0) {
-      const fieldId = uuidv4();
-      let formFieldsCopy = [...formFields];
-      formFieldsCopy[pageNum].set(fieldId, {
-        position: {
-          x: 0,
-          y: 0,
-          width: 80,
-          height: 30,
-        },
-        groupId: currentGroup,
+      setFormFields({
+        ...formFields,
+        [pageNum]: new Map([
+          ...formFields[pageNum],
+          [
+            uuidv4(),
+            {
+              position: {
+                x: 0,
+                y: 0,
+                width: 80,
+                height: 30,
+              },
+              groupId: currentGroup,
+            },
+          ],
+        ]),
       });
-      setFormFields(formFieldsCopy);
     }
   };
 
@@ -87,25 +90,20 @@ export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
     fieldId: string,
     pos: TextFieldPosition,
   ) => {
-    let updatedFormFields = [...formFields];
-    updatedFormFields[pageNum].set(fieldId, {
-      position: {
-        width: pos.width,
-        height: pos.height,
-        x: pos.x,
-        y: pos.y,
-      },
-      groupId: groupId,
+    setFormFields({
+      ...formFields,
+      [pageNum]: new Map([
+        ...formFields[pageNum].set(fieldId, { position: pos, groupId }),
+      ]),
     });
-    setFormFields(updatedFormFields);
   };
 
   const addGroup = () => {
-    const myuuid = uuidv4();
-    let mapCpy = new Map(fieldGroups);
+    let newFieldGroups = new Map(fieldGroups);
     if (groupNum != 5) {
-      mapCpy.set(myuuid, groupColors[groupNum][1]);
-      setFieldGroups(mapCpy);
+      const myuuid = uuidv4();
+      newFieldGroups.set(myuuid, groupColors[groupNum][1]);
+      setFieldGroups(newFieldGroups);
       setGroupNum(groupNum + 1);
       setCurrentGroup(myuuid);
     }
@@ -221,75 +219,6 @@ export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
             display="flex"
             flexDirection="column"
           >
-            {/* {signatureURL ? (
-                <DraggableSignature
-                  url={signatureURL}
-                  onCancel={() => {
-                    setSignatureURL(null);
-                  }}
-                  onSet={async () => {
-                    if (
-                      pageDetails &&
-                      documentRef &&
-                      documentRef.current &&
-                      position
-                    ) {
-                      const { originalHeight, originalWidth } = pageDetails;
-                      const scale =
-                        originalWidth / documentRef.current.clientWidth;
-
-                      const y =
-                        documentRef.current.clientHeight -
-                        (position.y -
-                          position.height +
-                          64 -
-                          documentRef.current.offsetTop);
-                      const x =
-                        position.x -
-                        160 -
-                        position.width -
-                        documentRef.current.offsetLeft;
-
-                      // new XY in relation to actual document size
-                      const newY =
-                        (y * originalHeight) / documentRef.current.clientHeight;
-                      const newX =
-                        (x * originalWidth) / documentRef.current.clientWidth;
-
-                      const pdfDoc = await PDFDocument.load(pdf);
-
-                      const pages = pdfDoc.getPages();
-                      const firstPage = pages[pageNum];
-
-                      const pngImage = await pdfDoc.embedPng(signatureURL);
-                      const pngDims = pngImage.scale(scale * 0.3);
-
-                      firstPage.drawImage(pngImage, {
-                        x: newX,
-                        y: newY,
-                        width: pngDims.width,
-                        height: pngDims.height,
-                      });
-
-                      const pdfBytes = await pdfDoc.save();
-                      const blob = new Blob([new Uint8Array(pdfBytes)]);
-
-                      // const URL = await blobToURL(blob);
-                      // setPdf(URL);
-                      setPosition(null);
-                      setSignatureURL(null);
-                    }
-                  }}
-                  onEnd={(e: DraggableEvent, data: DraggableData) =>
-                    setPosition({
-                      width: data.deltaX,
-                      height: data.deltaY,
-                      x: data.x,
-                      y: data.y,
-                    })
-                  }
-                />
-              ) : null} */}
             <Document
               file={pdfUrl}
               onLoadSuccess={(data) => {
@@ -306,9 +235,6 @@ export const FormEditor = ({ pdfUrl }: { pdfUrl: string }) => {
                 renderAnnotationLayer={false}
                 renderTextLayer={false}
                 pageNumber={pageNum + 1}
-                onLoadSuccess={(page: PageCallback) => {
-                  // setPageDetails(page);
-                }}
               >
                 {formFields[pageNum] &&
                   Array.from(formFields[pageNum].entries()).map(
