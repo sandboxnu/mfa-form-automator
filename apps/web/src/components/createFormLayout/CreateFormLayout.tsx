@@ -12,6 +12,7 @@ import { CreateFormButtons } from './CreateFormButtons';
  * @param submitLink the link to be pushed when the submit button is active and pressed
  * @param backLink the link to be pushed when the back button is active and pressed
  * @param disabled the boolean to determine whether the submit functionality is disabled (may be toggled by other pages)
+ * @param review if this is review page true, effects the buttons
  * @returns the formatted content of a form template creation page.
  */
 export const CreateFormLayout = ({
@@ -22,6 +23,7 @@ export const CreateFormLayout = ({
   backLink,
   disabled,
   children,
+  review,
 }: {
   pageNumber: number;
   subheading: string;
@@ -30,6 +32,7 @@ export const CreateFormLayout = ({
   backLink: string;
   disabled: boolean;
   children: ReactJSXElement;
+  review?: boolean;
 }) => {
   return (
     <Box height="100vh" marginTop="36px">
@@ -76,6 +79,7 @@ export const CreateFormLayout = ({
         submitLink={submitLink}
         backLink={backLink}
         disabled={disabled}
+        review={review}
       />
     </Box>
   );

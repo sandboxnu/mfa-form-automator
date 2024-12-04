@@ -26,7 +26,7 @@ export default function Description() {
       }}
       submitLink={'/create-template/input-fields'}
       backLink={'/create-template/upload'}
-      disabled={!formTemplateName || !formTemplateDescription}
+      disabled={!formTemplateName}
     >
       <NameAndDescriptionBox
         formLink={localBlobData.url}

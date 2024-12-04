@@ -12,7 +12,7 @@ export default function InputFields() {
         'Select an assignee group and drag to add input fields for each'
       }
       deleteFunction={() => {}}
-      submitLink={'/'}
+      submitLink={'/create-template/review'}
       backLink={'/create-template/description'}
       // TODO set disabled based on some state in the pdf editor component
       disabled={false}
