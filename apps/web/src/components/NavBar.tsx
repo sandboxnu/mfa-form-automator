@@ -17,6 +17,7 @@ import {
   SettingsIcon,
   PlusIcon,
   FormInstanceIcon,
+  GrayPencilIcon,
 } from 'apps/web/src/static/icons';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -30,9 +31,9 @@ const icons = {
   pendingActive: <PendingIcon marginRight="2" />,
   completed: <CompletedIcon marginRight="2" />,
   completedActive: <CompletedIcon marginRight="2" />,
-  history: <HistoryIcon marginRight="2" />,
-  settings: <SettingsIcon marginRight="2" />,
   formInstance: <FormInstanceIcon marginRight="2" />,
+  test: <GrayPencilIcon marginRight="2" />,
+  testActive: <GrayPencilIcon marginRight="2" />,
 };
 type IconKeys = keyof typeof icons;
 /**
@@ -184,6 +185,20 @@ export const NavBar = ({ ...props }: { props?: {} }) => {
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
+      {process.env.NODE_ENV === 'development' && (
+        <Box>
+          <Box
+            mt="4"
+            mb="2"
+            mx="12"
+            borderBottomWidth="1px"
+            borderColor="gray.200"
+          ></Box>
+          <NavItem icon="test" link="/sandbox">
+            Test
+          </NavItem>
+        </Box>
+      )}
     </Box>
   );
 };

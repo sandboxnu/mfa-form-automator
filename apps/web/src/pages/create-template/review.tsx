@@ -6,7 +6,7 @@ import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
  * The upload page in the form template creation flow, where users add their pdf.
  */
 export default function Review() {
-  const { formTemplateName, formTemplateDescription, useBlob } =
+  const { formTemplateName, formTemplateDescription, useBlob, fieldGroups } =
     useCreateFormTemplate();
 
   const { localBlobData } = useBlob;
@@ -24,6 +24,7 @@ export default function Review() {
         formLink={localBlobData.url}
         name={formTemplateName ? formTemplateName : ''}
         description={formTemplateDescription ? formTemplateDescription : ''}
+        fieldGroups={fieldGroups}
       />
     </CreateFormLayout>
   );
