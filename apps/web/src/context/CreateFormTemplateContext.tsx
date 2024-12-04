@@ -5,6 +5,8 @@ import {
   FormFields,
   FieldGroups,
 } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 export const CreateFormTemplateContext =
   createContext<CreateFormTemplateContextType>(
@@ -19,6 +21,16 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   >(null);
   const [formFields, setFormFields] = useState<FormFields>({});
   const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
+  const router = useRouter();
+
+  useEffect(() => {
+    if (
+      !blobHook.localBlobData.url &&
+      router.pathname !== '/create-template/upload'
+    ) {
+      router.push('/create-template/upload');
+    }
+  }, [blobHook.localBlobData.url]);
 
   return (
     <CreateFormTemplateContext.Provider

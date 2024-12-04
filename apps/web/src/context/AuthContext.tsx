@@ -211,7 +211,12 @@ export const AuthProvider = ({ children }: any) => {
   const logout = () => {
     DefaultService.appControllerLogout().then(() => setUser(undefined));
     // Don't redirect if we are already on the signin page since it will cause a loop
-    if (router.pathname !== '/signin') router.push('/signin');
+    if (router.pathname !== '/signin') {
+      // there can be a case where we push to another page before the logout is complete
+      while (router.pathname !== '/signin') {
+        router.push('/signin');
+      }
+    }
   };
 
   // Make the provider update only when it should.
