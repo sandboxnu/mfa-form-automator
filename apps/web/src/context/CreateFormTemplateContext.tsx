@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
 import { CreateFormTemplateContextType } from './types';
 import { useBlob } from '@web/hooks/useBlob';
+import {
+  FormFields,
+  FieldGroups,
+} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
 
 export const CreateFormTemplateContext =
   createContext<CreateFormTemplateContextType>(
@@ -13,6 +17,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   const [formTemplateDescription, setFormTemplateDescription] = useState<
     string | null
   >(null);
+  const [formFields, setFormFields] = useState<FormFields>({});
+  const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
 
   return (
     <CreateFormTemplateContext.Provider
@@ -22,6 +28,10 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFormTemplateName,
         setFormTemplateDescription,
         useBlob: blobHook,
+        formFields,
+        setFormFields,
+        fieldGroups,
+        setFieldGroups,
       }}
     >
       {children}

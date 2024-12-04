@@ -9,6 +9,7 @@ export default function DraggableText({
   color,
   onRemove,
   currentPosition,
+  disableEdit,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -16,25 +17,26 @@ export default function DraggableText({
   color: string;
   onRemove: () => void;
   currentPosition: TextFieldPosition;
+  disableEdit: boolean;
 }) {
   return (
     <Rnd
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
-      minWidth="60px"
-      minHeight="20px"
+      minWidth="50px"
+      minHeight="40px"
       style={{
         position: 'absolute',
         zIndex: 100000,
         background: `${color}`,
         opacity: '10px',
-        border: `solid 2px ${color}`,
-        borderRadius: 4,
+        border: `solid 1px grey`,
         padding: 4,
       }}
       onDragStop={onStop}
       onResizeStop={onResizeStop}
+      disableDragging={disableEdit}
     >
       <div
         style={{
@@ -43,16 +45,18 @@ export default function DraggableText({
           borderRadius: 4,
         }}
       >
-        <div
-          style={{
-            display: 'inline-block',
-            cursor: 'pointer',
-            padding: 4,
-          }}
-          onClick={onRemove}
-        >
-          <FaTimes color={'#ef6565'} />
-        </div>
+        {!disableEdit && (
+          <div
+            style={{
+              display: 'inline-block',
+              cursor: 'pointer',
+              padding: 4,
+            }}
+            onClick={onRemove}
+          >
+            <FaTimes color={'#ef6565'} />
+          </div>
+        )}
       </div>
     </Rnd>
   );

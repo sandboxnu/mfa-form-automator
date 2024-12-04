@@ -22,6 +22,7 @@ export default function InputFields() {
         <FormEditor
           formTemplateName={formTemplateName ?? ''}
           pdfUrl={localBlobData.url}
+          disableEdit={false}
         />
       }
       deleteFunction={() => {}}

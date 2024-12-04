@@ -1,14 +1,14 @@
 import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-
 import { Box, Text, Button } from '@chakra-ui/react';
 import { TextIcon, PlusSign } from 'apps/web/src/static/icons';
 import { DraggableData, DraggableEvent } from 'react-draggable';
-
 import PagingControl from './PagingControl';
-import { PDFPageProxy } from 'pdfjs-dist';
 import { v4 as uuidv4 } from 'uuid';
 import DraggableText from './DraggableText';
+import { useCreateFormTemplate } from 'apps/web/src/context/CreateFormTemplateContext';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export type TextFieldPosition = {
   x: number;
@@ -17,32 +17,39 @@ export type TextFieldPosition = {
   height: number;
 };
 
+type FieldGroupColor = {
+  border: string;
+  background: string;
+};
+
 type groupId = string;
 type fieldId = string;
-type colorHex = string;
-export type FieldGroups = Map<groupId, colorHex>;
+export type FieldGroups = Map<groupId, FieldGroupColor>;
 
 // index = page num (zero indexing)
-export type FormFields = Map<
-  fieldId,
-  { position: TextFieldPosition; groupId: string }
->[];
+export type FormFields = Record<
+  number,
+  Map<fieldId, { position: TextFieldPosition; groupId: string }>
+>;
 
 export const FormEditor = ({
   formTemplateName,
   pdfUrl,
+  disableEdit,
 }: {
   formTemplateName: string;
   pdfUrl: string;
+  disableEdit: boolean;
 }) => {
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-  const [formFields, setFormFields] = useState<FormFields>([]);
-  const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
-  const [currentGroup, setCurrentGroup] = useState<string>('');
+  const { formFields, setFormFields, fieldGroups, setFieldGroups } =
+    useCreateFormTemplate();
+  const [currentGroup, setCurrentGroup] = useState<string>(
+    fieldGroups.keys().next().value ?? '',
+  );
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const documentRef = useRef<HTMLDivElement>(null);
-  const [groupNum, setGroupNum] = useState(0);
+  const [groupNum, setGroupNum] = useState(fieldGroups.size);
 
   //colors for group buttons: colors[0] = border/text color, colors[1] = background color
   const groupColors = [
@@ -54,7 +61,13 @@ export const FormEditor = ({
   ];
 
   const handleAddField = () => {
-    if (fieldGroups.size > 0) {
+    if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
+      const container = documentRef.current;
+      const { scrollLeft, scrollTop, clientWidth, clientHeight } = container;
+
+      const centerX = scrollLeft + clientWidth / 2;
+      const centerY = scrollTop + clientHeight / 2;
+
       setFormFields({
         ...formFields,
         [pageNum]: new Map([
@@ -63,8 +76,8 @@ export const FormEditor = ({
             uuidv4(),
             {
               position: {
-                x: 0,
-                y: 0,
+                x: centerX - 40,
+                y: centerY - 15,
                 width: 80,
                 height: 30,
               },
@@ -77,9 +90,16 @@ export const FormEditor = ({
   };
 
   const handleRemoveField = (fieldId: string) => {
-    const updatedFields = [...formFields];
-    updatedFields[pageNum].delete(fieldId);
-    setFormFields(updatedFields);
+    if (disableEdit) return;
+
+    setFormFields({
+      ...formFields,
+      [pageNum]: new Map(
+        Array.from(formFields[pageNum]).filter(
+          ([key, value]) => key !== fieldId,
+        ),
+      ),
+    });
   };
 
   const handleFieldUpdate = (
@@ -87,6 +107,8 @@ export const FormEditor = ({
     fieldId: string,
     pos: TextFieldPosition,
   ) => {
+    if (disableEdit) return;
+
     setFormFields({
       ...formFields,
       [pageNum]: new Map([
@@ -96,10 +118,15 @@ export const FormEditor = ({
   };
 
   const addGroup = () => {
+    if (disableEdit) return;
+
     let newFieldGroups = new Map(fieldGroups);
-    if (groupNum != 5) {
+    if (groupNum <= 5) {
       const myuuid = uuidv4();
-      newFieldGroups.set(myuuid, groupColors[groupNum][1]);
+      newFieldGroups.set(myuuid, {
+        border: groupColors[groupNum][0],
+        background: groupColors[groupNum][1],
+      });
       setFieldGroups(newFieldGroups);
       setGroupNum(groupNum + 1);
       setCurrentGroup(myuuid);
@@ -115,46 +142,46 @@ export const FormEditor = ({
       flexDir="column"
       gap="20px"
     >
-      <Box display="flex" gap="12px">
-        {Array.from(fieldGroups.entries()).map(([key, value], index) => (
-          <Button
-            key={index}
-            onClick={() => setCurrentGroup(key)}
-            variant={'solid'}
-            border={'solid 1px'}
-            backgroundColor={
-              currentGroup === key ? groupColors[index][1] : 'white'
-            }
-            borderColor={
-              currentGroup === key ? groupColors[index][0] : '#1367EA'
-            }
-            textColor={currentGroup === key ? groupColors[index][0] : '#1367EA'}
-          >
-            Group {index + 1}
-          </Button>
-        ))}
+      {!disableEdit && (
+        <Box display="flex" gap="12px">
+          {Array.from(fieldGroups.entries()).map(([key, value], index) => (
+            <Button
+              key={index}
+              onClick={() => setCurrentGroup(key)}
+              variant={'solid'}
+              border={'solid 1px'}
+              backgroundColor={
+                currentGroup === key ? groupColors[index][1] : 'white'
+              }
+              borderColor={groupColors[index][0]}
+              textColor={groupColors[index][0]}
+            >
+              Group {index + 1}
+            </Button>
+          ))}
 
-        <Button
-          backgroundColor="white"
-          border="1px solid #1367EA"
-          onClick={addGroup}
-        >
-          {PlusSign}
-          <span
-            style={{
-              fontFamily: 'Hanken Grotesk',
-              fontSize: '16px',
-              color: '#1367EA',
-              fontWeight: 600,
-              lineHeight: '22px',
-              textAlign: 'left',
-              marginLeft: '6px',
-            }}
+          <Button
+            backgroundColor="white"
+            border="1px solid #1367EA"
+            onClick={addGroup}
           >
-            Add group
-          </span>
-        </Button>
-      </Box>
+            {PlusSign}
+            <span
+              style={{
+                fontFamily: 'Hanken Grotesk',
+                fontSize: '16px',
+                color: '#1367EA',
+                fontWeight: 600,
+                lineHeight: '22px',
+                textAlign: 'left',
+                marginLeft: '6px',
+              }}
+            >
+              Add group
+            </span>
+          </Button>
+        </Box>
+      )}
       <Box
         background="#F6F5F5"
         borderRadius="8px"
@@ -201,7 +228,7 @@ export const FormEditor = ({
               display="flex"
               justifyContent="center"
               alignItems="center"
-              isDisabled={fieldGroups.size == 0}
+              isDisabled={fieldGroups.size == 0 || disableEdit}
               onClick={handleAddField}
             >
               <div>{TextIcon}</div>
@@ -209,7 +236,7 @@ export const FormEditor = ({
           </Box>
           <Box
             height="474px"
-            width="1000px"
+            width="800px"
             overflow="scroll"
             ref={documentRef}
             display="flex"
@@ -219,11 +246,19 @@ export const FormEditor = ({
               file={pdfUrl}
               onLoadSuccess={(data) => {
                 setTotalPages(data.numPages);
-                let arr = [];
-                for (let i = 0; i <= data.numPages; i++) {
-                  arr.push(new Map());
-                }
-                setFormFields(arr);
+                setFormFields(
+                  Array.from({ length: data.numPages }).reduce<FormFields>(
+                    (acc, _, i) => {
+                      if (formFields[i]) {
+                        acc[i] = formFields[i];
+                      } else {
+                        acc[i] = new Map();
+                      }
+                      return acc;
+                    },
+                    {},
+                  ),
+                );
               }}
             >
               <Page
@@ -241,7 +276,7 @@ export const FormEditor = ({
                           handleRemoveField(fieldId);
                         }}
                         key={index}
-                        color={fieldGroups.get(groupId) ?? '#000'}
+                        color={fieldGroups.get(groupId)?.background ?? '#000'}
                         initialText={null}
                         onStop={(e: DraggableEvent, data: DraggableData) => {
                           handleFieldUpdate(groupId, fieldId, {
@@ -271,6 +306,7 @@ export const FormEditor = ({
                             y: pos.y,
                           });
                         }}
+                        disableEdit={disableEdit}
                       />
                     ),
                   )}

@@ -22,6 +22,7 @@ export const AssignInput = () => {
       <FormEditor
         formTemplateName="Authorization Form"
         pdfUrl={'http://localhost:3002/test.pdf'}
+        disableEdit={false}
       />
     </Box>
   );
