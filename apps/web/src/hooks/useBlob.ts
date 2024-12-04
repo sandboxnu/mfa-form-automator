@@ -49,11 +49,29 @@ export const useBlob = () => {
   const uploadFile = async (file: File) => {
     const newBlob = await upload(file.name, file, {
       access: 'public',
-      handleUploadUrl: 'api/upload',
+      handleUploadUrl: '/api/upload',
     });
 
     setBlob(newBlob);
     return newBlob;
+  };
+
+  const uploadLocalBlobData = async () => {
+    if (!localBlobData.blob) {
+      throw new Error('No file selected');
+    }
+
+    const file: File = new File(
+      [localBlobData.blob],
+      localBlobData.name || 'file.pdf',
+      {
+        type: 'application/pdf',
+      },
+    );
+
+    console.log('file', file);
+
+    return uploadFile(file);
   };
 
   const uploadFileRef = async () => {
@@ -74,5 +92,6 @@ export const useBlob = () => {
     uploadLocalFile,
     clearLocalBlob,
     hasLocalBlob,
+    uploadLocalBlobData,
   };
 };

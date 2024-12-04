@@ -34,7 +34,7 @@ export const CreateFormTemplateButtons = ({
   const { formTemplateName, formTemplateDescription, useBlob } =
     useCreateFormTemplate();
 
-  const { localBlobData, hasLocalBlob } = useBlob;
+  const { hasLocalBlob, uploadLocalBlobData } = useBlob;
 
   /**
    * Upload and create a form template
@@ -56,10 +56,12 @@ export const CreateFormTemplateButtons = ({
         order: 1,
       },
     ];
+
+    const blob = await uploadLocalBlobData();
     createFormTemplateMutation
       .mutateAsync({
         name: formTemplateName ? formTemplateName : '',
-        formDocLink: localBlobData.url,
+        formDocLink: blob.url,
         signatureFields: signatures,
       })
       .then((response) => {
