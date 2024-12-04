@@ -1,7 +1,5 @@
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
-import { queryClient } from '../_app';
 
 // https://vercel.com/docs/storage/vercel-blob/client-upload
 export default async function handler(

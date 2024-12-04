@@ -78,7 +78,7 @@ export const CreateFormLayout = ({
       >
         {children}
       </Flex>
-      {isCreateTemplate ? (
+      {isCreateTemplate && (
         <CreateFormTemplateButtons
           deleteFunction={deleteFunction}
           submitLink={submitLink}
@@ -86,8 +86,6 @@ export const CreateFormLayout = ({
           disabled={disabled}
           review={review}
         />
-      ) : (
-        <></>
       )}
     </Box>
   );
