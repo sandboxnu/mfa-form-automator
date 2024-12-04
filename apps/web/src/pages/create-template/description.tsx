@@ -35,7 +35,7 @@ export default function Description() {
       }}
       submitLink={'/create-template/inputFields'}
       backLink={'/create-template/upload'}
-      disabled={!formTemplateName || !formTemplateDescription}
+      disabled={!formTemplateName}
     />
   );
 }

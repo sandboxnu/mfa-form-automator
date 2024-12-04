@@ -1,4 +1,4 @@
-import { Flex, Text, Heading, Button, Box } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import { CloseIcon, PDFIcon, UploadIcon } from '@web/static/icons';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
