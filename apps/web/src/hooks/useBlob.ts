@@ -49,7 +49,7 @@ export const useBlob = () => {
   const uploadFile = async (file: File) => {
     const newBlob = await upload(file.name, file, {
       access: 'public',
-      handleUploadUrl: 'api/upload',
+      handleUploadUrl: '/api/upload',
     });
 
     setBlob(newBlob);
@@ -65,6 +65,15 @@ export const useBlob = () => {
     return uploadFile(file);
   };
 
+  const uploadLocalBlobData = async () => {
+    if (!localBlobData.blob) {
+      throw new Error('No file selected');
+    }
+
+    const file = new File([localBlobData.blob], localBlobData.name || 'file');
+    return uploadFile(file);
+  };
+
   return {
     inputFileRef,
     blob,
@@ -74,5 +83,6 @@ export const useBlob = () => {
     uploadLocalFile,
     clearLocalBlob,
     hasLocalBlob,
+    uploadLocalBlobData,
   };
 };
