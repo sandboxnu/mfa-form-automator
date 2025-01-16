@@ -57,9 +57,9 @@ export const FormCard = ({
                     label={
                       <>
                         <Text fontSize="16px" fontWeight="bold">
-                          {signature.assignedUser?.firstName +
+                          {signature.signerEmployee?.firstName +
                             ' ' +
-                            signature.assignedUser?.lastName}
+                            signature.signerEmployee?.lastName}
                         </Text>
                       </>
                     }
@@ -67,9 +67,9 @@ export const FormCard = ({
                   >
                     <Avatar
                       name={
-                        signature.assignedUser?.firstName +
+                        signature.signerEmployee?.firstName +
                         ' ' +
-                        signature.assignedUser?.lastName
+                        signature.signerEmployee?.lastName
                       }
                       key={index}
                       boxSize="32px"

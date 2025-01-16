@@ -35,9 +35,9 @@ export const getNameFromSignature = (signature: SignatureEntity) => {
 
   if (signature.signed || signerType === 'USER') {
     return (
-      signature.assignedUser?.firstName! +
+      signature.signerEmployee?.firstName! +
       ' ' +
-      signature.assignedUser?.lastName!
+      signature.signerEmployee?.lastName!
     );
   } else if (signerType === 'DEPARTMENT') {
     return signature.signerDepartment?.name!;
@@ -46,13 +46,13 @@ export const getNameFromSignature = (signature: SignatureEntity) => {
   } else if (signerType === 'USER_LIST') {
     if (signature.signed) {
       return (
-        signature.assignedUser?.firstName! +
+        signature.signerEmployee?.firstName! +
         ' ' +
-        signature.assignedUser?.lastName!
+        signature.signerEmployee?.lastName!
       );
     }
     return (
-      signature.assignedUserList
+      signature.signerEmployeeList
         ?.map((employee) => {
           return employee.firstName + ' ' + employee.lastName;
         })
@@ -73,9 +73,9 @@ export const getInitialsFromSignature = (signature: SignatureEntity) => {
 
   if (signature.signed || signerType === 'USER') {
     return (
-      signature.assignedUser?.firstName! +
+      signature.signerEmployee?.firstName! +
       ' ' +
-      signature.assignedUser?.lastName!
+      signature.signerEmployee?.lastName!
     );
   } else if (signerType === 'DEPARTMENT') {
     return 'D';
@@ -123,12 +123,14 @@ export const signerIsUser = (signature: SignatureEntity, user: User) => {
 
   const signerType = signature.signerType as any;
   return (
-    (signerType === 'USER' && signature.assignedUserId === user?.id) ||
+    (signerType === 'USER' && signature.signerEmployeeId === user?.id) ||
     (signerType === 'POSITION' &&
       signature.signerPositionId === user?.positionId) ||
     (signerType === 'DEPARTMENT' &&
       user?.departmentId === signature.signerDepartmentId) ||
     (signerType === 'USER_LIST' &&
-      signature.assignedUserList?.some((employee) => employee.id === user?.id))
+      signature.signerEmployeeList?.some(
+        (employee) => employee.id === user?.id,
+      ))
   );
 };

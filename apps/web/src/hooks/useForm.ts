@@ -64,7 +64,7 @@ export const useForm = () => {
     const signatures: SignatureEntity[] = formInstance.signatures;
 
     return signatures.some((signature: SignatureEntity) => {
-      return signature.assignedUserId === user?.id && signature.signed;
+      return signature.signerEmployeeId === user?.id && signature.signed;
     });
   };
 
