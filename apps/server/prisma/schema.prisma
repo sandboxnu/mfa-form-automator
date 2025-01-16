@@ -50,9 +50,9 @@ model Employee {
   position   Position @relation(fields: [positionId], references: [id])
   positionId String   @db.Uuid
 
-  signerEmployeeSignatures        Signature[] @relation("signerEmployee")
-  signatureEmployeeListSignatures Signature[] @relation("signerEmployeeList")
-  signingEmployeeSignatures       Signature[] @relation("signingEmployee")
+  signerEmployeeSignatures     Signature[] @relation("signerEmployee")
+  signerEmployeeListSignatures Signature[] @relation("signerEmployeeList")
+  signingEmployeeSignatures    Signature[] @relation("signingEmployee")
 }
 
 // `Positions` represent the various positions that employees at the MFA can hold.
