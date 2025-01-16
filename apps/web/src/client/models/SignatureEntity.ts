@@ -18,9 +18,11 @@ export type SignatureEntity = {
     signerPosition: PositionBaseEntity | null;
     signerDepartmentId: string | null;
     signerDepartment: DepartmentEntity | null;
-    assignedUserId: string | null;
-    assignedUser: EmployeeBaseEntity | null;
-    assignedUserList: Array<EmployeeBaseEntity>;
+    signerEmployeeId: string | null;
+    signerEmployee: EmployeeBaseEntity | null;
+    signerEmployeeList: Array<EmployeeBaseEntity>;
+    signingEmployeeId: string | null;
+    signingEmployee: EmployeeBaseEntity | null;
     signerType: Record<string, any>;
     formInstanceId: string;
 };

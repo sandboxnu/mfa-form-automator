@@ -21,11 +21,11 @@ enum SignerType {
 // `Departments` represent the various departments that employees could work in.
 model Department {
   id        String   @id @default(uuid()) @db.Uuid
-  name      String   @db.VarChar(255) @unique
+  name      String   @unique @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  signatures     Signature[]
+  signatures Signature[]
 
   positions Position[]
 }
@@ -34,24 +34,25 @@ model Department {
 //
 // Each `Employee` corresponds to a user who holds a certain position.
 model Employee {
-  id           String   @id @default(uuid()) @db.Uuid
-  firstName    String   @db.VarChar(255)
-  lastName     String   @db.VarChar(255)
-  email        String   @unique @db.VarChar(255)
-  signatureLink String  @db.VarChar(255)
-  isAdmin      Boolean  @default(false) @db.Boolean
-  pswdHash     String?  @db.VarChar(255)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  refreshToken String?  @db.Text()
+  id            String   @id @default(uuid()) @db.Uuid
+  firstName     String   @db.VarChar(255)
+  lastName      String   @db.VarChar(255)
+  email         String   @unique @db.VarChar(255)
+  signatureLink String   @db.VarChar(255)
+  isAdmin       Boolean  @default(false) @db.Boolean
+  pswdHash      String?  @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  refreshToken  String?  @db.Text()
 
-  signatures      Signature[]
   originatedForms FormInstance[]
 
   position   Position @relation(fields: [positionId], references: [id])
   positionId String   @db.Uuid
 
-  Signature Signature[] @relation("AssignedUserList")
+  signerEmployeeSignatures        Signature[] @relation("signerEmployee")
+  signatureEmployeeListSignatures Signature[] @relation("signerEmployeeList")
+  signingEmployeeSignatures       Signature[] @relation("signingEmployee")
 }
 
 // `Positions` represent the various positions that employees at the MFA can hold.
@@ -62,8 +63,8 @@ model Position {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  signatures      Signature[]
-  employees       Employee[]
+  signatures Signature[]
+  employees  Employee[]
 
   department   Department @relation(fields: [departmentId], references: [id])
   departmentId String     @db.Uuid
@@ -106,17 +107,19 @@ model Signature {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  signerPosition  Position?    @relation(fields: [signerPositionId], references: [id])
-  signerPositionId String?       @db.Uuid
-  signerDepartment Department? @relation(fields: [signerDepartmentId], references: [id])
-  signerDepartmentId String?   @db.Uuid
-  assignedUser     Employee?     @relation(fields: [assignedUserId], references: [id])
-  assignedUserId   String?       @db.Uuid
-  assignedUserList Employee[]   @relation("AssignedUserList")
-  signerType       SignerType
-  
-  formInstance     FormInstance @relation(fields: [formInstanceId], references: [id])
-  formInstanceId   String       @db.Uuid
+  signerPosition     Position?   @relation(fields: [signerPositionId], references: [id])
+  signerPositionId   String?     @db.Uuid
+  signerDepartment   Department? @relation(fields: [signerDepartmentId], references: [id])
+  signerDepartmentId String?     @db.Uuid
+  signerEmployee     Employee?   @relation("signerEmployee", fields: [signerEmployeeId], references: [id])
+  signerEmployeeId   String?     @db.Uuid
+  signerEmployeeList Employee[]  @relation("signerEmployeeList")
+  signingEmployee    Employee?   @relation("signingEmployee", fields: [signingEmployeeId], references: [id])
+  signingEmployeeId  String?     @db.Uuid
+  signerType         SignerType
+
+  formInstance   FormInstance @relation(fields: [formInstanceId], references: [id])
+  formInstanceId String       @db.Uuid
 }
 
 // `FormInstances` represent instances of forms created by employees.

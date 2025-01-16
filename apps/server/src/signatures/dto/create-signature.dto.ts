@@ -25,7 +25,7 @@ export class CreateSignatureDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  assignedUserId: string | null;
+  signerEmployeeId: string | null;
 
   @IsString()
   @IsNotEmpty()
@@ -41,7 +41,7 @@ export class CreateSignatureDto {
   @ValidateNested({ each: true })
   @Type(() => ConnectEmployeeDto)
   @ApiProperty({ type: [ConnectEmployeeDto] })
-  assignedUserList: ConnectEmployeeDto[]; // Update to an array of IDs for connecting
+  signerEmployeeList: ConnectEmployeeDto[]; // Update to an array of IDs for connecting
 
   @IsString()
   @IsNotEmpty()

@@ -37,13 +37,19 @@ export class SignatureEntity implements Signature {
   signerDepartment: DepartmentEntity | null;
 
   @ApiProperty()
-  assignedUserId: string | null;
+  signerEmployeeId: string | null;
 
   @ApiProperty()
-  assignedUser: EmployeeBaseEntity | null;
+  signerEmployee: EmployeeBaseEntity | null;
 
   @ApiProperty()
-  assignedUserList: EmployeeBaseEntity[];
+  signerEmployeeList: EmployeeBaseEntity[];
+
+  @ApiProperty()
+  signingEmployeeId: string | null;
+
+  @ApiProperty()
+  signingEmployee: EmployeeBaseEntity | null;
 
   @ApiProperty()
   signerType: $Enums.SignerType;
@@ -58,8 +64,11 @@ export class SignatureEntity implements Signature {
     if (partial.signerDepartment) {
       partial.signerDepartment = new DepartmentEntity(partial.signerDepartment);
     }
-    if (partial.assignedUser) {
-      partial.assignedUser = new EmployeeBaseEntity(partial.assignedUser);
+    if (partial.signerEmployee) {
+      partial.signerEmployee = new EmployeeBaseEntity(partial.signerEmployee);
+    }
+    if (partial.signingEmployee) {
+      partial.signingEmployee = new EmployeeBaseEntity(partial.signingEmployee);
     }
     Object.assign(this, partial);
   }
