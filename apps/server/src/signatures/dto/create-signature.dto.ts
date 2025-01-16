@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums } from '@prisma/client';
+import { SignerType } from '@prisma/client';
 import {
   IsString,
   IsNotEmpty,
@@ -45,6 +45,6 @@ export class CreateSignatureDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
-  signerType: $Enums.SignerType;
+  @ApiProperty({ enum: SignerType })
+  signerType: SignerType;
 }

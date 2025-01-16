@@ -13,7 +13,7 @@ export type { CreateEmployeeDto } from './models/CreateEmployeeDto';
 export type { CreateFormInstanceDto } from './models/CreateFormInstanceDto';
 export type { CreateFormTemplateDto } from './models/CreateFormTemplateDto';
 export type { CreatePositionDto } from './models/CreatePositionDto';
-export type { CreateSignatureDto } from './models/CreateSignatureDto';
+export { CreateSignatureDto } from './models/CreateSignatureDto';
 export type { CreateSignatureFieldDto } from './models/CreateSignatureFieldDto';
 export type { DepartmentEntity } from './models/DepartmentEntity';
 export type { EmployeeBaseEntity } from './models/EmployeeBaseEntity';
