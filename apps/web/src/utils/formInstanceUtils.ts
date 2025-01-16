@@ -112,17 +112,18 @@ export const nextSigner = (formInstance: FormInstanceEntity) => {
  * @param user the current user
  * @returns true if the next signer is the current user, false otherwise
  */
-export const signerIsUser = (signature: SignatureEntity, user: User) => {
-  if (!signature) return false;
+export const signerIsUser = (signature?: SignatureEntity, user?: User) => {
+  if (!signature || !user) return false;
 
-  const signerType = signature.signerType as any;
+  const signerType = signature.signerType;
   return (
-    (signerType === 'USER' && signature.signerEmployeeId === user?.id) ||
-    (signerType === 'POSITION' &&
+    (signerType === SignatureEntity.signerType.USER &&
+      signature.signerEmployeeId === user?.id) ||
+    (signerType === SignatureEntity.signerType.POSITION &&
       signature.signerPositionId === user?.positionId) ||
-    (signerType === 'DEPARTMENT' &&
+    (signerType === SignatureEntity.signerType.DEPARTMENT &&
       user?.departmentId === signature.signerDepartmentId) ||
-    (signerType === 'USER_LIST' &&
+    (signerType === SignatureEntity.signerType.USER_LIST &&
       signature.signerEmployeeList?.some(
         (employee) => employee.id === user?.id,
       ))
