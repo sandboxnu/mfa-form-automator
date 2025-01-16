@@ -28,6 +28,7 @@ import {
   FormTemplateEntity,
   FormTemplatesService,
   PositionsService,
+  SignatureEntity,
 } from '@web/client';
 import { SignatureDropdown } from './SignatureDropdown';
 import { CreateFormInstanceModalProps, Option } from './types';
@@ -96,7 +97,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
           return {
             order: i,
             signerEmployeeId: pos?.employeeValue!,
-            signerType: 'USER' as any as Record<string, any>,
+            signerType: SignatureEntity.signerType.USER,
             signerDepartmentId: null,
             signerPositionId: null,
             signerEmployeeList: [],

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { $Enums, Signature } from '@prisma/client';
+import { SignerType, Signature } from '@prisma/client';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 import { PositionBaseEntity } from '../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
@@ -51,8 +51,8 @@ export class SignatureEntity implements Signature {
   @ApiProperty()
   signingEmployee: EmployeeBaseEntity | null;
 
-  @ApiProperty()
-  signerType: $Enums.SignerType;
+  @ApiProperty({ enum: SignerType })
+  signerType: SignerType;
 
   @Exclude()
   formInstanceId: string;

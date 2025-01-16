@@ -25,7 +25,7 @@ export type { JwtEntity } from './models/JwtEntity';
 export type { PositionBaseEntity } from './models/PositionBaseEntity';
 export type { PositionEntity } from './models/PositionEntity';
 export type { RegisterEmployeeDto } from './models/RegisterEmployeeDto';
-export type { SignatureEntity } from './models/SignatureEntity';
+export { SignatureEntity } from './models/SignatureEntity';
 export type { SignatureFieldEntity } from './models/SignatureFieldEntity';
 export type { UpdateDepartmentDto } from './models/UpdateDepartmentDto';
 export type { UpdateEmployeeDto } from './models/UpdateEmployeeDto';
