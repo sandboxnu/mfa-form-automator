@@ -12,9 +12,6 @@ WORKDIR /app
 # Set to dev environment
 ENV NODE_ENV dev
 
-# Install openssl
-RUN apk add --no-cache openssl
-
 # Create non-root user for Docker
 # RUN addgroup --system --gid 1001 node
 # RUN adduser --system --uid 1001 node
@@ -65,6 +62,9 @@ FROM node:18-alpine as prod
 
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
+
+# Install openssl
+RUN apk add --no-cache openssl
 
 # Set to production environment
 ENV NODE_ENV production
