@@ -3,7 +3,7 @@
 #
 # 🧑‍💻 Development
 #
-FROM node:18-alpine as dev
+FROM node:18-alpine3.17 as dev
 # add the missing shared libraries from alpine base image
 # RUN apk add --no-cache libc6-compat
 # Create app folder
