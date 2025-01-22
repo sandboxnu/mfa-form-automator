@@ -431,7 +431,7 @@ async function main() {
           id: uuidv4(),
           order: 0,
           signerType: 'USER_LIST',
-          assignedUserList: {
+          signerEmployeeList: {
             connect: [
               { id: IRIS_ZHANG_UUID },
               { id: KAI_ZHENG_UUID },
@@ -459,13 +459,13 @@ async function main() {
           id: uuidv4(),
           order: 0,
           signerType: 'USER',
-          assignedUserId: KAI_ZHENG_UUID,
+          signerEmployeeId: KAI_ZHENG_UUID,
         },
         {
           id: uuidv4(),
           order: 1,
           signerType: 'USER_LIST',
-          assignedUserList: {
+          signerEmployeeList: {
             connect: [
               { id: IRIS_ZHANG_UUID },
               { id: KAI_ZHENG_UUID },
@@ -517,7 +517,7 @@ async function main() {
           id: uuidv4(),
           order: 0,
           signerType: 'USER',
-          assignedUserId: KAI_ZHENG_UUID,
+          signerEmployeeId: KAI_ZHENG_UUID,
         },
       ],
     },
@@ -532,7 +532,7 @@ async function main() {
           id: uuidv4(),
           order: 0,
           signerType: 'USER',
-          assignedUserId: KAI_ZHENG_UUID,
+          signerEmployeeId: KAI_ZHENG_UUID,
         },
       ],
     },
