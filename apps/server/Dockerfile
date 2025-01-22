@@ -12,6 +12,9 @@ WORKDIR /app
 # Set to dev environment
 ENV NODE_ENV dev
 
+# Install openssl
+RUN apk add --no-cache openssl
+
 # Create non-root user for Docker
 # RUN addgroup --system --gid 1001 node
 # RUN adduser --system --uid 1001 node
