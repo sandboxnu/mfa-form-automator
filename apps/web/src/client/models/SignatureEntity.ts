@@ -18,10 +18,24 @@ export type SignatureEntity = {
     signerPosition: PositionBaseEntity | null;
     signerDepartmentId: string | null;
     signerDepartment: DepartmentEntity | null;
-    assignedUserId: string | null;
-    assignedUser: EmployeeBaseEntity | null;
-    assignedUserList: Array<EmployeeBaseEntity>;
-    signerType: Record<string, any>;
+    signerEmployeeId: string | null;
+    signerEmployee: EmployeeBaseEntity | null;
+    signerEmployeeList: Array<EmployeeBaseEntity>;
+    signingEmployeeId: string | null;
+    signingEmployee: EmployeeBaseEntity | null;
+    signerType: SignatureEntity.signerType;
     formInstanceId: string;
 };
+
+export namespace SignatureEntity {
+
+    export enum signerType {
+        POSITION = 'POSITION',
+        DEPARTMENT = 'DEPARTMENT',
+        USER = 'USER',
+        USER_LIST = 'USER_LIST',
+    }
+
+
+}
 

@@ -73,7 +73,7 @@ const FormInstance = ({
   const _nextSignature = formInstance.signatures
     .sort((a, b) => a.order - b.order)
     .find((v) => v.signed === false);
-  const _userCanSign = signerIsUser(_nextSignature!, user!);
+  const _userCanSign = signerIsUser(_nextSignature, user);
 
   /**
    * Update the form instance with the next signature
