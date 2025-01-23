@@ -62,8 +62,6 @@ const db = {
 
 describe('SignaturesService', () => {
   let service: SignaturesService;
-  let employeeService: EmployeesService;
-  let prismaService: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -80,8 +78,6 @@ describe('SignaturesService', () => {
     }).compile();
 
     service = module.get<SignaturesService>(SignaturesService);
-    employeeService = module.get<EmployeesService>(EmployeesService);
-    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {
