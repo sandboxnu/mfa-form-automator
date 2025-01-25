@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MinLength, IsEmail } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  MinLength,
+  IsEmail,
+  IsBoolean,
+} from 'class-validator';
 
 export class RegisterEmployeeDto {
   @IsString()
@@ -37,4 +43,9 @@ export class RegisterEmployeeDto {
   @IsNotEmpty()
   @ApiProperty()
   signatureLink: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty()
+  isAdmin: boolean;
 }

@@ -10,5 +10,6 @@ export type CreateEmployeeDto = {
     email: string;
     password: string;
     signatureLink: string;
+    isAdmin: boolean;
 };
 

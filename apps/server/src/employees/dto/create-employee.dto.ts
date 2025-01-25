@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsString,
@@ -38,4 +39,9 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   @ApiProperty()
   signatureLink: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty()
+  isAdmin: boolean;
 }
