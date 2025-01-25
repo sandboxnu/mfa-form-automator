@@ -1,5 +1,4 @@
-import { FormTemplateLayout } from '@web/components/createFormTemplate/FormTemplateLayout';
-import { Flex } from '@chakra-ui/react';
+import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { FormEditor } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
@@ -13,8 +12,10 @@ export default function InputFields() {
   const { localBlobData } = useBlob;
 
   return (
-    <FormTemplateLayout
+    <CreateFormLayout
+      isFormTemplate={true}
       pageNumber={3}
+      heading={'Create form template'}
       subheading={
         'Select an assignee group and drag to add input fields for each'
       }

@@ -3,6 +3,7 @@ import {
   FormFields,
   FieldGroups,
 } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
+import { FormTemplateEntity } from '@web/client';
 
 // for storage in context
 export type User = {
@@ -52,4 +53,13 @@ export interface CreateFormTemplateContextType {
   setFormFields: Dispatch<SetStateAction<FormFields>>;
   fieldGroups: FieldGroups;
   setFieldGroups: Dispatch<SetStateAction<FieldGroups>>;
+}
+
+export interface CreateFormInstanceContextType {
+  formInstanceName: string | null;
+  formInstanceDescription: string | null;
+  setFormInstanceName: Dispatch<SetStateAction<string | null>>;
+  setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
+  formTemplate: FormTemplateEntity | null;
+  setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
 }

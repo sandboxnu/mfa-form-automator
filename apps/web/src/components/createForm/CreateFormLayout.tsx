@@ -1,22 +1,12 @@
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import { ReactJSXElement } from 'node_modules/@emotion/react/dist/declarations/types/jsx-namespace';
 import { SideCreateForm } from './SideCreateForm';
-import { FormTemplateButtons } from './FormTemplateButtons';
+import { FormTemplateButtons } from '../createFormTemplate/FormTemplateButtons';
 
-/**
- * The layout for a page in the create form template onboarding flow.  Used in pages.
- * @param pageNumber the step in the process (e.g. upload is 1).  Used in side nav bar
- * @param subheading the instruction under "Create Form Template"
- * @param boxContent the JSX elements inside of the flexbile white box
- * @param deleteFunction the function to be called when the delete button is pressed on this page
- * @param submitLink the link to be pushed when the submit button is active and pressed
- * @param backLink the link to be pushed when the back button is active and pressed
- * @param disabled the boolean to determine whether the submit functionality is disabled (may be toggled by other pages)
- * @param review if this is review page true, effects the buttons
- * @returns the formatted content of a form template creation page.
- */
-export const FormTemplateLayout = ({
+export const CreateFormLayout = ({
+  isFormTemplate,
   pageNumber,
+  heading,
   subheading,
   boxContent,
   deleteFunction,
@@ -25,7 +15,9 @@ export const FormTemplateLayout = ({
   disabled,
   review,
 }: {
+  isFormTemplate: boolean;
   pageNumber: number;
+  heading: string;
   subheading: string;
   boxContent: ReactJSXElement;
   deleteFunction: Function;
@@ -37,7 +29,7 @@ export const FormTemplateLayout = ({
   return (
     <Box height="100vh" marginTop="36px">
       <Flex position="absolute" margin="0px" zIndex={5000}>
-        <SideCreateForm curStep={pageNumber} />
+        <SideCreateForm curStep={pageNumber} isFormTemplate={isFormTemplate} />
       </Flex>
 
       <Heading
@@ -47,7 +39,7 @@ export const FormTemplateLayout = ({
         lineHeight="38px"
         marginLeft="36px"
       >
-        Create form template
+        {heading}
       </Heading>
       <Text
         color="#4B4C4F"
@@ -74,13 +66,17 @@ export const FormTemplateLayout = ({
       >
         {boxContent}
       </Flex>
-      <FormTemplateButtons
-        deleteFunction={deleteFunction}
-        submitLink={submitLink}
-        backLink={backLink}
-        disabled={disabled}
-        review={review}
-      />
+      {isFormTemplate ? (
+        <FormTemplateButtons
+          deleteFunction={deleteFunction}
+          submitLink={submitLink}
+          backLink={backLink}
+          disabled={disabled}
+          review={review}
+        />
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };

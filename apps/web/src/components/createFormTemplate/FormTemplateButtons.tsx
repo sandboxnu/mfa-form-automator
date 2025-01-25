@@ -34,7 +34,7 @@ export const FormTemplateButtons = ({
   const { formTemplateName, formTemplateDescription, useBlob } =
     useCreateFormTemplate();
 
-  const { localBlobData, hasLocalBlob, uploadLocalBlobData } = useBlob;
+  const { hasLocalBlob, uploadLocalBlobData } = useBlob;
 
   /**
    * Upload and create a form template
@@ -151,9 +151,7 @@ export const FormTemplateButtons = ({
           }}
           marginLeft="12px"
           marginRight="36px"
-          onClick={(_) => {
-            _submitFormTemplate();
-          }}
+          onClick={_submitFormTemplate}
         >
           <Text
             color="#FCFCFC"

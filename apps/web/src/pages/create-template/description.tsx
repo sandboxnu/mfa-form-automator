@@ -1,4 +1,4 @@
-import { FormTemplateLayout } from '@web/components/createFormTemplate/FormTemplateLayout';
+import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { NameAndDescriptionBox } from '@web/components/createFormTemplate/NameAndDescriptionBox';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
@@ -17,8 +17,10 @@ export default function Description() {
   const { localBlobData } = useBlob;
 
   return (
-    <FormTemplateLayout
+    <CreateFormLayout
+      isFormTemplate={true}
       pageNumber={2}
+      heading={'Create form template'}
       subheading={'Give your form template a name and short description'}
       boxContent={
         <NameAndDescriptionBox

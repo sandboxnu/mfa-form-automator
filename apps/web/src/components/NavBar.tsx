@@ -159,7 +159,12 @@ export const NavBar = ({
           </MenuButton>
           <MenuButton padding="8px 22px 8px 16px"></MenuButton>
           <MenuList>
-            <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
+            <MenuItem
+              rounded="8px"
+              onClick={() => {
+                router.push('create-instance/select-template');
+              }}
+            >
               Form
             </MenuItem>
             <MenuItem

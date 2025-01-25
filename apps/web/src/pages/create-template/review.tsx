@@ -1,4 +1,4 @@
-import { FormTemplateLayout } from '@web/components/createFormTemplate/FormTemplateLayout';
+import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { ReviewBox } from '@web/components/createFormTemplate/ReviewBox';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
@@ -16,8 +16,10 @@ export default function Review() {
 
   const { localBlobData } = useBlob;
   return (
-    <FormTemplateLayout
+    <CreateFormLayout
+      isFormTemplate={true}
       pageNumber={4}
+      heading={'Create form template'}
       subheading={'Review your form template'}
       boxContent={
         <ReviewBox

@@ -1,4 +1,4 @@
-import { FormTemplateLayout } from '@web/components/createFormTemplate/FormTemplateLayout';
+import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { UploadBox } from '@web/components/createFormTemplate/UploadBox';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
@@ -11,8 +11,10 @@ export default function Upload() {
     useBlob;
 
   return (
-    <FormTemplateLayout
+    <CreateFormLayout
+      isFormTemplate={true}
       pageNumber={1}
+      heading={'Create form template'}
       subheading={'Upload your form PDF'}
       boxContent={
         <UploadBox
