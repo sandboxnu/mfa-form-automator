@@ -59,6 +59,7 @@ export const FormEditor = ({
   const [totalPages, setTotalPages] = useState(0);
   const documentRef = useRef<HTMLDivElement>(null);
   const [groupNum, setGroupNum] = useState(fieldGroups.size);
+  const [deleteFields, setDeleteFields] = useState(false);
 
   //colors for group buttons: colors[0] = border/text color, colors[1] = background color
   const groupColors = [
@@ -290,6 +291,20 @@ export const FormEditor = ({
             >
               <div>{Checkbox}</div>
             </Button>
+            <Button
+              position="relative"
+              width="40px"
+              height="40px"
+              backgroundColor="white"
+              borderRadius="4px"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              isDisabled={fieldGroups.size == 0 || disableEdit}
+              onClick={() => setDeleteFields(!deleteFields)}
+            >
+              <div>X</div>
+            </Button>
           </Box>
           <Box
             height="474px"
@@ -328,6 +343,7 @@ export const FormEditor = ({
                   Array.from(formFields[pageNum].entries()).map(
                     ([fieldId, { position, groupId }], index) => (
                       <DraggableText
+                        disableDelete={deleteFields}
                         type={
                           formFields[pageNum].get(fieldId)?.type ??
                           FieldType.Text

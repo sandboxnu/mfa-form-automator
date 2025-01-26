@@ -11,6 +11,7 @@ export default function DraggableText({
   currentPosition,
   disableEdit,
   type,
+  disableDelete,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -20,6 +21,7 @@ export default function DraggableText({
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
   type: FieldType;
+  disableDelete: boolean;
 }) {
   return (
     <Rnd
@@ -53,7 +55,7 @@ export default function DraggableText({
           borderRadius: 4,
         }}
       >
-        {!disableEdit && (
+        {!disableEdit && disableDelete && (
           <div
             style={{
               display: 'inline-block',
