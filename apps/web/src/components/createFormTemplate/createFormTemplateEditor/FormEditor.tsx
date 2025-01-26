@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Box, Text, Button } from '@chakra-ui/react';
-import { TextIcon, PlusSign } from 'apps/web/src/static/icons';
+import { TextIcon, PlusSign, Checkbox } from 'apps/web/src/static/icons';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import PagingControl from './PagingControl';
 import { v4 as uuidv4 } from 'uuid';
@@ -17,6 +17,12 @@ export type TextFieldPosition = {
   height: number;
 };
 
+export enum FieldType {
+  Text,
+  Checkbox,
+  Signature,
+}
+
 type FieldGroupColor = {
   border: string;
   background: string;
@@ -29,7 +35,10 @@ export type FieldGroups = Map<groupId, FieldGroupColor>;
 // index = page num (zero indexing)
 export type FormFields = Record<
   number,
-  Map<fieldId, { position: TextFieldPosition; groupId: string }>
+  Map<
+    fieldId,
+    { position: TextFieldPosition; groupId: string; type: FieldType }
+  >
 >;
 
 export const FormEditor = ({
@@ -60,13 +69,9 @@ export const FormEditor = ({
     ['#A16308', '#FFFDDB'],
   ];
 
-  const handleAddField = () => {
+  const handleAddTextField = () => {
     if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
-      const container = documentRef.current;
-      const { scrollLeft, scrollTop, clientWidth, clientHeight } = container;
-
-      const centerX = scrollLeft + clientWidth / 2;
-      const centerY = scrollTop + clientHeight / 2;
+      const { centerX, centerY } = convertCoordinates(documentRef.current);
 
       setFormFields({
         ...formFields,
@@ -82,6 +87,33 @@ export const FormEditor = ({
                 height: 30,
               },
               groupId: currentGroup,
+              type: FieldType.Text,
+            },
+          ],
+        ]),
+      });
+    }
+  };
+
+  const handleAddCheckbox = () => {
+    if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
+      const { centerX, centerY } = convertCoordinates(documentRef.current);
+
+      setFormFields({
+        ...formFields,
+        [pageNum]: new Map([
+          ...formFields[pageNum],
+          [
+            uuidv4(),
+            {
+              position: {
+                x: centerX - 40,
+                y: centerY - 15,
+                width: 10,
+                height: 10,
+              },
+              groupId: currentGroup,
+              type: FieldType.Checkbox,
             },
           ],
         ]),
@@ -108,11 +140,15 @@ export const FormEditor = ({
     pos: TextFieldPosition,
   ) => {
     if (disableEdit) return;
-
+    console.log(pos.x, pos.y);
     setFormFields({
       ...formFields,
       [pageNum]: new Map([
-        ...formFields[pageNum].set(fieldId, { position: pos, groupId }),
+        ...formFields[pageNum].set(fieldId, {
+          position: pos,
+          groupId: groupId,
+          type: formFields[pageNum].get(fieldId)?.type ?? FieldType.Text,
+        }),
       ]),
     });
   };
@@ -131,6 +167,13 @@ export const FormEditor = ({
       setGroupNum(groupNum + 1);
       setCurrentGroup(myuuid);
     }
+  };
+
+  const convertCoordinates = (container: HTMLDivElement) => {
+    const { scrollLeft, scrollTop, clientWidth, clientHeight } = container;
+    const centerX = scrollLeft + clientWidth / 2;
+    const centerY = scrollTop + clientHeight / 2;
+    return { centerX, centerY };
   };
 
   return (
@@ -229,9 +272,23 @@ export const FormEditor = ({
               justifyContent="center"
               alignItems="center"
               isDisabled={fieldGroups.size == 0 || disableEdit}
-              onClick={handleAddField}
+              onClick={handleAddTextField}
             >
               <div>{TextIcon}</div>
+            </Button>
+            <Button
+              position="relative"
+              width="40px"
+              height="40px"
+              backgroundColor="white"
+              borderRadius="4px"
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              isDisabled={fieldGroups.size == 0 || disableEdit}
+              onClick={handleAddCheckbox}
+            >
+              <div>{Checkbox}</div>
             </Button>
           </Box>
           <Box
@@ -271,6 +328,10 @@ export const FormEditor = ({
                   Array.from(formFields[pageNum].entries()).map(
                     ([fieldId, { position, groupId }], index) => (
                       <DraggableText
+                        type={
+                          formFields[pageNum].get(fieldId)?.type ??
+                          FieldType.Text
+                        }
                         currentPosition={position}
                         onRemove={() => {
                           handleRemoveField(fieldId);
@@ -299,9 +360,9 @@ export const FormEditor = ({
                             width: Number.isNaN(newWidth)
                               ? position.width
                               : newWidth,
-                            height: Number.isNaN(newHeight)
-                              ? position.height
-                              : newHeight,
+                            height: Number.isNaN(newWidth)
+                              ? position.width
+                              : newWidth,
                             x: pos.x,
                             y: pos.y,
                           });

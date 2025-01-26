@@ -27,7 +27,7 @@ export default function DraggableSignature({
       display: 'inline-block',
       cursor: 'pointer',
       padding: 4,
-    },
+    }, 
   };
   return (
     <Draggable onStop={onEnd}>
