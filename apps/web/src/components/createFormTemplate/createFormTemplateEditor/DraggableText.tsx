@@ -29,13 +29,13 @@ export default function DraggableText({
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
-      minWidth={type == FieldType.Checkbox ? '30px' : '50px'}
+      minWidth={type == FieldType.Checkbox ? '10px' : '50px'}
       enableResizing={
         type == FieldType.Checkbox
           ? { left: false, right: false, top: false, bottom: false }
           : {}
       }
-      minHeight={type == FieldType.Checkbox ? '30px' : '40px'}
+      minHeight={type == FieldType.Checkbox ? '10px' : '40px'}
       style={{
         position: 'absolute',
         zIndex: 100000,
