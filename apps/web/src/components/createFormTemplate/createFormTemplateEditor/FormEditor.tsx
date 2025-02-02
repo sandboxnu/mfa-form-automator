@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Box, Text, Button } from '@chakra-ui/react';
-import { TextIcon, PlusSign } from 'apps/web/src/static/icons';
+import { TextIcon, PlusSign, SignatureIcon } from 'apps/web/src/static/icons';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import PagingControl from './PagingControl';
 import { v4 as uuidv4 } from 'uuid';
@@ -50,6 +50,7 @@ export const FormEditor = ({
   const [totalPages, setTotalPages] = useState(0);
   const documentRef = useRef<HTMLDivElement>(null);
   const [groupNum, setGroupNum] = useState(fieldGroups.size);
+  const [signatureFieldId, setSignatureFieldId] = useState<string | null>(null);
 
   //colors for group buttons: colors[0] = border/text color, colors[1] = background color
   const groupColors = [
@@ -131,6 +132,24 @@ export const FormEditor = ({
       setGroupNum(groupNum + 1);
       setCurrentGroup(myuuid);
     }
+  };
+
+  const handleSetSignature = () => {
+    const newFieldId = uuidv4();
+    setSignatureFieldId(newFieldId);
+    setFormFields({
+      ...formFields,
+      [pageNum]: new Map([
+        ...formFields[pageNum],
+        [
+          newFieldId,
+          {
+            position: { x: 0, y: 0, width: 150, height: 50 },
+            groupId: currentGroup,
+          },
+        ],
+      ]),
+    });
   };
 
   return (
@@ -233,6 +252,24 @@ export const FormEditor = ({
             >
               <div>{TextIcon}</div>
             </Button>
+
+            <Button
+            position="relative"
+            width="40px"
+            height="40px"
+            backgroundColor="#1367EA"
+            borderRadius="4px"
+            //border="1px #E5E5E5 solid"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            isDisabled={fieldGroups.size == 0 || disableEdit}
+            border="1px solid #1367EA"
+            onClick={() => handleSetSignature()}
+          >
+            <div>{SignatureIcon}</div>
+          </Button>
+
           </Box>
           <Box
             height="474px"
