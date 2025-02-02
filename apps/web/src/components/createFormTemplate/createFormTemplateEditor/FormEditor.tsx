@@ -259,7 +259,6 @@ export const FormEditor = ({
             height="40px"
             backgroundColor="#1367EA"
             borderRadius="4px"
-            //border="1px #E5E5E5 solid"
             display="flex"
             justifyContent="center"
             alignItems="center"
