@@ -1,22 +1,174 @@
-import { Injectable } from '@nestjs/common';
-// import { CreateSignatureDto } from './dto/create-signature.dto';
-// import { UpdateSignatureDto } from './dto/update-signature.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { UpdateSignatureSignerDto } from './dto/update-signature-signer.dto';
+import { SignatureErrorMessage } from './signatures.errors';
+import { PrismaService } from '../prisma/prisma.service';
+import { EmployeesService } from '../employees/employees.service';
+import { EmployeeErrorMessage } from '../employees/employees.errors';
+import { DepartmentsService } from '../departments/departments.service';
+import { DepartmentsErrorMessage } from '../departments/departments.errors';
+import { PositionsService } from '../positions/positions.service';
+import { PositionsErrorMessage } from '../positions/positions.errors';
 
 @Injectable()
 export class SignaturesService {
-  // create(createSignatureDto: CreateSignatureDto) {
-  //   return 'This action adds a new signature';
-  // }
-  // findAll() {
-  //   return `This action returns all signatures`;
-  // }
-  // findOne(id: number) {
-  //   return `This action returns a #${id} signature`;
-  // }
-  // update(id: number, updateSignatureDto: UpdateSignatureDto) {
-  //   return `This action updates a #${id} signature`;
-  // }
-  // remove(id: number) {
-  //   return `This action removes a #${id} signature`;
-  // }
+  constructor(
+    private prisma: PrismaService,
+    private employeeService: EmployeesService,
+    private departmentService: DepartmentsService,
+    private positionService: PositionsService,
+  ) {}
+
+  async updateSigner(
+    signatureId: string,
+    updateSignatureSignerDto: UpdateSignatureSignerDto,
+  ) {
+    try {
+      await this.findOne(signatureId);
+    } catch (e) {
+      throw new BadRequestException(SignatureErrorMessage.SIGNATURE_NOT_FOUND);
+    }
+
+    switch (updateSignatureSignerDto.signerType) {
+      case 'POSITION':
+        if (!updateSignatureSignerDto.signerPositionId) {
+          throw new BadRequestException(SignatureErrorMessage.MISSING_SIGNER);
+        }
+        try {
+          await this.positionService.findOne(
+            updateSignatureSignerDto.signerPositionId,
+          );
+        } catch (e) {
+          throw new BadRequestException(
+            PositionsErrorMessage.POSITION_NOT_FOUND,
+          );
+        }
+
+        return await this.prisma.signature.update({
+          where: {
+            id: signatureId,
+          },
+          data: {
+            signerType: 'POSITION',
+            signerPositionId: updateSignatureSignerDto.signerPositionId,
+            signerDepartmentId: null,
+            signerEmployeeId: null,
+            signerEmployeeList: {
+              set: [],
+            },
+          },
+          include: {
+            signerEmployeeList: true,
+          },
+        });
+      case 'DEPARTMENT':
+        if (!updateSignatureSignerDto.signerDepartmentId) {
+          throw new BadRequestException(SignatureErrorMessage.MISSING_SIGNER);
+        }
+        try {
+          await this.departmentService.findOne(
+            updateSignatureSignerDto.signerDepartmentId,
+          );
+        } catch (e) {
+          throw new BadRequestException(
+            DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND,
+          );
+        }
+
+        return await this.prisma.signature.update({
+          where: {
+            id: signatureId,
+          },
+          data: {
+            signerType: 'DEPARTMENT',
+            signerPositionId: null,
+            signerDepartmentId: updateSignatureSignerDto.signerDepartmentId,
+            signerEmployeeId: null,
+            signerEmployeeList: {
+              set: [],
+            },
+          },
+          include: {
+            signerEmployeeList: true,
+          },
+        });
+      case 'USER':
+        if (!updateSignatureSignerDto.signerEmployeeId) {
+          throw new BadRequestException(SignatureErrorMessage.MISSING_SIGNER);
+        }
+        try {
+          await this.employeeService.findOne(
+            updateSignatureSignerDto.signerEmployeeId,
+          );
+        } catch (e) {
+          throw new BadRequestException(
+            EmployeeErrorMessage.EMPLOYEE_NOT_FOUND,
+          );
+        }
+
+        return await this.prisma.signature.update({
+          where: {
+            id: signatureId,
+          },
+          data: {
+            signerType: 'USER',
+            signerPositionId: null,
+            signerDepartmentId: null,
+            signerEmployeeId: updateSignatureSignerDto.signerEmployeeId,
+            signerEmployeeList: {
+              set: [],
+            },
+          },
+          include: {
+            signerEmployeeList: true,
+          },
+        });
+      case 'USER_LIST':
+        if (!updateSignatureSignerDto.signerEmployeeList) {
+          throw new BadRequestException(SignatureErrorMessage.MISSING_SIGNER);
+        }
+
+        for (const employee of updateSignatureSignerDto.signerEmployeeList) {
+          try {
+            await this.employeeService.findOne(employee.id);
+          } catch (e) {
+            throw new BadRequestException(
+              EmployeeErrorMessage.EMPLOYEE_NOT_FOUND,
+            );
+          }
+        }
+
+        return await this.prisma.signature.update({
+          where: {
+            id: signatureId,
+          },
+          data: {
+            signerType: 'USER_LIST',
+            signerPositionId: null,
+            signerDepartmentId: null,
+            signerEmployeeId: null,
+            signerEmployeeList: {
+              set: updateSignatureSignerDto.signerEmployeeList,
+            },
+          },
+          include: {
+            signerEmployeeList: true,
+          },
+        });
+      default:
+        throw new BadRequestException(
+          SignatureErrorMessage.MISSING_SIGNER_TYPE,
+        );
+    }
+  }
+  async findOne(id: string) {
+    let signature = await this.prisma.signature.findFirstOrThrow({
+      where: {
+        id: id,
+      },
+      include: {
+        signerEmployeeList: true,
+      },
+    });
+    return signature;
+  }
 }

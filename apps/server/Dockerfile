@@ -28,7 +28,7 @@ USER node
 #
 # 🏡 Production Build
 #
-FROM node:18-alpine as build
+FROM node:18-alpine3.17 as build
 
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
@@ -58,7 +58,7 @@ USER node
 #
 # 🚀 Production Server
 #
-FROM node:18-alpine as prod
+FROM node:18-alpine3.17 as prod
 
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
