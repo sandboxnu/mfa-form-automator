@@ -1,41 +1,32 @@
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DraggableEventHandler } from 'react-draggable';
-import { FieldType, TextFieldPosition } from './FormEditor';
+import { FieldType, TextFieldPosition } from '../types';
 import { FaTimes } from 'react-icons/fa';
 
-export default function DraggableText({
+export default function TextField({
   onStop,
   onResizeStop,
   color,
   onRemove,
   currentPosition,
   disableEdit,
-  type,
   disableDelete,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
-  initialText: string | null;
   color: string;
   onRemove: () => void;
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
-  type: FieldType;
   disableDelete: boolean;
 }) {
   return (
     <Rnd
-      lockAspectRatio={type == FieldType.Checkbox ? true : false}
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
-      minWidth={type == FieldType.Checkbox ? '10px' : '50px'}
-      enableResizing={
-        type == FieldType.Checkbox
-          ? { left: false, right: false, top: false, bottom: false }
-          : {}
-      }
-      minHeight={type == FieldType.Checkbox ? '10px' : '40px'}
+      minWidth={'50px'}
+      minHeight={'40px'}
       style={{
         position: 'absolute',
         zIndex: 100000,

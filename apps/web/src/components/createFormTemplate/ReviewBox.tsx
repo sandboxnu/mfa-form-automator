@@ -1,5 +1,6 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { FormEditor, FieldGroups } from './createFormTemplateEditor/FormEditor';
+import { FormEditor } from './createFormTemplateEditor/FormEditor';
+import { FieldGroups } from './types';
 import { useCreateFormTemplate } from '../../context/CreateFormTemplateContext';
 
 /**

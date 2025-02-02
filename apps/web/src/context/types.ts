@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import {
   FormFields,
   FieldGroups,
-} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
+} from '@web/components/createFormTemplate/types';
 
 // for storage in context
 export type User = {

@@ -5,41 +5,11 @@ import { TextIcon, PlusSign, Checkbox } from 'apps/web/src/static/icons';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import PagingControl from './PagingControl';
 import { v4 as uuidv4 } from 'uuid';
-import DraggableText from './DraggableText';
+import DraggableTextFactory from './DraggableTextFactory';
 import { useCreateFormTemplate } from 'apps/web/src/context/CreateFormTemplateContext';
+import { FieldType, TextFieldPosition, FormFields } from '../types';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
-export type TextFieldPosition = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
-export enum FieldType {
-  Text,
-  Checkbox,
-  Signature,
-}
-
-type FieldGroupColor = {
-  border: string;
-  background: string;
-};
-
-type groupId = string;
-type fieldId = string;
-export type FieldGroups = Map<groupId, FieldGroupColor>;
-
-// index = page num (zero indexing)
-export type FormFields = Record<
-  number,
-  Map<
-    fieldId,
-    { position: TextFieldPosition; groupId: string; type: FieldType }
-  >
->;
 
 export const FormEditor = ({
   formTemplateName,
@@ -170,6 +140,7 @@ export const FormEditor = ({
     }
   };
 
+  // converts HTML web coordinates to PDF coordinates
   const convertCoordinates = (container: HTMLDivElement) => {
     const { scrollLeft, scrollTop, clientWidth, clientHeight } = container;
     const centerX = scrollLeft + clientWidth / 2;
@@ -291,6 +262,22 @@ export const FormEditor = ({
             >
               <div>{Checkbox}</div>
             </Button>
+          </Box>
+          <Box
+            position="absolute"
+            right="24px"
+            top="69px"
+            background="white"
+            padding="6px"
+            boxShadow="0px 1px 4px #E5E5E5"
+            borderRadius="5px"
+            border="1px #E5E5E5 solid"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            gap="8px"
+            display="flex"
+          >
             <Button
               position="relative"
               width="40px"
@@ -342,7 +329,7 @@ export const FormEditor = ({
                 {formFields[pageNum] &&
                   Array.from(formFields[pageNum].entries()).map(
                     ([fieldId, { position, groupId }], index) => (
-                      <DraggableText
+                      <DraggableTextFactory
                         disableDelete={deleteFields}
                         type={
                           formFields[pageNum].get(fieldId)?.type ??

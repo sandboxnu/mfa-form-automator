@@ -4,7 +4,7 @@ import { useBlob } from '@web/hooks/useBlob';
 import {
   FormFields,
   FieldGroups,
-} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
+} from '@web/components/createFormTemplate/types';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
