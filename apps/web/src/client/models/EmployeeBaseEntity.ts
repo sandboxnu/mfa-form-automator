@@ -8,8 +8,8 @@ export type EmployeeBaseEntity = {
     firstName: string;
     lastName: string;
     email: string;
-    isAdmin: boolean;
     signatureLink: string;
+    scope: Record<string, any>;
     positionId: string;
     pswdHash: string | null;
     createdAt: string;

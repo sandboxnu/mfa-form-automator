@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Employee } from '@prisma/client';
+import { Employee, EmployeeScope } from '@prisma/client';
 import { PositionBaseEntity } from './../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 
@@ -20,10 +20,10 @@ export class EmployeeBaseEntity implements Employee {
   email: string;
 
   @ApiProperty()
-  isAdmin: boolean;
+  signatureLink: string;
 
   @ApiProperty()
-  signatureLink: string;
+  scope: EmployeeScope;
 
   @Exclude()
   pswdHash: string | null;

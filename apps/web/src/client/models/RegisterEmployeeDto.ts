@@ -11,5 +11,6 @@ export type RegisterEmployeeDto = {
     positionName: string;
     departmentName: string;
     signatureLink: string;
+    scope: Record<string, any>;
 };
 

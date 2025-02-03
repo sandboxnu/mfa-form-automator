@@ -3,6 +3,7 @@ import {
   FormFields,
   FieldGroups,
 } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
+import { EmployeeScope } from '@prisma/client';
 
 // for storage in context
 export type User = {
@@ -12,7 +13,7 @@ export type User = {
   email: string;
   firstName: string;
   lastName: string;
-  isAdmin: boolean;
+  scope: EmployeeScope;
 };
 // jwt payload returned from server
 export type jwtPayload = {
@@ -22,7 +23,7 @@ export type jwtPayload = {
   email: string;
   firstName: string;
   lastName: string;
-  isAdmin: boolean;
+  scope: EmployeeScope;
 };
 
 export interface AuthContextType {

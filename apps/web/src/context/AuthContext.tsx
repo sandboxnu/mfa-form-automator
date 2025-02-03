@@ -13,6 +13,8 @@ import { loginRequest } from '@web/authConfig';
 import { callMsGraph } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
 import { RegisterEmployeeDto } from '@web/client';
+import { EmployeeScope } from '@prisma/client';
+
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -54,7 +56,7 @@ export const AuthProvider = ({ children }: any) => {
       email: decoded.email,
       firstName: decoded.firstName,
       lastName: decoded.lastName,
-      isAdmin: decoded.isAdmin,
+      scope: decoded.scope,
     };
 
     setUser(user);
@@ -89,7 +91,7 @@ export const AuthProvider = ({ children }: any) => {
           email: employee.email,
           firstName: employee.firstName,
           lastName: employee.lastName,
-          isAdmin: employee.isAdmin,
+          scope: EmployeeScope.BASE_USER,
         });
       })
       .catch(async (_error) => {
@@ -194,6 +196,7 @@ export const AuthProvider = ({ children }: any) => {
       departmentName: department,
       positionName: position,
       signatureLink: signatureLink,
+      scope: EmployeeScope,
     };
 
     registerEmployeeMutation.mutate(employee, {
