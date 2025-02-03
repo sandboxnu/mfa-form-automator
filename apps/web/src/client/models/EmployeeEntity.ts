@@ -10,8 +10,8 @@ export type EmployeeEntity = {
     firstName: string;
     lastName: string;
     email: string;
-    isAdmin: boolean;
     signatureLink: string;
+    scope: Record<string, any>;
     position: PositionBaseEntity;
     positionId: string;
     pswdHash: string | null;

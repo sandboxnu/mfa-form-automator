@@ -1,11 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsNotEmpty,
-  IsString,
-  MinLength,
-  IsEmail,
-  IsBoolean,
-} from 'class-validator';
+import { EmployeeScope } from '@prisma/client';
+import { IsNotEmpty, IsString, MinLength, IsEmail } from 'class-validator';
 
 export class RegisterEmployeeDto {
   @IsString()
@@ -44,8 +39,8 @@ export class RegisterEmployeeDto {
   @ApiProperty()
   signatureLink: string;
 
-  @IsBoolean()
+  @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  isAdmin: boolean;
+  scope: EmployeeScope;
 }

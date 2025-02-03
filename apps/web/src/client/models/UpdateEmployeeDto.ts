@@ -8,5 +8,6 @@ export type UpdateEmployeeDto = {
     lastName?: string;
     positionId?: string;
     signatureLink?: string;
+    scope?: Record<string, any>;
 };
 

@@ -135,7 +135,7 @@ export class AppController {
       password: employeeDto.password,
       signatureLink: employeeDto.signatureLink,
       positionId: '',
-      isAdmin: employeeDto.isAdmin,
+      scope: employeeDto.scope,
     };
 
     const newEmployee = await this.authService.register(
