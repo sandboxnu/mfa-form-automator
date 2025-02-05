@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { $Enums, AssignedGroup, SignerType } from '@prisma/client';
+import { AssignedGroup, SignerType } from '@prisma/client';
 import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class AssignedGroupBaseEntity implements AssignedGroup {
