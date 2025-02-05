@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { FormInstance } from '@prisma/client';
 import { FormTemplateBaseEntity } from '../../form-templates/entities/form-template.entity';
 import { Exclude } from 'class-transformer';
-import { SignatureEntity } from '../../signatures/entities/signature.entity';
 import { EmployeeEntity } from '../../employees/entities/employee.entity';
+import { AssignedGroupBaseEntity } from '../../assigned-group/entities/assigned-group.entity';
 
 export class FormInstanceBaseEntity implements FormInstance {
   @ApiProperty()
@@ -46,7 +46,7 @@ export class FormInstanceBaseEntity implements FormInstance {
   formTemplate: FormTemplateBaseEntity;
 
   @Exclude()
-  signatures: SignatureEntity[];
+  assignedGroups: AssignedGroupBaseEntity[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
     Object.assign(this, partial);
@@ -99,9 +99,9 @@ export class FormInstanceEntity implements FormInstance {
 
   @ApiProperty({
     isArray: true,
-    type: SignatureEntity,
+    type: AssignedGroupBaseEntity,
   })
-  signatures: SignatureEntity[];
+  assignedGroups: AssignedGroupBaseEntity[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
     if (partial.originator) {
@@ -113,9 +113,9 @@ export class FormInstanceEntity implements FormInstance {
     if (partial.originator) {
       partial.originator = new EmployeeEntity(partial.originator);
     }
-    if (partial.signatures) {
-      partial.signatures = partial.signatures.map(
-        (signature) => new SignatureEntity(signature),
+    if (partial.assignedGroups) {
+      partial.assignedGroups = partial.assignedGroups.map(
+        (assignedGroup) => new AssignedGroupBaseEntity(assignedGroup),
       );
     }
 

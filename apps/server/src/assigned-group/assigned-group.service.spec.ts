@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SignaturesService } from './signatures.service';
 import { EmployeesService } from '../employees/employees.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, SignerType } from '@prisma/client';
-import { ConnectEmployeeDto } from './dto/create-signature.dto';
 import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
+import { AssignedGroupService } from './assigned-group.service';
+import { ConnectEmployeeDto } from './dto/create-assigned-group.dto';
 
-let signaturePositionSigner = {
-  id: 'signature-id',
+let assignedGroupPositionSigner = {
+  id: 'assignedGroup-id',
   formInstanceId: 'form-instance-id',
   signerType: 'POSITION',
   signerPositionId: 'position-id',
@@ -19,8 +19,8 @@ let signaturePositionSigner = {
   updatedAt: new Date(1672531200),
 };
 
-let signatureDepartmentSigner = {
-  id: 'signature-id',
+let assignedGroupDepartmentSigner = {
+  id: 'assignedGroup-id',
   formInstanceId: 'form-instance-id',
   signerType: 'DEPARTMENT',
   signerPositionId: null,
@@ -32,11 +32,11 @@ let signatureDepartmentSigner = {
 };
 
 const db = {
-  signature: {
-    findFirstOrThrow: jest.fn().mockResolvedValue(signaturePositionSigner),
+  assignedGroup: {
+    findFirstOrThrow: jest.fn().mockResolvedValue(assignedGroupPositionSigner),
     update: jest.fn().mockImplementation((args) => {
       let val = {
-        ...signaturePositionSigner,
+        ...assignedGroupPositionSigner,
         ...args.data,
       };
       if (args.data.signerEmployeeList.set.length === 0) {
@@ -60,13 +60,13 @@ const db = {
   },
 };
 
-describe('SignaturesService', () => {
-  let service: SignaturesService;
+describe('AssignedGroupService', () => {
+  let service: AssignedGroupService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        SignaturesService,
+        AssignedGroupService,
         EmployeesService,
         DepartmentsService,
         PositionsService,
@@ -77,7 +77,7 @@ describe('SignaturesService', () => {
       ],
     }).compile();
 
-    service = module.get<SignaturesService>(SignaturesService);
+    service = module.get<AssignedGroupService>(AssignedGroupService);
   });
 
   it('should be defined', () => {
@@ -86,7 +86,9 @@ describe('SignaturesService', () => {
 
   describe('updateSigner', () => {
     beforeEach(() => {
-      db.signature.findFirstOrThrow.mockResolvedValue(signaturePositionSigner);
+      db.assignedGroup.findFirstOrThrow.mockResolvedValue(
+        assignedGroupPositionSigner,
+      );
 
       db.employee.findFirstOrThrow = jest.fn(async (val) => {
         if (val.where.id === 'unknown') {
@@ -117,8 +119,8 @@ describe('SignaturesService', () => {
 
     describe('success', () => {
       it('should update the signer to a position', async () => {
-        db.signature.findFirstOrThrow.mockResolvedValue(
-          signatureDepartmentSigner,
+        db.assignedGroup.findFirstOrThrow.mockResolvedValue(
+          assignedGroupDepartmentSigner,
         );
 
         const updateSignatureSignerDto = {
@@ -128,7 +130,7 @@ describe('SignaturesService', () => {
           signerEmployeeId: null,
         };
         let updatedSignature = await service.updateSigner(
-          'signature-id',
+          'assignedGroup-id',
           updateSignatureSignerDto,
         );
         expect(updatedSignature.signerType).toEqual(SignerType.POSITION);
@@ -139,8 +141,8 @@ describe('SignaturesService', () => {
       });
 
       it('should update the signer to a department', async () => {
-        db.signature.findFirstOrThrow.mockResolvedValue(
-          signaturePositionSigner,
+        db.assignedGroup.findFirstOrThrow.mockResolvedValue(
+          assignedGroupPositionSigner,
         );
 
         const updateSignatureSignerDto = {
@@ -150,7 +152,7 @@ describe('SignaturesService', () => {
           signerEmployeeId: null,
         };
         let updatedSignature = await service.updateSigner(
-          'signature-id',
+          'assignedGroup-id',
           updateSignatureSignerDto,
         );
         expect(updatedSignature.signerType).toEqual(SignerType.DEPARTMENT);
@@ -161,8 +163,8 @@ describe('SignaturesService', () => {
       });
 
       it('should update the signer to an employee', async () => {
-        db.signature.findFirstOrThrow.mockResolvedValue(
-          signaturePositionSigner,
+        db.assignedGroup.findFirstOrThrow.mockResolvedValue(
+          assignedGroupPositionSigner,
         );
 
         const updateSignatureSignerDto = {
@@ -172,7 +174,7 @@ describe('SignaturesService', () => {
           signerEmployeeId: 'employee-id',
         };
         let updatedSignature = await service.updateSigner(
-          'signature-id',
+          'assignedGroup-id',
           updateSignatureSignerDto,
         );
         expect(updatedSignature.signerType).toEqual(SignerType.USER);
@@ -183,8 +185,8 @@ describe('SignaturesService', () => {
       });
 
       it('should update the signer to a list of employees', async () => {
-        db.signature.findFirstOrThrow.mockResolvedValue(
-          signaturePositionSigner,
+        db.assignedGroup.findFirstOrThrow.mockResolvedValue(
+          assignedGroupPositionSigner,
         );
 
         const updateSignatureSignerDto = {
@@ -198,7 +200,7 @@ describe('SignaturesService', () => {
           ],
         };
         let updatedSignature = await service.updateSigner(
-          'signature-id',
+          'assignedGroup-id',
           updateSignatureSignerDto,
         );
         expect(updatedSignature.signerType).toEqual(SignerType.USER_LIST);
@@ -213,8 +215,8 @@ describe('SignaturesService', () => {
     });
 
     describe('error', () => {
-      it('should throw if signature not found', async () => {
-        db.signature.findFirstOrThrow.mockRejectedValue(
+      it('should throw if assignedGroup not found', async () => {
+        db.assignedGroup.findFirstOrThrow.mockRejectedValue(
           new Prisma.PrismaClientKnownRequestError('', {
             code: 'P2025',
             clientVersion: '',
@@ -229,7 +231,7 @@ describe('SignaturesService', () => {
           signerEmployeeId: null,
         };
         expect(
-          service.updateSigner('signature-id', updateSignatureSignerDto),
+          service.updateSigner('assignedGroup-id', updateSignatureSignerDto),
         ).rejects.toThrowError();
       });
       it('should throw if invalid position specified', async () => {
@@ -247,7 +249,7 @@ describe('SignaturesService', () => {
           signerPositionId: 'unknown',
         };
         expect(
-          service.updateSigner('signature-id', updateSignatureSignerDto),
+          service.updateSigner('assignedGroup-id', updateSignatureSignerDto),
         ).rejects.toThrowError();
       });
 
@@ -259,7 +261,7 @@ describe('SignaturesService', () => {
           signerEmployeeId: null,
         };
         expect(
-          service.updateSigner('signature-id', updateSignatureSignerDto),
+          service.updateSigner('assignedGroup-id', updateSignatureSignerDto),
         ).rejects.toThrowError();
       });
 
@@ -271,7 +273,7 @@ describe('SignaturesService', () => {
           signerEmployeeId: 'unknown',
         };
         expect(
-          service.updateSigner('signature-id', updateSignatureSignerDto),
+          service.updateSigner('assignedGroup-id', updateSignatureSignerDto),
         ).rejects.toThrowError();
       });
 
@@ -284,21 +286,21 @@ describe('SignaturesService', () => {
           signerEmployeeList: [{ id: 'employee-id-1' }, { id: 'unknown' }],
         };
         expect(
-          service.updateSigner('signature-id', updateSignatureSignerDto),
+          service.updateSigner('assignedGroup-id', updateSignatureSignerDto),
         ).rejects.toThrowError();
       });
     });
   });
 
   describe('findOne', () => {
-    it('should find one signature', async () => {
-      expect(service.findOne('signature-id')).resolves.toEqual(
-        signaturePositionSigner,
+    it('should find one assignedGroup', async () => {
+      expect(service.findOne('assignedGroup-id')).resolves.toEqual(
+        assignedGroupPositionSigner,
       );
     });
 
-    it('should throw an error if signature is not found', async () => {
-      db.signature.findFirstOrThrow = jest.fn().mockRejectedValue(
+    it('should throw an error if assignedGroup is not found', async () => {
+      db.assignedGroup.findFirstOrThrow = jest.fn().mockRejectedValue(
         new Prisma.PrismaClientKnownRequestError('', {
           code: 'P2025',
           clientVersion: '',
@@ -306,7 +308,7 @@ describe('SignaturesService', () => {
           batchRequestIdx: undefined,
         }),
       );
-      expect(service.findOne('signature-id')).rejects.toThrowError();
+      expect(service.findOne('assignedGroup-id')).rejects.toThrowError();
     });
   });
 });

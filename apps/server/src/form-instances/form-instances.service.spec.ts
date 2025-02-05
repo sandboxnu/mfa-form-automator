@@ -96,6 +96,7 @@ const formTemplate = {
     },
   ],
   formInstances: [],
+  fieldGroups: [],
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
 };

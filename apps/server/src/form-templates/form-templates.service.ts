@@ -17,10 +17,31 @@ export class FormTemplatesService {
       data: {
         name: createFormTemplateDto.name,
         formDocLink: createFormTemplateDto.formDocLink,
-        signatureFields: { create: createFormTemplateDto.signatureFields },
+        fieldGroups: {
+          create: createFormTemplateDto.fieldGroups.map((fieldGroup) => {
+            return {
+              name: fieldGroup.name,
+              order: fieldGroup.order,
+              templateBoxes: {
+                create: fieldGroup.templateBoxes.map((templateBox) => {
+                  return {
+                    name: templateBox.name,
+                    type: templateBox.type,
+                    x_coordinate: templateBox.x_coordinate,
+                    y_coordinate: templateBox.y_coordinate,
+                  };
+                }),
+              },
+            };
+          }),
+        },
       },
       include: {
-        signatureFields: true,
+        fieldGroups: {
+          include: {
+            templateBoxes: true,
+          },
+        },
         formInstances: {
           include: {
             formTemplate: true,
@@ -33,7 +54,7 @@ export class FormTemplatesService {
                 },
               },
             },
-            signatures: {
+            assignedGroups: {
               include: {
                 signerPosition: {
                   include: {
@@ -63,7 +84,11 @@ export class FormTemplatesService {
       ? await this.prisma.formTemplate.findMany({
           take: limit,
           include: {
-            signatureFields: true,
+            fieldGroups: {
+              include: {
+                templateBoxes: true,
+              },
+            },
             formInstances: {
               include: {
                 formTemplate: true,
@@ -76,7 +101,7 @@ export class FormTemplatesService {
                     },
                   },
                 },
-                signatures: {
+                assignedGroups: {
                   include: {
                     signerPosition: {
                       include: {
@@ -95,7 +120,11 @@ export class FormTemplatesService {
         })
       : await this.prisma.formTemplate.findMany({
           include: {
-            signatureFields: true,
+            fieldGroups: {
+              include: {
+                templateBoxes: true,
+              },
+            },
             formInstances: {
               include: {
                 formTemplate: true,
@@ -108,7 +137,7 @@ export class FormTemplatesService {
                     },
                   },
                 },
-                signatures: {
+                assignedGroups: {
                   include: {
                     signerPosition: {
                       include: {
@@ -139,7 +168,11 @@ export class FormTemplatesService {
         id: id,
       },
       include: {
-        signatureFields: true,
+        fieldGroups: {
+          include: {
+            templateBoxes: true,
+          },
+        },
         formInstances: {
           include: {
             formTemplate: true,
@@ -152,7 +185,7 @@ export class FormTemplatesService {
                 },
               },
             },
-            signatures: {
+            assignedGroups: {
               include: {
                 signerPosition: {
                   include: {
@@ -190,7 +223,11 @@ export class FormTemplatesService {
         formDocLink: updateFormTemplateDto.formDocLink,
       },
       include: {
-        signatureFields: true,
+        fieldGroups: {
+          include: {
+            templateBoxes: true,
+          },
+        },
         formInstances: {
           include: {
             formTemplate: true,
@@ -203,7 +240,7 @@ export class FormTemplatesService {
                 },
               },
             },
-            signatures: {
+            assignedGroups: {
               include: {
                 signerPosition: {
                   include: {

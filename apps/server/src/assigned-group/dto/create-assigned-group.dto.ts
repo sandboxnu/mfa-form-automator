@@ -1,26 +1,41 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { SignerType } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsNotEmpty,
-  IsNumber,
+  IsInt,
   IsArray,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 export class ConnectEmployeeDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  id: string; // Use an existing Employee ID to connect
+  id: string;
 }
 
-export class CreateSignatureDto {
-  @IsNumber()
+export class CreateAssignedGroupDto {
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  formInstanceId: string;
+
+  @IsInt()
   @IsNotEmpty()
   @ApiProperty()
   order: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  fieldGroupId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ enum: SignerType })
+  signerType: SignerType;
 
   @IsString()
   @IsNotEmpty()
@@ -42,9 +57,4 @@ export class CreateSignatureDto {
   @Type(() => ConnectEmployeeDto)
   @ApiProperty({ type: [ConnectEmployeeDto] })
   signerEmployeeList: ConnectEmployeeDto[]; // Update to an array of IDs for connecting
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ enum: SignerType })
-  signerType: SignerType;
 }
