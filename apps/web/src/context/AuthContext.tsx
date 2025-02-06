@@ -187,6 +187,7 @@ export const AuthProvider = ({ children }: any) => {
     position: string,
     department: string,
     signatureLink: string,
+    scope: EmployeeScope,
   ) => {
     const employee: RegisterEmployeeDto = {
       email: email,
@@ -196,7 +197,7 @@ export const AuthProvider = ({ children }: any) => {
       departmentName: department,
       positionName: position,
       signatureLink: signatureLink,
-      scope: EmployeeScope,
+      scope: scope.valueOf, // Record<string, any>
     };
 
     registerEmployeeMutation.mutate(employee, {
