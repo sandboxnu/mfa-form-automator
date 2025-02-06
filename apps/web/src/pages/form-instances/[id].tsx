@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import FormInstance from '@web/components/FormInstance';
 import FormLoading from './../../components/FormLoading';
 import ErrorComponent from './../../components/Error';
-import { formInstancesControllerFindOne } from '@web/client';
 import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/react-query.gen';
 
 /**
@@ -11,10 +10,7 @@ import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/rea
  */
 export default function FormInstanceView() {
   const router = useRouter();
-
-  if (!router.query.id) {
-    return <ErrorComponent />;
-  }
+  const { id } = router.query;
 
   const {
     data: formInstance,
@@ -23,9 +19,10 @@ export default function FormInstanceView() {
   } = useQuery({
     ...formInstancesControllerFindOneOptions({
       path: {
-        id: String(router.query.id),
+        id: String(id),
       },
     }),
+    enabled: !!id,
   });
 
   if (isLoading) {
