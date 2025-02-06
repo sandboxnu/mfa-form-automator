@@ -1,7 +1,7 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { FormInstanceEntity } from '../client';
 import { useRouter } from 'next/router';
 import { PDFDocument } from './PDFDocument';
+import { FormInstanceEntity } from '@web/client/types.gen';
 
 /**
  * @param formName - the name of the form
@@ -18,10 +18,8 @@ export const FormImageCard = ({
 }) => {
   const router = useRouter();
 
-  const daysAgo = (date1: string, date2: string) => {
-    const d1 = new Date(date1);
-    const d2 = new Date(date2);
-    const diffInTime = d2.getTime() - d1.getTime();
+  const daysAgo = (date1: Date, date2: Date) => {
+    const diffInTime = date1.getTime() - date2.getTime();
     const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
     return diffInDays == 0 ? 'today' : `${diffInDays} days ago`;
   };
@@ -94,7 +92,7 @@ export const FormImageCard = ({
             fontSize="13px"
             isTruncated
           >
-            Assigned {daysAgo(formInstance.createdAt, new Date().toISOString())}
+            Assigned {daysAgo(formInstance.createdAt, new Date())}
           </Text>
         </Flex>
       </Flex>

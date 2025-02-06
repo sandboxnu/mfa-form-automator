@@ -1,5 +1,5 @@
 import { Box, Text, Avatar, AvatarGroup, Tooltip } from '@chakra-ui/react';
-import { SignatureEntity } from './../../../web/src/client';
+import { SignatureEntity } from '@web/client/types.gen';
 import { useRouter } from 'next/router';
 
 /**

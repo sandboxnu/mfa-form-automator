@@ -1,11 +1,9 @@
-import { SignatureEntity } from '@web/client';
-
 export type Assignee = {
   name?: string;
   signed: boolean;
   title: string;
-  updatedAt: string;
-  signerType: SignatureEntity.signerType;
+  updatedAt: Date;
+  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
 };
 
 export type AvatarMapProps = {

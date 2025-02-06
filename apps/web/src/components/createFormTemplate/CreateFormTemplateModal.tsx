@@ -16,7 +16,6 @@ import {
   Flex,
   Input,
 } from '@chakra-ui/react';
-import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
@@ -26,6 +25,11 @@ import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
 import { useBlob } from '@web/hooks/useBlob';
+import {
+  CreateFormTemplateDto,
+  formTemplatesControllerCreate,
+} from '@web/client';
+import { client } from '@web/client/client.gen';
 
 const variants = {
   notDragging: {
@@ -71,9 +75,10 @@ export const CreateFormTemplateModal = ({
 
   const createFormTemplateMutation = useMutation({
     mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
-      return FormTemplatesService.formTemplatesControllerCreate(
-        newFormTemplate,
-      );
+      return formTemplatesControllerCreate({
+        client: client,
+        body: newFormTemplate,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['api', 'form-templates'] });

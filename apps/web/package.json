@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
+    "openapi-ts": "openapi-ts",
     "gen-client": "openapi --input http://localhost:4000/api-json --output ./src/client --client axios"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@fontsource/hanken-grotesk": "^4.5.2",
+    "@hey-api/client-next": "^0.2.1",
     "@next/font": "13.1.4",
     "@tanstack/react-query": "^5.0.5",
     "@trpc/client": "^10.38.0",
@@ -60,6 +62,7 @@
     "@babel/plugin-syntax-flow": "^7.22.5",
     "@babel/plugin-transform-react-jsx": "^7.22.5",
     "@babel/preset-env": "^7.22.10",
+    "@hey-api/openapi-ts": "^0.64.1",
     "@types/react-signature-canvas": "^1.0.6",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",

@@ -22,19 +22,20 @@ import {
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import {
-  CreateFormInstanceDto,
-  FormInstancesService,
-  FormTemplateEntity,
-  FormTemplatesService,
-  PositionsService,
-  SignatureEntity,
-} from '@web/client';
 import { SignatureDropdown } from './SignatureDropdown';
 import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
+import {
+  FormTemplateEntity,
+  CreateFormInstanceDto,
+  formInstancesControllerCreate,
+  formTemplatesControllerFindAll,
+  positionsControllerFindAll,
+} from '@web/client';
+import { client } from '@web/client/client.gen';
+import { SignatureEntity } from '@web/client/types.gen';
 
 /**
  * @param isOpen - boolean to determine if the modal is open
@@ -56,9 +57,10 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [formName, setFormName] = useState('Create Form');
   const createFormInstanceMutation = useMutation({
     mutationFn: async (newFormInstance: CreateFormInstanceDto) => {
-      return FormInstancesService.formInstancesControllerCreate(
-        newFormInstance,
-      );
+      return formInstancesControllerCreate({
+        client: client,
+        body: newFormInstance,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['api', 'form-instances'] });
@@ -67,12 +69,18 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
 
   const { data: formTemplates } = useQuery({
     queryKey: ['api', 'form-templates'],
-    queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
+    queryFn: () =>
+      formTemplatesControllerFindAll({
+        client: client,
+      }),
   });
 
   const { data: positions } = useQuery({
     queryKey: ['api', 'positions'],
-    queryFn: () => PositionsService.positionsControllerFindAll(),
+    queryFn: () =>
+      positionsControllerFindAll({
+        client: client,
+      }),
   });
 
   /**
@@ -97,7 +105,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
           return {
             order: i,
             signerEmployeeId: pos?.employeeValue!,
-            signerType: SignatureEntity.signerType.USER,
+            signerType: 'USER',
             signerDepartmentId: null,
             signerPositionId: null,
             signerEmployeeList: [],
@@ -204,7 +212,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
               <Select
                 useBasicStyles
                 selectedOptionStyle="check"
-                options={formTemplates}
+                options={formTemplates?.data}
                 placeholder="Select Form Template"
                 value={selectedFormTemplate}
                 onChange={(option) => {
@@ -275,7 +283,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                     key={field.id}
                     field={field}
                     index={i}
-                    positions={positions}
+                    positions={positions?.data}
                     signaturePositions={signaturePositions}
                     setSignaturePositions={setSignaturePositions}
                   />

@@ -15,8 +15,8 @@ import {
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
-import { useRef, useState } from 'react';
-import { FormInstanceEntity, FormInstancesService } from '@web/client';
+import { useState } from 'react';
+import { FormInstanceEntity } from '@web/client/types.gen';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
@@ -25,6 +25,11 @@ import {
   getNameFromSignature,
   signerIsUser,
 } from '@web/utils/formInstanceUtils';
+import {
+  formInstancesControllerSignFormInstance,
+  formInstancesControllerCompleteFormInstance,
+} from '@web/client';
+import { client } from '@web/client/client.gen';
 
 /**
  * @param formInstance - the form instance
@@ -41,17 +46,20 @@ const FormInstance = ({
   const { user } = useAuth();
 
   const signFormInstanceMutation = useMutation({
-    mutationFn: async ({
+    mutationFn: ({
       formInstanceId,
       signatureId,
     }: {
       formInstanceId: string;
       signatureId: string;
     }) => {
-      return FormInstancesService.formInstancesControllerSignFormInstance(
-        formInstanceId,
-        signatureId,
-      );
+      return formInstancesControllerSignFormInstance({
+        client: client,
+        path: {
+          formInstanceId,
+          signatureId,
+        },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -61,8 +69,13 @@ const FormInstance = ({
   });
 
   const completeFormInstanceMutation = useMutation({
-    mutationFn:
-      FormInstancesService.formInstancesControllerCompleteFormInstance,
+    mutationFn: () =>
+      formInstancesControllerCompleteFormInstance({
+        client: client,
+        path: {
+          formInstanceId: formInstance.id,
+        },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['api', 'form-instances'],
@@ -95,7 +108,7 @@ const FormInstance = ({
    */
   const _handleFormApprove = async () => {
     if (formInstance.markedCompleted) return;
-    completeFormInstanceMutation.mutateAsync(formInstance.id).catch((e) => {
+    completeFormInstanceMutation.mutateAsync().catch((e) => {
       throw e;
     });
 

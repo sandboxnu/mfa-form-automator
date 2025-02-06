@@ -2,9 +2,9 @@ import { Box, Heading } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useState } from 'react';
-import { PositionEntity, SignatureFieldEntity } from '@web/client';
 import { Option } from './types';
 import { SearchIcon } from '@web/static/icons';
+import { SignatureFieldEntity, PositionEntity } from '@web/client';
 
 const assigneePlaceholderWithIcon = (
   <div style={{ display: 'flex', alignItems: 'center' }}>

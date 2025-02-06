@@ -1,10 +1,11 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import {
-  CreateFormTemplateDto,
   CreateSignatureFieldDto,
-  FormTemplatesService,
+  CreateFormTemplateDto,
+  formTemplatesControllerCreate,
 } from '@web/client';
+import { client } from '@web/client/client.gen';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
@@ -76,9 +77,10 @@ export const FormTemplateButtons = ({
 
   const createFormTemplateMutation = useMutation({
     mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
-      return FormTemplatesService.formTemplatesControllerCreate(
-        newFormTemplate,
-      );
+      return formTemplatesControllerCreate({
+        client: client,
+        body: newFormTemplate,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['api', 'form-templates'] });

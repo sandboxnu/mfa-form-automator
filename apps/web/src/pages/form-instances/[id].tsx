@@ -1,9 +1,9 @@
-import { FormInstancesService } from '../../client/services/FormInstancesService';
 import { useRouter } from 'next/router';
 import { useQuery } from '@tanstack/react-query';
 import FormInstance from '@web/components/FormInstance';
 import FormLoading from './../../components/FormLoading';
 import ErrorComponent from './../../components/Error';
+import { formInstancesControllerFindOne } from '@web/client';
 
 /**
  * @returns a view of a form instance
@@ -20,10 +20,9 @@ export default function FormInstanceView() {
     queryFn: async () => {
       try {
         if (router.query.id) {
-          const result =
-            await FormInstancesService.formInstancesControllerFindOne(
-              String(router.query.id),
-            );
+          const result = await formInstancesControllerFindOne({
+            path: { id: String(router.query.id) },
+          });
           return result;
         }
       } catch (error) {
@@ -37,8 +36,8 @@ export default function FormInstanceView() {
   }
   return (
     <>
-      {formInstance && !formInstanceError ? (
-        <FormInstance formInstance={formInstance} />
+      {formInstance?.data && !formInstanceError ? (
+        <FormInstance formInstance={formInstance.data} />
       ) : (
         <ErrorComponent />
       )}
