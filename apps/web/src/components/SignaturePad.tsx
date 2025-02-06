@@ -1,5 +1,4 @@
 import { Box, Flex, Input, Link } from '@chakra-ui/react';
-import { useRef } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { ButtonSwitch } from '@web/components/ButtonSwitch';
 

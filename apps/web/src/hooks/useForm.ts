@@ -1,9 +1,4 @@
-import { useMemo, useState } from 'react';
-import {
-  FormInstanceEntity,
-  FormInstancesService,
-  SignatureEntity,
-} from './../../../web/src/client';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from './useAuth';
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -11,6 +6,11 @@ import {
   nextSigner,
   signerIsUser,
 } from '@web/utils/formInstanceUtils';
+import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import {
+  formInstancesControllerFindAllAssignedToCurrentEmployeeOptions,
+  formInstancesControllerFindAllCreatedByCurrentEmployeeOptions,
+} from '@web/client/@tanstack/react-query.gen';
 
 /**
  * @returns an object containing the todo, pending, and completed forms
@@ -23,9 +23,7 @@ export const useForm = () => {
     error: assignedFIError,
     data: assignedFIData,
   } = useQuery({
-    queryKey: ['api', 'form-instances'],
-    queryFn:
-      FormInstancesService.formInstancesControllerFindAllAssignedToCurrentEmployee,
+    ...formInstancesControllerFindAllAssignedToCurrentEmployeeOptions(),
   });
 
   const {
@@ -33,9 +31,7 @@ export const useForm = () => {
     error: createdFIError,
     data: createdFIData,
   } = useQuery({
-    queryKey: ['api', 'form-instances', 'created', 'me'],
-    queryFn:
-      FormInstancesService.formInstancesControllerFindAllCreatedByCurrentEmployee,
+    ...formInstancesControllerFindAllCreatedByCurrentEmployeeOptions(),
   });
 
   const [todoForms, setTodoForms] = useState<FormInstanceEntity[]>([]);
@@ -84,15 +80,14 @@ export const useForm = () => {
     );
 
     // Forms created by current user that are fully signed but not marked completed
-    const todoApproveForms: FormInstanceEntity[] = createdFIData.filter(
-      (formInstance: FormInstanceEntity) => {
+    const todoApproveForms: FormInstanceEntity[] =
+      createdFIData.filter((formInstance: FormInstanceEntity) => {
         return (
           isFullySigned(formInstance) &&
           isOriginator(formInstance) &&
           !formInstance.markedCompleted
         );
-      },
-    );
+      }) ?? [];
 
     // Forms created by current user that are not fully signed but the next signer is not the current user since that would be in the todo list
     const originatorPendingForms: FormInstanceEntity[] = createdFIData.filter(

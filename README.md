@@ -12,7 +12,7 @@ NextJS, NestJS, Prisma, PostgreSQL
 - `test`: run all tests
 - `tsc`: run ts checker
 - `migrate`: run prisma migrate and make changes to local db in `apps/server`
-- `gen-client`: regenerate client used to communicate with backend in `apps/web`
+- `openapi-ts`: regenerate client used to communicate with backend in `apps/web`
 - `dev:db:up`: start up the database in `apps`
 - `dev:db:down`: stop the database in `apps`
 - `backend:docker:build`: build the docker image for the backend in `apps`
