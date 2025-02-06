@@ -48,6 +48,7 @@ export class AppController {
 
   @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
+  // @ApiOkResponse({ type: JwtEntity })
   @ApiCreatedResponse({ type: JwtEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
