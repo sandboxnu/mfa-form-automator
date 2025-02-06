@@ -5,7 +5,7 @@ const nextConfig = {
     extensionAlias: {
       '.js': ['.tsx', '.ts', '.jsx', '.js'],
     },
-    turbo: {}
+    turbo: {},
   },
   webpack: (config) => {
     /**
