@@ -7,6 +7,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useBlob } from '@web/hooks/useBlob';
 import { SignaturePad } from './../components/SignaturePad';
+import { EmployeeScope } from '@prisma/client';
 
 export default function Register() {
   const { completeRegistration, userData } = useAuth();
@@ -106,6 +107,7 @@ export default function Register() {
       currentDepartmentName,
       currentPositionName,
       uploadedBlob?.url || 'http://localhost:3002/signature.png',
+      EmployeeScope.BASE_USER,
     );
   };
 
