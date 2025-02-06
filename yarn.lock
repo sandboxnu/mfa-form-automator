@@ -4051,11 +4051,6 @@
   dependencies:
     glob "10.3.10"
 
-"@next/font@13.1.4":
-  version "13.1.4"
-  resolved "https://registry.npmjs.org/@next/font/-/font-13.1.4.tgz"
-  integrity sha512-NfqQPAIFJhssdaZEsP0MADZKN+tc040jOkNKVlDZHtVjJWBJSgbe8UHg3w0S6YuQr7PHc0ACbFeVCBQeG4MEvg==
-
 "@next/swc-darwin-arm64@15.0.3":
   version "15.0.3"
   resolved "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-15.0.3.tgz"
@@ -4618,7 +4613,7 @@
   resolved "https://registry.npmjs.org/@types/estree/-/estree-0.0.39.tgz"
   integrity sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
 
-"@types/express-serve-static-core@*", "@types/express-serve-static-core@4.17.33", "@types/express-serve-static-core@^4.17.33":
+"@types/express-serve-static-core@*", "@types/express-serve-static-core@^4.17.33":
   version "4.17.33"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.33.tgz#de35d30a9d637dc1450ad18dd583d75d5733d543"
   integrity sha512-TPBqmR/HRYI3eC2E5hmiivIzv+bidAfXofM+sbonAGvyDhySGw9/PQZFt2BLOrjUUR++4eJVpx6KnLQK1Fk9tA==
@@ -7006,7 +7001,7 @@ class-transformer@0.5.1:
   resolved "https://registry.npmjs.org/class-transformer/-/class-transformer-0.5.1.tgz"
   integrity sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==
 
-class-validator@^0.14.1:
+class-validator@0.14.1:
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/class-validator/-/class-validator-0.14.1.tgz#ff2411ed8134e9d76acfeb14872884448be98110"
   integrity sha512-2VEG9JICxIqTpoK1eMzZqaV+u/EiwEJkMGzTrZf6sU/fwsnOITVgYJ8yojSy6CaXtO9V0Cc6ZQZ8h8m4UBuLwQ==
@@ -16139,6 +16134,48 @@ tunnel@^0.0.6:
   version "0.0.6"
   resolved "https://registry.npmjs.org/tunnel/-/tunnel-0.0.6.tgz"
   integrity sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==
+
+turbo-darwin-64@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/turbo-darwin-64/-/turbo-darwin-64-2.4.0.tgz#45bd92a119f0365d7aedd61e5aadabb589a23e44"
+  integrity sha512-kVMScnPUa3R4n7woNmkR15kOY0aUwCLJcUyH5UC59ggKqr5HIHwweKYK8N1pwBQso0LQF4I9i93hIzfJguCcwQ==
+
+turbo-darwin-arm64@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/turbo-darwin-arm64/-/turbo-darwin-arm64-2.4.0.tgz#7c8a6d612056ed2d841e5de3cbbdd8b7d1c7ad84"
+  integrity sha512-8JObIpfun1guA7UlFR5jC/SOVm49lRscxMxfg5jZ5ABft79rhFC+ygN9AwAhGKv6W2DUhIh2xENkSgu4EDmUyg==
+
+turbo-linux-64@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/turbo-linux-64/-/turbo-linux-64-2.4.0.tgz#6d24123685db82ff5c863e2c96c976394d13c8b3"
+  integrity sha512-xWDGGcRlBuGV7HXWAVuTY6vsQi4aZxGMAnuiuNDg8Ij1aHGohOM0RUsWMXjxz4vuJmjk9+/D6NQqHH3AJEXezg==
+
+turbo-linux-arm64@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/turbo-linux-arm64/-/turbo-linux-arm64-2.4.0.tgz#f286a91c8c1f25074f383870ff597c3b3227871b"
+  integrity sha512-c3En99xMguc/Pdtk/rZP53LnDdw0W6lgUc04he8r8F+UHYSNvgzHh0WGXXmCC6lGbBH72kPhhGx4bAwyvi7dug==
+
+turbo-windows-64@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/turbo-windows-64/-/turbo-windows-64-2.4.0.tgz#60c3fdb38f7fb3fcce3acf07256c5f9973072bc5"
+  integrity sha512-/gOORuOlyA8JDPzyA16CD3wvyRcuBFePa1URAnFUof9hXQmKxK0VvSDO79cYZFsJSchCKNJpckUS0gYxGsWwoA==
+
+turbo-windows-arm64@2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/turbo-windows-arm64/-/turbo-windows-arm64-2.4.0.tgz#23809ecfdd31e5800174f0af23f8f35b2f0370d4"
+  integrity sha512-/DJIdTFijEMM5LSiEpSfarDOMOlYqJV+EzmppqWtHqDsOLF4hbbIBH9sJR6OOp5dURAu5eURBYdmvBRz9Lo6TA==
+
+turbo@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/turbo/-/turbo-2.4.0.tgz#fb23f7d90c2199dbc34b71de5800bf2432785706"
+  integrity sha512-ah/yQp2oMif1X0u7fBJ4MLMygnkbKnW5O8SG6pJvloPCpHfFoZctkSVQiJ3VnvNTq71V2JJIdwmOeu1i34OQyg==
+  optionalDependencies:
+    turbo-darwin-64 "2.4.0"
+    turbo-darwin-arm64 "2.4.0"
+    turbo-linux-64 "2.4.0"
+    turbo-linux-arm64 "2.4.0"
+    turbo-windows-64 "2.4.0"
+    turbo-windows-arm64 "2.4.0"
 
 typanion@^3.14.0, typanion@^3.8.0:
   version "3.14.0"
