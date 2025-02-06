@@ -15,7 +15,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { AzureSignout } from './AzureSignout';
 import { SignOut } from './SignOut';
-import { positionsControllerFindAll } from '@web/client';
+import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
 
 /**
  * @returns the top bar of the application
@@ -23,11 +23,10 @@ import { positionsControllerFindAll } from '@web/client';
 export const TopBar: React.FC = () => {
   const { user, logout } = useAuth();
   const { data: positions } = useQuery({
-    queryKey: ['api', 'positions'],
-    queryFn: () => positionsControllerFindAll(),
+    ...positionsControllerFindAllOptions(),
   });
 
-  const userPosition = positions?.data?.find(
+  const userPosition = positions?.find(
     (position) => position.id === user?.positionId,
   );
 

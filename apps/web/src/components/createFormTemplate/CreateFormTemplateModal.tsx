@@ -26,10 +26,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
 import { useBlob } from '@web/hooks/useBlob';
 import {
-  CreateFormTemplateDto,
-  formTemplatesControllerCreate,
-} from '@web/client';
-import { client } from '@web/client/client.gen';
+  formTemplatesControllerCreateMutation,
+  formTemplatesControllerFindAllQueryKey,
+} from '@web/client/@tanstack/react-query.gen';
 
 const variants = {
   notDragging: {
@@ -74,14 +73,11 @@ export const CreateFormTemplateModal = ({
   const toast = useToast();
 
   const createFormTemplateMutation = useMutation({
-    mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
-      return formTemplatesControllerCreate({
-        client: client,
-        body: newFormTemplate,
-      });
-    },
+    ...formTemplatesControllerCreateMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api', 'form-templates'] });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
     },
   });
 
@@ -117,14 +113,16 @@ export const CreateFormTemplateModal = ({
     const blob = await uploadFileRef();
     createFormTemplateMutation
       .mutateAsync({
-        name: formTemplateName,
-        formDocLink: blob.url,
-        signatureFields: signatureFields.map((signatureField, i) => {
-          return {
-            name: signatureField.value,
-            order: i,
-          };
-        }),
+        body: {
+          name: formTemplateName,
+          formDocLink: blob.url,
+          signatureFields: signatureFields.map((signatureField, i) => {
+            return {
+              name: signatureField.value,
+              order: i,
+            };
+          }),
+        },
       })
       .then((response) => {
         _handleModalClose();

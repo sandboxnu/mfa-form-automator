@@ -79,7 +79,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                     Signed
                   </Text>
                   <Text color="#515151" ml={2}>
-                    {assignee.updatedAt.toLocaleDateString()}
+                    {new Date(assignee.updatedAt).toLocaleDateString()}
                   </Text>
                 </Flex>
               ) : (

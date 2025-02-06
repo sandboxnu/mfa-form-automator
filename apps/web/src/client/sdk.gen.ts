@@ -3,7 +3,6 @@
 import type { Options as ClientOptions, TDataShape, Client } from '@hey-api/client-fetch';
 import type { AppControllerGetHelloData, AppControllerGetHelloResponse, AppControllerLoginData, AppControllerLoginResponse, AppControllerRefreshData, AppControllerRefreshResponse, AppControllerRegisterData, AppControllerRegisterResponse, AppControllerLogoutData, EmployeesControllerFindAllData, EmployeesControllerFindAllResponse, EmployeesControllerCreateData, EmployeesControllerCreateResponse, EmployeesControllerFindMeData, EmployeesControllerFindMeResponse, EmployeesControllerRemoveData, EmployeesControllerFindOneData, EmployeesControllerFindOneResponse, EmployeesControllerUpdateData, EmployeesControllerUpdateResponse, PositionsControllerFindAllData, PositionsControllerFindAllResponse, PositionsControllerCreateData, PositionsControllerCreateResponse, PositionsControllerFindAllInDepartmentData, PositionsControllerFindAllInDepartmentResponse, PositionsControllerFindAllInDepartmentNameData, PositionsControllerFindAllInDepartmentNameResponse, PositionsControllerRemoveData, PositionsControllerFindOneData, PositionsControllerFindOneResponse, PositionsControllerUpdateData, PositionsControllerUpdateResponse, PositionsControllerFindOneByNameInDepartmentData, PositionsControllerFindOneByNameInDepartmentResponse, SignatureFieldsControllerFindAllData, SignatureFieldsControllerFindAllResponse, SignatureFieldsControllerCreateData, SignatureFieldsControllerCreateResponse, SignatureFieldsControllerRemoveData, SignatureFieldsControllerFindOneData, SignatureFieldsControllerFindOneResponse, SignatureFieldsControllerUpdateData, SignatureFieldsControllerUpdateResponse, SignaturesControllerUpdateSignatureSignerData, SignaturesControllerUpdateSignatureSignerResponse, DepartmentsControllerFindAllData, DepartmentsControllerFindAllResponse, DepartmentsControllerCreateData, DepartmentsControllerCreateResponse, DepartmentsControllerRemoveData, DepartmentsControllerFindOneData, DepartmentsControllerFindOneResponse, DepartmentsControllerUpdateData, DepartmentsControllerUpdateResponse, DepartmentsControllerFindOneByNameData, DepartmentsControllerFindOneByNameResponse, FormInstancesControllerFindAllData, FormInstancesControllerFindAllResponse, FormInstancesControllerCreateData, FormInstancesControllerCreateResponse, FormInstancesControllerFindAllAssignedToCurrentEmployeeData, FormInstancesControllerFindAllAssignedToCurrentEmployeeResponse, FormInstancesControllerFindAllCreatedByCurrentEmployeeData, FormInstancesControllerFindAllCreatedByCurrentEmployeeResponse, FormInstancesControllerRemoveData, FormInstancesControllerFindOneData, FormInstancesControllerFindOneResponse, FormInstancesControllerUpdateData, FormInstancesControllerUpdateResponse, FormInstancesControllerSignFormInstanceData, FormInstancesControllerSignFormInstanceResponse, FormInstancesControllerCompleteFormInstanceData, FormInstancesControllerCompleteFormInstanceResponse, FormTemplatesControllerFindAllData, FormTemplatesControllerFindAllResponse, FormTemplatesControllerCreateData, FormTemplatesControllerCreateResponse, FormTemplatesControllerRemoveData, FormTemplatesControllerFindOneData, FormTemplatesControllerFindOneResponse, FormTemplatesControllerUpdateData, FormTemplatesControllerUpdateResponse } from './types.gen';
 import { client as _heyApiClient } from './client.gen';
-import { appControllerRegisterResponseTransformer, employeesControllerFindAllResponseTransformer, employeesControllerCreateResponseTransformer, employeesControllerFindMeResponseTransformer, employeesControllerFindOneResponseTransformer, employeesControllerUpdateResponseTransformer, positionsControllerFindAllResponseTransformer, positionsControllerCreateResponseTransformer, positionsControllerFindAllInDepartmentResponseTransformer, positionsControllerFindAllInDepartmentNameResponseTransformer, positionsControllerFindOneResponseTransformer, positionsControllerUpdateResponseTransformer, positionsControllerFindOneByNameInDepartmentResponseTransformer, signatureFieldsControllerFindAllResponseTransformer, signatureFieldsControllerCreateResponseTransformer, signatureFieldsControllerFindOneResponseTransformer, signatureFieldsControllerUpdateResponseTransformer, departmentsControllerFindAllResponseTransformer, departmentsControllerCreateResponseTransformer, departmentsControllerFindOneResponseTransformer, departmentsControllerUpdateResponseTransformer, departmentsControllerFindOneByNameResponseTransformer, formInstancesControllerFindAllResponseTransformer, formInstancesControllerCreateResponseTransformer, formInstancesControllerFindAllAssignedToCurrentEmployeeResponseTransformer, formInstancesControllerFindAllCreatedByCurrentEmployeeResponseTransformer, formInstancesControllerFindOneResponseTransformer, formInstancesControllerUpdateResponseTransformer, formInstancesControllerSignFormInstanceResponseTransformer, formInstancesControllerCompleteFormInstanceResponseTransformer, formTemplatesControllerFindAllResponseTransformer, formTemplatesControllerCreateResponseTransformer, formTemplatesControllerFindOneResponseTransformer, formTemplatesControllerUpdateResponseTransformer } from './transformers.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = ClientOptions<TData, ThrowOnError> & {
     /**
@@ -47,7 +46,6 @@ export const appControllerRefresh = <ThrowOnError extends boolean = false>(optio
 
 export const appControllerRegister = <ThrowOnError extends boolean = false>(options: Options<AppControllerRegisterData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<AppControllerRegisterResponse, unknown, ThrowOnError>({
-        responseTransformer: appControllerRegisterResponseTransformer,
         url: '/api/auth/register',
         ...options,
         headers: {
@@ -66,7 +64,6 @@ export const appControllerLogout = <ThrowOnError extends boolean = false>(option
 
 export const employeesControllerFindAll = <ThrowOnError extends boolean = false>(options?: Options<EmployeesControllerFindAllData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<EmployeesControllerFindAllResponse, unknown, ThrowOnError>({
-        responseTransformer: employeesControllerFindAllResponseTransformer,
         url: '/api/employees',
         ...options
     });
@@ -80,7 +77,6 @@ export const employeesControllerCreate = <ThrowOnError extends boolean = false>(
                 type: 'http'
             }
         ],
-        responseTransformer: employeesControllerCreateResponseTransformer,
         url: '/api/employees',
         ...options,
         headers: {
@@ -98,7 +94,6 @@ export const employeesControllerFindMe = <ThrowOnError extends boolean = false>(
                 type: 'http'
             }
         ],
-        responseTransformer: employeesControllerFindMeResponseTransformer,
         url: '/api/employees/me',
         ...options
     });
@@ -113,7 +108,6 @@ export const employeesControllerRemove = <ThrowOnError extends boolean = false>(
 
 export const employeesControllerFindOne = <ThrowOnError extends boolean = false>(options: Options<EmployeesControllerFindOneData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<EmployeesControllerFindOneResponse, unknown, ThrowOnError>({
-        responseTransformer: employeesControllerFindOneResponseTransformer,
         url: '/api/employees/{id}',
         ...options
     });
@@ -121,7 +115,6 @@ export const employeesControllerFindOne = <ThrowOnError extends boolean = false>
 
 export const employeesControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<EmployeesControllerUpdateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).patch<EmployeesControllerUpdateResponse, unknown, ThrowOnError>({
-        responseTransformer: employeesControllerUpdateResponseTransformer,
         url: '/api/employees/{id}',
         ...options,
         headers: {
@@ -133,7 +126,6 @@ export const employeesControllerUpdate = <ThrowOnError extends boolean = false>(
 
 export const positionsControllerFindAll = <ThrowOnError extends boolean = false>(options?: Options<PositionsControllerFindAllData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<PositionsControllerFindAllResponse, unknown, ThrowOnError>({
-        responseTransformer: positionsControllerFindAllResponseTransformer,
         url: '/api/positions',
         ...options
     });
@@ -141,7 +133,6 @@ export const positionsControllerFindAll = <ThrowOnError extends boolean = false>
 
 export const positionsControllerCreate = <ThrowOnError extends boolean = false>(options: Options<PositionsControllerCreateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<PositionsControllerCreateResponse, unknown, ThrowOnError>({
-        responseTransformer: positionsControllerCreateResponseTransformer,
         url: '/api/positions',
         ...options,
         headers: {
@@ -153,7 +144,6 @@ export const positionsControllerCreate = <ThrowOnError extends boolean = false>(
 
 export const positionsControllerFindAllInDepartment = <ThrowOnError extends boolean = false>(options: Options<PositionsControllerFindAllInDepartmentData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<PositionsControllerFindAllInDepartmentResponse, unknown, ThrowOnError>({
-        responseTransformer: positionsControllerFindAllInDepartmentResponseTransformer,
         url: '/api/positions/department/{departmentId}',
         ...options
     });
@@ -161,7 +151,6 @@ export const positionsControllerFindAllInDepartment = <ThrowOnError extends bool
 
 export const positionsControllerFindAllInDepartmentName = <ThrowOnError extends boolean = false>(options: Options<PositionsControllerFindAllInDepartmentNameData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<PositionsControllerFindAllInDepartmentNameResponse, unknown, ThrowOnError>({
-        responseTransformer: positionsControllerFindAllInDepartmentNameResponseTransformer,
         url: '/api/positions/departmentName/{departmentName}',
         ...options
     });
@@ -176,7 +165,6 @@ export const positionsControllerRemove = <ThrowOnError extends boolean = false>(
 
 export const positionsControllerFindOne = <ThrowOnError extends boolean = false>(options: Options<PositionsControllerFindOneData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<PositionsControllerFindOneResponse, unknown, ThrowOnError>({
-        responseTransformer: positionsControllerFindOneResponseTransformer,
         url: '/api/positions/{id}',
         ...options
     });
@@ -184,7 +172,6 @@ export const positionsControllerFindOne = <ThrowOnError extends boolean = false>
 
 export const positionsControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<PositionsControllerUpdateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).patch<PositionsControllerUpdateResponse, unknown, ThrowOnError>({
-        responseTransformer: positionsControllerUpdateResponseTransformer,
         url: '/api/positions/{id}',
         ...options,
         headers: {
@@ -196,7 +183,6 @@ export const positionsControllerUpdate = <ThrowOnError extends boolean = false>(
 
 export const positionsControllerFindOneByNameInDepartment = <ThrowOnError extends boolean = false>(options: Options<PositionsControllerFindOneByNameInDepartmentData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<PositionsControllerFindOneByNameInDepartmentResponse, unknown, ThrowOnError>({
-        responseTransformer: positionsControllerFindOneByNameInDepartmentResponseTransformer,
         url: '/api/positions/name/{name}',
         ...options
     });
@@ -204,7 +190,6 @@ export const positionsControllerFindOneByNameInDepartment = <ThrowOnError extend
 
 export const signatureFieldsControllerFindAll = <ThrowOnError extends boolean = false>(options: Options<SignatureFieldsControllerFindAllData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<SignatureFieldsControllerFindAllResponse, unknown, ThrowOnError>({
-        responseTransformer: signatureFieldsControllerFindAllResponseTransformer,
         url: '/api/signature-fields',
         ...options
     });
@@ -212,7 +197,6 @@ export const signatureFieldsControllerFindAll = <ThrowOnError extends boolean = 
 
 export const signatureFieldsControllerCreate = <ThrowOnError extends boolean = false>(options: Options<SignatureFieldsControllerCreateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<SignatureFieldsControllerCreateResponse, unknown, ThrowOnError>({
-        responseTransformer: signatureFieldsControllerCreateResponseTransformer,
         url: '/api/signature-fields',
         ...options,
         headers: {
@@ -231,7 +215,6 @@ export const signatureFieldsControllerRemove = <ThrowOnError extends boolean = f
 
 export const signatureFieldsControllerFindOne = <ThrowOnError extends boolean = false>(options: Options<SignatureFieldsControllerFindOneData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<SignatureFieldsControllerFindOneResponse, unknown, ThrowOnError>({
-        responseTransformer: signatureFieldsControllerFindOneResponseTransformer,
         url: '/api/signature-fields/{id}',
         ...options
     });
@@ -239,7 +222,6 @@ export const signatureFieldsControllerFindOne = <ThrowOnError extends boolean = 
 
 export const signatureFieldsControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<SignatureFieldsControllerUpdateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).patch<SignatureFieldsControllerUpdateResponse, unknown, ThrowOnError>({
-        responseTransformer: signatureFieldsControllerUpdateResponseTransformer,
         url: '/api/signature-fields/{id}',
         ...options,
         headers: {
@@ -262,7 +244,6 @@ export const signaturesControllerUpdateSignatureSigner = <ThrowOnError extends b
 
 export const departmentsControllerFindAll = <ThrowOnError extends boolean = false>(options: Options<DepartmentsControllerFindAllData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<DepartmentsControllerFindAllResponse, unknown, ThrowOnError>({
-        responseTransformer: departmentsControllerFindAllResponseTransformer,
         url: '/api/departments',
         ...options
     });
@@ -270,7 +251,6 @@ export const departmentsControllerFindAll = <ThrowOnError extends boolean = fals
 
 export const departmentsControllerCreate = <ThrowOnError extends boolean = false>(options: Options<DepartmentsControllerCreateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<DepartmentsControllerCreateResponse, unknown, ThrowOnError>({
-        responseTransformer: departmentsControllerCreateResponseTransformer,
         url: '/api/departments',
         ...options,
         headers: {
@@ -289,7 +269,6 @@ export const departmentsControllerRemove = <ThrowOnError extends boolean = false
 
 export const departmentsControllerFindOne = <ThrowOnError extends boolean = false>(options: Options<DepartmentsControllerFindOneData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<DepartmentsControllerFindOneResponse, unknown, ThrowOnError>({
-        responseTransformer: departmentsControllerFindOneResponseTransformer,
         url: '/api/departments/{id}',
         ...options
     });
@@ -297,7 +276,6 @@ export const departmentsControllerFindOne = <ThrowOnError extends boolean = fals
 
 export const departmentsControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<DepartmentsControllerUpdateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).patch<DepartmentsControllerUpdateResponse, unknown, ThrowOnError>({
-        responseTransformer: departmentsControllerUpdateResponseTransformer,
         url: '/api/departments/{id}',
         ...options,
         headers: {
@@ -309,7 +287,6 @@ export const departmentsControllerUpdate = <ThrowOnError extends boolean = false
 
 export const departmentsControllerFindOneByName = <ThrowOnError extends boolean = false>(options: Options<DepartmentsControllerFindOneByNameData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<DepartmentsControllerFindOneByNameResponse, unknown, ThrowOnError>({
-        responseTransformer: departmentsControllerFindOneByNameResponseTransformer,
         url: '/api/departments/name/{name}',
         ...options
     });
@@ -317,7 +294,6 @@ export const departmentsControllerFindOneByName = <ThrowOnError extends boolean 
 
 export const formInstancesControllerFindAll = <ThrowOnError extends boolean = false>(options?: Options<FormInstancesControllerFindAllData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<FormInstancesControllerFindAllResponse, unknown, ThrowOnError>({
-        responseTransformer: formInstancesControllerFindAllResponseTransformer,
         url: '/api/form-instances',
         ...options
     });
@@ -325,7 +301,6 @@ export const formInstancesControllerFindAll = <ThrowOnError extends boolean = fa
 
 export const formInstancesControllerCreate = <ThrowOnError extends boolean = false>(options: Options<FormInstancesControllerCreateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<FormInstancesControllerCreateResponse, unknown, ThrowOnError>({
-        responseTransformer: formInstancesControllerCreateResponseTransformer,
         url: '/api/form-instances',
         ...options,
         headers: {
@@ -343,7 +318,6 @@ export const formInstancesControllerFindAllAssignedToCurrentEmployee = <ThrowOnE
                 type: 'http'
             }
         ],
-        responseTransformer: formInstancesControllerFindAllAssignedToCurrentEmployeeResponseTransformer,
         url: '/api/form-instances/me',
         ...options
     });
@@ -357,7 +331,6 @@ export const formInstancesControllerFindAllCreatedByCurrentEmployee = <ThrowOnEr
                 type: 'http'
             }
         ],
-        responseTransformer: formInstancesControllerFindAllCreatedByCurrentEmployeeResponseTransformer,
         url: '/api/form-instances/created/me',
         ...options
     });
@@ -372,7 +345,6 @@ export const formInstancesControllerRemove = <ThrowOnError extends boolean = fal
 
 export const formInstancesControllerFindOne = <ThrowOnError extends boolean = false>(options: Options<FormInstancesControllerFindOneData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<FormInstancesControllerFindOneResponse, unknown, ThrowOnError>({
-        responseTransformer: formInstancesControllerFindOneResponseTransformer,
         url: '/api/form-instances/{id}',
         ...options
     });
@@ -380,7 +352,6 @@ export const formInstancesControllerFindOne = <ThrowOnError extends boolean = fa
 
 export const formInstancesControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<FormInstancesControllerUpdateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).patch<FormInstancesControllerUpdateResponse, unknown, ThrowOnError>({
-        responseTransformer: formInstancesControllerUpdateResponseTransformer,
         url: '/api/form-instances/{id}',
         ...options,
         headers: {
@@ -392,7 +363,6 @@ export const formInstancesControllerUpdate = <ThrowOnError extends boolean = fal
 
 export const formInstancesControllerSignFormInstance = <ThrowOnError extends boolean = false>(options: Options<FormInstancesControllerSignFormInstanceData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).patch<FormInstancesControllerSignFormInstanceResponse, unknown, ThrowOnError>({
-        responseTransformer: formInstancesControllerSignFormInstanceResponseTransformer,
         url: '/api/form-instances/{formInstanceId}/sign/{signatureId}',
         ...options
     });
@@ -406,7 +376,6 @@ export const formInstancesControllerCompleteFormInstance = <ThrowOnError extends
                 type: 'http'
             }
         ],
-        responseTransformer: formInstancesControllerCompleteFormInstanceResponseTransformer,
         url: '/api/form-instances/{formInstanceId}/complete',
         ...options
     });
@@ -414,7 +383,6 @@ export const formInstancesControllerCompleteFormInstance = <ThrowOnError extends
 
 export const formTemplatesControllerFindAll = <ThrowOnError extends boolean = false>(options?: Options<FormTemplatesControllerFindAllData, ThrowOnError>) => {
     return (options?.client ?? _heyApiClient).get<FormTemplatesControllerFindAllResponse, unknown, ThrowOnError>({
-        responseTransformer: formTemplatesControllerFindAllResponseTransformer,
         url: '/api/form-templates',
         ...options
     });
@@ -422,7 +390,6 @@ export const formTemplatesControllerFindAll = <ThrowOnError extends boolean = fa
 
 export const formTemplatesControllerCreate = <ThrowOnError extends boolean = false>(options: Options<FormTemplatesControllerCreateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<FormTemplatesControllerCreateResponse, unknown, ThrowOnError>({
-        responseTransformer: formTemplatesControllerCreateResponseTransformer,
         url: '/api/form-templates',
         ...options,
         headers: {
@@ -441,7 +408,6 @@ export const formTemplatesControllerRemove = <ThrowOnError extends boolean = fal
 
 export const formTemplatesControllerFindOne = <ThrowOnError extends boolean = false>(options: Options<FormTemplatesControllerFindOneData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<FormTemplatesControllerFindOneResponse, unknown, ThrowOnError>({
-        responseTransformer: formTemplatesControllerFindOneResponseTransformer,
         url: '/api/form-templates/{id}',
         ...options
     });
@@ -449,7 +415,6 @@ export const formTemplatesControllerFindOne = <ThrowOnError extends boolean = fa
 
 export const formTemplatesControllerUpdate = <ThrowOnError extends boolean = false>(options: Options<FormTemplatesControllerUpdateData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).patch<FormTemplatesControllerUpdateResponse, unknown, ThrowOnError>({
-        responseTransformer: formTemplatesControllerUpdateResponseTransformer,
         url: '/api/form-templates/{id}',
         ...options,
         headers: {

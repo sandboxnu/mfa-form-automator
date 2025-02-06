@@ -62,7 +62,7 @@ export const FormRow = ({
         </GridItem>
         <GridItem colSpan={3} h="64px">
           <Text pt="20px" fontWeight={400}>
-            {formatDate(formInstance.createdAt)}
+            {formatDate(new Date(formInstance.createdAt))}
           </Text>
         </GridItem>
         <GridItem colSpan={4} h="64px">

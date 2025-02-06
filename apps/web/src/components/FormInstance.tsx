@@ -26,10 +26,10 @@ import {
   signerIsUser,
 } from '@web/utils/formInstanceUtils';
 import {
-  formInstancesControllerSignFormInstance,
-  formInstancesControllerCompleteFormInstance,
-} from '@web/client';
-import { client } from '@web/client/client.gen';
+  formInstancesControllerCompleteFormInstanceMutation,
+  formInstancesControllerFindAllQueryKey,
+  formInstancesControllerSignFormInstanceMutation,
+} from '@web/client/@tanstack/react-query.gen';
 
 /**
  * @param formInstance - the form instance
@@ -46,39 +46,19 @@ const FormInstance = ({
   const { user } = useAuth();
 
   const signFormInstanceMutation = useMutation({
-    mutationFn: ({
-      formInstanceId,
-      signatureId,
-    }: {
-      formInstanceId: string;
-      signatureId: string;
-    }) => {
-      return formInstancesControllerSignFormInstance({
-        client: client,
-        path: {
-          formInstanceId,
-          signatureId,
-        },
-      });
-    },
+    ...formInstancesControllerSignFormInstanceMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['api', 'form-instances'],
+        queryKey: formInstancesControllerFindAllQueryKey(),
       });
     },
   });
 
   const completeFormInstanceMutation = useMutation({
-    mutationFn: () =>
-      formInstancesControllerCompleteFormInstance({
-        client: client,
-        path: {
-          formInstanceId: formInstance.id,
-        },
-      }),
+    ...formInstancesControllerCompleteFormInstanceMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['api', 'form-instances'],
+        queryKey: formInstancesControllerFindAllQueryKey(),
       });
     },
   });
@@ -95,8 +75,10 @@ const FormInstance = ({
     if (_nextSignature == null || !_userCanSign) return;
     signFormInstanceMutation
       .mutateAsync({
-        formInstanceId: formInstance.id,
-        signatureId: _nextSignature?.id!,
+        path: {
+          formInstanceId: formInstance.id,
+          signatureId: _nextSignature?.id!,
+        },
       })
       .catch((e) => {
         throw e;
@@ -108,9 +90,15 @@ const FormInstance = ({
    */
   const _handleFormApprove = async () => {
     if (formInstance.markedCompleted) return;
-    completeFormInstanceMutation.mutateAsync().catch((e) => {
-      throw e;
-    });
+    completeFormInstanceMutation
+      .mutateAsync({
+        path: {
+          formInstanceId: formInstance.id,
+        },
+      })
+      .catch((e) => {
+        throw e;
+      });
 
     router.push('/');
   };

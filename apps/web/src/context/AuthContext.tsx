@@ -17,6 +17,7 @@ import {
   RegisterEmployeeDto,
 } from '../client';
 import { client } from '@web/client/client.gen';
+import { appControllerRegisterMutation } from '@web/client/@tanstack/react-query.gen';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -33,12 +34,7 @@ export const AuthProvider = ({ children }: any) => {
   const [userData, setUserData] = useState<any>(undefined);
 
   const registerEmployeeMutation = useMutation({
-    mutationFn: async (employee: RegisterEmployeeDto) => {
-      return appControllerRegister({
-        client: client,
-        body: employee,
-      });
-    },
+    ...appControllerRegisterMutation(),
   });
 
   const requestProfileDataMutation = useMutation({
@@ -51,23 +47,24 @@ export const AuthProvider = ({ children }: any) => {
   });
 
   const parseUser = async (jwt?: JwtEntity) => {
-    if (jwt == null) {
-      throw new Error('No JWT data found');
+    if (jwt) {
+      const token = jwt.accessToken;
+      const decoded = jwtDecode(token) as jwtPayload;
+
+      const user: User = {
+        id: decoded.sub,
+        positionId: decoded.positionId,
+        departmentId: decoded.departmentId,
+        email: decoded.email,
+        firstName: decoded.firstName,
+        lastName: decoded.lastName,
+        isAdmin: decoded.isAdmin,
+      };
+
+      setUser(user);
+    } else {
+      logout();
     }
-    const token = jwt.accessToken;
-    const decoded = jwtDecode(token) as jwtPayload;
-
-    const user: User = {
-      id: decoded.sub,
-      positionId: decoded.positionId,
-      departmentId: decoded.departmentId,
-      email: decoded.email,
-      firstName: decoded.firstName,
-      lastName: decoded.lastName,
-      isAdmin: decoded.isAdmin,
-    };
-
-    setUser(user);
   };
 
   // Reset the error state if we change page
@@ -221,14 +218,17 @@ export const AuthProvider = ({ children }: any) => {
       signatureLink: signatureLink,
     };
 
-    registerEmployeeMutation.mutate(employee, {
-      onSuccess: () => {
-        login(email, password);
+    registerEmployeeMutation.mutate(
+      { body: employee },
+      {
+        onSuccess: () => {
+          login(email, password);
+        },
+        onError: (error) => {
+          setError(error);
+        },
       },
-      onError: (error) => {
-        setError(error);
-      },
-    });
+    );
   };
 
   // Call the logout endpoint and then remove the user

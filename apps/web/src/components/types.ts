@@ -2,7 +2,7 @@ export type Assignee = {
   name?: string;
   signed: boolean;
   title: string;
-  updatedAt: Date;
+  updatedAt: string;
   signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
 };
 

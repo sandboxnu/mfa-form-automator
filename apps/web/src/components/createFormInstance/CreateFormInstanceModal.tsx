@@ -27,15 +27,13 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
+import { FormTemplateEntity } from '@web/client';
 import {
-  FormTemplateEntity,
-  CreateFormInstanceDto,
-  formInstancesControllerCreate,
-  formTemplatesControllerFindAll,
-  positionsControllerFindAll,
-} from '@web/client';
-import { client } from '@web/client/client.gen';
-import { SignatureEntity } from '@web/client/types.gen';
+  formInstancesControllerCreateMutation,
+  formTemplatesControllerFindAllOptions,
+  formTemplatesControllerFindAllQueryKey,
+  positionsControllerFindAllOptions,
+} from '@web/client/@tanstack/react-query.gen';
 
 /**
  * @param isOpen - boolean to determine if the modal is open
@@ -56,31 +54,20 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   >([]);
   const [formName, setFormName] = useState('Create Form');
   const createFormInstanceMutation = useMutation({
-    mutationFn: async (newFormInstance: CreateFormInstanceDto) => {
-      return formInstancesControllerCreate({
-        client: client,
-        body: newFormInstance,
-      });
-    },
+    ...formInstancesControllerCreateMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api', 'form-instances'] });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
     },
   });
 
   const { data: formTemplates } = useQuery({
-    queryKey: ['api', 'form-templates'],
-    queryFn: () =>
-      formTemplatesControllerFindAll({
-        client: client,
-      }),
+    ...formTemplatesControllerFindAllOptions(),
   });
 
   const { data: positions } = useQuery({
-    queryKey: ['api', 'positions'],
-    queryFn: () =>
-      positionsControllerFindAll({
-        client: client,
-      }),
+    ...positionsControllerFindAllOptions(),
   });
 
   /**
@@ -100,20 +87,22 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
 
     await createFormInstanceMutation
       .mutateAsync({
-        name: formName,
-        signatures: signaturePositions.map((pos, i) => {
-          return {
-            order: i,
-            signerEmployeeId: pos?.employeeValue!,
-            signerType: 'USER',
-            signerDepartmentId: null,
-            signerPositionId: null,
-            signerEmployeeList: [],
-          };
-        }),
-        originatorId: user?.id!,
-        formTemplateId: selectedFormTemplate?.id!,
-        formDocLink: selectedFormTemplate?.formDocLink!,
+        body: {
+          name: formName,
+          signatures: signaturePositions.map((pos, i) => {
+            return {
+              order: i,
+              signerEmployeeId: pos?.employeeValue!,
+              signerType: 'USER',
+              signerDepartmentId: null,
+              signerPositionId: null,
+              signerEmployeeList: [],
+            };
+          }),
+          originatorId: user?.id!,
+          formTemplateId: selectedFormTemplate?.id!,
+          formDocLink: selectedFormTemplate?.formDocLink!,
+        },
       })
       .then((response) => {
         _handleModalClose();
@@ -212,7 +201,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
               <Select
                 useBasicStyles
                 selectedOptionStyle="check"
-                options={formTemplates?.data}
+                options={formTemplates}
                 placeholder="Select Form Template"
                 value={selectedFormTemplate}
                 onChange={(option) => {
@@ -283,7 +272,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                     key={field.id}
                     field={field}
                     index={i}
-                    positions={positions?.data}
+                    positions={positions}
                     signaturePositions={signaturePositions}
                     setSignaturePositions={setSignaturePositions}
                   />

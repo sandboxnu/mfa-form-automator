@@ -4,6 +4,7 @@ import FormInstance from '@web/components/FormInstance';
 import FormLoading from './../../components/FormLoading';
 import ErrorComponent from './../../components/Error';
 import { formInstancesControllerFindOne } from '@web/client';
+import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/react-query.gen';
 
 /**
  * @returns a view of a form instance
@@ -11,24 +12,20 @@ import { formInstancesControllerFindOne } from '@web/client';
 export default function FormInstanceView() {
   const router = useRouter();
 
+  if (!router.query.id) {
+    return <ErrorComponent />;
+  }
+
   const {
     data: formInstance,
     error: formInstanceError,
     isLoading,
   } = useQuery({
-    queryKey: ['api', 'form-instances', router.query.id],
-    queryFn: async () => {
-      try {
-        if (router.query.id) {
-          const result = await formInstancesControllerFindOne({
-            path: { id: String(router.query.id) },
-          });
-          return result;
-        }
-      } catch (error) {
-        throw new Error(`Error fetching form instance data: ${error}`);
-      }
-    },
+    ...formInstancesControllerFindOneOptions({
+      path: {
+        id: String(router.query.id),
+      },
+    }),
   });
 
   if (isLoading) {
@@ -36,8 +33,8 @@ export default function FormInstanceView() {
   }
   return (
     <>
-      {formInstance?.data && !formInstanceError ? (
-        <FormInstance formInstance={formInstance.data} />
+      {formInstance && !formInstanceError ? (
+        <FormInstance formInstance={formInstance} />
       ) : (
         <ErrorComponent />
       )}

@@ -17,8 +17,8 @@ export type RegisterEmployeeDto = {
 export type DepartmentEntity = {
     id: string;
     name: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type PositionBaseEntity = {
@@ -27,8 +27,8 @@ export type PositionBaseEntity = {
     single: boolean;
     department: DepartmentEntity;
     departmentId: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type EmployeeEntity = {
@@ -41,8 +41,8 @@ export type EmployeeEntity = {
     position: PositionBaseEntity;
     positionId: string;
     pswdHash: string | null;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     refreshToken: string | null;
 };
 
@@ -76,8 +76,8 @@ export type EmployeeBaseEntity = {
     signatureLink: string;
     positionId: string;
     pswdHash: string | null;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     refreshToken: string | null;
 };
 
@@ -87,8 +87,8 @@ export type PositionEntity = {
     single: boolean;
     department: DepartmentEntity;
     departmentId: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     employees?: Array<EmployeeBaseEntity>;
 };
 
@@ -108,8 +108,8 @@ export type SignatureFieldEntity = {
     name: string;
     order: number;
     formTemplateId: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type UpdateSignatureFieldDto = {
@@ -159,8 +159,8 @@ export type FormTemplateBaseEntity = {
     id: string;
     name: string;
     formDocLink: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type SignatureEntity = {
@@ -168,8 +168,8 @@ export type SignatureEntity = {
     order: number;
     signed: boolean;
     signedDocLink: string | null;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
     signerPositionId: string | null;
     signerPosition: PositionBaseEntity | null;
     signerDepartmentId: string | null;
@@ -189,10 +189,10 @@ export type FormInstanceEntity = {
     formDocLink: string;
     completed: boolean;
     markedCompleted: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    completedAt?: Date | null;
-    markedCompletedAt?: Date | null;
+    createdAt: string;
+    updatedAt: string;
+    completedAt?: string | null;
+    markedCompletedAt?: string | null;
     originator: EmployeeEntity;
     formTemplate: FormTemplateBaseEntity;
     signatures: Array<SignatureEntity>;
@@ -217,8 +217,8 @@ export type FormTemplateEntity = {
     formDocLink: string;
     signatureFields: Array<SignatureFieldEntity>;
     formInstances: Array<FormInstanceEntity>;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type UpdateFormTemplateDto = {

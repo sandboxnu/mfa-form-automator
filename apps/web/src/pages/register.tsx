@@ -10,6 +10,10 @@ import {
   DepartmentEntity,
   PositionEntity,
 } from '@web/client';
+import {
+  departmentsControllerFindAllOptions,
+  positionsControllerFindAllInDepartmentNameOptions,
+} from '@web/client/@tanstack/react-query.gen';
 
 export default function Register() {
   const { completeRegistration, userData } = useAuth();
@@ -25,28 +29,22 @@ export default function Register() {
 
   // Fetch departments and positions
   const { data: departmentsData } = useQuery({
-    queryKey: ['api', 'departments'],
-    queryFn: () =>
-      departmentsControllerFindAll({
-        query: {
-          limit: 1000,
-        },
-      }),
+    ...departmentsControllerFindAllOptions({
+      query: {
+        limit: 1000,
+      },
+    }),
   });
 
-  console.log(departmentsData);
-
   const { data: positionsData } = useQuery({
-    queryKey: ['api', 'positions', currentDepartmentName],
-    queryFn: () =>
-      positionsControllerFindAllInDepartmentName({
-        path: {
-          departmentName: currentDepartmentName,
-        },
-        query: {
-          limit: 1000,
-        },
-      }),
+    ...positionsControllerFindAllInDepartmentNameOptions({
+      path: {
+        departmentName: currentDepartmentName,
+      },
+      query: {
+        limit: 1000,
+      },
+    }),
     enabled: !!currentDepartmentName,
   });
 
@@ -163,7 +161,7 @@ export default function Register() {
             onChange={(e) => setCurrentDepartmentName(e.target.value)}
             marginTop="8px"
           >
-            {departmentsData?.data?.map((department: DepartmentEntity) => (
+            {departmentsData?.map((department: DepartmentEntity) => (
               <option
                 key={department.name}
                 value={department.name}
@@ -184,7 +182,7 @@ export default function Register() {
             disabled={!currentDepartmentName}
             marginTop="8px"
           >
-            {positionsData?.data?.map((position: PositionEntity) => (
+            {positionsData?.map((position: PositionEntity) => (
               <option
                 key={position.name}
                 value={position.name}
