@@ -4,6 +4,7 @@ import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 import { PositionBaseEntity } from '../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 import { DepartmentEntity } from '../../departments/entities/department.entity';
+import { IsEnum } from 'class-validator';
 
 export class SignatureEntity implements Signature {
   @ApiProperty()
@@ -51,6 +52,7 @@ export class SignatureEntity implements Signature {
   @ApiProperty()
   signingEmployee: EmployeeBaseEntity | null;
 
+  @IsEnum(SignerType)
   @ApiProperty({ enum: SignerType })
   signerType: SignerType;
 

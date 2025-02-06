@@ -13,8 +13,6 @@ import {
   ToDoIcon,
   PendingIcon,
   CompletedIcon,
-  HistoryIcon,
-  SettingsIcon,
   PlusIcon,
   FormInstanceIcon,
   GrayPencilIcon,

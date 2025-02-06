@@ -7,11 +7,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { FormInstanceEntity, SignatureEntity } from '@web/client';
-import {
-  getInitialsFromSignature,
-  getNameFromSignature,
-} from '@web/utils/formInstanceUtils';
+import { FormInstanceEntity, SignatureEntity } from '@web/client/types.gen';
+import { getNameFromSignature } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
 import { HoverableAvatar } from './HoverableAvatar';
 
@@ -30,8 +27,8 @@ export const FormRow = ({
 }) => {
   const router = useRouter();
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleString('en-US', {
+  const formatDate = (date: Date) => {
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -65,7 +62,7 @@ export const FormRow = ({
         </GridItem>
         <GridItem colSpan={3} h="64px">
           <Text pt="20px" fontWeight={400}>
-            {formatDate(formInstance.createdAt)}
+            {formatDate(new Date(formInstance.createdAt))}
           </Text>
         </GridItem>
         <GridItem colSpan={4} h="64px">
