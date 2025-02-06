@@ -39,6 +39,7 @@ export interface AuthContextType {
     position: string,
     department: string,
     signatureLink: string,
+    scope: EmployeeScope
   ) => void;
   logout: () => void;
 }
