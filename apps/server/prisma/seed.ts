@@ -262,8 +262,9 @@ async function main() {
     },
   });
 
-  const IT_EXIT_FORM_SIGNATURE_FIELDS =
-    await fetchSignatureFields(IT_EXIT_FORM_UUID);
+  const IT_EXIT_FORM_SIGNATURE_FIELDS = await fetchSignatureFields(
+    IT_EXIT_FORM_UUID,
+  );
   const STAFFING_REQUISITION_SIGNATURE_FIELDS = await fetchSignatureFields(
     STAFFING_REQUISITION_UUID,
   );
@@ -275,8 +276,9 @@ async function main() {
   );
   const HYBRID_AND_REMOTE_WORK_AGREEMENT_SIGNATURE_FIELDS =
     await fetchSignatureFields(HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID);
-  const VPN_REQUEST_SIGNATURE_FIELDS =
-    await fetchSignatureFields(VPN_REQUEST_UUID);
+  const VPN_REQUEST_SIGNATURE_FIELDS = await fetchSignatureFields(
+    VPN_REQUEST_UUID,
+  );
   const DIGITAL_MFA_ID_BADGE_REQUEST_SIGNATURE_FIELDS =
     await fetchSignatureFields(DIGITAL_MFA_ID_BADGE_REQUEST_UUID);
   const TRAVEL_AUTHORIZATION_SIGNATURE_FIELDS = await fetchSignatureFields(

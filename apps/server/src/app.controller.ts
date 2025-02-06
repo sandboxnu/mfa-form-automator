@@ -18,7 +18,6 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiBearerAuth,
-  ApiAcceptedResponse,
   ApiCreatedResponse,
 } from '@nestjs/swagger';
 import { AppErrorMessage } from './app.errors';
