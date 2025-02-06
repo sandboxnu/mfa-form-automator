@@ -62,7 +62,6 @@
     "@types/passport": "1.0.17",
     "@types/passport-jwt": "3.0.10",
     "@types/passport-local": "1.0.36",
-    "@types/signature_pad": "^4.0.0",
     "@types/supertest": "2.0.12",
     "@types/validator": "13.12.2",
     "@typescript-eslint/eslint-plugin": "6.4.1",

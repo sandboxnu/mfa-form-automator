@@ -4159,7 +4159,7 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
   integrity sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
 
-"@types/express-serve-static-core@*", "@types/express-serve-static-core@4.17.33", "@types/express-serve-static-core@^4.17.33":
+"@types/express-serve-static-core@*", "@types/express-serve-static-core@^4.17.33":
   version "4.17.33"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.33.tgz#de35d30a9d637dc1450ad18dd583d75d5733d543"
   integrity sha512-TPBqmR/HRYI3eC2E5hmiivIzv+bidAfXofM+sbonAGvyDhySGw9/PQZFt2BLOrjUUR++4eJVpx6KnLQK1Fk9tA==
@@ -4493,7 +4493,7 @@
     "@types/node" "*"
     "@types/send" "*"
 
-"@types/signature_pad@*", "@types/signature_pad@^4.0.0":
+"@types/signature_pad@*":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/signature_pad/-/signature_pad-4.0.0.tgz#6fe702f79f110edef5e0fcde597f26710ff062d1"
   integrity sha512-uvyInmPxfG4fMz9DN7QSxNcF6O9tOtt98z6sMjP0SSFyiF7RxgfeSww+jVjkQtcvEBqR5bjVinMqxBDRP1nnmg==
