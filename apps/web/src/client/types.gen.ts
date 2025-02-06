@@ -122,6 +122,13 @@ export type ConnectEmployeeDto = {
     id: string;
 };
 
+export enum SignerType {
+    POSITION = 'POSITION',
+    DEPARTMENT = 'DEPARTMENT',
+    USER = 'USER',
+    USER_LIST = 'USER_LIST'
+}
+
 export type UpdateSignatureSignerDto = {
     signerEmployeeId?: string | null;
     signerPositionId?: string | null;

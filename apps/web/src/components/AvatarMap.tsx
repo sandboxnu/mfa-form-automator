@@ -2,6 +2,7 @@ import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
 import { AwaitingIcon, CheckIcon } from 'apps/web/src/static/icons';
 import { AvatarMapProps } from './types';
 import { SignatureEntitySchema } from '@web/client/schemas.gen';
+import { SignerType } from '@web/client';
 
 /**
  * @param assignees - an array of assignees
@@ -12,17 +13,17 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
 
   const getInitialsFromTitle = (
     title: string,
-    signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST',
+    signerType: SignerType,
     isSigned: boolean,
   ) => {
     SignatureEntitySchema;
-    if (isSigned || signerType === 'USER') {
+    if (isSigned || signerType === SignerType.USER) {
       return title;
-    } else if (signerType === 'DEPARTMENT') {
+    } else if (signerType === SignerType.DEPARTMENT) {
       return 'D';
-    } else if (signerType === 'POSITION') {
+    } else if (signerType === SignerType.POSITION) {
       return 'P';
-    } else if (signerType === 'USER_LIST') {
+    } else if (signerType === SignerType.USER_LIST) {
       return 'U';
     }
   };

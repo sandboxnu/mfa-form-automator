@@ -1,9 +1,11 @@
+import { SignerType } from '@web/client';
+
 export type Assignee = {
   name?: string;
   signed: boolean;
   title: string;
   updatedAt: string;
-  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
+  signerType: SignerType;
 };
 
 export type AvatarMapProps = {

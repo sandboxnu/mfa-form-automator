@@ -10,7 +10,8 @@ export default {
     '@tanstack/react-query',
     '@hey-api/schemas',
     {
-      enums: 'javascript',
+      enums: 'typescript',
+      exportInlineEnums: true,
       name: '@hey-api/typescript',
     },
   ],

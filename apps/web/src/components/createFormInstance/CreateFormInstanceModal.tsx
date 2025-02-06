@@ -27,7 +27,7 @@ import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
-import { FormTemplateEntity } from '@web/client';
+import { FormTemplateEntity, SignerType } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
   formTemplatesControllerFindAllOptions,
@@ -93,7 +93,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
             return {
               order: i,
               signerEmployeeId: pos?.employeeValue!,
-              signerType: 'USER',
+              signerType: SignerType.USER,
               signerDepartmentId: null,
               signerPositionId: null,
               signerEmployeeList: [],

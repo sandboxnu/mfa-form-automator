@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, SignerType } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
@@ -432,7 +432,7 @@ async function main() {
         {
           id: uuidv4(),
           order: 0,
-          signerType: 'USER_LIST',
+          signerType: SignerType.USER_LIST,
           signerEmployeeList: {
             connect: [
               { id: IRIS_ZHANG_UUID },
@@ -466,7 +466,7 @@ async function main() {
         {
           id: uuidv4(),
           order: 1,
-          signerType: 'USER_LIST',
+          signerType: SignerType.USER_LIST,
           signerEmployeeList: {
             connect: [
               { id: IRIS_ZHANG_UUID },

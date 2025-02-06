@@ -1,4 +1,4 @@
-import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import { FormInstanceEntity, SignatureEntity, SignerType } from '@web/client';
 import { User } from '@web/context/types';
 
 /**
@@ -27,17 +27,17 @@ export const isFullySigned = (formInstance: FormInstanceEntity) => {
 export const getNameFromSignature = (signature: SignatureEntity) => {
   const signerType = signature.signerType as any;
 
-  if (signature.signed || signerType === 'USER') {
+  if (signature.signed || signerType === SignerType.USER) {
     return (
       signature.signerEmployee?.firstName! +
       ' ' +
       signature.signerEmployee?.lastName!
     );
-  } else if (signerType === 'DEPARTMENT') {
+  } else if (signerType === SignerType.DEPARTMENT) {
     return signature.signerDepartment?.name!;
-  } else if (signerType === 'POSITION') {
+  } else if (signerType === SignerType.POSITION) {
     return signature.signerPosition?.name!;
-  } else if (signerType === 'USER_LIST') {
+  } else if (signerType === SignerType.USER_LIST) {
     if (signature.signed) {
       return (
         signature.signerEmployee?.firstName! +
@@ -63,19 +63,19 @@ export const getNameFromSignature = (signature: SignatureEntity) => {
  * @returns the initials of the signer
  */
 export const getInitialsFromSignature = (signature: SignatureEntity) => {
-  const signerType = signature.signerType as any;
+  const signerType = signature.signerType;
 
-  if (signature.signed || signerType === 'USER') {
+  if (signature.signed || signerType === SignerType.USER) {
     return (
       signature.signerEmployee?.firstName! +
       ' ' +
       signature.signerEmployee?.lastName!
     );
-  } else if (signerType === 'DEPARTMENT') {
+  } else if (signerType === SignerType.DEPARTMENT) {
     return 'D';
-  } else if (signerType === 'POSITION') {
+  } else if (signerType === SignerType.POSITION) {
     return 'P';
-  } else if (signerType === 'USER_LIST') {
+  } else if (signerType === SignerType.USER_LIST) {
     return 'U';
   }
   return '';
@@ -117,12 +117,13 @@ export const signerIsUser = (signature?: SignatureEntity, user?: User) => {
 
   const signerType = signature.signerType;
   return (
-    (signerType === 'USER' && signature.signerEmployeeId === user?.id) ||
-    (signerType === 'POSITION' &&
+    (signerType === SignerType.USER &&
+      signature.signerEmployeeId === user?.id) ||
+    (signerType === SignerType.POSITION &&
       signature.signerPositionId === user?.positionId) ||
-    (signerType === 'DEPARTMENT' &&
+    (signerType === SignerType.DEPARTMENT &&
       user?.departmentId === signature.signerDepartmentId) ||
-    (signerType === 'USER_LIST' &&
+    (signerType === SignerType.USER_LIST &&
       signature.signerEmployeeList?.some(
         (employee) => employee.id === user?.id,
       ))

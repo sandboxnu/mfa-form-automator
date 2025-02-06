@@ -58,7 +58,7 @@ describe('SignaturesController', () => {
 
   it('should update signer', async () => {
     let response = await controller.updateSignatureSigner('signature-id', {
-      signerType: 'DEPARTMENT',
+      signerType: SignerType.DEPARTMENT,
       signerDepartmentId: 'department-id',
     });
     expect(response.signerType).toEqual(SignerType.DEPARTMENT);

@@ -8,6 +8,7 @@ import { DepartmentsService } from '../departments/departments.service';
 import { DepartmentsErrorMessage } from '../departments/departments.errors';
 import { PositionsService } from '../positions/positions.service';
 import { PositionsErrorMessage } from '../positions/positions.errors';
+import { SignerType } from '@prisma/client';
 
 @Injectable()
 export class SignaturesService {
@@ -29,7 +30,7 @@ export class SignaturesService {
     }
 
     switch (updateSignatureSignerDto.signerType) {
-      case 'POSITION':
+      case SignerType.POSITION:
         if (!updateSignatureSignerDto.signerPositionId) {
           throw new BadRequestException(SignatureErrorMessage.MISSING_SIGNER);
         }
@@ -48,7 +49,7 @@ export class SignaturesService {
             id: signatureId,
           },
           data: {
-            signerType: 'POSITION',
+            signerType: SignerType.POSITION,
             signerPositionId: updateSignatureSignerDto.signerPositionId,
             signerDepartmentId: null,
             signerEmployeeId: null,
@@ -60,7 +61,7 @@ export class SignaturesService {
             signerEmployeeList: true,
           },
         });
-      case 'DEPARTMENT':
+      case SignerType.DEPARTMENT:
         if (!updateSignatureSignerDto.signerDepartmentId) {
           throw new BadRequestException(SignatureErrorMessage.MISSING_SIGNER);
         }
@@ -91,7 +92,7 @@ export class SignaturesService {
             signerEmployeeList: true,
           },
         });
-      case 'USER':
+      case SignerType.USER:
         if (!updateSignatureSignerDto.signerEmployeeId) {
           throw new BadRequestException(SignatureErrorMessage.MISSING_SIGNER);
         }
@@ -110,7 +111,7 @@ export class SignaturesService {
             id: signatureId,
           },
           data: {
-            signerType: 'USER',
+            signerType: SignerType.USER,
             signerPositionId: null,
             signerDepartmentId: null,
             signerEmployeeId: updateSignatureSignerDto.signerEmployeeId,
@@ -122,7 +123,7 @@ export class SignaturesService {
             signerEmployeeList: true,
           },
         });
-      case 'USER_LIST':
+      case SignerType.USER_LIST:
         if (!updateSignatureSignerDto.signerEmployeeList) {
           throw new BadRequestException(SignatureErrorMessage.MISSING_SIGNER);
         }
@@ -142,7 +143,7 @@ export class SignaturesService {
             id: signatureId,
           },
           data: {
-            signerType: 'USER_LIST',
+            signerType: SignerType.USER_LIST,
             signerPositionId: null,
             signerDepartmentId: null,
             signerEmployeeId: null,
