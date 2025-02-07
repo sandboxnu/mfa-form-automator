@@ -1,10 +1,15 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import {
-  CreateFormTemplateDto,
   CreateSignatureFieldDto,
-  FormTemplatesService,
+  CreateFormTemplateDto,
+  formTemplatesControllerCreate,
 } from '@web/client';
+import {
+  formTemplatesControllerCreateMutation,
+  formTemplatesControllerFindAllQueryKey,
+} from '@web/client/@tanstack/react-query.gen';
+import { client } from '@web/client/client.gen';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
@@ -63,9 +68,11 @@ export const FormTemplateButtons = ({
 
     createFormTemplateMutation
       .mutateAsync({
-        name: formTemplateName ? formTemplateName : '',
-        formDocLink: blob.url,
-        signatureFields: signatures,
+        body: {
+          name: formTemplateName ? formTemplateName : '',
+          formDocLink: blob.url,
+          signatureFields: signatures,
+        },
       })
       .then((response) => {
         return response;
@@ -77,13 +84,11 @@ export const FormTemplateButtons = ({
   };
 
   const createFormTemplateMutation = useMutation({
-    mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
-      return FormTemplatesService.formTemplatesControllerCreate(
-        newFormTemplate,
-      );
-    },
+    ...formTemplatesControllerCreateMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api', 'form-templates'] });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
     },
   });
 

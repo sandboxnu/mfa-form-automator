@@ -1,6 +1,6 @@
 import { HStack, Flex, Text } from '@chakra-ui/react';
 import { FormCard } from './FormCard';
-import { FormInstanceEntity } from '@web/client';
+import { FormInstanceEntity } from '@web/client/types.gen';
 import React from 'react';
 import { FormImageCard } from './FormImageCard';
 import { ViewAll } from './ViewAll';
