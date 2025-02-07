@@ -10,7 +10,7 @@ import { ConnectEmployeeDto } from './dto/create-assigned-group.dto';
 let assignedGroupPositionSigner = {
   id: 'assignedGroup-id',
   formInstanceId: 'form-instance-id',
-  signerType: 'POSITION',
+  signerType: SignerType.POSITION,
   signerPositionId: 'position-id',
   signerDepartmentId: null,
   signerEmployeeId: null,
@@ -22,7 +22,7 @@ let assignedGroupPositionSigner = {
 let assignedGroupDepartmentSigner = {
   id: 'assignedGroup-id',
   formInstanceId: 'form-instance-id',
-  signerType: 'DEPARTMENT',
+  signerType: SignerType.DEPARTMENT,
   signerPositionId: null,
   signerDepartmentId: 'department-id',
   signerEmployeeId: null,

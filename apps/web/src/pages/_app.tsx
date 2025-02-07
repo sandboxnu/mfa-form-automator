@@ -10,12 +10,12 @@ import theme from '../styles/theme';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from './../context/AuthContext';
 import { CreateFormTemplateProvider } from '@web/context/CreateFormTemplateContext';
-import { OpenAPI } from '@web/client';
 import Head from 'next/head';
 import { PublicClientApplication } from '@azure/msal-browser';
 import { msalConfig } from '@web/authConfig';
 import { MsalProvider } from '@azure/msal-react';
 import { ReactNode, useMemo, memo } from 'react';
+import { client } from '@web/client/client.gen';
 
 export const queryClient = new QueryClient();
 const publicClientApplication = new PublicClientApplication(msalConfig);
@@ -53,8 +53,9 @@ export default function App({
   pageProps: { session, ...pageProps },
   ...appProps
 }: AppProps) {
-  OpenAPI.CREDENTIALS = 'include';
-  OpenAPI.WITH_CREDENTIALS = true;
+  client.setConfig({
+    credentials: 'include',
+  });
 
   const excludeLayoutPaths = [
     '/signin',

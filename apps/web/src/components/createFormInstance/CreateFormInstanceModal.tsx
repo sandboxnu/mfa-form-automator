@@ -22,19 +22,18 @@ import {
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import {
-  CreateFormInstanceDto,
-  FormInstancesService,
-  FormTemplateEntity,
-  FormTemplatesService,
-  PositionsService,
-  SignatureEntity,
-} from '@web/client';
 import { SignatureDropdown } from './SignatureDropdown';
 import { CreateFormInstanceModalProps, Option } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
+import { FormTemplateEntity, SignerType } from '@web/client';
+import {
+  formInstancesControllerCreateMutation,
+  formTemplatesControllerFindAllOptions,
+  formTemplatesControllerFindAllQueryKey,
+  positionsControllerFindAllOptions,
+} from '@web/client/@tanstack/react-query.gen';
 
 /**
  * @param isOpen - boolean to determine if the modal is open
@@ -55,24 +54,20 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   >([]);
   const [formName, setFormName] = useState('Create Form');
   const createFormInstanceMutation = useMutation({
-    mutationFn: async (newFormInstance: CreateFormInstanceDto) => {
-      return FormInstancesService.formInstancesControllerCreate(
-        newFormInstance,
-      );
-    },
+    ...formInstancesControllerCreateMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api', 'form-instances'] });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
     },
   });
 
   const { data: formTemplates } = useQuery({
-    queryKey: ['api', 'form-templates'],
-    queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
+    ...formTemplatesControllerFindAllOptions(),
   });
 
   const { data: positions } = useQuery({
-    queryKey: ['api', 'positions'],
-    queryFn: () => PositionsService.positionsControllerFindAll(),
+    ...positionsControllerFindAllOptions(),
   });
 
   /**
@@ -92,20 +87,22 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
 
     await createFormInstanceMutation
       .mutateAsync({
-        name: formName,
-        signatures: signaturePositions.map((pos, i) => {
-          return {
-            order: i,
-            signerEmployeeId: pos?.employeeValue!,
-            signerType: SignatureEntity.signerType.USER,
-            signerDepartmentId: null,
-            signerPositionId: null,
-            signerEmployeeList: [],
-          };
-        }),
-        originatorId: user?.id!,
-        formTemplateId: selectedFormTemplate?.id!,
-        formDocLink: selectedFormTemplate?.formDocLink!,
+        body: {
+          name: formName,
+          signatures: signaturePositions.map((pos, i) => {
+            return {
+              order: i,
+              signerEmployeeId: pos?.employeeValue!,
+              signerType: SignerType.USER,
+              signerDepartmentId: null,
+              signerPositionId: null,
+              signerEmployeeList: [],
+            };
+          }),
+          originatorId: user?.id!,
+          formTemplateId: selectedFormTemplate?.id!,
+          formDocLink: selectedFormTemplate?.formDocLink!,
+        },
       })
       .then((response) => {
         _handleModalClose();

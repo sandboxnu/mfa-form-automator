@@ -153,19 +153,19 @@ export class FormInstancesService {
           some: {
             OR: [
               {
-                signerType: 'POSITION',
+                signerType: SignerType.POSITION,
                 signerPositionId: employee.positionId,
               },
               {
-                signerType: 'DEPARTMENT',
+                signerType: SignerType.DEPARTMENT,
                 signerDepartmentId: employee.position.departmentId,
               },
               {
-                signerType: 'USER',
+                signerType: SignerType.USER,
                 signerEmployeeId: employeeId,
               },
               {
-                signerType: 'USER_LIST',
+                signerType: SignerType.USER_LIST,
                 signerEmployeeList: {
                   some: {
                     id: employeeId,
