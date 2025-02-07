@@ -1,10 +1,6 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import {
-  CreateSignatureFieldDto,
-  CreateFormTemplateDto,
-  formTemplatesControllerCreate,
-} from '@web/client';
+import { CreateFieldGroupDto } from '@web/client';
 import {
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
@@ -55,10 +51,12 @@ export const FormTemplateButtons = ({
     if (!hasLocalBlob) {
       throw new Error('No PDF file uploaded');
     }
-    const signatures: CreateSignatureFieldDto[] = [
+    const fieldGroups: CreateFieldGroupDto[] = [
       {
         name: 'Signature Field 1',
         order: 1,
+        // TODO: THIS SHOULD NOT BE STATIC
+        templateBoxes: [],
       },
     ];
 
@@ -69,7 +67,7 @@ export const FormTemplateButtons = ({
         body: {
           name: formTemplateName ? formTemplateName : '',
           formDocLink: blob.url,
-          signatureFields: signatures,
+          fieldGroups: fieldGroups,
         },
       })
       .then((response) => {

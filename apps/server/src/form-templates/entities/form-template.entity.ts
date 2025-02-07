@@ -1,10 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { FormTemplate } from '@prisma/client';
 import { Exclude } from 'class-transformer';
-import {
-  FormInstanceBaseEntity,
-  FormInstanceEntity,
-} from './../../form-instances/entities/form-instance.entity';
+import { FormInstanceEntity } from './../../form-instances/entities/form-instance.entity';
 import { FieldGroupBaseEntity } from '../../field-group/entities/field-group.entity';
 
 export class FormTemplateBaseEntity implements FormTemplate {
@@ -29,7 +26,10 @@ export class FormTemplateBaseEntity implements FormTemplate {
 }
 
 export class FormTemplateEntity extends FormTemplateBaseEntity {
-  @ApiProperty()
+  @ApiProperty({
+    isArray: true,
+    type: FieldGroupBaseEntity,
+  })
   fieldGroups: FieldGroupBaseEntity[];
 
   @ApiProperty()
@@ -44,7 +44,7 @@ export class FormTemplateEntity extends FormTemplateBaseEntity {
     }
     if (partial.formInstances) {
       partial.formInstances = partial.formInstances.map(
-        (formInstance) => new FormInstanceBaseEntity(formInstance),
+        (formInstance) => new FormInstanceEntity(formInstance),
       );
     }
     Object.assign(this, partial);

@@ -65,6 +65,11 @@ export class FormTemplatesService {
                 signerEmployee: true,
                 signerEmployeeList: true,
                 signingEmployee: true,
+                fieldGroup: {
+                  include: {
+                    templateBoxes: true,
+                  },
+                },
               },
             },
           },
@@ -112,6 +117,11 @@ export class FormTemplatesService {
                     signerEmployee: true,
                     signerEmployeeList: true,
                     signingEmployee: true,
+                    fieldGroup: {
+                      include: {
+                        templateBoxes: true,
+                      },
+                    },
                   },
                 },
               },
@@ -148,6 +158,11 @@ export class FormTemplatesService {
                     signerEmployee: true,
                     signerEmployeeList: true,
                     signingEmployee: true,
+                    fieldGroup: {
+                      include: {
+                        templateBoxes: true,
+                      },
+                    },
                   },
                 },
               },
@@ -196,6 +211,11 @@ export class FormTemplatesService {
                 signerEmployee: true,
                 signerEmployeeList: true,
                 signingEmployee: true,
+                fieldGroup: {
+                  include: {
+                    templateBoxes: true,
+                  },
+                },
               },
             },
           },
@@ -251,6 +271,11 @@ export class FormTemplatesService {
                 signerEmployee: true,
                 signerEmployeeList: true,
                 signingEmployee: true,
+                fieldGroup: {
+                  include: {
+                    templateBoxes: true,
+                  },
+                },
               },
             },
           },

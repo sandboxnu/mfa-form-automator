@@ -26,9 +26,4 @@ export class CreateFieldGroupDto {
     type: CreateTemplateBoxDto,
   })
   templateBoxes: CreateTemplateBoxDto[];
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  formTemplateId: string;
 }

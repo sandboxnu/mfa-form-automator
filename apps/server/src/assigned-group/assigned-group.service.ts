@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PositionsService } from '../positions/positions.service';
-import { CreateAssignedGroupDto } from './dto/create-assigned-group.dto';
 import { UpdateAssignedGroupSignerDto } from './dto/update-assigned-group-signer.dto';
 import { DepartmentsErrorMessage } from '../departments/departments.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
@@ -18,30 +17,6 @@ export class AssignedGroupService {
     private employeeService: EmployeesService,
     private prismaService: PrismaService,
   ) {}
-
-  async create(createAssignedGroupDto: CreateAssignedGroupDto) {
-    const newAssignedGroup = this.prismaService.assignedGroup.create({
-      data: {
-        formInstanceId: createAssignedGroupDto.formInstanceId,
-        order: createAssignedGroupDto.order,
-        signerType: createAssignedGroupDto.signerType,
-        signerEmployeeId: createAssignedGroupDto.signerEmployeeId,
-        signerPositionId: createAssignedGroupDto.signerPositionId,
-        signerDepartmentId: createAssignedGroupDto.signerDepartmentId,
-        signerEmployeeList: {
-          connect: createAssignedGroupDto.signerEmployeeList,
-        },
-      },
-      include: {
-        signerEmployee: true,
-        signerPosition: true,
-        signerDepartment: true,
-        signerEmployeeList: true,
-      },
-    });
-
-    return newAssignedGroup;
-  }
 
   async updateSigner(
     assignedGroupId: string,

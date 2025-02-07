@@ -103,9 +103,10 @@ model FieldGroup {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  formTemplate   FormTemplate  @relation(fields: [formTemplateId], references: [id])
-  formTemplateId String        @db.Uuid
+  formTemplate   FormTemplate    @relation(fields: [formTemplateId], references: [id])
+  formTemplateId String          @db.Uuid
   templateBoxes  TemplateBox[]
+  assignedGroups AssignedGroup[]
 }
 
 // `TemplateBox` represent the actual signature boxes that are to be filled by the employees.
@@ -185,6 +186,8 @@ model AssignedGroup {
   formInstance   FormInstance  @relation(fields: [formInstanceId], references: [id])
   formInstanceId String        @db.Uuid
   instanceBoxes  InstanceBox[]
+  fieldGroup     FieldGroup    @relation(fields: [fieldGroupId], references: [id])
+  fieldGroupId   String        @db.Uuid
 }
 
 // `InstanceBox` represent the signature boxes on an instantiated form that are to be filled by the employees.

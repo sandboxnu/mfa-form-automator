@@ -6,7 +6,7 @@ import {
   nextSigner,
   signerIsUser,
 } from '@web/utils/formInstanceUtils';
-import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import { AssignedGroupEntity, FormInstanceEntity } from '@web/client';
 import {
   formInstancesControllerFindAllAssignedToCurrentEmployeeOptions,
   formInstancesControllerFindAllCreatedByCurrentEmployeeOptions,
@@ -57,10 +57,12 @@ export const useForm = () => {
    * @returns true if the form instance is signed by the current user, false otherwise
    */
   const isSignedByUser = (formInstance: FormInstanceEntity) => {
-    const signatures: SignatureEntity[] = formInstance.signatures;
+    const assignedGroups: AssignedGroupEntity[] = formInstance.assignedGroups;
 
-    return signatures.some((signature: SignatureEntity) => {
-      return signature.signerEmployeeId === user?.id && signature.signed;
+    return assignedGroups.some((assignedGroup: AssignedGroupEntity) => {
+      return (
+        assignedGroup.signerEmployeeId === user?.id && assignedGroup.signed
+      );
     });
   };
 

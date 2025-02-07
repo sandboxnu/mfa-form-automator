@@ -1,4 +1,8 @@
-import { FormInstanceEntity, SignatureEntity, SignerType } from '@web/client';
+import {
+  AssignedGroupEntity,
+  FormInstanceEntity,
+  SignerType,
+} from '@web/client';
 import { User } from '@web/context/types';
 
 /**
@@ -8,45 +12,47 @@ import { User } from '@web/context/types';
  * @returns true if the form instance is fully signed, false otherwise
  */
 export const isFullySigned = (formInstance: FormInstanceEntity) => {
-  const signatures: SignatureEntity[] = formInstance.signatures;
+  const assignedGroups: AssignedGroupEntity[] = formInstance.assignedGroups;
 
-  const unsignedSignatures: SignatureEntity[] = signatures.filter(
-    (signature: SignatureEntity) => {
-      return !signature.signed;
+  const unsignedAssignedGroups: AssignedGroupEntity[] = assignedGroups.filter(
+    (assignedGroup: AssignedGroupEntity) => {
+      return !assignedGroup.signed;
     },
   );
 
-  return unsignedSignatures.length === 0;
+  return unsignedAssignedGroups.length === 0;
 };
 
 /**
- * Finds the name of the signer from a signature
- * @param signature the signature to check
+ * Finds the name of the signer from a assigned group
+ * @param assignedGroup the assigned group to check
  * @returns the name of the signer
  */
-export const getNameFromSignature = (signature: SignatureEntity) => {
-  const signerType = signature.signerType as any;
+export const getNameFromAssignedGroup = (
+  assignedGroup: AssignedGroupEntity,
+) => {
+  const signerType = assignedGroup.signerType as any;
 
-  if (signature.signed || signerType === SignerType.USER) {
+  if (assignedGroup.signed || signerType === SignerType.USER) {
     return (
-      signature.signerEmployee?.firstName! +
+      assignedGroup.signerEmployee?.firstName! +
       ' ' +
-      signature.signerEmployee?.lastName!
+      assignedGroup.signerEmployee?.lastName!
     );
   } else if (signerType === SignerType.DEPARTMENT) {
-    return signature.signerDepartment?.name!;
+    return assignedGroup.signerDepartment?.name!;
   } else if (signerType === SignerType.POSITION) {
-    return signature.signerPosition?.name!;
+    return assignedGroup.signerPosition?.name!;
   } else if (signerType === SignerType.USER_LIST) {
-    if (signature.signed) {
+    if (assignedGroup.signed) {
       return (
-        signature.signerEmployee?.firstName! +
+        assignedGroup.signerEmployee?.firstName! +
         ' ' +
-        signature.signerEmployee?.lastName!
+        assignedGroup.signerEmployee?.lastName!
       );
     }
     return (
-      signature.signerEmployeeList
+      assignedGroup.signerEmployeeList
         ?.map((employee) => {
           return employee.firstName + ' ' + employee.lastName;
         })
@@ -58,18 +64,20 @@ export const getNameFromSignature = (signature: SignatureEntity) => {
 };
 
 /**
- * Finds the initials of the signer from a signature
- * @param signature the signature to check
+ * Finds the initials of the signer from a assigned group
+ * @param assignedGroup the assigned group to check
  * @returns the initials of the signer
  */
-export const getInitialsFromSignature = (signature: SignatureEntity) => {
-  const signerType = signature.signerType;
+export const getInitialsFromAssignedGroup = (
+  assignedGroup: AssignedGroupEntity,
+) => {
+  const signerType = assignedGroup.signerType;
 
-  if (signature.signed || signerType === SignerType.USER) {
+  if (assignedGroup.signed || signerType === SignerType.USER) {
     return (
-      signature.signerEmployee?.firstName! +
+      assignedGroup.signerEmployee?.firstName! +
       ' ' +
-      signature.signerEmployee?.lastName!
+      assignedGroup.signerEmployee?.lastName!
     );
   } else if (signerType === SignerType.DEPARTMENT) {
     return 'D';
@@ -82,49 +90,51 @@ export const getInitialsFromSignature = (signature: SignatureEntity) => {
 };
 
 /**
- * Finds the next signer in the signature chain of a form instance
+ * Finds the next signer in the assigned group chain of a form instance
  *
  * @param formInstance  the form instance to check
- * @returns the next signer in the signature chain
+ * @returns the next signer in the assignedGroup chain
  */
 export const nextSigner = (formInstance: FormInstanceEntity) => {
-  const signatures: SignatureEntity[] = formInstance.signatures;
+  const assignedGroups: AssignedGroupEntity[] = formInstance.assignedGroups;
 
   // Sort signatures by order
-  signatures.sort((a: SignatureEntity, b: SignatureEntity) => {
+  assignedGroups.sort((a: AssignedGroupEntity, b: AssignedGroupEntity) => {
     return a.order - b.order;
   });
 
-  // Find the first signature that doesn't have a signature
-  const firstUnsignedSignature: SignatureEntity | undefined = signatures.find(
-    (signature: SignatureEntity) => {
-      return signature.signed === false;
-    },
-  );
+  // Find the first assigned group that is not signed
+  const firstUnsignedAssignedGroup: AssignedGroupEntity | undefined =
+    assignedGroups.find((assignedGroup: AssignedGroupEntity) => {
+      return assignedGroup.signed === false;
+    });
 
-  return firstUnsignedSignature;
+  return firstUnsignedAssignedGroup;
 };
 
 /**
  * Determines if a signature's next signer is the current user
  *
- * @param signature the signature to check
+ * @param assignedGroup the assignedGroup to check
  * @param user the current user
  * @returns true if the next signer is the current user, false otherwise
  */
-export const signerIsUser = (signature?: SignatureEntity, user?: User) => {
-  if (!signature || !user) return false;
+export const signerIsUser = (
+  assignedGroup?: AssignedGroupEntity,
+  user?: User,
+) => {
+  if (!assignedGroup || !user) return false;
 
-  const signerType = signature.signerType;
+  const signerType = assignedGroup.signerType;
   return (
     (signerType === SignerType.USER &&
-      signature.signerEmployeeId === user?.id) ||
+      assignedGroup.signerEmployeeId === user?.id) ||
     (signerType === SignerType.POSITION &&
-      signature.signerPositionId === user?.positionId) ||
+      assignedGroup.signerPositionId === user?.positionId) ||
     (signerType === SignerType.DEPARTMENT &&
-      user?.departmentId === signature.signerDepartmentId) ||
+      user?.departmentId === assignedGroup.signerDepartmentId) ||
     (signerType === SignerType.USER_LIST &&
-      signature.signerEmployeeList?.some(
+      assignedGroup.signerEmployeeList?.some(
         (employee) => employee.id === user?.id,
       ))
   );

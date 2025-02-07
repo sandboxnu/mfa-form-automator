@@ -3,7 +3,7 @@ import { FormInstance } from '@prisma/client';
 import { FormTemplateBaseEntity } from '../../form-templates/entities/form-template.entity';
 import { Exclude } from 'class-transformer';
 import { EmployeeEntity } from '../../employees/entities/employee.entity';
-import { AssignedGroupBaseEntity } from '../../assigned-group/entities/assigned-group.entity';
+import { AssignedGroupEntity } from '../../assigned-group/entities/assigned-group.entity';
 
 export class FormInstanceBaseEntity implements FormInstance {
   @ApiProperty()
@@ -46,7 +46,7 @@ export class FormInstanceBaseEntity implements FormInstance {
   formTemplate: FormTemplateBaseEntity;
 
   @Exclude()
-  assignedGroups: AssignedGroupBaseEntity[];
+  assignedGroups: AssignedGroupEntity[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
     Object.assign(this, partial);
@@ -99,9 +99,9 @@ export class FormInstanceEntity implements FormInstance {
 
   @ApiProperty({
     isArray: true,
-    type: AssignedGroupBaseEntity,
+    type: AssignedGroupEntity,
   })
-  assignedGroups: AssignedGroupBaseEntity[];
+  assignedGroups: AssignedGroupEntity[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
     if (partial.originator) {
@@ -115,7 +115,7 @@ export class FormInstanceEntity implements FormInstance {
     }
     if (partial.assignedGroups) {
       partial.assignedGroups = partial.assignedGroups.map(
-        (assignedGroup) => new AssignedGroupBaseEntity(assignedGroup),
+        (assignedGroup) => new AssignedGroupEntity(assignedGroup),
       );
     }
 

@@ -120,6 +120,11 @@ export class FormInstancesService {
             signerEmployeeList: true,
             signingEmployee: true,
             instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -199,6 +204,11 @@ export class FormInstancesService {
             signerEmployeeList: true,
             signingEmployee: true,
             instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -242,6 +252,11 @@ export class FormInstancesService {
             signerEmployeeList: true,
             signingEmployee: true,
             instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -280,6 +295,11 @@ export class FormInstancesService {
             signerEmployeeList: true,
             signingEmployee: true,
             instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -320,6 +340,11 @@ export class FormInstancesService {
             signerEmployeeList: true,
             signingEmployee: true,
             instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -365,6 +390,11 @@ export class FormInstancesService {
             signerEmployeeList: true,
             signingEmployee: true,
             instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -396,6 +426,11 @@ export class FormInstancesService {
             signerEmployee: true,
             signerEmployeeList: true,
             instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -423,6 +458,11 @@ export class FormInstancesService {
             signerEmployee: true,
             signerEmployeeList: true,
             instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
         originator: true,

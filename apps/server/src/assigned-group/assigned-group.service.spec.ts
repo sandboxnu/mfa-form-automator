@@ -126,8 +126,8 @@ describe('AssignedGroupService', () => {
         const updateSignatureSignerDto = {
           signerType: SignerType.POSITION,
           signerPositionId: 'position-id',
-          signerDepartmentId: null,
-          signerEmployeeId: null,
+          signerDepartmentId: undefined,
+          signerEmployeeId: undefined,
         };
         let updatedSignature = await service.updateSigner(
           'assignedGroup-id',
@@ -147,9 +147,9 @@ describe('AssignedGroupService', () => {
 
         const updateSignatureSignerDto = {
           signerType: SignerType.DEPARTMENT,
-          signerPositionId: null,
+          signerPositionId: undefined,
           signerDepartmentId: 'department-id',
-          signerEmployeeId: null,
+          signerEmployeeId: undefined,
         };
         let updatedSignature = await service.updateSigner(
           'assignedGroup-id',
@@ -169,8 +169,8 @@ describe('AssignedGroupService', () => {
 
         const updateSignatureSignerDto = {
           signerType: SignerType.USER,
-          signerPositionId: null,
-          signerDepartmentId: null,
+          signerPositionId: undefined,
+          signerDepartmentId: undefined,
           signerEmployeeId: 'employee-id',
         };
         let updatedSignature = await service.updateSigner(
@@ -191,9 +191,9 @@ describe('AssignedGroupService', () => {
 
         const updateSignatureSignerDto = {
           signerType: SignerType.USER_LIST,
-          signerPositionId: null,
-          signerDepartmentId: null,
-          signerEmployeeId: null,
+          signerPositionId: undefined,
+          signerDepartmentId: undefined,
+          signerEmployeeId: undefined,
           signerEmployeeList: [
             { id: 'employee-id-1' },
             { id: 'employee-id-2' },
@@ -227,8 +227,8 @@ describe('AssignedGroupService', () => {
         const updateSignatureSignerDto = {
           signerType: SignerType.POSITION,
           signerPositionId: 'position-id',
-          signerDepartmentId: null,
-          signerEmployeeId: null,
+          signerDepartmentId: undefined,
+          signerEmployeeId: undefined,
         };
         expect(
           service.updateSigner('assignedGroup-id', updateSignatureSignerDto),
@@ -256,9 +256,9 @@ describe('AssignedGroupService', () => {
       it('should throw if invalid department specified', async () => {
         const updateSignatureSignerDto = {
           signerType: SignerType.DEPARTMENT,
-          signerPositionId: null,
+          signerPositionId: undefined,
           signerDepartmentId: 'unknown',
-          signerEmployeeId: null,
+          signerEmployeeId: undefined,
         };
         expect(
           service.updateSigner('assignedGroup-id', updateSignatureSignerDto),
@@ -268,8 +268,8 @@ describe('AssignedGroupService', () => {
       it('should throw if invalid employee specified', async () => {
         const updateSignatureSignerDto = {
           signerType: SignerType.USER,
-          signerPositionId: null,
-          signerDepartmentId: null,
+          signerPositionId: undefined,
+          signerDepartmentId: undefined,
           signerEmployeeId: 'unknown',
         };
         expect(
@@ -280,9 +280,9 @@ describe('AssignedGroupService', () => {
       it('should throw if invalid employee in list of employees', async () => {
         const updateSignatureSignerDto = {
           signerType: SignerType.USER_LIST,
-          signerPositionId: null,
-          signerDepartmentId: null,
-          signerEmployeeId: null,
+          signerPositionId: undefined,
+          signerDepartmentId: undefined,
+          signerEmployeeId: undefined,
           signerEmployeeList: [{ id: 'employee-id-1' }, { id: 'unknown' }],
         };
         expect(

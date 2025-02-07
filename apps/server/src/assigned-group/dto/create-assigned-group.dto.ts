@@ -7,6 +7,7 @@ import {
   IsInt,
   IsArray,
   ValidateNested,
+  IsOptional,
 } from 'class-validator';
 
 export class ConnectEmployeeDto {
@@ -17,11 +18,6 @@ export class ConnectEmployeeDto {
 }
 
 export class CreateAssignedGroupDto {
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  formInstanceId: string;
-
   @IsInt()
   @IsNotEmpty()
   @ApiProperty()
@@ -38,19 +34,19 @@ export class CreateAssignedGroupDto {
   signerType: SignerType;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
-  signerEmployeeId: string | null;
+  signerEmployeeId?: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
-  signerPositionId: string | null;
+  signerPositionId?: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty()
-  signerDepartmentId: string | null;
+  signerDepartmentId?: string;
 
   @IsArray()
   @ValidateNested({ each: true })

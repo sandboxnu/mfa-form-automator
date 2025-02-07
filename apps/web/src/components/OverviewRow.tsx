@@ -81,7 +81,7 @@ export const OverviewRow = ({
               <FormCard
                 key={index}
                 formName={formInstance.name}
-                signatures={formInstance.signatures}
+                assignedGroups={formInstance.assignedGroups}
                 link={'/form-instances/' + formInstance.id}
               />
             );

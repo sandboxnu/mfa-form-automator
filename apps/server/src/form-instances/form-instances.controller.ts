@@ -188,13 +188,13 @@ export class FormInstancesController {
   async signFormInstance(
     @AuthUser() currentUser: UserEntity,
     @Param('formInstanceId') formInstanceId: string,
-    @Param('signatureId') signatureId: string,
+    @Param('assignedGroupId') assignedGroupId: string,
   ) {
     try {
       const updatedFormInstance =
         await this.formInstancesService.signFormInstance(
           formInstanceId,
-          signatureId,
+          assignedGroupId,
           currentUser,
         );
       return new FormInstanceEntity(updatedFormInstance);

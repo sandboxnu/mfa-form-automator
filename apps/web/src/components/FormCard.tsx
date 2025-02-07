@@ -1,20 +1,20 @@
 import { Box, Text, Avatar, AvatarGroup, Tooltip } from '@chakra-ui/react';
-import { SignatureEntity } from '@web/client/types.gen';
+import { AssignedGroupEntity } from '@web/client';
 import { useRouter } from 'next/router';
 
 /**
  * @param formName - the name of the form
- * @param signatures - the signatures on the form
+ * @param assignedGroups - the assigned groups on the form
  * @param link - the link to the form
  * @returns a card for a form
  */
 export const FormCard = ({
   formName,
-  signatures,
+  assignedGroups,
   link,
 }: {
   formName: String;
-  signatures: SignatureEntity[];
+  assignedGroups: AssignedGroupEntity[];
   link: string;
 }) => {
   const router = useRouter();
@@ -46,9 +46,9 @@ export const FormCard = ({
             {formName}
           </Text>
           <AvatarGroup size="sm" max={5} marginTop="9px" spacing={'-3px'}>
-            {signatures
+            {assignedGroups
               .sort((a, b) => a.order - b.order)
-              .map((signature: SignatureEntity, index: number) => {
+              .map((assignedGroup: AssignedGroupEntity, index: number) => {
                 return (
                   <Tooltip
                     bg={'white'}
@@ -57,9 +57,9 @@ export const FormCard = ({
                     label={
                       <>
                         <Text fontSize="16px" fontWeight="bold">
-                          {signature.signerEmployee?.firstName +
+                          {assignedGroup.signerEmployee?.firstName +
                             ' ' +
-                            signature.signerEmployee?.lastName}
+                            assignedGroup.signerEmployee?.lastName}
                         </Text>
                       </>
                     }
@@ -67,13 +67,15 @@ export const FormCard = ({
                   >
                     <Avatar
                       name={
-                        signature.signerEmployee?.firstName +
+                        assignedGroup.signerEmployee?.firstName +
                         ' ' +
-                        signature.signerEmployee?.lastName
+                        assignedGroup.signerEmployee?.lastName
                       }
                       key={index}
                       boxSize="32px"
-                      backgroundColor={signature.signed ? '#D1F0D4' : '#DCDCDC'}
+                      backgroundColor={
+                        assignedGroup.signed ? '#D1F0D4' : '#DCDCDC'
+                      }
                       outline="1px solid #FFFFFF"
                       color="black"
                       fontWeight={400}

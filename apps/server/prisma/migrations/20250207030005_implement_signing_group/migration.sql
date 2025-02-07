@@ -80,6 +80,7 @@ CREATE TABLE "AssignedGroup" (
     "signingEmployeeId" UUID,
     "signerType" "SignerType" NOT NULL,
     "formInstanceId" UUID NOT NULL,
+    "fieldGroupId" UUID NOT NULL,
 
     CONSTRAINT "AssignedGroup_pkey" PRIMARY KEY ("id")
 );
@@ -115,6 +116,9 @@ ALTER TABLE "AssignedGroup" ADD CONSTRAINT "AssignedGroup_signingEmployeeId_fkey
 
 -- AddForeignKey
 ALTER TABLE "AssignedGroup" ADD CONSTRAINT "AssignedGroup_formInstanceId_fkey" FOREIGN KEY ("formInstanceId") REFERENCES "FormInstance"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AssignedGroup" ADD CONSTRAINT "AssignedGroup_fieldGroupId_fkey" FOREIGN KEY ("fieldGroupId") REFERENCES "FieldGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "InstanceBox" ADD CONSTRAINT "InstanceBox_assignedGroupId_fkey" FOREIGN KEY ("assignedGroupId") REFERENCES "AssignedGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

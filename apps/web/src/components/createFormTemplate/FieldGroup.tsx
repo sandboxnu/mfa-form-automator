@@ -17,24 +17,24 @@ import {
   DeleteIcon,
   DraggerIcon,
 } from '@web/static/icons';
-import { TempSignatureField } from './types';
+import { TempFieldGroup } from './types';
 
 /**
- * @param field - the signature field
- * @param handleChange - function to handle changes to the signature field
- * @param handleDelete - function to handle deletion of the signature field
- * @returns a signature field
+ * @param fieldGroup - the field group
+ * @param handleChange - function to handle changes to the field group
+ * @param handleDelete - function to handle deletion of the field group
+ * @returns a field group
  */
-export const SignatureField = ({
-  field,
+export const FieldGroup = ({
+  fieldGroup,
   handleChange,
   handleDelete,
 }: {
-  field: TempSignatureField;
-  handleChange: (newSignatureField: TempSignatureField) => void;
+  fieldGroup: TempFieldGroup;
+  handleChange: (newFieldGroup: TempFieldGroup) => void;
   handleDelete: (id: string) => void;
 }) => {
-  const SignatureFieldEditableControls = () => {
+  const FieldGroupEditableControls = () => {
     const { isEditing, getEditButtonProps } = useEditableControls();
 
     return isEditing ? (
@@ -43,8 +43,8 @@ export const SignatureField = ({
           <IconButton
             aria-label="Submit"
             icon={<CompletedIcon />}
-            isDisabled={field.value === ''}
-            onSubmit={() => handleChange(field)}
+            isDisabled={fieldGroup.value === ''}
+            onSubmit={() => handleChange(fieldGroup)}
           >
             Submit
           </IconButton>
@@ -54,18 +54,18 @@ export const SignatureField = ({
       <Flex justifyContent="center" alignItems="center">
         <ButtonGroup spacing="0">
           <IconButton
-            aria-label="Edit Signature Field"
+            aria-label="Edit Field Group"
             size="sm"
             background="transparent"
             icon={<EditIcon />}
             {...getEditButtonProps()}
           />
           <IconButton
-            aria-label="Delete Signature Field"
+            aria-label="Delete Field Group"
             size="sm"
             background="transparent"
             icon={<DeleteIcon />}
-            onClick={() => handleDelete(field.id)}
+            onClick={() => handleDelete(fieldGroup.id)}
           />
         </ButtonGroup>
       </Flex>
@@ -74,7 +74,7 @@ export const SignatureField = ({
 
   return (
     <>
-      {field.value === '' ? (
+      {fieldGroup.value === '' ? (
         <Text
           fontFamily="Hanken Grotesk"
           fontSize="12px"
@@ -91,7 +91,7 @@ export const SignatureField = ({
         <DraggerIcon />
         <Editable
           fontFamily="Hanken Grotesk"
-          defaultValue={field.value}
+          defaultValue={fieldGroup.value}
           fontSize="16px"
           fontWeight="400"
           isPreviewFocusable={false}
@@ -99,20 +99,20 @@ export const SignatureField = ({
           justifyContent="space-between"
           alignItems="center"
           w="100%"
-          startWithEditView={field.value === ''}
+          startWithEditView={fieldGroup.value === ''}
         >
           <Box w="100%" pr="5px">
             <EditablePreview />
             <Input
               as={EditableInput}
-              value={field.value}
+              value={fieldGroup.value}
               onChange={(e) =>
-                handleChange({ id: field.id, value: e.target.value })
+                handleChange({ id: fieldGroup.id, value: e.target.value })
               }
               w="100%"
             />
           </Box>
-          <SignatureFieldEditableControls />
+          <FieldGroupEditableControls />
         </Editable>
       </HStack>
     </>

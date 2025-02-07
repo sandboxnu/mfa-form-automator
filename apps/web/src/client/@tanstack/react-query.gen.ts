@@ -21,12 +21,12 @@ import {
   positionsControllerFindOne,
   positionsControllerUpdate,
   positionsControllerFindOneByNameInDepartment,
-  signatureFieldsControllerFindAll,
-  signatureFieldsControllerCreate,
-  signatureFieldsControllerRemove,
-  signatureFieldsControllerFindOne,
-  signatureFieldsControllerUpdate,
-  signaturesControllerUpdateSignatureSigner,
+  assignedGroupControllerUpdateAssignedGroupSigner,
+  formTemplatesControllerFindAll,
+  formTemplatesControllerCreate,
+  formTemplatesControllerRemove,
+  formTemplatesControllerFindOne,
+  formTemplatesControllerUpdate,
   departmentsControllerFindAll,
   departmentsControllerCreate,
   departmentsControllerRemove,
@@ -42,11 +42,6 @@ import {
   formInstancesControllerUpdate,
   formInstancesControllerSignFormInstance,
   formInstancesControllerCompleteFormInstance,
-  formTemplatesControllerFindAll,
-  formTemplatesControllerCreate,
-  formTemplatesControllerRemove,
-  formTemplatesControllerFindOne,
-  formTemplatesControllerUpdate,
 } from '../sdk.gen';
 import {
   queryOptions,
@@ -79,15 +74,15 @@ import type {
   PositionsControllerUpdateData,
   PositionsControllerUpdateResponse,
   PositionsControllerFindOneByNameInDepartmentData,
-  SignatureFieldsControllerFindAllData,
-  SignatureFieldsControllerCreateData,
-  SignatureFieldsControllerCreateResponse,
-  SignatureFieldsControllerRemoveData,
-  SignatureFieldsControllerFindOneData,
-  SignatureFieldsControllerUpdateData,
-  SignatureFieldsControllerUpdateResponse,
-  SignaturesControllerUpdateSignatureSignerData,
-  SignaturesControllerUpdateSignatureSignerResponse,
+  AssignedGroupControllerUpdateAssignedGroupSignerData,
+  AssignedGroupControllerUpdateAssignedGroupSignerResponse,
+  FormTemplatesControllerFindAllData,
+  FormTemplatesControllerCreateData,
+  FormTemplatesControllerCreateResponse,
+  FormTemplatesControllerRemoveData,
+  FormTemplatesControllerFindOneData,
+  FormTemplatesControllerUpdateData,
+  FormTemplatesControllerUpdateResponse,
   DepartmentsControllerFindAllData,
   DepartmentsControllerCreateData,
   DepartmentsControllerCreateResponse,
@@ -109,13 +104,6 @@ import type {
   FormInstancesControllerSignFormInstanceResponse,
   FormInstancesControllerCompleteFormInstanceData,
   FormInstancesControllerCompleteFormInstanceResponse,
-  FormTemplatesControllerFindAllData,
-  FormTemplatesControllerCreateData,
-  FormTemplatesControllerCreateResponse,
-  FormTemplatesControllerRemoveData,
-  FormTemplatesControllerFindOneData,
-  FormTemplatesControllerUpdateData,
-  FormTemplatesControllerUpdateResponse,
 } from '../types.gen';
 import { client as _heyApiClient } from '../client.gen';
 
@@ -628,58 +616,18 @@ export const positionsControllerFindOneByNameInDepartmentOptions = (
   });
 };
 
-export const signatureFieldsControllerFindAllQueryKey = (
-  options: Options<SignatureFieldsControllerFindAllData>,
-) => [createQueryKey('signatureFieldsControllerFindAll', options)];
-
-export const signatureFieldsControllerFindAllOptions = (
-  options: Options<SignatureFieldsControllerFindAllData>,
-) => {
-  return queryOptions({
-    queryFn: async ({ queryKey, signal }) => {
-      const { data } = await signatureFieldsControllerFindAll({
-        ...options,
-        ...queryKey[0],
-        signal,
-        throwOnError: true,
-      });
-      return data;
-    },
-    queryKey: signatureFieldsControllerFindAllQueryKey(options),
-  });
-};
-
-export const signatureFieldsControllerCreateQueryKey = (
-  options: Options<SignatureFieldsControllerCreateData>,
-) => [createQueryKey('signatureFieldsControllerCreate', options)];
-
-export const signatureFieldsControllerCreateOptions = (
-  options: Options<SignatureFieldsControllerCreateData>,
-) => {
-  return queryOptions({
-    queryFn: async ({ queryKey, signal }) => {
-      const { data } = await signatureFieldsControllerCreate({
-        ...options,
-        ...queryKey[0],
-        signal,
-        throwOnError: true,
-      });
-      return data;
-    },
-    queryKey: signatureFieldsControllerCreateQueryKey(options),
-  });
-};
-
-export const signatureFieldsControllerCreateMutation = (
-  options?: Partial<Options<SignatureFieldsControllerCreateData>>,
+export const assignedGroupControllerUpdateAssignedGroupSignerMutation = (
+  options?: Partial<
+    Options<AssignedGroupControllerUpdateAssignedGroupSignerData>
+  >,
 ) => {
   const mutationOptions: UseMutationOptions<
-    SignatureFieldsControllerCreateResponse,
+    AssignedGroupControllerUpdateAssignedGroupSignerResponse,
     DefaultError,
-    Options<SignatureFieldsControllerCreateData>
+    Options<AssignedGroupControllerUpdateAssignedGroupSignerData>
   > = {
     mutationFn: async (localOptions) => {
-      const { data } = await signatureFieldsControllerCreate({
+      const { data } = await assignedGroupControllerUpdateAssignedGroupSigner({
         ...options,
         ...localOptions,
         throwOnError: true,
@@ -690,16 +638,78 @@ export const signatureFieldsControllerCreateMutation = (
   return mutationOptions;
 };
 
-export const signatureFieldsControllerRemoveMutation = (
-  options?: Partial<Options<SignatureFieldsControllerRemoveData>>,
+export const formTemplatesControllerFindAllQueryKey = (
+  options?: Options<FormTemplatesControllerFindAllData>,
+) => [createQueryKey('formTemplatesControllerFindAll', options)];
+
+export const formTemplatesControllerFindAllOptions = (
+  options?: Options<FormTemplatesControllerFindAllData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await formTemplatesControllerFindAll({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: formTemplatesControllerFindAllQueryKey(options),
+  });
+};
+
+export const formTemplatesControllerCreateQueryKey = (
+  options: Options<FormTemplatesControllerCreateData>,
+) => [createQueryKey('formTemplatesControllerCreate', options)];
+
+export const formTemplatesControllerCreateOptions = (
+  options: Options<FormTemplatesControllerCreateData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await formTemplatesControllerCreate({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: formTemplatesControllerCreateQueryKey(options),
+  });
+};
+
+export const formTemplatesControllerCreateMutation = (
+  options?: Partial<Options<FormTemplatesControllerCreateData>>,
+) => {
+  const mutationOptions: UseMutationOptions<
+    FormTemplatesControllerCreateResponse,
+    DefaultError,
+    Options<FormTemplatesControllerCreateData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await formTemplatesControllerCreate({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const formTemplatesControllerRemoveMutation = (
+  options?: Partial<Options<FormTemplatesControllerRemoveData>>,
 ) => {
   const mutationOptions: UseMutationOptions<
     unknown,
     DefaultError,
-    Options<SignatureFieldsControllerRemoveData>
+    Options<FormTemplatesControllerRemoveData>
   > = {
     mutationFn: async (localOptions) => {
-      const { data } = await signatureFieldsControllerRemove({
+      const { data } = await formTemplatesControllerRemove({
         ...options,
         ...localOptions,
         throwOnError: true,
@@ -710,16 +720,16 @@ export const signatureFieldsControllerRemoveMutation = (
   return mutationOptions;
 };
 
-export const signatureFieldsControllerFindOneQueryKey = (
-  options: Options<SignatureFieldsControllerFindOneData>,
-) => [createQueryKey('signatureFieldsControllerFindOne', options)];
+export const formTemplatesControllerFindOneQueryKey = (
+  options: Options<FormTemplatesControllerFindOneData>,
+) => [createQueryKey('formTemplatesControllerFindOne', options)];
 
-export const signatureFieldsControllerFindOneOptions = (
-  options: Options<SignatureFieldsControllerFindOneData>,
+export const formTemplatesControllerFindOneOptions = (
+  options: Options<FormTemplatesControllerFindOneData>,
 ) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {
-      const { data } = await signatureFieldsControllerFindOne({
+      const { data } = await formTemplatesControllerFindOne({
         ...options,
         ...queryKey[0],
         signal,
@@ -727,40 +737,20 @@ export const signatureFieldsControllerFindOneOptions = (
       });
       return data;
     },
-    queryKey: signatureFieldsControllerFindOneQueryKey(options),
+    queryKey: formTemplatesControllerFindOneQueryKey(options),
   });
 };
 
-export const signatureFieldsControllerUpdateMutation = (
-  options?: Partial<Options<SignatureFieldsControllerUpdateData>>,
+export const formTemplatesControllerUpdateMutation = (
+  options?: Partial<Options<FormTemplatesControllerUpdateData>>,
 ) => {
   const mutationOptions: UseMutationOptions<
-    SignatureFieldsControllerUpdateResponse,
+    FormTemplatesControllerUpdateResponse,
     DefaultError,
-    Options<SignatureFieldsControllerUpdateData>
+    Options<FormTemplatesControllerUpdateData>
   > = {
     mutationFn: async (localOptions) => {
-      const { data } = await signatureFieldsControllerUpdate({
-        ...options,
-        ...localOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
-export const signaturesControllerUpdateSignatureSignerMutation = (
-  options?: Partial<Options<SignaturesControllerUpdateSignatureSignerData>>,
-) => {
-  const mutationOptions: UseMutationOptions<
-    SignaturesControllerUpdateSignatureSignerResponse,
-    DefaultError,
-    Options<SignaturesControllerUpdateSignatureSignerData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await signaturesControllerUpdateSignatureSigner({
+      const { data } = await formTemplatesControllerUpdate({
         ...options,
         ...localOptions,
         throwOnError: true,
@@ -1124,129 +1114,6 @@ export const formInstancesControllerCompleteFormInstanceMutation = (
   > = {
     mutationFn: async (localOptions) => {
       const { data } = await formInstancesControllerCompleteFormInstance({
-        ...options,
-        ...localOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
-export const formTemplatesControllerFindAllQueryKey = (
-  options?: Options<FormTemplatesControllerFindAllData>,
-) => [createQueryKey('formTemplatesControllerFindAll', options)];
-
-export const formTemplatesControllerFindAllOptions = (
-  options?: Options<FormTemplatesControllerFindAllData>,
-) => {
-  return queryOptions({
-    queryFn: async ({ queryKey, signal }) => {
-      const { data } = await formTemplatesControllerFindAll({
-        ...options,
-        ...queryKey[0],
-        signal,
-        throwOnError: true,
-      });
-      return data;
-    },
-    queryKey: formTemplatesControllerFindAllQueryKey(options),
-  });
-};
-
-export const formTemplatesControllerCreateQueryKey = (
-  options: Options<FormTemplatesControllerCreateData>,
-) => [createQueryKey('formTemplatesControllerCreate', options)];
-
-export const formTemplatesControllerCreateOptions = (
-  options: Options<FormTemplatesControllerCreateData>,
-) => {
-  return queryOptions({
-    queryFn: async ({ queryKey, signal }) => {
-      const { data } = await formTemplatesControllerCreate({
-        ...options,
-        ...queryKey[0],
-        signal,
-        throwOnError: true,
-      });
-      return data;
-    },
-    queryKey: formTemplatesControllerCreateQueryKey(options),
-  });
-};
-
-export const formTemplatesControllerCreateMutation = (
-  options?: Partial<Options<FormTemplatesControllerCreateData>>,
-) => {
-  const mutationOptions: UseMutationOptions<
-    FormTemplatesControllerCreateResponse,
-    DefaultError,
-    Options<FormTemplatesControllerCreateData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await formTemplatesControllerCreate({
-        ...options,
-        ...localOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
-export const formTemplatesControllerRemoveMutation = (
-  options?: Partial<Options<FormTemplatesControllerRemoveData>>,
-) => {
-  const mutationOptions: UseMutationOptions<
-    unknown,
-    DefaultError,
-    Options<FormTemplatesControllerRemoveData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await formTemplatesControllerRemove({
-        ...options,
-        ...localOptions,
-        throwOnError: true,
-      });
-      return data;
-    },
-  };
-  return mutationOptions;
-};
-
-export const formTemplatesControllerFindOneQueryKey = (
-  options: Options<FormTemplatesControllerFindOneData>,
-) => [createQueryKey('formTemplatesControllerFindOne', options)];
-
-export const formTemplatesControllerFindOneOptions = (
-  options: Options<FormTemplatesControllerFindOneData>,
-) => {
-  return queryOptions({
-    queryFn: async ({ queryKey, signal }) => {
-      const { data } = await formTemplatesControllerFindOne({
-        ...options,
-        ...queryKey[0],
-        signal,
-        throwOnError: true,
-      });
-      return data;
-    },
-    queryKey: formTemplatesControllerFindOneQueryKey(options),
-  });
-};
-
-export const formTemplatesControllerUpdateMutation = (
-  options?: Partial<Options<FormTemplatesControllerUpdateData>>,
-) => {
-  const mutationOptions: UseMutationOptions<
-    FormTemplatesControllerUpdateResponse,
-    DefaultError,
-    Options<FormTemplatesControllerUpdateData>
-  > = {
-    mutationFn: async (localOptions) => {
-      const { data } = await formTemplatesControllerUpdate({
         ...options,
         ...localOptions,
         throwOnError: true,

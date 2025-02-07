@@ -242,22 +242,40 @@ export class Seeder {
               id: assignedGroup.id,
               order: assignedGroup.order,
               signerType: assignedGroup.signerType,
-              signerEmployeeId: assignedGroup.signerEmployeeId,
-              signerPositionId: assignedGroup.signerPositionId,
-              signerDepartmentId: assignedGroup.signerDepartmentId,
+              signerEmployee: assignedGroup.signerEmployeeId
+                ? {
+                    connect: { id: assignedGroup.signerEmployeeId },
+                  }
+                : undefined,
+              signerPosition: assignedGroup.signerPositionId
+                ? {
+                    connect: { id: assignedGroup.signerPositionId },
+                  }
+                : undefined,
+              signerDepartment: assignedGroup.signerDepartmentId
+                ? {
+                    connect: { id: assignedGroup.signerDepartmentId },
+                  }
+                : undefined,
               signerEmployeeList: {
-                connect: assignedGroup.signerEmployeeList,
+                connect: assignedGroup.signerEmployeeList?.map((dto) => ({
+                  id: dto.id,
+                })),
               },
               instanceBoxes: {
                 create: formTemplate.fieldGroups
-                  .find((fieldGroup) => {
-                    fieldGroup.id === assignedGroup.fieldGroupId;
-                  })
+                  .find(
+                    (fieldGroup) =>
+                      fieldGroup.id === assignedGroup.fieldGroupId,
+                  )
                   ?.templateBoxes.map((box) => {
                     return {
                       templateBoxId: box.id,
                     };
                   }),
+              },
+              fieldGroup: {
+                connect: { id: assignedGroup.fieldGroupId },
               },
             };
           }),

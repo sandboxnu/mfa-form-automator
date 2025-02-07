@@ -12,7 +12,6 @@ import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AssignedGroupModule } from './assigned-group/assigned-group.module';
-import { FieldGroupModule } from './field-group/field-group.module';
 
 @Module({
   imports: [
@@ -20,7 +19,6 @@ import { FieldGroupModule } from './field-group/field-group.module';
     EmployeesModule,
     PositionsModule,
     AssignedGroupModule,
-    FieldGroupModule,
     FormInstancesModule,
     FormTemplatesModule,
     DepartmentsModule,
