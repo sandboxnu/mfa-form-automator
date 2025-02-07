@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { AssignedGroup, Position, SignerType } from '@prisma/client';
+import { AssignedGroup, SignerType } from '@prisma/client';
 import { IsDate, IsOptional, IsString } from 'class-validator';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 import { PositionBaseEntity } from '../../positions/entities/position.entity';
