@@ -3,6 +3,7 @@ import { PositionsService } from './positions.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
+import { PositionsErrorMessage } from './positions.errors';
 
 describe('PositionsService', () => {
   let service: PositionsService;
@@ -137,9 +138,11 @@ describe('PositionsService', () => {
       const positionId = 'nonexistent';
       jest
         .spyOn(prismaService.position, 'findFirstOrThrow')
-        .mockRejectedValue(new Error('Position not found'));
+        .mockRejectedValue(
+          new Error('Position could not be found with this id'),
+        );
       await expect(service.findOne(positionId)).rejects.toThrowError(
-        'Position not found',
+        PositionsErrorMessage.POSITION_NOT_FOUND,
       );
     });
   });
