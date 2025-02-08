@@ -20,7 +20,7 @@ import { PostmarkService } from '../postmark/postmark.service';
 import { PositionsService } from '../positions/positions.service';
 import { DepartmentsService } from '../departments/departments.service';
 import { SignerType } from '@prisma/client';
-import { CreateSignatureDto } from '@server/signatures/dto/create-signature.dto';
+import { CreateSignatureDto } from '../signatures/dto/create-signature.dto';
 
 @Injectable()
 export class FormInstancesService {
@@ -61,6 +61,7 @@ export class FormInstancesService {
           );
         }
       } else if (signature.signerType === SignerType.USER_LIST) {
+        // TODO: write query to get all employees in the list
         try {
           await Promise.all(
             signature.signerEmployeeList.map((employee) =>
