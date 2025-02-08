@@ -161,7 +161,7 @@ export class SignaturesService {
     }
   }
   async findOne(id: string) {
-    let signature = await this.prisma.signature.findFirstOrThrow({
+    const signature = await this.prisma.signature.findFirstOrThrow({
       where: {
         id: id,
       },

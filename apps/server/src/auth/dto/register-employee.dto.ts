@@ -39,8 +39,7 @@ export class RegisterEmployeeDto {
   @ApiProperty()
   signatureLink: string;
 
-  @IsString()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({ enum: EmployeeScope })
   scope: EmployeeScope;
 }

@@ -22,7 +22,7 @@ export class EmployeeBaseEntity implements Employee {
   @ApiProperty()
   signatureLink: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: EmployeeScope })
   scope: EmployeeScope;
 
   @Exclude()

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { EmployeeScope } from '@prisma/client';
 import {
   IsEmail,
   IsNotEmpty,
@@ -40,6 +41,6 @@ export class CreateEmployeeDto {
   signatureLink: string;
 
   @IsNotEmpty()
-  @ApiProperty()
-  scope: any;
+  @ApiProperty({ enum: EmployeeScope })
+  scope: EmployeeScope;
 }

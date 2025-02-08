@@ -4,6 +4,7 @@ import {
   FieldGroups,
 } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
 import { EmployeeScope } from '@prisma/client';
+import { RegisterEmployeeDto } from '@web/client';
 
 // for storage in context
 export type User = {
@@ -39,7 +40,7 @@ export interface AuthContextType {
     position: string,
     department: string,
     signatureLink: string,
-    scope: EmployeeScope,
+    scope: RegisterEmployeeDto.scope,
   ) => void;
   logout: () => void;
 }

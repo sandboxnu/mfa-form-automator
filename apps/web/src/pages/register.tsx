@@ -1,5 +1,9 @@
 import { Flex, Box, Text, Select, Button } from '@chakra-ui/react';
-import { DepartmentsService, PositionsService } from '@web/client';
+import {
+  DepartmentsService,
+  PositionsService,
+  RegisterEmployeeDto,
+} from '@web/client';
 import { DepartmentEntity } from '@web/client/models/DepartmentEntity';
 import { PositionEntity } from '@web/client/models/PositionEntity';
 import { useEffect, useState, useRef } from 'react';
@@ -107,7 +111,7 @@ export default function Register() {
       currentDepartmentName,
       currentPositionName,
       uploadedBlob?.url || 'http://localhost:3002/signature.png',
-      EmployeeScope.BASE_USER,
+      RegisterEmployeeDto.scope.BASE_USER,
     );
   };
 

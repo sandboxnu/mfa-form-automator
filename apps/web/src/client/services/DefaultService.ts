@@ -5,6 +5,7 @@
 import type { EmployeeEntity } from '../models/EmployeeEntity';
 import type { JwtEntity } from '../models/JwtEntity';
 import type { RegisterEmployeeDto } from '../models/RegisterEmployeeDto';
+import type { UpdateSignatureSignerDto } from '../models/UpdateSignatureSignerDto';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -90,6 +91,27 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/auth/logout',
+        });
+    }
+
+    /**
+     * @param id
+     * @param requestBody
+     * @returns any
+     * @throws ApiError
+     */
+    public static signaturesControllerUpdateSignatureSigner(
+        id: string,
+        requestBody: UpdateSignatureSignerDto,
+    ): CancelablePromise<Record<string, any>> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
+            url: '/api/signatures/{id}/signer',
+            path: {
+                'id': id,
+            },
+            body: requestBody,
+            mediaType: 'application/json',
         });
     }
 

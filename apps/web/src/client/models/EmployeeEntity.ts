@@ -11,7 +11,7 @@ export type EmployeeEntity = {
     lastName: string;
     email: string;
     signatureLink: string;
-    scope: Record<string, any>;
+    scope: EmployeeEntity.scope;
     position: PositionBaseEntity;
     positionId: string;
     pswdHash: string | null;
@@ -19,4 +19,14 @@ export type EmployeeEntity = {
     updatedAt: string;
     refreshToken: string | null;
 };
+
+export namespace EmployeeEntity {
+
+    export enum scope {
+        BASE_USER = 'BASE_USER',
+        ADMIN = 'ADMIN',
+    }
+
+
+}
 

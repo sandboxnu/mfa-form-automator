@@ -11,6 +11,16 @@ export type RegisterEmployeeDto = {
     positionName: string;
     departmentName: string;
     signatureLink: string;
-    scope: Record<string, any>;
+    scope: RegisterEmployeeDto.scope;
 };
+
+export namespace RegisterEmployeeDto {
+
+    export enum scope {
+        BASE_USER = 'BASE_USER',
+        ADMIN = 'ADMIN',
+    }
+
+
+}
 

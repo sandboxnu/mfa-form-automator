@@ -9,11 +9,21 @@ export type EmployeeBaseEntity = {
     lastName: string;
     email: string;
     signatureLink: string;
-    scope: Record<string, any>;
+    scope: EmployeeBaseEntity.scope;
     positionId: string;
     pswdHash: string | null;
     createdAt: string;
     updatedAt: string;
     refreshToken: string | null;
 };
+
+export namespace EmployeeBaseEntity {
+
+    export enum scope {
+        BASE_USER = 'BASE_USER',
+        ADMIN = 'ADMIN',
+    }
+
+
+}
 

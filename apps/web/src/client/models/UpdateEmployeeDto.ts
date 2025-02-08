@@ -8,6 +8,16 @@ export type UpdateEmployeeDto = {
     lastName?: string;
     positionId?: string;
     signatureLink?: string;
-    scope?: Record<string, any>;
+    scope?: UpdateEmployeeDto.scope;
 };
+
+export namespace UpdateEmployeeDto {
+
+    export enum scope {
+        BASE_USER = 'BASE_USER',
+        ADMIN = 'ADMIN',
+    }
+
+
+}
 
