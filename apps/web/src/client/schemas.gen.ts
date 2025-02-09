@@ -24,6 +24,7 @@ export const RegisterEmployeeDtoSchema = {
     },
     password: {
       type: 'string',
+      minLength: 5,
     },
     positionName: {
       type: 'string',
@@ -55,8 +56,16 @@ export const DepartmentEntitySchema = {
     name: {
       type: 'string',
     },
+    createdAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    updatedAt: {
+      format: 'date-time',
+      type: 'string',
+    },
   },
-  required: ['id', 'name'],
+  required: ['id', 'name', 'createdAt', 'updatedAt'],
 } as const;
 
 export const PositionBaseEntitySchema = {
@@ -174,6 +183,7 @@ export const CreateEmployeeDtoSchema = {
     },
     password: {
       type: 'string',
+      minLength: 5,
     },
     signatureLink: {
       type: 'string',
@@ -440,7 +450,7 @@ export const TemplateBoxBaseEntitySchema = {
     },
     type: {
       type: 'string',
-      enum: ['SIGNATURE', 'CHECKBOX'],
+      enum: ['SIGNATURE', 'CHECKBOX', 'TEXT_FIELD'],
     },
     x_coordinate: {
       type: 'number',
@@ -456,6 +466,9 @@ export const TemplateBoxBaseEntitySchema = {
       format: 'date-time',
       type: 'string',
     },
+    fieldGroupId: {
+      type: 'string',
+    },
   },
   required: [
     'id',
@@ -464,6 +477,7 @@ export const TemplateBoxBaseEntitySchema = {
     'y_coordinate',
     'createdAt',
     'updatedAt',
+    'fieldGroupId',
   ],
 } as const;
 
@@ -538,6 +552,9 @@ export const AssignedGroupEntitySchema = {
     id: {
       type: 'string',
     },
+    fieldGroupId: {
+      type: 'string',
+    },
     order: {
       type: 'number',
     },
@@ -578,6 +595,9 @@ export const AssignedGroupEntitySchema = {
     },
     formInstanceId: {
       type: 'string',
+    },
+    fieldGroup: {
+      $ref: '#/components/schemas/FieldGroupBaseEntity',
     },
     signingEmployee: {
       nullable: true,
@@ -621,12 +641,14 @@ export const AssignedGroupEntitySchema = {
   },
   required: [
     'id',
+    'fieldGroupId',
     'order',
     'signed',
     'createdAt',
     'updatedAt',
     'signerType',
     'formInstanceId',
+    'fieldGroup',
   ],
 } as const;
 

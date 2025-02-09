@@ -21,6 +21,7 @@ enum SignerType {
 enum SignatureBoxFieldType {
   SIGNATURE
   CHECKBOX
+  TEXT_FIELD
 }
 
 // `Departments` represent the various departments that employees could work in.

@@ -6,7 +6,7 @@
 
 */
 -- CreateEnum
-CREATE TYPE "SignatureBoxFieldType" AS ENUM ('SIGNATURE', 'CHECKBOX');
+CREATE TYPE "SignatureBoxFieldType" AS ENUM ('SIGNATURE', 'CHECKBOX', 'TEXT_FIELD');
 
 -- DropForeignKey
 ALTER TABLE "Signature" DROP CONSTRAINT "Signature_employeeId_fkey";

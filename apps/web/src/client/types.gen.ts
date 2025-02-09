@@ -17,6 +17,8 @@ export type RegisterEmployeeDto = {
 export type DepartmentEntity = {
   id: string;
   name: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type PositionBaseEntity = {
@@ -142,11 +144,12 @@ export type CreateFormTemplateDto = {
 
 export type TemplateBoxBaseEntity = {
   id: string;
-  type: 'SIGNATURE' | 'CHECKBOX';
+  type: 'SIGNATURE' | 'CHECKBOX' | 'TEXT_FIELD';
   x_coordinate: number;
   y_coordinate: number;
   createdAt: string;
   updatedAt: string;
+  fieldGroupId: string;
 };
 
 export type FieldGroupBaseEntity = {
@@ -169,6 +172,7 @@ export type FormTemplateBaseEntity = {
 
 export type AssignedGroupEntity = {
   id: string;
+  fieldGroupId: string;
   order: number;
   signed: boolean;
   signedDocLink?: string | null;
@@ -180,6 +184,7 @@ export type AssignedGroupEntity = {
   signingEmployeeId?: string | null;
   signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
   formInstanceId: string;
+  fieldGroup: FieldGroupBaseEntity;
   signingEmployee?: EmployeeBaseEntity | null;
   signerPosition?: PositionBaseEntity | null;
   signerDepartment?: DepartmentEntity | null;
