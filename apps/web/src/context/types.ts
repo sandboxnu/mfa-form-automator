@@ -3,7 +3,7 @@ import {
   FormFields,
   FieldGroups,
 } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
-import { EmployeeScope } from '@prisma/client';
+import { Scope } from '@web/client';
 import { RegisterEmployeeDto } from '@web/client';
 
 // for storage in context
@@ -14,7 +14,7 @@ export type User = {
   email: string;
   firstName: string;
   lastName: string;
-  scope: EmployeeScope;
+  scope: Scope;
 };
 // jwt payload returned from server
 export type jwtPayload = {
@@ -24,7 +24,7 @@ export type jwtPayload = {
   email: string;
   firstName: string;
   lastName: string;
-  scope: EmployeeScope;
+  scope: Scope;
 };
 
 export interface AuthContextType {
