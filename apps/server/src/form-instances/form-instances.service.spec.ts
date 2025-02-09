@@ -316,6 +316,7 @@ describe('FormInstancesService', () => {
         originatorId: 'originator-id',
         formTemplateId: 'form-template-id',
         formDocLink: 'form-doc-link',
+        description: 'description',
       };
 
       jest
@@ -348,6 +349,7 @@ describe('FormInstancesService', () => {
         originatorId: 'originator-id',
         formTemplateId: 'form-template-id',
         formDocLink: 'form-doc-link',
+        description: 'description',
       };
 
       jest
@@ -373,6 +375,7 @@ describe('FormInstancesService', () => {
         originatorId: 'originator-id',
         formTemplateId: 'form-template-id',
         formDocLink: 'form-doc-link',
+        description: 'description',
       };
 
       expect(service.create(createFormInstanceDto)).rejects.toThrowError(
@@ -399,6 +402,7 @@ describe('FormInstancesService', () => {
         originatorId: 'originator-id',
         formTemplateId: 'form-template-id',
         formDocLink: 'form-doc-link',
+        description: 'description',
       };
 
       jest
@@ -429,6 +433,7 @@ describe('FormInstancesService', () => {
         originatorId: 'originator-id',
         formTemplateId: 'form-template-id',
         formDocLink: 'form-doc-link',
+        description: 'description',
       };
 
       jest
@@ -459,6 +464,7 @@ describe('FormInstancesService', () => {
         originatorId: 'originator-id',
         formTemplateId: 'form-template-id',
         formDocLink: 'form-doc-link',
+        description: 'description',
       };
 
       jest
@@ -489,6 +495,7 @@ describe('FormInstancesService', () => {
         originatorId: 'originator-id',
         formTemplateId: 'form-template-id',
         formDocLink: 'form-doc-link',
+        description: 'description',
       };
 
       jest

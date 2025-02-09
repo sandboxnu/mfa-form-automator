@@ -43,9 +43,8 @@ export class DepartmentsController {
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async create(@Body() createDepartmentDto: CreateDepartmentDto) {
-    const newDepartment = await this.departmentsService.create(
-      createDepartmentDto,
-    );
+    const newDepartment =
+      await this.departmentsService.create(createDepartmentDto);
     return new DepartmentEntity(newDepartment);
   }
 

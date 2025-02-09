@@ -14,6 +14,9 @@ export class FormTemplateBaseEntity implements FormTemplate {
   @ApiProperty()
   formDocLink: string;
 
+  @ApiProperty()
+  description: string;
+
   @Exclude()
   createdAt: Date;
 

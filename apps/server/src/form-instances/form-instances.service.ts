@@ -130,6 +130,7 @@ export class FormInstancesService {
       data: {
         name: createFormInstanceDto.name,
         formDocLink: createFormInstanceDto.formDocLink,
+        description: createFormInstanceDto.description,
         assignedGroups: {
           create: createFormInstanceDto.assignedGroups.map((assignedGroup) => ({
             ...assignedGroup,

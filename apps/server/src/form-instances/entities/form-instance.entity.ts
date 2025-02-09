@@ -51,6 +51,9 @@ export class FormInstanceBaseEntity implements FormInstance {
   constructor(partial: Partial<FormInstanceEntity>) {
     Object.assign(this, partial);
   }
+
+  @ApiProperty()
+  description: string;
 }
 
 export class FormInstanceEntity implements FormInstance {
@@ -59,6 +62,9 @@ export class FormInstanceEntity implements FormInstance {
 
   @ApiProperty()
   name: string;
+
+  @ApiProperty()
+  description: string;
 
   @ApiProperty()
   formDocLink: string;
