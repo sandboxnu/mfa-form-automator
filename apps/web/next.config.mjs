@@ -6,7 +6,7 @@ const nextConfig = {
       '.js': ['.tsx', '.ts', '.jsx', '.js'],
     },
     turbo: {},
-    optimizePackageImports: ["@chakra-ui/react"],
+    optimizePackageImports: ['@chakra-ui/react'],
   },
   reactStrictMode: true,
   env: {
