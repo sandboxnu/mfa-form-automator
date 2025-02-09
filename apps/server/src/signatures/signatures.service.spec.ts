@@ -7,7 +7,7 @@ import { ConnectEmployeeDto } from './dto/create-signature.dto';
 import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
 
-let signaturePositionSigner = {
+const signaturePositionSigner = {
   id: 'signature-id',
   formInstanceId: 'form-instance-id',
   signerType: SignerType.POSITION,
@@ -19,7 +19,7 @@ let signaturePositionSigner = {
   updatedAt: new Date(1672531200),
 };
 
-let signatureDepartmentSigner = {
+const signatureDepartmentSigner = {
   id: 'signature-id',
   formInstanceId: 'form-instance-id',
   signerType: SignerType.DEPARTMENT,
@@ -35,7 +35,7 @@ const db = {
   signature: {
     findFirstOrThrow: jest.fn().mockResolvedValue(signaturePositionSigner),
     update: jest.fn().mockImplementation((args) => {
-      let val = {
+      const val = {
         ...signaturePositionSigner,
         ...args.data,
       };
@@ -127,7 +127,7 @@ describe('SignaturesService', () => {
           signerDepartmentId: null,
           signerEmployeeId: null,
         };
-        let updatedSignature = await service.updateSigner(
+        const updatedSignature = await service.updateSigner(
           'signature-id',
           updateSignatureSignerDto,
         );
@@ -149,7 +149,7 @@ describe('SignaturesService', () => {
           signerDepartmentId: 'department-id',
           signerEmployeeId: null,
         };
-        let updatedSignature = await service.updateSigner(
+        const updatedSignature = await service.updateSigner(
           'signature-id',
           updateSignatureSignerDto,
         );
@@ -171,7 +171,7 @@ describe('SignaturesService', () => {
           signerDepartmentId: null,
           signerEmployeeId: 'employee-id',
         };
-        let updatedSignature = await service.updateSigner(
+        const updatedSignature = await service.updateSigner(
           'signature-id',
           updateSignatureSignerDto,
         );
@@ -197,7 +197,7 @@ describe('SignaturesService', () => {
             { id: 'employee-id-2' },
           ],
         };
-        let updatedSignature = await service.updateSigner(
+        const updatedSignature = await service.updateSigner(
           'signature-id',
           updateSignatureSignerDto,
         );

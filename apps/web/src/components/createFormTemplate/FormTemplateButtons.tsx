@@ -36,10 +36,9 @@ export const FormTemplateButtons = ({
   review?: boolean;
 }) => {
   const router = useRouter();
-  const { formTemplateName, formTemplateDescription, useBlob } =
-    useCreateFormTemplate();
+  const { formTemplateName, fieldGroups, useBlob } = useCreateFormTemplate();
 
-  const { localBlobData, hasLocalBlob, uploadLocalBlobData } = useBlob;
+  const { hasLocalBlob, uploadLocalBlobData } = useBlob;
 
   /**
    * Upload and create a form template
@@ -55,12 +54,15 @@ export const FormTemplateButtons = ({
     if (!hasLocalBlob) {
       throw new Error('No PDF file uploaded');
     }
-    const signatures: CreateSignatureFieldDto[] = [
-      {
-        name: 'Signature Field 1',
-        order: 1,
-      },
-    ];
+
+    const signatures: CreateSignatureFieldDto[] = [];
+
+    Array.from(fieldGroups).forEach(([key, value], index) => {
+      signatures.push({
+        name: `Group ${index + 1}`,
+        order: index,
+      });
+    });
 
     const blob = await uploadLocalBlobData();
 
@@ -92,32 +94,27 @@ export const FormTemplateButtons = ({
 
   return (
     <>
-      {!review ? (
-        <Button
-          borderRadius="6px"
-          borderWidth="1.5px"
-          borderStyle={'solid'}
-          borderColor="#E23F40"
-          alignContent={'center'}
-          bgColor={'transparent'}
-          _hover={{
-            bgColor: 'transparent',
-          }}
-          marginLeft="36px"
+      <Button
+        borderRadius="6px"
+        borderWidth="1.5px"
+        borderStyle={'solid'}
+        borderColor="#E23F40"
+        alignContent={'center'}
+        bgColor={'transparent'}
+        _hover={{
+          bgColor: 'transparent',
+        }}
+      >
+        <Text
+          color="#E23F40"
+          fontWeight="600px"
+          fontSize="18px"
+          lineHeight="22px"
+          onClick={(e) => deleteFunction(e)}
         >
-          <Text
-            color="#E23F40"
-            fontWeight="600px"
-            fontSize="18px"
-            lineHeight="22px"
-            onClick={(e) => deleteFunction(e)}
-          >
-            Delete
-          </Text>
-        </Button>
-      ) : (
-        <></>
-      )}
+          Delete
+        </Text>
+      </Button>
 
       <Flex float="right" justifyContent={'space-between'}>
         <Button
@@ -155,7 +152,6 @@ export const FormTemplateButtons = ({
             background: 'auto',
           }}
           marginLeft="12px"
-          marginRight="36px"
           onClick={(_) => {
             _submitFormTemplate();
           }}
