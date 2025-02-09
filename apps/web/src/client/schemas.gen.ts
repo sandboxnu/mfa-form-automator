@@ -448,6 +448,9 @@ export const CreateFormTemplateDtoSchema = {
     formDocLink: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+    },
     fieldGroups: {
       type: 'array',
       items: {
@@ -455,7 +458,7 @@ export const CreateFormTemplateDtoSchema = {
       },
     },
   },
-  required: ['name', 'formDocLink', 'fieldGroups'],
+  required: ['name', 'formDocLink', 'description', 'fieldGroups'],
 } as const;
 
 export const TemplateBoxBaseEntitySchema = {
@@ -550,6 +553,9 @@ export const FormTemplateBaseEntitySchema = {
     formDocLink: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+    },
     createdAt: {
       format: 'date-time',
       type: 'string',
@@ -559,7 +565,14 @@ export const FormTemplateBaseEntitySchema = {
       type: 'string',
     },
   },
-  required: ['id', 'name', 'formDocLink', 'createdAt', 'updatedAt'],
+  required: [
+    'id',
+    'name',
+    'formDocLink',
+    'description',
+    'createdAt',
+    'updatedAt',
+  ],
 } as const;
 
 export const AssignedGroupEntitySchema = {
@@ -677,6 +690,9 @@ export const FormInstanceEntitySchema = {
     name: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+    },
     formDocLink: {
       type: 'string',
     },
@@ -726,6 +742,7 @@ export const FormInstanceEntitySchema = {
   required: [
     'id',
     'name',
+    'description',
     'formDocLink',
     'completed',
     'markedCompleted',
@@ -749,6 +766,9 @@ export const FormTemplateEntitySchema = {
       type: 'string',
     },
     formDocLink: {
+      type: 'string',
+    },
+    description: {
       type: 'string',
     },
     fieldGroups: {
@@ -776,6 +796,7 @@ export const FormTemplateEntitySchema = {
     'id',
     'name',
     'formDocLink',
+    'description',
     'fieldGroups',
     'formInstances',
     'createdAt',
@@ -790,6 +811,9 @@ export const UpdateFormTemplateDtoSchema = {
       type: 'string',
     },
     formDocLink: {
+      type: 'string',
+    },
+    description: {
       type: 'string',
     },
   },
@@ -852,6 +876,9 @@ export const CreateFormInstanceDtoSchema = {
     name: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+    },
     assignedGroups: {
       type: 'array',
       items: {
@@ -870,6 +897,7 @@ export const CreateFormInstanceDtoSchema = {
   },
   required: [
     'name',
+    'description',
     'assignedGroups',
     'originatorId',
     'formTemplateId',
@@ -881,6 +909,9 @@ export const UpdateFormInstanceDtoSchema = {
   type: 'object',
   properties: {
     name: {
+      type: 'string',
+    },
+    description: {
       type: 'string',
     },
     formDocLink: {
