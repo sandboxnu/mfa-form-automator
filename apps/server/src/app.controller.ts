@@ -18,6 +18,7 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiBearerAuth,
+  ApiCreatedResponse,
 } from '@nestjs/swagger';
 import { AppErrorMessage } from './app.errors';
 import { JwtEntity } from './auth/entities/jwt.entity';
@@ -47,7 +48,7 @@ export class AppController {
 
   @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
-  @ApiOkResponse({ type: JwtEntity })
+  @ApiCreatedResponse({ type: JwtEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { FormRow } from './FormRow';
-import { Box, Flex, Grid, GridItem, Heading, Text } from '@chakra-ui/react';
-import { FormInstanceEntity, SignatureEntity } from '@web/client';
+import { Box, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
+import { FormInstanceEntity } from '@web/client/types.gen';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { SearchAndSort } from 'apps/web/src/components/SearchAndSort';
@@ -49,7 +49,7 @@ export const FormList = ({
 
   return (
     <>
-      <Box padding={isDashboard ? '12px 30px 12px 0px' : '12px 30px 12px 30px'}>
+      <Box>
         <Flex justifyContent="space-between" pb="20px">
           <Flex alignItems="center">
             <Text

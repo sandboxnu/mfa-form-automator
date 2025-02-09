@@ -1,10 +1,15 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import {
-  CreateFormTemplateDto,
   CreateSignatureFieldDto,
-  FormTemplatesService,
+  CreateFormTemplateDto,
+  formTemplatesControllerCreate,
 } from '@web/client';
+import {
+  formTemplatesControllerCreateMutation,
+  formTemplatesControllerFindAllQueryKey,
+} from '@web/client/@tanstack/react-query.gen';
+import { client } from '@web/client/client.gen';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
@@ -31,10 +36,9 @@ export const FormTemplateButtons = ({
   review?: boolean;
 }) => {
   const router = useRouter();
-  const { formTemplateName, formTemplateDescription, useBlob } =
-    useCreateFormTemplate();
+  const { formTemplateName, fieldGroups, useBlob } = useCreateFormTemplate();
 
-  const { localBlobData, hasLocalBlob, uploadLocalBlobData } = useBlob;
+  const { hasLocalBlob, uploadLocalBlobData } = useBlob;
 
   /**
    * Upload and create a form template
@@ -50,20 +54,25 @@ export const FormTemplateButtons = ({
     if (!hasLocalBlob) {
       throw new Error('No PDF file uploaded');
     }
-    const signatures: CreateSignatureFieldDto[] = [
-      {
-        name: 'Signature Field 1',
-        order: 1,
-      },
-    ];
+
+    const signatures: CreateSignatureFieldDto[] = [];
+
+    Array.from(fieldGroups).forEach(([key, value], index) => {
+      signatures.push({
+        name: `Group ${index + 1}`,
+        order: index,
+      });
+    });
 
     const blob = await uploadLocalBlobData();
 
     createFormTemplateMutation
       .mutateAsync({
-        name: formTemplateName ? formTemplateName : '',
-        formDocLink: blob.url,
-        signatureFields: signatures,
+        body: {
+          name: formTemplateName ? formTemplateName : '',
+          formDocLink: blob.url,
+          signatureFields: signatures,
+        },
       })
       .then((response) => {
         return response;
@@ -75,44 +84,37 @@ export const FormTemplateButtons = ({
   };
 
   const createFormTemplateMutation = useMutation({
-    mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
-      return FormTemplatesService.formTemplatesControllerCreate(
-        newFormTemplate,
-      );
-    },
+    ...formTemplatesControllerCreateMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api', 'form-templates'] });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
     },
   });
 
   return (
     <>
-      {!review ? (
-        <Button
-          borderRadius="6px"
-          borderWidth="1.5px"
-          borderStyle={'solid'}
-          borderColor="#E23F40"
-          alignContent={'center'}
-          bgColor={'transparent'}
-          _hover={{
-            bgColor: 'transparent',
-          }}
-          marginLeft="36px"
+      <Button
+        borderRadius="6px"
+        borderWidth="1.5px"
+        borderStyle={'solid'}
+        borderColor="#E23F40"
+        alignContent={'center'}
+        bgColor={'transparent'}
+        _hover={{
+          bgColor: 'transparent',
+        }}
+      >
+        <Text
+          color="#E23F40"
+          fontWeight="600px"
+          fontSize="18px"
+          lineHeight="22px"
+          onClick={(e) => deleteFunction(e)}
         >
-          <Text
-            color="#E23F40"
-            fontWeight="600px"
-            fontSize="18px"
-            lineHeight="22px"
-            onClick={(e) => deleteFunction(e)}
-          >
-            Delete
-          </Text>
-        </Button>
-      ) : (
-        <></>
-      )}
+          Delete
+        </Text>
+      </Button>
 
       <Flex float="right" justifyContent={'space-between'}>
         <Button
@@ -150,7 +152,6 @@ export const FormTemplateButtons = ({
             background: 'auto',
           }}
           marginLeft="12px"
-          marginRight="36px"
           onClick={(_) => {
             _submitFormTemplate();
           }}

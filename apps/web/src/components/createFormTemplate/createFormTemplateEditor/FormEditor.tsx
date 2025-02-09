@@ -6,7 +6,6 @@ import { DraggableData, DraggableEvent } from 'react-draggable';
 import PagingControl from './PagingControl';
 import { v4 as uuidv4 } from 'uuid';
 import DraggableText from './DraggableText';
-import { useCreateFormTemplate } from 'apps/web/src/context/CreateFormTemplateContext';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -36,13 +35,21 @@ export const FormEditor = ({
   formTemplateName,
   pdfUrl,
   disableEdit,
+  formFields,
+  setFormFields,
+  fieldGroups,
+  setFieldGroups,
+  scale,
 }: {
   formTemplateName: string;
   pdfUrl: string;
   disableEdit: boolean;
+  formFields: FormFields;
+  setFormFields: (fields: FormFields) => void;
+  fieldGroups: FieldGroups;
+  setFieldGroups: (groups: FieldGroups) => void;
+  scale: number;
 }) => {
-  const { formFields, setFormFields, fieldGroups, setFieldGroups } =
-    useCreateFormTemplate();
   const [currentGroup, setCurrentGroup] = useState<string>(
     fieldGroups.keys().next().value ?? '',
   );
@@ -217,6 +224,7 @@ export const FormEditor = ({
             alignItems="center"
             gap="8px"
             display="flex"
+            zIndex={1}
           >
             <Button
               position="relative"
@@ -236,7 +244,7 @@ export const FormEditor = ({
           </Box>
           <Box
             height="474px"
-            width="800px"
+            width="100%"
             overflow="scroll"
             ref={documentRef}
             display="flex"
@@ -262,7 +270,6 @@ export const FormEditor = ({
               }}
             >
               <Page
-                width={1000}
                 renderAnnotationLayer={false}
                 renderTextLayer={false}
                 pageNumber={pageNum + 1}
@@ -271,7 +278,12 @@ export const FormEditor = ({
                   Array.from(formFields[pageNum].entries()).map(
                     ([fieldId, { position, groupId }], index) => (
                       <DraggableText
-                        currentPosition={position}
+                        currentPosition={{
+                          x: position.x * scale,
+                          y: position.y * scale,
+                          width: position.width * scale,
+                          height: position.height * scale,
+                        }}
                         onRemove={() => {
                           handleRemoveField(fieldId);
                         }}

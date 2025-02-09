@@ -10,7 +10,7 @@ import { PositionsService } from '../positions/positions.service';
 const signaturePositionSigner = {
   id: 'signature-id',
   formInstanceId: 'form-instance-id',
-  signerType: 'POSITION',
+  signerType: SignerType.POSITION,
   signerPositionId: 'position-id',
   signerDepartmentId: null,
   signerEmployeeId: null,
@@ -22,7 +22,7 @@ const signaturePositionSigner = {
 const signatureDepartmentSigner = {
   id: 'signature-id',
   formInstanceId: 'form-instance-id',
-  signerType: 'DEPARTMENT',
+  signerType: SignerType.DEPARTMENT,
   signerPositionId: null,
   signerDepartmentId: 'department-id',
   signerEmployeeId: null,

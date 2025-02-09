@@ -1,17 +1,19 @@
 import { Flex, Box, Text, Select, Button } from '@chakra-ui/react';
-import {
-  DepartmentsService,
-  PositionsService,
-  RegisterEmployeeDto,
-} from '@web/client';
-import { DepartmentEntity } from '@web/client/models/DepartmentEntity';
-import { PositionEntity } from '@web/client/models/PositionEntity';
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useBlob } from '@web/hooks/useBlob';
 import { SignaturePad } from './../components/SignaturePad';
-import { EmployeeScope } from '@prisma/client';
+import {
+  departmentsControllerFindAll,
+  positionsControllerFindAllInDepartmentName,
+  DepartmentEntity,
+  PositionEntity,
+} from '@web/client';
+import {
+  departmentsControllerFindAllOptions,
+  positionsControllerFindAllInDepartmentNameOptions,
+} from '@web/client/@tanstack/react-query.gen';
 
 export default function Register() {
   const { completeRegistration, userData } = useAuth();
@@ -26,20 +28,23 @@ export default function Register() {
   const { uploadFile } = useBlob();
 
   // Fetch departments and positions
-  const { data: departmentsData = [] } = useQuery({
-    queryKey: ['api', 'departments'],
-    queryFn: () => DepartmentsService.departmentsControllerFindAll(1000),
+  const { data: departmentsData } = useQuery({
+    ...departmentsControllerFindAllOptions({
+      query: {
+        limit: 1000,
+      },
+    }),
   });
 
-  console.log(departmentsData);
-
-  const { data: positionsData = [] } = useQuery({
-    queryKey: ['api', 'positions', currentDepartmentName],
-    queryFn: () =>
-      PositionsService.positionsControllerFindAllInDepartmentName(
-        currentDepartmentName,
-        1000,
-      ),
+  const { data: positionsData } = useQuery({
+    ...positionsControllerFindAllInDepartmentNameOptions({
+      path: {
+        departmentName: currentDepartmentName,
+      },
+      query: {
+        limit: 1000,
+      },
+    }),
     enabled: !!currentDepartmentName,
   });
 
@@ -157,7 +162,7 @@ export default function Register() {
             onChange={(e) => setCurrentDepartmentName(e.target.value)}
             marginTop="8px"
           >
-            {departmentsData.map((department: DepartmentEntity) => (
+            {departmentsData?.map((department: DepartmentEntity) => (
               <option
                 key={department.name}
                 value={department.name}
@@ -178,7 +183,7 @@ export default function Register() {
             disabled={!currentDepartmentName}
             marginTop="8px"
           >
-            {positionsData.map((position: PositionEntity) => (
+            {positionsData?.map((position: PositionEntity) => (
               <option
                 key={position.name}
                 value={position.name}

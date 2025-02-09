@@ -16,7 +16,6 @@ import {
   Flex,
   Input,
 } from '@chakra-ui/react';
-import { CreateFormTemplateDto, FormTemplatesService } from '@web/client';
 import { AddIcon, UploadForm } from '@web/static/icons';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
@@ -26,6 +25,10 @@ import { TempSignatureField } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
 import { useBlob } from '@web/hooks/useBlob';
+import {
+  formTemplatesControllerCreateMutation,
+  formTemplatesControllerFindAllQueryKey,
+} from '@web/client/@tanstack/react-query.gen';
 
 const variants = {
   notDragging: {
@@ -70,13 +73,11 @@ export const CreateFormTemplateModal = ({
   const toast = useToast();
 
   const createFormTemplateMutation = useMutation({
-    mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
-      return FormTemplatesService.formTemplatesControllerCreate(
-        newFormTemplate,
-      );
-    },
+    ...formTemplatesControllerCreateMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api', 'form-templates'] });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
     },
   });
 
@@ -112,14 +113,16 @@ export const CreateFormTemplateModal = ({
     const blob = await uploadFileRef();
     createFormTemplateMutation
       .mutateAsync({
-        name: formTemplateName,
-        formDocLink: blob.url,
-        signatureFields: signatureFields.map((signatureField, i) => {
-          return {
-            name: signatureField.value,
-            order: i,
-          };
-        }),
+        body: {
+          name: formTemplateName,
+          formDocLink: blob.url,
+          signatureFields: signatureFields.map((signatureField, i) => {
+            return {
+              name: signatureField.value,
+              order: i,
+            };
+          }),
+        },
       })
       .then((response) => {
         _handleModalClose();
