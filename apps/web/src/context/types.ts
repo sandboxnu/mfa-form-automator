@@ -40,7 +40,7 @@ export interface AuthContextType {
     position: string,
     department: string,
     signatureLink: string,
-    scope: RegisterEmployeeDto.scope,
+    scope: RegisterEmployeeDto['scope'],
   ) => void;
   logout: () => void;
 }
