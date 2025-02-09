@@ -1,6 +1,9 @@
 import { Avatar, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
 
-import { FormInstanceEntity, SignatureEntity } from '@web/client/types.gen.tsx';
+import {
+  AssignedGroupEntity,
+  FormInstanceEntity,
+} from '@web/client/types.gen.tsx';
 import { useRouter } from 'next/router.js';
 import { AssignedAvatarGroup } from './AssignedAvatarGroup.tsx';
 
@@ -84,18 +87,18 @@ export const FormRow = ({
         </GridItem>
         <GridItem colSpan={5} h="64px">
           <Flex pt="15px">
-            <AssignedAvatarGroup signatures={formInstance.signatures} />
+            <AssignedAvatarGroup assignedGroups={formInstance.assignedGroups} />
 
             {/* TODO: Do we need to have the enhanced popover for these avatars? */}
             {/* <AvatarGroup size="sm" max={5}>
               {formInstance.signatures
                 .sort((a, b) => a.order - b.order)
-                .map((signature: SignatureEntity, index: number) => {
+                .map((assignedGroup: AssignedGroupEntity, index: number) => {
                   return (
                     <>
                       <HoverableAvatar
-                        name={getNameFromSignature(signature)}
-                        signed={signature.signed}
+                        name={getNameFromAssignedGroup(assignedGroup)}
+                        signed={assignedGroup.signed}
                         index={index}
                       />
                     </>
@@ -104,10 +107,12 @@ export const FormRow = ({
             </AvatarGroup> */}
             <Text pl="15px" mt="5px">
               {`${
-                formInstance.signatures.filter((signature: SignatureEntity) => {
-                  return signature.signed;
-                }).length
-              }/${formInstance.signatures.length}`}{' '}
+                formInstance.assignedGroups.filter(
+                  (assignedGroup: AssignedGroupEntity) => {
+                    return assignedGroup.signed;
+                  },
+                ).length
+              }/${formInstance.assignedGroups.length}`}{' '}
               signed
             </Text>
           </Flex>

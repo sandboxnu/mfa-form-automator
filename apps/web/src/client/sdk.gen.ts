@@ -41,17 +41,17 @@ import type {
   PositionsControllerUpdateResponse,
   PositionsControllerFindOneByNameInDepartmentData,
   PositionsControllerFindOneByNameInDepartmentResponse,
-  SignatureFieldsControllerFindAllData,
-  SignatureFieldsControllerFindAllResponse,
-  SignatureFieldsControllerCreateData,
-  SignatureFieldsControllerCreateResponse,
-  SignatureFieldsControllerRemoveData,
-  SignatureFieldsControllerFindOneData,
-  SignatureFieldsControllerFindOneResponse,
-  SignatureFieldsControllerUpdateData,
-  SignatureFieldsControllerUpdateResponse,
-  SignaturesControllerUpdateSignatureSignerData,
-  SignaturesControllerUpdateSignatureSignerResponse,
+  AssignedGroupControllerUpdateAssignedGroupSignerData,
+  AssignedGroupControllerUpdateAssignedGroupSignerResponse,
+  FormTemplatesControllerFindAllData,
+  FormTemplatesControllerFindAllResponse,
+  FormTemplatesControllerCreateData,
+  FormTemplatesControllerCreateResponse,
+  FormTemplatesControllerRemoveData,
+  FormTemplatesControllerFindOneData,
+  FormTemplatesControllerFindOneResponse,
+  FormTemplatesControllerUpdateData,
+  FormTemplatesControllerUpdateResponse,
   DepartmentsControllerFindAllData,
   DepartmentsControllerFindAllResponse,
   DepartmentsControllerCreateData,
@@ -80,15 +80,6 @@ import type {
   FormInstancesControllerSignFormInstanceResponse,
   FormInstancesControllerCompleteFormInstanceData,
   FormInstancesControllerCompleteFormInstanceResponse,
-  FormTemplatesControllerFindAllData,
-  FormTemplatesControllerFindAllResponse,
-  FormTemplatesControllerCreateData,
-  FormTemplatesControllerCreateResponse,
-  FormTemplatesControllerRemoveData,
-  FormTemplatesControllerFindOneData,
-  FormTemplatesControllerFindOneResponse,
-  FormTemplatesControllerUpdateData,
-  FormTemplatesControllerUpdateResponse,
 } from './types.gen';
 import { client as _heyApiClient } from './client.gen';
 
@@ -411,32 +402,20 @@ export const positionsControllerFindOneByNameInDepartment = <
   });
 };
 
-export const signatureFieldsControllerFindAll = <
+export const assignedGroupControllerUpdateAssignedGroupSigner = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<SignatureFieldsControllerFindAllData, ThrowOnError>,
+  options: Options<
+    AssignedGroupControllerUpdateAssignedGroupSignerData,
+    ThrowOnError
+  >,
 ) => {
-  return (options.client ?? _heyApiClient).get<
-    SignatureFieldsControllerFindAllResponse,
+  return (options.client ?? _heyApiClient).patch<
+    AssignedGroupControllerUpdateAssignedGroupSignerResponse,
     unknown,
     ThrowOnError
   >({
-    url: '/api/signature-fields',
-    ...options,
-  });
-};
-
-export const signatureFieldsControllerCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<SignatureFieldsControllerCreateData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).post<
-    SignatureFieldsControllerCreateResponse,
-    unknown,
-    ThrowOnError
-  >({
-    url: '/api/signature-fields',
+    url: '/api/signatures/{id}/signer',
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -445,66 +424,81 @@ export const signatureFieldsControllerCreate = <
   });
 };
 
-export const signatureFieldsControllerRemove = <
+export const formTemplatesControllerFindAll = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<SignatureFieldsControllerRemoveData, ThrowOnError>,
+  options?: Options<FormTemplatesControllerFindAllData, ThrowOnError>,
+) => {
+  return (options?.client ?? _heyApiClient).get<
+    FormTemplatesControllerFindAllResponse,
+    unknown,
+    ThrowOnError
+  >({
+    url: '/api/form-templates',
+    ...options,
+  });
+};
+
+export const formTemplatesControllerCreate = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<FormTemplatesControllerCreateData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).post<
+    FormTemplatesControllerCreateResponse,
+    unknown,
+    ThrowOnError
+  >({
+    url: '/api/form-templates',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+};
+
+export const formTemplatesControllerRemove = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<FormTemplatesControllerRemoveData, ThrowOnError>,
 ) => {
   return (options.client ?? _heyApiClient).delete<
     unknown,
     unknown,
     ThrowOnError
   >({
-    url: '/api/signature-fields/{id}',
+    url: '/api/form-templates/{id}',
     ...options,
   });
 };
 
-export const signatureFieldsControllerFindOne = <
+export const formTemplatesControllerFindOne = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<SignatureFieldsControllerFindOneData, ThrowOnError>,
+  options: Options<FormTemplatesControllerFindOneData, ThrowOnError>,
 ) => {
   return (options.client ?? _heyApiClient).get<
-    SignatureFieldsControllerFindOneResponse,
+    FormTemplatesControllerFindOneResponse,
     unknown,
     ThrowOnError
   >({
-    url: '/api/signature-fields/{id}',
+    url: '/api/form-templates/{id}',
     ...options,
   });
 };
 
-export const signatureFieldsControllerUpdate = <
+export const formTemplatesControllerUpdate = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<SignatureFieldsControllerUpdateData, ThrowOnError>,
+  options: Options<FormTemplatesControllerUpdateData, ThrowOnError>,
 ) => {
   return (options.client ?? _heyApiClient).patch<
-    SignatureFieldsControllerUpdateResponse,
+    FormTemplatesControllerUpdateResponse,
     unknown,
     ThrowOnError
   >({
-    url: '/api/signature-fields/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
-};
-
-export const signaturesControllerUpdateSignatureSigner = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<SignaturesControllerUpdateSignatureSignerData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).patch<
-    SignaturesControllerUpdateSignatureSignerResponse,
-    unknown,
-    ThrowOnError
-  >({
-    url: '/api/signatures/{id}/signer',
+    url: '/api/form-templates/{id}',
     ...options,
     headers: {
       'Content-Type': 'application/json',
@@ -778,88 +772,5 @@ export const formInstancesControllerCompleteFormInstance = <
     ],
     url: '/api/form-instances/{formInstanceId}/complete',
     ...options,
-  });
-};
-
-export const formTemplatesControllerFindAll = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<FormTemplatesControllerFindAllData, ThrowOnError>,
-) => {
-  return (options?.client ?? _heyApiClient).get<
-    FormTemplatesControllerFindAllResponse,
-    unknown,
-    ThrowOnError
-  >({
-    url: '/api/form-templates',
-    ...options,
-  });
-};
-
-export const formTemplatesControllerCreate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<FormTemplatesControllerCreateData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).post<
-    FormTemplatesControllerCreateResponse,
-    unknown,
-    ThrowOnError
-  >({
-    url: '/api/form-templates',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
-  });
-};
-
-export const formTemplatesControllerRemove = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<FormTemplatesControllerRemoveData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).delete<
-    unknown,
-    unknown,
-    ThrowOnError
-  >({
-    url: '/api/form-templates/{id}',
-    ...options,
-  });
-};
-
-export const formTemplatesControllerFindOne = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<FormTemplatesControllerFindOneData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).get<
-    FormTemplatesControllerFindOneResponse,
-    unknown,
-    ThrowOnError
-  >({
-    url: '/api/form-templates/{id}',
-    ...options,
-  });
-};
-
-export const formTemplatesControllerUpdate = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<FormTemplatesControllerUpdateData, ThrowOnError>,
-) => {
-  return (options.client ?? _heyApiClient).patch<
-    FormTemplatesControllerUpdateResponse,
-    unknown,
-    ThrowOnError
-  >({
-    url: '/api/form-templates/{id}',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
   });
 };

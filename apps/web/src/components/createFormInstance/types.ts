@@ -1,10 +1,18 @@
+import { PositionEntity } from '@web/client';
+
 export interface CreateFormInstanceModalProps {
   open: boolean;
   onClose: () => void;
 }
 
-export interface Option {
+// value represents the position id
+export interface PositionOption {
   value: string;
-  employeeValue: string;
   label: string;
+}
+
+export interface AssignedGroupData {
+  fieldGroupId: string;
+  order: number;
+  positionId?: string;
 }

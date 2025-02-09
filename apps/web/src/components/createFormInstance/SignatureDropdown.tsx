@@ -2,9 +2,9 @@ import { Box, Heading } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useState } from 'react';
-import { Option } from './types';
+import { AssignedGroupData, PositionOption } from './types';
 import { SearchIcon } from '@web/static/icons';
-import { SignatureFieldEntity, PositionEntity } from '@web/client';
+import { FieldGroupBaseEntity, PositionEntity } from '@web/client';
 
 const assigneePlaceholderWithIcon = (
   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -25,16 +25,18 @@ export const SignatureDropdown = ({
   field,
   index,
   positions,
-  signaturePositions,
-  setSignaturePositions,
+  assignedGroupData,
+  setAssignedGroupData,
 }: {
-  field: SignatureFieldEntity;
+  field: FieldGroupBaseEntity;
   index: number;
   positions?: PositionEntity[];
-  signaturePositions: (Option | null)[];
-  setSignaturePositions: (updatedSignaturePositions: (Option | null)[]) => void;
+  assignedGroupData: AssignedGroupData[];
+  setAssignedGroupData: (updatedAssignedGroupData: AssignedGroupData[]) => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] =
+    useState<PositionOption | null>();
 
   /**
    * Get the employee name from the position
@@ -50,7 +52,7 @@ export const SignatureDropdown = ({
   /**
    * Format the option label
    */
-  const _formatOptionLabel = ({ value }: Option) => {
+  const _formatOptionLabel = ({ value }: PositionOption) => {
     const positionEntity = positions?.find((position) => position.id === value);
     const employeeName = positionEntity?.name ?? '';
 
@@ -77,17 +79,22 @@ export const SignatureDropdown = ({
           const fullLabel = fullName + ' ' + position.name;
           return {
             value: position.id,
-            employeeValue: employee?.id ?? '', // Ensure employeeValue is always a string
             label: fullLabel,
           };
         })}
         placeholder={assigneePlaceholderWithIcon}
-        value={signaturePositions[index]} // Create a separate state for Department Head
-        onChange={(selected: Option | null) => {
-          // value is the selected option or null
-          let updatedSignaturePositions = signaturePositions.slice(0);
-          updatedSignaturePositions[index] = selected;
-          setSignaturePositions(updatedSignaturePositions);
+        value={selectedPosition} // Create a separate state for Department Head
+        onChange={(selected: PositionOption | null) => {
+          setSelectedPosition(selected);
+          // TODO: probably should not be coercing this type
+          let selectedAssignedGroupData = assignedGroupData?.at(index)!;
+          selectedAssignedGroupData.positionId = selected?.value;
+          assignedGroupData[index] = {
+            ...selectedAssignedGroupData,
+            fieldGroupId: selectedAssignedGroupData?.fieldGroupId,
+            positionId: selected?.value,
+          };
+          setAssignedGroupData(assignedGroupData);
         }}
         className="custom-dropdown"
         components={{

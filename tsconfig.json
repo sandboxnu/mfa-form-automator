@@ -11,8 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@server/*": ["apps/server/src/*"],
-      "@web/*": ["apps/web/src/*"]
+      "@web/*": ["./apps/web/src/*"]
     }
   }
 }

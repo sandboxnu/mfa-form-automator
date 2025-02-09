@@ -317,6 +317,12 @@ export const PositionEntitySchema = {
     department: {
       $ref: '#/components/schemas/DepartmentEntity',
     },
+    employees: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/EmployeeBaseEntity',
+      },
+    },
     departmentId: {
       type: 'string',
     },
@@ -328,18 +334,13 @@ export const PositionEntitySchema = {
       format: 'date-time',
       type: 'string',
     },
-    employees: {
-      type: 'array',
-      items: {
-        $ref: '#/components/schemas/EmployeeBaseEntity',
-      },
-    },
   },
   required: [
     'id',
     'name',
     'single',
     'department',
+    'employees',
     'departmentId',
     'createdAt',
     'updatedAt',
@@ -358,64 +359,6 @@ export const UpdatePositionDtoSchema = {
   },
 } as const;
 
-export const CreateSignatureFieldDtoSchema = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-    },
-    order: {
-      type: 'number',
-    },
-    formTemplateId: {
-      type: 'string',
-    },
-  },
-  required: ['name', 'order'],
-} as const;
-
-export const SignatureFieldEntitySchema = {
-  type: 'object',
-  properties: {
-    id: {
-      type: 'string',
-    },
-    name: {
-      type: 'string',
-    },
-    order: {
-      type: 'number',
-    },
-    formTemplateId: {
-      type: 'string',
-    },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-  },
-  required: ['id', 'name', 'order', 'formTemplateId', 'createdAt', 'updatedAt'],
-} as const;
-
-export const UpdateSignatureFieldDtoSchema = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-    },
-    order: {
-      type: 'number',
-    },
-    formTemplateId: {
-      type: 'string',
-    },
-  },
-} as const;
-
 export const ConnectEmployeeDtoSchema = {
   type: 'object',
   properties: {
@@ -426,20 +369,24 @@ export const ConnectEmployeeDtoSchema = {
   required: ['id'],
 } as const;
 
-export const UpdateSignatureSignerDtoSchema = {
+export const UpdateAssignedGroupSignerDtoSchema = {
   type: 'object',
   properties: {
+    fieldGroupId: {
+      type: 'string',
+    },
+    signerType: {
+      type: 'string',
+      enum: ['POSITION', 'DEPARTMENT', 'USER', 'USER_LIST'],
+    },
     signerEmployeeId: {
       type: 'string',
-      nullable: true,
     },
     signerPositionId: {
       type: 'string',
-      nullable: true,
     },
     signerDepartmentId: {
       type: 'string',
-      nullable: true,
     },
     signerEmployeeList: {
       type: 'array',
@@ -447,99 +394,147 @@ export const UpdateSignatureSignerDtoSchema = {
         $ref: '#/components/schemas/ConnectEmployeeDto',
       },
     },
-    signerType: {
-      type: 'string',
-      enum: ['POSITION', 'DEPARTMENT', 'USER', 'USER_LIST'],
-    },
   },
 } as const;
 
-export const CreateDepartmentDtoSchema = {
+export const CreateTemplateBoxDtoSchema = {
   type: 'object',
   properties: {
     name: {
       type: 'string',
     },
+    type: {
+      type: 'string',
+      enum: ['signature', 'checkbox'],
+    },
+    x_coordinate: {
+      type: 'number',
+    },
+    y_coordinate: {
+      type: 'number',
+    },
+    fieldGroupId: {
+      type: 'string',
+    },
   },
-  required: ['name'],
+  required: ['name', 'type', 'x_coordinate', 'y_coordinate', 'fieldGroupId'],
 } as const;
 
-export const UpdateDepartmentDtoSchema = {
+export const CreateFieldGroupDtoSchema = {
   type: 'object',
   properties: {
     name: {
       type: 'string',
     },
-  },
-} as const;
-
-export const CreateSignatureDtoSchema = {
-  type: 'object',
-  properties: {
     order: {
       type: 'number',
     },
-    signerEmployeeId: {
-      type: 'string',
-      nullable: true,
-    },
-    signerPositionId: {
-      type: 'string',
-      nullable: true,
-    },
-    signerDepartmentId: {
-      type: 'string',
-      nullable: true,
-    },
-    signerEmployeeList: {
+    templateBoxes: {
       type: 'array',
       items: {
-        $ref: '#/components/schemas/ConnectEmployeeDto',
+        $ref: '#/components/schemas/CreateTemplateBoxDto',
       },
     },
-    signerType: {
-      type: 'string',
-      enum: ['POSITION', 'DEPARTMENT', 'USER', 'USER_LIST'],
-    },
   },
-  required: [
-    'order',
-    'signerEmployeeId',
-    'signerPositionId',
-    'signerDepartmentId',
-    'signerEmployeeList',
-    'signerType',
-  ],
+  required: ['name', 'order', 'templateBoxes'],
 } as const;
 
-export const CreateFormInstanceDtoSchema = {
+export const CreateFormTemplateDtoSchema = {
   type: 'object',
   properties: {
     name: {
-      type: 'string',
-    },
-    signatures: {
-      type: 'array',
-      items: {
-        $ref: '#/components/schemas/CreateSignatureDto',
-      },
-    },
-    originatorId: {
-      type: 'string',
-    },
-    formTemplateId: {
       type: 'string',
     },
     formDocLink: {
       type: 'string',
     },
+    fieldGroups: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/CreateFieldGroupDto',
+      },
+    },
+  },
+  required: ['name', 'formDocLink', 'fieldGroups'],
+} as const;
+
+export const TemplateBoxBaseEntitySchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    type: {
+      type: 'string',
+      enum: ['SIGNATURE', 'CHECKBOX', 'TEXT_FIELD'],
+    },
+    x_coordinate: {
+      type: 'number',
+    },
+    y_coordinate: {
+      type: 'number',
+    },
+    createdAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    updatedAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    fieldGroupId: {
+      type: 'string',
+    },
   },
   required: [
+    'id',
+    'type',
+    'x_coordinate',
+    'y_coordinate',
+    'createdAt',
+    'updatedAt',
+    'fieldGroupId',
+  ],
+} as const;
+
+export const FieldGroupBaseEntitySchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    order: {
+      type: 'number',
+    },
+    createdAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    updatedAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    formTemplateId: {
+      type: 'string',
+    },
+    templateBoxes: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/TemplateBoxBaseEntity',
+      },
+    },
+  },
+  required: [
+    'id',
     'name',
-    'signatures',
-    'originatorId',
+    'order',
+    'createdAt',
+    'updatedAt',
     'formTemplateId',
-    'formDocLink',
+    'templateBoxes',
   ],
 } as const;
 
@@ -567,10 +562,13 @@ export const FormTemplateBaseEntitySchema = {
   required: ['id', 'name', 'formDocLink', 'createdAt', 'updatedAt'],
 } as const;
 
-export const SignatureEntitySchema = {
+export const AssignedGroupEntitySchema = {
   type: 'object',
   properties: {
     id: {
+      type: 'string',
+    },
+    fieldGroupId: {
       type: 'string',
     },
     order: {
@@ -595,6 +593,36 @@ export const SignatureEntitySchema = {
       type: 'string',
       nullable: true,
     },
+    signerDepartmentId: {
+      type: 'string',
+      nullable: true,
+    },
+    signerEmployeeId: {
+      type: 'string',
+      nullable: true,
+    },
+    signingEmployeeId: {
+      type: 'string',
+      nullable: true,
+    },
+    signerType: {
+      type: 'string',
+      enum: ['POSITION', 'DEPARTMENT', 'USER', 'USER_LIST'],
+    },
+    formInstanceId: {
+      type: 'string',
+    },
+    fieldGroup: {
+      $ref: '#/components/schemas/FieldGroupBaseEntity',
+    },
+    signingEmployee: {
+      nullable: true,
+      allOf: [
+        {
+          $ref: '#/components/schemas/EmployeeBaseEntity',
+        },
+      ],
+    },
     signerPosition: {
       nullable: true,
       allOf: [
@@ -603,10 +631,6 @@ export const SignatureEntitySchema = {
         },
       ],
     },
-    signerDepartmentId: {
-      type: 'string',
-      nullable: true,
-    },
     signerDepartment: {
       nullable: true,
       allOf: [
@@ -614,10 +638,6 @@ export const SignatureEntitySchema = {
           $ref: '#/components/schemas/DepartmentEntity',
         },
       ],
-    },
-    signerEmployeeId: {
-      type: 'string',
-      nullable: true,
     },
     signerEmployee: {
       nullable: true,
@@ -628,49 +648,23 @@ export const SignatureEntitySchema = {
       ],
     },
     signerEmployeeList: {
+      nullable: true,
       type: 'array',
       items: {
         $ref: '#/components/schemas/EmployeeBaseEntity',
       },
     },
-    signingEmployeeId: {
-      type: 'string',
-      nullable: true,
-    },
-    signingEmployee: {
-      nullable: true,
-      allOf: [
-        {
-          $ref: '#/components/schemas/EmployeeBaseEntity',
-        },
-      ],
-    },
-    signerType: {
-      type: 'string',
-      enum: ['POSITION', 'DEPARTMENT', 'USER', 'USER_LIST'],
-    },
-    formInstanceId: {
-      type: 'string',
-    },
   },
   required: [
     'id',
+    'fieldGroupId',
     'order',
     'signed',
-    'signedDocLink',
     'createdAt',
     'updatedAt',
-    'signerPositionId',
-    'signerPosition',
-    'signerDepartmentId',
-    'signerDepartment',
-    'signerEmployeeId',
-    'signerEmployee',
-    'signerEmployeeList',
-    'signingEmployeeId',
-    'signingEmployee',
     'signerType',
     'formInstanceId',
+    'fieldGroup',
   ],
 } as const;
 
@@ -716,10 +710,10 @@ export const FormInstanceEntitySchema = {
     formTemplate: {
       $ref: '#/components/schemas/FormTemplateBaseEntity',
     },
-    signatures: {
+    assignedGroups: {
       type: 'array',
       items: {
-        $ref: '#/components/schemas/SignatureEntity',
+        $ref: '#/components/schemas/AssignedGroupEntity',
       },
     },
     originatorId: {
@@ -739,41 +733,10 @@ export const FormInstanceEntitySchema = {
     'updatedAt',
     'originator',
     'formTemplate',
-    'signatures',
+    'assignedGroups',
     'originatorId',
     'formTemplateId',
   ],
-} as const;
-
-export const UpdateFormInstanceDtoSchema = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-    },
-    formDocLink: {
-      type: 'string',
-    },
-  },
-} as const;
-
-export const CreateFormTemplateDtoSchema = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-    },
-    formDocLink: {
-      type: 'string',
-    },
-    signatureFields: {
-      type: 'array',
-      items: {
-        $ref: '#/components/schemas/CreateSignatureFieldDto',
-      },
-    },
-  },
-  required: ['name', 'formDocLink', 'signatureFields'],
 } as const;
 
 export const FormTemplateEntitySchema = {
@@ -788,10 +751,10 @@ export const FormTemplateEntitySchema = {
     formDocLink: {
       type: 'string',
     },
-    signatureFields: {
+    fieldGroups: {
       type: 'array',
       items: {
-        $ref: '#/components/schemas/SignatureFieldEntity',
+        $ref: '#/components/schemas/FieldGroupBaseEntity',
       },
     },
     formInstances: {
@@ -813,7 +776,7 @@ export const FormTemplateEntitySchema = {
     'id',
     'name',
     'formDocLink',
-    'signatureFields',
+    'fieldGroups',
     'formInstances',
     'createdAt',
     'updatedAt',
@@ -821,6 +784,100 @@ export const FormTemplateEntitySchema = {
 } as const;
 
 export const UpdateFormTemplateDtoSchema = {
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+    },
+    formDocLink: {
+      type: 'string',
+    },
+  },
+} as const;
+
+export const CreateDepartmentDtoSchema = {
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+    },
+  },
+  required: ['name'],
+} as const;
+
+export const UpdateDepartmentDtoSchema = {
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+    },
+  },
+} as const;
+
+export const CreateAssignedGroupDtoSchema = {
+  type: 'object',
+  properties: {
+    order: {
+      type: 'number',
+    },
+    fieldGroupId: {
+      type: 'string',
+    },
+    signerType: {
+      type: 'string',
+      enum: ['POSITION', 'DEPARTMENT', 'USER', 'USER_LIST'],
+    },
+    signerEmployeeId: {
+      type: 'string',
+    },
+    signerPositionId: {
+      type: 'string',
+    },
+    signerDepartmentId: {
+      type: 'string',
+    },
+    signerEmployeeList: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/ConnectEmployeeDto',
+      },
+    },
+  },
+  required: ['order', 'fieldGroupId', 'signerType', 'signerEmployeeList'],
+} as const;
+
+export const CreateFormInstanceDtoSchema = {
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+    },
+    assignedGroups: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/CreateAssignedGroupDto',
+      },
+    },
+    originatorId: {
+      type: 'string',
+    },
+    formTemplateId: {
+      type: 'string',
+    },
+    formDocLink: {
+      type: 'string',
+    },
+  },
+  required: [
+    'name',
+    'assignedGroups',
+    'originatorId',
+    'formTemplateId',
+    'formDocLink',
+  ],
+} as const;
+
+export const UpdateFormInstanceDtoSchema = {
   type: 'object',
   properties: {
     name: {

@@ -1,10 +1,10 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
+import { CreateFieldGroupDto } from '@web/client';
 import {
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen.ts';
-import { CreateSignatureFieldDto } from '@web/client/types.gen.ts';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext.tsx';
 import { queryClient } from '@web/pages/_app.tsx';
 import { useRouter } from 'next/router.js';
@@ -50,12 +50,13 @@ export const FormTemplateButtons = ({
       throw new Error('No PDF file uploaded');
     }
 
-    const signatures: CreateSignatureFieldDto[] = [];
+    const fieldGroups: CreateFieldGroupDto[] = [];
 
-    Array.from(fieldGroups).forEach(([key, value], index) => {
-      signatures.push({
-        name: `Group ${index + 1}`,
+    Array.from(fieldGroups).forEach((fieldGroup, index) => {
+      fieldGroups.push({
+        name: fieldGroup.name,
         order: index,
+        templateBoxes: fieldGroup.templateBoxes,
       });
     });
 
@@ -66,7 +67,7 @@ export const FormTemplateButtons = ({
         body: {
           name: formTemplateName ? formTemplateName : '',
           formDocLink: blob.url,
-          signatureFields: signatures,
+          fieldGroups: fieldGroups,
         },
       })
       .then((response) => {

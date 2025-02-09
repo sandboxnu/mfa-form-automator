@@ -1,21 +1,21 @@
 import { Box, Text } from '@chakra-ui/react';
-import { SignatureEntity } from '@web/client/types.gen.ts';
 import { useRouter } from 'next/router.js';
 import { AssignedAvatarGroup } from './AssignedAvatarGroup';
+import { AssignedGroupEntity } from '@web/client';
 
 /**
  * @param formName - the name of the form
- * @param signatures - the signatures on the form
+ * @param assignedGroups - the assigned groups on the form
  * @param link - the link to the form
  * @returns a card for a form
  */
 export const FormCard = ({
   formName,
-  signatures,
+  assignedGroups,
   link,
 }: {
   formName: String;
-  signatures: SignatureEntity[];
+  assignedGroups: AssignedGroupEntity[];
   link: string;
 }) => {
   const router = useRouter();
@@ -47,7 +47,7 @@ export const FormCard = ({
             {formName}
           </Text>
 
-          <AssignedAvatarGroup signatures={signatures} />
+          <AssignedAvatarGroup assignedGroups={assignedGroups} />
         </Box>
       </Box>
     </>

@@ -13,8 +13,7 @@ import { AddIcon, UploadForm } from '@web/static/icons.tsx';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { SignatureField } from './SignatureField.tsx';
-import { TempSignatureField } from './types.ts';
+import { TempFieldGroup } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app.tsx';
 import { useBlob } from '@web/hooks/useBlob.ts';
@@ -32,6 +31,7 @@ import {
   DialogRoot,
 } from '../ui/dialog.tsx';
 import { toaster, Toaster } from '../ui/toaster.tsx';
+import { FieldGroup } from './FieldGroup.tsx';
 
 const variants = {
   notDragging: {
@@ -60,9 +60,8 @@ export const CreateFormTemplateModal = ({
 }) => {
   const [formTemplateName, setFormTemplateName] =
     useState<string>('New Form Template');
-  const [signatureFields, setSignatureFields] = useState<TempSignatureField[]>(
-    [],
-  );
+  const [fieldGroups, setFieldGroups] = useState<TempFieldGroup[]>([]);
+
   let isFormTemplateNameInvalid = formTemplateName === '';
   const {
     inputFileRef,
@@ -83,24 +82,23 @@ export const CreateFormTemplateModal = ({
   });
 
   /**
-   * Delete a signature field given an id
+   * Delete a field group given an id
    */
-  const _deleteSignatureField = (id: string) => {
-    let newSignatureFields = signatureFields.filter((item) => {
+  const _deleteFieldGroup = (id: string) => {
+    let newFieldGroups = fieldGroups.filter((item) => {
       return item.id !== id;
     });
-    setSignatureFields(newSignatureFields);
+    setFieldGroups(newFieldGroups);
   };
 
   /**
-   * Add a signature field
+   * Add a field group
    */
-  const _handleChange = (newSignatureField: TempSignatureField) => {
-    let tempSignatureFields = signatureFields.slice(0);
-    tempSignatureFields.filter(
-      (value) => value.id === newSignatureField.id,
-    )[0].value = newSignatureField.value;
-    setSignatureFields(tempSignatureFields);
+  const _handleChange = (newFieldGroup: TempFieldGroup) => {
+    let tempFieldGroups = fieldGroups.slice(0);
+    tempFieldGroups.filter((value) => value.id === newFieldGroup.id)[0].value =
+      newFieldGroup.value;
+    setFieldGroups(tempFieldGroups);
   };
 
   /**
@@ -117,10 +115,13 @@ export const CreateFormTemplateModal = ({
         body: {
           name: formTemplateName,
           formDocLink: blob.url,
-          signatureFields: signatureFields.map((signatureField, i) => {
+          fieldGroups: fieldGroups.map((fieldGroup, i) => {
             return {
-              name: signatureField.value,
+              name: fieldGroup.value,
               order: i,
+              // TODO: THESE SHOULD BE SPECIFIED IN THE FORM TEMPLATE CREATION
+              templateBoxes: [],
+              formTemplateId: '',
             };
           }),
         },
@@ -139,7 +140,7 @@ export const CreateFormTemplateModal = ({
    */
   const _handleModalClose = () => {
     setFormTemplateName('New Form Template');
-    setSignatureFields([]);
+    setFieldGroups([]);
     onCloseCreateFormTemplate();
     clearLocalBlob();
   };
@@ -248,15 +249,15 @@ export const CreateFormTemplateModal = ({
                   <Reorder.Group
                     spacing={2}
                     axis="y"
-                    values={signatureFields}
-                    onReorder={setSignatureFields}
+                    values={fieldGroups}
+                    onReorder={setFieldGroups}
                     mt="20px"
                   ></Reorder.Group>
-                  {signatureFields.map((signatureField) => (
+                  {fieldGroups.map((fieldGroup) => (
                     <List.Item asChild>
                       <Reorder.Item
-                        key={signatureField.id}
-                        value={signatureField}
+                        key={fieldGroup.id}
+                        value={fieldGroup}
                         dragTransition={{
                           bounceStiffness: 600,
                         }}
@@ -268,10 +269,10 @@ export const CreateFormTemplateModal = ({
                           borderRadius: '8px',
                         }}
                       >
-                        <SignatureField
-                          field={signatureField}
+                        <FieldGroup
+                          fieldGroup={fieldGroup}
                           handleChange={_handleChange}
-                          handleDelete={_deleteSignatureField}
+                          handleDelete={_deleteFieldGroup}
                         />
                       </Reorder.Item>
                     </List.Item>
@@ -279,17 +280,17 @@ export const CreateFormTemplateModal = ({
                 </List.Root>
                 <Button
                   variant="ghost"
-                  mt={signatureFields.length > 0 ? '14px' : '0px'}
+                  mt={fieldGroups.length > 0 ? '14px' : '0px'}
                   padding="0px"
                   data-group
                   _hover={{ bg: 'transparent' }}
                   onClick={() => {
-                    let currentSignatureFields = signatureFields.slice(0);
-                    currentSignatureFields.push({
+                    let currentFieldGroups = fieldGroups.slice(0);
+                    currentFieldGroups.push({
                       id: uuidv4(),
                       value: '',
                     });
-                    setSignatureFields(currentSignatureFields);
+                    setFieldGroups(currentFieldGroups);
                   }}
                 >
                   <AddIcon
@@ -337,8 +338,8 @@ export const CreateFormTemplateModal = ({
             disabled={
               !hasLocalBlob ||
               isFormTemplateNameInvalid ||
-              signatureFields.length == 0 ||
-              signatureFields.some((field) => field.value === '')
+              fieldGroups.length == 0 ||
+              fieldGroups.some((field) => field.value === '')
             }
             onClick={(_) => {
               toaster.promise(_submitFormTemplate(), {

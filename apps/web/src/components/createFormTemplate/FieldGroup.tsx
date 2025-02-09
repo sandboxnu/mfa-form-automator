@@ -1,11 +1,8 @@
 import {
   Flex,
-  ButtonGroup,
   IconButton,
   HStack,
   Editable,
-  Input,
-  Box,
   Text,
   useEditable,
 } from '@chakra-ui/react';
@@ -15,39 +12,39 @@ import {
   DeleteIcon,
   DraggerIcon,
 } from '@web/static/icons';
-import { TempSignatureField } from './types';
+import { TempFieldGroup } from './types';
 
 /**
- * @param field - the signature field
- * @param handleChange - function to handle changes to the signature field
- * @param handleDelete - function to handle deletion of the signature field
- * @returns a signature field
+ * @param fieldGroup - the field group
+ * @param handleChange - function to handle changes to the field group
+ * @param handleDelete - function to handle deletion of the field group
+ * @returns a field group
  */
-export const SignatureField = ({
-  field,
+export const FieldGroup = ({
+  fieldGroup,
   handleChange,
   handleDelete,
 }: {
-  field: TempSignatureField;
-  handleChange: (newSignatureField: TempSignatureField) => void;
+  fieldGroup: TempFieldGroup;
+  handleChange: (newFieldGroup: TempFieldGroup) => void;
   handleDelete: (id: string) => void;
 }) => {
   const editable = useEditable({
-    defaultValue: field.value,
+    defaultValue: fieldGroup.value,
     onValueChange: (value) => {
-      handleChange({ id: field.id, value: value.value });
+      handleChange({ id: fieldGroup.id, value: value.value });
     },
     onValueCommit: (value) => {
-      handleChange({ id: field.id, value: value.value });
+      handleChange({ id: fieldGroup.id, value: value.value });
     },
     onValueRevert: (value) => {
-      handleChange({ id: field.id, value: value.value });
+      handleChange({ id: fieldGroup.id, value: value.value });
     },
   });
 
   return (
     <>
-      {field.value === '' ? (
+      {fieldGroup.value === '' ? (
         <Text
           fontFamily="Hanken Grotesk"
           fontSize="12px"
@@ -65,7 +62,7 @@ export const SignatureField = ({
         <Editable.RootProvider
           value={editable}
           fontFamily="Hanken Grotesk"
-          defaultValue={field.value}
+          defaultValue={fieldGroup.value}
           fontSize="16px"
           fontWeight="400"
           // TODO: do we need this? not sure what the equivalent is when migrating from chakra v2 to v3
@@ -93,7 +90,7 @@ export const SignatureField = ({
                 aria-label="Delete Signature Field"
                 size="sm"
                 background="transparent"
-                onClick={() => handleDelete(field.id)}
+                onClick={() => handleDelete(fieldGroup.id)}
               >
                 <DeleteIcon />
               </IconButton>
@@ -102,8 +99,8 @@ export const SignatureField = ({
               <IconButton
                 aria-label="Submit"
                 borderRadius="full"
-                disabled={field.value === ''}
-                onClick={() => handleChange(field)}
+                disabled={fieldGroup.value === ''}
+                onClick={() => handleChange(fieldGroup)}
               >
                 <CompletedIcon />
               </IconButton>

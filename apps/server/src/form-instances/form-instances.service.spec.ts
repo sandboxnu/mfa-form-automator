@@ -3,7 +3,7 @@ import { FormInstancesService } from './form-instances.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
-import { Prisma, SignerType } from '@prisma/client';
+import { Prisma, SignatureBoxFieldType, SignerType } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
@@ -98,6 +98,27 @@ const formTemplate = {
     },
   ],
   formInstances: [],
+  fieldGroups: [
+    {
+      id: 'fieldGroupId',
+      name: 'Field-Group-1',
+      order: 0,
+      formTemplateId: formTemplateId,
+      templateBoxes: [
+        {
+          id: 'templateBoxId',
+          type: SignatureBoxFieldType.TEXT_FIELD,
+          x_coordinate: 0,
+          y_coordinate: 0,
+          createdAt: new Date(1672531200),
+          updatedAt: new Date(1672531200),
+          fieldGroupId: 'fieldGroupId',
+        },
+      ],
+      createdAt: new Date(1672531200),
+      updatedAt: new Date(1672531200),
+    },
+  ],
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
 };
@@ -219,6 +240,9 @@ const db = {
   formTemplate: {
     findFirstOrThrow: jest.fn().mockResolvedValue(formTemplate),
   },
+  fieldGroup: {
+    findMany: jest.fn().mockResolvedValue(formTemplate.fieldGroups),
+  },
 };
 
 const mockPostmarkService = {
@@ -278,12 +302,13 @@ describe('FormInstancesService', () => {
     it('should successfully create a form instance', () => {
       const createFormInstanceDto = {
         name: formInstance1Name,
-        signatures: [
+        assignedGroups: [
           {
+            fieldGroupId: 'fieldGroupId',
             order: 0,
             signerPositionId: positionId3,
-            signerEmployeeId: null,
-            signerDepartmentId: null,
+            signerEmployeeId: undefined,
+            signerDepartmentId: undefined,
             signerEmployeeList: [],
             signerType: SignerType.POSITION,
           },
@@ -309,12 +334,13 @@ describe('FormInstancesService', () => {
     it('should fail when invalid form template is specified', () => {
       const createFormInstanceDto = {
         name: formInstance1Name,
-        signatures: [
+        assignedGroups: [
           {
+            fieldGroupId: 'assignedGroupId',
             order: 0,
             signerPositionId: positionId3,
-            signerEmployeeId: null,
-            signerDepartmentId: null,
+            signerEmployeeId: undefined,
+            signerDepartmentId: undefined,
             signerEmployeeList: [],
             signerType: SignerType.POSITION,
           },
@@ -343,7 +369,7 @@ describe('FormInstancesService', () => {
     it('should fail when number of signatures does not equal number of signature fields', () => {
       const createFormInstanceDto = {
         name: formInstance1Name,
-        signatures: [],
+        assignedGroups: [],
         originatorId: 'originator-id',
         formTemplateId: 'form-template-id',
         formDocLink: 'form-doc-link',
@@ -351,7 +377,7 @@ describe('FormInstancesService', () => {
 
       expect(service.create(createFormInstanceDto)).rejects.toThrowError(
         new Error(
-          FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_SIGNATURES,
+          FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_ASSIGNED_GROUPS,
         ),
       );
     });
@@ -359,12 +385,13 @@ describe('FormInstancesService', () => {
     it('should throw an error when an invalid position id is specified when signer type is position', () => {
       const createFormInstanceDto = {
         name: formInstance1Name,
-        signatures: [
+        assignedGroups: [
           {
+            fieldGroupId: 'fieldGroupId',
             order: 0,
             signerPositionId: 'invalid-position-id',
-            signerEmployeeId: null,
-            signerDepartmentId: null,
+            signerEmployeeId: undefined,
+            signerDepartmentId: undefined,
             signerEmployeeList: [],
             signerType: SignerType.POSITION,
           },
@@ -388,12 +415,13 @@ describe('FormInstancesService', () => {
     it('should throw an error when an invalid employee id is specified when signer type is employee', () => {
       const createFormInstanceDto = {
         name: formInstance1Name,
-        signatures: [
+        assignedGroups: [
           {
+            fieldGroupId: 'fieldGroupId',
             order: 0,
-            signerPositionId: null,
+            signerPositionId: undefined,
             signerEmployeeId: 'invalid-employee-id',
-            signerDepartmentId: null,
+            signerDepartmentId: undefined,
             signerEmployeeList: [],
             signerType: SignerType.USER,
           },
@@ -417,11 +445,12 @@ describe('FormInstancesService', () => {
     it('should throw an error when an invalid department id is specified when signer type is department', () => {
       const createFormInstanceDto = {
         name: formInstance1Name,
-        signatures: [
+        assignedGroups: [
           {
+            fieldGroupId: 'fieldGroupId',
             order: 0,
-            signerPositionId: null,
-            signerEmployeeId: null,
+            signerPositionId: undefined,
+            signerEmployeeId: undefined,
             signerDepartmentId: 'invalid-department-id',
             signerEmployeeList: [],
             signerType: SignerType.DEPARTMENT,
@@ -446,12 +475,13 @@ describe('FormInstancesService', () => {
     it('should throw an error when an invalid employee id is specified in the employee list when signer type is employee list', () => {
       const createFormInstanceDto = {
         name: formInstance1Name,
-        signatures: [
+        assignedGroups: [
           {
+            fieldGroupId: 'fieldGroupId',
             order: 0,
-            signerPositionId: null,
-            signerEmployeeId: null,
-            signerDepartmentId: null,
+            signerPositionId: undefined,
+            signerEmployeeId: undefined,
+            signerDepartmentId: undefined,
             signerEmployeeList: [{ id: 'invalid-employee-id' }],
             signerType: SignerType.USER_LIST,
           },

@@ -1,7 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { AwaitingIcon, CheckIcon } from 'apps/web/src/static/icons.tsx';
 import { AvatarMapProps } from './types.ts';
-import { SignatureEntitySchema } from '@web/client/schemas.gen.ts';
 import { SignerType } from '@web/client/types.gen.ts';
 import { Avatar } from './ui/avatar.tsx';
 
@@ -17,7 +16,6 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
     signerType: SignerType,
     isSigned: boolean,
   ) => {
-    SignatureEntitySchema;
     if (isSigned || signerType === SignerType.USER) {
       return title;
     } else if (signerType === SignerType.DEPARTMENT) {
