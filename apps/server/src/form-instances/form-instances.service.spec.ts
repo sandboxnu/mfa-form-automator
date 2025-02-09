@@ -3,7 +3,7 @@ import { FormInstancesService } from './form-instances.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
-import { Prisma, SignerType } from '@prisma/client';
+import { Prisma, SignatureBoxFieldType, SignerType } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
@@ -98,7 +98,27 @@ const formTemplate = {
     },
   ],
   formInstances: [],
-  fieldGroups: [],
+  fieldGroups: [
+    {
+      id: 'fieldGroupId',
+      name: 'Field-Group-1',
+      order: 0,
+      formTemplateId: formTemplateId,
+      templateBoxes: [
+        {
+          id: 'templateBoxId',
+          type: SignatureBoxFieldType.TEXT_FIELD,
+          x_coordinate: 0,
+          y_coordinate: 0,
+          createdAt: new Date(1672531200),
+          updatedAt: new Date(1672531200),
+          fieldGroupId: 'fieldGroupId',
+        },
+      ],
+      createdAt: new Date(1672531200),
+      updatedAt: new Date(1672531200),
+    },
+  ],
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
 };
@@ -220,6 +240,9 @@ const db = {
   formTemplate: {
     findFirstOrThrow: jest.fn().mockResolvedValue(formTemplate),
   },
+  fieldGroup: {
+    findMany: jest.fn().mockResolvedValue(formTemplate.fieldGroups),
+  },
 };
 
 const mockPostmarkService = {
@@ -288,7 +311,6 @@ describe('FormInstancesService', () => {
             signerDepartmentId: undefined,
             signerEmployeeList: [],
             signerType: SignerType.POSITION,
-            templateBoxes: [],
           },
         ],
         originatorId: 'originator-id',
