@@ -6,7 +6,7 @@ import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@web/authConfig';
 import { callMsGraph } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
-import { EmployeeScope } from '@prisma/client';
+import { Scope } from '@web/client';
 
 import {
   appControllerLogin,
@@ -101,13 +101,13 @@ export const AuthProvider = ({ children }: any) => {
         }
 
         setUser({
-          id: employee.id,
-          positionId: employee.position.id,
-          departmentId: position.department.id,
-          email: employee.email,
-          firstName: employee.firstName,
-          lastName: employee.lastName,
-          scope: EmployeeScope.BASE_USER,
+          id: employee.data.id,
+          positionId: employee.data.position.id,
+          departmentId: position.data.department.id,
+          email: employee.data.email,
+          firstName: employee.data.firstName,
+          lastName: employee.data.lastName,
+          scope: Scope.BASE_USER,
         });
       })
       .catch(async (_error) => {
@@ -209,7 +209,7 @@ export const AuthProvider = ({ children }: any) => {
     position: string,
     department: string,
     signatureLink: string,
-    scope: RegisterEmployeeDto.scope,
+    scope: RegisterEmployeeDto['scope'],
   ) => {
     const employee: RegisterEmployeeDto = {
       email: email,

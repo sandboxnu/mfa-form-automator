@@ -4,16 +4,12 @@ import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useBlob } from '@web/hooks/useBlob';
 import { SignaturePad } from './../components/SignaturePad';
-import {
-  departmentsControllerFindAll,
-  positionsControllerFindAllInDepartmentName,
-  DepartmentEntity,
-  PositionEntity,
-} from '@web/client';
+import { DepartmentEntity, PositionEntity } from '@web/client';
 import {
   departmentsControllerFindAllOptions,
   positionsControllerFindAllInDepartmentNameOptions,
 } from '@web/client/@tanstack/react-query.gen';
+import { Scope } from '@web/client';
 
 export default function Register() {
   const { completeRegistration, userData } = useAuth();
@@ -116,7 +112,7 @@ export default function Register() {
       currentDepartmentName,
       currentPositionName,
       uploadedBlob?.url || 'http://localhost:3002/signature.png',
-      RegisterEmployeeDto.scope.BASE_USER,
+      Scope.BASE_USER,
     );
   };
 

@@ -44,7 +44,7 @@ model Employee {
   lastName      String   @db.VarChar(255)
   email         String   @unique @db.VarChar(255)
   signatureLink String   @db.VarChar(255)
-  scope         EmployeeScope  @default(BASE_USER) // TODO @db tag
+  scope         EmployeeScope  @default(BASE_USER)
   pswdHash      String?  @db.VarChar(255)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
