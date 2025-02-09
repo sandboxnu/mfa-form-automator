@@ -3,7 +3,6 @@ import {
   Box,
   Text,
   Button,
-  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -20,6 +19,7 @@ import {
   positionsControllerFindAllInDepartmentNameOptions,
 } from '@web/client/@tanstack/react-query.gen';
 import { SelectLabel, SelectRoot } from '@web/components/ui/select';
+import { Scope } from '@web/client';
 
 export default function Register() {
   const { completeRegistration, userData } = useAuth();
@@ -124,6 +124,7 @@ export default function Register() {
       currentDepartmentName[0],
       currentPositionName[0],
       uploadedBlob?.url || 'http://localhost:3002/signature.png',
+      Scope.BASE_USER,
     );
   };
 

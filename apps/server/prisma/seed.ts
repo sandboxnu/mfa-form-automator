@@ -1,4 +1,4 @@
-import { PrismaClient, SignerType } from '@prisma/client';
+import { PrismaClient, SignerType, EmployeeScope } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
@@ -49,6 +49,7 @@ type EmployeeData = {
   email: string;
   positionId: string;
   signatureLink: string;
+  scope: EmployeeScope;
 };
 
 // update or insert employee to database based on the employee id
@@ -65,6 +66,7 @@ async function upsertEmployee(empData: EmployeeData) {
       position: {
         connect: { id: empData.positionId },
       },
+      scope: empData.scope,
     },
   });
 }
@@ -389,6 +391,7 @@ async function main() {
       email: 'zhang.iri@northeastern.edu',
       positionId: CHIEF_OF_STAFF_UUID,
       signatureLink: DEV_SIGNATURE_LINK,
+      scope: EmployeeScope.BASE_USER,
     },
     {
       id: KAI_ZHENG_UUID,
@@ -397,6 +400,7 @@ async function main() {
       email: 'zheng.kaiy@northeastern.edu',
       positionId: CHIEF_FIN_OFFICER_UUID,
       signatureLink: DEV_SIGNATURE_LINK,
+      scope: EmployeeScope.BASE_USER,
     },
     {
       id: ANGELA_WEIGL_UUID,
@@ -405,6 +409,7 @@ async function main() {
       email: 'weigl.a@northeastern.edu',
       positionId: AGG_DIR_UUID,
       signatureLink: DEV_SIGNATURE_LINK,
+      scope: EmployeeScope.BASE_USER,
     },
     {
       id: ANSHUL_SHIRUDE_UUID,
@@ -413,6 +418,7 @@ async function main() {
       email: 'shirude.a@northeastern.edu',
       positionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
       signatureLink: DEV_SIGNATURE_LINK,
+      scope: EmployeeScope.BASE_USER,
     },
   ];
 

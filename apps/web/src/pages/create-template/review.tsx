@@ -29,7 +29,7 @@ export default function Review() {
       }
       deleteFunction={() => {}}
       submitLink={'/create-template/success'}
-      backLink={'/create-template/inputFields'}
+      backLink={'/create-template/input-fields'}
       disabled={false}
       review={true}
     />

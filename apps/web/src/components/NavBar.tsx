@@ -181,20 +181,6 @@ export const NavBar = ({
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
-      {process.env.NODE_ENV === 'development' && (
-        <Box>
-          <Box
-            mt="4"
-            mb="2"
-            mx="12"
-            borderBottomWidth="1px"
-            borderColor="gray.200"
-          ></Box>
-          <NavItem icon="test" link="/sandbox">
-            Test
-          </NavItem>
-        </Box>
-      )}
     </Box>
   );
 };

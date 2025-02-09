@@ -57,17 +57,15 @@ export const OverviewRow = ({
             </Flex>
           )}
         </Flex>
-        <Flex pr="30px">
+        <Flex>
           <ViewAll title={title} link={link} />
         </Flex>
       </Flex>
-      <HStack
+      <Flex
         marginTop="20px"
         flexDirection="row"
-        wrap="wrap"
-        pr="30px"
-        gap="20px"
         width="100%"
+        justifyContent={'space-between'}
       >
         {displayFormInstances.map(
           (formInstance: FormInstanceEntity, index: number) => {
@@ -87,7 +85,7 @@ export const OverviewRow = ({
             );
           },
         )}
-      </HStack>
+      </Flex>
     </>
   );
 };
