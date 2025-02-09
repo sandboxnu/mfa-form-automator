@@ -105,7 +105,7 @@ export const FormRow = ({
                   );
                 })}
             </AvatarGroup> */}
-            <Text pl="15px" mt="5px">
+            <Text pl="15px" mt="5px" truncate>
               {`${
                 formInstance.assignedGroups.filter(
                   (assignedGroup: AssignedGroupEntity) => {

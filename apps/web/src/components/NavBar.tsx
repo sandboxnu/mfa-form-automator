@@ -127,10 +127,8 @@ export const NavBar = ({
       <Flex
         alignItems={'center'}
         justifyContent={'center'}
-        px="4"
-        pt="40px"
-        pb="32px"
-        pl="12"
+        mt="40px"
+        mb="32px"
         rounded="8px"
         cursor="pointer"
         color="inherit"
@@ -148,11 +146,13 @@ export const NavBar = ({
               Create
             </Button>
           </MenuTrigger>
-          <MenuContent>
+          <MenuContent zIndex={5000}>
             <MenuItem
               rounded="8px"
               onClick={onOpenCreateFormInstance}
               value="form"
+              padding="10px"
+              w="158px"
             >
               Form
             </MenuItem>
@@ -162,6 +162,8 @@ export const NavBar = ({
                 router.push('create-template/upload');
               }}
               value="template"
+              padding="10px"
+              w="158px"
             >
               Template
             </MenuItem>
