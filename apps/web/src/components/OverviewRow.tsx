@@ -1,6 +1,6 @@
 import { HStack, Flex, Text } from '@chakra-ui/react';
 import { FormCard } from './FormCard';
-import { FormInstanceEntity } from '@web/client';
+import { FormInstanceEntity } from '@web/client/types.gen';
 import React from 'react';
 import { FormImageCard } from './FormImageCard';
 import { ViewAll } from './ViewAll';
@@ -57,17 +57,15 @@ export const OverviewRow = ({
             </Flex>
           )}
         </Flex>
-        <Flex pr="30px">
+        <Flex>
           <ViewAll title={title} link={link} />
         </Flex>
       </Flex>
-      <HStack
+      <Flex
         marginTop="20px"
         flexDirection="row"
-        wrap="wrap"
-        pr="30px"
-        spacing="20px"
         width="100%"
+        justifyContent={'space-between'}
       >
         {displayFormInstances.map(
           (formInstance: FormInstanceEntity, index: number) => {
@@ -81,13 +79,13 @@ export const OverviewRow = ({
               <FormCard
                 key={index}
                 formName={formInstance.name}
-                signatures={formInstance.signatures}
+                assignedGroups={formInstance.assignedGroups}
                 link={'/form-instances/' + formInstance.id}
               />
             );
           },
         )}
-      </HStack>
+      </Flex>
     </>
   );
 };

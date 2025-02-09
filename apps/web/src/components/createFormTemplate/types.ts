@@ -1,4 +1,4 @@
-export type TempSignatureField = {
+export type TempFieldGroup = {
   id: string;
   value: string;
 };

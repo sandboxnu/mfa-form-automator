@@ -22,19 +22,18 @@ import {
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import {
-  CreateFormInstanceDto,
-  FormInstancesService,
-  FormTemplateEntity,
-  FormTemplatesService,
-  PositionsService,
-  SignatureEntity,
-} from '@web/client';
 import { SignatureDropdown } from './SignatureDropdown';
-import { CreateFormInstanceModalProps, Option } from './types';
+import { AssignedGroupData, CreateFormInstanceModalProps } from './types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { GrayPencilIcon } from '@web/static/icons';
+import { FormTemplateEntity, SignerType } from '@web/client';
+import {
+  formInstancesControllerCreateMutation,
+  formTemplatesControllerFindAllOptions,
+  formTemplatesControllerFindAllQueryKey,
+  positionsControllerFindAllOptions,
+} from '@web/client/@tanstack/react-query.gen';
 
 /**
  * @param isOpen - boolean to determine if the modal is open
@@ -49,38 +48,41 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
   const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
   const [selectedFormTemplate, setSelectedFormTemplate] =
     useState<FormTemplateEntity | null>(null);
-  const [formTypeSelected, setFormTypeSelected] = useState(false);
-  const [signaturePositions, setSignaturePositions] = useState<
-    (Option | null)[]
+  const [assignedGroupsData, setAssignedGroupsData] = useState<
+    AssignedGroupData[]
   >([]);
+  const [formTypeSelected, setFormTypeSelected] = useState(false);
   const [formName, setFormName] = useState('Create Form');
   const createFormInstanceMutation = useMutation({
-    mutationFn: async (newFormInstance: CreateFormInstanceDto) => {
-      return FormInstancesService.formInstancesControllerCreate(
-        newFormInstance,
-      );
-    },
+    ...formInstancesControllerCreateMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['api', 'form-instances'] });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
     },
   });
 
   const { data: formTemplates } = useQuery({
-    queryKey: ['api', 'form-templates'],
-    queryFn: () => FormTemplatesService.formTemplatesControllerFindAll(),
+    ...formTemplatesControllerFindAllOptions(),
   });
 
   const { data: positions } = useQuery({
-    queryKey: ['api', 'positions'],
-    queryFn: () => PositionsService.positionsControllerFindAll(),
+    ...positionsControllerFindAllOptions(),
   });
 
   /**
    * Reset signature positions when form template changes
    */
   useEffect(() => {
-    setSignaturePositions(
-      new Array(selectedFormTemplate?.signatureFields.length).fill(null),
+    if (!selectedFormTemplate) return;
+
+    setAssignedGroupsData(
+      selectedFormTemplate.fieldGroups.map((_, i) => {
+        return {
+          fieldGroupId: selectedFormTemplate?.fieldGroups[i].id!,
+          order: i,
+        };
+      }),
     );
   }, [selectedFormTemplate]);
 
@@ -89,23 +91,28 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
    */
   const _submitFormInstance = async () => {
     if (!selectedFormTemplate) return;
+    if (!assignedGroupsData) return;
 
     await createFormInstanceMutation
       .mutateAsync({
-        name: formName,
-        signatures: signaturePositions.map((pos, i) => {
-          return {
-            order: i,
-            signerEmployeeId: pos?.employeeValue!,
-            signerType: SignatureEntity.signerType.USER,
-            signerDepartmentId: null,
-            signerPositionId: null,
-            signerEmployeeList: [],
-          };
-        }),
-        originatorId: user?.id!,
-        formTemplateId: selectedFormTemplate?.id!,
-        formDocLink: selectedFormTemplate?.formDocLink!,
+        body: {
+          name: formName,
+          assignedGroups: assignedGroupsData.map((pos, i) => {
+            return {
+              order: i,
+              fieldGroupId: pos?.fieldGroupId,
+              // signerEmployeeId: undefined,
+              signerType: SignerType.POSITION,
+              // signerDepartmentId: undefined,
+              // TODO: when we support multiple types, we should create this list outside of the mutation
+              signerPositionId: pos.positionId!,
+              signerEmployeeList: [],
+            };
+          }),
+          originatorId: user?.id!,
+          formTemplateId: selectedFormTemplate?.id!,
+          formDocLink: selectedFormTemplate?.formDocLink!,
+        },
       })
       .then((response) => {
         _handleModalClose();
@@ -133,7 +140,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     setFormName('Create Form');
     setSelectedFormTemplate(null);
     setFormTypeSelected(false);
-    setSignaturePositions([]);
+    setAssignedGroupsData([]);
   };
 
   function EditableControls() {
@@ -270,14 +277,14 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 <Heading as="h3" mb="28px">
                   Assignees
                 </Heading>
-                {selectedFormTemplate?.signatureFields.map((field, i) => (
+                {selectedFormTemplate?.fieldGroups.map((field, i) => (
                   <SignatureDropdown
                     key={field.id}
                     field={field}
                     index={i}
                     positions={positions}
-                    signaturePositions={signaturePositions}
-                    setSignaturePositions={setSignaturePositions}
+                    assignedGroupData={assignedGroupsData}
+                    setAssignedGroupData={setAssignedGroupsData}
                   />
                 ))}
               </Box>

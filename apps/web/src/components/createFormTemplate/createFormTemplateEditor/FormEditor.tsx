@@ -15,13 +15,21 @@ export const FormEditor = ({
   formTemplateName,
   pdfUrl,
   disableEdit,
+  formFields,
+  setFormFields,
+  fieldGroups,
+  setFieldGroups,
+  scale,
 }: {
   formTemplateName: string;
   pdfUrl: string;
   disableEdit: boolean;
+  formFields: FormFields;
+  setFormFields: (fields: FormFields) => void;
+  fieldGroups: FieldGroups;
+  setFieldGroups: (groups: FieldGroups) => void;
+  scale: number;
 }) => {
-  const { formFields, setFormFields, fieldGroups, setFieldGroups } =
-    useCreateFormTemplate();
   const [currentGroup, setCurrentGroup] = useState<string>(
     fieldGroups.keys().next().value ?? '',
   );
@@ -232,6 +240,7 @@ export const FormEditor = ({
             alignItems="center"
             gap="8px"
             display="flex"
+            zIndex={1}
           >
             <Button
               position="relative"
@@ -295,7 +304,7 @@ export const FormEditor = ({
           </Box>
           <Box
             height="474px"
-            width="800px"
+            width="100%"
             overflow="scroll"
             ref={documentRef}
             display="flex"
@@ -321,7 +330,6 @@ export const FormEditor = ({
               }}
             >
               <Page
-                width={1000}
                 renderAnnotationLayer={false}
                 renderTextLayer={false}
                 pageNumber={pageNum + 1}

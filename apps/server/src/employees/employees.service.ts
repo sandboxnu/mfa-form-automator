@@ -25,6 +25,7 @@ export class EmployeesService {
           createEmployeeDto.password,
           await bcrypt.genSalt(),
         ),
+        scope: createEmployeeDto.scope,
       },
       include: {
         position: {
@@ -151,7 +152,7 @@ export class EmployeesService {
         position: {
           include: {
             department: true,
-            signatures: true,
+            assignedGroups: true,
           },
         },
       },

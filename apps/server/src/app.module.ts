@@ -4,8 +4,6 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { EmployeesModule } from './employees/employees.module';
 import { PositionsModule } from './positions/positions.module';
-import { SignatureFieldsModule } from './signature-fields/signature-fields.module';
-import { SignaturesModule } from './signatures/signatures.module';
 import { FormInstancesModule } from './form-instances/form-instances.module';
 import { FormTemplatesModule } from './form-templates/form-templates.module';
 import { DepartmentsModule } from './departments/departments.module';
@@ -13,14 +11,14 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { AssignedGroupModule } from './assigned-group/assigned-group.module';
 
 @Module({
   imports: [
     PrismaModule,
     EmployeesModule,
     PositionsModule,
-    SignatureFieldsModule,
-    SignaturesModule,
+    AssignedGroupModule,
     FormInstancesModule,
     FormTemplatesModule,
     DepartmentsModule,

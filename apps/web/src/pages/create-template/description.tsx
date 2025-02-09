@@ -33,7 +33,7 @@ export default function Description() {
         setFormTemplateName(null);
         setFormTemplateDescription(null);
       }}
-      submitLink={'/create-template/inputFields'}
+      submitLink={'/create-template/input-fields'}
       backLink={'/create-template/upload'}
       disabled={!formTemplateName}
     />

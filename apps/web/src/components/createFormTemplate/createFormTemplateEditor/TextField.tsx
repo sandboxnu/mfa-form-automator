@@ -29,7 +29,7 @@ export default function TextField({
       minHeight={'40px'}
       style={{
         position: 'absolute',
-        zIndex: 100000,
+        zIndex: 1,
         background: `${color}`,
         opacity: '10px',
         border: `solid 1px grey`,

@@ -35,52 +35,54 @@ export const FormTemplateLayout = ({
   review?: boolean;
 }) => {
   return (
-    <Box height="100vh" marginTop="36px">
-      <Flex position="absolute" margin="0px" zIndex={5000}>
-        <SideCreateForm curStep={pageNumber} />
-      </Flex>
+    <>
+      <Box display="flex" flexDirection="column" flex="1" margin="36px">
+        <Flex>
+          <SideCreateForm curStep={pageNumber} />
+        </Flex>
 
-      <Heading
-        color="#2A2B2D"
-        fontSize="30px"
-        fontWeight={700}
-        lineHeight="38px"
-        marginLeft="36px"
-      >
-        Create form template
-      </Heading>
-      <Text
-        color="#4B4C4F"
-        fontSize="19px"
-        fontWeight={500}
-        lineHeight="26px"
-        pl="36px"
-      >
-        {subheading}
-      </Text>
-      <Flex
-        /* outer white box */
-        padding="36px 24px 36px 24px"
-        flexDirection="column"
-        justifyContent={'center'}
-        alignItems="center"
-        gap="20px"
-        borderRadius="12px"
-        border="1px solid #E5E5E5"
-        height="auto"
-        margin="16px 36px 16px 36px"
-        backgroundColor="#FFF"
-        alignContent={'center'}
-      >
-        {boxContent}
-      </Flex>
-      <FormTemplateButtons
-        deleteFunction={deleteFunction}
-        submitLink={submitLink}
-        backLink={backLink}
-        disabled={disabled}
-        review={review}
-      />
-    </Box>
+        <Heading
+          color="#2A2B2D"
+          fontSize="30px"
+          fontWeight={700}
+          lineHeight="38px"
+        >
+          Create form template
+        </Heading>
+        <Text
+          color="#4B4C4F"
+          fontSize="19px"
+          fontWeight={500}
+          lineHeight="26px"
+        >
+          {subheading}
+        </Text>
+
+        <Flex
+          marginTop="20px"
+          padding="36px 24px"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          gap="20px"
+          borderRadius="12px"
+          border="1px solid #E5E5E5"
+          height="auto"
+          backgroundColor="#FFF"
+          flex="1"
+        >
+          {boxContent}
+        </Flex>
+        <Flex justifyContent="space-between" marginTop="20px">
+          <FormTemplateButtons
+            deleteFunction={deleteFunction}
+            submitLink={submitLink}
+            backLink={backLink}
+            disabled={disabled}
+            review={review}
+          />
+        </Flex>
+      </Box>
+    </>
   );
 };
