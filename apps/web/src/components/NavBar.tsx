@@ -139,7 +139,7 @@ export const NavBar = ({
         fontWeight="semibold"
         transition=".15s ease"
       >
-        <MenuRoot closeOnSelect={false}>
+        <MenuRoot closeOnSelect={true}>
           <MenuTrigger asChild>
             <Button h="40px" w="124px" backgroundColor="#1367EA" color="white">
               <PlusIcon />
@@ -153,6 +153,7 @@ export const NavBar = ({
               value="form"
               padding="10px"
               w="158px"
+              cursor="pointer"
             >
               Form
             </MenuItem>
@@ -164,6 +165,7 @@ export const NavBar = ({
               value="template"
               padding="10px"
               w="158px"
+              cursor="pointer"
             >
               Template
             </MenuItem>

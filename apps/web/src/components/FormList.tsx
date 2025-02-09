@@ -65,7 +65,7 @@ export const FormList = ({
                 backgroundColor={color}
                 height="25px"
                 width="41px"
-                borderRadius="20"
+                borderRadius="20px"
                 justifyContent="center"
                 alignItems="center"
               >

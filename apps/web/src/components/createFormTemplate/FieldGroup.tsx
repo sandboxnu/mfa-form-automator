@@ -82,7 +82,7 @@ export const FieldGroup = ({
                 size="sm"
                 background="transparent"
               >
-                <EditIcon />
+                <EditIcon boxSize="24px" />
               </IconButton>
             </Editable.EditTrigger>
             {editable.editing && (

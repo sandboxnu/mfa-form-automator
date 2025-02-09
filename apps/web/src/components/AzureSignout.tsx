@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
 import { useAuth } from '@web/hooks/useAuth.ts';
-import { Flex, Text } from '@chakra-ui/react';
+import { Button, Flex, Text } from '@chakra-ui/react';
 import { SignoutIcon } from '@web/static/icons.tsx';
 
 /**
@@ -33,8 +33,8 @@ export const AzureSignout: React.FC = () => {
   };
 
   return (
-    <button onClick={handleLogout}>
-      <Flex align="center">
+    <Button background="white" onClick={handleLogout} cursor="pointer">
+      <Flex alignItems="center" justifyContent="start">
         <Text
           color="#4C658A"
           fontSize="18px"
@@ -47,6 +47,6 @@ export const AzureSignout: React.FC = () => {
         </Text>
         <SignoutIcon boxSize="24px" />
       </Flex>
-    </button>
+    </Button>
   );
 };

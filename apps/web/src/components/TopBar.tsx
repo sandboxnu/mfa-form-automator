@@ -62,7 +62,11 @@ export const TopBar: React.FC = () => {
           <PopoverTrigger asChild>
             <button>
               <Flex align="center">
-                <IconButton aria-label="Visit profile" colorScheme="none">
+                <IconButton
+                  aria-label="Visit profile"
+                  colorScheme="none"
+                  background="white"
+                >
                   {user?.firstName && user?.lastName ? (
                     <UserProfileAvatar
                       firstName={user.firstName}
@@ -76,7 +80,7 @@ export const TopBar: React.FC = () => {
             </button>
           </PopoverTrigger>
           <PopoverContent maxW="288px">
-            <PopoverBody divideX="2px" borderRadius="6px" p="0">
+            <PopoverBody divideX="2px" borderRadius="6px" mb="14px">
               <Box pl="24px" pb="14px">
                 <Text fontSize="18px" cursor="default" pt="18px">
                   {user?.firstName && user?.lastName
@@ -89,8 +93,10 @@ export const TopBar: React.FC = () => {
                     : 'Position'}
                 </Text>
               </Box>
-              <AzureSignout />
-              <SignOut />
+              <Box w="100%">
+                <AzureSignout />
+                <SignOut />
+              </Box>
             </PopoverBody>
           </PopoverContent>
         </PopoverRoot>

@@ -139,10 +139,11 @@ const FormInstance = ({
           _hover={{ textDecoration: 'none' }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          background="transparent"
         >
           <Flex flexDirection="column">
-            <Flex>
-              <PencilIcon mr={1} mt={6} />
+            <Flex alignItems={'center'}>
+              <PencilIcon mr={1} mt={4} boxSize="18px" />
               <Text
                 color="#000"
                 style={{ fontSize: '18px', textDecoration: 'none' }}
@@ -262,7 +263,7 @@ const FormInstance = ({
                   Assignees
                 </Text>
                 <Flex alignItems="center">
-                  <PencilIcon color="#4C658A" mr={1} />
+                  <PencilIcon boxSize="16px" color="#4C658A" mr={1} />
                   <Text
                     color="#4C658A"
                     style={{ fontSize: '18px', textDecoration: 'none' }}
