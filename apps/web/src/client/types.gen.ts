@@ -94,36 +94,15 @@ export type PositionEntity = {
   name: string;
   single: boolean;
   department: DepartmentEntity;
+  employees: Array<EmployeeBaseEntity>;
   departmentId: string;
   createdAt: string;
   updatedAt: string;
-  employees?: Array<EmployeeBaseEntity>;
 };
 
 export type UpdatePositionDto = {
   name?: string;
   departmentId?: string;
-};
-
-export type CreateSignatureFieldDto = {
-  name: string;
-  order: number;
-  formTemplateId?: string;
-};
-
-export type SignatureFieldEntity = {
-  id: string;
-  name: string;
-  order: number;
-  formTemplateId: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type UpdateSignatureFieldDto = {
-  name?: string;
-  order?: number;
-  formTemplateId?: string;
 };
 
 export type ConnectEmployeeDto = {
@@ -137,37 +116,58 @@ export enum SignerType {
   USER_LIST = 'USER_LIST',
 }
 
-export type UpdateSignatureSignerDto = {
-  signerEmployeeId?: string | null;
-  signerPositionId?: string | null;
-  signerDepartmentId?: string | null;
-  signerEmployeeList?: Array<ConnectEmployeeDto>;
+export type UpdateAssignedGroupSignerDto = {
+  fieldGroupId?: string;
   signerType?: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
+  signerEmployeeId?: string;
+  signerPositionId?: string;
+  signerDepartmentId?: string;
+  signerEmployeeList?: Array<ConnectEmployeeDto>;
 };
 
-export type CreateDepartmentDto = {
+export enum Type {
+  SIGNATURE = 'signature',
+  CHECKBOX = 'checkbox',
+}
+
+export type CreateTemplateBoxDto = {
   name: string;
+  type: 'signature' | 'checkbox';
+  x_coordinate: number;
+  y_coordinate: number;
+  fieldGroupId: string;
 };
 
-export type UpdateDepartmentDto = {
-  name?: string;
-};
-
-export type CreateSignatureDto = {
+export type CreateFieldGroupDto = {
+  name: string;
   order: number;
-  signerEmployeeId: string | null;
-  signerPositionId: string | null;
-  signerDepartmentId: string | null;
-  signerEmployeeList: Array<ConnectEmployeeDto>;
-  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
+  templateBoxes: Array<CreateTemplateBoxDto>;
 };
 
-export type CreateFormInstanceDto = {
+export type CreateFormTemplateDto = {
   name: string;
-  signatures: Array<CreateSignatureDto>;
-  originatorId: string;
-  formTemplateId: string;
   formDocLink: string;
+  fieldGroups: Array<CreateFieldGroupDto>;
+};
+
+export type TemplateBoxBaseEntity = {
+  id: string;
+  type: 'SIGNATURE' | 'CHECKBOX' | 'TEXT_FIELD';
+  x_coordinate: number;
+  y_coordinate: number;
+  createdAt: string;
+  updatedAt: string;
+  fieldGroupId: string;
+};
+
+export type FieldGroupBaseEntity = {
+  id: string;
+  name: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+  formTemplateId: string;
+  templateBoxes: Array<TemplateBoxBaseEntity>;
 };
 
 export type FormTemplateBaseEntity = {
@@ -178,24 +178,26 @@ export type FormTemplateBaseEntity = {
   updatedAt: string;
 };
 
-export type SignatureEntity = {
+export type AssignedGroupEntity = {
   id: string;
+  fieldGroupId: string;
   order: number;
   signed: boolean;
-  signedDocLink: string | null;
+  signedDocLink?: string | null;
   createdAt: string;
   updatedAt: string;
-  signerPositionId: string | null;
-  signerPosition: PositionBaseEntity | null;
-  signerDepartmentId: string | null;
-  signerDepartment: DepartmentEntity | null;
-  signerEmployeeId: string | null;
-  signerEmployee: EmployeeBaseEntity | null;
-  signerEmployeeList: Array<EmployeeBaseEntity>;
-  signingEmployeeId: string | null;
-  signingEmployee: EmployeeBaseEntity | null;
+  signerPositionId?: string | null;
+  signerDepartmentId?: string | null;
+  signerEmployeeId?: string | null;
+  signingEmployeeId?: string | null;
   signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
   formInstanceId: string;
+  fieldGroup: FieldGroupBaseEntity;
+  signingEmployee?: EmployeeBaseEntity | null;
+  signerPosition?: PositionBaseEntity | null;
+  signerDepartment?: DepartmentEntity | null;
+  signerEmployee?: EmployeeBaseEntity | null;
+  signerEmployeeList?: Array<EmployeeBaseEntity> | null;
 };
 
 export type FormInstanceEntity = {
@@ -210,33 +212,53 @@ export type FormInstanceEntity = {
   markedCompletedAt?: string | null;
   originator: EmployeeEntity;
   formTemplate: FormTemplateBaseEntity;
-  signatures: Array<SignatureEntity>;
+  assignedGroups: Array<AssignedGroupEntity>;
   originatorId: string;
   formTemplateId: string;
-};
-
-export type UpdateFormInstanceDto = {
-  name?: string;
-  formDocLink?: string;
-};
-
-export type CreateFormTemplateDto = {
-  name: string;
-  formDocLink: string;
-  signatureFields: Array<CreateSignatureFieldDto>;
 };
 
 export type FormTemplateEntity = {
   id: string;
   name: string;
   formDocLink: string;
-  signatureFields: Array<SignatureFieldEntity>;
+  fieldGroups: Array<FieldGroupBaseEntity>;
   formInstances: Array<FormInstanceEntity>;
   createdAt: string;
   updatedAt: string;
 };
 
 export type UpdateFormTemplateDto = {
+  name?: string;
+  formDocLink?: string;
+};
+
+export type CreateDepartmentDto = {
+  name: string;
+};
+
+export type UpdateDepartmentDto = {
+  name?: string;
+};
+
+export type CreateAssignedGroupDto = {
+  order: number;
+  fieldGroupId: string;
+  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
+  signerEmployeeId?: string;
+  signerPositionId?: string;
+  signerDepartmentId?: string;
+  signerEmployeeList: Array<ConnectEmployeeDto>;
+};
+
+export type CreateFormInstanceDto = {
+  name: string;
+  assignedGroups: Array<CreateAssignedGroupDto>;
+  originatorId: string;
+  formTemplateId: string;
+  formDocLink: string;
+};
+
+export type UpdateFormInstanceDto = {
   name?: string;
   formDocLink?: string;
 };
@@ -790,154 +812,8 @@ export type PositionsControllerFindOneByNameInDepartmentResponses = {
 export type PositionsControllerFindOneByNameInDepartmentResponse =
   PositionsControllerFindOneByNameInDepartmentResponses[keyof PositionsControllerFindOneByNameInDepartmentResponses];
 
-export type SignatureFieldsControllerFindAllData = {
-  body?: never;
-  path?: never;
-  query: {
-    limit: number;
-  };
-  url: '/api/signature-fields';
-};
-
-export type SignatureFieldsControllerFindAllErrors = {
-  /**
-   * Bad Request
-   */
-  400: unknown;
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-};
-
-export type SignatureFieldsControllerFindAllResponses = {
-  200: Array<SignatureFieldEntity>;
-};
-
-export type SignatureFieldsControllerFindAllResponse =
-  SignatureFieldsControllerFindAllResponses[keyof SignatureFieldsControllerFindAllResponses];
-
-export type SignatureFieldsControllerCreateData = {
-  body: CreateSignatureFieldDto;
-  path?: never;
-  query?: never;
-  url: '/api/signature-fields';
-};
-
-export type SignatureFieldsControllerCreateErrors = {
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-  /**
-   * Bad Request
-   */
-  422: unknown;
-};
-
-export type SignatureFieldsControllerCreateResponses = {
-  201: SignatureFieldEntity;
-};
-
-export type SignatureFieldsControllerCreateResponse =
-  SignatureFieldsControllerCreateResponses[keyof SignatureFieldsControllerCreateResponses];
-
-export type SignatureFieldsControllerRemoveData = {
-  body?: never;
-  path: {
-    id: string;
-  };
-  query?: never;
-  url: '/api/signature-fields/{id}';
-};
-
-export type SignatureFieldsControllerRemoveErrors = {
-  /**
-   * Bad Request
-   */
-  400: unknown;
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-  /**
-   * Resource not found
-   */
-  404: unknown;
-};
-
-export type SignatureFieldsControllerRemoveResponses = {
-  200: unknown;
-};
-
-export type SignatureFieldsControllerFindOneData = {
-  body?: never;
-  path: {
-    id: string;
-  };
-  query?: never;
-  url: '/api/signature-fields/{id}';
-};
-
-export type SignatureFieldsControllerFindOneErrors = {
-  /**
-   * Bad Request
-   */
-  400: unknown;
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-  /**
-   * Resource not found
-   */
-  404: unknown;
-};
-
-export type SignatureFieldsControllerFindOneResponses = {
-  200: SignatureFieldEntity;
-};
-
-export type SignatureFieldsControllerFindOneResponse =
-  SignatureFieldsControllerFindOneResponses[keyof SignatureFieldsControllerFindOneResponses];
-
-export type SignatureFieldsControllerUpdateData = {
-  body: UpdateSignatureFieldDto;
-  path: {
-    id: string;
-  };
-  query?: never;
-  url: '/api/signature-fields/{id}';
-};
-
-export type SignatureFieldsControllerUpdateErrors = {
-  /**
-   * Bad Request
-   */
-  400: unknown;
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-  /**
-   * Resource not found
-   */
-  404: unknown;
-  /**
-   * Bad Request
-   */
-  422: unknown;
-};
-
-export type SignatureFieldsControllerUpdateResponses = {
-  200: SignatureFieldEntity;
-};
-
-export type SignatureFieldsControllerUpdateResponse =
-  SignatureFieldsControllerUpdateResponses[keyof SignatureFieldsControllerUpdateResponses];
-
-export type SignaturesControllerUpdateSignatureSignerData = {
-  body: UpdateSignatureSignerDto;
+export type AssignedGroupControllerUpdateAssignedGroupSignerData = {
+  body: UpdateAssignedGroupSignerDto;
   path: {
     id: string;
   };
@@ -945,14 +821,163 @@ export type SignaturesControllerUpdateSignatureSignerData = {
   url: '/api/signatures/{id}/signer';
 };
 
-export type SignaturesControllerUpdateSignatureSignerResponses = {
+export type AssignedGroupControllerUpdateAssignedGroupSignerResponses = {
   200: {
     [key: string]: unknown;
   };
 };
 
-export type SignaturesControllerUpdateSignatureSignerResponse =
-  SignaturesControllerUpdateSignatureSignerResponses[keyof SignaturesControllerUpdateSignatureSignerResponses];
+export type AssignedGroupControllerUpdateAssignedGroupSignerResponse =
+  AssignedGroupControllerUpdateAssignedGroupSignerResponses[keyof AssignedGroupControllerUpdateAssignedGroupSignerResponses];
+
+export type FormTemplatesControllerFindAllData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * Limit on number of form templates to return
+     */
+    limit?: number;
+  };
+  url: '/api/form-templates';
+};
+
+export type FormTemplatesControllerFindAllErrors = {
+  /**
+   * Bad Request
+   */
+  400: unknown;
+  /**
+   * Unauthorized Request
+   */
+  403: unknown;
+};
+
+export type FormTemplatesControllerFindAllResponses = {
+  200: Array<FormTemplateEntity>;
+};
+
+export type FormTemplatesControllerFindAllResponse =
+  FormTemplatesControllerFindAllResponses[keyof FormTemplatesControllerFindAllResponses];
+
+export type FormTemplatesControllerCreateData = {
+  body: CreateFormTemplateDto;
+  path?: never;
+  query?: never;
+  url: '/api/form-templates';
+};
+
+export type FormTemplatesControllerCreateErrors = {
+  /**
+   * Unauthorized Request
+   */
+  403: unknown;
+  /**
+   * Bad Request
+   */
+  422: unknown;
+};
+
+export type FormTemplatesControllerCreateResponses = {
+  201: FormTemplateEntity;
+};
+
+export type FormTemplatesControllerCreateResponse =
+  FormTemplatesControllerCreateResponses[keyof FormTemplatesControllerCreateResponses];
+
+export type FormTemplatesControllerRemoveData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/api/form-templates/{id}';
+};
+
+export type FormTemplatesControllerRemoveErrors = {
+  /**
+   * Bad Request
+   */
+  400: unknown;
+  /**
+   * Unauthorized Request
+   */
+  403: unknown;
+  /**
+   * Resource not found
+   */
+  404: unknown;
+};
+
+export type FormTemplatesControllerRemoveResponses = {
+  200: unknown;
+};
+
+export type FormTemplatesControllerFindOneData = {
+  body?: never;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/api/form-templates/{id}';
+};
+
+export type FormTemplatesControllerFindOneErrors = {
+  /**
+   * Bad Request
+   */
+  400: unknown;
+  /**
+   * Unauthorized Request
+   */
+  403: unknown;
+  /**
+   * Resource not found
+   */
+  404: unknown;
+};
+
+export type FormTemplatesControllerFindOneResponses = {
+  200: FormTemplateEntity;
+};
+
+export type FormTemplatesControllerFindOneResponse =
+  FormTemplatesControllerFindOneResponses[keyof FormTemplatesControllerFindOneResponses];
+
+export type FormTemplatesControllerUpdateData = {
+  body: UpdateFormTemplateDto;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/api/form-templates/{id}';
+};
+
+export type FormTemplatesControllerUpdateErrors = {
+  /**
+   * Bad Request
+   */
+  400: unknown;
+  /**
+   * Unauthorized Request
+   */
+  403: unknown;
+  /**
+   * Resource not found
+   */
+  404: unknown;
+  /**
+   * Bad Request
+   */
+  422: unknown;
+};
+
+export type FormTemplatesControllerUpdateResponses = {
+  200: FormTemplateEntity;
+};
+
+export type FormTemplatesControllerUpdateResponse =
+  FormTemplatesControllerUpdateResponses[keyof FormTemplatesControllerUpdateResponses];
 
 export type DepartmentsControllerFindAllData = {
   body?: never;
@@ -1338,7 +1363,7 @@ export type FormInstancesControllerSignFormInstanceData = {
   body?: never;
   path: {
     formInstanceId: string;
-    signatureId: string;
+    assignedGroupId: string;
   };
   query?: never;
   url: '/api/form-instances/{formInstanceId}/sign/{signatureId}';
@@ -1396,155 +1421,6 @@ export type FormInstancesControllerCompleteFormInstanceResponses = {
 
 export type FormInstancesControllerCompleteFormInstanceResponse =
   FormInstancesControllerCompleteFormInstanceResponses[keyof FormInstancesControllerCompleteFormInstanceResponses];
-
-export type FormTemplatesControllerFindAllData = {
-  body?: never;
-  path?: never;
-  query?: {
-    /**
-     * Limit on number of form templates to return
-     */
-    limit?: number;
-  };
-  url: '/api/form-templates';
-};
-
-export type FormTemplatesControllerFindAllErrors = {
-  /**
-   * Bad Request
-   */
-  400: unknown;
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-};
-
-export type FormTemplatesControllerFindAllResponses = {
-  200: Array<FormTemplateEntity>;
-};
-
-export type FormTemplatesControllerFindAllResponse =
-  FormTemplatesControllerFindAllResponses[keyof FormTemplatesControllerFindAllResponses];
-
-export type FormTemplatesControllerCreateData = {
-  body: CreateFormTemplateDto;
-  path?: never;
-  query?: never;
-  url: '/api/form-templates';
-};
-
-export type FormTemplatesControllerCreateErrors = {
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-  /**
-   * Bad Request
-   */
-  422: unknown;
-};
-
-export type FormTemplatesControllerCreateResponses = {
-  201: FormTemplateEntity;
-};
-
-export type FormTemplatesControllerCreateResponse =
-  FormTemplatesControllerCreateResponses[keyof FormTemplatesControllerCreateResponses];
-
-export type FormTemplatesControllerRemoveData = {
-  body?: never;
-  path: {
-    id: string;
-  };
-  query?: never;
-  url: '/api/form-templates/{id}';
-};
-
-export type FormTemplatesControllerRemoveErrors = {
-  /**
-   * Bad Request
-   */
-  400: unknown;
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-  /**
-   * Resource not found
-   */
-  404: unknown;
-};
-
-export type FormTemplatesControllerRemoveResponses = {
-  200: unknown;
-};
-
-export type FormTemplatesControllerFindOneData = {
-  body?: never;
-  path: {
-    id: string;
-  };
-  query?: never;
-  url: '/api/form-templates/{id}';
-};
-
-export type FormTemplatesControllerFindOneErrors = {
-  /**
-   * Bad Request
-   */
-  400: unknown;
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-  /**
-   * Resource not found
-   */
-  404: unknown;
-};
-
-export type FormTemplatesControllerFindOneResponses = {
-  200: FormTemplateEntity;
-};
-
-export type FormTemplatesControllerFindOneResponse =
-  FormTemplatesControllerFindOneResponses[keyof FormTemplatesControllerFindOneResponses];
-
-export type FormTemplatesControllerUpdateData = {
-  body: UpdateFormTemplateDto;
-  path: {
-    id: string;
-  };
-  query?: never;
-  url: '/api/form-templates/{id}';
-};
-
-export type FormTemplatesControllerUpdateErrors = {
-  /**
-   * Bad Request
-   */
-  400: unknown;
-  /**
-   * Unauthorized Request
-   */
-  403: unknown;
-  /**
-   * Resource not found
-   */
-  404: unknown;
-  /**
-   * Bad Request
-   */
-  422: unknown;
-};
-
-export type FormTemplatesControllerUpdateResponses = {
-  200: FormTemplateEntity;
-};
-
-export type FormTemplatesControllerUpdateResponse =
-  FormTemplatesControllerUpdateResponses[keyof FormTemplatesControllerUpdateResponses];
 
 export type ClientOptions = {
   baseUrl: string;

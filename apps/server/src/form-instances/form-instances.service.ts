@@ -11,7 +11,6 @@ import { EmployeesService } from '../employees/employees.service';
 import { FormInstance } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
-import { SignatureErrorMessage } from '../signatures/signatures.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { PositionsErrorMessage } from '../positions/positions.errors';
 import { DepartmentsErrorMessage } from '../departments/departments.errors';
@@ -20,7 +19,8 @@ import { PostmarkService } from '../postmark/postmark.service';
 import { PositionsService } from '../positions/positions.service';
 import { DepartmentsService } from '../departments/departments.service';
 import { SignerType } from '@prisma/client';
-import { CreateSignatureDto } from '../signatures/dto/create-signature.dto';
+import { AssignedGroupErrorMessage } from '../assigned-group/assigned-group.errors';
+import { CreateAssignedGroupDto } from '../assigned-group/dto/create-assigned-group.dto';
 
 @Injectable()
 export class FormInstancesService {
@@ -33,9 +33,11 @@ export class FormInstancesService {
     private postmarkService: PostmarkService,
   ) {}
 
-  async checkValidSignaturesSigner(signatures: CreateSignatureDto[]) {
-    for (let i = 0; i < signatures.length; i++) {
-      const signature = signatures[i];
+  async checkValidAssignedGroupsSigner(
+    assignedGroups: CreateAssignedGroupDto[],
+  ) {
+    for (let i = 0; i < assignedGroups.length; i++) {
+      const signature = assignedGroups[i];
 
       if (signature.signerType === SignerType.USER) {
         const employeeId = signature.signerEmployeeId as string;
@@ -98,30 +100,52 @@ export class FormInstancesService {
       );
     }
 
-    // check that the form template and form instance have the same number of signatures
+    // check that the form template and form instance have the same number of groups
     if (
-      createFormInstanceDto.signatures.length !==
-      formTemplate.signatureFields.length
+      createFormInstanceDto.assignedGroups.length !==
+      formTemplate.fieldGroups.length
     ) {
       throw new BadRequestException(
-        FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_SIGNATURES,
+        FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_ASSIGNED_GROUPS,
       );
     }
 
+    // need mapping of each assignedGroup to template boxes
+    const fieldGroups = await this.prisma.fieldGroup.findMany({
+      where: {
+        id: {
+          in: formTemplate.fieldGroups.map((group) => group.id),
+        },
+      },
+      include: {
+        templateBoxes: true,
+      },
+    });
     // check that the assigned signer exists for each signature
-    await this.checkValidSignaturesSigner(createFormInstanceDto.signatures);
+    await this.checkValidAssignedGroupsSigner(
+      createFormInstanceDto.assignedGroups,
+    );
 
     const newFormInstance = await this.prisma.formInstance.create({
       data: {
         name: createFormInstanceDto.name,
         formDocLink: createFormInstanceDto.formDocLink,
-        signatures: {
-          create: createFormInstanceDto.signatures.map((signature) => ({
-            ...signature,
+        assignedGroups: {
+          create: createFormInstanceDto.assignedGroups.map((assignedGroup) => ({
+            ...assignedGroup,
             signerEmployeeList: {
-              connect: signature.signerEmployeeList.map((user) => ({
+              connect: assignedGroup.signerEmployeeList.map((user) => ({
                 id: user.id,
               })),
+            },
+            instanceBoxes: {
+              create: fieldGroups
+                .find(
+                  (fieldGroup) => fieldGroup.id === assignedGroup.fieldGroupId,
+                )
+                ?.templateBoxes.map((templateBox) => ({
+                  templateBoxId: templateBox.id,
+                })),
             },
           })),
         },
@@ -147,7 +171,7 @@ export class FormInstancesService {
           },
         },
         formTemplate: true,
-        signatures: {
+        assignedGroups: {
           include: {
             signerPosition: {
               include: {
@@ -158,6 +182,12 @@ export class FormInstancesService {
             signerEmployee: true,
             signerEmployeeList: true,
             signingEmployee: true,
+            instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -189,7 +219,7 @@ export class FormInstancesService {
 
     const formInstances = await this.prisma.formInstance.findMany({
       where: {
-        signatures: {
+        assignedGroups: {
           some: {
             OR: [
               {
@@ -227,7 +257,7 @@ export class FormInstancesService {
           },
         },
         formTemplate: true,
-        signatures: {
+        assignedGroups: {
           include: {
             signerPosition: {
               include: {
@@ -238,6 +268,12 @@ export class FormInstancesService {
             signerEmployee: true,
             signerEmployeeList: true,
             signingEmployee: true,
+            instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -269,7 +305,7 @@ export class FormInstancesService {
           },
         },
         formTemplate: true,
-        signatures: {
+        assignedGroups: {
           include: {
             signerPosition: {
               include: {
@@ -280,6 +316,12 @@ export class FormInstancesService {
             signerEmployee: true,
             signerEmployeeList: true,
             signingEmployee: true,
+            instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -306,7 +348,7 @@ export class FormInstancesService {
           },
         },
         formTemplate: true,
-        signatures: {
+        assignedGroups: {
           include: {
             signerPosition: {
               include: {
@@ -317,6 +359,12 @@ export class FormInstancesService {
             signerEmployee: true,
             signerEmployeeList: true,
             signingEmployee: true,
+            instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -345,7 +393,7 @@ export class FormInstancesService {
           },
         },
         formTemplate: true,
-        signatures: {
+        assignedGroups: {
           include: {
             signerPosition: {
               include: {
@@ -356,6 +404,12 @@ export class FormInstancesService {
             signerEmployee: true,
             signerEmployeeList: true,
             signingEmployee: true,
+            instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -389,7 +443,7 @@ export class FormInstancesService {
           },
         },
         formTemplate: true,
-        signatures: {
+        assignedGroups: {
           include: {
             signerPosition: {
               include: {
@@ -400,6 +454,12 @@ export class FormInstancesService {
             signerEmployee: true,
             signerEmployeeList: true,
             signingEmployee: true,
+            instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -419,7 +479,7 @@ export class FormInstancesService {
       include: {
         originator: true,
         formTemplate: true,
-        signatures: {
+        assignedGroups: {
           include: {
             signerPosition: {
               include: {
@@ -427,6 +487,15 @@ export class FormInstancesService {
               },
             },
             signingEmployee: true,
+            signerDepartment: true,
+            signerEmployee: true,
+            signerEmployeeList: true,
+            instanceBoxes: true,
+            fieldGroup: {
+              include: {
+                templateBoxes: true,
+              },
+            },
           },
         },
       },
@@ -436,13 +505,13 @@ export class FormInstancesService {
   /**
    * Sign a form instance.
    * @param formInstanceId the form instance id
-   * @param signatureId the signature id
+   * @param assignedGroupId the assigned group id id
    * @param currentUser the current user to sign the form
    * @returns the updated form instance, hydrated
    */
   async signFormInstance(
     formInstanceId: string,
-    signatureId: string,
+    assignedGroupId: string,
     currentUser: UserEntity,
   ) {
     const formInstance = await this.findOne(formInstanceId);
@@ -461,46 +530,56 @@ export class FormInstancesService {
       where: { id: employee.positionId },
     });
 
-    const signatureIndex = formInstance.signatures.findIndex(
-      (sig) => sig.id === signatureId,
+    const assignedGroupIndex = formInstance.assignedGroups.findIndex(
+      (assignedGroup) => assignedGroup.id === assignedGroupId,
     );
 
-    if (signatureIndex === -1) {
-      throw new NotFoundException(SignatureErrorMessage.SIGNATURE_NOT_FOUND);
+    if (assignedGroupIndex === -1) {
+      throw new NotFoundException(
+        AssignedGroupErrorMessage.ASSIGNED_GROUP_NOT_FOUND,
+      );
     }
 
-    for (let i = 0; i < signatureIndex; i++) {
-      if (!formInstance.signatures[i].signed) {
-        throw new BadRequestException(SignatureErrorMessage.SIGNATURE_NOT_NEXT);
+    for (let i = 0; i < assignedGroupIndex; i++) {
+      if (!formInstance.assignedGroups[i].signed) {
+        throw new BadRequestException(
+          AssignedGroupErrorMessage.ASSIGNED_GROUP_NOT_NEXT,
+        );
       }
     }
-    const signature = formInstance.signatures[signatureIndex];
+    const assignedGroup = formInstance.assignedGroups[assignedGroupIndex];
 
     if (
-      (signature.signerType === SignerType.USER &&
-        signature.signerEmployeeId !== employee.id) ||
-      (signature.signerType === SignerType.POSITION &&
-        signature.signerPositionId !== employee.positionId) ||
-      (signature.signerType === SignerType.DEPARTMENT &&
-        signature.signerDepartmentId !== position.departmentId) ||
-      (signature.signerType === SignerType.USER_LIST &&
-        signature.signerEmployeeList &&
-        !signature.signerEmployeeList.some((user) => user.id === employee.id))
+      (assignedGroup.signerType === SignerType.USER &&
+        assignedGroup.signerEmployeeId !== employee.id) ||
+      (assignedGroup.signerType === SignerType.POSITION &&
+        assignedGroup.signerPositionId !== employee.positionId) ||
+      (assignedGroup.signerType === SignerType.DEPARTMENT &&
+        assignedGroup.signerDepartmentId !== position.departmentId) ||
+      (assignedGroup.signerType === SignerType.USER_LIST &&
+        assignedGroup.signerEmployeeList &&
+        !assignedGroup.signerEmployeeList.some(
+          (user) => user.id === employee.id,
+        ))
     ) {
-      throw new BadRequestException(SignatureErrorMessage.EMPLOYEE_CANNOT_SIGN);
+      throw new BadRequestException(
+        AssignedGroupErrorMessage.EMPLOYEE_CANNOT_SIGN,
+      );
     }
 
-    const updatedSignature = await this.prisma.signature.update({
-      where: { id: signatureId },
+    const updatedAssignedGroup = await this.prisma.assignedGroup.update({
+      where: { id: assignedGroupId },
       data: { signed: true, signingEmployeeId: employee.id },
     });
 
-    formInstance.signatures[signatureIndex] = {
-      ...formInstance.signatures[signatureIndex],
-      ...updatedSignature,
+    formInstance.assignedGroups[assignedGroupIndex] = {
+      ...formInstance.assignedGroups[assignedGroupIndex],
+      ...updatedAssignedGroup,
     };
 
-    const allSigned = formInstance.signatures.every((sig) => sig.signed);
+    const allSigned = formInstance.assignedGroups.every(
+      (assignedGroup) => assignedGroup.signed,
+    );
 
     let updatedFormInstance = (await this.findOne(
       formInstanceId,
@@ -511,7 +590,7 @@ export class FormInstancesService {
         where: { id: formInstanceId },
         data: { completed: true, completedAt: new Date() },
         include: {
-          signatures: {
+          assignedGroups: {
             include: { signerPosition: true, signingEmployee: true },
           },
         },
@@ -525,7 +604,8 @@ export class FormInstancesService {
       );
     } else {
       // Notify next user that form is ready to sign
-      const nextUserToSignId = formInstance.signatures[signatureIndex + 1];
+      const nextUserToSignId =
+        formInstance.assignedGroups[assignedGroupIndex + 1];
 
       if (nextUserToSignId.signerType === SignerType.USER) {
         this.postmarkService.sendReadyForSignatureToUserEmail(

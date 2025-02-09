@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateSignatureDto } from '../../signatures/dto/create-signature.dto';
 import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { CreateAssignedGroupDto } from '../../assigned-group/dto/create-assigned-group.dto';
 
 export class CreateFormInstanceDto {
   @IsString()
@@ -12,9 +12,9 @@ export class CreateFormInstanceDto {
   @ArrayMinSize(1)
   @ApiProperty({
     isArray: true,
-    type: CreateSignatureDto,
+    type: CreateAssignedGroupDto,
   })
-  signatures: CreateSignatureDto[];
+  assignedGroups: CreateAssignedGroupDto[];
 
   @IsString()
   @IsNotEmpty()

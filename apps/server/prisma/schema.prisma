@@ -18,6 +18,12 @@ enum SignerType {
   USER_LIST
 }
 
+enum SignatureBoxFieldType {
+  SIGNATURE
+  CHECKBOX
+  TEXT_FIELD
+}
+
 enum EmployeeScope {
   BASE_USER
   ADMIN
@@ -30,34 +36,9 @@ model Department {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  signatures Signature[]
+  assignedGroups AssignedGroup[]
 
   positions Position[]
-}
-
-// `Employees` represent the people who work at the MFA.
-//
-// Each `Employee` corresponds to a user who holds a certain position.
-model Employee {
-  id            String   @id @default(uuid()) @db.Uuid
-  firstName     String   @db.VarChar(255)
-  lastName      String   @db.VarChar(255)
-  email         String   @unique @db.VarChar(255)
-  signatureLink String   @db.VarChar(255)
-  scope         EmployeeScope  @default(BASE_USER)
-  pswdHash      String?  @db.VarChar(255)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  refreshToken  String?  @db.Text()
-
-  originatedForms FormInstance[]
-
-  position   Position @relation(fields: [positionId], references: [id])
-  positionId String   @db.Uuid
-
-  signerEmployeeSignatures     Signature[] @relation("signerEmployee")
-  signerEmployeeListSignatures Signature[] @relation("signerEmployeeList")
-  signingEmployeeSignatures    Signature[] @relation("signingEmployee")
 }
 
 // `Positions` represent the various positions that employees at the MFA can hold.
@@ -68,8 +49,8 @@ model Position {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  signatures Signature[]
-  employees  Employee[]
+  assignedGroups AssignedGroup[]
+  employees      Employee[]
 
   department   Department @relation(fields: [departmentId], references: [id])
   departmentId String     @db.Uuid
@@ -77,54 +58,75 @@ model Position {
   @@unique([name, departmentId])
 }
 
-// `SignatureFields` represent each signature field that is required on a given form.
-// A field may have a position specified, indicating that when a user creates an
-// instance of the corresponding form, the field should default to the specified position.
+// `Employees` represent the people who work at the MFA.
 //
-// Each `SignatureField` also specifies its order on the form it is on.
-// `SignatureFields` are used as subdocuments within `FormTemplates`.
-model SignatureField {
+// Each `Employee` corresponds to a user who holds a certain position.
+model Employee {
+  id            String        @id @default(uuid()) @db.Uuid
+  firstName     String        @db.VarChar(255)
+  lastName      String        @db.VarChar(255)
+  email         String        @unique @db.VarChar(255)
+  signatureLink String        @db.VarChar(255)
+  scope         EmployeeScope @default(BASE_USER)
+  pswdHash      String?       @db.VarChar(255)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  refreshToken  String?       @db.Text()
+
+  originatedForms FormInstance[]
+
+  position   Position @relation(fields: [positionId], references: [id])
+  positionId String   @db.Uuid
+
+  signerEmployeeAssignedGroups     AssignedGroup[] @relation("signerEmployee")
+  signerEmployeeListAssignedGroups AssignedGroup[] @relation("signerEmployeeList")
+  signingEmployeeAssignedGroup     AssignedGroup[] @relation("signingEmployee")
+}
+
+// A `FormTemplate` is a reference for a form that is used when creating forms initiated by users.
+model FormTemplate {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.VarChar(255)
+  formDocLink String   @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  fieldGroups   FieldGroup[]
+  formInstances FormInstance[]
+}
+
+// `FieldGroups` represent a group of signature fields to be assigned together 
+// that are required on a given form.
+// When new form instances are created, new `AssignedGroups` are also created 
+// based on the `FieldGroups` found on a form template.
+//
+// Each `FieldGroup` also specifies its order on the form it is on.
+// `FieldGroups` are within `FormTemplates`.
+model FieldGroup {
   id        String   @id @default(uuid()) @db.Uuid
   name      String   @db.VarChar(255)
   order     Int      @db.Integer
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
-  formTemplateId String       @db.Uuid
+  formTemplate   FormTemplate    @relation(fields: [formTemplateId], references: [id])
+  formTemplateId String          @db.Uuid
+  templateBoxes  TemplateBox[]
+  assignedGroups AssignedGroup[]
 }
 
-// `Signatures` represent the signatures required on a form. Each signature has a
-// specified signer and its corresponding status which indicates if it has been signed.
-//
-// A `Signature` will also carry over its order from the original `FormTemplate` order
-// from which the `FormInstance` that the `Signature` belongs to was derived. If a `Signature`
-// has been signed and completed, the `signedDoc` should contain a reference to the
-// signed file with all previous signatures up to the current signature.
-//
-// The signer position and the user signed by are populated when the signature has been
-// completed, and are derived from the person who signed at that moment in time.
-model Signature {
-  id            String   @id @default(uuid()) @db.Uuid
-  order         Int      @db.Integer
-  signed        Boolean  @default(false)
-  signedDocLink String?  @db.VarChar(255)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+// `TemplateBox` represent the actual signature boxes that are to be filled by the employees.
+model TemplateBox {
+  id           String                @id @default(uuid()) @db.Uuid
+  type         SignatureBoxFieldType
+  x_coordinate Int                   @db.Integer
+  y_coordinate Int                   @db.Integer
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
 
-  signerPosition     Position?   @relation(fields: [signerPositionId], references: [id])
-  signerPositionId   String?     @db.Uuid
-  signerDepartment   Department? @relation(fields: [signerDepartmentId], references: [id])
-  signerDepartmentId String?     @db.Uuid
-  signerEmployee     Employee?   @relation("signerEmployee", fields: [signerEmployeeId], references: [id])
-  signerEmployeeId   String?     @db.Uuid
-  signerEmployeeList Employee[]  @relation("signerEmployeeList")
-  signingEmployee    Employee?   @relation("signingEmployee", fields: [signingEmployeeId], references: [id])
-  signingEmployeeId  String?     @db.Uuid
-  signerType         SignerType
-
-  formInstance   FormInstance @relation(fields: [formInstanceId], references: [id])
-  formInstanceId String       @db.Uuid
+  fieldGroup   FieldGroup    @relation(fields: [fieldGroupId], references: [id])
+  fieldGroupId String        @db.Uuid
+  InstanceBox  InstanceBox[]
 }
 
 // `FormInstances` represent instances of forms created by employees.
@@ -145,7 +147,7 @@ model FormInstance {
   completedAt       DateTime?
   markedCompletedAt DateTime?
 
-  signatures Signature[]
+  assignedGroups AssignedGroup[]
 
   originator     Employee     @relation(fields: [originatorId], references: [id])
   originatorId   String       @db.Uuid
@@ -153,14 +155,55 @@ model FormInstance {
   formTemplateId String       @db.Uuid
 }
 
-// A `FormTemplate` is a reference for a form that is used when creating forms initiated by users.
-model FormTemplate {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(255)
-  formDocLink String   @db.VarChar(255)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+// `AssignedGroups` represent groups of signatures required on a form to be signed by a 
+// specific employee, position, department, or an employee from a list. Each `AssignedGroup` has a
+// corresponding status which indicates if it has been signed.
+//
+// `AssignedGroups` are derived from `FieldGroups` on a `FormTemplate` and are 
+// created when a new form instance is created. Each `AssignedGroup` has corresponding `InstanceBoxes`
+// which are the actual signature boxes that are to be filled by the employees.
+//
+// A `Signature` will also carry over its order from the original `FormTemplate` order
+// from which the `FormInstance` that the `Signature` belongs to was derived. If a `Signature`
+// has been signed and completed, the `signedDoc` should contain a reference to the
+// signed file with all previous signatures up to the current signature.
+//
+// The signer position and the user signed by are populated when the signature has been
+// completed, and are derived from the person who signed at that moment in time.
+model AssignedGroup {
+  id            String   @id @default(uuid()) @db.Uuid
+  order         Int      @db.Integer
+  signed        Boolean  @default(false)
+  signedDocLink String?  @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  signatureFields SignatureField[]
-  formInstances   FormInstance[]
+  signerPosition     Position?   @relation(fields: [signerPositionId], references: [id])
+  signerPositionId   String?     @db.Uuid
+  signerDepartment   Department? @relation(fields: [signerDepartmentId], references: [id])
+  signerDepartmentId String?     @db.Uuid
+  signerEmployee     Employee?   @relation("signerEmployee", fields: [signerEmployeeId], references: [id])
+  signerEmployeeId   String?     @db.Uuid
+  signerEmployeeList Employee[]  @relation("signerEmployeeList")
+  signingEmployee    Employee?   @relation("signingEmployee", fields: [signingEmployeeId], references: [id])
+  signingEmployeeId  String?     @db.Uuid
+  signerType         SignerType
+
+  formInstance   FormInstance  @relation(fields: [formInstanceId], references: [id])
+  formInstanceId String        @db.Uuid
+  instanceBoxes  InstanceBox[]
+  fieldGroup     FieldGroup    @relation(fields: [fieldGroupId], references: [id])
+  fieldGroupId   String        @db.Uuid
+}
+
+// `InstanceBox` represent the signature boxes on an instantiated form that are to be filled by the employees.
+model InstanceBox {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  assignedGroup   AssignedGroup @relation(fields: [assignedGroupId], references: [id])
+  assignedGroupId String        @db.Uuid
+  templateBox     TemplateBox   @relation(fields: [templateBoxId], references: [id])
+  templateBoxId   String        @db.Uuid
 }
