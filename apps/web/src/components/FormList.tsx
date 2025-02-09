@@ -49,7 +49,7 @@ export const FormList = ({
 
   return (
     <>
-      <Box padding={isDashboard ? '12px 30px 12px 0px' : '12px 30px 12px 30px'}>
+      <Box>
         <Flex justifyContent="space-between" pb="20px">
           <Flex alignItems="center">
             <Text

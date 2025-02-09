@@ -12,10 +12,15 @@ import { FormInstance } from '@prisma/client';
 import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
 import { FormInstanceErrorMessage } from './form-instance.errors';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
+import { PositionsErrorMessage } from '../positions/positions.errors';
+import { DepartmentsErrorMessage } from '../departments/departments.errors';
 import { UserEntity } from '../auth/entities/user.entity';
 import { PostmarkService } from '../postmark/postmark.service';
+import { PositionsService } from '../positions/positions.service';
+import { DepartmentsService } from '../departments/departments.service';
 import { SignerType } from '@prisma/client';
 import { AssignedGroupErrorMessage } from '../assigned-group/assigned-group.errors';
+import { CreateAssignedGroupDto } from '../assigned-group/dto/create-assigned-group.dto';
 
 @Injectable()
 export class FormInstancesService {
@@ -23,17 +28,71 @@ export class FormInstancesService {
     private prisma: PrismaService,
     private formTemplateService: FormTemplatesService,
     private employeeService: EmployeesService,
+    private positionsService: PositionsService,
+    private departmentsService: DepartmentsService,
     private postmarkService: PostmarkService,
   ) {}
+
+  async checkValidAssignedGroupsSigner(
+    assignedGroups: CreateAssignedGroupDto[],
+  ) {
+    for (let i = 0; i < assignedGroups.length; i++) {
+      const signature = assignedGroups[i];
+
+      if (signature.signerType === SignerType.USER) {
+        const employeeId = signature.signerEmployeeId as string;
+        try {
+          await this.employeeService.findOne(employeeId);
+        } catch (e) {
+          throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
+        }
+      } else if (signature.signerType === SignerType.POSITION) {
+        const positionId = signature.signerPositionId as string;
+        try {
+          await this.positionsService.findOne(positionId);
+        } catch (e) {
+          throw new NotFoundException(PositionsErrorMessage.POSITION_NOT_FOUND);
+        }
+      } else if (signature.signerType === SignerType.DEPARTMENT) {
+        const departmentId = signature.signerDepartmentId as string;
+        try {
+          await this.departmentsService.findOne(departmentId);
+        } catch (e) {
+          throw new NotFoundException(
+            DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND,
+          );
+        }
+      } else if (signature.signerType === SignerType.USER_LIST) {
+        // TODO: write query to get all employees in the list
+        try {
+          await Promise.all(
+            signature.signerEmployeeList.map((employee) =>
+              this.employeeService.findOne(employee.id),
+            ),
+          );
+        } catch (e) {
+          throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
+        }
+      }
+    }
+  }
 
   /**
    * Create a new form instance.
    * @param createFormInstanceDto
    */
   async create(createFormInstanceDto: CreateFormInstanceDto) {
-    const formTemplate = await this.formTemplateService.findOne(
-      createFormInstanceDto.formTemplateId,
-    );
+    let formTemplate;
+
+    try {
+      formTemplate = await this.formTemplateService.findOne(
+        createFormInstanceDto.formTemplateId,
+      );
+    } catch (e) {
+      throw new NotFoundException(
+        FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+      );
+    }
 
     if (!formTemplate) {
       throw new NotFoundException(
@@ -62,6 +121,10 @@ export class FormInstancesService {
         templateBoxes: true,
       },
     });
+    // check that the assigned signer exists for each signature
+    await this.checkValidAssignedGroupsSigner(
+      createFormInstanceDto.assignedGroups,
+    );
 
     const newFormInstance = await this.prisma.formInstance.create({
       data: {
@@ -146,9 +209,11 @@ export class FormInstancesService {
    * @returns all form instances assigned to the employee, employees are assigned to a form instance if their id, position id, or department id matches the signer
    */
   async findAssignedTo(employeeId: string) {
-    const employee = await this.employeeService.findOne(employeeId);
+    let employee;
 
-    if (!employee) {
+    try {
+      employee = await this.employeeService.findOne(employeeId);
+    } catch (e) {
       throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
     }
 
@@ -449,25 +514,7 @@ export class FormInstancesService {
     assignedGroupId: string,
     currentUser: UserEntity,
   ) {
-    const formInstance = await this.prisma.formInstance.findUnique({
-      where: { id: formInstanceId },
-      include: {
-        assignedGroups: {
-          include: {
-            signerPosition: true,
-            signerEmployee: true,
-            signerEmployeeList: true,
-            instanceBoxes: true,
-            fieldGroup: {
-              include: {
-                templateBoxes: true,
-              },
-            },
-          },
-        },
-        originator: true,
-      },
-    });
+    const formInstance = await this.findOne(formInstanceId);
 
     if (!formInstance) {
       throw new NotFoundException(
@@ -609,17 +656,9 @@ export class FormInstancesService {
     employeeId: string,
     formInstanceId: string,
   ) {
-    const formInstance = await this.prisma.formInstance.findUnique({
-      where: { id: formInstanceId },
-      include: {
-        originator: { include: { position: true } },
-      },
-    });
+    const formInstance = await this.findOne(formInstanceId);
 
-    const currUser = await this.prisma.employee.findUnique({
-      where: { id: employeeId },
-      include: { position: true },
-    });
+    const currUser = await this.employeeService.findOne(employeeId);
 
     if (!formInstance) {
       throw new NotFoundException(

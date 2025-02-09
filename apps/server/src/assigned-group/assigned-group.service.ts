@@ -183,8 +183,8 @@ export class AssignedGroupService {
     }
   }
   async findOne(id: string) {
-    let assignedGroup = await this.prismaService.assignedGroup.findFirstOrThrow(
-      {
+    const assignedGroup =
+      await this.prismaService.assignedGroup.findFirstOrThrow({
         where: {
           id: id,
         },
@@ -195,8 +195,7 @@ export class AssignedGroupService {
           signerEmployeeList: true,
           instanceBoxes: true,
         },
-      },
-    );
+      });
     return assignedGroup;
   }
 }
