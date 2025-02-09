@@ -7,15 +7,15 @@ import {
   MenuRoot,
 } from '@chakra-ui/react';
 import { Tooltip } from './ui/tooltip';
-import { SignatureEntity } from '@web/client/types.gen';
+import { AssignedGroupEntity } from '@web/client/types.gen';
 import { MenuTrigger } from './ui/menu';
 
 export const AssignedAvatarGroup = ({
-  signatures,
+  assignedGroups,
 }: {
-  signatures: SignatureEntity[];
+  assignedGroups: AssignedGroupEntity[];
 }) => {
-  const partition = (arr: SignatureEntity[], max: number) => {
+  const partition = (arr: AssignedGroupEntity[], max: number) => {
     const items = [];
     const overflow = [];
     for (const item of arr.sort((a, b) => a.order - b.order)) {
@@ -25,12 +25,12 @@ export const AssignedAvatarGroup = ({
     return { items, overflow };
   };
 
-  const { items: displayedSignatures, overflow: overflowSignatures } =
-    partition(signatures, 5);
+  const { items: displayedAssignedGroups, overflow: overflowAssignedGroups } =
+    partition(assignedGroups, 5);
 
   return (
     <Group gap="0" spaceX="2">
-      {displayedSignatures.map((sig, i) => (
+      {displayedAssignedGroups.map((sig, i) => (
         <Tooltip
           contentProps={{
             css: { '--tooltip-bg': 'white', color: 'black' },
@@ -65,15 +65,17 @@ export const AssignedAvatarGroup = ({
           </Avatar.Root>
         </Tooltip>
       ))}
-      {overflowSignatures.length > 0 && (
+      {overflowAssignedGroups.length > 0 && (
         <MenuRoot positioning={{ placement: 'bottom' }}>
           <MenuTrigger rounded="full" focusRing="outside">
             <Avatar.Root variant="outline">
-              <Avatar.Fallback>+{overflowSignatures.length}</Avatar.Fallback>
+              <Avatar.Fallback>
+                +{overflowAssignedGroups.length}
+              </Avatar.Fallback>
             </Avatar.Root>
           </MenuTrigger>
           <MenuContent>
-            {overflowSignatures.map((sig, i) => (
+            {overflowAssignedGroups.map((sig, i) => (
               <MenuItem
                 value={
                   sig.signerEmployee?.firstName +

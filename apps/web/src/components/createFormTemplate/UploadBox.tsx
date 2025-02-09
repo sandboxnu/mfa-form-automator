@@ -71,14 +71,19 @@ export const UploadBox = ({
             /* drag file here or browse line */
             gap="3px"
           >
-            <Text fontWeight={500} size="16px" height="21px" align="center">
+            <Text
+              fontWeight={500}
+              fontSize="16px"
+              height="21px"
+              textAlign="center"
+            >
               Drag file here or
             </Text>
             <Text
               fontWeight={500}
-              size="16px"
+              fontSize="16px"
               height="21px"
-              align="center"
+              textAlign="center"
               textDecoration="underline"
               color="#1367EA"
             >
