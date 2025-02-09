@@ -8,7 +8,7 @@ import { PositionsService } from '../positions/positions.service';
 import { UpdateSignatureSignerDto } from './dto/update-signature-signer.dto';
 import { SignerType } from '@prisma/client';
 
-let mockSignatureService = {
+const mockSignatureService = {
   updateSigner: async (
     signatureId: string,
     updateSignatureSignerDto: UpdateSignatureSignerDto,
@@ -57,7 +57,7 @@ describe('SignaturesController', () => {
   });
 
   it('should update signer', async () => {
-    let response = await controller.updateSignatureSigner('signature-id', {
+    const response = await controller.updateSignatureSigner('signature-id', {
       signerType: SignerType.DEPARTMENT,
       signerDepartmentId: 'department-id',
     });

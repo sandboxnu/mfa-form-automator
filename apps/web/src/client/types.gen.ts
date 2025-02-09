@@ -4,6 +4,11 @@ export type JwtEntity = {
   accessToken: string;
 };
 
+export enum Scope {
+  BASE_USER = 'BASE_USER',
+  ADMIN = 'ADMIN',
+}
+
 export type RegisterEmployeeDto = {
   firstName: string;
   lastName: string;
@@ -12,6 +17,7 @@ export type RegisterEmployeeDto = {
   positionName: string;
   departmentName: string;
   signatureLink: string;
+  scope: 'BASE_USER' | 'ADMIN';
 };
 
 export type DepartmentEntity = {
@@ -36,8 +42,8 @@ export type EmployeeEntity = {
   firstName: string;
   lastName: string;
   email: string;
-  isAdmin: boolean;
   signatureLink: string;
+  scope: 'BASE_USER' | 'ADMIN';
   position: PositionBaseEntity;
   positionId: string;
   pswdHash: string | null;
@@ -53,6 +59,7 @@ export type CreateEmployeeDto = {
   email: string;
   password: string;
   signatureLink: string;
+  scope: 'BASE_USER' | 'ADMIN';
 };
 
 export type UpdateEmployeeDto = {
@@ -60,6 +67,7 @@ export type UpdateEmployeeDto = {
   lastName?: string;
   positionId?: string;
   signatureLink?: string;
+  scope?: 'BASE_USER' | 'ADMIN';
 };
 
 export type CreatePositionDto = {
@@ -72,8 +80,8 @@ export type EmployeeBaseEntity = {
   firstName: string;
   lastName: string;
   email: string;
-  isAdmin: boolean;
   signatureLink: string;
+  scope: 'BASE_USER' | 'ADMIN';
   positionId: string;
   pswdHash: string | null;
   createdAt: string;

@@ -6,6 +6,8 @@ import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@web/authConfig';
 import { callMsGraph } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
+import { Scope } from '@web/client';
+
 import {
   appControllerLogin,
   appControllerLogout,
@@ -58,7 +60,7 @@ export const AuthProvider = ({ children }: any) => {
         email: decoded.email,
         firstName: decoded.firstName,
         lastName: decoded.lastName,
-        isAdmin: decoded.isAdmin,
+        scope: decoded.scope,
       };
 
       setUser(user);
@@ -105,7 +107,7 @@ export const AuthProvider = ({ children }: any) => {
           email: employee.data.email,
           firstName: employee.data.firstName,
           lastName: employee.data.lastName,
-          isAdmin: employee.data.isAdmin,
+          scope: Scope.BASE_USER,
         });
       })
       .catch(async (_error) => {
@@ -207,6 +209,7 @@ export const AuthProvider = ({ children }: any) => {
     position: string,
     department: string,
     signatureLink: string,
+    scope: RegisterEmployeeDto['scope'],
   ) => {
     const employee: RegisterEmployeeDto = {
       email: email,
@@ -216,6 +219,7 @@ export const AuthProvider = ({ children }: any) => {
       departmentName: department,
       positionName: position,
       signatureLink: signatureLink,
+      scope: scope,
     };
 
     registerEmployeeMutation.mutate(

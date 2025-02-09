@@ -35,6 +35,10 @@ export const RegisterEmployeeDtoSchema = {
     signatureLink: {
       type: 'string',
     },
+    scope: {
+      type: 'string',
+      enum: ['BASE_USER', 'ADMIN'],
+    },
   },
   required: [
     'firstName',
@@ -44,6 +48,7 @@ export const RegisterEmployeeDtoSchema = {
     'positionName',
     'departmentName',
     'signatureLink',
+    'scope',
   ],
 } as const;
 
@@ -121,11 +126,12 @@ export const EmployeeEntitySchema = {
     email: {
       type: 'string',
     },
-    isAdmin: {
-      type: 'boolean',
-    },
     signatureLink: {
       type: 'string',
+    },
+    scope: {
+      type: 'string',
+      enum: ['BASE_USER', 'ADMIN'],
     },
     position: {
       $ref: '#/components/schemas/PositionBaseEntity',
@@ -155,8 +161,8 @@ export const EmployeeEntitySchema = {
     'firstName',
     'lastName',
     'email',
-    'isAdmin',
     'signatureLink',
+    'scope',
     'position',
     'positionId',
     'pswdHash',
@@ -188,6 +194,10 @@ export const CreateEmployeeDtoSchema = {
     signatureLink: {
       type: 'string',
     },
+    scope: {
+      type: 'string',
+      enum: ['BASE_USER', 'ADMIN'],
+    },
   },
   required: [
     'firstName',
@@ -196,6 +206,7 @@ export const CreateEmployeeDtoSchema = {
     'email',
     'password',
     'signatureLink',
+    'scope',
   ],
 } as const;
 
@@ -213,6 +224,10 @@ export const UpdateEmployeeDtoSchema = {
     },
     signatureLink: {
       type: 'string',
+    },
+    scope: {
+      type: 'string',
+      enum: ['BASE_USER', 'ADMIN'],
     },
   },
 } as const;
@@ -245,11 +260,12 @@ export const EmployeeBaseEntitySchema = {
     email: {
       type: 'string',
     },
-    isAdmin: {
-      type: 'boolean',
-    },
     signatureLink: {
       type: 'string',
+    },
+    scope: {
+      type: 'string',
+      enum: ['BASE_USER', 'ADMIN'],
     },
     positionId: {
       type: 'string',
@@ -276,8 +292,8 @@ export const EmployeeBaseEntitySchema = {
     'firstName',
     'lastName',
     'email',
-    'isAdmin',
     'signatureLink',
+    'scope',
     'positionId',
     'pswdHash',
     'createdAt',

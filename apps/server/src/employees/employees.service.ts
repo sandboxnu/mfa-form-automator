@@ -25,6 +25,7 @@ export class EmployeesService {
           createEmployeeDto.password,
           await bcrypt.genSalt(),
         ),
+        scope: createEmployeeDto.scope,
       },
       include: {
         position: {
