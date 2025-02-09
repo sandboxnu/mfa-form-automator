@@ -2,15 +2,15 @@ import {
   Button,
   Flex,
   Input,
-  InputGroup,
-  InputLeftElement,
-  Select,
+  NativeSelectField,
+  NativeSelectRoot,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { RightSearchIcon, SortDownArrow } from 'apps/web/src/static/icons';
+import { RightSearchIcon } from '@web/static/icons.tsx';
 import { motion } from 'framer-motion';
+import { InputGroup } from './ui/input-group';
 
 /**
  * @returns a search bar and sort by dropdown
@@ -22,7 +22,7 @@ export const SearchAndSort = ({
   searchQuery: string;
   setSearchQuery: (searchQuery: string) => void;
 }) => {
-  const { isOpen, onToggle } = useDisclosure();
+  const [showSearchField, setShowSearchField] = useState(false);
   const [showButton, setShowButton] = useState(false);
 
   return (
@@ -30,32 +30,40 @@ export const SearchAndSort = ({
       <Flex alignItems="flex-end">
         <motion.div
           initial={{ width: 0, opacity: 0 }}
-          animate={{ width: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+          animate={{
+            width: showSearchField ? 'auto' : 0,
+            opacity: showSearchField ? 1 : 0,
+          }}
           transition={{ duration: 0.3 }}
-          onAnimationComplete={() => setShowButton(!isOpen)}
+          onAnimationComplete={() => setShowButton(!showSearchField)}
         >
-          <InputGroup marginRight="12px">
-            {isOpen ? (
-              <InputLeftElement
-                as="button"
-                onClick={onToggle}
-                justifyContent="flex-start"
-              >
-                <RightSearchIcon color="#595959" w="25px" h="25px" />
-              </InputLeftElement>
-            ) : (
-              <Button
-                variant="unstyled"
-                onClick={onToggle}
-                display="flex"
-                alignItems="flex-end"
-                p={0}
-              >
-                <RightSearchIcon color="#595959" w="25px" h="25px" />
-              </Button>
-            )}
+          <InputGroup
+            marginRight="12px"
+            startElement={
+              showSearchField ?? (
+                <Button
+                  onClick={() => setShowSearchField(!showSearchField)}
+                  justifyContent="flex-start"
+                >
+                  <RightSearchIcon color="#595959" w="25px" h="25px" />
+                </Button>
+              )
+            }
+            endElement={
+              !showSearchField ? (
+                <Button
+                  unstyled
+                  onClick={() => setShowSearchField(!showSearchField)}
+                  p={0}
+                >
+                  <RightSearchIcon color="#595959" w="25px" h="25px" />
+                </Button>
+              ) : undefined
+            }
+          >
             <Input
-              size="16px"
+              // TODO: Used to be 16px, but we can't use absolute values in Chakra v3
+              size="sm"
               borderRadius="0"
               border="none"
               marginRight="12px"
@@ -69,14 +77,16 @@ export const SearchAndSort = ({
               }}
               placeholder="Search for forms"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchQuery(e.target.value)
+              }
             />
           </InputGroup>
         </motion.div>
-        {showButton && !isOpen && (
+        {showButton && !open && (
           <Button
-            variant="unstyled"
-            onClick={onToggle}
+            unstyled
+            onClick={() => setShowSearchField(!showSearchField)}
             height="32px"
             alignItems="center"
             p={0}
@@ -94,21 +104,23 @@ export const SearchAndSort = ({
         >
           Sort by:
         </Text>
-        <Select
+        {/* TODO: https://chakra-ui.com/docs/components/menu Use Radio items here instead? */}
+        <NativeSelectRoot
           minW="100px"
           maxW="100px"
           minH="32px"
           maxH="32px"
           backgroundColor="white"
           borderRadius="md"
-          size="16px"
-          icon={<SortDownArrow />}
-          iconSize="10px"
+          // TODO: Used to be 16px, but we can't use absolute values in Chakra v3
+          size="sm"
         >
-          <option value="recent">&nbsp;&nbsp;Recent</option>
-          <option value="option2">&nbsp;&nbsp;Option 2</option>
-          <option value="option3">&nbsp;&nbsp;Option 3</option>
-        </Select>
+          <NativeSelectField>
+            <option value="recent">&nbsp;&nbsp;Recent</option>
+            <option value="option2">&nbsp;&nbsp;Option 2</option>
+            <option value="option3">&nbsp;&nbsp;Option 3</option>
+          </NativeSelectField>
+        </NativeSelectRoot>
       </Flex>
     </>
   );

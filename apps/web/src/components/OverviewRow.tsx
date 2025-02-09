@@ -1,9 +1,9 @@
 import { HStack, Flex, Text } from '@chakra-ui/react';
-import { FormCard } from './FormCard';
-import { FormInstanceEntity } from '@web/client/types.gen';
+import { FormCard } from './FormCard.tsx';
+import { FormInstanceEntity } from '@web/client/types.gen.ts';
 import React from 'react';
-import { FormImageCard } from './FormImageCard';
-import { ViewAll } from './ViewAll';
+import { FormImageCard } from './FormImageCard.tsx';
+import { ViewAll } from './ViewAll.tsx';
 
 /**
  * @param title - the title of the overview row
@@ -66,7 +66,7 @@ export const OverviewRow = ({
         flexDirection="row"
         wrap="wrap"
         pr="30px"
-        spacing="20px"
+        gap="20px"
         width="100%"
       >
         {displayFormInstances.map(

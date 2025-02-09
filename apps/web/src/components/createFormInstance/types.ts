@@ -1,5 +1,5 @@
 export interface CreateFormInstanceModalProps {
-  isOpen: boolean;
+  open: boolean;
   onClose: () => void;
 }
 

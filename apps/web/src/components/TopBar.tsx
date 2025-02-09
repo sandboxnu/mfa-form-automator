@@ -1,22 +1,17 @@
+import { Box, IconButton, Text, Flex, Spacer, Button } from '@chakra-ui/react';
+import { MFALogoIcon, UserProfileAvatar } from 'apps/web/src/static/icons.tsx';
+import { useAuth } from '@web/hooks/useAuth.ts';
+import { useQuery } from '@tanstack/react-query';
+import { AzureSignout } from './AzureSignout.tsx';
+import { SignOut } from './SignOut.tsx';
+import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen.ts';
 import {
-  Box,
-  IconButton,
-  Text,
-  Flex,
-  Spacer,
-  Popover,
   PopoverBody,
   PopoverContent,
+  PopoverRoot,
+  PopoverTitle,
   PopoverTrigger,
-  Divider,
-} from '@chakra-ui/react';
-import { MFALogoIcon, UserProfileAvatar } from 'apps/web/src/static/icons';
-import { useAuth } from '@web/hooks/useAuth';
-import { useQuery } from '@tanstack/react-query';
-import { AzureSignout } from './AzureSignout';
-import { SignOut } from './SignOut';
-import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
-
+} from '../components/ui/popover';
 /**
  * @returns the top bar of the application
  */
@@ -62,31 +57,26 @@ export const TopBar: React.FC = () => {
         </Flex>
       </Box>
       <Spacer />
-
       <Flex align="center" pl="10" mr="32px">
-        <Popover placement="bottom-end" closeOnBlur={true}>
-          <PopoverTrigger>
+        <PopoverRoot positioning={{ placement: 'bottom-end' }}>
+          <PopoverTrigger asChild>
             <button>
               <Flex align="center">
-                <IconButton
-                  aria-label="Visit profile"
-                  icon={
-                    user?.firstName && user?.lastName ? (
-                      <UserProfileAvatar
-                        firstName={user.firstName}
-                        lastName={user.lastName}
-                      />
-                    ) : (
-                      <UserProfileAvatar firstName="Default" lastName="User" />
-                    )
-                  }
-                  colorScheme="none"
-                />
+                <IconButton aria-label="Visit profile" colorScheme="none">
+                  {user?.firstName && user?.lastName ? (
+                    <UserProfileAvatar
+                      firstName={user.firstName}
+                      lastName={user.lastName}
+                    />
+                  ) : (
+                    <UserProfileAvatar firstName="Default" lastName="User" />
+                  )}
+                </IconButton>
               </Flex>
             </button>
           </PopoverTrigger>
           <PopoverContent maxW="288px">
-            <PopoverBody borderRadius="6px" p="0">
+            <PopoverBody divideX="2px" borderRadius="6px" p="0">
               <Box pl="24px" pb="14px">
                 <Text fontSize="18px" cursor="default" pt="18px">
                   {user?.firstName && user?.lastName
@@ -99,12 +89,11 @@ export const TopBar: React.FC = () => {
                     : 'Position'}
                 </Text>
               </Box>
-              <Divider />
               <AzureSignout />
               <SignOut />
             </PopoverBody>
           </PopoverContent>
-        </Popover>
+        </PopoverRoot>
       </Flex>
     </Flex>
   );

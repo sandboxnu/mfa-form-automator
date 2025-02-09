@@ -83,7 +83,7 @@ export const SignatureDropdown = ({
         })}
         placeholder={assigneePlaceholderWithIcon}
         value={signaturePositions[index]} // Create a separate state for Department Head
-        onChange={(selected) => {
+        onChange={(selected: Option | null) => {
           // value is the selected option or null
           let updatedSignaturePositions = signaturePositions.slice(0);
           updatedSignaturePositions[index] = selected;

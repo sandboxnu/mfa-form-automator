@@ -1,7 +1,7 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-import { PDFDocument } from './PDFDocument';
-import { FormInstanceEntity } from '@web/client/types.gen';
+import { useRouter } from 'next/router.js';
+import { PDFDocument } from './PDFDocument.tsx';
+import { FormInstanceEntity } from '@web/client/types.gen.ts';
 
 /**
  * @param formName - the name of the form
@@ -64,7 +64,7 @@ export const FormImageCard = ({
           fontFamily="Hanken Grotesk"
           fontWeight={500}
           fontSize="15px"
-          isTruncated
+          truncate
           height="21px"
         >
           {formInstance.name}
@@ -77,7 +77,7 @@ export const FormImageCard = ({
             fontFamily="Hanken Grotesk"
             fontWeight={700}
             fontSize="12px"
-            isTruncated
+            truncate
             borderRadius="20px"
             padding="3px 12px"
           >
@@ -90,7 +90,7 @@ export const FormImageCard = ({
             fontFamily="Hanken Grotesk"
             fontWeight={500}
             fontSize="13px"
-            isTruncated
+            truncate
           >
             Assigned {daysAgo(new Date(formInstance.createdAt), new Date())}
           </Text>

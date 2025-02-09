@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@chakra-ui/react';
-import { useAuth } from '@web/hooks/useAuth';
+import { useAuth } from '@web/hooks/useAuth.ts';
 
 /**
  * @returns a button that allows users to sign in with Azure

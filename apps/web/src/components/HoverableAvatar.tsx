@@ -1,11 +1,11 @@
 import {
-  Avatar,
   Popover,
   PopoverArrow,
   PopoverContent,
   PopoverTrigger,
 } from '@chakra-ui/react';
-import { ProfileHover } from './ProfileHover';
+import { ProfileHover } from './ProfileHover.tsx';
+import { Avatar } from './ui/avatar.tsx';
 
 /**
  * Wraps an Avatar with a profive signature hover that shows the name of the signer
@@ -25,26 +25,26 @@ export const HoverableAvatar = ({
   signed: boolean;
   index: any;
 }) => {
-  return (
-    <Popover trigger="hover" openDelay={800} closeDelay={0}>
-      <PopoverTrigger>
-        <Avatar
-          name={name}
-          key={index}
-          boxSize="36px"
-          backgroundColor={signed ? '#D0F0DC' : '#DCDCDC'}
-          border="1px solid #FFFFFF"
-          color="black"
-          fontWeight={400}
-          fontSize="14px"
-          size="sm"
-          cursor="pointer"
-        />
-      </PopoverTrigger>
-      <PopoverContent boxSize={'fit-content'}>
-        <PopoverArrow />
-        <ProfileHover name={name} signed={signed} />
-      </PopoverContent>
-    </Popover>
-  );
+  // return (
+  //   <Popover.Root trigger="hover" openDelay={800} closeDelay={0}>
+  //     <PopoverTrigger>
+  //       <Avatar
+  //         name={name}
+  //         key={index}
+  //         boxSize="36px"
+  //         backgroundColor={signed ? '#D0F0DC' : '#DCDCDC'}
+  //         border="1px solid #FFFFFF"
+  //         color="black"
+  //         fontWeight={400}
+  //         fontSize="14px"
+  //         size="sm"
+  //         cursor="pointer"
+  //       />
+  //     </PopoverTrigger>
+  //     <PopoverContent boxSize={'fit-content'}>
+  //       <PopoverArrow />
+  //       <ProfileHover name={name} signed={signed} />
+  //     </PopoverContent>
+  //   </Popover.Root>
+  // );
 };

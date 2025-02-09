@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { FormRow } from './FormRow';
+import { FormRow } from './FormRow.tsx';
 import { Box, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
-import { FormInstanceEntity } from '@web/client/types.gen';
+import { FormInstanceEntity } from '@web/client/types.gen.ts';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
-import { SearchAndSort } from 'apps/web/src/components/SearchAndSort';
-import { ViewAll } from 'apps/web/src/components/ViewAll';
-import { NoForms } from '@web/static/icons';
+import { SearchAndSort } from 'apps/web/src/components/SearchAndSort.tsx';
+import { ViewAll } from 'apps/web/src/components/ViewAll.tsx';
+import { NoForms } from '@web/static/icons.tsx';
 
 /**
  * @param title - the title of the form list
@@ -53,7 +53,7 @@ export const FormList = ({
         <Flex justifyContent="space-between" pb="20px">
           <Flex alignItems="center">
             <Text
-              textColor="#363940"
+              css={{ '--color': '#363940' }}
               fontSize={isDashboard ? '19px' : '24px'}
               fontWeight="700"
             >
@@ -93,7 +93,7 @@ export const FormList = ({
             background="white"
             borderTopRadius={'8px'}
             boxShadow="0px 0px 1px 1px #d4d4d4"
-            textColor={'#5E5E5E'}
+            css={{ '--color': '#5E5E5E' }}
           >
             <GridItem colSpan={8} h="48px">
               <Text fontSize="15px" fontWeight="700" pl="24px" pt="10px">

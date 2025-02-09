@@ -1,25 +1,32 @@
-import { Flex, Box, Text, Select, Button } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Text,
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValueText,
+  createListCollection,
+} from '@chakra-ui/react';
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useBlob } from '@web/hooks/useBlob';
 import { SignaturePad } from './../components/SignaturePad';
 import {
-  departmentsControllerFindAll,
-  positionsControllerFindAllInDepartmentName,
-  DepartmentEntity,
-  PositionEntity,
-} from '@web/client';
-import {
   departmentsControllerFindAllOptions,
   positionsControllerFindAllInDepartmentNameOptions,
 } from '@web/client/@tanstack/react-query.gen';
+import { SelectLabel, SelectRoot } from '@web/components/ui/select';
 
 export default function Register() {
   const { completeRegistration, userData } = useAuth();
-  const [currentDepartmentName, setCurrentDepartmentName] =
-    useState<string>('');
-  const [currentPositionName, setCurrentPositionName] = useState<string>('');
+  const [currentDepartmentName, setCurrentDepartmentName] = useState<string[]>(
+    [],
+  );
+  const [currentPositionName, setCurrentPositionName] = useState<string[]>([]);
   const [loadingUserData, setLoadingUserData] = useState<boolean>(true);
   const [createSignatureType, setCreateSignatureType] =
     useState<string>('draw');
@@ -39,13 +46,13 @@ export default function Register() {
   const { data: positionsData } = useQuery({
     ...positionsControllerFindAllInDepartmentNameOptions({
       path: {
-        departmentName: currentDepartmentName,
+        departmentName: currentDepartmentName[0],
       },
       query: {
         limit: 1000,
       },
     }),
-    enabled: !!currentDepartmentName,
+    enabled: currentDepartmentName.length === 1,
   });
 
   useEffect(() => {
@@ -107,17 +114,34 @@ export default function Register() {
 
   // Handle registration submission
   const handleRegistration = async () => {
-    if (!currentDepartmentName || !currentPositionName) return;
+    if (currentDepartmentName.length != 1 || currentPositionName.length != 1)
+      return;
 
     const uploadedBlob = await createSignatureImage();
     completeRegistration(
       userData.email,
       userData.password,
-      currentDepartmentName,
-      currentPositionName,
+      currentDepartmentName[0],
+      currentPositionName[0],
       uploadedBlob?.url || 'http://localhost:3002/signature.png',
     );
   };
+
+  const departmentsCollection = createListCollection({
+    items:
+      departmentsData?.map((department) => ({
+        label: department.name,
+        value: department.name,
+      })) ?? [],
+  });
+
+  const positionCollection = createListCollection({
+    items:
+      positionsData?.map((position) => ({
+        label: position.name,
+        value: position.name,
+      })) ?? [],
+  });
 
   return (
     <Flex
@@ -155,45 +179,50 @@ export default function Register() {
 
         <Box width="100%">
           <label htmlFor="departmentDropdown">Department</label>
-          <Select
-            id="departmentDropdown"
-            placeholder="Select your department"
-            onChange={(e) => setCurrentDepartmentName(e.target.value)}
-            marginTop="8px"
+          <SelectRoot
+            collection={departmentsCollection}
+            width="320px"
+            multiple={false}
+            value={currentDepartmentName}
+            onValueChange={(e) => setCurrentDepartmentName(e.value)}
           >
-            {departmentsData?.map((department: DepartmentEntity) => (
-              <option
-                key={department.name}
-                value={department.name}
-                selected={department.name === currentDepartmentName}
-              >
-                {department.name}
-              </option>
-            ))}
-          </Select>
+            <SelectLabel>Select your department</SelectLabel>
+            <SelectTrigger>
+              <SelectValueText placeholder="Select your department" />
+            </SelectTrigger>
+            <SelectContent>
+              {departmentsCollection.items.map((department) => (
+                <SelectItem item={department} key={department.value}>
+                  {department.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </SelectRoot>
         </Box>
 
         <Box width="100%">
           <label htmlFor="positionDropdown">Position</label>
-          <Select
-            id="positionDropdown"
-            placeholder="Select your position"
-            onChange={(e) => setCurrentPositionName(e.target.value)}
-            disabled={!currentDepartmentName}
-            marginTop="8px"
-          >
-            {positionsData?.map((position: PositionEntity) => (
-              <option
-                key={position.name}
-                value={position.name}
-                selected={position.name === currentPositionName}
-              >
-                {position.name}
-              </option>
-            ))}
-          </Select>
-        </Box>
 
+          <SelectRoot
+            collection={positionCollection}
+            width="320px"
+            multiple={false}
+            value={currentPositionName}
+            onValueChange={(e) => setCurrentPositionName(e.value)}
+          >
+            <SelectLabel>Select your position</SelectLabel>
+            <SelectTrigger>
+              <SelectValueText placeholder="Select your position" />
+            </SelectTrigger>
+            <SelectContent>
+              {positionCollection.items.map((position) => (
+                <SelectItem item={position} key={position.value}>
+                  {position.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </SelectRoot>
+        </Box>
         <SignaturePad
           createSignatureType={createSignatureType}
           setCreateSignatureType={setCreateSignatureType}
@@ -205,7 +234,7 @@ export default function Register() {
         <Box>
           <Button
             onClick={handleRegistration}
-            isDisabled={!(currentDepartmentName && currentPositionName)}
+            disabled={!(currentDepartmentName && currentPositionName)}
             bg="#1367EA"
             color="#FFF"
           >

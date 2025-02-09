@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import { SignedCheck, UnsignedX } from '@web/static/icons';
+import { SignedCheck, UnsignedX } from '@web/static/icons.tsx';
 export const ProfileHover = ({
   name,
   signed,
@@ -45,7 +45,7 @@ export const ProfileHover = ({
                 fontWeight={600}
                 fontSize="13px"
                 lineHeight="16px"
-                textColor="#14A34A"
+                css={{ '--color': '#14A34A' }}
               >
                 Signed
               </Text>
@@ -58,7 +58,7 @@ export const ProfileHover = ({
                 fontWeight={600}
                 fontSize="13px"
                 lineHeight="16px"
-                textColor="#BD2828"
+                css={{ '--color': '#BD2828' }}
               >
                 Awaiting
               </Text>

@@ -1,7 +1,6 @@
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
-import { ReactJSXElement } from 'node_modules/@emotion/react/dist/declarations/types/jsx-namespace';
-import { SideCreateForm } from './SideCreateForm';
-import { FormTemplateButtons } from './FormTemplateButtons';
+import { SideCreateForm } from './SideCreateForm.tsx';
+import { FormTemplateButtons } from './FormTemplateButtons.tsx';
 
 /**
  * The layout for a page in the create form template onboarding flow.  Used in pages.
@@ -27,7 +26,7 @@ export const FormTemplateLayout = ({
 }: {
   pageNumber: number;
   subheading: string;
-  boxContent: ReactJSXElement;
+  boxContent: React.ReactNode;
   deleteFunction: Function;
   submitLink: string;
   backLink: string;

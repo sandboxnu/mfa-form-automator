@@ -1,6 +1,7 @@
-import { Box, Text, Avatar, AvatarGroup, Tooltip } from '@chakra-ui/react';
-import { SignatureEntity } from '@web/client/types.gen';
-import { useRouter } from 'next/router';
+import { Box, Text } from '@chakra-ui/react';
+import { SignatureEntity } from '@web/client/types.gen.ts';
+import { useRouter } from 'next/router.js';
+import { AssignedAvatarGroup } from './AssignedAvatarGroup';
 
 /**
  * @param formName - the name of the form
@@ -41,50 +42,12 @@ export const FormCard = ({
             fontFamily="Hanken Grotesk"
             fontWeight={800}
             fontSize="18px"
-            isTruncated
+            truncate
           >
             {formName}
           </Text>
-          <AvatarGroup size="sm" max={5} marginTop="9px" spacing={'-3px'}>
-            {signatures
-              .sort((a, b) => a.order - b.order)
-              .map((signature: SignatureEntity, index: number) => {
-                return (
-                  <Tooltip
-                    bg={'white'}
-                    color={'black'}
-                    placement="bottom-start"
-                    label={
-                      <>
-                        <Text fontSize="16px" fontWeight="bold">
-                          {signature.signerEmployee?.firstName +
-                            ' ' +
-                            signature.signerEmployee?.lastName}
-                        </Text>
-                      </>
-                    }
-                    key={index}
-                  >
-                    <Avatar
-                      name={
-                        signature.signerEmployee?.firstName +
-                        ' ' +
-                        signature.signerEmployee?.lastName
-                      }
-                      key={index}
-                      boxSize="32px"
-                      backgroundColor={signature.signed ? '#D1F0D4' : '#DCDCDC'}
-                      outline="1px solid #FFFFFF"
-                      color="black"
-                      fontWeight={400}
-                      fontSize="16px"
-                      size="sm"
-                      marginRight={'-3.5px'}
-                    />
-                  </Tooltip>
-                );
-              })}
-          </AvatarGroup>
+
+          <AssignedAvatarGroup signatures={signatures} />
         </Box>
       </Box>
     </>

@@ -5,7 +5,6 @@ import {
   Grid,
   Text,
   Spacer,
-  useToast,
   Heading,
 } from '@chakra-ui/react';
 import {
@@ -13,23 +12,24 @@ import {
   PencilIcon,
   EditUnderlineIcon,
   UserProfileAvatar,
-} from 'apps/web/src/static/icons';
-import AssigneeMap from './AvatarMap';
+} from 'apps/web/src/static/icons.tsx';
+import AssigneeMap from './AssigneeMap.tsx';
 import { useState } from 'react';
-import { FormInstanceEntity } from '@web/client/types.gen';
-import { useRouter } from 'next/router';
+import { FormInstanceEntity } from '@web/client/types.gen.ts';
+import { useRouter } from 'next/router.js';
 import { useMutation } from '@tanstack/react-query';
-import { queryClient } from '@web/pages/_app';
-import { useAuth } from '@web/hooks/useAuth';
+import { queryClient } from '@web/pages/_app.tsx';
+import { useAuth } from '@web/hooks/useAuth.ts';
 import {
   getNameFromSignature,
   signerIsUser,
-} from '@web/utils/formInstanceUtils';
+} from '@web/utils/formInstanceUtils.ts';
 import {
   formInstancesControllerCompleteFormInstanceMutation,
   formInstancesControllerFindAllQueryKey,
   formInstancesControllerSignFormInstanceMutation,
-} from '@web/client/@tanstack/react-query.gen';
+} from '@web/client/@tanstack/react-query.gen.ts';
+import { toaster, Toaster } from './ui/toaster.tsx';
 
 /**
  * @param formInstance - the form instance
@@ -42,7 +42,6 @@ const FormInstance = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const toast = useToast();
   const { user } = useAuth();
 
   const signFormInstanceMutation = useMutation({
@@ -105,6 +104,7 @@ const FormInstance = ({
 
   return (
     <Box>
+      <Toaster />
       <Flex
         ml="50px"
         as="button"
@@ -132,7 +132,6 @@ const FormInstance = ({
           {formInstance.name}
         </Heading>
         <Button
-          variant="link"
           onClick={() => {}}
           color="black"
           fontWeight="normal"
@@ -292,7 +291,7 @@ const FormInstance = ({
               }
               color="#FFF"
               onClick={async (_) => {
-                toast.promise(_handleFormSign(), {
+                toaster.promise(_handleFormSign(), {
                   success: {
                     title: 'Success',
                     description: 'Form signed',
@@ -319,7 +318,7 @@ const FormInstance = ({
                   width="111px"
                   height="40px"
                   onClick={async (_) => {
-                    toast.promise(_handleFormApprove(), {
+                    toaster.promise(_handleFormApprove(), {
                       success: {
                         title: 'Success',
                         description: 'Form approved',

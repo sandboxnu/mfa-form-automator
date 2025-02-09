@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  Flex,
-  MenuButton,
-  Menu,
-  Text,
-  MenuItem,
-  MenuList,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import {
   OverViewIcon,
   ToDoIcon,
@@ -16,22 +7,28 @@ import {
   PlusIcon,
   FormInstanceIcon,
   GrayPencilIcon,
-} from 'apps/web/src/static/icons';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+} from 'apps/web/src/static/icons.tsx';
+import Link from 'next/link.js';
+import { useRouter } from 'next/router.js';
+import {
+  MenuContent,
+  MenuRoot,
+  MenuTrigger,
+  MenuItem,
+} from '../components/ui/menu';
 
 const icons = {
-  overview: <OverViewIcon marginRight="2" />,
-  overviewActive: <OverViewIcon marginRight="2" />,
-  todo: <ToDoIcon marginRight="2" />,
-  todoActive: <ToDoIcon marginRight="2" />,
-  pending: <PendingIcon marginRight="2" />,
-  pendingActive: <PendingIcon marginRight="2" />,
-  completed: <CompletedIcon marginRight="2" />,
-  completedActive: <CompletedIcon marginRight="2" />,
-  formInstance: <FormInstanceIcon marginRight="2" />,
-  test: <GrayPencilIcon marginRight="2" />,
-  testActive: <GrayPencilIcon marginRight="2" />,
+  overview: <OverViewIcon marginRight="2" boxSize="24px" />,
+  overviewActive: <OverViewIcon marginRight="2" boxSize="24px" />,
+  todo: <ToDoIcon marginRight="2" boxSize="24px" />,
+  todoActive: <ToDoIcon marginRight="2" boxSize="24px" />,
+  pending: <PendingIcon marginRight="2" boxSize="24px" />,
+  pendingActive: <PendingIcon marginRight="2" boxSize="24px" />,
+  completed: <CompletedIcon marginRight="2" boxSize="24px" />,
+  completedActive: <CompletedIcon marginRight="2" boxSize="24px" />,
+  formInstance: <FormInstanceIcon marginRight="2" boxSize="24px" />,
+  test: <GrayPencilIcon marginRight="2" boxSize="24px" />,
+  testActive: <GrayPencilIcon marginRight="2" boxSize="24px" />,
 };
 type IconKeys = keyof typeof icons;
 /**
@@ -81,7 +78,7 @@ const NavItem = ({
         >
           {icons[iconKey as IconKeys]}
           <Text
-            textColor={isActive ? '#263345 !important' : ''}
+            color={isActive ? '#263345 !important' : ''}
             fontWeight={isActive ? 'bold !important' : 'inherit'}
             className="p1"
           >
@@ -144,20 +141,19 @@ export const NavBar = ({
         fontWeight="semibold"
         transition=".15s ease"
       >
-        <Menu closeOnSelect={false}>
-          <MenuButton
-            as={Button}
-            h="40px"
-            w="124px"
-            backgroundColor="#1367EA"
-            textColor="white"
-            leftIcon={<PlusIcon />}
-          >
-            Create
-          </MenuButton>
-          <MenuButton padding="8px 22px 8px 16px"></MenuButton>
-          <MenuList>
-            <MenuItem rounded="8px" onClick={onOpenCreateFormInstance}>
+        <MenuRoot closeOnSelect={false}>
+          <MenuTrigger asChild>
+            <Button h="40px" w="124px" backgroundColor="#1367EA" color="white">
+              <PlusIcon />
+              Create
+            </Button>
+          </MenuTrigger>
+          <MenuContent>
+            <MenuItem
+              rounded="8px"
+              onClick={onOpenCreateFormInstance}
+              value="form"
+            >
               Form
             </MenuItem>
             <MenuItem
@@ -165,11 +161,12 @@ export const NavBar = ({
               onClick={() => {
                 router.push('create-template/upload');
               }}
+              value="template"
             >
               Template
             </MenuItem>
-          </MenuList>
-        </Menu>
+          </MenuContent>
+        </MenuRoot>
       </Flex>
 
       <NavItem icon="overview" link="/">

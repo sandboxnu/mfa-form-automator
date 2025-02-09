@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
-import { FormEditor } from './FormEditor';
+import { FormEditor } from './FormEditor.tsx';
 
 export const AssignInput = () => {
   return (

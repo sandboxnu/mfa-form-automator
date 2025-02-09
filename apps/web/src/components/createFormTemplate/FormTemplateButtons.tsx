@@ -1,18 +1,13 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import {
-  CreateSignatureFieldDto,
-  CreateFormTemplateDto,
-  formTemplatesControllerCreate,
-} from '@web/client';
-import {
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
-} from '@web/client/@tanstack/react-query.gen';
-import { client } from '@web/client/client.gen';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
-import { queryClient } from '@web/pages/_app';
-import { useRouter } from 'next/router';
+} from '@web/client/@tanstack/react-query.gen.ts';
+import { CreateSignatureFieldDto } from '@web/client/types.gen.ts';
+import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext.tsx';
+import { queryClient } from '@web/pages/_app.tsx';
+import { useRouter } from 'next/router.js';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.

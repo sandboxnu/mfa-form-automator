@@ -1,5 +1,9 @@
-import { FormInstanceEntity, SignatureEntity, SignerType } from '@web/client';
-import { User } from '@web/context/types';
+import {
+  FormInstanceEntity,
+  SignatureEntity,
+  SignerType,
+} from '@web/client/types.gen.ts';
+import { User } from '@web/context/types.ts';
 
 /**
  * Determines if a form instance is fully signed

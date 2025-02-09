@@ -1,18 +1,16 @@
-import { Box, useDisclosure } from '@chakra-ui/react';
-import { NavBar } from './NavBar';
-import { TopBar } from './TopBar';
-import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal';
+import { Box } from '@chakra-ui/react';
+import { NavBar } from './NavBar.tsx';
+import { TopBar } from './TopBar.tsx';
+import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal.tsx';
+import { useState } from 'react';
 
 /**
  * @param children - the children of the layout
  * @returns overall layout of the application
  */
 export const Layout = ({ children }: { children: any }) => {
-  const {
-    isOpen: isCreateFormInstanceOpen,
-    onOpen: onOpenCreateFormInstance,
-    onClose: onCloseCreateFormInstance,
-  } = useDisclosure();
+  const [isCreateFormInstanceOpen, setIsCreateFormInstanceOpen] =
+    useState(false);
 
   return (
     <Box
@@ -24,7 +22,9 @@ export const Layout = ({ children }: { children: any }) => {
       minH="100vh"
       height="100%"
     >
-      <NavBar onOpenCreateFormInstance={onOpenCreateFormInstance} />
+      <NavBar
+        onOpenCreateFormInstance={() => setIsCreateFormInstanceOpen(true)}
+      />
       <Box>
         <TopBar />
 
@@ -33,8 +33,8 @@ export const Layout = ({ children }: { children: any }) => {
         </Box>
       </Box>
       <CreateFormInstanceModal
-        isOpen={isCreateFormInstanceOpen}
-        onClose={onCloseCreateFormInstance}
+        open={isCreateFormInstanceOpen}
+        onClose={() => setIsCreateFormInstanceOpen(false)}
       />
     </Box>
   );

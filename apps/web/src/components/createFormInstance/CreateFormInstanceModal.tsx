@@ -1,47 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  ModalCloseButton,
   Flex,
   Box,
   Heading,
   Text,
-  ModalFooter,
   Skeleton,
   Editable,
-  EditableInput,
-  EditablePreview,
-  useEditableControls,
   HStack,
-  ModalHeader,
   Button,
 } from '@chakra-ui/react';
-import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
+import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons.tsx';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { SignatureDropdown } from './SignatureDropdown';
-import { CreateFormInstanceModalProps, Option } from './types';
-import { useAuth } from '@web/hooks/useAuth';
-import { queryClient } from '@web/pages/_app';
-import { GrayPencilIcon } from '@web/static/icons';
-import { FormTemplateEntity, SignerType } from '@web/client';
+import { SignatureDropdown } from './SignatureDropdown.tsx';
+import { CreateFormInstanceModalProps, Option } from './types.ts';
+import { useAuth } from '@web/hooks/useAuth.ts';
+import { queryClient } from '@web/pages/_app.tsx';
+import { GrayPencilIcon } from '@web/static/icons.tsx';
 import {
   formInstancesControllerCreateMutation,
   formTemplatesControllerFindAllOptions,
   formTemplatesControllerFindAllQueryKey,
   positionsControllerFindAllOptions,
-} from '@web/client/@tanstack/react-query.gen';
+} from '@web/client/@tanstack/react-query.gen.ts';
+import { FormTemplateEntity, SignerType } from '@web/client/types.gen.ts';
+import {
+  DialogBackdrop,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+} from '../ui/dialog.tsx';
 
 /**
- * @param isOpen - boolean to determine if the modal is open
+ * @param open - boolean to determine if the modal is open
  * @param onClose - function to close the modal
  * @returns a modal to create a form instance
  */
 const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
-  isOpen,
+  open,
   onClose,
 }) => {
   const { user } = useAuth();
@@ -133,66 +132,58 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
     setSignaturePositions([]);
   };
 
-  function EditableControls() {
-    const { isEditing, getEditButtonProps } = useEditableControls();
-
-    return isEditing ? null : (
-      <Flex justifyContent="center">
-        <Box {...getEditButtonProps()}>
-          <Box
-            as={GrayPencilIcon}
-            color="gray.500"
-            fontSize="20px"
-            _hover={{
-              color: 'black',
-              textDecoration: 'underline',
-            }}
-            cursor="pointer"
-            m="5px"
-          />
-        </Box>
-      </Flex>
-    );
-  }
-
   return (
-    <Modal isOpen={isOpen} onClose={_handleModalClose}>
-      <ModalOverlay backdropFilter="blur(2px)" />
-      <ModalContent minWidth="936px" minHeight="761px" padding="20px">
-        <ModalCloseButton />
-        <ModalHeader>
-          <Editable
+    <DialogRoot open={open} onOpenChange={_handleModalClose}>
+      <DialogBackdrop backdropFilter="blur(2px)" />
+      <DialogContent minWidth="936px" minHeight="761px" padding="20px">
+        <DialogCloseTrigger />
+        <DialogHeader>
+          <Editable.Root
             placeholder="Enter form name"
-            onChange={(value) => {
-              setFormName(value);
+            onValueChange={(value) => {
+              setFormName(value.value);
             }}
-            onSubmit={(value) => {
-              setFormName(value);
+            onValueCommit={(value) => {
+              setFormName(value.value);
             }}
-            onCancel={(value) => {
-              setFormName(value);
+            onValueRevert={(value) => {
+              setFormName(value.value);
             }}
             value={formName}
           >
             <HStack>
-              <EditablePreview
+              <Editable.Preview
                 style={{
                   fontWeight: 800,
                   fontSize: '27px',
                 }}
               />
-              <EditableInput
+              <Editable.Input
                 minW="20em"
                 style={{
                   fontWeight: 800,
                   fontSize: '27px',
                 }}
               />
-              <EditableControls />
+              <Editable.Control>
+                <Editable.EditTrigger asChild>
+                  <Box
+                    as={GrayPencilIcon}
+                    color="gray.500"
+                    fontSize="20px"
+                    _hover={{
+                      color: 'black',
+                      textDecoration: 'underline',
+                    }}
+                    cursor="pointer"
+                    m="5px"
+                  />
+                </Editable.EditTrigger>
+              </Editable.Control>
             </HStack>
-          </Editable>
-        </ModalHeader>
-        <ModalBody>
+          </Editable.Root>
+        </DialogHeader>
+        <DialogBody>
           <Flex gap="30px">
             <Box flex="1">
               <Heading as="h3" mb="10px">
@@ -204,13 +195,17 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 options={formTemplates}
                 placeholder="Select Form Template"
                 value={selectedFormTemplate}
-                onChange={(option) => {
+                onChange={(option: FormTemplateEntity) => {
                   setSelectedFormTemplate(option);
                   setFormTypeSelected(true);
                 }}
                 className="custom-dropdown"
                 components={{
-                  DropdownIndicator: (props: any) => (
+                  DropdownIndicator: (
+                    props: React.ComponentProps<
+                      typeof chakraComponents.DropdownIndicator
+                    >,
+                  ) => (
                     <chakraComponents.DropdownIndicator {...props}>
                       {isFormTypeDropdownOpen ? (
                         <DropdownUpArrow maxH="7px" />
@@ -222,10 +217,10 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
                 }}
                 onMenuOpen={() => setIsFormTypeDropdownOpen(true)}
                 onMenuClose={() => setIsFormTypeDropdownOpen(false)}
-                isOptionSelected={(option, _) => {
+                isOptionSelected={(option: FormTemplateEntity, _: unknown) => {
                   return option.id == selectedFormTemplate?.id;
                 }}
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option: FormTemplateEntity) => option.name}
                 classNamePrefix="react-select"
                 isClearable
                 closeMenuOnSelect
@@ -280,20 +275,20 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
               </Box>
             )}
           </Flex>
-        </ModalBody>
-        <ModalFooter>
+        </DialogBody>
+        <DialogFooter>
           <Button
             backgroundColor="#4C658A"
-            textColor="white"
+            css={{ '--color': 'white' }}
             width="161px"
             height="40px"
             onClick={_submitFormInstance}
           >
             Create Form
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 };
 

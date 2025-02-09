@@ -1,15 +1,13 @@
 import {
-  useEditableControls,
   Flex,
   ButtonGroup,
   IconButton,
   HStack,
   Editable,
-  EditablePreview,
   Input,
-  EditableInput,
   Box,
   Text,
+  useEditable,
 } from '@chakra-ui/react';
 import {
   CompletedIcon,
@@ -34,43 +32,18 @@ export const SignatureField = ({
   handleChange: (newSignatureField: TempSignatureField) => void;
   handleDelete: (id: string) => void;
 }) => {
-  const SignatureFieldEditableControls = () => {
-    const { isEditing, getEditButtonProps } = useEditableControls();
-
-    return isEditing ? (
-      <Flex justifyContent="center">
-        <ButtonGroup justifyContent="center" size="sm" spacing="0">
-          <IconButton
-            aria-label="Submit"
-            icon={<CompletedIcon />}
-            isDisabled={field.value === ''}
-            onSubmit={() => handleChange(field)}
-          >
-            Submit
-          </IconButton>
-        </ButtonGroup>
-      </Flex>
-    ) : (
-      <Flex justifyContent="center" alignItems="center">
-        <ButtonGroup spacing="0">
-          <IconButton
-            aria-label="Edit Signature Field"
-            size="sm"
-            background="transparent"
-            icon={<EditIcon />}
-            {...getEditButtonProps()}
-          />
-          <IconButton
-            aria-label="Delete Signature Field"
-            size="sm"
-            background="transparent"
-            icon={<DeleteIcon />}
-            onClick={() => handleDelete(field.id)}
-          />
-        </ButtonGroup>
-      </Flex>
-    );
-  };
+  const editable = useEditable({
+    defaultValue: field.value,
+    onValueChange: (value) => {
+      handleChange({ id: field.id, value: value.value });
+    },
+    onValueCommit: (value) => {
+      handleChange({ id: field.id, value: value.value });
+    },
+    onValueRevert: (value) => {
+      handleChange({ id: field.id, value: value.value });
+    },
+  });
 
   return (
     <>
@@ -89,31 +62,54 @@ export const SignatureField = ({
       )}
       <HStack w="100%">
         <DraggerIcon />
-        <Editable
+        <Editable.RootProvider
+          value={editable}
           fontFamily="Hanken Grotesk"
           defaultValue={field.value}
           fontSize="16px"
           fontWeight="400"
-          isPreviewFocusable={false}
+          // TODO: do we need this? not sure what the equivalent is when migrating from chakra v2 to v3
+          // isPreviewFocusable={false}
           as={Flex}
           justifyContent="space-between"
           alignItems="center"
           w="100%"
-          startWithEditView={field.value === ''}
+          pr="5px"
         >
-          <Box w="100%" pr="5px">
-            <EditablePreview />
-            <Input
-              as={EditableInput}
-              value={field.value}
-              onChange={(e) =>
-                handleChange({ id: field.id, value: e.target.value })
-              }
-              w="100%"
-            />
-          </Box>
-          <SignatureFieldEditableControls />
-        </Editable>
+          <Editable.Preview />
+          <Editable.Input w="100%" />
+          <Editable.Control>
+            <Editable.EditTrigger asChild>
+              <IconButton
+                aria-label="Edit Signature Field"
+                size="sm"
+                background="transparent"
+              >
+                <EditIcon />
+              </IconButton>
+            </Editable.EditTrigger>
+            {editable.editing && (
+              <IconButton
+                aria-label="Delete Signature Field"
+                size="sm"
+                background="transparent"
+                onClick={() => handleDelete(field.id)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
+            <Editable.SubmitTrigger asChild>
+              <IconButton
+                aria-label="Submit"
+                borderRadius="full"
+                disabled={field.value === ''}
+                onClick={() => handleChange(field)}
+              >
+                <CompletedIcon />
+              </IconButton>
+            </Editable.SubmitTrigger>
+          </Editable.Control>
+        </Editable.RootProvider>
       </HStack>
     </>
   );
