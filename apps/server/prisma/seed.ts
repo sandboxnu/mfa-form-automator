@@ -1,4 +1,8 @@
-import { SignatureBoxFieldType, SignerType } from '@prisma/client';
+import {
+  SignatureBoxFieldType,
+  SignerType,
+  EmployeeScope,
+} from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import {
   DepartmentData,
@@ -94,6 +98,7 @@ const employees: EmployeeData[] = [
     email: 'zhang.iri@northeastern.edu',
     positionId: CHIEF_OF_STAFF_UUID,
     signatureLink: DEV_SIGNATURE_LINK,
+    scope: EmployeeScope.BASE_USER,
   },
   {
     id: KAI_ZHENG_UUID,
@@ -102,6 +107,7 @@ const employees: EmployeeData[] = [
     email: 'zheng.kaiy@northeastern.edu',
     positionId: CHIEF_FIN_OFFICER_UUID,
     signatureLink: DEV_SIGNATURE_LINK,
+    scope: EmployeeScope.BASE_USER,
   },
   {
     id: ANGELA_WEIGL_UUID,
@@ -110,6 +116,7 @@ const employees: EmployeeData[] = [
     email: 'weigl.a@northeastern.edu',
     positionId: AGG_DIR_UUID,
     signatureLink: DEV_SIGNATURE_LINK,
+    scope: EmployeeScope.BASE_USER,
   },
   {
     id: ANSHUL_SHIRUDE_UUID,
@@ -118,6 +125,7 @@ const employees: EmployeeData[] = [
     email: 'shirude.a@northeastern.edu',
     positionId: CHIEF_LEARNING_ENGAGEMENT_UUID,
     signatureLink: DEV_SIGNATURE_LINK,
+    scope: EmployeeScope.BASE_USER,
   },
 ];
 

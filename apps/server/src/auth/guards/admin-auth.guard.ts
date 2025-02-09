@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { EmployeeScope } from '@prisma/client';
 import { Request } from 'express';
 
 @Injectable()
@@ -23,7 +24,7 @@ export class AdminAuthGuard extends AuthGuard('jwt') {
 
   handleRequest(err: any, user: any, info: any) {
     // You can throw an exception based on either "info" or "err" arguments
-    if (err || !user || !user.isAdmin) {
+    if (err || !user || !(user.scope == EmployeeScope.ADMIN)) {
       console.log(info);
       throw err || new UnauthorizedException();
     }

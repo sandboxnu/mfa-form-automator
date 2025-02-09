@@ -24,6 +24,11 @@ enum SignatureBoxFieldType {
   TEXT_FIELD
 }
 
+enum EmployeeScope {
+  BASE_USER
+  ADMIN
+}
+
 // `Departments` represent the various departments that employees could work in.
 model Department {
   id        String   @id @default(uuid()) @db.Uuid
@@ -57,16 +62,16 @@ model Position {
 //
 // Each `Employee` corresponds to a user who holds a certain position.
 model Employee {
-  id            String   @id @default(uuid()) @db.Uuid
-  firstName     String   @db.VarChar(255)
-  lastName      String   @db.VarChar(255)
-  email         String   @unique @db.VarChar(255)
-  signatureLink String   @db.VarChar(255)
-  isAdmin       Boolean  @default(false) @db.Boolean
-  pswdHash      String?  @db.VarChar(255)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  refreshToken  String?  @db.Text()
+  id            String        @id @default(uuid()) @db.Uuid
+  firstName     String        @db.VarChar(255)
+  lastName      String        @db.VarChar(255)
+  email         String        @unique @db.VarChar(255)
+  signatureLink String        @db.VarChar(255)
+  scope         EmployeeScope @default(BASE_USER)
+  pswdHash      String?       @db.VarChar(255)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  refreshToken  String?       @db.Text()
 
   originatedForms FormInstance[]
 

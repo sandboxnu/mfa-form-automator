@@ -159,7 +159,8 @@ export class Seeder {
   }
 
   private async upsertEmployee(data: EmployeeData) {
-    const { id, firstName, lastName, email, signatureLink, positionId } = data;
+    const { id, firstName, lastName, email, signatureLink, positionId, scope } =
+      data;
 
     return await this.prisma.employee.upsert({
       where: { id: id },
@@ -173,6 +174,7 @@ export class Seeder {
         position: {
           connect: { id: positionId },
         },
+        scope: scope,
       },
     });
   }

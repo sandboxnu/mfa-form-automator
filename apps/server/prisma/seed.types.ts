@@ -1,4 +1,8 @@
-import { SignatureBoxFieldType, SignerType } from '@prisma/client';
+import {
+  EmployeeScope,
+  SignatureBoxFieldType,
+  SignerType,
+} from '@prisma/client';
 import { ConnectEmployeeDto } from '../src/assigned-group/dto/create-assigned-group.dto';
 
 export type DepartmentData = {
@@ -19,6 +23,7 @@ export type EmployeeData = {
   email: string;
   positionId: string;
   signatureLink: string;
+  scope: EmployeeScope;
 };
 
 export type TemplateBoxData = {
