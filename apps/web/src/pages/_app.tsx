@@ -17,6 +17,7 @@ import { MsalProvider } from '@azure/msal-react';
 import { ReactNode, useMemo, memo } from 'react';
 import { client } from '@web/client/client.gen';
 import { ColorModeProvider } from '@web/components/ui/color-mode';
+import { LightMode } from '@web/components/ui/color-mode';
 
 export const queryClient = new QueryClient();
 const publicClientApplication = new PublicClientApplication(msalConfig);
@@ -40,7 +41,7 @@ const WrapperComponent = memo(({ children }: { children: ReactNode }) => {
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <ChakraProvider value={system}>
-              <ColorModeProvider>{children}</ColorModeProvider>
+              <LightMode>{children}</LightMode>
             </ChakraProvider>
           </AuthProvider>
         </QueryClientProvider>
@@ -78,7 +79,9 @@ export default function App({
     return (
       <>
         <WrapperComponent>
-          <Component {...pageProps} />
+          <LightMode>
+            <Component {...pageProps} />
+          </LightMode>
         </WrapperComponent>
       </>
     );
