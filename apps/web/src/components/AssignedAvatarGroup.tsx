@@ -20,20 +20,20 @@ export const AssignedAvatarGroup = ({
     return { items, overflow };
   };
 
-  const { items: displayedAssignedGroups, overflow: overflowAssignedGroups } =
-    partition(assignedGroups, 5);
+  const { items: displayedAssignedGroups } = partition(assignedGroups, 5);
 
   return (
     <Group gap="0" spaceX="2">
       {detailed
-        ? displayedAssignedGroups.map((assignedGroup, i) => (
+        ? displayedAssignedGroups.map((assignedGroup) => (
             <HoverableAvatar
+              key={assignedGroup.id}
               name={getNameFromAssignedGroup(assignedGroup)}
               signed={assignedGroup.signed}
             />
           ))
         : displayedAssignedGroups.map((assignedGroup, i) => (
-            <Tooltip.Root>
+            <Tooltip.Root key={i}>
               <Tooltip.Trigger asChild>
                 <Box>
                   <Avatar.Root

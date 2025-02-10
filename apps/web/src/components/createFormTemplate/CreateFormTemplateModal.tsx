@@ -254,7 +254,7 @@ export const CreateFormTemplateModal = ({
                     mt="20px"
                   ></Reorder.Group>
                   {fieldGroups.map((fieldGroup) => (
-                    <List.Item asChild>
+                    <List.Item key={fieldGroup.id} asChild>
                       <Reorder.Item
                         key={fieldGroup.id}
                         value={fieldGroup}
