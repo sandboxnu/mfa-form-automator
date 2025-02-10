@@ -290,6 +290,7 @@ const FormInstance = ({
                   ? 'var(--mfa-gray-hex)'
                   : 'var(--mfa-blue-hex)'
               }
+              px="10px"
               color="#FFF"
               onClick={async (_) => {
                 toaster.promise(_handleFormSign(), {
