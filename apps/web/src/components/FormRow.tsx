@@ -87,24 +87,10 @@ export const FormRow = ({
         </GridItem>
         <GridItem colSpan={5} h="64px">
           <Flex pt="15px">
-            <AssignedAvatarGroup assignedGroups={formInstance.assignedGroups} />
-
-            {/* TODO: Do we need to have the enhanced popover for these avatars? */}
-            {/* <AvatarGroup size="sm" max={5}>
-              {formInstance.signatures
-                .sort((a, b) => a.order - b.order)
-                .map((assignedGroup: AssignedGroupEntity, index: number) => {
-                  return (
-                    <>
-                      <HoverableAvatar
-                        name={getNameFromAssignedGroup(assignedGroup)}
-                        signed={assignedGroup.signed}
-                        index={index}
-                      />
-                    </>
-                  );
-                })}
-            </AvatarGroup> */}
+            <AssignedAvatarGroup
+              assignedGroups={formInstance.assignedGroups}
+              detailed
+            />
             <Text pl="15px" mt="5px" truncate>
               {`${
                 formInstance.assignedGroups.filter(
