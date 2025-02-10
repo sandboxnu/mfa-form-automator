@@ -8,6 +8,8 @@ import {
   SelectTrigger,
   SelectValueText,
   createListCollection,
+  SelectRoot,
+  SelectLabel,
 } from '@chakra-ui/react';
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@web/hooks/useAuth';
@@ -18,7 +20,6 @@ import {
   departmentsControllerFindAllOptions,
   positionsControllerFindAllInDepartmentNameOptions,
 } from '@web/client/@tanstack/react-query.gen';
-import { SelectLabel, SelectRoot } from '@web/components/ui/select';
 import { Scope } from '@web/client';
 
 export default function Register() {

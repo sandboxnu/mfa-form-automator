@@ -1,12 +1,14 @@
 import {
-  Text,
   Avatar,
+  Box,
+  Button,
   Group,
   MenuContent,
   MenuItem,
   MenuRoot,
+  Portal,
+  Tooltip,
 } from '@chakra-ui/react';
-import { Tooltip } from './ui/tooltip';
 import { AssignedGroupEntity } from '@web/client/types.gen';
 import { MenuTrigger } from './ui/menu';
 
@@ -31,39 +33,45 @@ export const AssignedAvatarGroup = ({
   return (
     <Group gap="0" spaceX="2">
       {displayedAssignedGroups.map((sig, i) => (
-        <Tooltip
-          contentProps={{
-            css: { '--tooltip-bg': 'white', color: 'black' },
-          }}
-          positioning={{ placement: 'bottom-start' }}
-          content={
-            <Text fontSize="16px" fontWeight="bold">
-              {sig.signerEmployee?.firstName +
-                ' ' +
-                sig.signerEmployee?.lastName}
-            </Text>
-          }
-          key={i}
-        >
-          <Avatar.Root
-            key={i}
-            boxSize="32px"
-            backgroundColor={sig.signed ? '#D1F0D4' : '#DCDCDC'}
-            outline="1px solid #FFFFFF"
-            color="black"
-            fontWeight={400}
-            fontSize="16px"
-            size="sm"
-          >
-            <Avatar.Fallback
-              name={
-                sig.signerEmployee?.firstName +
-                ' ' +
-                sig.signerEmployee?.lastName
-              }
-            />
-          </Avatar.Root>
-        </Tooltip>
+        <Tooltip.Root>
+          <Tooltip.Trigger asChild>
+            <Box>
+              <Avatar.Root
+                key={i}
+                boxSize="32px"
+                backgroundColor={sig.signed ? '#D1F0D4' : '#DCDCDC'}
+                outline="1px solid #FFFFFF"
+                color="black"
+                fontWeight={400}
+                fontSize="16px"
+                size="sm"
+              >
+                <Avatar.Fallback
+                  name={
+                    sig.signerEmployee?.firstName +
+                    ' ' +
+                    sig.signerEmployee?.lastName
+                  }
+                />
+              </Avatar.Root>
+            </Box>
+          </Tooltip.Trigger>
+          <Portal>
+            <Tooltip.Positioner>
+              <Tooltip.Content
+                fontSize="16px"
+                fontWeight="bold"
+                p="5px"
+                color="black"
+                background="white"
+              >
+                {sig.signerEmployee?.firstName +
+                  ' ' +
+                  sig.signerEmployee?.lastName}
+              </Tooltip.Content>
+            </Tooltip.Positioner>
+          </Portal>
+        </Tooltip.Root>
       ))}
       {overflowAssignedGroups.length > 0 && (
         <MenuRoot positioning={{ placement: 'bottom' }}>

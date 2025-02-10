@@ -164,7 +164,7 @@ export const CreateFormTemplateModal = ({
                 <Heading as="h3">Form Name</Heading>
                 <Field.Root invalid={isFormTemplateNameInvalid}>
                   <Field.Label>
-                    "Field Template"
+                    Field Template
                     <Field.RequiredIndicator />
                   </Field.Label>
                   <Input
