@@ -5,6 +5,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { CreateTemplateBoxDto } from './create-template-box.dto';
 
@@ -21,6 +22,7 @@ export class CreateFieldGroupDto {
 
   @IsArray()
   @ArrayMinSize(1)
+  @ValidateNested({ each: true })
   @ApiProperty({
     isArray: true,
     type: CreateTemplateBoxDto,

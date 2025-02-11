@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   Body,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import {
@@ -125,7 +126,10 @@ export class AppController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async register(@Body() registerEmployeeDto: RegisterEmployeeDto) {
+  async register(
+    @Body(new ValidationPipe({ transform: true }))
+    registerEmployeeDto: RegisterEmployeeDto,
+  ) {
     const { positionName, departmentName, ...employeeDto } =
       registerEmployeeDto;
 

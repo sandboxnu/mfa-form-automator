@@ -3,6 +3,7 @@ import { FormTemplatesController } from './form-templates.controller';
 import { FormTemplatesService } from './form-templates.service';
 import { PrismaService } from './../../../server/src/prisma/prisma.service';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { PdfStoreModule } from '../pdf-store/pdf-storage.module';
 
 describe('FormTemplatesController', () => {
   let controller: FormTemplatesController;
@@ -11,6 +12,7 @@ describe('FormTemplatesController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FormTemplatesController],
       providers: [FormTemplatesService, PrismaService, LoggerServiceImpl],
+      imports: [PdfStoreModule],
     }).compile();
 
     controller = module.get<FormTemplatesController>(FormTemplatesController);

@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dto/create-position.dto';
@@ -43,7 +44,10 @@ export class PositionsController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async create(@Body() createPositionDto: CreatePositionDto) {
+  async create(
+    @Body(new ValidationPipe({ transform: true }))
+    createPositionDto: CreatePositionDto,
+  ) {
     const newPosition = await this.positionsService.create(createPositionDto);
     return new PositionEntity(newPosition);
   }
@@ -149,7 +153,8 @@ export class PositionsController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async update(
     @Param('id') id: string,
-    @Body() updatePositionDto: UpdatePositionDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updatePositionDto: UpdatePositionDto,
   ) {
     try {
       const updatedPosition = await this.positionsService.update(

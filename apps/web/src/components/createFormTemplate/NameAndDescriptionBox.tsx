@@ -1,4 +1,5 @@
 import { Text, Flex } from '@chakra-ui/react';
+import React, { useMemo } from 'react';
 import { Dispatch, SetStateAction } from 'react';
 
 /**
@@ -10,17 +11,17 @@ import { Dispatch, SetStateAction } from 'react';
  * @param formLink link to form to preview
  */
 export const NameAndDescriptionBox = ({
+  pdfFile,
   name,
   setName,
   description,
   setDescription,
-  formLink,
 }: {
+  pdfFile: File | null;
   name: string | null;
   setName: Dispatch<SetStateAction<string | null>>;
   description: string | null;
   setDescription: Dispatch<SetStateAction<string | null>>;
-  formLink: string;
 }) => {
   const textInputStyle = {
     padding: '8px 10px',
@@ -32,6 +33,11 @@ export const NameAndDescriptionBox = ({
     outlineColor: 'transparent',
     borderColor: 'transparent',
   };
+
+  const memoPdfLink = useMemo(
+    () => (pdfFile ? URL.createObjectURL(pdfFile) : undefined),
+    [pdfFile],
+  );
 
   return (
     <Flex
@@ -86,7 +92,7 @@ export const NameAndDescriptionBox = ({
             Preview Only
           </Text>
           <embed
-            src={formLink}
+            src={memoPdfLink}
             type="application/pdf"
             width="400px"
             height="600px"

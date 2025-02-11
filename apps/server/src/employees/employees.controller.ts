@@ -9,6 +9,7 @@ import {
   NotFoundException,
   Query,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -49,7 +50,10 @@ export class EmployeesController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async create(@Body() createEmployeeDto: CreateEmployeeDto) {
+  async create(
+    @Body(new ValidationPipe({ transform: true }))
+    createEmployeeDto: CreateEmployeeDto,
+  ) {
     // TODO: Auth
     const newEmployee = await this.employeesService.create(createEmployeeDto);
     return new EmployeeEntity(newEmployee);
@@ -109,7 +113,8 @@ export class EmployeesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async update(
     @Param('id') id: string,
-    @Body() updateEmployeeDto: UpdateEmployeeDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateEmployeeDto: UpdateEmployeeDto,
   ) {
     // TODO: Auth
     try {

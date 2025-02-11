@@ -7,7 +7,7 @@ import { PositionsService } from '../positions/positions.service';
 import { AssignedGroupService } from './assigned-group.service';
 import { ConnectEmployeeDto } from './dto/create-assigned-group.dto';
 
-let assignedGroupPositionSigner = {
+const assignedGroupPositionSigner = {
   id: 'assignedGroup-id',
   formInstanceId: 'form-instance-id',
   signerType: SignerType.POSITION,
@@ -19,7 +19,7 @@ let assignedGroupPositionSigner = {
   updatedAt: new Date(1672531200),
 };
 
-let assignedGroupDepartmentSigner = {
+const assignedGroupDepartmentSigner = {
   id: 'assignedGroup-id',
   formInstanceId: 'form-instance-id',
   signerType: SignerType.DEPARTMENT,
@@ -35,7 +35,7 @@ const db = {
   assignedGroup: {
     findFirstOrThrow: jest.fn().mockResolvedValue(assignedGroupPositionSigner),
     update: jest.fn().mockImplementation((args) => {
-      let val = {
+      const val = {
         ...assignedGroupPositionSigner,
         ...args.data,
       };
@@ -129,7 +129,7 @@ describe('AssignedGroupService', () => {
           signerDepartmentId: undefined,
           signerEmployeeId: undefined,
         };
-        let updatedSignature = await service.updateSigner(
+        const updatedSignature = await service.updateSigner(
           'assignedGroup-id',
           updateSignatureSignerDto,
         );
@@ -151,7 +151,7 @@ describe('AssignedGroupService', () => {
           signerDepartmentId: 'department-id',
           signerEmployeeId: undefined,
         };
-        let updatedSignature = await service.updateSigner(
+        const updatedSignature = await service.updateSigner(
           'assignedGroup-id',
           updateSignatureSignerDto,
         );
@@ -173,7 +173,7 @@ describe('AssignedGroupService', () => {
           signerDepartmentId: undefined,
           signerEmployeeId: 'employee-id',
         };
-        let updatedSignature = await service.updateSigner(
+        const updatedSignature = await service.updateSigner(
           'assignedGroup-id',
           updateSignatureSignerDto,
         );
@@ -199,7 +199,7 @@ describe('AssignedGroupService', () => {
             { id: 'employee-id-2' },
           ],
         };
-        let updatedSignature = await service.updateSigner(
+        const updatedSignature = await service.updateSigner(
           'assignedGroup-id',
           updateSignatureSignerDto,
         );
