@@ -3,32 +3,35 @@ import {
   Text,
   Button,
   List,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalOverlay,
-  useToast,
   Skeleton,
   Heading,
-  ModalHeader,
   Flex,
   Input,
+  Field,
 } from '@chakra-ui/react';
-import { AddIcon, UploadForm } from '@web/static/icons';
+import { AddIcon, UploadForm } from '@web/static/icons.tsx';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { FieldGroup } from './FieldGroup';
 import { TempFieldGroup } from './types';
 import { v4 as uuidv4 } from 'uuid';
-import { queryClient } from '@web/pages/_app';
-import { useBlob } from '@web/hooks/useBlob';
+import { queryClient } from '@web/pages/_app.tsx';
+import { useBlob } from '@web/hooks/useBlob.ts';
 import {
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
-} from '@web/client/@tanstack/react-query.gen';
+} from '@web/client/@tanstack/react-query.gen.ts';
+import {
+  DialogBody,
+  DialogBackdrop,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+} from '../ui/dialog.tsx';
+import { toaster, Toaster } from '../ui/toaster.tsx';
+import { FieldGroup } from './FieldGroup.tsx';
 
 const variants = {
   notDragging: {
@@ -68,8 +71,6 @@ export const CreateFormTemplateModal = ({
     localBlobData: { blob: localBlob, url: localBlobUrl, name: localBlobName },
     hasLocalBlob,
   } = useBlob();
-
-  const toast = useToast();
 
   const createFormTemplateMutation = useMutation({
     ...formTemplatesControllerCreateMutation(),
@@ -145,31 +146,42 @@ export const CreateFormTemplateModal = ({
   };
 
   return (
-    <Modal isOpen={isCreateFormTemplateOpen} onClose={_handleModalClose}>
-      <ModalOverlay backdropFilter="blur(2px)" />
-      <ModalContent minWidth="936px" minHeight="761px" padding="20px">
-        <ModalCloseButton />
-        <ModalHeader>
+    <DialogRoot
+      open={isCreateFormTemplateOpen}
+      onOpenChange={_handleModalClose}
+    >
+      <Toaster />
+      <DialogBackdrop backdropFilter="blur(2px)" />
+      <DialogContent minWidth="936px" minHeight="761px" padding="20px">
+        <DialogCloseTrigger />
+        <DialogHeader>
           <Heading as="h1">Create Form Template</Heading>
-        </ModalHeader>
-        <ModalBody>
+        </DialogHeader>
+        <DialogBody>
           <Flex gap="30px">
             <Box flex="1">
               <Box>
                 <Heading as="h3">Form Name</Heading>
-                <Input
-                  value={formTemplateName}
-                  isInvalid={isFormTemplateNameInvalid}
-                  onChange={(e) => setFormTemplateName(e.target.value)}
-                  placeholder="Form Name"
-                  fontSize="16px"
-                  paddingLeft="11px"
-                  paddingRight="11px"
-                  fontWeight="400px"
-                  width="386px"
-                  height="40px"
-                  mt="16px"
-                />
+                <Field.Root invalid={isFormTemplateNameInvalid}>
+                  <Field.Label>
+                    Field Template
+                    <Field.RequiredIndicator />
+                  </Field.Label>
+                  <Input
+                    value={formTemplateName}
+                    onChange={(e) => setFormTemplateName(e.target.value)}
+                    placeholder="Form Name"
+                    fontSize="16px"
+                    paddingLeft="11px"
+                    paddingRight="11px"
+                    fontWeight="400px"
+                    width="386px"
+                    height="40px"
+                    mt="16px"
+                  />
+                  <Field.HelperText />
+                  <Field.ErrorText>This field is required</Field.ErrorText>
+                </Field.Root>
               </Box>
               <Box mt="35px">
                 <Heading as="h3">Upload Form</Heading>
@@ -233,45 +245,41 @@ export const CreateFormTemplateModal = ({
                   Enter the role titles of employees that will need to sign this
                   form, and set the order it will be signed in.
                 </Text>
-                <List
-                  as={Reorder.Group}
-                  spacing={2}
-                  axis="y"
-                  values={fieldGroups}
-                  onReorder={setFieldGroups}
-                  mt="20px"
-                >
+                <List.Root asChild>
+                  <Reorder.Group
+                    spacing={2}
+                    axis="y"
+                    values={fieldGroups}
+                    onReorder={setFieldGroups}
+                    mt="20px"
+                  ></Reorder.Group>
                   {fieldGroups.map((fieldGroup) => (
-                    <Reorder.Item
-                      key={fieldGroup.id}
-                      value={fieldGroup}
-                      dragTransition={{
-                        bounceStiffness: 600,
-                      }}
-                      variants={variants}
-                      initial="notDragging"
-                      whileDrag="dragging"
-                      style={{
-                        padding: '5px',
-                        borderRadius: '8px',
-                      }}
-                    >
-                      <FieldGroup
-                        fieldGroup={fieldGroup}
-                        handleChange={_handleChange}
-                        handleDelete={_deleteFieldGroup}
-                      />
-                    </Reorder.Item>
+                    <List.Item key={fieldGroup.id} asChild>
+                      <Reorder.Item
+                        key={fieldGroup.id}
+                        value={fieldGroup}
+                        dragTransition={{
+                          bounceStiffness: 600,
+                        }}
+                        variants={variants}
+                        initial="notDragging"
+                        whileDrag="dragging"
+                        style={{
+                          padding: '5px',
+                          borderRadius: '8px',
+                        }}
+                      >
+                        <FieldGroup
+                          fieldGroup={fieldGroup}
+                          handleChange={_handleChange}
+                          handleDelete={_deleteFieldGroup}
+                        />
+                      </Reorder.Item>
+                    </List.Item>
                   ))}
-                </List>
+                </List.Root>
                 <Button
                   variant="ghost"
-                  leftIcon={
-                    <AddIcon
-                      fill="#4C658A"
-                      _groupHover={{ fill: 'var(--chakra-colors-gray-500)' }}
-                    />
-                  }
                   mt={fieldGroups.length > 0 ? '14px' : '0px'}
                   padding="0px"
                   data-group
@@ -285,6 +293,10 @@ export const CreateFormTemplateModal = ({
                     setFieldGroups(currentFieldGroups);
                   }}
                 >
+                  <AddIcon
+                    fill="#4C658A"
+                    _groupHover={{ fill: 'var(--chakra-colors-gray-500)' }}
+                  />
                   <Text
                     fontSize="16px"
                     fontWeight="400"
@@ -316,21 +328,21 @@ export const CreateFormTemplateModal = ({
               )}
             </Box>
           </Flex>
-        </ModalBody>
-        <ModalFooter>
+        </DialogBody>
+        <DialogFooter>
           <Button
             backgroundColor="#4C658A"
-            textColor="white"
+            css={{ '--color': 'white' }}
             width="161px"
             height="40px"
-            isDisabled={
+            disabled={
               !hasLocalBlob ||
               isFormTemplateNameInvalid ||
               fieldGroups.length == 0 ||
               fieldGroups.some((field) => field.value === '')
             }
             onClick={(_) => {
-              toast.promise(_submitFormTemplate(), {
+              toaster.promise(_submitFormTemplate(), {
                 success: {
                   title: 'Success',
                   description: 'Form template created',
@@ -348,8 +360,8 @@ export const CreateFormTemplateModal = ({
           >
             Create Template
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 };

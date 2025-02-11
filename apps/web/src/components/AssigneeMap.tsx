@@ -1,7 +1,8 @@
-import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
-import { AwaitingIcon, CheckIcon } from 'apps/web/src/static/icons';
-import { AvatarMapProps } from './types';
-import { SignerType } from '@web/client';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { AwaitingIcon, CheckIcon } from 'apps/web/src/static/icons.tsx';
+import { AvatarMapProps } from './types.ts';
+import { SignerType } from '@web/client/types.gen.ts';
+import { Avatar } from './ui/avatar.tsx';
 
 /**
  * @param assignees - an array of assignees

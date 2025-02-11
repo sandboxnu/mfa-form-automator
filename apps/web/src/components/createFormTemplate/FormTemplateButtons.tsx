@@ -4,11 +4,10 @@ import { CreateFieldGroupDto } from '@web/client';
 import {
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
-} from '@web/client/@tanstack/react-query.gen';
-import { client } from '@web/client/client.gen';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
-import { queryClient } from '@web/pages/_app';
-import { useRouter } from 'next/router';
+} from '@web/client/@tanstack/react-query.gen.ts';
+import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext.tsx';
+import { queryClient } from '@web/pages/_app.tsx';
+import { useRouter } from 'next/router.js';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.

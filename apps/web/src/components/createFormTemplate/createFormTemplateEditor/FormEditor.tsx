@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Box, Text, Button } from '@chakra-ui/react';
-import { TextIcon, PlusSign } from 'apps/web/src/static/icons';
+import { TextIcon, PlusSign } from 'apps/web/src/static/icons.tsx';
 import { DraggableData, DraggableEvent } from 'react-draggable';
-import PagingControl from './PagingControl';
+import PagingControl from './PagingControl.tsx';
 import { v4 as uuidv4 } from 'uuid';
 import DraggableText from './DraggableText';
 
@@ -161,7 +161,7 @@ export const FormEditor = ({
                 currentGroup === key ? groupColors[index][1] : 'white'
               }
               borderColor={groupColors[index][0]}
-              textColor={groupColors[index][0]}
+              css={{ '--color': groupColors[index][0] }}
             >
               Group {index + 1}
             </Button>
@@ -236,7 +236,7 @@ export const FormEditor = ({
               display="flex"
               justifyContent="center"
               alignItems="center"
-              isDisabled={fieldGroups.size == 0 || disableEdit}
+              disabled={fieldGroups.size == 0 || disableEdit}
               onClick={handleAddField}
             >
               <div>{TextIcon}</div>
