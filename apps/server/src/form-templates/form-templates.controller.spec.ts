@@ -3,8 +3,6 @@ import { FormTemplatesController } from './form-templates.controller';
 import { FormTemplatesService } from './form-templates.service';
 import { PrismaService } from './../../../server/src/prisma/prisma.service';
 import { LoggerServiceImpl } from '../logger/logger.service';
-import { PdfStoreService } from '../pdf-store/pdf-store.service';
-import { VercelFileStorageHandler } from '../pdf-store/file-storage/VercelFileStorageHandler';
 import { PdfStoreModule } from '../pdf-store/pdf-storage.module';
 
 describe('FormTemplatesController', () => {
