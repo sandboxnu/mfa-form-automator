@@ -6,9 +6,7 @@ import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
  * The upload page in the form template creation flow, where users add their pdf.
  */
 export default function Upload() {
-  const { useBlob } = useCreateFormTemplate();
-  const { hasLocalBlob, clearLocalBlob, localBlobData, uploadLocalFile } =
-    useBlob;
+  const { pdfFile, setPdfFile } = useCreateFormTemplate();
 
   return (
     <FormTemplateLayout
@@ -16,16 +14,15 @@ export default function Upload() {
       subheading={'Upload your form PDF'}
       boxContent={
         <UploadBox
-          hasLocalBlob={hasLocalBlob}
-          localBlobData={localBlobData}
-          clearLocalBlob={clearLocalBlob}
-          uploadLocalFile={uploadLocalFile}
+          pdfFile={pdfFile}
+          clearPdfFile={() => setPdfFile(null)}
+          setPdfFile={setPdfFile}
         />
       }
-      deleteFunction={clearLocalBlob}
+      deleteFunction={() => setPdfFile(null)}
       submitLink={'/create-template/description'}
       backLink={'/'}
-      disabled={!hasLocalBlob}
+      disabled={!pdfFile}
     />
   );
 }

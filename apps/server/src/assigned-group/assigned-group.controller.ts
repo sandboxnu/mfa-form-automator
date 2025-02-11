@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Param, Patch, ValidationPipe } from '@nestjs/common';
 import { AssignedGroupService } from './assigned-group.service';
 import { UpdateAssignedGroupSignerDto } from './dto/update-assigned-group-signer.dto';
 
@@ -9,7 +9,8 @@ export class AssignedGroupController {
   @Patch(':id/signer')
   updateAssignedGroupSigner(
     @Param('id') assignedGroupId: string,
-    @Body() updateAssignedGroupSigner: UpdateAssignedGroupSignerDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateAssignedGroupSigner: UpdateAssignedGroupSignerDto,
   ) {
     return this.assignedGroupService.updateSigner(
       assignedGroupId,
