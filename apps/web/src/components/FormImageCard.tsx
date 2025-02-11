@@ -92,7 +92,7 @@ export const FormImageCard = ({
             fontSize="13px"
             truncate
           >
-            Assigned {daysAgo(new Date(formInstance.createdAt), new Date())}
+            Assigned {daysAgo(new Date(), new Date(formInstance.createdAt))}
           </Text>
         </Flex>
       </Flex>
