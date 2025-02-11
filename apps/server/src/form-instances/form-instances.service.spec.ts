@@ -85,6 +85,7 @@ const formTemplate = {
   id: formTemplateId,
   name: 'Form-Template-1',
   formDocLink: 'mfa.org/form1',
+  description: 'description',
   signatureFields: [
     {
       id: '086885ca-ecc8-4614-8103-9a99fa0bdf6d',
@@ -131,6 +132,7 @@ const formInstancesArray = [
   {
     id: formInstance1Id,
     name: formInstance1Name,
+    description: 'forminstance1 description',
     formDocLink: '',
     completed: false,
     createdAt: new Date(1672531200),
@@ -171,6 +173,7 @@ const formInstancesArray = [
   {
     id: formInstance2Id,
     name: formInstance2Name,
+    description: 'forminstance2 description',
     formDocLink: '',
     completed: false,
     createdAt: new Date(1672531200),
@@ -198,6 +201,7 @@ const formInstancesArray = [
   {
     id: formInstance3Id,
     name: formInstance3Name,
+    description: 'forminstance3 description',
     formDocLink: '',
     completed: false,
     createdAt: new Date(1672531200),
