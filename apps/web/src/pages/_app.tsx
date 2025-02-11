@@ -4,9 +4,8 @@ import '@fontsource/hanken-grotesk/800.css';
 import '@fontsource/hanken-grotesk/700.css';
 import '@fontsource/hanken-grotesk/400.css';
 import type { AppProps } from 'next/app';
-import { ChakraProvider } from '@chakra-ui/react';
+import { Provider } from '@web/components/ui/provider';
 import { Layout } from 'apps/web/src/components/Layout';
-import { system } from '../styles/system';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from './../context/AuthContext';
 import { CreateFormTemplateProvider } from '@web/context/CreateFormTemplateContext';
@@ -16,8 +15,6 @@ import { msalConfig } from '@web/authConfig';
 import { MsalProvider } from '@azure/msal-react';
 import { ReactNode, useMemo, memo } from 'react';
 import { client } from '@web/client/client.gen';
-import { ColorModeProvider } from '@web/components/ui/color-mode';
-import { LightMode } from '@web/components/ui/color-mode';
 
 export const queryClient = new QueryClient();
 const publicClientApplication = new PublicClientApplication(msalConfig);
@@ -40,9 +37,7 @@ const WrapperComponent = memo(({ children }: { children: ReactNode }) => {
       <MsalProvider instance={publicClientApplication}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <ChakraProvider value={system}>
-              <LightMode>{children}</LightMode>
-            </ChakraProvider>
+            <Provider>{children}</Provider>
           </AuthProvider>
         </QueryClientProvider>
       </MsalProvider>
@@ -79,9 +74,7 @@ export default function App({
     return (
       <>
         <WrapperComponent>
-          <LightMode>
-            <Component {...pageProps} />
-          </LightMode>
+          <Component {...pageProps} />
         </WrapperComponent>
       </>
     );
