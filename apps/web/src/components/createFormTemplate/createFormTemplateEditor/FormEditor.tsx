@@ -7,7 +7,7 @@ import PagingControl from './PagingControl';
 import { v4 as uuidv4 } from 'uuid';
 import DraggableTextFactory from './DraggableTextFactory';
 import { useCreateFormTemplate } from 'apps/web/src/context/CreateFormTemplateContext';
-import { FieldType, TextFieldPosition, FormFields } from '../types';
+import { FieldType, TextFieldPosition, FormFields, FieldGroups } from '../types';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -167,21 +167,21 @@ export const FormEditor = ({
     >
       {!disableEdit && (
         <Box display="flex" gap="12px">
-          {Array.from(fieldGroups.entries().map(([key, value], index) => (
+          {Array.from(fieldGroups.entries()).map(([key, _]: [string, any], index: number) => (
             <Button
               key={index}
               onClick={() => setCurrentGroup(key)}
               variant={'solid'}
               border={'solid 1px'}
               backgroundColor={
-                currentGroup === key ? groupColors[index][1] : 'white'
+          currentGroup === key ? groupColors[index][1] : 'white'
               }
               borderColor={groupColors[index][0]}
               textColor={groupColors[index][0]}
             >
               Group {index + 1}
             </Button>
-          )))}
+          ))}
 
           <Button
             backgroundColor="white"
@@ -191,13 +191,13 @@ export const FormEditor = ({
             {PlusSign}
             <span
               style={{
-                fontFamily: 'Hanken Grotesk',
-                fontSize: '16px',
-                color: '#1367EA',
-                fontWeight: 600,
-                lineHeight: '22px',
-                textAlign: 'left',
-                marginLeft: '6px',
+          fontFamily: 'Hanken Grotesk',
+          fontSize: '16px',
+          color: '#1367EA',
+          fontWeight: 600,
+          lineHeight: '22px',
+          textAlign: 'left',
+          marginLeft: '6px',
               }}
             >
               Add group
