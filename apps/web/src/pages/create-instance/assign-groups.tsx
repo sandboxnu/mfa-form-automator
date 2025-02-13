@@ -2,7 +2,7 @@ import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 
 
 export default function AssignGroups() {
-  
+
     return (
         <CreateFormLayout
             isFormTemplate={false}
