@@ -1,4 +1,3 @@
-import { Text } from '@chakra-ui/react';    
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 
 
@@ -10,7 +9,7 @@ export default function AssignGroups() {
             pageNumber={3}
             heading={'Create form instance'}
             subheading={'Assign your input field groups to a person, role, or department'} 
-            boxContent={<AssignGroups />} 
+            boxContent={<div></div>} 
             deleteFunction={() => {}}
             submitLink={'/create-instance/review'} 
             backLink={'/create-instance/description'} 
