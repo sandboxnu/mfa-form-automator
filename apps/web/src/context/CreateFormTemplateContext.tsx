@@ -1,12 +1,11 @@
-import React, { createContext, useContext, useState } from 'react';
-import { CreateFormTemplateContextType } from './types';
-import { useBlob } from '@web/hooks/useBlob';
 import {
-  FormFields,
   FieldGroups,
+  FormFields,
 } from '@web/components/createFormTemplate/types';
-import { useEffect } from 'react';
+import { useBlob } from '@web/hooks/useBlob';
 import { useRouter } from 'next/router';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { CreateFormTemplateContextType } from './types';
 
 export const CreateFormTemplateContext =
   createContext<CreateFormTemplateContextType>(

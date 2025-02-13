@@ -1,13 +1,17 @@
+import { Box, Button, Text } from '@chakra-ui/react';
+import { Checkbox, PlusSign, TextIcon } from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
-import { Box, Text, Button } from '@chakra-ui/react';
-import { TextIcon, PlusSign, Checkbox } from 'apps/web/src/static/icons';
 import { DraggableData, DraggableEvent } from 'react-draggable';
-import PagingControl from './PagingControl';
+import { Document, Page, pdfjs } from 'react-pdf';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  FieldGroups,
+  FieldType,
+  FormFields,
+  TextFieldPosition,
+} from '../types';
 import DraggableTextFactory from './DraggableTextFactory';
-import { useCreateFormTemplate } from 'apps/web/src/context/CreateFormTemplateContext';
-import { FieldType, TextFieldPosition, FormFields } from '../types';
+import PagingControl from './PagingControl';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 

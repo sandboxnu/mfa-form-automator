@@ -36,6 +36,8 @@ export default function DraggableTextFactory({
       disableDelete={disableDelete}
     ></Checkbox>
   ) : (
+    // we'll have to add something else for signature fields but right now lets treat it as
+    // a text field
     <TextField
       onStop={onStop}
       onResizeStop={onResizeStop}

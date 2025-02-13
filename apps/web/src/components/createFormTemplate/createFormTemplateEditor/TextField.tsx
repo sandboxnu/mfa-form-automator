@@ -1,7 +1,7 @@
-import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DraggableEventHandler } from 'react-draggable';
-import { FieldType, TextFieldPosition } from '../types';
 import { FaTimes } from 'react-icons/fa';
+import { Rnd, RndResizeCallback } from 'react-rnd';
+import { TextFieldPosition } from '../types';
 
 export default function TextField({
   onStop,
@@ -24,9 +24,8 @@ export default function TextField({
     <Rnd
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
-      size={{ height: currentPosition.height, width: currentPosition.width }}
       minWidth={'50px'}
-      minHeight={'40px'}
+      minHeight={'15px'}
       style={{
         position: 'absolute',
         zIndex: 1,
