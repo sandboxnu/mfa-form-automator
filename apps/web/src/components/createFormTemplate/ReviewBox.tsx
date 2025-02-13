@@ -1,6 +1,7 @@
-import { Box, Text, Flex } from '@chakra-ui/react';
-import { FormEditor, FieldGroups } from './createFormTemplateEditor/FormEditor';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { useCreateFormTemplate } from '../../context/CreateFormTemplateContext';
+import { FormEditor } from './createFormTemplateEditor/FormEditor';
+import { FieldGroups } from './types';
 
 /**
  * The contents of the white box for the page (step 2) that asks the user for the form's name and
