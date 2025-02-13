@@ -12,22 +12,17 @@ export const CreateFormInstanceContext =
 export const CreateFormInstanceProvider = ({ children }: any) => {
   const [formInstanceName, setFormInstanceName] = useState<string | null>(null);
   const [formInstanceDescription, setFormInstanceDescription] = useState<
-    string | null
-  >(null);
-  const [formTemplate, setFormTemplate] = useState<FormTemplateEntity | null>(
-    null,
-  );
+    string | null>(null);
+  const [formTemplate, setFormTemplate] = useState<FormTemplateEntity | null>(null);
+  
 
   const router = useRouter();
 
   useEffect(() => {
-    if (
-      !formTemplate &&
-      router.pathname !== '/create-instance/select-template'
-    ) {
+    if (!formTemplate && router.pathname !== '/create-instance/select-template') {
       router.push('/create-instance/select-template');
     }
-  });
+  }, [formTemplate, router.pathname]);
 
   return (
     <CreateFormInstanceContext.Provider

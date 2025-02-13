@@ -1,9 +1,11 @@
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { useEffect } from 'react';
 
 export default function SelectTemplate() {
-  const { setFormTemplate } = useCreateFormInstance();
+  const { formTemplate, setFormTemplate } = useCreateFormInstance();
+
   return (
     <CreateFormLayout
       isFormTemplate={false}
@@ -16,7 +18,8 @@ export default function SelectTemplate() {
       }}
       submitLink={'/create-instance/description'}
       backLink={'/'}
-      disabled={false}
+      disabled={!formTemplate}   
     />
   );
+ 
 }

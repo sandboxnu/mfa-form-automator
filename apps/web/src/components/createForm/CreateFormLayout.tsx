@@ -1,7 +1,7 @@
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import { ReactJSXElement } from 'node_modules/@emotion/react/dist/declarations/types/jsx-namespace';
 import { SideCreateForm } from './SideCreateForm';
-import { FormTemplateButtons } from '../createFormTemplate/FormTemplateButtons';
+import { FormButtons } from './FormButtons';
 
 export const CreateFormLayout = ({
   isFormTemplate,
@@ -67,7 +67,9 @@ export const CreateFormLayout = ({
         {boxContent}
       </Flex>
       {isFormTemplate ? (
-        <FormTemplateButtons
+        <FormButtons
+          isFormTemplate={true}
+          heading='Create Form Template'
           deleteFunction={deleteFunction}
           submitLink={submitLink}
           backLink={backLink}
@@ -75,7 +77,15 @@ export const CreateFormLayout = ({
           review={review}
         />
       ) : (
-        <></>
+        <FormButtons
+          isFormTemplate={false}
+          heading='Create Form Instance'
+          deleteFunction={deleteFunction}
+          submitLink={submitLink}
+          backLink={backLink}
+          disabled={disabled}
+          review={review}
+        />
       )}
     </Box>
   );

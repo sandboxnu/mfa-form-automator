@@ -1,5 +1,5 @@
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
-import { NameAndDescriptionBox } from '@web/components/createFormTemplate/NameAndDescriptionBox';
+import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 /**
