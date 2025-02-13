@@ -6,13 +6,13 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
  * The description page in the form instance creation flow, where users describe their form.
  */
 export default function Description() {
+  
   const {
     formInstanceName,
     formInstanceDescription,
     setFormInstanceName,        
     setFormInstanceDescription,
     formTemplate,
-    setFormTemplate,
   } = useCreateFormInstance();
 
 
