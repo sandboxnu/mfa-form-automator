@@ -12,10 +12,10 @@ import {
 } from '@chakra-ui/react';
 import { MFALogoIcon, UserProfileAvatar } from 'apps/web/src/static/icons';
 import { useAuth } from '@web/hooks/useAuth';
-import { PositionsService } from '@web/client';
 import { useQuery } from '@tanstack/react-query';
 import { AzureSignout } from './AzureSignout';
 import { SignOut } from './SignOut';
+import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
 
 /**
  * @returns the top bar of the application
@@ -23,8 +23,7 @@ import { SignOut } from './SignOut';
 export const TopBar: React.FC = () => {
   const { user, logout } = useAuth();
   const { data: positions } = useQuery({
-    queryKey: ['api', 'positions'],
-    queryFn: () => PositionsService.positionsControllerFindAll(),
+    ...positionsControllerFindAllOptions(),
   });
 
   const userPosition = positions?.find(

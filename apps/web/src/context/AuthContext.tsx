@@ -1,18 +1,25 @@
 import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { User, jwtPayload, AuthContextType } from './types';
 import { useRouter } from 'next/router';
-import {
-  DefaultService,
-  EmployeesService,
-  JwtEntity,
-  PositionsService,
-} from '@web/client';
 import { jwtDecode } from 'jwt-decode';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@web/authConfig';
 import { callMsGraph } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
-import { RegisterEmployeeDto } from '@web/client';
+import { Scope } from '@web/client';
+
+import {
+  appControllerLogin,
+  appControllerLogout,
+  appControllerRefresh,
+  appControllerRegister,
+  employeesControllerFindMe,
+  JwtEntity,
+  positionsControllerFindOne,
+  RegisterEmployeeDto,
+} from '../client';
+import { client } from '@web/client/client.gen';
+import { appControllerRegisterMutation } from '@web/client/@tanstack/react-query.gen';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -29,9 +36,7 @@ export const AuthProvider = ({ children }: any) => {
   const [userData, setUserData] = useState<any>(undefined);
 
   const registerEmployeeMutation = useMutation({
-    mutationFn: async (employee: RegisterEmployeeDto) => {
-      return DefaultService.appControllerRegister(employee);
-    },
+    ...appControllerRegisterMutation(),
   });
 
   const requestProfileDataMutation = useMutation({
@@ -43,21 +48,25 @@ export const AuthProvider = ({ children }: any) => {
     },
   });
 
-  const parseUser = async (jwt: JwtEntity) => {
-    const token = jwt.accessToken;
-    const decoded = jwtDecode(token) as jwtPayload;
+  const parseUser = async (jwt?: JwtEntity) => {
+    if (jwt) {
+      const token = jwt.accessToken;
+      const decoded = jwtDecode(token) as jwtPayload;
 
-    const user: User = {
-      id: decoded.sub,
-      positionId: decoded.positionId,
-      departmentId: decoded.departmentId,
-      email: decoded.email,
-      firstName: decoded.firstName,
-      lastName: decoded.lastName,
-      isAdmin: decoded.isAdmin,
-    };
+      const user: User = {
+        id: decoded.sub,
+        positionId: decoded.positionId,
+        departmentId: decoded.departmentId,
+        email: decoded.email,
+        firstName: decoded.firstName,
+        lastName: decoded.lastName,
+        scope: decoded.scope,
+      };
 
-    setUser(user);
+      setUser(user);
+    } else {
+      logout();
+    }
   };
 
   // Reset the error state if we change page
@@ -75,28 +84,37 @@ export const AuthProvider = ({ children }: any) => {
   // is over.
   useEffect(() => {
     setLoadingInitial(true);
-    EmployeesService.employeesControllerFindMe()
+    employeesControllerFindMe({ client: client })
       .then(async (employee) => {
+        if (employee.data == null) {
+          throw new Error('No employee data found');
+        }
         // temporary fix for the user object
-        const position = await PositionsService.positionsControllerFindOne(
-          employee.position.id,
-        );
+        const position = await positionsControllerFindOne({
+          client: client,
+          path: {
+            id: employee.data.position.id,
+          },
+        });
+        if (position.data == null) {
+          throw new Error('No position data found');
+        }
 
         setUser({
-          id: employee.id,
-          positionId: employee.position.id,
-          departmentId: position.department.id,
-          email: employee.email,
-          firstName: employee.firstName,
-          lastName: employee.lastName,
-          isAdmin: employee.isAdmin,
+          id: employee.data.id,
+          positionId: employee.data.position.id,
+          departmentId: position.data.department.id,
+          email: employee.data.email,
+          firstName: employee.data.firstName,
+          lastName: employee.data.lastName,
+          scope: Scope.BASE_USER,
         });
       })
       .catch(async (_error) => {
         setUser(undefined);
-        DefaultService.appControllerRefresh()
+        appControllerRefresh()
           .then((response) => {
-            parseUser(response);
+            parseUser(response.data);
           })
           .catch((_error) => {
             logout();
@@ -117,12 +135,18 @@ export const AuthProvider = ({ children }: any) => {
   const login = (email: string, password: string) => {
     setLoading(true);
 
-    DefaultService.appControllerLogin({
-      username: email,
-      password: password,
+    appControllerLogin({
+      client: client,
+      body: {
+        username: email,
+        password: password,
+      },
     })
       .then((response) => {
-        parseUser(response);
+        if (response.data == null) {
+          throw new Error('No JWT data found');
+        }
+        parseUser(response.data);
         router.push('/');
       })
       .catch((error) => {
@@ -185,6 +209,7 @@ export const AuthProvider = ({ children }: any) => {
     position: string,
     department: string,
     signatureLink: string,
+    scope: RegisterEmployeeDto['scope'],
   ) => {
     const employee: RegisterEmployeeDto = {
       email: email,
@@ -194,22 +219,26 @@ export const AuthProvider = ({ children }: any) => {
       departmentName: department,
       positionName: position,
       signatureLink: signatureLink,
+      scope: scope,
     };
 
-    registerEmployeeMutation.mutate(employee, {
-      onSuccess: () => {
-        login(email, password);
+    registerEmployeeMutation.mutate(
+      { body: employee },
+      {
+        onSuccess: () => {
+          login(email, password);
+        },
+        onError: (error) => {
+          setError(error);
+        },
       },
-      onError: (error) => {
-        setError(error);
-      },
-    });
+    );
   };
 
   // Call the logout endpoint and then remove the user
   // from the state.
   const logout = () => {
-    DefaultService.appControllerLogout().then(() => setUser(undefined));
+    appControllerLogout().then(() => setUser(undefined));
     // Don't redirect if we are already on the signin page since it will cause a loop
     if (router.pathname !== '/signin') {
       router.replace('/signin');

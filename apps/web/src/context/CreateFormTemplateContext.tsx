@@ -30,7 +30,7 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
     ) {
       router.push('/create-template/upload');
     }
-  }, [blobHook.localBlobData.url]);
+  }, [blobHook.localBlobData.url, router]);
 
   return (
     <CreateFormTemplateContext.Provider

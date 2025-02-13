@@ -18,17 +18,15 @@ export const Layout = ({ children }: { children: any }) => {
     <Box
       as="section"
       bg="gray.50"
-      _dark={{
-        bg: 'gray.700',
-      }}
+      _dark={{ bg: 'gray.700' }}
       minH="100vh"
-      height="100%"
+      display="flex"
+      flexDirection="column"
     >
       <NavBar onOpenCreateFormInstance={onOpenCreateFormInstance} />
-      <Box>
+      <Box flex="1" display="flex" flexDirection="column">
         <TopBar />
-
-        <Box as="main" ml="60" pt="60px">
+        <Box as="main" ml="60" pt="60px" flex="1">
           {children}
         </Box>
       </Box>

@@ -26,10 +26,10 @@ export default function TextField({
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
       minWidth={'50px'}
-      minHeight={'40px'}
+      minHeight={'10px'}
       style={{
         position: 'absolute',
-        zIndex: 100000,
+        zIndex: 1,
         background: `${color}`,
         opacity: '10px',
         border: `solid 1px grey`,

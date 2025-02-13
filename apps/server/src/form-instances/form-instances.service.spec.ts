@@ -3,12 +3,14 @@ import { FormInstancesService } from './form-instances.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplatesService } from '../form-templates/form-templates.service';
 import { PositionsService } from '../positions/positions.service';
-import { Prisma } from '@prisma/client';
-// import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
-// import { FormInstanceErrorMessage } from './form-instance.errors';
-// import { PositionsErrorMessage } from '../positions/positions.errors';
+import { Prisma, SignatureBoxFieldType, SignerType } from '@prisma/client';
+import { FormTemplateErrorMessage } from '../form-templates/form-templates.errors';
+import { FormInstanceErrorMessage } from './form-instance.errors';
+import { PositionsErrorMessage } from '../positions/positions.errors';
 import { PostmarkService } from '../postmark/postmark.service';
 import { EmployeesService } from '../employees/employees.service';
+import { DepartmentsService } from '../departments/departments.service';
+import { EmployeeErrorMessage } from '../employees/employees.errors';
 
 const formInstance1Id = 'formInstanceId1';
 const formInstance2Id = 'formInstanceId2';
@@ -96,6 +98,27 @@ const formTemplate = {
     },
   ],
   formInstances: [],
+  fieldGroups: [
+    {
+      id: 'fieldGroupId',
+      name: 'Field-Group-1',
+      order: 0,
+      formTemplateId: formTemplateId,
+      templateBoxes: [
+        {
+          id: 'templateBoxId',
+          type: SignatureBoxFieldType.TEXT_FIELD,
+          x_coordinate: 0,
+          y_coordinate: 0,
+          createdAt: new Date(1672531200),
+          updatedAt: new Date(1672531200),
+          fieldGroupId: 'fieldGroupId',
+        },
+      ],
+      createdAt: new Date(1672531200),
+      updatedAt: new Date(1672531200),
+    },
+  ],
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
 };
@@ -217,12 +240,28 @@ const db = {
   formTemplate: {
     findFirstOrThrow: jest.fn().mockResolvedValue(formTemplate),
   },
+  fieldGroup: {
+    findMany: jest.fn().mockResolvedValue(formTemplate.fieldGroups),
+  },
+};
+
+const mockPostmarkService = {
+  sendEmail: jest.fn(),
+  sendFormCreatedEmail: jest.fn(),
+  sendReadyForSignatureToUserEmail: jest.fn(),
+  sendReadyForSignatureToDepartmentEmail: jest.fn(),
+  sendReadyForSignatureToPositionEmail: jest.fn(),
+  sendReadyForSignatureToUserListEmail: jest.fn(),
+  sendSignedEmail: jest.fn(),
+  sendReadyForApprovalEmail: jest.fn(),
 };
 
 describe('FormInstancesService', () => {
   let service: FormInstancesService;
   let formTemplateService: FormTemplatesService;
   let positionService: PositionsService;
+  let employeeService: EmployeesService;
+  let departmentService: DepartmentsService;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
@@ -231,11 +270,15 @@ describe('FormInstancesService', () => {
         FormInstancesService,
         FormTemplatesService,
         PositionsService,
-        PostmarkService,
         EmployeesService,
+        DepartmentsService,
         {
           provide: PrismaService,
           useValue: db,
+        },
+        {
+          provide: PostmarkService,
+          useValue: mockPostmarkService,
         },
       ],
     }).compile();
@@ -244,8 +287,12 @@ describe('FormInstancesService', () => {
     formTemplateService =
       module.get<FormTemplatesService>(FormTemplatesService);
     positionService = module.get<PositionsService>(PositionsService);
+    employeeService = module.get<EmployeesService>(EmployeesService);
+    departmentService = module.get<DepartmentsService>(DepartmentsService);
     prismaService = module.get<PrismaService>(PrismaService);
   });
+
+  // TODO: write integration tests for findAssignedTo
 
   it('should be defined', () => {
     expect(service).toBeDefined();
@@ -253,43 +300,55 @@ describe('FormInstancesService', () => {
 
   describe('create', () => {
     it('should successfully create a form instance', () => {
-      // const createFormInstanceDto = {
-      //   name: formInstance1Name,
-      //   signatures: [
-      //     {
-      //       order: 0,
-      //       signerPositionId: positionId3,
-      //     },
-      //   ],
-      //   originatorId: 'originator-id',
-      //   formTemplateId: 'form-template-id',
-      // };
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        assignedGroups: [
+          {
+            fieldGroupId: 'fieldGroupId',
+            order: 0,
+            signerPositionId: positionId3,
+            signerEmployeeId: undefined,
+            signerDepartmentId: undefined,
+            signerEmployeeList: [],
+            signerType: SignerType.POSITION,
+          },
+        ],
+        originatorId: 'originator-id',
+        formTemplateId: 'form-template-id',
+        formDocLink: 'form-doc-link',
+      };
 
       jest
         .spyOn(formTemplateService, 'findOne')
         .mockImplementation(async () => formTemplate);
 
       jest
-        .spyOn(positionService, 'findAllWithIds')
-        .mockImplementation(async () => [position3]);
+        .spyOn(positionService, 'findOne')
+        .mockImplementation(async () => position3);
 
-      // expect(service.create(createFormInstanceDto)).resolves.toEqual(
-      //   oneFormInstance,
-      // );
+      expect(service.create(createFormInstanceDto)).resolves.toEqual(
+        oneFormInstance,
+      );
     });
 
     it('should fail when invalid form template is specified', () => {
-      // const createFormInstanceDto = {
-      //   name: formInstance1Name,
-      //   signatures: [
-      //     {
-      //       order: 0,
-      //       signerPositionId: positionId3,
-      //     },
-      //   ],
-      //   originatorId: 'originator-id',
-      //   formTemplateId: 'invalid-form-template-id',
-      // };
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        assignedGroups: [
+          {
+            fieldGroupId: 'assignedGroupId',
+            order: 0,
+            signerPositionId: positionId3,
+            signerEmployeeId: undefined,
+            signerDepartmentId: undefined,
+            signerEmployeeList: [],
+            signerType: SignerType.POSITION,
+          },
+        ],
+        originatorId: 'originator-id',
+        formTemplateId: 'form-template-id',
+        formDocLink: 'form-doc-link',
+      };
 
       jest
         .spyOn(formTemplateService, 'findOne')
@@ -302,79 +361,147 @@ describe('FormInstancesService', () => {
           });
         });
 
-      // expect(service.create(createFormInstanceDto)).rejects.toThrowError(
-      //   new Error(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND),
-      // );
+      expect(service.create(createFormInstanceDto)).rejects.toThrowError(
+        new Error(FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND),
+      );
     });
 
     it('should fail when number of signatures does not equal number of signature fields', () => {
-      // const createFormInstanceDto = {
-      //   name: formInstance1Name,
-      //   signatures: [
-      //     {
-      //       order: 0,
-      //       signerPositionId: positionId3,
-      //     },
-      //     {
-      //       order: 1,
-      //       signerPositionId: positionId2,
-      //     },
-      //   ],
-      //   originatorId: 'originator-id',
-      //   formTemplateId: 'form-template-id',
-      // };
-      // expect(service.create(createFormInstanceDto)).rejects.toThrowError(
-      //   new Error(
-      //     FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_SIGNATURES,
-      //   ),
-      // );
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        assignedGroups: [],
+        originatorId: 'originator-id',
+        formTemplateId: 'form-template-id',
+        formDocLink: 'form-doc-link',
+      };
+
+      expect(service.create(createFormInstanceDto)).rejects.toThrowError(
+        new Error(
+          FormInstanceErrorMessage.FORM_INSTANCE_INVALID_NUMBER_OF_ASSIGNED_GROUPS,
+        ),
+      );
     });
 
-    it('should fail when invalid position ids are specified', () => {
-      // const createFormInstanceDto = {
-      //   name: formInstance1Name,
-      //   signatures: [
-      //     {
-      //       order: 0,
-      //       signerPositionId: 'invalid-position-id',
-      //     },
-      //   ],
-      //   originatorId: 'originator-id',
-      //   formTemplateId: 'form-template-id',
-      // };
+    it('should throw an error when an invalid position id is specified when signer type is position', () => {
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        assignedGroups: [
+          {
+            fieldGroupId: 'fieldGroupId',
+            order: 0,
+            signerPositionId: 'invalid-position-id',
+            signerEmployeeId: undefined,
+            signerDepartmentId: undefined,
+            signerEmployeeList: [],
+            signerType: SignerType.POSITION,
+          },
+        ],
+        originatorId: 'originator-id',
+        formTemplateId: 'form-template-id',
+        formDocLink: 'form-doc-link',
+      };
 
       jest
-        .spyOn(positionService, 'findAllWithIds')
-        .mockImplementation(async () => []);
+        .spyOn(positionService, 'findOne')
+        .mockRejectedValue(
+          new Error('Position could not be found with this id'),
+        );
 
-      // expect(service.create(createFormInstanceDto)).rejects.toThrowError(
-      //   new Error(PositionsErrorMessage.POSITION_NOT_FOUND),
-      // );
+      expect(service.create(createFormInstanceDto)).rejects.toThrowError(
+        new Error(PositionsErrorMessage.POSITION_NOT_FOUND),
+      );
+    });
+
+    it('should throw an error when an invalid employee id is specified when signer type is employee', () => {
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        assignedGroups: [
+          {
+            fieldGroupId: 'fieldGroupId',
+            order: 0,
+            signerPositionId: undefined,
+            signerEmployeeId: 'invalid-employee-id',
+            signerDepartmentId: undefined,
+            signerEmployeeList: [],
+            signerType: SignerType.USER,
+          },
+        ],
+        originatorId: 'originator-id',
+        formTemplateId: 'form-template-id',
+        formDocLink: 'form-doc-link',
+      };
+
+      jest
+        .spyOn(employeeService, 'findOne')
+        .mockRejectedValue(
+          new Error('Employee could not be found with this id'),
+        );
+
+      expect(service.create(createFormInstanceDto)).rejects.toThrowError(
+        EmployeeErrorMessage.EMPLOYEE_NOT_FOUND,
+      );
+    });
+
+    it('should throw an error when an invalid department id is specified when signer type is department', () => {
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        assignedGroups: [
+          {
+            fieldGroupId: 'fieldGroupId',
+            order: 0,
+            signerPositionId: undefined,
+            signerEmployeeId: undefined,
+            signerDepartmentId: 'invalid-department-id',
+            signerEmployeeList: [],
+            signerType: SignerType.DEPARTMENT,
+          },
+        ],
+        originatorId: 'originator-id',
+        formTemplateId: 'form-template-id',
+        formDocLink: 'form-doc-link',
+      };
+
+      jest
+        .spyOn(departmentService, 'findOne')
+        .mockRejectedValue(
+          new Error('Department could not be found with this id'),
+        );
+
+      expect(service.create(createFormInstanceDto)).rejects.toThrowError(
+        new Error('Department could not be found with this id'),
+      );
+    });
+
+    it('should throw an error when an invalid employee id is specified in the employee list when signer type is employee list', () => {
+      const createFormInstanceDto = {
+        name: formInstance1Name,
+        assignedGroups: [
+          {
+            fieldGroupId: 'fieldGroupId',
+            order: 0,
+            signerPositionId: undefined,
+            signerEmployeeId: undefined,
+            signerDepartmentId: undefined,
+            signerEmployeeList: [{ id: 'invalid-employee-id' }],
+            signerType: SignerType.USER_LIST,
+          },
+        ],
+        originatorId: 'originator-id',
+        formTemplateId: 'form-template-id',
+        formDocLink: 'form-doc-link',
+      };
+
+      jest
+        .spyOn(employeeService, 'findOne')
+        .mockRejectedValue(
+          new Error('Employee could not be found with this id'),
+        );
+
+      expect(service.create(createFormInstanceDto)).rejects.toThrowError(
+        EmployeeErrorMessage.EMPLOYEE_NOT_FOUND,
+      );
     });
   });
-
-  // WORK IN PROGRESS
-  // describe('findAssignedTo', () => {
-  //   beforeEach(async () => {
-  //     db.formInstance.findMany = jest
-  //       .fn()
-  //       .mockResolvedValue(
-  //         formInstancesArray.slice(formInstancesArray.length - 1),
-  //       );
-  //   });
-
-  //   it('should successfully find all form instances assigned to an employee', () => {
-  //     expect(service.findAssignedTo(originatorId2)).resolves.toEqual(
-  //       formInstancesArray.slice(formInstancesArray.length - 1),
-  //     );
-  //   });
-
-  //   afterEach(async () => {
-  //     db.formInstance.findMany = jest
-  //       .fn()
-  //       .mockResolvedValue(formInstancesArray);
-  //   });
-  // });
 
   describe('findCreatedBy', () => {
     beforeEach(async () => {

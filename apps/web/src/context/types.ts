@@ -3,6 +3,8 @@ import {
   FormFields,
   FieldGroups,
 } from '@web/components/createFormTemplate/types';
+import { Scope } from '@web/client';
+import { RegisterEmployeeDto } from '@web/client';
 
 // for storage in context
 export type User = {
@@ -12,7 +14,7 @@ export type User = {
   email: string;
   firstName: string;
   lastName: string;
-  isAdmin: boolean;
+  scope: Scope;
 };
 // jwt payload returned from server
 export type jwtPayload = {
@@ -22,7 +24,7 @@ export type jwtPayload = {
   email: string;
   firstName: string;
   lastName: string;
-  isAdmin: boolean;
+  scope: Scope;
 };
 
 export interface AuthContextType {
@@ -38,6 +40,7 @@ export interface AuthContextType {
     position: string,
     department: string,
     signatureLink: string,
+    scope: RegisterEmployeeDto['scope'],
   ) => void;
   logout: () => void;
 }

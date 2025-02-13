@@ -15,6 +15,7 @@ import { PositionsService } from '../positions/positions.service';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { PostmarkService } from '../postmark/postmark.service';
 import { EmployeesService } from '../employees/employees.service';
+import { DepartmentsService } from '../departments/departments.service';
 
 describe('FormInstancesController', () => {
   let controller: FormInstancesController;
@@ -32,6 +33,7 @@ describe('FormInstancesController', () => {
         EmployeesService,
         LoggerServiceImpl,
         PostmarkService,
+        DepartmentsService,
       ],
     }).compile();
 

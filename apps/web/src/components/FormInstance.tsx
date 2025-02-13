@@ -15,16 +15,21 @@ import {
   UserProfileAvatar,
 } from 'apps/web/src/static/icons';
 import AssigneeMap from './AvatarMap';
-import { useRef, useState } from 'react';
-import { FormInstanceEntity, FormInstancesService } from '@web/client';
+import { useState } from 'react';
+import { FormInstanceEntity } from '@web/client/types.gen';
 import { useRouter } from 'next/router';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import {
-  getNameFromSignature,
+  getNameFromAssignedGroup,
   signerIsUser,
 } from '@web/utils/formInstanceUtils';
+import {
+  formInstancesControllerCompleteFormInstanceMutation,
+  formInstancesControllerFindAllQueryKey,
+  formInstancesControllerSignFormInstanceMutation,
+} from '@web/client/@tanstack/react-query.gen';
 
 /**
  * @param formInstance - the form instance
@@ -41,49 +46,39 @@ const FormInstance = ({
   const { user } = useAuth();
 
   const signFormInstanceMutation = useMutation({
-    mutationFn: async ({
-      formInstanceId,
-      signatureId,
-    }: {
-      formInstanceId: string;
-      signatureId: string;
-    }) => {
-      return FormInstancesService.formInstancesControllerSignFormInstance(
-        formInstanceId,
-        signatureId,
-      );
-    },
+    ...formInstancesControllerSignFormInstanceMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['api', 'form-instances'],
+        queryKey: formInstancesControllerFindAllQueryKey(),
       });
     },
   });
 
   const completeFormInstanceMutation = useMutation({
-    mutationFn:
-      FormInstancesService.formInstancesControllerCompleteFormInstance,
+    ...formInstancesControllerCompleteFormInstanceMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['api', 'form-instances'],
+        queryKey: formInstancesControllerFindAllQueryKey(),
       });
     },
   });
 
-  const _nextSignature = formInstance.signatures
+  const _nextAssignedGroup = formInstance.assignedGroups
     .sort((a, b) => a.order - b.order)
     .find((v) => v.signed === false);
-  const _userCanSign = signerIsUser(_nextSignature, user);
+  const _userCanSign = signerIsUser(_nextAssignedGroup, user);
 
   /**
-   * Update the form instance with the next signature
+   * Update the form instance with the next assigned group
    */
   const _handleFormSign = async () => {
-    if (_nextSignature == null || !_userCanSign) return;
+    if (_nextAssignedGroup == null || !_userCanSign) return;
     signFormInstanceMutation
       .mutateAsync({
-        formInstanceId: formInstance.id,
-        signatureId: _nextSignature?.id!,
+        path: {
+          formInstanceId: formInstance.id,
+          assignedGroupId: _nextAssignedGroup?.id!,
+        },
       })
       .catch((e) => {
         throw e;
@@ -95,9 +90,15 @@ const FormInstance = ({
    */
   const _handleFormApprove = async () => {
     if (formInstance.markedCompleted) return;
-    completeFormInstanceMutation.mutateAsync(formInstance.id).catch((e) => {
-      throw e;
-    });
+    completeFormInstanceMutation
+      .mutateAsync({
+        path: {
+          formInstanceId: formInstance.id,
+        },
+      })
+      .catch((e) => {
+        throw e;
+      });
 
     router.push('/');
   };
@@ -273,11 +274,11 @@ const FormInstance = ({
               </Flex>
 
               <AssigneeMap
-                assignees={formInstance.signatures.map((signature) => ({
-                  signed: signature.signed,
-                  title: getNameFromSignature(signature),
-                  signerType: signature.signerType as any,
-                  updatedAt: signature.updatedAt,
+                assignees={formInstance.assignedGroups.map((assignedGroup) => ({
+                  signed: assignedGroup.signed,
+                  title: getNameFromAssignedGroup(assignedGroup),
+                  signerType: assignedGroup.signerType as any,
+                  updatedAt: assignedGroup.updatedAt,
                 }))}
               />
             </Box>

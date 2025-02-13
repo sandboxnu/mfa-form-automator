@@ -7,11 +7,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 
-import { FormInstanceEntity, SignatureEntity } from '@web/client';
-import {
-  getInitialsFromSignature,
-  getNameFromSignature,
-} from '@web/utils/formInstanceUtils';
+import { AssignedGroupEntity, FormInstanceEntity } from '@web/client/types.gen';
+import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
 import { HoverableAvatar } from './HoverableAvatar';
 
@@ -30,8 +27,8 @@ export const FormRow = ({
 }) => {
   const router = useRouter();
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleString('en-US', {
+  const formatDate = (date: Date) => {
+    return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -65,7 +62,7 @@ export const FormRow = ({
         </GridItem>
         <GridItem colSpan={3} h="64px">
           <Text pt="20px" fontWeight={400}>
-            {formatDate(formInstance.createdAt)}
+            {formatDate(new Date(formInstance.createdAt))}
           </Text>
         </GridItem>
         <GridItem colSpan={4} h="64px">
@@ -93,14 +90,14 @@ export const FormRow = ({
         <GridItem colSpan={5} h="64px">
           <Flex pt="15px">
             <AvatarGroup size="sm" max={5}>
-              {formInstance.signatures
+              {formInstance.assignedGroups
                 .sort((a, b) => a.order - b.order)
-                .map((signature: SignatureEntity, index: number) => {
+                .map((assignedGroup: AssignedGroupEntity, index: number) => {
                   return (
                     <>
                       <HoverableAvatar
-                        name={getNameFromSignature(signature)}
-                        signed={signature.signed}
+                        name={getNameFromAssignedGroup(assignedGroup)}
+                        signed={assignedGroup.signed}
                         index={index}
                       />
                     </>
@@ -109,10 +106,12 @@ export const FormRow = ({
             </AvatarGroup>
             <Text pl="15px" mt="5px">
               {`${
-                formInstance.signatures.filter((signature: SignatureEntity) => {
-                  return signature.signed;
-                }).length
-              }/${formInstance.signatures.length}`}{' '}
+                formInstance.assignedGroups.filter(
+                  (assignedGroup: AssignedGroupEntity) => {
+                    return assignedGroup.signed;
+                  },
+                ).length
+              }/${formInstance.assignedGroups.length}`}{' '}
               signed
             </Text>
           </Flex>

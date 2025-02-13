@@ -4,6 +4,7 @@ import { EmployeesService } from './employees.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmployeeEntity } from './entities/employee.entity';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { EmployeeScope } from '@prisma/client';
 
 describe('EmployeesController', () => {
   let controller: EmployeesController;
@@ -47,7 +48,7 @@ describe('EmployeesController', () => {
             },
           },
           email: 'john.doe@example.com',
-          isAdmin: false,
+          scope: EmployeeScope.BASE_USER,
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
@@ -74,7 +75,7 @@ describe('EmployeesController', () => {
             },
           },
           email: 'bilbo.baggins@example.com',
-          isAdmin: false,
+          scope: EmployeeScope.BASE_USER,
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
@@ -104,7 +105,7 @@ describe('EmployeesController', () => {
             },
           },
           email: 'john.doe@example.com',
-          isAdmin: false,
+          scope: EmployeeScope.BASE_USER,
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
@@ -131,7 +132,7 @@ describe('EmployeesController', () => {
             },
           },
           email: 'bilbo.baggins@example.com',
-          isAdmin: false,
+          scope: EmployeeScope.BASE_USER,
           pswdHash: 'thisIsASecureHash',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),

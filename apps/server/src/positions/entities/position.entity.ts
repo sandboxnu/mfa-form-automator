@@ -38,13 +38,10 @@ export class PositionBaseEntity implements Position {
 }
 
 export class PositionEntity extends PositionBaseEntity {
-  @IsOptional()
-  // @ApiProperty({
-  //   isArray: true,
-  //   required: false,
-  //   type: EmployeeBaseEntity,
-  // })
-  employees?: EmployeeBaseEntity[];
+  @ApiProperty({
+    type: EmployeeBaseEntity,
+  })
+  employees: EmployeeBaseEntity[];
 
   constructor(partial: Partial<PositionEntity>) {
     super(partial);
@@ -52,7 +49,7 @@ export class PositionEntity extends PositionBaseEntity {
       partial.employees = partial.employees.map(
         (employee) => new EmployeeBaseEntity(employee),
       );
-      Object.assign(this, partial);
     }
+    Object.assign(this, partial);
   }
 }
