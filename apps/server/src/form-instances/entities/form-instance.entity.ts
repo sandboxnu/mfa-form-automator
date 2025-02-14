@@ -12,6 +12,9 @@ export class FormInstanceBaseEntity implements FormInstance {
   @ApiProperty()
   name: string;
 
+  @ApiProperty()
+  description: string | null;
+
   @Exclude()
   formDocLink: string;
 
@@ -59,6 +62,9 @@ export class FormInstanceEntity implements FormInstance {
 
   @ApiProperty()
   name: string;
+
+  @ApiProperty()
+  description: string | null;
 
   @ApiProperty()
   formDocLink: string;

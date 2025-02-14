@@ -17,6 +17,7 @@ export class FormTemplatesService {
       data: {
         name: createFormTemplateDto.name,
         formDocLink: createFormTemplateDto.formDocLink,
+        description: createFormTemplateDto.description,
         fieldGroups: {
           create: createFormTemplateDto.fieldGroups.map((fieldGroup) => {
             return {

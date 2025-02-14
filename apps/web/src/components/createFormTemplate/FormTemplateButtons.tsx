@@ -32,7 +32,8 @@ export const FormTemplateButtons = ({
   review?: boolean;
 }) => {
   const router = useRouter();
-  const { formTemplateName, fieldGroups, useBlob } = useCreateFormTemplate();
+  const { formTemplateName, fieldGroups, useBlob, formTemplateDescription } =
+    useCreateFormTemplate();
 
   const { hasLocalBlob, uploadLocalBlobData } = useBlob;
 
@@ -69,6 +70,7 @@ export const FormTemplateButtons = ({
           name: formTemplateName ? formTemplateName : '',
           formDocLink: blob.url,
           fieldGroups: fieldGroups,
+          description: formTemplateDescription ? formTemplateDescription : '',
         },
       })
       .then((response) => {

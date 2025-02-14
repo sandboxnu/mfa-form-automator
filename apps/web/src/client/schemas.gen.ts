@@ -448,6 +448,10 @@ export const CreateFormTemplateDtoSchema = {
     formDocLink: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+      nullable: true,
+    },
     fieldGroups: {
       type: 'array',
       items: {
@@ -455,7 +459,7 @@ export const CreateFormTemplateDtoSchema = {
       },
     },
   },
-  required: ['name', 'formDocLink', 'fieldGroups'],
+  required: ['name', 'formDocLink', 'description', 'fieldGroups'],
 } as const;
 
 export const TemplateBoxBaseEntitySchema = {
@@ -549,6 +553,10 @@ export const FormTemplateBaseEntitySchema = {
     },
     formDocLink: {
       type: 'string',
+    },
+    description: {
+      type: 'string',
+      nullable: true,
     },
     createdAt: {
       format: 'date-time',
@@ -677,6 +685,10 @@ export const FormInstanceEntitySchema = {
     name: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+      nullable: true,
+    },
     formDocLink: {
       type: 'string',
     },
@@ -726,6 +738,7 @@ export const FormInstanceEntitySchema = {
   required: [
     'id',
     'name',
+    'description',
     'formDocLink',
     'completed',
     'markedCompleted',
@@ -750,6 +763,10 @@ export const FormTemplateEntitySchema = {
     },
     formDocLink: {
       type: 'string',
+    },
+    description: {
+      type: 'string',
+      nullable: true,
     },
     fieldGroups: {
       type: 'array',
@@ -791,6 +808,10 @@ export const UpdateFormTemplateDtoSchema = {
     },
     formDocLink: {
       type: 'string',
+    },
+    description: {
+      type: 'string',
+      nullable: true,
     },
   },
 } as const;
@@ -852,6 +873,10 @@ export const CreateFormInstanceDtoSchema = {
     name: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+      nullable: true,
+    },
     assignedGroups: {
       type: 'array',
       items: {
@@ -870,6 +895,7 @@ export const CreateFormInstanceDtoSchema = {
   },
   required: [
     'name',
+    'description',
     'assignedGroups',
     'originatorId',
     'formTemplateId',
@@ -882,6 +908,10 @@ export const UpdateFormInstanceDtoSchema = {
   properties: {
     name: {
       type: 'string',
+    },
+    description: {
+      type: 'string',
+      nullable: true,
     },
     formDocLink: {
       type: 'string',

@@ -13,6 +13,10 @@ export class CreateFormTemplateDto {
   @ApiProperty()
   formDocLink: string;
 
+  @IsString()
+  @ApiProperty()
+  description: string | null;
+
   @IsArray()
   @ArrayMinSize(1)
   @ApiProperty({

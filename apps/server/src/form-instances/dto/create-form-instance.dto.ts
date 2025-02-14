@@ -8,6 +8,10 @@ export class CreateFormInstanceDto {
   @ApiProperty()
   name: string;
 
+  @IsString()
+  @ApiProperty()
+  description: string | null;
+
   @IsArray()
   @ArrayMinSize(1)
   @ApiProperty({
