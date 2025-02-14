@@ -88,9 +88,9 @@ model FormTemplate {
   id          String   @id @default(uuid()) @db.Uuid
   name        String   @db.VarChar(255)
   formDocLink String   @db.VarChar(255)
-  description String   @db.VarChar(255) @default("No description")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  description String?   @db.Text()
 
   fieldGroups   FieldGroup[]
   formInstances FormInstance[]
@@ -141,11 +141,11 @@ model FormInstance {
   id                String    @id @default(uuid()) @db.Uuid
   name              String    @db.VarChar(255)
   formDocLink       String    @db.VarChar(255)
-  description       String    @db.VarChar(255) @default("No description")
   completed         Boolean   @default(false)
   markedCompleted   Boolean   @default(false)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+  description       String?    @db.Text()
   completedAt       DateTime?
   markedCompletedAt DateTime?
 

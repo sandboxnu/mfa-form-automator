@@ -450,6 +450,7 @@ export const CreateFormTemplateDtoSchema = {
     },
     description: {
       type: 'string',
+      nullable: true,
     },
     fieldGroups: {
       type: 'array',
@@ -555,6 +556,7 @@ export const FormTemplateBaseEntitySchema = {
     },
     description: {
       type: 'string',
+      nullable: true,
     },
     createdAt: {
       format: 'date-time',
@@ -565,14 +567,7 @@ export const FormTemplateBaseEntitySchema = {
       type: 'string',
     },
   },
-  required: [
-    'id',
-    'name',
-    'formDocLink',
-    'description',
-    'createdAt',
-    'updatedAt',
-  ],
+  required: ['id', 'name', 'formDocLink', 'createdAt', 'updatedAt'],
 } as const;
 
 export const AssignedGroupEntitySchema = {
@@ -692,6 +687,7 @@ export const FormInstanceEntitySchema = {
     },
     description: {
       type: 'string',
+      nullable: true,
     },
     formDocLink: {
       type: 'string',
@@ -770,6 +766,7 @@ export const FormTemplateEntitySchema = {
     },
     description: {
       type: 'string',
+      nullable: true,
     },
     fieldGroups: {
       type: 'array',
@@ -796,7 +793,6 @@ export const FormTemplateEntitySchema = {
     'id',
     'name',
     'formDocLink',
-    'description',
     'fieldGroups',
     'formInstances',
     'createdAt',
@@ -815,6 +811,7 @@ export const UpdateFormTemplateDtoSchema = {
     },
     description: {
       type: 'string',
+      nullable: true,
     },
   },
 } as const;
@@ -878,6 +875,7 @@ export const CreateFormInstanceDtoSchema = {
     },
     description: {
       type: 'string',
+      nullable: true,
     },
     assignedGroups: {
       type: 'array',
@@ -913,6 +911,7 @@ export const UpdateFormInstanceDtoSchema = {
     },
     description: {
       type: 'string',
+      nullable: true,
     },
     formDocLink: {
       type: 'string',

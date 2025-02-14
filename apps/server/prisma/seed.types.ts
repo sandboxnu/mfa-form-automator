@@ -45,7 +45,7 @@ export type FormTemplateData = {
   name: string;
   formDocLink: string;
   fieldGroups: FieldGroupData[];
-  description: string;
+  description?: string;
 };
 
 export type AssignedGroupData = {
@@ -66,5 +66,5 @@ export type FormInstanceData = {
   originatorId: string;
   formTemplateId: string;
   assignedGroups: AssignedGroupData[];
-  description: string;
+  description?: string;
 };

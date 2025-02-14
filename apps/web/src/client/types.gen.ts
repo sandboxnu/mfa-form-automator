@@ -147,7 +147,7 @@ export type CreateFieldGroupDto = {
 export type CreateFormTemplateDto = {
   name: string;
   formDocLink: string;
-  description: string;
+  description: string | null;
   fieldGroups: Array<CreateFieldGroupDto>;
 };
 
@@ -175,7 +175,7 @@ export type FormTemplateBaseEntity = {
   id: string;
   name: string;
   formDocLink: string;
-  description: string;
+  description?: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -205,7 +205,7 @@ export type AssignedGroupEntity = {
 export type FormInstanceEntity = {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   formDocLink: string;
   completed: boolean;
   markedCompleted: boolean;
@@ -224,7 +224,7 @@ export type FormTemplateEntity = {
   id: string;
   name: string;
   formDocLink: string;
-  description: string;
+  description?: string | null;
   fieldGroups: Array<FieldGroupBaseEntity>;
   formInstances: Array<FormInstanceEntity>;
   createdAt: string;
@@ -234,7 +234,7 @@ export type FormTemplateEntity = {
 export type UpdateFormTemplateDto = {
   name?: string;
   formDocLink?: string;
-  description?: string;
+  description?: string | null;
 };
 
 export type CreateDepartmentDto = {
@@ -257,7 +257,7 @@ export type CreateAssignedGroupDto = {
 
 export type CreateFormInstanceDto = {
   name: string;
-  description: string;
+  description: string | null;
   assignedGroups: Array<CreateAssignedGroupDto>;
   originatorId: string;
   formTemplateId: string;
@@ -266,7 +266,7 @@ export type CreateFormInstanceDto = {
 
 export type UpdateFormInstanceDto = {
   name?: string;
-  description?: string;
+  description?: string | null;
   formDocLink?: string;
 };
 
