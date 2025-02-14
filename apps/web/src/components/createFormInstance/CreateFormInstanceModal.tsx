@@ -112,7 +112,9 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
           originatorId: user?.id!,
           formTemplateId: selectedFormTemplate?.id!,
           formDocLink: selectedFormTemplate?.formDocLink!,
-          description: selectedFormTemplate?.description ? selectedFormTemplate?.description : null,
+          description: selectedFormTemplate?.description
+            ? selectedFormTemplate?.description
+            : null,
         },
       })
       .then((response) => {
