@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { CreateAssignedGroupDto } from '../../assigned-group/dto/create-assigned-group.dto';
 
 export class CreateFormInstanceDto {
@@ -10,7 +16,8 @@ export class CreateFormInstanceDto {
 
   @IsString()
   @ApiProperty()
-  description: string | null;
+  @IsOptional()
+  description?: string;
 
   @IsArray()
   @ArrayMinSize(1)

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { CreateFieldGroupDto } from '../../field-group/dto/create-field-group.dto';
 
 export class CreateFormTemplateDto {
@@ -15,7 +21,8 @@ export class CreateFormTemplateDto {
 
   @IsString()
   @ApiProperty()
-  description: string | null;
+  @IsOptional()
+  description?: string;
 
   @IsArray()
   @ArrayMinSize(1)

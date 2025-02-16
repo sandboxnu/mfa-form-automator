@@ -450,7 +450,6 @@ export const CreateFormTemplateDtoSchema = {
     },
     description: {
       type: 'string',
-      nullable: true,
     },
     fieldGroups: {
       type: 'array',
@@ -459,7 +458,7 @@ export const CreateFormTemplateDtoSchema = {
       },
     },
   },
-  required: ['name', 'formDocLink', 'description', 'fieldGroups'],
+  required: ['name', 'formDocLink', 'fieldGroups'],
 } as const;
 
 export const TemplateBoxBaseEntitySchema = {
@@ -556,7 +555,6 @@ export const FormTemplateBaseEntitySchema = {
     },
     description: {
       type: 'string',
-      nullable: true,
     },
     createdAt: {
       format: 'date-time',
@@ -766,7 +764,6 @@ export const FormTemplateEntitySchema = {
     },
     description: {
       type: 'string',
-      nullable: true,
     },
     fieldGroups: {
       type: 'array',
@@ -811,7 +808,6 @@ export const UpdateFormTemplateDtoSchema = {
     },
     description: {
       type: 'string',
-      nullable: true,
     },
   },
 } as const;
@@ -875,7 +871,6 @@ export const CreateFormInstanceDtoSchema = {
     },
     description: {
       type: 'string',
-      nullable: true,
     },
     assignedGroups: {
       type: 'array',
@@ -895,7 +890,6 @@ export const CreateFormInstanceDtoSchema = {
   },
   required: [
     'name',
-    'description',
     'assignedGroups',
     'originatorId',
     'formTemplateId',
@@ -911,7 +905,6 @@ export const UpdateFormInstanceDtoSchema = {
     },
     description: {
       type: 'string',
-      nullable: true,
     },
     formDocLink: {
       type: 'string',
