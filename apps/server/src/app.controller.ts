@@ -46,8 +46,8 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
+  @UseGuards(LocalAuthGuard)
   @ApiCreatedResponse({ type: JwtEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
@@ -79,8 +79,8 @@ export class AppController {
     return tokens;
   }
 
-  @UseGuards(JwtRefreshAuthGuard)
   @Get('/auth/refresh')
+  @UseGuards(JwtRefreshAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: JwtEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
