@@ -5245,18 +5245,6 @@
     "@typescript-eslint/types" "7.2.0"
     eslint-visitor-keys "^3.4.1"
 
-"@vercel/blob@0.26.0":
-  version "0.26.0"
-  resolved "https://registry.yarnpkg.com/@vercel/blob/-/blob-0.26.0.tgz#b92c1c6095f858064061fbf729dad199cc194465"
-  integrity sha512-5aF+bDYGFx5WgxGE+CeOWWI8GYD1I/JxAWl+R//+MgNjkTPpCKkUVjdchFOr622rEu2wuHAOtpLr5HYg7/uRAA==
-  dependencies:
-    async-retry "^1.3.3"
-    bytes "^3.1.2"
-    is-buffer "^2.0.5"
-    is-node-process "^1.2.0"
-    throttleit "^2.1.0"
-    undici "^5.28.4"
-
 "@vercel/blob@0.27.1":
   version "0.27.1"
   resolved "https://registry.yarnpkg.com/@vercel/blob/-/blob-0.27.1.tgz#ecb580785bf880a8c4519d7cfd83f4e2de8968bc"
