@@ -11,6 +11,7 @@ import { PostmarkService } from '../postmark/postmark.service';
 import { EmployeesService } from '../employees/employees.service';
 import { DepartmentsService } from '../departments/departments.service';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
+import { PdfStoreService } from '../pdf-store/pdf-store.service';
 
 const formInstance1Id = 'formInstanceId1';
 const formInstance2Id = 'formInstanceId2';
@@ -256,6 +257,10 @@ const mockPostmarkService = {
   sendReadyForApprovalEmail: jest.fn(),
 };
 
+const mockPdfStoreService = {
+  uploadPdf: jest.fn().mockReturnValue('mfa.org/form1'),
+};
+
 describe('FormInstancesService', () => {
   let service: FormInstancesService;
   let formTemplateService: FormTemplatesService;
@@ -279,6 +284,10 @@ describe('FormInstancesService', () => {
         {
           provide: PostmarkService,
           useValue: mockPostmarkService,
+        },
+        {
+          provide: PdfStoreService,
+          useValue: mockPdfStoreService,
         },
       ],
     }).compile();
