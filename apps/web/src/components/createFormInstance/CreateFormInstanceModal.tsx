@@ -114,7 +114,7 @@ const CreateFormInstanceModal: React.FC<CreateFormInstanceModalProps> = ({
           formDocLink: selectedFormTemplate?.formDocLink!,
           description: selectedFormTemplate?.description
             ? selectedFormTemplate?.description
-            : undefined,
+            : null,
         },
       })
       .then((response) => {

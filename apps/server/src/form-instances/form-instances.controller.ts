@@ -66,7 +66,6 @@ export class FormInstancesController {
   })
   async findAll(@Query('limit') limit?: number) {
     const formInstances = await this.formInstancesService.findAll(limit);
-
     return formInstances.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );
@@ -82,7 +81,6 @@ export class FormInstancesController {
     const formInstances = await this.formInstancesService.findAssignedTo(
       currentUser.id,
     );
-
     return formInstances.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );
