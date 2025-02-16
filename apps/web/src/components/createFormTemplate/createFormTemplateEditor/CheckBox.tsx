@@ -10,7 +10,8 @@ export default function Checkbox({
   onRemove,
   currentPosition,
   disableEdit,
-  disableDelete,
+  onMouseDown,
+  deleteActive,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -18,7 +19,8 @@ export default function Checkbox({
   onRemove: () => void;
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
-  disableDelete: boolean;
+  onMouseDown: (e: MouseEvent) => void;
+  deleteActive: boolean;
 }) {
   return (
     <Rnd
@@ -49,6 +51,7 @@ export default function Checkbox({
       onDragStop={onStop}
       onResizeStop={onResizeStop}
       disableDragging={disableEdit}
+      onMouseDown={onMouseDown}
     >
       <div
         style={{
@@ -57,7 +60,7 @@ export default function Checkbox({
           borderRadius: 4,
         }}
       >
-        {!disableEdit && disableDelete && (
+        {!disableEdit && deleteActive && (
           <div
             style={{
               display: 'inline-block',

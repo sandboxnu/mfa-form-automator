@@ -28,6 +28,10 @@ export type FieldGroups = Map<groupId, FieldGroupColor>;
 // Dictionary from page number to fields on that page.
 export type FormFields = Record<number, Map<fieldId, Field>>;
 
+export type SelectedField = {
+  pageNumber: number;
+  fieldId: string;
+};
 export type Field = {
   position: TextFieldPosition;
   groupId: string;

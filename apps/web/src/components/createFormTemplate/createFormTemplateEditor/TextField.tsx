@@ -10,7 +10,8 @@ export default function TextField({
   onRemove,
   currentPosition,
   disableEdit,
-  disableDelete,
+  onMouseDown,
+  deleteActive,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -18,7 +19,8 @@ export default function TextField({
   onRemove: () => void;
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
-  disableDelete: boolean;
+  onMouseDown: (e: MouseEvent) => void;
+  deleteActive: boolean;
 }) {
   return (
     <Rnd
@@ -38,6 +40,7 @@ export default function TextField({
       onDragStop={onStop}
       onResizeStop={onResizeStop}
       disableDragging={disableEdit}
+      onMouseDown={onMouseDown}
     >
       <div
         style={{
@@ -46,7 +49,7 @@ export default function TextField({
           borderRadius: 4,
         }}
       >
-        {!disableEdit && disableDelete && (
+        {!disableEdit && deleteActive && (
           <div
             style={{
               display: 'inline-block',

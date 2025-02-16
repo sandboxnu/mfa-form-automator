@@ -1,18 +1,15 @@
 import { Box, Button, Text } from '@chakra-ui/react';
-import {
-  ActiveDeleteIcon,
-  Checkbox,
-  PlusSign,
-  TextIcon,
-} from 'apps/web/src/static/icons';
+import { Checkbox, PlusSign, TextIcon } from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  Field,
   FieldGroups,
   FieldType,
   FormFields,
+  SelectedField,
   TextFieldPosition,
 } from '../types';
 import DraggableTextFactory from './DraggableTextFactory';
@@ -46,7 +43,7 @@ export const FormEditor = ({
   const [totalPages, setTotalPages] = useState(0);
   const documentRef = useRef<HTMLDivElement>(null);
   const [groupNum, setGroupNum] = useState(fieldGroups.size);
-  const [deleteFields, setDeleteFields] = useState(false);
+  const [selectedField, setSelectedField] = useState<string>();
 
   //colors for group buttons: colors[0] = border/text color, colors[1] = background color
   const groupColors = [
@@ -282,37 +279,7 @@ export const FormEditor = ({
               <div>{Checkbox}</div>
             </Button>
           </Box>
-          <Box
-            position="absolute"
-            left="24px"
-            top="180px"
-            background="white"
-            padding="6px"
-            boxShadow="0px 1px 4px #E5E5E5"
-            borderRadius="5px"
-            border="1px #E5E5E5 solid"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            gap="8px"
-            display="flex"
-            zIndex={1}
-          >
-            <Button
-              position="relative"
-              width="40px"
-              height="40px"
-              backgroundColor="white"
-              borderRadius="4px"
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              isDisabled={fieldGroups.size == 0 || disableEdit}
-              onClick={() => setDeleteFields(!deleteFields)}
-            >
-              <div>{ActiveDeleteIcon}</div>
-            </Button>
-          </Box>
+
           <Box
             position="absolute"
             right="24px"
@@ -365,11 +332,13 @@ export const FormEditor = ({
                   Array.from(formFields[pageNum].entries()).map(
                     ([fieldId, { position, groupId }], index) => (
                       <DraggableTextFactory
-                        disableDelete={deleteFields}
                         type={
                           formFields[pageNum].get(fieldId)?.type ??
                           FieldType.Text
                         }
+                        onMouseDown={(e: MouseEvent) => {
+                          setSelectedField(fieldId);
+                        }}
                         currentPosition={{
                           x: position.x * scale,
                           y: position.y * scale,
@@ -411,6 +380,7 @@ export const FormEditor = ({
                           });
                         }}
                         disableEdit={disableEdit}
+                        deleteActive={selectedField === fieldId}
                       />
                     ),
                   )}
