@@ -26,7 +26,7 @@ export default function InputFields() {
         'Select an assignee group and drag to add input fields for each'
       }
       boxContent={
-        <Box width="1000px">
+        <Box width="100%">
           <FormEditor
             formTemplateName={formTemplateName ?? ''}
             pdfUrl={localBlobData.url}

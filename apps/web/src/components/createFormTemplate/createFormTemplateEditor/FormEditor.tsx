@@ -1,13 +1,22 @@
+import { Box, Button, Text } from '@chakra-ui/react';
+import {
+  ActiveDeleteIcon,
+  Checkbox,
+  PlusSign,
+  TextIcon,
+} from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
-import { Box, Text, Button } from '@chakra-ui/react';
-import { TextIcon, PlusSign, Checkbox } from 'apps/web/src/static/icons';
 import { DraggableData, DraggableEvent } from 'react-draggable';
-import PagingControl from './PagingControl';
+import { Document, Page, pdfjs } from 'react-pdf';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  FieldGroups,
+  FieldType,
+  FormFields,
+  TextFieldPosition,
+} from '../types';
 import DraggableTextFactory from './DraggableTextFactory';
-import { useCreateFormTemplate } from 'apps/web/src/context/CreateFormTemplateContext';
-import { FieldType, TextFieldPosition, FormFields, FieldGroups } from '../types';
+import PagingControl from './PagingControl';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -119,7 +128,6 @@ export const FormEditor = ({
     pos: TextFieldPosition,
   ) => {
     if (disableEdit) return;
-    console.log(pos.x, pos.y);
     setFormFields({
       ...formFields,
       [pageNum]: new Map([
@@ -167,21 +175,23 @@ export const FormEditor = ({
     >
       {!disableEdit && (
         <Box display="flex" gap="12px">
-          {Array.from(fieldGroups.entries()).map(([key, _]: [string, any], index: number) => (
-            <Button
-              key={index}
-              onClick={() => setCurrentGroup(key)}
-              variant={'solid'}
-              border={'solid 1px'}
-              backgroundColor={
-          currentGroup === key ? groupColors[index][1] : 'white'
-              }
-              borderColor={groupColors[index][0]}
-              textColor={groupColors[index][0]}
-            >
-              Group {index + 1}
-            </Button>
-          ))}
+          {Array.from(fieldGroups.entries()).map(
+            ([key, _]: [string, any], index: number) => (
+              <Button
+                key={index}
+                onClick={() => setCurrentGroup(key)}
+                variant={'solid'}
+                border={'solid 1px'}
+                backgroundColor={
+                  currentGroup === key ? groupColors[index][1] : 'white'
+                }
+                borderColor={groupColors[index][0]}
+                textColor={groupColors[index][0]}
+              >
+                Group {index + 1}
+              </Button>
+            ),
+          )}
 
           <Button
             backgroundColor="white"
@@ -191,13 +201,13 @@ export const FormEditor = ({
             {PlusSign}
             <span
               style={{
-          fontFamily: 'Hanken Grotesk',
-          fontSize: '16px',
-          color: '#1367EA',
-          fontWeight: 600,
-          lineHeight: '22px',
-          textAlign: 'left',
-          marginLeft: '6px',
+                fontFamily: 'Hanken Grotesk',
+                fontSize: '16px',
+                color: '#1367EA',
+                fontWeight: 600,
+                lineHeight: '22px',
+                textAlign: 'left',
+                marginLeft: '6px',
               }}
             >
               Add group
@@ -274,8 +284,8 @@ export const FormEditor = ({
           </Box>
           <Box
             position="absolute"
-            right="24px"
-            top="69px"
+            left="24px"
+            top="180px"
             background="white"
             padding="6px"
             boxShadow="0px 1px 4px #E5E5E5"
@@ -286,6 +296,7 @@ export const FormEditor = ({
             alignItems="center"
             gap="8px"
             display="flex"
+            zIndex={1}
           >
             <Button
               position="relative"
@@ -299,12 +310,27 @@ export const FormEditor = ({
               isDisabled={fieldGroups.size == 0 || disableEdit}
               onClick={() => setDeleteFields(!deleteFields)}
             >
-              <div>X</div>
+              <div>{ActiveDeleteIcon}</div>
             </Button>
           </Box>
           <Box
+            position="absolute"
+            right="24px"
+            top="69px"
+            background="white"
+            padding="6px"
+            boxShadow="0px 1px 4px #E5E5E5"
+            borderRadius="5px"
+            border="1px #E5E5E5 solid"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+            gap="8px"
+            display="flex"
+          ></Box>
+          <Box
             height="474px"
-            width="100%"
+            width="800px"
             overflow="scroll"
             ref={documentRef}
             display="flex"
@@ -333,6 +359,7 @@ export const FormEditor = ({
                 renderAnnotationLayer={false}
                 renderTextLayer={false}
                 pageNumber={pageNum + 1}
+                width={1000}
               >
                 {formFields[pageNum] &&
                   Array.from(formFields[pageNum].entries()).map(
@@ -343,7 +370,12 @@ export const FormEditor = ({
                           formFields[pageNum].get(fieldId)?.type ??
                           FieldType.Text
                         }
-                        currentPosition={position}
+                        currentPosition={{
+                          x: position.x * scale,
+                          y: position.y * scale,
+                          width: position.width * scale,
+                          height: position.height * scale,
+                        }}
                         onRemove={() => {
                           handleRemoveField(fieldId);
                         }}
@@ -371,9 +403,9 @@ export const FormEditor = ({
                             width: Number.isNaN(newWidth)
                               ? position.width
                               : newWidth,
-                            height: Number.isNaN(newWidth)
-                              ? position.width
-                              : newWidth,
+                            height: Number.isNaN(newHeight)
+                              ? position.height
+                              : newHeight,
                             x: pos.x,
                             y: pos.y,
                           });

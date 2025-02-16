@@ -1,7 +1,7 @@
-import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DraggableEventHandler } from 'react-draggable';
-import { FieldType, TextFieldPosition } from '../types';
 import { FaTimes } from 'react-icons/fa';
+import { Rnd, RndResizeCallback } from 'react-rnd';
+import { TextFieldPosition } from '../types';
 
 export default function TextField({
   onStop,
