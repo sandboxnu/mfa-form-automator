@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dto/create-position.dto';
@@ -27,6 +28,8 @@ import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { PositionsErrorMessage } from './positions.errors';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('positions')
 @Controller('positions')
@@ -37,6 +40,7 @@ export class PositionsController {
   ) {}
 
   @Post()
+  @UseGuards(AdminAuthGuard)
   @ApiCreatedResponse({ type: PositionEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
@@ -44,11 +48,13 @@ export class PositionsController {
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async create(@Body() createPositionDto: CreatePositionDto) {
+    // TODO: Should only admins be able to create new positions?
     const newPosition = await this.positionsService.create(createPositionDto);
     return new PositionEntity(newPosition);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [PositionEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -64,6 +70,7 @@ export class PositionsController {
   }
 
   @Get('department/:departmentId')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [PositionEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -86,6 +93,7 @@ export class PositionsController {
   }
 
   @Get('departmentName/:departmentName')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [PositionEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -102,6 +110,7 @@ export class PositionsController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: PositionEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -118,6 +127,7 @@ export class PositionsController {
   }
 
   @Get('name/:name')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: PositionEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -140,6 +150,7 @@ export class PositionsController {
   }
 
   @Patch(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse({ type: PositionEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -171,6 +182,7 @@ export class PositionsController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse()
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
