@@ -4,6 +4,7 @@ import { FormTemplateBaseEntity } from '../../form-templates/entities/form-templ
 import { Exclude } from 'class-transformer';
 import { EmployeeEntity } from '../../employees/entities/employee.entity';
 import { AssignedGroupEntity } from '../../assigned-group/entities/assigned-group.entity';
+import { IsOptional } from 'class-validator';
 
 export class FormInstanceBaseEntity implements FormInstance {
   @ApiProperty()
@@ -12,6 +13,7 @@ export class FormInstanceBaseEntity implements FormInstance {
   @ApiProperty()
   name: string;
 
+  @IsOptional()
   @ApiProperty()
   description: string | null;
 
