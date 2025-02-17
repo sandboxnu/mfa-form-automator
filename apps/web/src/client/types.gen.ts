@@ -126,16 +126,15 @@ export type UpdateAssignedGroupSignerDto = {
 };
 
 export enum Type {
-  SIGNATURE = 'signature',
-  CHECKBOX = 'checkbox',
+  SIGNATURE = 'SIGNATURE',
+  CHECKBOX = 'CHECKBOX',
+  TEXT_FIELD = 'TEXT_FIELD',
 }
 
 export type CreateTemplateBoxDto = {
-  name: string;
-  type: 'signature' | 'checkbox';
+  type: 'SIGNATURE' | 'CHECKBOX' | 'TEXT_FIELD';
   x_coordinate: number;
   y_coordinate: number;
-  fieldGroupId: string;
 };
 
 export type CreateFieldGroupDto = {
@@ -145,8 +144,8 @@ export type CreateFieldGroupDto = {
 };
 
 export type CreateFormTemplateDto = {
+  file: Blob | File;
   name: string;
-  formDocLink: string;
   fieldGroups: Array<CreateFieldGroupDto>;
 };
 
@@ -228,8 +227,8 @@ export type FormTemplateEntity = {
 };
 
 export type UpdateFormTemplateDto = {
+  file?: Blob | File;
   name?: string;
-  formDocLink?: string;
 };
 
 export type CreateDepartmentDto = {

@@ -12,12 +12,12 @@ import { useCreateFormTemplate } from '../../context/CreateFormTemplateContext';
  * @param formLink link to form to preview
  */
 export const ReviewBox = ({
-  formLink,
+  pdfFile,
   name,
   description,
   fieldGroups,
 }: {
-  formLink: string;
+  pdfFile: File | null;
   name: string;
   description: string;
   fieldGroups: FieldGroups;
@@ -115,7 +115,7 @@ export const ReviewBox = ({
         <Box width="550px">
           <FormEditor
             formTemplateName={name}
-            pdfUrl={formLink}
+            pdfFile={pdfFile}
             disableEdit={true}
             fieldGroups={fieldGroups}
             formFields={formFields}

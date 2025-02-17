@@ -50,7 +50,8 @@ export interface CreateFormTemplateContextType {
   formTemplateDescription: string | null;
   setFormTemplateName: Dispatch<SetStateAction<string | null>>;
   setFormTemplateDescription: Dispatch<SetStateAction<string | null>>;
-  useBlob: any;
+  pdfFile: File | null;
+  setPdfFile: Dispatch<SetStateAction<File | null>>;
   formFields: FormFields;
   setFormFields: Dispatch<SetStateAction<FormFields>>;
   fieldGroups: FieldGroups;

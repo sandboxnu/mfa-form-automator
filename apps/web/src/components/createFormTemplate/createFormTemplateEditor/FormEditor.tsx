@@ -17,7 +17,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pd
 
 export const FormEditor = ({
   formTemplateName,
-  pdfUrl,
+  pdfFile,
   disableEdit,
   formFields,
   setFormFields,
@@ -26,7 +26,7 @@ export const FormEditor = ({
   scale,
 }: {
   formTemplateName: string;
-  pdfUrl: string;
+  pdfFile: File | null;
   disableEdit: boolean;
   formFields: FormFields;
   setFormFields: (fields: FormFields) => void;
@@ -302,7 +302,7 @@ export const FormEditor = ({
             flexDirection="column"
           >
             <Document
-              file={pdfUrl}
+              file={pdfFile}
               onLoadSuccess={(data) => {
                 setTotalPages(data.numPages);
                 setFormFields(

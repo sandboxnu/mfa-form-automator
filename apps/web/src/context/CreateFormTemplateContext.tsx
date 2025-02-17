@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
 import { CreateFormTemplateContextType } from './types';
-import { useBlob } from '@web/hooks/useBlob';
 import {
   FormFields,
   FieldGroups,
@@ -14,24 +13,21 @@ export const CreateFormTemplateContext =
   );
 
 export const CreateFormTemplateProvider = ({ children }: any) => {
-  const blobHook = useBlob();
   const [formTemplateName, setFormTemplateName] = useState<string | null>(null);
   const [formTemplateDescription, setFormTemplateDescription] = useState<
     string | null
   >(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [formFields, setFormFields] = useState<FormFields>({});
   const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
 
   const router = useRouter();
 
   useEffect(() => {
-    if (
-      !blobHook.localBlobData.url &&
-      router.pathname !== '/create-template/upload'
-    ) {
+    if (!pdfFile && router.pathname !== '/create-template/upload') {
       router.push('/create-template/upload');
     }
-  }, [blobHook.localBlobData.url, router]);
+  }, [pdfFile, router]);
 
   return (
     <CreateFormTemplateContext.Provider
@@ -40,7 +36,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         formTemplateDescription,
         setFormTemplateName,
         setFormTemplateDescription,
-        useBlob: blobHook,
+        pdfFile: pdfFile,
+        setPdfFile: setPdfFile,
         formFields,
         setFormFields,
         fieldGroups,

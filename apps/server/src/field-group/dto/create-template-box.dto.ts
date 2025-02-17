@@ -1,16 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsInt } from 'class-validator';
+import { SignatureBoxFieldType } from '@prisma/client';
+import { IsNotEmpty, IsInt } from 'class-validator';
 
 export class CreateTemplateBoxDto {
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  name: string;
-
   @ApiProperty({
-    enum: ['signature', 'checkbox'],
+    enum: SignatureBoxFieldType,
   })
-  type: any;
+  type: SignatureBoxFieldType;
 
   @IsInt()
   @IsNotEmpty()
@@ -21,9 +17,4 @@ export class CreateTemplateBoxDto {
   @IsNotEmpty()
   @ApiProperty()
   y_coordinate: number;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  fieldGroupId: string;
 }

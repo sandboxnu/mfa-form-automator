@@ -36,6 +36,7 @@ NextJS, NestJS, Prisma, PostgreSQL
    | JWT_REFRESH_VALID_DURATION | 604800 |
    | FRONTEND_DOMAIN | <http://localhost:3002> |
    | POSTMARK_SERVER_KEY | |
+   | BLOB_READ_WRITE_TOKEN | |
    | NODE_ENV | development |
 
    `apps/web/.env`
@@ -45,7 +46,6 @@ NextJS, NestJS, Prisma, PostgreSQL
    | AZURE_AD_CLIENT_ID | |
    | AZURE_AD_CLIENT_SECRET | |
    | AZURE_AD_TENANT_ID | |
-   | BLOB_READ_WRITE_TOKEN | |
    | NEXTAUTH_SECRET | |
    | NEXTAUTH_URL | http://localhost:3002 |
 

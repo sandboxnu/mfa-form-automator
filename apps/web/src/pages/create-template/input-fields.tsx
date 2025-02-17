@@ -9,15 +9,13 @@ import { Box } from '@chakra-ui/react';
 
 export default function InputFields() {
   const {
-    useBlob,
     formTemplateName,
     formFields,
     setFormFields,
     fieldGroups,
     setFieldGroups,
+    pdfFile,
   } = useCreateFormTemplate();
-
-  const { localBlobData } = useBlob;
 
   return (
     <FormTemplateLayout
@@ -29,7 +27,7 @@ export default function InputFields() {
         <Box width="100%">
           <FormEditor
             formTemplateName={formTemplateName ?? ''}
-            pdfUrl={localBlobData.url}
+            pdfFile={pdfFile}
             disableEdit={false}
             formFields={formFields}
             setFormFields={setFormFields}
