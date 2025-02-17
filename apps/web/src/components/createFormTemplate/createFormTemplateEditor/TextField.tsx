@@ -2,6 +2,8 @@ import { DraggableEventHandler } from 'react-draggable';
 import { FaTimes } from 'react-icons/fa';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import { TextFieldPosition } from '../types';
+import { RedDeleteIcon } from '@web/static/icons';
+import { Box } from '@chakra-ui/react';
 
 export default function TextField({
   onStop,
@@ -10,7 +12,6 @@ export default function TextField({
   onRemove,
   currentPosition,
   disableEdit,
-  onMouseDown,
   deleteActive,
 }: {
   onStop: DraggableEventHandler;
@@ -19,9 +20,9 @@ export default function TextField({
   onRemove: () => void;
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
-  onMouseDown: (e: MouseEvent) => void;
   deleteActive: boolean;
 }) {
+  console.log(currentPosition.height);
   return (
     <Rnd
       bounds="parent"
@@ -30,38 +31,37 @@ export default function TextField({
       minWidth={'50px'}
       minHeight={'10px'}
       style={{
-        position: 'absolute',
-        zIndex: 1,
+        zIndex: 10,
         background: `${color}`,
         opacity: '10px',
         border: `solid 1px grey`,
         padding: 4,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
       }}
       onDragStop={onStop}
       onResizeStop={onResizeStop}
       disableDragging={disableEdit}
-      onMouseDown={onMouseDown}
     >
-      <div
-        style={{
-          position: 'absolute',
-          display: 'inline-block',
-          borderRadius: 4,
-        }}
-      >
-        {!disableEdit && deleteActive && (
-          <div
-            style={{
-              display: 'inline-block',
-              cursor: 'pointer',
-              padding: 4,
-            }}
-            onClick={onRemove}
-          >
-            <FaTimes color={'#ef6565'} />
-          </div>
-        )}
-      </div>
+      <Box display="flex" alignItems="center" justifyContent="center">
+        {!disableEdit &&
+          deleteActive &&
+          (currentPosition.height <= 17 ? (
+            <Box
+              position="absolute"
+              left={currentPosition.width + 5}
+              zIndex={2}
+              onClick={onRemove}
+            >
+              {RedDeleteIcon}
+            </Box>
+          ) : (
+            <Box zIndex={2} onClick={onRemove}>
+              {RedDeleteIcon}
+            </Box>
+          ))}
+      </Box>
     </Rnd>
   );
 }

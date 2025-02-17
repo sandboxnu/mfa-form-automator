@@ -1,7 +1,8 @@
-import { Rnd, RndResizeCallback } from 'react-rnd';
+import { RedDeleteIcon } from '@web/static/icons';
 import { DraggableEventHandler } from 'react-draggable';
-import { FieldType, TextFieldPosition } from '../types';
-import { FaTimes } from 'react-icons/fa';
+import { Rnd, RndResizeCallback } from 'react-rnd';
+import { TextFieldPosition } from '../types';
+import { Box } from '@chakra-ui/react';
 
 export default function Checkbox({
   onStop,
@@ -10,7 +11,6 @@ export default function Checkbox({
   onRemove,
   currentPosition,
   disableEdit,
-  onMouseDown,
   deleteActive,
 }: {
   onStop: DraggableEventHandler;
@@ -19,7 +19,6 @@ export default function Checkbox({
   onRemove: () => void;
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
-  onMouseDown: (e: MouseEvent) => void;
   deleteActive: boolean;
 }) {
   return (
@@ -41,38 +40,24 @@ export default function Checkbox({
         topRight: false,
       }}
       style={{
-        position: 'absolute',
-        zIndex: 100000,
+        zIndex: 10,
         background: `${color}`,
         opacity: '10px',
         border: `solid 1px grey`,
         padding: 4,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
       }}
       onDragStop={onStop}
       onResizeStop={onResizeStop}
       disableDragging={disableEdit}
-      onMouseDown={onMouseDown}
     >
-      <div
-        style={{
-          position: 'absolute',
-          display: 'inline-block',
-          borderRadius: 4,
-        }}
-      >
-        {!disableEdit && deleteActive && (
-          <div
-            style={{
-              display: 'inline-block',
-              cursor: 'pointer',
-              padding: 4,
-            }}
-            onClick={onRemove}
-          >
-            <FaTimes color={'#ef6565'} />
-          </div>
-        )}
-      </div>
+      {!disableEdit && deleteActive && (
+        <Box position="absolute" left="150%" zIndex={2} onClick={onRemove}>
+          {RedDeleteIcon}
+        </Box>
+      )}
     </Rnd>
   );
 }

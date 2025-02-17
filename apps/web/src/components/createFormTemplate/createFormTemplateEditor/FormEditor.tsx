@@ -5,11 +5,9 @@ import { DraggableData, DraggableEvent } from 'react-draggable';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  Field,
   FieldGroups,
   FieldType,
   FormFields,
-  SelectedField,
   TextFieldPosition,
 } from '../types';
 import DraggableTextFactory from './DraggableTextFactory';
@@ -336,9 +334,6 @@ export const FormEditor = ({
                           formFields[pageNum].get(fieldId)?.type ??
                           FieldType.Text
                         }
-                        onMouseDown={(e: MouseEvent) => {
-                          setSelectedField(fieldId);
-                        }}
                         currentPosition={{
                           x: position.x * scale,
                           y: position.y * scale,
@@ -352,6 +347,8 @@ export const FormEditor = ({
                         color={fieldGroups.get(groupId)?.background ?? '#000'}
                         initialText={null}
                         onStop={(e: DraggableEvent, data: DraggableData) => {
+                          setSelectedField(fieldId);
+
                           handleFieldUpdate(groupId, fieldId, {
                             width: position.width,
                             height: position.height,
@@ -366,6 +363,8 @@ export const FormEditor = ({
                           delta,
                           pos,
                         ) => {
+                          setSelectedField(fieldId);
+
                           let newWidth = parseFloat(elementRef.style.width);
                           let newHeight = parseFloat(elementRef.style.height);
                           handleFieldUpdate(groupId, fieldId, {

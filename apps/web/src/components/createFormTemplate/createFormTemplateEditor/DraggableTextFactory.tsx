@@ -13,7 +13,6 @@ export default function DraggableTextFactory({
   currentPosition,
   disableEdit,
   type,
-  onMouseDown,
   deleteActive = false,
 }: {
   onStop: DraggableEventHandler;
@@ -24,7 +23,6 @@ export default function DraggableTextFactory({
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
   type: FieldType;
-  onMouseDown: (e: MouseEvent) => void;
   deleteActive: boolean;
 }) {
   return type === FieldType.Checkbox ? (
@@ -35,14 +33,12 @@ export default function DraggableTextFactory({
       onRemove={onRemove}
       currentPosition={currentPosition}
       disableEdit={disableEdit}
-      onMouseDown={onMouseDown}
       deleteActive={deleteActive}
     ></Checkbox>
   ) : (
     // we'll have to add something else for signature fields but right now lets treat it as
     // a text field
     <TextField
-      onMouseDown={onMouseDown}
       onStop={onStop}
       onResizeStop={onResizeStop}
       color={color}
