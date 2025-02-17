@@ -7,6 +7,7 @@ export default function SelectTemplate() {
   const { formTemplate, setFormTemplate } = useCreateFormInstance();
 
   return (
+    console.log("formtemplate", formTemplate),
     <CreateFormLayout
       isFormTemplate={false}
       pageNumber={1}

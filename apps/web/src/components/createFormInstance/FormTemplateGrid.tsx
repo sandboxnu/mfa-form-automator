@@ -1,13 +1,11 @@
 import { Grid, Box, Flex, Text, Button } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PDFDocument } from '../PDFDocument';
 import router from 'next/router';
 import { FormTemplate } from '@prisma/client';
-import { CreateFormInstanceModalProps, Option } from './types';
 import { FormTemplateEntity } from '@web/client';
 import { useCreateFormInstance } from '../../context/CreateFormInstanceContext';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 export const TemplateSelectGrid: React.FC = () => {
   const { data: formTemplates } = useQuery<FormTemplate[]>({
@@ -19,8 +17,7 @@ export const TemplateSelectGrid: React.FC = () => {
     },
   });
 
-  const { setFormTemplate, formInstanceName, setFormInstanceName, 
-    formInstanceDescription, setFormInstanceDescription } = useCreateFormInstance();
+  const { setFormTemplate, setFormInstanceName } = useCreateFormInstance();
   const [selectedFormTemplateId, setSelectedFormTemplateId] = useState<string | null>(null);
  
 
@@ -39,8 +36,6 @@ export const TemplateSelectGrid: React.FC = () => {
       console.error(error);
     }
   };
-
-  
 
   return (
     <Grid templateColumns="repeat(5, 1fr)" gap="24px" padding="16px">
@@ -87,7 +82,7 @@ export const TemplateSelectGrid: React.FC = () => {
               +
             </Text>
           </Button>
-          <Text flex="center" justifyContent="center" fontSize="15px" fontWeight="500">
+          <Text flex="center" justifyContent="center" fontSize="15px" fontWeight="500" marginTop="8px">
             Create Form Template
           </Text>
         </Flex>

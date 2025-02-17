@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
+import { Option } from 'apps/web/src/components/createFormInstance/types'
 import {
   FormFields,
   FieldGroups,
@@ -62,4 +63,6 @@ export interface CreateFormInstanceContextType {
   setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
   formTemplate: FormTemplateEntity | null;
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
+  signaturePositions: (Option | null)[];
+  setSignaturePositions: Dispatch<SetStateAction<(Option | null)[]>>;
 }

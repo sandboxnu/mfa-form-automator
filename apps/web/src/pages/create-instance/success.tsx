@@ -10,7 +10,6 @@ export default function Success() {
   const router = useRouter();
   return (
     <>
-      <TopBar />
       <Flex
         backgroundColor="#F8F9FA"
         justifyContent="center"
@@ -50,7 +49,7 @@ export default function Success() {
               <WhiteCheck width="31.2px" height="24px" flexShrink={'0px'} />
             </Flex>
             <Text fontSize={'21px'} color={'#32353B'} fontWeight={500}>
-              Your form template has been created!
+              Your form instance has been created!
             </Text>
           </Flex>
           <Flex
@@ -74,17 +73,17 @@ export default function Success() {
                 fontWeight={600}
                 lineHeight="20px"
               >
-                Back To Dashboard
+                View Form
               </Text>
             </Button>
             <Link
               color="#1367EA"
               textDecoration={'underline'}
               onClick={(e) => {
-                router.push("/create-instance/select-template");  
+                router.push("/");  
               }}
             >
-              Create form instance
+              Edit Form
             </Link>
           </Flex>
         </Flex>

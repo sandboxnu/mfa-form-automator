@@ -149,6 +149,7 @@ h3 {
 
 .custom-dropdown {
   background-color: white;
+  max-width: 360px;
 }
 
 .bold-selected-option {
