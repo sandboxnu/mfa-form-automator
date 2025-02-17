@@ -1,9 +1,8 @@
+import { Box } from '@chakra-ui/react';
+import { RedDeleteIcon } from '@web/static/icons';
 import { DraggableEventHandler } from 'react-draggable';
-import { FaTimes } from 'react-icons/fa';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import { TextFieldPosition } from '../types';
-import { RedDeleteIcon } from '@web/static/icons';
-import { Box } from '@chakra-ui/react';
 
 export default function TextField({
   onStop,

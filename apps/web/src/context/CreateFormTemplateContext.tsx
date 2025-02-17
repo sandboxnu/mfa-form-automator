@@ -21,7 +21,7 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   >(null);
   const [formFields, setFormFields] = useState<FormFields>({});
   const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
-  
+
   const router = useRouter();
 
   useEffect(() => {
