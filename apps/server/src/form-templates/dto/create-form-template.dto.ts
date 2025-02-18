@@ -3,12 +3,17 @@ import {
   ArrayMinSize,
   IsArray,
   IsNotEmpty,
-  IsOptional,
   IsString,
+  ValidateNested,
+  IsOptional
 } from 'class-validator';
 import { CreateFieldGroupDto } from '../../field-group/dto/create-field-group.dto';
+import { Type } from 'class-transformer';
 
 export class CreateFormTemplateDto {
+  @ApiProperty({ type: 'string', format: 'binary' })
+  file: Express.Multer.File;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
@@ -26,6 +31,8 @@ export class CreateFormTemplateDto {
 
   @IsArray()
   @ArrayMinSize(1)
+  @Type(() => CreateFieldGroupDto)
+  @ValidateNested({ each: true })
   @ApiProperty({
     isArray: true,
     type: CreateFieldGroupDto,

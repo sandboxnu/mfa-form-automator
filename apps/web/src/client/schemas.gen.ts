@@ -21,6 +21,7 @@ export const RegisterEmployeeDtoSchema = {
     },
     email: {
       type: 'string',
+      format: 'email',
     },
     password: {
       type: 'string',
@@ -183,9 +184,11 @@ export const CreateEmployeeDtoSchema = {
     },
     positionId: {
       type: 'string',
+      format: 'uuid',
     },
     email: {
       type: 'string',
+      format: 'email',
     },
     password: {
       type: 'string',
@@ -221,6 +224,7 @@ export const UpdateEmployeeDtoSchema = {
     },
     positionId: {
       type: 'string',
+      format: 'uuid',
     },
     signatureLink: {
       type: 'string',
@@ -240,6 +244,7 @@ export const CreatePositionDtoSchema = {
     },
     departmentId: {
       type: 'string',
+      format: 'uuid',
     },
   },
   required: ['name', 'departmentId'],
@@ -355,6 +360,7 @@ export const UpdatePositionDtoSchema = {
     },
     departmentId: {
       type: 'string',
+      format: 'uuid',
     },
   },
 } as const;
@@ -405,7 +411,7 @@ export const CreateTemplateBoxDtoSchema = {
     },
     type: {
       type: 'string',
-      enum: ['signature', 'checkbox'],
+      enum: ['SIGNATURE', 'CHECKBOX', 'TEXT_FIELD'],
     },
     x_coordinate: {
       type: 'number',
@@ -413,11 +419,8 @@ export const CreateTemplateBoxDtoSchema = {
     y_coordinate: {
       type: 'number',
     },
-    fieldGroupId: {
-      type: 'string',
-    },
   },
-  required: ['name', 'type', 'x_coordinate', 'y_coordinate', 'fieldGroupId'],
+  required: ['type', 'x_coordinate', 'y_coordinate'],
 } as const;
 
 export const CreateFieldGroupDtoSchema = {
@@ -430,6 +433,7 @@ export const CreateFieldGroupDtoSchema = {
       type: 'number',
     },
     templateBoxes: {
+      minItems: 1,
       type: 'array',
       items: {
         $ref: '#/components/schemas/CreateTemplateBoxDto',
@@ -442,10 +446,11 @@ export const CreateFieldGroupDtoSchema = {
 export const CreateFormTemplateDtoSchema = {
   type: 'object',
   properties: {
-    name: {
+    file: {
       type: 'string',
+      format: 'binary',
     },
-    formDocLink: {
+    name: {
       type: 'string',
     },
     description: {
@@ -820,10 +825,11 @@ export const FormTemplateEntitySchema = {
 export const UpdateFormTemplateDtoSchema = {
   type: 'object',
   properties: {
-    name: {
+    file: {
       type: 'string',
+      format: 'binary',
     },
-    formDocLink: {
+    name: {
       type: 'string',
     },
     description: {
@@ -893,6 +899,7 @@ export const CreateFormInstanceDtoSchema = {
       type: 'string',
     },
     assignedGroups: {
+      minItems: 1,
       type: 'array',
       items: {
         $ref: '#/components/schemas/CreateAssignedGroupDto',
