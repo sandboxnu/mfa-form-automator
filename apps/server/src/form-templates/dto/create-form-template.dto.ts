@@ -5,7 +5,7 @@ import {
   IsNotEmpty,
   IsString,
   ValidateNested,
-  IsOptional
+  IsOptional,
 } from 'class-validator';
 import { CreateFieldGroupDto } from '../../field-group/dto/create-field-group.dto';
 import { Type } from 'class-transformer';

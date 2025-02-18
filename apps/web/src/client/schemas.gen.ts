@@ -406,9 +406,6 @@ export const UpdateAssignedGroupSignerDtoSchema = {
 export const CreateTemplateBoxDtoSchema = {
   type: 'object',
   properties: {
-    name: {
-      type: 'string',
-    },
     type: {
       type: 'string',
       enum: ['SIGNATURE', 'CHECKBOX', 'TEXT_FIELD'],
@@ -453,17 +450,21 @@ export const CreateFormTemplateDtoSchema = {
     name: {
       type: 'string',
     },
+    formDocLink: {
+      type: 'string',
+    },
     description: {
       type: 'string',
     },
     fieldGroups: {
+      minItems: 1,
       type: 'array',
       items: {
         $ref: '#/components/schemas/CreateFieldGroupDto',
       },
     },
   },
-  required: ['name', 'formDocLink', 'description', 'fieldGroups'],
+  required: ['file', 'name', 'formDocLink', 'description', 'fieldGroups'],
 } as const;
 
 export const TemplateBoxBaseEntitySchema = {
@@ -830,6 +831,9 @@ export const UpdateFormTemplateDtoSchema = {
       format: 'binary',
     },
     name: {
+      type: 'string',
+    },
+    formDocLink: {
       type: 'string',
     },
     description: {

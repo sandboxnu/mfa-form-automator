@@ -31,7 +31,8 @@ export const FormTemplateButtons = ({
   review?: boolean;
 }) => {
   const router = useRouter();
-  const { formTemplateName, pdfFile } = useCreateFormTemplate();
+  const { formTemplateName, pdfFile, formTemplateDescription } =
+    useCreateFormTemplate();
 
   /**
    * Upload and create a form template
@@ -78,7 +79,7 @@ export const FormTemplateButtons = ({
         body: {
           name: formTemplateName ? formTemplateName : '',
           fieldGroups: fieldGroups,
-          description: formTemplateDescription,
+          description: formTemplateDescription ? formTemplateDescription : '',
           file: pdfFile,
         },
       })
