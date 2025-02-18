@@ -147,7 +147,7 @@ export type CreateFieldGroupDto = {
 export type CreateFormTemplateDto = {
   name: string;
   formDocLink: string;
-  description: string | null;
+  description: string;
   fieldGroups: Array<CreateFieldGroupDto>;
 };
 
@@ -185,21 +185,21 @@ export type AssignedGroupEntity = {
   fieldGroupId: string;
   order: number;
   signed: boolean;
-  signedDocLink?: string | null;
+  signedDocLink: string | null;
   createdAt: string;
   updatedAt: string;
-  signerPositionId?: string | null;
-  signerDepartmentId?: string | null;
-  signerEmployeeId?: string | null;
-  signingEmployeeId?: string | null;
+  signerPositionId: string | null;
+  signerDepartmentId: string | null;
+  signerEmployeeId: string | null;
+  signingEmployeeId: string | null;
   signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
   formInstanceId: string;
   fieldGroup: FieldGroupBaseEntity;
-  signingEmployee?: EmployeeBaseEntity | null;
-  signerPosition?: PositionBaseEntity | null;
-  signerDepartment?: DepartmentEntity | null;
-  signerEmployee?: EmployeeBaseEntity | null;
-  signerEmployeeList?: Array<EmployeeBaseEntity> | null;
+  signingEmployee: EmployeeBaseEntity | null;
+  signerPosition: PositionBaseEntity | null;
+  signerDepartment: DepartmentEntity | null;
+  signerEmployee: EmployeeBaseEntity | null;
+  signerEmployeeList: Array<EmployeeBaseEntity> | null;
 };
 
 export type FormInstanceEntity = {
@@ -234,7 +234,7 @@ export type FormTemplateEntity = {
 export type UpdateFormTemplateDto = {
   name?: string;
   formDocLink?: string;
-  description?: string | null;
+  description?: string;
 };
 
 export type CreateDepartmentDto = {

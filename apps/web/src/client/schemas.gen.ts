@@ -450,7 +450,6 @@ export const CreateFormTemplateDtoSchema = {
     },
     description: {
       type: 'string',
-      nullable: true,
     },
     fieldGroups: {
       type: 'array',
@@ -675,11 +674,21 @@ export const AssignedGroupEntitySchema = {
     'fieldGroupId',
     'order',
     'signed',
+    'signedDocLink',
     'createdAt',
     'updatedAt',
+    'signerPositionId',
+    'signerDepartmentId',
+    'signerEmployeeId',
+    'signingEmployeeId',
     'signerType',
     'formInstanceId',
     'fieldGroup',
+    'signingEmployee',
+    'signerPosition',
+    'signerDepartment',
+    'signerEmployee',
+    'signerEmployeeList',
   ],
 } as const;
 
@@ -819,7 +828,6 @@ export const UpdateFormTemplateDtoSchema = {
     },
     description: {
       type: 'string',
-      nullable: true,
     },
   },
 } as const;
