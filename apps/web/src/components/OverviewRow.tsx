@@ -4,6 +4,8 @@ import { FormInstanceEntity } from '@web/client/types.gen';
 import React from 'react';
 import { FormImageCard } from './FormImageCard';
 import { ViewAll } from './ViewAll';
+import { ProfileIcon } from '@web/static/icons';
+import { SignFormInstancePreview } from './SignFormInstancePreview';
 
 /**
  * @param title - the title of the overview row
@@ -86,6 +88,7 @@ export const OverviewRow = ({
           },
         )}
       </Flex>
+      <SignFormInstancePreview />
     </>
   );
 };
