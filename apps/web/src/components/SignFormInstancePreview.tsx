@@ -1,21 +1,19 @@
 import {
   Avatar,
-  background,
   Button,
   Flex,
   Modal,
   ModalContent,
+  ModalOverlay,
   Text,
 } from '@chakra-ui/react';
 import {
   AssignedGroupEntity,
-  EmployeeEntity,
   FormInstanceEntity,
 } from '@web/client/types.gen';
 
 import { useRouter } from 'next/router';
 import { CloseIcon, PenSigningIcon } from '@web/static/icons';
-import { MouseEventHandler } from 'react';
 import AssigneeMap from './AvatarMap';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 
@@ -64,10 +62,12 @@ export const SignFormInstancePreview = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={closeFunction}>
-      <ModalContent>
+    <Modal isOpen={isOpen} onClose={closeFunction} isCentered>
+      <ModalOverlay bg="rgba(0, 0, 0, 0.5)" />
+      <ModalContent
+        alignItems="center"
+        justifyContent={"center"}>
         <Flex
-          zIndex="10000"
           backgroundColor="#F8F9FA"
           padding="24px 32px"
           gap="24px"
