@@ -1,7 +1,9 @@
-import { Box, Text, Flex } from '@chakra-ui/react';
+import { Box, Text, Flex, useDisclosure } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { PDFDocument } from './PDFDocument';
 import { FormInstanceEntity } from '@web/client/types.gen';
+import { SignFormInstancePreview } from './SignFormInstancePreview';
+import { MouseEventHandler } from 'react';
 
 /**
  * @param formName - the name of the form
@@ -12,9 +14,11 @@ import { FormInstanceEntity } from '@web/client/types.gen';
 export const FormImageCard = ({
   formInstance,
   link,
+  clickFunction,
 }: {
   formInstance: FormInstanceEntity;
   link: string;
+  clickFunction: MouseEventHandler<HTMLDivElement>;
 }) => {
   const router = useRouter();
 
@@ -33,9 +37,7 @@ export const FormImageCard = ({
       border="1px solid #D4D4D4"
       background="#FCFCFC"
       cursor="pointer"
-      onClick={() => {
-        router.push(link);
-      }}
+      onClick={clickFunction}
       _hover={{
         boxShadow: '0px 0.5px 6px 1px #DCDCDC',
       }}
