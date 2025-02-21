@@ -7,16 +7,20 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import {
-  AssignedGroupEntity,
-  FormInstanceEntity,
-} from '@web/client/types.gen';
+import { AssignedGroupEntity, FormInstanceEntity } from '@web/client/types.gen';
 
 import { useRouter } from 'next/router';
 import { CloseIcon, PenSigningIcon } from '@web/static/icons';
 import AssigneeMap from './AvatarMap';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 
+/**
+ * Modal used in OverviewRow component for To Do forms
+ * @param isOpen boolean which keeps track of modal open-state based on interactions in the OverviewRow component
+ * @param closeFunction the operation that closes the modal when "X" is pressed
+ * @param formInstance the instance whose info is displayed
+ * @returns a modal displaying a To-Do form's status including description, assigner, and assignee flow
+ */
 export const SignFormInstancePreview = ({
   isOpen,
   closeFunction,
@@ -64,20 +68,18 @@ export const SignFormInstancePreview = ({
   return (
     <Modal isOpen={isOpen} onClose={closeFunction} isCentered>
       <ModalOverlay bg="rgba(0, 0, 0, 0.5)" />
-      <ModalContent
-        alignItems="center"
-        justifyContent={"center"}>
+      <ModalContent alignItems="center" justifyContent={'center'}>
         <Flex
           backgroundColor="#F8F9FA"
           padding="24px 32px"
           gap="24px"
           flexDirection="column"
-          justifyContent={"space-between"}
+          justifyContent={'space-between'}
           width="559px"
           height="554px"
           borderRadius="12px"
           alignItems="flex-end"
-          flexShrink={"0"}
+          flexShrink={'0'}
           box-shadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
         >
           <Flex
@@ -135,8 +137,7 @@ export const SignFormInstancePreview = ({
                       ' ' +
                       formInstance.originator.lastName
                     }
-                    width="32px"
-                    height="32px"
+                    boxSize="32px"
                     backgroundColor={'#DDD'}
                     padding="6px 7px"
                     border="1px solid #FFFFFF"
@@ -170,7 +171,7 @@ export const SignFormInstancePreview = ({
               </Flex>
             </Flex>
           </Flex>
-          
+
           <Button
             width="158px"
             height="32px"
@@ -178,14 +179,12 @@ export const SignFormInstancePreview = ({
             justifyContent={'center'}
             gap="8px"
             borderRadius="6px"
-            backgroundColor="#1367EA"
+            background="#1367EA"
             color="#FFF"
             onClick={() => router.push('form-instances/' + formInstance.id)}
             _hover={{
               background: '#1367EA',
-              color: '#FFF',
             }}
-            border="1px solid var(--Blue, #1367EA)"
           >
             <PenSigningIcon color="#FFF" />
             Sign Now

@@ -285,6 +285,7 @@ const FormInstance = ({
           </Box>
           {_userCanSign && (
             <Button
+              margin="20px"
               background={
                 formInstance.markedCompleted
                   ? 'var(--mfa-gray-hex)'

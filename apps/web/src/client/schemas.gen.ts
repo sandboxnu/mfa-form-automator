@@ -449,6 +449,7 @@ export const CreateFormTemplateDtoSchema = {
       type: 'string',
     },
     fieldGroups: {
+      minItems: 1,
       type: 'array',
       items: {
         $ref: '#/components/schemas/CreateFieldGroupDto',

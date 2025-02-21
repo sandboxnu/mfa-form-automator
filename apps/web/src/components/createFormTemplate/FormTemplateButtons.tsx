@@ -5,7 +5,6 @@ import {
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
-import { client } from '@web/client/client.gen';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
