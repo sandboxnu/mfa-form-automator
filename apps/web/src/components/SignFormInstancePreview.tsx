@@ -72,9 +72,12 @@ export const SignFormInstancePreview = ({
           padding="24px 32px"
           gap="24px"
           flexDirection="column"
+          justifyContent={"space-between"}
           width="559px"
           height="554px"
           borderRadius="12px"
+          alignItems="flex-end"
+          flexShrink={"0"}
           box-shadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
         >
           <Flex
@@ -132,9 +135,13 @@ export const SignFormInstancePreview = ({
                       ' ' +
                       formInstance.originator.lastName
                     }
-                    boxSize="36px"
+                    width="32px"
+                    height="32px"
                     backgroundColor={'#DDD'}
+                    padding="6px 7px"
                     border="1px solid #FFFFFF"
+                    color="#0C0C0C"
+                    size="16px"
                   />
                   <Text color="#0C0C0C" fontSize="15px">
                     {formInstance.originator.firstName +
@@ -147,6 +154,7 @@ export const SignFormInstancePreview = ({
                 flexDirection="column"
                 justifyContent={'space-between'}
                 alignSelf={'stretch'}
+                gap="12px"
               >
                 <Text style={subheadingStyle}>Assignees</Text>
                 <AssigneeMap
@@ -162,14 +170,12 @@ export const SignFormInstancePreview = ({
               </Flex>
             </Flex>
           </Flex>
+          
           <Button
-            display={'flex'}
-            alignSelf="right"
             width="158px"
             height="32px"
             padding="4px 16px"
             justifyContent={'center'}
-            alignItems="center"
             gap="8px"
             borderRadius="6px"
             backgroundColor="#1367EA"
