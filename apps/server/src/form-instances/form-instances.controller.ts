@@ -9,6 +9,7 @@ import {
   NotFoundException,
   Query,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { FormInstancesService } from './form-instances.service';
 import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
@@ -49,7 +50,10 @@ export class FormInstancesController {
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
-  async create(@Body() createFormInstanceDto: CreateFormInstanceDto) {
+  async create(
+    @Body(new ValidationPipe({ transform: true }))
+    createFormInstanceDto: CreateFormInstanceDto,
+  ) {
     const newFormInstance = await this.formInstancesService.create(
       createFormInstanceDto,
     );
@@ -136,7 +140,8 @@ export class FormInstancesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async update(
     @Param('id') id: string,
-    @Body() updateFormInstanceDto: UpdateFormInstanceDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateFormInstanceDto: UpdateFormInstanceDto,
   ) {
     // TODO: Who is alloed to update a form instance? Creator? Admin? etc?
     try {

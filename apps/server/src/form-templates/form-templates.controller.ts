@@ -9,6 +9,10 @@ import {
   NotFoundException,
   Query,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  PipeTransform,
+  ValidationPipe,
 } from '@nestjs/common';
 import { FormTemplatesService } from './form-templates.service';
 import {
@@ -20,6 +24,8 @@ import {
   ApiTags,
   ApiQuery,
   ApiUnprocessableEntityResponse,
+  ApiConsumes,
+  ApiBody,
 } from '@nestjs/swagger';
 import { FormTemplateEntity } from './entities/form-template.entity';
 import { AppErrorMessage } from '../app.errors';
@@ -30,6 +36,45 @@ import { Prisma } from '@prisma/client';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+export class ParseFormDataJsonPipe implements PipeTransform {
+  constructor() {}
+
+  transform(value: any) {
+    const transformStringsToObjects = (obj: any) => {
+      for (const key in obj) {
+        if (typeof obj[key] === 'string') {
+          try {
+            const parsedValue = JSON.parse(obj[key]);
+            if (Array.isArray(parsedValue)) {
+              obj[key] = parsedValue.map((item) => {
+                if (typeof item === 'string') {
+                  try {
+                    return JSON.parse(item);
+                  } catch (e) {
+                    return item; // If parsing fails, keep the original string value
+                  }
+                }
+                return item;
+              });
+            } else {
+              obj[key] = parsedValue;
+            }
+          } catch (e) {
+            // If parsing fails, keep the original string value
+          }
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+          transformStringsToObjects(obj[key]);
+        }
+      }
+    };
+
+    transformStringsToObjects(value);
+    return value;
+  }
+}
 
 @ApiTags('form-templates')
 @Controller('form-templates')
@@ -41,13 +86,22 @@ export class FormTemplatesController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: CreateFormTemplateDto,
+  })
   @ApiCreatedResponse({ type: FormTemplateEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
-  async create(@Body() createFormTemplateDto: CreateFormTemplateDto) {
-    // TODO: Should only admins be able to create new templates?
+  async create(
+    @Body(new ParseFormDataJsonPipe(), new ValidationPipe({ transform: true }))
+    createFormTemplateDto: CreateFormTemplateDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    createFormTemplateDto.file = file;
     const newFormTemplate = await this.formTemplatesService.create(
       createFormTemplateDto,
     );
@@ -104,7 +158,8 @@ export class FormTemplatesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async update(
     @Param('id') id: string,
-    @Body() updateFormTemplateDto: UpdateFormTemplateDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateFormTemplateDto: UpdateFormTemplateDto,
   ) {
     // TODO: Should only admins be able to update templates?
     try {
