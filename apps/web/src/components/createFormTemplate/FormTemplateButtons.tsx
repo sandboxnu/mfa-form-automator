@@ -31,9 +31,7 @@ export const FormTemplateButtons = ({
   review?: boolean;
 }) => {
   const router = useRouter();
-  const { formTemplateName, fieldGroups, useBlob } = useCreateFormTemplate();
-
-  const { hasLocalBlob, uploadLocalBlobData } = useBlob;
+  const { formTemplateName, pdfFile } = useCreateFormTemplate();
 
   /**
    * Upload and create a form template
@@ -46,28 +44,41 @@ export const FormTemplateButtons = ({
       router.push(submitLink);
       return;
     }
-    if (!hasLocalBlob) {
+    if (!pdfFile) {
       throw new Error('No PDF file uploaded');
     }
 
-    const fieldGroups: CreateFieldGroupDto[] = [];
-
-    Array.from(fieldGroups).forEach((fieldGroup, index) => {
-      fieldGroups.push({
-        name: fieldGroup.name,
-        order: index,
-        templateBoxes: fieldGroup.templateBoxes,
-      });
-    });
-
-    const blob = await uploadLocalBlobData();
+    const fieldGroups: CreateFieldGroupDto[] = [
+      {
+        name: 'Default',
+        order: 0,
+        templateBoxes: [
+          {
+            type: 'SIGNATURE',
+            x_coordinate: 0,
+            y_coordinate: 0,
+          },
+        ],
+      },
+      {
+        name: 'Default',
+        order: 1,
+        templateBoxes: [
+          {
+            type: 'SIGNATURE',
+            x_coordinate: 0,
+            y_coordinate: 0,
+          },
+        ],
+      },
+    ];
 
     createFormTemplateMutation
       .mutateAsync({
         body: {
           name: formTemplateName ? formTemplateName : '',
-          formDocLink: blob.url,
           fieldGroups: fieldGroups,
+          file: pdfFile,
         },
       })
       .then((response) => {

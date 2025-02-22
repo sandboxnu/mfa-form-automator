@@ -63,14 +63,7 @@ export const CreateFormTemplateModal = ({
   const [fieldGroups, setFieldGroups] = useState<TempFieldGroup[]>([]);
 
   let isFormTemplateNameInvalid = formTemplateName === '';
-  const {
-    inputFileRef,
-    uploadFileRef,
-    uploadLocalFile,
-    clearLocalBlob,
-    localBlobData: { blob: localBlob, url: localBlobUrl, name: localBlobName },
-    hasLocalBlob,
-  } = useBlob();
+  const { inputFileRef, blob, setBlob } = useBlob();
 
   const createFormTemplateMutation = useMutation({
     ...formTemplatesControllerCreateMutation(),
@@ -105,16 +98,14 @@ export const CreateFormTemplateModal = ({
    * Upload and create a form template
    */
   const _submitFormTemplate = async () => {
-    if (!hasLocalBlob) {
+    if (!blob) {
       throw new Error('No PDF file uploaded');
     }
-
-    const blob = await uploadFileRef();
     createFormTemplateMutation
       .mutateAsync({
         body: {
           name: formTemplateName,
-          formDocLink: blob.url,
+          file: blob,
           fieldGroups: fieldGroups.map((fieldGroup, i) => {
             return {
               name: fieldGroup.value,
@@ -142,7 +133,7 @@ export const CreateFormTemplateModal = ({
     setFormTemplateName('New Form Template');
     setFieldGroups([]);
     onCloseCreateFormTemplate();
-    clearLocalBlob();
+    setBlob(null);
   };
 
   return (
@@ -222,9 +213,11 @@ export const CreateFormTemplateModal = ({
                     accept=".pdf"
                     style={{ display: 'none' }}
                     ref={inputFileRef}
-                    onChange={(e) => uploadLocalFile(e.target?.files?.[0])}
+                    onChange={(e) =>
+                      e.target?.files?.[0] && setBlob(e.target?.files?.[0])
+                    }
                   />
-                  {hasLocalBlob && (
+                  {blob && (
                     <span
                       style={{
                         fontSize: '17px',
@@ -234,7 +227,7 @@ export const CreateFormTemplateModal = ({
                         paddingLeft: '15px',
                       }}
                     >
-                      {localBlobName}
+                      {blob.name}
                     </span>
                   )}
                 </Flex>
@@ -310,12 +303,12 @@ export const CreateFormTemplateModal = ({
             </Box>
             <Box flex="1">
               <Heading as="h3">Form Preview</Heading>
-              {!hasLocalBlob && (
+              {!blob && (
                 <Skeleton mt="16px" w="400px" h="500px" background="gray" />
               )}
-              {hasLocalBlob && (
+              {blob && (
                 <embed
-                  src={localBlobUrl as string}
+                  src={URL.createObjectURL(blob)}
                   type="application/pdf"
                   width="400px"
                   height="500px"
@@ -336,7 +329,7 @@ export const CreateFormTemplateModal = ({
             width="161px"
             height="40px"
             disabled={
-              !hasLocalBlob ||
+              !blob ||
               isFormTemplateNameInvalid ||
               fieldGroups.length == 0 ||
               fieldGroups.some((field) => field.value === '')

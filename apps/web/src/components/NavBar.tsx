@@ -9,13 +9,15 @@ import {
   GrayPencilIcon,
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link.js';
-import { useRouter } from 'next/router.js';
 import {
   MenuContent,
   MenuRoot,
   MenuTrigger,
   MenuItem,
 } from '../components/ui/menu';
+import { Scope } from '@web/client/types.gen';
+import { useAuth } from '@web/hooks/useAuth';
+import { useRouter } from 'next/router';
 
 const icons = {
   overview: <OverViewIcon marginRight="2" boxSize="24px" />,
@@ -102,6 +104,9 @@ export const NavBar = ({
   props?: {};
 }) => {
   const router = useRouter();
+  const { user } = useAuth();
+  const isAdmin = user?.scope === Scope.ADMIN;
+
   return (
     <Box
       as="nav"
@@ -157,18 +162,17 @@ export const NavBar = ({
             >
               Form
             </MenuItem>
-            <MenuItem
-              rounded="8px"
-              onClick={() => {
-                router.push('create-template/upload');
-              }}
-              value="template"
-              padding="10px"
-              w="158px"
-              cursor="pointer"
-            >
-              Template
-            </MenuItem>
+            {isAdmin && (
+              <MenuItem
+                rounded="8px"
+                onClick={() => {
+                  router.push('create-template/upload');
+                }}
+                value="template"
+              >
+                Template
+              </MenuItem>
+            )}
           </MenuContent>
         </MenuRoot>
       </Flex>

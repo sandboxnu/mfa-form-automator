@@ -9,6 +9,9 @@ import {
   NotFoundException,
   Query,
   UseGuards,
+  ValidationPipe,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { FormInstancesService } from './form-instances.service';
 import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
@@ -23,6 +26,7 @@ import {
   ApiTags,
   ApiBearerAuth,
   ApiQuery,
+  ApiConsumes,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
@@ -32,6 +36,9 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthUser } from '../auth/auth.decorators';
 import { UserEntity } from '../auth/entities/user.entity';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
+import { ParseFormDataJsonPipe } from '../form-templates/form-templates.controller';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
@@ -47,7 +54,10 @@ export class FormInstancesController {
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
-  async create(@Body() createFormInstanceDto: CreateFormInstanceDto) {
+  async create(
+    @Body(new ValidationPipe({ transform: true }))
+    createFormInstanceDto: CreateFormInstanceDto,
+  ) {
     const newFormInstance = await this.formInstancesService.create(
       createFormInstanceDto,
     );
@@ -131,7 +141,8 @@ export class FormInstancesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async update(
     @Param('id') id: string,
-    @Body() updateFormInstanceDto: UpdateFormInstanceDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateFormInstanceDto: UpdateFormInstanceDto,
   ) {
     try {
       const updatedFormInstance = await this.formInstancesService.update(
@@ -179,6 +190,8 @@ export class FormInstancesController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':formInstanceId/sign/:signatureId')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
   @ApiOkResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -189,13 +202,18 @@ export class FormInstancesController {
     @AuthUser() currentUser: UserEntity,
     @Param('formInstanceId') formInstanceId: string,
     @Param('assignedGroupId') assignedGroupId: string,
+    @Body(new ParseFormDataJsonPipe(), new ValidationPipe({ transform: true }))
+    signFormInstanceDto: SignFormInstanceDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
+    signFormInstanceDto.file = file;
     try {
       const updatedFormInstance =
         await this.formInstancesService.signFormInstance(
           formInstanceId,
           assignedGroupId,
           currentUser,
+          signFormInstanceDto,
         );
       return new FormInstanceEntity(updatedFormInstance);
     } catch (e) {

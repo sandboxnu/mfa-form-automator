@@ -78,6 +78,10 @@ const FormInstance = ({
           formInstanceId: formInstance.id,
           assignedGroupId: _nextAssignedGroup?.id!,
         },
+        body: {
+          // TODO: Update when frontend functionality is implemented
+          file: new File([], 'placeholder.txt'),
+        },
       })
       .catch((e) => {
         throw e;

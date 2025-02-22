@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
@@ -42,7 +43,10 @@ export class DepartmentsController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async create(@Body() createDepartmentDto: CreateDepartmentDto) {
+  async create(
+    @Body(new ValidationPipe({ transform: true }))
+    createDepartmentDto: CreateDepartmentDto,
+  ) {
     const newDepartment = await this.departmentsService.create(
       createDepartmentDto,
     );
@@ -104,7 +108,8 @@ export class DepartmentsController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async update(
     @Param('id') id: string,
-    @Body() updateDepartmentDto: UpdateDepartmentDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateDepartmentDto: UpdateDepartmentDto,
   ) {
     try {
       const updatedDepartment = await this.departmentsService.update(
