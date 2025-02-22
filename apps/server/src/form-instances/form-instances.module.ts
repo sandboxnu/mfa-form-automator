@@ -12,6 +12,7 @@ import { DepartmentsModule } from '../departments/departments.module';
 import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
 import { EmployeesService } from '../employees/employees.service';
+import { PdfStoreModule } from '../pdf-store/pdf-storage.module';
 
 @Module({
   controllers: [FormInstancesController],
@@ -31,6 +32,7 @@ import { EmployeesService } from '../employees/employees.service';
     EmployeesModule,
     PostmarkModule,
     DepartmentsModule,
+    PdfStoreModule,
   ],
 })
 export class FormInstancesModule {}

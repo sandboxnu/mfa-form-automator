@@ -451,6 +451,7 @@ export const CreateFormTemplateDtoSchema = {
       type: 'string',
     },
     fieldGroups: {
+      minItems: 1,
       type: 'array',
       items: {
         $ref: '#/components/schemas/CreateFieldGroupDto',
@@ -891,4 +892,15 @@ export const UpdateFormInstanceDtoSchema = {
       type: 'string',
     },
   },
+} as const;
+
+export const SignFormInstanceDtoSchema = {
+  type: 'object',
+  properties: {
+    file: {
+      type: 'string',
+      format: 'binary',
+    },
+  },
+  required: ['file'],
 } as const;
