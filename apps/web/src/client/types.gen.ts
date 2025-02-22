@@ -146,6 +146,7 @@ export type CreateFieldGroupDto = {
 export type CreateFormTemplateDto = {
   file: Blob | File;
   name: string;
+  formDocLink: string;
   description: string;
   fieldGroups: Array<CreateFieldGroupDto>;
 };

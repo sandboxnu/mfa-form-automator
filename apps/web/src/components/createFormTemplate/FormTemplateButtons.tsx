@@ -77,10 +77,11 @@ export const FormTemplateButtons = ({
     createFormTemplateMutation
       .mutateAsync({
         body: {
-          name: formTemplateName ? formTemplateName : '',
+          name: formTemplateName ?? '',
           fieldGroups: fieldGroups,
-          description: formTemplateDescription ? formTemplateDescription : '',
+          description: formTemplateDescription ?? '',
           file: pdfFile,
+          formDocLink: ''
         },
       })
       .then((response) => {

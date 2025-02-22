@@ -1,10 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  ArrayMinSize,
-  IsArray,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
+import { ArrayMinSize, IsArray, IsNotEmpty, IsOptional, IsString,
 } from 'class-validator';
 import { CreateAssignedGroupDto } from '../../assigned-group/dto/create-assigned-group.dto';
 

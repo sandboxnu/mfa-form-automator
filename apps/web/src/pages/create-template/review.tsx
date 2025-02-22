@@ -16,8 +16,8 @@ export default function Review() {
       boxContent={
         <ReviewBox
           pdfFile={pdfFile}
-          name={formTemplateName ? formTemplateName : ''}
-          description={formTemplateDescription ? formTemplateDescription : ''}
+          name={formTemplateName ?? ''}
+          description={formTemplateDescription ?? ''}
           fieldGroups={fieldGroups}
         />
       }
