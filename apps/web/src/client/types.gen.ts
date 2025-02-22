@@ -262,6 +262,10 @@ export type UpdateFormInstanceDto = {
   formDocLink?: string;
 };
 
+export type SignFormInstanceDto = {
+  file: Blob | File;
+};
+
 export type AppControllerGetHelloData = {
   body?: never;
   path?: never;
@@ -1359,7 +1363,7 @@ export type FormInstancesControllerUpdateResponse =
   FormInstancesControllerUpdateResponses[keyof FormInstancesControllerUpdateResponses];
 
 export type FormInstancesControllerSignFormInstanceData = {
-  body?: never;
+  body: SignFormInstanceDto;
   path: {
     formInstanceId: string;
     assignedGroupId: string;
