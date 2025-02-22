@@ -66,7 +66,12 @@ export const SignFormInstancePreview = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={closeFunction} isCentered>
+    <Modal
+      isOpen={isOpen}
+      onClose={closeFunction}
+      isCentered
+      closeOnOverlayClick={false}
+    >
       <ModalOverlay bg="rgba(0, 0, 0, 0.5)" />
       <ModalContent alignItems="center" justifyContent={'center'}>
         <Flex
@@ -179,6 +184,7 @@ export const SignFormInstancePreview = ({
             justifyContent={'center'}
             gap="8px"
             borderRadius="6px"
+            alignContent={'center'}
             background="#1367EA"
             color="#FFF"
             onClick={() => router.push('form-instances/' + formInstance.id)}

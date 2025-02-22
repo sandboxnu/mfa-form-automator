@@ -103,14 +103,18 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
               >
                 {assignee.title}
               </Text>
-              {assignee.signed ? 
-              <Text
-              color="#515151"
-              fontSize="13px"
-              fontWeight="400"
-              lineHeight="normal">
-              {new Date(assignee.updatedAt).toLocaleDateString()}
-            </Text> : <></>}
+              {assignee.signed ? (
+                <Text
+                  color="#515151"
+                  fontSize="13px"
+                  fontWeight="400"
+                  lineHeight="normal"
+                >
+                  {new Date(assignee.updatedAt).toLocaleDateString()}
+                </Text>
+              ) : (
+                <></>
+              )}
             </Flex>
             {index < assignees.length - 1 ? (
               <Flex
