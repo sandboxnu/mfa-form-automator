@@ -107,7 +107,7 @@ const employees: EmployeeData[] = [
     email: 'zheng.kaiy@northeastern.edu',
     positionId: CHIEF_FIN_OFFICER_UUID,
     signatureLink: DEV_SIGNATURE_LINK,
-    scope: EmployeeScope.BASE_USER,
+    scope: EmployeeScope.ADMIN,
   },
   {
     id: ANGELA_WEIGL_UUID,

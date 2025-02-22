@@ -114,6 +114,16 @@ describe('AuthService', () => {
       const result = await service.validateEmployee(email, password);
       expect(result).toBeNull();
     });
+
+    it('should return null on an invalid admin credential', async () => {
+      jest.spyOn(employeeService, 'findOneByEmail').mockResolvedValue(employee);
+
+      const result = await service.validateEmployeeScope(
+        email,
+        EmployeeScope.ADMIN,
+      );
+      expect(result).toBeNull();
+    });
   });
 
   describe('login', () => {
