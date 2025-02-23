@@ -50,7 +50,7 @@ export default function TextField({
         {!disableEdit && selected && (
           <Box
             pos="absolute"
-            left={currentPosition.width + 5}
+            right="-30px"
             zIndex={2}
             onClick={onRemove}
             bg="white"
