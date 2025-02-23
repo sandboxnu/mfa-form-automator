@@ -49,8 +49,6 @@ export const AssignGroupsBox = ({
       },
     }),
   });
-  console.log('dept', departments);
-  console.log('emp', employees);
 
   return (
     <Flex
