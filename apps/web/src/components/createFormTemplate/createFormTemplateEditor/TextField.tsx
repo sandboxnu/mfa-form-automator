@@ -13,7 +13,6 @@ export default function TextField({
   disableEdit,
   selected,
   highlighted,
-  onMouseDown,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -23,13 +22,9 @@ export default function TextField({
   disableEdit: boolean;
   selected: boolean;
   highlighted: boolean;
-  onMouseDown: () => void;
 }) {
-  console.log(currentPosition.height);
   return (
     <Rnd
-      onResizeStart={onMouseDown}
-      onMouseDown={onMouseDown}
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}

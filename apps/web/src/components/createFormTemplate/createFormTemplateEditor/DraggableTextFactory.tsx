@@ -16,7 +16,6 @@ export default function DraggableTextFactory({
   type,
   highlighted = true,
   selected = false,
-  onMouseDown,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -28,11 +27,9 @@ export default function DraggableTextFactory({
   type: FieldType;
   highlighted: boolean;
   selected: boolean;
-  onMouseDown: () => void;
 }) {
   return type === FieldType.Checkbox ? (
     <Checkbox
-      onMouseDown={onMouseDown}
       onStop={onStop}
       onResizeStop={onResizeStop}
       color={color}
@@ -46,7 +43,6 @@ export default function DraggableTextFactory({
     // we'll have to add something else for signature fields but right now lets treat it as
     // a text field
     <TextField
-      onMouseDown={onMouseDown}
       onStop={onStop}
       onResizeStop={onResizeStop}
       color={color}

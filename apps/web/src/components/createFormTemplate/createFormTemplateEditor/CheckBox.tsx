@@ -13,7 +13,6 @@ export default function Checkbox({
   disableEdit,
   selected,
   highlighted,
-  onMouseDown,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -23,11 +22,9 @@ export default function Checkbox({
   disableEdit: boolean;
   selected: boolean;
   highlighted: boolean;
-  onMouseDown: () => void;
 }) {
   return (
     <Rnd
-      onMouseDown={onMouseDown}
       lockAspectRatio={true}
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
@@ -63,7 +60,7 @@ export default function Checkbox({
       {!disableEdit && selected && (
         <Box
           pos="absolute"
-          left={currentPosition.width + 5}
+          right="-30px"
           zIndex={2}
           onClick={onRemove}
           bg="white"

@@ -321,10 +321,6 @@ export const FormEditor = ({
                   Array.from(formFields[pageNum].entries()).map(
                     ([fieldId, { position, groupId }], index) => (
                       <DraggableTextFactory
-                        onMouseDown={() => {
-                          setSelectedField(null);
-                          setHighlightedField(fieldId);
-                        }}
                         type={
                           formFields[pageNum].get(fieldId)?.type ??
                           FieldType.Text
