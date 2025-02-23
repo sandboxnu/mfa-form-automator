@@ -80,14 +80,13 @@ export const OverviewRow = ({
           (formInstance: FormInstanceEntity, index: number) => {
             return title == 'To-do' ? (
               <FormImageCard
-                clickFunction={() => handleModalOpen(formInstance)}
+                onClick={() => handleModalOpen(formInstance)}
                 key={index}
                 formInstance={formInstance}
-                link={'/form-instances/' + formInstance.id}
               />
             ) : (
               <FormCard
-                clickFunction={() => handleModalOpen(formInstance)}
+                onClick={() => handleModalOpen(formInstance)}
                 key={index}
                 formName={formInstance.name}
                 assignedGroups={formInstance.assignedGroups}
@@ -99,7 +98,7 @@ export const OverviewRow = ({
       </Flex>
       <SignFormInstancePreview
         isOpen={isOpen}
-        closeFunction={onClose}
+        onClose={onClose}
         formInstance={curForm}
       />
     </>

@@ -12,12 +12,12 @@ export const FormCard = ({
   formName,
   assignedGroups,
   link,
-  clickFunction,
+  onClick,
 }: {
   formName: String;
   assignedGroups: AssignedGroupEntity[];
   link: string;
-  clickFunction: MouseEventHandler<HTMLDivElement>;
+  onClick: MouseEventHandler<HTMLDivElement>;
 }) => {
   return (
     <>
@@ -29,7 +29,7 @@ export const FormCard = ({
         boxShadow="0px 0.5px 3px 1px #DCDCDC"
         background="#FCFCFC"
         cursor="pointer"
-        onClick={clickFunction}
+        onClick={onClick}
         _hover={{
           boxShadow: '0px 0.5px 6px 1px #DCDCDC',
         }}

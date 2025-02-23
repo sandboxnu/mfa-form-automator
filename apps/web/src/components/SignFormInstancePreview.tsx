@@ -7,7 +7,7 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import { AssignedGroupEntity, FormInstanceEntity } from '@web/client/types.gen';
+import { FormInstanceEntity } from '@web/client/types.gen';
 
 import { useRouter } from 'next/router';
 import { CloseIcon, PenSigningIcon } from '@web/static/icons';
@@ -17,26 +17,19 @@ import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 /**
  * Modal used in OverviewRow component for To Do forms
  * @param isOpen boolean which keeps track of modal open-state based on interactions in the OverviewRow component
- * @param closeFunction the operation that closes the modal when "X" is pressed
+ * @param onClose the operation that closes the modal when "X" is pressed
  * @param formInstance the instance whose info is displayed
  * @returns a modal displaying a To-Do form's status including description, assigner, and assignee flow
  */
 export const SignFormInstancePreview = ({
   isOpen,
-  closeFunction,
+  onClose,
   formInstance,
 }: {
   isOpen: boolean;
-  closeFunction: any;
+  onClose: any;
   formInstance: FormInstanceEntity;
 }) => {
-  const lineStyle = {
-    width: '1px',
-    height: '33px',
-    position: 'absolute',
-    left: '16.5px',
-    background: '#A1A1A1',
-  };
   const router = useRouter();
 
   const subheadingStyle = {
@@ -46,29 +39,10 @@ export const SignFormInstancePreview = ({
     fontWeight: '600',
   };
 
-  const RowItem = ({ signer }: { signer: AssignedGroupEntity }) => {
-    return (
-      <Flex
-        flexDirection={'column'}
-        alignItems="flex-start"
-        gap="-4px"
-        alignSelf="stretch"
-      >
-        <Flex alignItems={'center'} gap="8px">
-          <Flex flex="1 0 0">
-            <Text>Name</Text>
-            <Text>{signer.signed ? <Flex></Flex> : 'awaiting'}</Text>
-          </Flex>
-        </Flex>
-        <Flex></Flex>
-      </Flex>
-    );
-  };
-
   return (
     <Modal
       isOpen={isOpen}
-      onClose={closeFunction}
+      onClose={onClose}
       isCentered
       closeOnOverlayClick={false}
     >
@@ -112,7 +86,7 @@ export const SignFormInstancePreview = ({
                 >
                   {formInstance.name}
                 </Text>
-                <CloseIcon onClick={closeFunction} />
+                <CloseIcon onClick={onClose} cursor="pointer" />
               </Flex>
 
               <Flex
@@ -161,6 +135,7 @@ export const SignFormInstancePreview = ({
                 justifyContent={'space-between'}
                 alignSelf={'stretch'}
                 gap="12px"
+                overflowY={'scroll'}
               >
                 <Text style={subheadingStyle}>Assignees</Text>
                 <AssigneeMap
@@ -181,19 +156,26 @@ export const SignFormInstancePreview = ({
             width="158px"
             height="32px"
             padding="4px 16px"
-            justifyContent={'center'}
-            gap="8px"
             borderRadius="6px"
-            alignContent={'center'}
             background="#1367EA"
-            color="#FFF"
             onClick={() => router.push('form-instances/' + formInstance.id)}
             _hover={{
               background: '#1367EA',
             }}
+            justifyContent="center"
+            alignItems={'center'}
           >
-            <PenSigningIcon color="#FFF" />
-            Sign Now
+            <Flex gap="8px">
+              <PenSigningIcon
+                color="#FFF"
+                position={'absolute'}
+                alignSelf="center"
+                left="20px"
+              />
+              <Text color="#FFF" position={'relative'}>
+                Sign Now
+              </Text>
+            </Flex>
           </Button>
         </Flex>
       </ModalContent>

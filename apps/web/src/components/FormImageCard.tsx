@@ -13,12 +13,10 @@ import { MouseEventHandler } from 'react';
  */
 export const FormImageCard = ({
   formInstance,
-  link,
-  clickFunction,
+  onClick,
 }: {
   formInstance: FormInstanceEntity;
-  link: string;
-  clickFunction: MouseEventHandler<HTMLDivElement>;
+  onClick: MouseEventHandler<HTMLDivElement>;
 }) => {
   const router = useRouter();
 
@@ -37,7 +35,7 @@ export const FormImageCard = ({
       border="1px solid #D4D4D4"
       background="#FCFCFC"
       cursor="pointer"
-      onClick={clickFunction}
+      onClick={onClick}
       _hover={{
         boxShadow: '0px 0.5px 6px 1px #DCDCDC',
       }}
