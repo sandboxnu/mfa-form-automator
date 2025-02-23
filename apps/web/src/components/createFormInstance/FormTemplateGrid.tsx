@@ -32,7 +32,6 @@ export const TemplateSelectGrid: React.FC = () => {
       const template: FormTemplateEntity = await response.json();
       setFormTemplate(template);
       setFormInstanceName(template.name);
-      console.log('Selected Form Template:', template.name);
     } catch (error) {
       console.error(error);
     }

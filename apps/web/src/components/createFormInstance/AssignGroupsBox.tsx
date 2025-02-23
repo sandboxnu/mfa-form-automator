@@ -36,7 +36,6 @@ export const AssignGroupsBox = ({
 
   const { assignedGroupData, setAssignedGroupData } = useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
-  console.log('Assigned Groups Data:', assignedGroupData);
 
   return (
     <Flex

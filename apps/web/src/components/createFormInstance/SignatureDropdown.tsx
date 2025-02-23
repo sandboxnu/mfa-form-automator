@@ -206,13 +206,8 @@ export const SignatureDropdown = ({
               value={selectedPosition}
               onChange={(selected) => {
                 setSelectedPosition(selected);
-                console.log('selected', selected);
                 // TODO: probably should not be coercing this type
                 let updatedAssignedGroupData = assignedGroupData.at(index)!;
-                console.log(
-                  'selectedAssignedGroupData',
-                  updatedAssignedGroupData,
-                );
                 updatedAssignedGroupData.positionId = selected?.value;
                 assignedGroupData[index] = {
                   ...updatedAssignedGroupData,
