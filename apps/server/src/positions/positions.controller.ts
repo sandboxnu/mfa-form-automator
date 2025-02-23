@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dto/create-position.dto';
@@ -68,7 +69,7 @@ export class PositionsController {
     description: 'Limit on number of positions to return',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
+  async findAll(@Query('limit', ParseIntPipe) limit?: number) {
     const positions = await this.positionsService.findAll(limit);
     return positions.map((position) => new PositionEntity(position));
   }
@@ -87,7 +88,7 @@ export class PositionsController {
   })
   async findAllInDepartment(
     @Param('departmentId') departmentId: string,
-    @Query('limit') limit?: number,
+    @Query('limit', ParseIntPipe) limit?: number,
   ) {
     const positions = await this.positionsService.findAllInDepartment(
       departmentId,
@@ -104,7 +105,7 @@ export class PositionsController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findAllInDepartmentName(
     @Param('departmentName') departmentName: string,
-    @Query('limit') limit?: number,
+    @Query('limit', ParseIntPipe) limit?: number,
   ) {
     const positions = await this.positionsService.findAllInDepartmentName(
       departmentName,

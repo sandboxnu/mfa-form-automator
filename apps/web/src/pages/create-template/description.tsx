@@ -1,5 +1,5 @@
-import { FormTemplateLayout } from '@web/components/createFormTemplate/FormTemplateLayout';
-import { NameAndDescriptionBox } from '@web/components/createFormTemplate/NameAndDescriptionBox';
+import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 /**
@@ -15,8 +15,10 @@ export default function Description() {
   } = useCreateFormTemplate();
 
   return (
-    <FormTemplateLayout
+    <CreateFormLayout
+      isFormTemplate={true}
       pageNumber={2}
+      heading={'Create form template'}
       subheading={'Give your form template a name and short description'}
       boxContent={
         <NameAndDescriptionBox
