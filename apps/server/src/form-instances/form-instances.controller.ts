@@ -12,6 +12,7 @@ import {
   ValidationPipe,
   UseInterceptors,
   UploadedFile,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { FormInstancesService } from './form-instances.service';
 import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
@@ -77,7 +78,7 @@ export class FormInstancesController {
     description: 'Limit on number of form instances to return',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
+  async findAll(@Query('limit', ParseIntPipe) limit?: number) {
     const formInstances = await this.formInstancesService.findAll(limit);
     return formInstances.map(
       (formInstance) => new FormInstanceEntity(formInstance),

@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -72,7 +73,7 @@ export class EmployeesController {
     description: 'Limit on number of positions to return',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
+  async findAll(@Query('limit', ParseIntPipe) limit?: number) {
     // TODO: Auth
     const employees = await this.employeesService.findAll(limit);
     return employees.map((employee) => new EmployeeEntity(employee));
