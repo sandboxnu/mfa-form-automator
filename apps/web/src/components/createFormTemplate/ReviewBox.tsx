@@ -121,7 +121,7 @@ export const ReviewBox = ({
             formFields={formFields}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
-            scale={0.55}
+            scale={0.6875}
           />
         </Box>
       </Flex>

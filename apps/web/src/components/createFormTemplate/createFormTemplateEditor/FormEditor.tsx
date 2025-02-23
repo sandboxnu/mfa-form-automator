@@ -163,10 +163,10 @@ export const FormEditor = ({
     <Box
       background="white"
       borderRadius="12px"
-      width="100%"
       display="flex"
       flexDir="column"
       gap="20px"
+      width="100%"
     >
       {!disableEdit && (
         <Box display="flex" gap="12px">
@@ -231,68 +231,54 @@ export const FormEditor = ({
           {formTemplateName}
         </Text>
         <Box display="flex" justifyContent="center">
-          <Box
-            position="absolute"
-            left="24px"
-            top="69px"
-            background="white"
-            padding="6px"
-            boxShadow="0px 1px 4px #E5E5E5"
-            borderRadius="5px"
-            border="1px #E5E5E5 solid"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            gap="8px"
-            display="flex"
-            zIndex={1}
-          >
-            <Button
-              position="relative"
-              width="40px"
-              height="40px"
-              backgroundColor="#1367EA"
-              borderRadius="4px"
+          {!disableEdit && (
+            <Box
+              position="absolute"
+              left="24px"
+              top="69px"
+              background="white"
+              padding="6px"
+              boxShadow="0px 1px 4px #E5E5E5"
+              borderRadius="5px"
               border="1px #E5E5E5 solid"
-              display="flex"
+              flexDirection="column"
               justifyContent="center"
               alignItems="center"
-              isDisabled={fieldGroups.size == 0 || disableEdit}
-              onClick={handleAddTextField}
-            >
-              <div>{TextIcon}</div>
-            </Button>
-            <Button
-              position="relative"
-              width="40px"
-              height="40px"
-              backgroundColor="white"
-              borderRadius="4px"
+              gap="8px"
               display="flex"
-              justifyContent="center"
-              alignItems="center"
-              isDisabled={fieldGroups.size == 0 || disableEdit}
-              onClick={handleAddCheckbox}
+              zIndex={1}
             >
-              <div>{Checkbox}</div>
-            </Button>
-          </Box>
-
-          <Box
-            position="absolute"
-            right="24px"
-            top="69px"
-            background="white"
-            padding="6px"
-            boxShadow="0px 1px 4px #E5E5E5"
-            borderRadius="5px"
-            border="1px #E5E5E5 solid"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            gap="8px"
-            display="flex"
-          ></Box>
+              <Button
+                position="relative"
+                width="40px"
+                height="40px"
+                backgroundColor="#1367EA"
+                borderRadius="4px"
+                border="1px #E5E5E5 solid"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                isDisabled={fieldGroups.size == 0 || disableEdit}
+                onClick={handleAddTextField}
+              >
+                <div>{TextIcon}</div>
+              </Button>
+              <Button
+                position="relative"
+                width="40px"
+                height="40px"
+                backgroundColor="white"
+                borderRadius="4px"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                isDisabled={fieldGroups.size == 0 || disableEdit}
+                onClick={handleAddCheckbox}
+              >
+                <div>{Checkbox}</div>
+              </Button>
+            </Box>
+          )}
           <Box
             height="474px"
             width="800px"
