@@ -11,7 +11,9 @@ export default function Checkbox({
   onRemove,
   currentPosition,
   disableEdit,
-  deleteActive,
+  selected,
+  highlighted,
+  onMouseDown,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -19,16 +21,20 @@ export default function Checkbox({
   onRemove: () => void;
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
-  deleteActive: boolean;
+  selected: boolean;
+  highlighted: boolean;
+  onMouseDown: () => void;
 }) {
   return (
     <Rnd
+      onMouseDown={onMouseDown}
       lockAspectRatio={true}
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
       minWidth={'10px'}
       minHeight={'10px'}
+      border={selected ? `1px solid blue` : ''}
       enableResizing={{
         bottom: false,
         bottomLeft: false,
@@ -43,7 +49,8 @@ export default function Checkbox({
         zIndex: 10,
         background: `${color}`,
         opacity: '10px',
-        border: `solid 1px grey`,
+        borderRadius: '2px',
+        border: `${highlighted ? 'solid 2px #1367EA' : ''}`,
         padding: 4,
         display: 'flex',
         alignItems: 'center',
@@ -53,8 +60,18 @@ export default function Checkbox({
       onResizeStop={onResizeStop}
       disableDragging={disableEdit}
     >
-      {!disableEdit && deleteActive && (
-        <Box position="absolute" left="150%" zIndex={2} onClick={onRemove}>
+      {!disableEdit && selected && (
+        <Box
+          pos="absolute"
+          left={currentPosition.width + 5}
+          zIndex={2}
+          onClick={onRemove}
+          bg="white"
+          padding="1px 2px"
+          borderRadius="4px"
+          border="1.5px solid"
+          borderColor="#E5E5E5"
+        >
           {RedDeleteIcon}
         </Box>
       )}

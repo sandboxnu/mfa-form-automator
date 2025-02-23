@@ -41,7 +41,8 @@ export const FormEditor = ({
   const [totalPages, setTotalPages] = useState(0);
   const documentRef = useRef<HTMLDivElement>(null);
   const [groupNum, setGroupNum] = useState(fieldGroups.size);
-  const [selectedField, setSelectedField] = useState<string>();
+  const [selectedField, setSelectedField] = useState<string | null>();
+  const [highlightedField, setHighlightedField] = useState<string>();
 
   //colors for group buttons: colors[0] = border/text color, colors[1] = background color
   const groupColors = [
@@ -55,13 +56,13 @@ export const FormEditor = ({
   const handleAddTextField = () => {
     if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
       const { centerX, centerY } = convertCoordinates(documentRef.current);
-
+      const id = uuidv4();
       setFormFields({
         ...formFields,
         [pageNum]: new Map([
           ...formFields[pageNum],
           [
-            uuidv4(),
+            id,
             {
               position: {
                 x: centerX - 40,
@@ -75,19 +76,21 @@ export const FormEditor = ({
           ],
         ]),
       });
+      setHighlightedField(id);
+      setSelectedField(null);
     }
   };
 
   const handleAddCheckbox = () => {
     if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
       const { centerX, centerY } = convertCoordinates(documentRef.current);
-
+      const id = uuidv4();
       setFormFields({
         ...formFields,
         [pageNum]: new Map([
           ...formFields[pageNum],
           [
-            uuidv4(),
+            id,
             {
               position: {
                 x: centerX - 40,
@@ -101,6 +104,8 @@ export const FormEditor = ({
           ],
         ]),
       });
+      setHighlightedField(id);
+      setSelectedField(null);
     }
   };
 
@@ -316,6 +321,10 @@ export const FormEditor = ({
                   Array.from(formFields[pageNum].entries()).map(
                     ([fieldId, { position, groupId }], index) => (
                       <DraggableTextFactory
+                        onMouseDown={() => {
+                          setSelectedField(null);
+                          setHighlightedField(fieldId);
+                        }}
                         type={
                           formFields[pageNum].get(fieldId)?.type ??
                           FieldType.Text
@@ -334,6 +343,7 @@ export const FormEditor = ({
                         initialText={null}
                         onStop={(e: DraggableEvent, data: DraggableData) => {
                           setSelectedField(fieldId);
+                          setHighlightedField(fieldId);
 
                           handleFieldUpdate(groupId, fieldId, {
                             width: position.width,
@@ -350,6 +360,7 @@ export const FormEditor = ({
                           pos,
                         ) => {
                           setSelectedField(fieldId);
+                          setHighlightedField(fieldId);
 
                           let newWidth = parseFloat(elementRef.style.width);
                           let newHeight = parseFloat(elementRef.style.height);
@@ -365,7 +376,8 @@ export const FormEditor = ({
                           });
                         }}
                         disableEdit={disableEdit}
-                        deleteActive={selectedField === fieldId}
+                        selected={selectedField === fieldId}
+                        highlighted={highlightedField === fieldId}
                       />
                     ),
                   )}

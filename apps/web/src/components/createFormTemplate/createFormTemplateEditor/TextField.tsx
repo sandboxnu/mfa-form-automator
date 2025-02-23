@@ -11,7 +11,9 @@ export default function TextField({
   onRemove,
   currentPosition,
   disableEdit,
-  deleteActive,
+  selected,
+  highlighted,
+  onMouseDown,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -19,21 +21,27 @@ export default function TextField({
   onRemove: () => void;
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
-  deleteActive: boolean;
+  selected: boolean;
+  highlighted: boolean;
+  onMouseDown: () => void;
 }) {
   console.log(currentPosition.height);
   return (
     <Rnd
+      onResizeStart={onMouseDown}
+      onMouseDown={onMouseDown}
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
       minWidth={'50px'}
       minHeight={'10px'}
+      border={selected ? `1px solid blue` : ''}
       style={{
         zIndex: 10,
         background: `${color}`,
         opacity: '10px',
-        border: `solid 1px grey`,
+        borderRadius: '2px',
+        border: `${highlighted ? 'solid 2px #1367EA' : ''}`,
         padding: 4,
         display: 'flex',
         alignItems: 'center',
@@ -44,22 +52,21 @@ export default function TextField({
       disableDragging={disableEdit}
     >
       <Box display="flex" alignItems="center" justifyContent="center">
-        {!disableEdit &&
-          deleteActive &&
-          (currentPosition.height <= 17 ? (
-            <Box
-              position="absolute"
-              left={currentPosition.width + 5}
-              zIndex={2}
-              onClick={onRemove}
-            >
-              {RedDeleteIcon}
-            </Box>
-          ) : (
-            <Box zIndex={2} onClick={onRemove}>
-              {RedDeleteIcon}
-            </Box>
-          ))}
+        {!disableEdit && selected && (
+          <Box
+            pos="absolute"
+            left={currentPosition.width + 5}
+            zIndex={2}
+            onClick={onRemove}
+            bg="white"
+            padding="1px 2px"
+            borderRadius="4px"
+            border="1.5px solid"
+            borderColor="#E5E5E5"
+          >
+            {RedDeleteIcon}
+          </Box>
+        )}
       </Box>
     </Rnd>
   );

@@ -4,6 +4,7 @@ import { FieldType, TextFieldPosition } from '../types';
 import { FaTimes } from 'react-icons/fa';
 import Checkbox from './CheckBox';
 import TextField from './TextField';
+import { on } from 'events';
 
 export default function DraggableTextFactory({
   onStop,
@@ -13,7 +14,9 @@ export default function DraggableTextFactory({
   currentPosition,
   disableEdit,
   type,
-  deleteActive = false,
+  highlighted = true,
+  selected = false,
+  onMouseDown,
 }: {
   onStop: DraggableEventHandler;
   onResizeStop: RndResizeCallback;
@@ -23,29 +26,35 @@ export default function DraggableTextFactory({
   currentPosition: TextFieldPosition;
   disableEdit: boolean;
   type: FieldType;
-  deleteActive: boolean;
+  highlighted: boolean;
+  selected: boolean;
+  onMouseDown: () => void;
 }) {
   return type === FieldType.Checkbox ? (
     <Checkbox
+      onMouseDown={onMouseDown}
       onStop={onStop}
       onResizeStop={onResizeStop}
       color={color}
       onRemove={onRemove}
       currentPosition={currentPosition}
       disableEdit={disableEdit}
-      deleteActive={deleteActive}
+      selected={selected}
+      highlighted={highlighted}
     ></Checkbox>
   ) : (
     // we'll have to add something else for signature fields but right now lets treat it as
     // a text field
     <TextField
+      onMouseDown={onMouseDown}
       onStop={onStop}
       onResizeStop={onResizeStop}
       color={color}
       onRemove={onRemove}
       currentPosition={currentPosition}
       disableEdit={disableEdit}
-      deleteActive={deleteActive}
+      selected={selected}
+      highlighted={highlighted}
     ></TextField>
   );
 }
