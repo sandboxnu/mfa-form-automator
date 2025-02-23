@@ -21,6 +21,8 @@ import { DepartmentsService } from '../departments/departments.service';
 import { SignerType } from '@prisma/client';
 import { AssignedGroupErrorMessage } from '../assigned-group/assigned-group.errors';
 import { CreateAssignedGroupDto } from '../assigned-group/dto/create-assigned-group.dto';
+import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
+import { PdfStoreService } from '../pdf-store/pdf-store.service';
 
 @Injectable()
 export class FormInstancesService {
@@ -31,6 +33,7 @@ export class FormInstancesService {
     private positionsService: PositionsService,
     private departmentsService: DepartmentsService,
     private postmarkService: PostmarkService,
+    private pdfStoreService: PdfStoreService,
   ) {}
 
   async checkValidAssignedGroupsSigner(
@@ -507,18 +510,26 @@ export class FormInstancesService {
    * @param formInstanceId the form instance id
    * @param assignedGroupId the assigned group id id
    * @param currentUser the current user to sign the form
+   * @param signFormInstanceDto the sign form instance dto
    * @returns the updated form instance, hydrated
    */
   async signFormInstance(
     formInstanceId: string,
     assignedGroupId: string,
     currentUser: UserEntity,
-  ) {
+    signFormInstanceDto: SignFormInstanceDto,
+  ): Promise<FormInstance> {
     const formInstance = await this.findOne(formInstanceId);
 
     if (!formInstance) {
       throw new NotFoundException(
         FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+      );
+    }
+
+    if (!signFormInstanceDto.file) {
+      throw new BadRequestException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NO_SIGNED_PDF_PROVIDED,
       );
     }
 
@@ -567,9 +578,19 @@ export class FormInstancesService {
       );
     }
 
+    // save signed form to blob storage
+    const pdfLink = await this.pdfStoreService.uploadPdf(
+      signFormInstanceDto.file.buffer,
+      `${formInstanceId}-${assignedGroupId}-${employee.id}`,
+    );
+
     const updatedAssignedGroup = await this.prisma.assignedGroup.update({
       where: { id: assignedGroupId },
-      data: { signed: true, signingEmployeeId: employee.id },
+      data: {
+        signed: true,
+        signingEmployeeId: employee.id,
+        signedDocLink: pdfLink,
+      },
     });
 
     formInstance.assignedGroups[assignedGroupIndex] = {
@@ -607,25 +628,37 @@ export class FormInstancesService {
       const nextUserToSignId =
         formInstance.assignedGroups[assignedGroupIndex + 1];
 
-      if (nextUserToSignId.signerType === SignerType.USER) {
+      if (
+        nextUserToSignId.signerType === SignerType.USER &&
+        nextUserToSignId.signerEmployee
+      ) {
         this.postmarkService.sendReadyForSignatureToUserEmail(
-          nextUserToSignId.signerEmployee!.email,
-          nextUserToSignId.signerEmployee!.firstName,
+          nextUserToSignId.signerEmployee.email,
+          nextUserToSignId.signerEmployee.firstName,
           formInstance.name,
         );
-      } else if (nextUserToSignId.signerType === SignerType.POSITION) {
+      } else if (
+        nextUserToSignId.signerType === SignerType.POSITION &&
+        nextUserToSignId.signerPositionId
+      ) {
         this.postmarkService.sendReadyForSignatureToPositionEmail(
-          nextUserToSignId.signerPositionId!,
+          nextUserToSignId.signerPositionId,
           formInstance.name,
         );
-      } else if (nextUserToSignId.signerType === SignerType.DEPARTMENT) {
+      } else if (
+        nextUserToSignId.signerType === SignerType.DEPARTMENT &&
+        nextUserToSignId.signerDepartmentId
+      ) {
         this.postmarkService.sendReadyForSignatureToDepartmentEmail(
-          nextUserToSignId.signerDepartmentId!,
+          nextUserToSignId.signerDepartmentId,
           formInstance.name,
         );
-      } else if (nextUserToSignId.signerType === SignerType.USER_LIST) {
+      } else if (
+        nextUserToSignId.signerType === SignerType.USER_LIST &&
+        nextUserToSignId.signerEmployeeList
+      ) {
         this.postmarkService.sendReadyForSignatureToUserListEmail(
-          nextUserToSignId.signerEmployeeList!,
+          nextUserToSignId.signerEmployeeList,
           formInstance.name,
         );
       }

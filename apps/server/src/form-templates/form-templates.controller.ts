@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   Query,
+  UseGuards,
   UseInterceptors,
   UploadedFile,
   PipeTransform,
@@ -33,6 +34,8 @@ import { FormTemplateErrorMessage } from './form-templates.errors';
 import { UpdateFormTemplateDto } from './dto/update-form-template.dto';
 import { Prisma } from '@prisma/client';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -82,6 +85,7 @@ export class FormTemplatesController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -105,6 +109,7 @@ export class FormTemplatesController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [FormTemplateEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -122,6 +127,7 @@ export class FormTemplatesController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: FormTemplateEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -142,6 +148,7 @@ export class FormTemplatesController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: FormTemplateEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -154,6 +161,7 @@ export class FormTemplatesController {
     @Body(new ValidationPipe({ transform: true }))
     updateFormTemplateDto: UpdateFormTemplateDto,
   ) {
+    // TODO: Should only admins be able to update templates?
     try {
       const updatedFormTemplate = await this.formTemplatesService.update(
         id,
@@ -176,11 +184,13 @@ export class FormTemplatesController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse()
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async remove(@Param('id') id: string) {
+    // TODO: Should only admins be able to delete templates?
     try {
       await this.formTemplatesService.remove(id);
     } catch (e) {

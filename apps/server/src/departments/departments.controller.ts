@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   Query,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
@@ -27,6 +28,8 @@ import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { DepartmentsErrorMessage } from './departments.errors';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('departments')
 @Controller('departments')
@@ -37,6 +40,7 @@ export class DepartmentsController {
   ) {}
 
   @Post()
+  @UseGuards(AdminAuthGuard)
   @ApiCreatedResponse({ type: DepartmentEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
@@ -54,6 +58,7 @@ export class DepartmentsController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [DepartmentEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -63,6 +68,7 @@ export class DepartmentsController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: DepartmentEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -81,6 +87,7 @@ export class DepartmentsController {
   }
 
   @Get('name/:name')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: DepartmentEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -99,6 +106,7 @@ export class DepartmentsController {
   }
 
   @Patch(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse({ type: DepartmentEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -133,6 +141,7 @@ export class DepartmentsController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse()
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })

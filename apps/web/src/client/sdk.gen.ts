@@ -748,8 +748,13 @@ export const formInstancesControllerSignFormInstance = <
     unknown,
     ThrowOnError
   >({
+    ...formDataBodySerializer,
     url: '/api/form-instances/{formInstanceId}/sign/{signatureId}',
     ...options,
+    headers: {
+      'Content-Type': null,
+      ...options?.headers,
+    },
   });
 };
 

@@ -6,7 +6,7 @@ import { EmployeeEntity } from '../employees/entities/employee.entity';
 import { CreateEmployeeDto } from '../employees/dto/create-employee.dto';
 import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
-import { Department, Position } from '@prisma/client';
+import { Department, EmployeeScope, Position } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +35,22 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { pswdHash, ...result } = user;
     return new EmployeeEntity(result);
+  }
+
+  /**
+   * Validate if employee has specified scope.
+   * @param email employee email
+   * @returns validated employee or null
+   */
+  async validateEmployeeScope(
+    email: string,
+    scope: EmployeeScope,
+  ): Promise<EmployeeEntity | null> {
+    const user = await this.employeesService.findOneByEmail(email);
+    if (user.scope == scope) {
+      return user;
+    }
+    return null;
   }
 
   /**
