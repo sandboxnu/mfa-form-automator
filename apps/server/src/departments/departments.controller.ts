@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
@@ -62,7 +63,7 @@ export class DepartmentsController {
   @ApiOkResponse({ type: [DepartmentEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async findAll(@Query('limit') limit?: number) {
+  async findAll(@Query('limit', ParseIntPipe) limit?: number) {
     const departments = await this.departmentsService.findAll(limit);
     return departments.map((department) => new DepartmentEntity(department));
   }

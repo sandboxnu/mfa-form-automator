@@ -1168,7 +1168,7 @@ export type FormInstancesControllerFindAllData = {
   path?: never;
   query?: {
     /**
-     * Limit on number of positions to return
+     * Limit on number of form instances to return
      */
     limit?: number;
   };
