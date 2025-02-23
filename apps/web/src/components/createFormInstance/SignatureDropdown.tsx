@@ -12,7 +12,12 @@ import { chakraComponents, Select } from 'chakra-react-select';
 import { useEffect, useState } from 'react';
 import { AssignedGroupData, PositionOption } from './types';
 import { SearchIcon } from '@web/static/icons';
-import { FieldGroupBaseEntity, PositionEntity } from '@web/client';
+import {
+  DepartmentEntity,
+  EmployeeEntity,
+  FieldGroupBaseEntity,
+  PositionEntity,
+} from '@web/client';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
 const assigneePlaceholderWithIcon = (
@@ -26,12 +31,16 @@ export const SignatureDropdown = ({
   field,
   index,
   positions,
+  employees,
+  departments,
   assignedGroupData,
   setAssignedGroupData,
 }: {
   field: FieldGroupBaseEntity;
   index: number;
   positions?: PositionEntity[];
+  employees?: EmployeeEntity[];
+  departments?: DepartmentEntity[];
   assignedGroupData: AssignedGroupData[];
   setAssignedGroupData: (updatedAssignedGroupData: AssignedGroupData[]) => void;
 }) => {
@@ -39,6 +48,7 @@ export const SignatureDropdown = ({
   const [activeTab, setActiveTab] = useState('Employee');
   const [selectedPosition, setSelectedPosition] =
     useState<PositionOption | null>();
+  const [options, setOptions] = useState<PositionOption[]>([]);
   const { formTemplate } = useCreateFormInstance();
 
   /**
@@ -58,75 +68,38 @@ export const SignatureDropdown = ({
   }, [formTemplate]);
 
   /**
-   * Get the employee name from the position
-   */
-  const _getEmployeeName = ({ position }: { position?: PositionEntity }) => {
-    return (
-      (position?.employees?.at(0)?.firstName ?? '') +
-      ' ' +
-      (position?.employees?.at(0)?.lastName ?? '')
-    );
-  };
-
-  /**
    * Get filtered options based on active tab
    */
-  const getFilteredOptions = () => {
-    if (!positions) return [];
+  useEffect(() => {
+    const getFilteredOptions = async () => {
+      let data;
+      switch (activeTab) {
+        case 'Employee':
+          data = employees;
+          setOptions(
+            data?.map((emp) => ({
+              value: emp.id,
+              label: `${emp.firstName} ${emp.lastName}`,
+            })) || [],
+          );
+          break;
+        case 'Role':
+          data = positions;
+          setOptions(
+            data?.map((role) => ({ value: role.id, label: role.name })) || [],
+          );
+          break;
+        case 'Department':
+          data = departments;
+          setOptions(
+            data?.map((dept) => ({ value: dept.id, label: dept.name })) || [],
+          );
+          break;
+      }
+    };
 
-    return positions
-      .map((position) => {
-        const employee = position.employees?.at(0);
-        if (activeTab === 'Employee') {
-          return {
-            value: employee?.id ?? '',
-            label: _getEmployeeName({ position }),
-          };
-        } else if (activeTab === 'Role') {
-          return {
-            value: position.id,
-            label: position.name,
-          };
-        } else if (activeTab === 'Department') {
-          return {
-            value: position.department?.id ?? '',
-            label: position.department?.name ?? '',
-          };
-        }
-      })
-      .filter(Boolean) as PositionOption[];
-  };
-
-  /**
-   * Show corresponding people based on tab
-   */
-  const _formatOptionLabel = ({ value }: PositionOption) => {
-    if (activeTab === 'Employee') {
-      const positionEntity = positions?.find(
-        (p) => p.employees?.some((e) => e.id === value),
-      );
-      return (
-        <span>
-          <strong>{_getEmployeeName({ position: positionEntity })}</strong>
-        </span>
-      );
-    } else if (activeTab === 'Role') {
-      return (
-        <span>
-          <strong>{positions?.find((p) => p.id === value)?.name ?? ''}</strong>
-        </span>
-      );
-    } else if (activeTab === 'Department') {
-      return (
-        <span>
-          <strong>
-            {positions?.find((p) => p.department?.id === value)?.department
-              ?.name ?? ''}
-          </strong>
-        </span>
-      );
-    }
-  };
+    getFilteredOptions();
+  }, [activeTab, employees, positions, departments]);
 
   const groupColors = [
     ['#1367EA', '#EEF5FF'],
@@ -201,7 +174,7 @@ export const SignatureDropdown = ({
             <Select
               useBasicStyles
               selectedOptionStyle="check"
-              options={getFilteredOptions()}
+              options={options}
               placeholder={assigneePlaceholderWithIcon}
               value={selectedPosition}
               onChange={(selected) => {
@@ -231,7 +204,6 @@ export const SignatureDropdown = ({
               }}
               onMenuOpen={() => setIsDropdownOpen(true)}
               onMenuClose={() => setIsDropdownOpen(false)}
-              formatOptionLabel={_formatOptionLabel}
               isClearable
               closeMenuOnSelect
             />

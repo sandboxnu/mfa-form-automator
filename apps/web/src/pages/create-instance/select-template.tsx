@@ -7,21 +7,19 @@ export default function SelectTemplate() {
   const { formTemplate, setFormTemplate } = useCreateFormInstance();
 
   return (
-    (
-      <CreateFormLayout
-        isFormTemplate={false}
-        pageNumber={1}
-        heading={'Create form instance'}
-        subheading={'Select a form template'}
-        boxContent={<TemplateSelectGrid />}
-        deleteFunction={() => {
-          setFormTemplate(null);
-        }}
-        submitLink={'/create-instance/description'}
-        backLink={'/'}
-        review={false}
-        disabled={!formTemplate}
-      />
-    )
+    <CreateFormLayout
+      isFormTemplate={false}
+      pageNumber={1}
+      heading={'Create form instance'}
+      subheading={'Select a form template'}
+      boxContent={<TemplateSelectGrid />}
+      deleteFunction={() => {
+        setFormTemplate(null);
+      }}
+      submitLink={'/create-instance/description'}
+      backLink={'/'}
+      review={false}
+      disabled={!formTemplate}
+    />
   );
 }

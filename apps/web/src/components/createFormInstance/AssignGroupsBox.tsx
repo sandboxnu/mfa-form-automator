@@ -2,9 +2,14 @@ import { Text, Flex } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { SignatureDropdown } from './SignatureDropdown';
 import { FieldGroupBaseEntity } from '../../client/types.gen';
-import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
+import {
+  departmentsControllerFindAllOptions,
+  employeesControllerFindAllOptions,
+  positionsControllerFindAllOptions,
+} from '@web/client/@tanstack/react-query.gen';
 import { FormView } from './FormView';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { departmentsControllerFindAll } from '@web/client';
 
 /**
  * The contents of the white box for assigning groups.
@@ -36,6 +41,17 @@ export const AssignGroupsBox = ({
 
   const { assignedGroupData, setAssignedGroupData } = useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
+  const { data: employees } = useQuery(employeesControllerFindAllOptions());
+  const { data: departments } = useQuery({
+    ...departmentsControllerFindAllOptions({
+      query: {
+        limit: 1000,
+      },
+    }),
+  });
+
+  console.log('dept', departments);
+  console.log('emp', employees);
 
   return (
     <Flex
@@ -70,6 +86,8 @@ export const AssignGroupsBox = ({
               field={field}
               index={i}
               positions={positions}
+              employees={employees}
+              departments={departments}
               assignedGroupData={assignedGroupData}
               setAssignedGroupData={setAssignedGroupData}
             />
