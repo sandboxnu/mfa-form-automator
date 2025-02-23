@@ -11,15 +11,16 @@ export const TemplateSelectGrid: React.FC = () => {
   const { data: formTemplates } = useQuery<FormTemplate[]>({
     queryKey: ['api', 'form-templates'],
     queryFn: async () => {
-      const response = await fetch('/api/form-templates'); 
+      const response = await fetch('/api/form-templates');
       if (!response.ok) throw new Error('Failed to get form templates');
       return response.json();
     },
   });
 
   const { setFormTemplate, setFormInstanceName } = useCreateFormInstance();
-  const [selectedFormTemplateId, setSelectedFormTemplateId] = useState<string | null>(null);
- 
+  const [selectedFormTemplateId, setSelectedFormTemplateId] = useState<
+    string | null
+  >(null);
 
   const handleSelectTemplate = async (id: string) => {
     setSelectedFormTemplateId(id);
@@ -27,8 +28,8 @@ export const TemplateSelectGrid: React.FC = () => {
     try {
       const response = await fetch(`/api/form-templates/${id}`);
       if (!response.ok) throw new Error('Failed to find form template');
-      
-      const template: FormTemplateEntity = await response.json(); 
+
+      const template: FormTemplateEntity = await response.json();
       setFormTemplate(template);
       setFormInstanceName(template.name);
       console.log('Selected Form Template:', template.name);
@@ -52,7 +53,11 @@ export const TemplateSelectGrid: React.FC = () => {
             height="240px"
             borderRadius="4px"
             border="1px solid #D4D4D4"
-            boxShadow={template.id === selectedFormTemplateId ? '0px 0px 4px 0px #1367EA' : 'none'}
+            boxShadow={
+              template.id === selectedFormTemplateId
+                ? '0px 0px 4px 0px #1367EA'
+                : 'none'
+            }
             _hover={{ boxShadow: '0px 0px 4px 0px #1367EA' }}
           >
             <PDFDocument formLink={template.formDocLink} />
@@ -62,30 +67,33 @@ export const TemplateSelectGrid: React.FC = () => {
           </Text>
         </Flex>
       ))}
-      <Flex
-          flexDirection="column"
-          padding="4px 4px 0px 4px"
-          cursor="pointer"
+      <Flex flexDirection="column" padding="4px 4px 0px 4px" cursor="pointer">
+        <Button
+          overflow="hidden"
+          height="240px"
+          borderRadius="4px"
+          border="1px solid #D4D4D4"
+          padding="8px"
+          backgroundColor="white"
+          _hover={{ boxShadow: '0px 0px 4px 0px #1367EA' }}
+          onClick={() => {
+            router.push('/create-template/upload');
+          }}
         >
-          <Button
-            overflow="hidden"
-            height="240px"
-            borderRadius="4px"
-            border="1px solid #D4D4D4"
-            padding="8px"
-            backgroundColor="white"
-            _hover={{ boxShadow: '0px 0px 4px 0px #1367EA' }}
-            onClick={() => {
-              router.push('/create-template/upload');
-            }}>
-            <Text fontSize="60px" fontWeight="50">
-              +
-            </Text>
-          </Button>
-          <Text flex="center" justifyContent="center" fontSize="15px" fontWeight="500" marginTop="8px">
-            Create Form Template
+          <Text fontSize="60px" fontWeight="50">
+            +
           </Text>
-        </Flex>
+        </Button>
+        <Text
+          flex="center"
+          justifyContent="center"
+          fontSize="15px"
+          fontWeight="500"
+          marginTop="8px"
+        >
+          Create Form Template
+        </Text>
+      </Flex>
     </Grid>
   );
 };

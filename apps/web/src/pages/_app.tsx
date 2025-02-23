@@ -62,7 +62,7 @@ export default function App({
     '/signin',
     '/register',
     '/create-template/success',
-    '/create-instance/success'
+    '/create-instance/success',
   ];
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
@@ -98,21 +98,19 @@ export default function App({
     );
   }
 
-  if(appProps.router.pathname.includes(createFormInstancePath)) {
+  if (appProps.router.pathname.includes(createFormInstancePath)) {
     return (
       <>
         <WrapperComponent>
-        <CreateFormInstanceProvider>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <CreateFormInstanceProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </CreateFormInstanceProvider>
         </WrapperComponent>
       </>
-    )
+    );
   }
-
-  
 
   return (
     <>

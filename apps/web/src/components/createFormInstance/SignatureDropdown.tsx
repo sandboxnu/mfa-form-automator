@@ -1,4 +1,12 @@
-import { Box, Button, Flex, Heading, HStack, VStack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  VStack,
+  Text,
+} from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useEffect, useState } from 'react';
@@ -28,26 +36,26 @@ export const SignatureDropdown = ({
   setAssignedGroupData: (updatedAssignedGroupData: AssignedGroupData[]) => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("Employee");
+  const [activeTab, setActiveTab] = useState('Employee');
   const [selectedPosition, setSelectedPosition] =
     useState<PositionOption | null>();
   const { formTemplate } = useCreateFormInstance();
 
-   /**
+  /**
    * Reset signature positions when form template changes
    */
-   useEffect(() => {
+  useEffect(() => {
     if (!formTemplate) return;
 
     setAssignedGroupData(
-        formTemplate.fieldGroups.map((_, i) => {
-            return {
-                fieldGroupId: formTemplate?.fieldGroups[i].id!,
-                order: i,
-            };
-        }),
+      formTemplate.fieldGroups.map((_, i) => {
+        return {
+          fieldGroupId: formTemplate?.fieldGroups[i].id!,
+          order: i,
+        };
+      }),
     );
-}, [formTemplate]);
+  }, [formTemplate]);
 
   /**
    * Get the employee name from the position
@@ -66,48 +74,55 @@ export const SignatureDropdown = ({
   const getFilteredOptions = () => {
     if (!positions) return [];
 
-    return positions.map((position) => {
-      const employee = position.employees?.at(0);
-      if (activeTab === "Employee") {
-        return {
-          value: employee?.id ?? '',
-          label: _getEmployeeName({ position }),
-        };
-      } else if (activeTab === "Role") {
-        return {
-          value: position.id,
-          label: position.name,
-        };
-      } else if (activeTab === "Department") {
-        return {
-          value: position.department?.id ?? '',
-          label: position.department?.name ?? '',
-        };
-      }
-    }).filter(Boolean) as PositionOption[];
+    return positions
+      .map((position) => {
+        const employee = position.employees?.at(0);
+        if (activeTab === 'Employee') {
+          return {
+            value: employee?.id ?? '',
+            label: _getEmployeeName({ position }),
+          };
+        } else if (activeTab === 'Role') {
+          return {
+            value: position.id,
+            label: position.name,
+          };
+        } else if (activeTab === 'Department') {
+          return {
+            value: position.department?.id ?? '',
+            label: position.department?.name ?? '',
+          };
+        }
+      })
+      .filter(Boolean) as PositionOption[];
   };
 
   /**
    * Show corresponding people based on tab
    */
   const _formatOptionLabel = ({ value }: PositionOption) => {
-    if (activeTab === "Employee") {
-      const positionEntity = positions?.find((p) => p.employees?.some(e => e.id === value));
+    if (activeTab === 'Employee') {
+      const positionEntity = positions?.find(
+        (p) => p.employees?.some((e) => e.id === value),
+      );
       return (
         <span>
           <strong>{_getEmployeeName({ position: positionEntity })}</strong>
         </span>
       );
-    } else if (activeTab === "Role") {
+    } else if (activeTab === 'Role') {
       return (
         <span>
           <strong>{positions?.find((p) => p.id === value)?.name ?? ''}</strong>
         </span>
       );
-    } else if (activeTab === "Department") {
+    } else if (activeTab === 'Department') {
       return (
         <span>
-          <strong>{positions?.find((p) => p.department?.id === value)?.department?.name ?? ''}</strong>
+          <strong>
+            {positions?.find((p) => p.department?.id === value)?.department
+              ?.name ?? ''}
+          </strong>
         </span>
       );
     }
@@ -138,7 +153,9 @@ export const SignatureDropdown = ({
           backgroundColor={color}
           border={`1px solid ${border}`}
         />
-        <Text font-size='16px' fontWeight='400' whiteSpace={"nowrap"}>Group {num}</Text>
+        <Text font-size="16px" fontWeight="400" whiteSpace={'nowrap'}>
+          Group {num}
+        </Text>
       </Flex>
     );
   };
@@ -148,7 +165,7 @@ export const SignatureDropdown = ({
   return (
     <Box w="100%">
       <Flex w="100%" justifyContent="space-between" paddingBottom="6px">
-        <Heading as="h3" color="black" marginTop='7px'>
+        <Heading as="h3" color="black" marginTop="7px">
           <GroupItem
             key={index}
             num={index + 1}
@@ -157,25 +174,30 @@ export const SignatureDropdown = ({
           />
         </Heading>
         <VStack align="start" spacing="8px">
-          <HStack width="360px" spacing="0px"
-            borderWidth="1px" borderRadius="4px" overflow="hidden">
-            {["Employee", "Role", "Department"].map((tab) => (
+          <HStack
+            width="360px"
+            spacing="0px"
+            borderWidth="1px"
+            borderRadius="4px"
+            overflow="hidden"
+          >
+            {['Employee', 'Role', 'Department'].map((tab) => (
               <Button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 flex="1"
                 borderRadius="0"
                 borderWidth="1px"
-                backgroundColor={activeTab === tab ? "blue.50" : "white"}
-                color={activeTab === tab ? "#1367EA" : '#63646B'}
-                fontWeight={activeTab === tab ? "550" : '500'}
-                _hover={{ backgroundColor: "blue.100" }}
+                backgroundColor={activeTab === tab ? 'blue.50' : 'white'}
+                color={activeTab === tab ? '#1367EA' : '#63646B'}
+                fontWeight={activeTab === tab ? '550' : '500'}
+                _hover={{ backgroundColor: 'blue.100' }}
               >
                 {tab}
               </Button>
             ))}
           </HStack>
-          <Box width='100%'>
+          <Box width="100%">
             <Select
               useBasicStyles
               selectedOptionStyle="check"
@@ -187,14 +209,16 @@ export const SignatureDropdown = ({
                 console.log('selected', selected);
                 // TODO: probably should not be coercing this type
                 let updatedAssignedGroupData = assignedGroupData.at(index)!;
-                console.log('selectedAssignedGroupData', updatedAssignedGroupData);
+                console.log(
+                  'selectedAssignedGroupData',
+                  updatedAssignedGroupData,
+                );
                 updatedAssignedGroupData.positionId = selected?.value;
                 assignedGroupData[index] = {
                   ...updatedAssignedGroupData,
                   fieldGroupId: updatedAssignedGroupData?.fieldGroupId,
                   positionId: selected?.value,
                   order: updatedAssignedGroupData?.order,
-
                 };
                 setAssignedGroupData(assignedGroupData);
               }}
@@ -202,7 +226,11 @@ export const SignatureDropdown = ({
               components={{
                 DropdownIndicator: (props: any) => (
                   <chakraComponents.DropdownIndicator {...props}>
-                    {isDropdownOpen ? <DropdownUpArrow maxH="7px" /> : <DropdownDownArrow maxH="7px" />}
+                    {isDropdownOpen ? (
+                      <DropdownUpArrow maxH="7px" />
+                    ) : (
+                      <DropdownDownArrow maxH="7px" />
+                    )}
                   </chakraComponents.DropdownIndicator>
                 ),
               }}

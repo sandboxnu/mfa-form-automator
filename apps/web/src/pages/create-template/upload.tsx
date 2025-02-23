@@ -24,6 +24,7 @@ export default function Upload() {
       deleteFunction={() => setPdfFile(null)}
       submitLink={'/create-template/description'}
       backLink={'/'}
+      review={false}
       disabled={!pdfFile}
     />
   );

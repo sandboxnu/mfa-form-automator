@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
-import { AssignedGroupData } from 'apps/web/src/components/createFormInstance/types'
+import { AssignedGroupData } from 'apps/web/src/components/createFormInstance/types';
 import {
   FormFields,
   FieldGroups,

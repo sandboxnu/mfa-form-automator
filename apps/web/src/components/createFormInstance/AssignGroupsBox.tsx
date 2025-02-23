@@ -6,10 +6,9 @@ import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-q
 import { FormView } from './FormView';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
-
 /**
  * The contents of the white box for assigning groups.
- * 
+ *
  * @param formLink link to form preview
  * @param name form name
  * @param description form description
@@ -35,10 +34,9 @@ export const AssignGroupsBox = ({
     borderColor: 'transparent',
   };
 
-
   const { assignedGroupData, setAssignedGroupData } = useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
-  console.log('Assigned Groups Data:', assignedGroupData); 
+  console.log('Assigned Groups Data:', assignedGroupData);
 
   return (
     <Flex
@@ -69,14 +67,14 @@ export const AssignGroupsBox = ({
           </Flex>
           {fieldGroups.map((field, i) => (
             <SignatureDropdown
-            key={field.id}
-            field={field}
-            index={i}
-            positions={positions}
-            assignedGroupData={assignedGroupData}
-            setAssignedGroupData={setAssignedGroupData}
-          />
-        ))}
+              key={field.id}
+              field={field}
+              index={i}
+              positions={positions}
+              assignedGroupData={assignedGroupData}
+              setAssignedGroupData={setAssignedGroupData}
+            />
+          ))}
         </Flex>
       </Flex>
       <Flex
@@ -93,10 +91,7 @@ export const AssignGroupsBox = ({
         >
           Preview Only
         </Text>
-        <FormView
-          formTemplateName={name}
-          pdfUrl={formLink}
-        />
+        <FormView formTemplateName={name} pdfUrl={formLink} />
       </Flex>
     </Flex>
   );

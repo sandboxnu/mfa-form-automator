@@ -13,18 +13,25 @@ export const CreateFormInstanceContext =
 export const CreateFormInstanceProvider = ({ children }: any) => {
   const [formInstanceName, setFormInstanceName] = useState<string | null>(null);
   const [formInstanceDescription, setFormInstanceDescription] = useState<
-    string | null>(null);
-  const [formTemplate, setFormTemplate] = useState<FormTemplateEntity | null>(null);
+    string | null
+  >(null);
+  const [formTemplate, setFormTemplate] = useState<FormTemplateEntity | null>(
+    null,
+  );
   const [assignedGroupData, setAssignedGroupData] = useState<
-  AssignedGroupData[]
-  >([]); 
-  const [assignedGroupEntities, setAssignedGroupEntities] = useState<AssignedGroupEntity[]>([]);
-  
+    AssignedGroupData[]
+  >([]);
+  const [assignedGroupEntities, setAssignedGroupEntities] = useState<
+    AssignedGroupEntity[]
+  >([]);
 
   const router = useRouter();
 
   useEffect(() => {
-    if (!formTemplate && router.pathname !== '/create-instance/select-template') {
+    if (
+      !formTemplate &&
+      router.pathname !== '/create-instance/select-template'
+    ) {
       router.push('/create-instance/select-template');
     }
   }, [formTemplate, router.pathname]);
@@ -38,8 +45,8 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
         setFormInstanceDescription,
         formTemplate,
         setFormTemplate,
-        assignedGroupData : assignedGroupData,
-        setAssignedGroupData : setAssignedGroupData,
+        assignedGroupData: assignedGroupData,
+        setAssignedGroupData: setAssignedGroupData,
       }}
     >
       {children}

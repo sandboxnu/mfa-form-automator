@@ -81,7 +81,7 @@ export const CreateFormLayout = ({
       </Flex>
       <FormButtons
         isFormTemplate={isFormTemplate}
-        heading={`Create Form ${isFormTemplate ? "Template" : "Instance"}`}
+        heading={`Create Form ${isFormTemplate ? 'Template' : 'Instance'}`}
         deleteFunction={deleteFunction}
         submitLink={submitLink}
         backLink={backLink}

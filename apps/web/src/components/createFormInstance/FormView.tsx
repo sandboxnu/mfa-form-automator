@@ -13,7 +13,7 @@ export const FormView = ({
 }) => {
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  
+
   return (
     <Box
       background="white"
@@ -33,11 +33,16 @@ export const FormView = ({
         justifyContent="center"
         alignItems="center"
       >
-        <Box height="100%" width="100%" overflow="auto" display="flex" justifyContent="center">
-        <Document
+        <Box
+          height="100%"
+          width="100%"
+          overflow="auto"
+          display="flex"
+          justifyContent="center"
+        >
+          <Document
             file={pdfUrl}
             onLoadSuccess={(data) => setTotalPages(data.numPages)}
-            
           >
             <Page
               width={1000}
@@ -48,7 +53,11 @@ export const FormView = ({
           </Document>
         </Box>
       </Box>
-      <PagingControl pageNum={pageNum} setPageNum={setPageNum} totalPages={totalPages} />
+      <PagingControl
+        pageNum={pageNum}
+        setPageNum={setPageNum}
+        totalPages={totalPages}
+      />
     </Box>
   );
 };

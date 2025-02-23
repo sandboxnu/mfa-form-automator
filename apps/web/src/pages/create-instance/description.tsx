@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
  * The description page in the form instance creation flow, where users describe their form.
  */
 export default function Description() {
-
   const {
     formInstanceName,
     formInstanceDescription,
@@ -23,14 +22,15 @@ export default function Description() {
       if (formTemplate?.formDocLink) {
         const response = await fetch(formTemplate.formDocLink);
         const blob = await response.blob();
-        const file = new File([blob], 'document.pdf', { type: 'application/pdf' });
+        const file = new File([blob], 'document.pdf', {
+          type: 'application/pdf',
+        });
         setPdfFile(file);
       }
     };
 
     fetchPdfFile();
   }, [formTemplate?.formDocLink]);
-
 
   return (
     <CreateFormLayout
