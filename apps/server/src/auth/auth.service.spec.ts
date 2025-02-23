@@ -8,6 +8,7 @@ import { EmployeeEntity } from '../employees/entities/employee.entity';
 import { PositionBaseEntity } from '../positions/entities/position.entity';
 import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
+import { EmployeeScope } from '@prisma/client';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -60,7 +61,7 @@ describe('AuthService', () => {
         updatedAt: new Date(1672531200),
       },
       email: 'info@mfa.org',
-      isAdmin: false,
+      scope: EmployeeScope.BASE_USER,
       pswdHash: 'password',
       createdAt: new Date(1672531200),
       updatedAt: new Date(1672531200),
@@ -89,7 +90,7 @@ describe('AuthService', () => {
           updatedAt: new Date(1672531200),
         },
         email: 'info@mfa.org',
-        isAdmin: false,
+        scope: EmployeeScope.BASE_USER,
         createdAt: new Date(1672531200),
         updatedAt: new Date(1672531200),
         refreshToken: null,
@@ -111,6 +112,16 @@ describe('AuthService', () => {
       jest.spyOn(employeeService, 'findOneByEmail').mockResolvedValue(employee);
 
       const result = await service.validateEmployee(email, password);
+      expect(result).toBeNull();
+    });
+
+    it('should return null on an invalid admin credential', async () => {
+      jest.spyOn(employeeService, 'findOneByEmail').mockResolvedValue(employee);
+
+      const result = await service.validateEmployeeScope(
+        email,
+        EmployeeScope.ADMIN,
+      );
       expect(result).toBeNull();
     });
   });
@@ -147,7 +158,7 @@ describe('AuthService', () => {
         firstName: 'First',
         lastName: 'Last',
         positionId: 'position-id',
-        isAdmin: false,
+        scope: EmployeeScope.BASE_USER,
         pswdHash: null,
         createdAt: new Date(0),
         updatedAt: new Date(0),

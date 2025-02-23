@@ -4,16 +4,12 @@ import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useBlob } from '@web/hooks/useBlob';
 import { SignaturePad } from './../components/SignaturePad';
-import {
-  departmentsControllerFindAll,
-  positionsControllerFindAllInDepartmentName,
-  DepartmentEntity,
-  PositionEntity,
-} from '@web/client';
+import { DepartmentEntity, PositionEntity } from '@web/client';
 import {
   departmentsControllerFindAllOptions,
   positionsControllerFindAllInDepartmentNameOptions,
 } from '@web/client/@tanstack/react-query.gen';
+import { Scope } from '@web/client';
 
 export default function Register() {
   const { completeRegistration, userData } = useAuth();
@@ -25,7 +21,7 @@ export default function Register() {
     useState<string>('draw');
   const [signatureText, setSignatureText] = useState<string>('');
   const signatureCanvas = useRef<any>(null);
-  const { uploadFile } = useBlob();
+  const { blob, setBlob } = useBlob();
 
   // Fetch departments and positions
   const { data: departmentsData } = useQuery({
@@ -102,20 +98,25 @@ export default function Register() {
       });
     }
 
-    return await uploadFile(file);
+    return await setBlob(file);
   };
 
   // Handle registration submission
   const handleRegistration = async () => {
     if (!currentDepartmentName || !currentPositionName) return;
 
-    const uploadedBlob = await createSignatureImage();
+    await createSignatureImage();
+    const signatureUrl = blob
+      ? // TODO: Do we want to store the URL representation of their signature?
+        URL.createObjectURL(blob)
+      : 'http://localhost:3002/signature.png';
     completeRegistration(
       userData.email,
       userData.password,
       currentDepartmentName,
       currentPositionName,
-      uploadedBlob?.url || 'http://localhost:3002/signature.png',
+      signatureUrl,
+      Scope.BASE_USER,
     );
   };
 

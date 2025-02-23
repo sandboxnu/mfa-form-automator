@@ -1,23 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateSignatureFieldDto } from '../../signature-fields/dto/create-signature-field.dto';
-import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { CreateFieldGroupDto } from '../../field-group/dto/create-field-group.dto';
+import { Type } from 'class-transformer';
 
 export class CreateFormTemplateDto {
+  @ApiProperty({ type: 'string', format: 'binary' })
+  file: Express.Multer.File;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
   name: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  formDocLink: string;
-
   @IsArray()
   @ArrayMinSize(1)
+  @Type(() => CreateFieldGroupDto)
+  @ValidateNested({ each: true })
   @ApiProperty({
     isArray: true,
-    type: CreateSignatureFieldDto,
+    type: CreateFieldGroupDto,
   })
-  signatureFields: CreateSignatureFieldDto[];
+  fieldGroups: CreateFieldGroupDto[];
 }

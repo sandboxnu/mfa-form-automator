@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreateFormTemplateDto } from './dto/create-form-template.dto';
 import { UpdateFormTemplateDto } from './dto/update-form-template.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { PdfStoreService } from '../pdf-store/pdf-store.service';
 
 @Injectable()
 export class FormTemplatesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private pdfStoreService: PdfStoreService,
+  ) {}
 
   /**
    * Create a new form template.
@@ -13,14 +17,39 @@ export class FormTemplatesService {
    * @returns the created employee, hydrated
    */
   async create(createFormTemplateDto: CreateFormTemplateDto) {
+    const formTemplatePdfFormDockLink = await this.pdfStoreService.uploadPdf(
+      createFormTemplateDto.file.buffer,
+      createFormTemplateDto.name,
+    );
+
     const newFormTemplate = await this.prisma.formTemplate.create({
       data: {
         name: createFormTemplateDto.name,
-        formDocLink: createFormTemplateDto.formDocLink,
-        signatureFields: { create: createFormTemplateDto.signatureFields },
+        formDocLink: formTemplatePdfFormDockLink,
+        fieldGroups: {
+          create: createFormTemplateDto.fieldGroups.map((fieldGroup) => {
+            return {
+              name: fieldGroup.name,
+              order: fieldGroup.order,
+              templateBoxes: {
+                create: fieldGroup.templateBoxes.map((templateBox) => {
+                  return {
+                    type: templateBox.type,
+                    x_coordinate: templateBox.x_coordinate,
+                    y_coordinate: templateBox.y_coordinate,
+                  };
+                }),
+              },
+            };
+          }),
+        },
       },
       include: {
-        signatureFields: true,
+        fieldGroups: {
+          include: {
+            templateBoxes: true,
+          },
+        },
         formInstances: {
           include: {
             formTemplate: true,
@@ -33,7 +62,7 @@ export class FormTemplatesService {
                 },
               },
             },
-            signatures: {
+            assignedGroups: {
               include: {
                 signerPosition: {
                   include: {
@@ -44,6 +73,11 @@ export class FormTemplatesService {
                 signerEmployee: true,
                 signerEmployeeList: true,
                 signingEmployee: true,
+                fieldGroup: {
+                  include: {
+                    templateBoxes: true,
+                  },
+                },
               },
             },
           },
@@ -63,7 +97,11 @@ export class FormTemplatesService {
       ? await this.prisma.formTemplate.findMany({
           take: limit,
           include: {
-            signatureFields: true,
+            fieldGroups: {
+              include: {
+                templateBoxes: true,
+              },
+            },
             formInstances: {
               include: {
                 formTemplate: true,
@@ -76,7 +114,7 @@ export class FormTemplatesService {
                     },
                   },
                 },
-                signatures: {
+                assignedGroups: {
                   include: {
                     signerPosition: {
                       include: {
@@ -87,6 +125,11 @@ export class FormTemplatesService {
                     signerEmployee: true,
                     signerEmployeeList: true,
                     signingEmployee: true,
+                    fieldGroup: {
+                      include: {
+                        templateBoxes: true,
+                      },
+                    },
                   },
                 },
               },
@@ -95,7 +138,11 @@ export class FormTemplatesService {
         })
       : await this.prisma.formTemplate.findMany({
           include: {
-            signatureFields: true,
+            fieldGroups: {
+              include: {
+                templateBoxes: true,
+              },
+            },
             formInstances: {
               include: {
                 formTemplate: true,
@@ -108,7 +155,7 @@ export class FormTemplatesService {
                     },
                   },
                 },
-                signatures: {
+                assignedGroups: {
                   include: {
                     signerPosition: {
                       include: {
@@ -119,6 +166,11 @@ export class FormTemplatesService {
                     signerEmployee: true,
                     signerEmployeeList: true,
                     signingEmployee: true,
+                    fieldGroup: {
+                      include: {
+                        templateBoxes: true,
+                      },
+                    },
                   },
                 },
               },
@@ -139,7 +191,11 @@ export class FormTemplatesService {
         id: id,
       },
       include: {
-        signatureFields: true,
+        fieldGroups: {
+          include: {
+            templateBoxes: true,
+          },
+        },
         formInstances: {
           include: {
             formTemplate: true,
@@ -152,7 +208,7 @@ export class FormTemplatesService {
                 },
               },
             },
-            signatures: {
+            assignedGroups: {
               include: {
                 signerPosition: {
                   include: {
@@ -163,6 +219,11 @@ export class FormTemplatesService {
                 signerEmployee: true,
                 signerEmployeeList: true,
                 signingEmployee: true,
+                fieldGroup: {
+                  include: {
+                    templateBoxes: true,
+                  },
+                },
               },
             },
           },
@@ -187,10 +248,13 @@ export class FormTemplatesService {
       },
       data: {
         name: updateFormTemplateDto.name,
-        formDocLink: updateFormTemplateDto.formDocLink,
       },
       include: {
-        signatureFields: true,
+        fieldGroups: {
+          include: {
+            templateBoxes: true,
+          },
+        },
         formInstances: {
           include: {
             formTemplate: true,
@@ -203,7 +267,7 @@ export class FormTemplatesService {
                 },
               },
             },
-            signatures: {
+            assignedGroups: {
               include: {
                 signerPosition: {
                   include: {
@@ -214,6 +278,11 @@ export class FormTemplatesService {
                 signerEmployee: true,
                 signerEmployeeList: true,
                 signingEmployee: true,
+                fieldGroup: {
+                  include: {
+                    templateBoxes: true,
+                  },
+                },
               },
             },
           },

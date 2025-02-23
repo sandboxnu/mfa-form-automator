@@ -9,6 +9,7 @@ import {
   NotFoundException,
   Query,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -32,6 +33,7 @@ import { AuthUser } from '../auth/auth.decorators';
 import { UserEntity } from '../auth/entities/user.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 
 @ApiTags('employees')
 @Controller('employees')
@@ -42,6 +44,7 @@ export class EmployeesController {
   ) {}
 
   @Post()
+  @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: EmployeeEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
@@ -49,13 +52,17 @@ export class EmployeesController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async create(@Body() createEmployeeDto: CreateEmployeeDto) {
+  async create(
+    @Body(new ValidationPipe({ transform: true }))
+    createEmployeeDto: CreateEmployeeDto,
+  ) {
     // TODO: Auth
     const newEmployee = await this.employeesService.create(createEmployeeDto);
     return new EmployeeEntity(newEmployee);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [EmployeeEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -71,9 +78,9 @@ export class EmployeesController {
     return employees.map((employee) => new EmployeeEntity(employee));
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: EmployeeEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -83,12 +90,12 @@ export class EmployeesController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: EmployeeEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findOne(@Param('id') id: string) {
-    // TODO: Auth
     const employee = await this.employeesService.findOne(id);
     if (employee == null) {
       this.loggerService.error(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
@@ -100,6 +107,7 @@ export class EmployeesController {
   }
 
   @Patch(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse({ type: EmployeeEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -109,9 +117,9 @@ export class EmployeesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async update(
     @Param('id') id: string,
-    @Body() updateEmployeeDto: UpdateEmployeeDto,
+    @Body(new ValidationPipe({ transform: true }))
+    updateEmployeeDto: UpdateEmployeeDto,
   ) {
-    // TODO: Auth
     try {
       const updatedEmployee = await this.employeesService.update(
         id,
@@ -132,12 +140,12 @@ export class EmployeesController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse()
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async remove(@Param('id') id: string) {
-    // TODO: Auth
     try {
       await this.employeesService.remove(id);
     } catch (e) {

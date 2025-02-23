@@ -11,10 +11,8 @@ export default function Description() {
     setFormTemplateName,
     formTemplateDescription,
     setFormTemplateDescription,
-    useBlob,
+    pdfFile,
   } = useCreateFormTemplate();
-
-  const { localBlobData } = useBlob;
 
   return (
     <CreateFormLayout
@@ -24,7 +22,7 @@ export default function Description() {
       subheading={'Give your form template a name and short description'}
       boxContent={
         <NameAndDescriptionBox
-          formLink={localBlobData.url}
+          pdfFile={pdfFile}
           name={formTemplateName}
           description={formTemplateDescription}
           setName={setFormTemplateName}
@@ -35,7 +33,7 @@ export default function Description() {
         setFormTemplateName(null);
         setFormTemplateDescription(null);
       }}
-      submitLink={'/create-template/inputFields'}
+      submitLink={'/create-template/input-fields'}
       backLink={'/create-template/upload'}
       disabled={!formTemplateName}
     />

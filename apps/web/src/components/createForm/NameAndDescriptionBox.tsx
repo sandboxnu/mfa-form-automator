@@ -1,4 +1,5 @@
 import { Text, Flex } from '@chakra-ui/react';
+import React, { useMemo } from 'react';
 import { Dispatch, SetStateAction } from 'react';
 
 /**
@@ -10,17 +11,17 @@ import { Dispatch, SetStateAction } from 'react';
  * @param formLink link to form to preview
  */
 export const NameAndDescriptionBox = ({
+  pdfFile,
   name,
   setName,
   description,
   setDescription,
-  formLink,
 }: {
+  pdfFile: File | null;
   name: string | null;
   setName: Dispatch<SetStateAction<string | null>>;
   description: string | null;
   setDescription: Dispatch<SetStateAction<string | null>>;
-  formLink: string;
 }) => {
   const textInputStyle = {
     padding: '8px 10px',
@@ -33,21 +34,25 @@ export const NameAndDescriptionBox = ({
     borderColor: 'transparent',
   };
 
+  const memoPdfLink = useMemo(
+    () => (pdfFile ? URL.createObjectURL(pdfFile) : undefined),
+    [pdfFile],
+  );
+
   return (
     <Flex
       flexDirection={'row'}
       gap={'40px'}
-      alignContent={'justify'}
-      alignSelf="stretch"
       width="100%"
+      justifyContent={'space-between'}
     >
       <Flex
         flexDirection="column"
         gap="24px"
-        width="480px"
         alignItems={'flex-start'}
+        flex={1}
       >
-        <Flex gap="10px" flexDirection="column" width="480px">
+        <Flex gap="10px" flexDirection="column" width="100%">
           <Text>Name</Text>
           <input
             type="text"
@@ -57,9 +62,8 @@ export const NameAndDescriptionBox = ({
             value={name!!}
           />
         </Flex>
-        <Flex gap="10px" flexDirection="column" width="480px">
+        <Flex gap="10px" flexDirection="column" width="100%">
           <Text>Description (optional)</Text>
-
           <textarea
             onChange={(e) => setDescription(e.target.value)}
             style={{
@@ -72,35 +76,37 @@ export const NameAndDescriptionBox = ({
           />
         </Flex>
       </Flex>
-      <Flex
-        flexDirection={'column'}
-        gap="8px"
-        alignItems="flex-start"
-        flex="1 0 0"
-      >
-        <Text
-          color="#7C7F86"
-          fontSize="14px"
-          fontWeight="500px"
-          lineHeight="21px"
+      <Flex flex={1}>
+        <Flex
+          flexDirection={'column'}
+          gap="8px"
+          alignItems="flex-start"
+          flex="1 0 0"
         >
-          Preview Only
-        </Text>
-        <embed
-          src={formLink}
-          type="application/pdf"
-          width="400px"
-          height="500px"
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            alignSelf: 'stretch',
-            border: '1px solid #E5E5E5',
-            borderRadius: '8px',
-            width: '100%',
-          }}
-        />
+          <Text
+            color="#7C7F86"
+            fontSize="14px"
+            fontWeight="500px"
+            lineHeight="21px"
+          >
+            Preview Only
+          </Text>
+          <embed
+            src={memoPdfLink}
+            type="application/pdf"
+            width="400px"
+            height="600px"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'stretch',
+              border: '1px solid #E5E5E5',
+              borderRadius: '8px',
+              width: '100%',
+            }}
+          />
+        </Flex>
       </Flex>
     </Flex>
   );

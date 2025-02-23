@@ -1,10 +1,11 @@
 import { Dispatch, SetStateAction } from 'react';
-import { Option } from 'apps/web/src/components/createFormInstance/types'
+import { AssignedGroupData } from 'apps/web/src/components/createFormInstance/types'
 import {
   FormFields,
   FieldGroups,
-} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
-import { FormTemplateEntity } from '@web/client';
+} from '@web/components/createFormTemplate/types';
+import { FormTemplateEntity, Scope } from '@web/client';
+import { RegisterEmployeeDto } from '@web/client';
 
 // for storage in context
 export type User = {
@@ -14,7 +15,7 @@ export type User = {
   email: string;
   firstName: string;
   lastName: string;
-  isAdmin: boolean;
+  scope: Scope;
 };
 // jwt payload returned from server
 export type jwtPayload = {
@@ -24,7 +25,7 @@ export type jwtPayload = {
   email: string;
   firstName: string;
   lastName: string;
-  isAdmin: boolean;
+  scope: Scope;
 };
 
 export interface AuthContextType {
@@ -40,6 +41,7 @@ export interface AuthContextType {
     position: string,
     department: string,
     signatureLink: string,
+    scope: RegisterEmployeeDto['scope'],
   ) => void;
   logout: () => void;
 }
@@ -49,7 +51,8 @@ export interface CreateFormTemplateContextType {
   formTemplateDescription: string | null;
   setFormTemplateName: Dispatch<SetStateAction<string | null>>;
   setFormTemplateDescription: Dispatch<SetStateAction<string | null>>;
-  useBlob: any;
+  pdfFile: File | null;
+  setPdfFile: Dispatch<SetStateAction<File | null>>;
   formFields: FormFields;
   setFormFields: Dispatch<SetStateAction<FormFields>>;
   fieldGroups: FieldGroups;
@@ -63,6 +66,6 @@ export interface CreateFormInstanceContextType {
   setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
   formTemplate: FormTemplateEntity | null;
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
-  signaturePositions: (Option | null)[];
-  setSignaturePositions: Dispatch<SetStateAction<(Option | null)[]>>;
+  assignedGroupsData: AssignedGroupData[];
+  setAssignedGroupsData: Dispatch<SetStateAction<AssignedGroupData[]>>;
 }

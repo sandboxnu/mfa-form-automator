@@ -2,9 +2,9 @@ import { Box, Button, Flex, Heading, HStack, VStack, Text } from '@chakra-ui/rea
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
 import { useState } from 'react';
-import { Option } from './types';
+import { AssignedGroupData, PositionOption } from './types';
 import { SearchIcon } from '@web/static/icons';
-import { SignatureFieldEntity, PositionEntity, SignatureEntity } from '@web/client';
+import { FieldGroupBaseEntity, PositionEntity } from '@web/client';
 
 const assigneePlaceholderWithIcon = (
   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -17,17 +17,19 @@ export const SignatureDropdown = ({
   field,
   index,
   positions,
-  signaturePositions,
-  setSignaturePositions,
+  assignedGroupData,
+  setAssignedGroupData,
 }: {
-  field: SignatureFieldEntity;
+  field: FieldGroupBaseEntity;
   index: number;
   positions?: PositionEntity[];
-  signaturePositions: (Option | null)[];
-  setSignaturePositions: (updatedSignaturePositions: (Option | null)[]) => void;
+  assignedGroupData: AssignedGroupData[];
+  setAssignedGroupData: (updatedAssignedGroupData: AssignedGroupData[]) => void;
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("Employee");
+  const [selectedPosition, setSelectedPosition] =
+    useState<PositionOption | null>();
 
   /**
    * Get the employee name from the position
@@ -64,13 +66,13 @@ export const SignatureDropdown = ({
           label: position.department?.name ?? '',
         };
       }
-    }).filter(Boolean) as Option[];
+    }).filter(Boolean) as PositionOption[];
   };
 
   /**
    * Show corresponding people based on tab
    */
-  const _formatOptionLabel = ({ value }: Option) => {
+  const _formatOptionLabel = ({ value }: PositionOption) => {
     if (activeTab === "Employee") {
       const positionEntity = positions?.find((p) => p.employees?.some(e => e.id === value));
       return (
@@ -161,12 +163,18 @@ export const SignatureDropdown = ({
               selectedOptionStyle="check"
               options={getFilteredOptions()}
               placeholder={assigneePlaceholderWithIcon}
-              value={signaturePositions[index]}
+              value={selectedPosition}
               onChange={(selected) => {
-                let updatedSignaturePositions = [...signaturePositions];
-                updatedSignaturePositions[index] = selected;
-                setSignaturePositions(updatedSignaturePositions);
-                console.log("Updated signaturePositions:", updatedSignaturePositions);
+                setSelectedPosition(selected);
+          // TODO: probably should not be coercing this type
+          let selectedAssignedGroupData = assignedGroupData?.at(index)!;
+          selectedAssignedGroupData.positionId = selected?.value;
+          assignedGroupData[index] = {
+            ...selectedAssignedGroupData,
+            fieldGroupId: selectedAssignedGroupData?.fieldGroupId,
+            positionId: selected?.value,
+          };
+          setAssignedGroupData(assignedGroupData);
               }}
               className="custom-dropdown"
               components={{

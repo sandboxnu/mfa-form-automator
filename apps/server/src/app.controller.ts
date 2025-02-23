@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   Body,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import {
@@ -46,8 +47,8 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('/auth/login')
+  @UseGuards(LocalAuthGuard)
   @ApiCreatedResponse({ type: JwtEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
@@ -79,8 +80,8 @@ export class AppController {
     return tokens;
   }
 
-  @UseGuards(JwtRefreshAuthGuard)
   @Get('/auth/refresh')
+  @UseGuards(JwtRefreshAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: JwtEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
@@ -125,7 +126,10 @@ export class AppController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async register(@Body() registerEmployeeDto: RegisterEmployeeDto) {
+  async register(
+    @Body(new ValidationPipe({ transform: true }))
+    registerEmployeeDto: RegisterEmployeeDto,
+  ) {
     const { positionName, departmentName, ...employeeDto } =
       registerEmployeeDto;
 
@@ -136,6 +140,7 @@ export class AppController {
       password: employeeDto.password,
       signatureLink: employeeDto.signatureLink,
       positionId: '',
+      scope: employeeDto.scope,
     };
 
     const newEmployee = await this.authService.register(

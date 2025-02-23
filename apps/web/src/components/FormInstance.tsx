@@ -22,7 +22,7 @@ import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import {
-  getNameFromSignature,
+  getNameFromAssignedGroup,
   signerIsUser,
 } from '@web/utils/formInstanceUtils';
 import {
@@ -63,21 +63,25 @@ const FormInstance = ({
     },
   });
 
-  const _nextSignature = formInstance.signatures
+  const _nextAssignedGroup = formInstance.assignedGroups
     .sort((a, b) => a.order - b.order)
     .find((v) => v.signed === false);
-  const _userCanSign = signerIsUser(_nextSignature, user);
+  const _userCanSign = signerIsUser(_nextAssignedGroup, user);
 
   /**
-   * Update the form instance with the next signature
+   * Update the form instance with the next assigned group
    */
   const _handleFormSign = async () => {
-    if (_nextSignature == null || !_userCanSign) return;
+    if (_nextAssignedGroup == null || !_userCanSign) return;
     signFormInstanceMutation
       .mutateAsync({
         path: {
           formInstanceId: formInstance.id,
-          signatureId: _nextSignature?.id!,
+          assignedGroupId: _nextAssignedGroup?.id!,
+        },
+        body: {
+          // TODO: Update when frontend functionality is implemented
+          file: new File([], 'placeholder.txt'),
         },
       })
       .catch((e) => {
@@ -274,17 +278,18 @@ const FormInstance = ({
               </Flex>
 
               <AssigneeMap
-                assignees={formInstance.signatures.map((signature) => ({
-                  signed: signature.signed,
-                  title: getNameFromSignature(signature),
-                  signerType: signature.signerType as any,
-                  updatedAt: signature.updatedAt,
+                assignees={formInstance.assignedGroups.map((assignedGroup) => ({
+                  signed: assignedGroup.signed,
+                  title: getNameFromAssignedGroup(assignedGroup),
+                  signerType: assignedGroup.signerType as any,
+                  updatedAt: assignedGroup.updatedAt,
                 }))}
               />
             </Box>
           </Box>
           {_userCanSign && (
             <Button
+              margin="20px"
               background={
                 formInstance.markedCompleted
                   ? 'var(--mfa-gray-hex)'

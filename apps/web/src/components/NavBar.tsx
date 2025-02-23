@@ -19,6 +19,8 @@ import {
 } from 'apps/web/src/static/icons';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useAuth } from '@web/hooks/useAuth';
+import { Scope } from '@web/client';
 
 const icons = {
   overview: <OverViewIcon marginRight="2" />,
@@ -105,6 +107,9 @@ export const NavBar = ({
   props?: {};
 }) => {
   const router = useRouter();
+  const { user } = useAuth();
+  const isAdmin = user?.scope === Scope.ADMIN;
+
   return (
     <Box
       as="nav"
@@ -165,14 +170,16 @@ export const NavBar = ({
             >
               Form
             </MenuItem>
-            <MenuItem
-              rounded="8px"
-              onClick={() => {
-                router.push('create-template/upload');
-              }}
-            >
-              Template
-            </MenuItem>
+            {isAdmin && (
+              <MenuItem
+                rounded="8px"
+                onClick={() => {
+                  router.push('create-template/upload');
+                }}
+              >
+                Template
+              </MenuItem>
+            )}
           </MenuList>
         </Menu>
       </Flex>
@@ -189,20 +196,6 @@ export const NavBar = ({
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
-      {process.env.NODE_ENV === 'development' && (
-        <Box>
-          <Box
-            mt="4"
-            mb="2"
-            mx="12"
-            borderBottomWidth="1px"
-            borderColor="gray.200"
-          ></Box>
-          <NavItem icon="test" link="/sandbox">
-            Test
-          </NavItem>
-        </Box>
-      )}
     </Box>
   );
 };

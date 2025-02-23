@@ -15,6 +15,8 @@ import { PositionsService } from '../positions/positions.service';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { PostmarkService } from '../postmark/postmark.service';
 import { EmployeesService } from '../employees/employees.service';
+import { DepartmentsService } from '../departments/departments.service';
+import { PdfStoreModule } from '../pdf-store/pdf-storage.module';
 
 describe('FormInstancesController', () => {
   let controller: FormInstancesController;
@@ -32,7 +34,9 @@ describe('FormInstancesController', () => {
         EmployeesService,
         LoggerServiceImpl,
         PostmarkService,
+        DepartmentsService,
       ],
+      imports: [PdfStoreModule],
     }).compile();
 
     controller = module.get<FormInstancesController>(FormInstancesController);

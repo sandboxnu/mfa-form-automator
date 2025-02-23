@@ -1,9 +1,11 @@
-import { HStack, Flex, Text } from '@chakra-ui/react';
+import { HStack, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { FormCard } from './FormCard';
 import { FormInstanceEntity } from '@web/client/types.gen';
-import React from 'react';
+import React, { useState } from 'react';
 import { FormImageCard } from './FormImageCard';
 import { ViewAll } from './ViewAll';
+import { ProfileIcon } from '@web/static/icons';
+import { SignFormInstancePreview } from './SignFormInstancePreview';
 
 /**
  * @param title - the title of the overview row
@@ -28,6 +30,13 @@ export const OverviewRow = ({
     0,
     Math.min(4, formInstances.length),
   );
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [curForm, setCurForm] = useState<FormInstanceEntity>(formInstances[0]);
+
+  function handleModalOpen(formInstance: FormInstanceEntity) {
+    setCurForm(formInstance);
+    onOpen();
+  }
 
   return (
     <>
@@ -57,37 +66,41 @@ export const OverviewRow = ({
             </Flex>
           )}
         </Flex>
-        <Flex pr="30px">
+        <Flex>
           <ViewAll title={title} link={link} />
         </Flex>
       </Flex>
-      <HStack
+      <Flex
         marginTop="20px"
         flexDirection="row"
-        wrap="wrap"
-        pr="30px"
-        spacing="20px"
         width="100%"
+        justifyContent={'space-between'}
       >
         {displayFormInstances.map(
           (formInstance: FormInstanceEntity, index: number) => {
             return title == 'To-do' ? (
               <FormImageCard
+                onClick={() => handleModalOpen(formInstance)}
                 key={index}
                 formInstance={formInstance}
-                link={'/form-instances/' + formInstance.id}
               />
             ) : (
               <FormCard
+                onClick={() => handleModalOpen(formInstance)}
                 key={index}
                 formName={formInstance.name}
-                signatures={formInstance.signatures}
+                assignedGroups={formInstance.assignedGroups}
                 link={'/form-instances/' + formInstance.id}
               />
             );
           },
         )}
-      </HStack>
+      </Flex>
+      <SignFormInstancePreview
+        isOpen={isOpen}
+        onClose={onClose}
+        formInstance={curForm}
+      />
     </>
   );
 };

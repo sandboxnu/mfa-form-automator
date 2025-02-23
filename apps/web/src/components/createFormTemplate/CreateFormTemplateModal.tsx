@@ -20,8 +20,8 @@ import { AddIcon, UploadForm } from '@web/static/icons';
 import { Reorder } from 'framer-motion';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { SignatureField } from './SignatureField';
-import { TempSignatureField } from './types';
+import { FieldGroup } from './FieldGroup';
+import { TempFieldGroup } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { queryClient } from '@web/pages/_app';
 import { useBlob } from '@web/hooks/useBlob';
@@ -57,18 +57,10 @@ export const CreateFormTemplateModal = ({
 }) => {
   const [formTemplateName, setFormTemplateName] =
     useState<string>('New Form Template');
-  const [signatureFields, setSignatureFields] = useState<TempSignatureField[]>(
-    [],
-  );
+  const [fieldGroups, setFieldGroups] = useState<TempFieldGroup[]>([]);
+
   let isFormTemplateNameInvalid = formTemplateName === '';
-  const {
-    inputFileRef,
-    uploadFileRef,
-    uploadLocalFile,
-    clearLocalBlob,
-    localBlobData: { blob: localBlob, url: localBlobUrl, name: localBlobName },
-    hasLocalBlob,
-  } = useBlob();
+  const { inputFileRef, blob, setBlob } = useBlob();
 
   const toast = useToast();
 
@@ -82,44 +74,44 @@ export const CreateFormTemplateModal = ({
   });
 
   /**
-   * Delete a signature field given an id
+   * Delete a field group given an id
    */
-  const _deleteSignatureField = (id: string) => {
-    let newSignatureFields = signatureFields.filter((item) => {
+  const _deleteFieldGroup = (id: string) => {
+    let newFieldGroups = fieldGroups.filter((item) => {
       return item.id !== id;
     });
-    setSignatureFields(newSignatureFields);
+    setFieldGroups(newFieldGroups);
   };
 
   /**
-   * Add a signature field
+   * Add a field group
    */
-  const _handleChange = (newSignatureField: TempSignatureField) => {
-    let tempSignatureFields = signatureFields.slice(0);
-    tempSignatureFields.filter(
-      (value) => value.id === newSignatureField.id,
-    )[0].value = newSignatureField.value;
-    setSignatureFields(tempSignatureFields);
+  const _handleChange = (newFieldGroup: TempFieldGroup) => {
+    let tempFieldGroups = fieldGroups.slice(0);
+    tempFieldGroups.filter((value) => value.id === newFieldGroup.id)[0].value =
+      newFieldGroup.value;
+    setFieldGroups(tempFieldGroups);
   };
 
   /**
    * Upload and create a form template
    */
   const _submitFormTemplate = async () => {
-    if (!hasLocalBlob) {
+    if (!blob) {
       throw new Error('No PDF file uploaded');
     }
-
-    const blob = await uploadFileRef();
     createFormTemplateMutation
       .mutateAsync({
         body: {
           name: formTemplateName,
-          formDocLink: blob.url,
-          signatureFields: signatureFields.map((signatureField, i) => {
+          file: blob,
+          fieldGroups: fieldGroups.map((fieldGroup, i) => {
             return {
-              name: signatureField.value,
+              name: fieldGroup.value,
               order: i,
+              // TODO: THESE SHOULD BE SPECIFIED IN THE FORM TEMPLATE CREATION
+              templateBoxes: [],
+              formTemplateId: '',
             };
           }),
         },
@@ -138,9 +130,9 @@ export const CreateFormTemplateModal = ({
    */
   const _handleModalClose = () => {
     setFormTemplateName('New Form Template');
-    setSignatureFields([]);
+    setFieldGroups([]);
     onCloseCreateFormTemplate();
-    clearLocalBlob();
+    setBlob(null);
   };
 
   return (
@@ -209,9 +201,11 @@ export const CreateFormTemplateModal = ({
                     accept=".pdf"
                     style={{ display: 'none' }}
                     ref={inputFileRef}
-                    onChange={(e) => uploadLocalFile(e.target?.files?.[0])}
+                    onChange={(e) =>
+                      e.target?.files?.[0] && setBlob(e.target?.files?.[0])
+                    }
                   />
-                  {hasLocalBlob && (
+                  {blob && (
                     <span
                       style={{
                         fontSize: '17px',
@@ -221,7 +215,7 @@ export const CreateFormTemplateModal = ({
                         paddingLeft: '15px',
                       }}
                     >
-                      {localBlobName}
+                      {blob.name}
                     </span>
                   )}
                 </Flex>
@@ -236,14 +230,14 @@ export const CreateFormTemplateModal = ({
                   as={Reorder.Group}
                   spacing={2}
                   axis="y"
-                  values={signatureFields}
-                  onReorder={setSignatureFields}
+                  values={fieldGroups}
+                  onReorder={setFieldGroups}
                   mt="20px"
                 >
-                  {signatureFields.map((signatureField) => (
+                  {fieldGroups.map((fieldGroup) => (
                     <Reorder.Item
-                      key={signatureField.id}
-                      value={signatureField}
+                      key={fieldGroup.id}
+                      value={fieldGroup}
                       dragTransition={{
                         bounceStiffness: 600,
                       }}
@@ -255,10 +249,10 @@ export const CreateFormTemplateModal = ({
                         borderRadius: '8px',
                       }}
                     >
-                      <SignatureField
-                        field={signatureField}
+                      <FieldGroup
+                        fieldGroup={fieldGroup}
                         handleChange={_handleChange}
-                        handleDelete={_deleteSignatureField}
+                        handleDelete={_deleteFieldGroup}
                       />
                     </Reorder.Item>
                   ))}
@@ -271,17 +265,17 @@ export const CreateFormTemplateModal = ({
                       _groupHover={{ fill: 'var(--chakra-colors-gray-500)' }}
                     />
                   }
-                  mt={signatureFields.length > 0 ? '14px' : '0px'}
+                  mt={fieldGroups.length > 0 ? '14px' : '0px'}
                   padding="0px"
                   data-group
                   _hover={{ bg: 'transparent' }}
                   onClick={() => {
-                    let currentSignatureFields = signatureFields.slice(0);
-                    currentSignatureFields.push({
+                    let currentFieldGroups = fieldGroups.slice(0);
+                    currentFieldGroups.push({
                       id: uuidv4(),
                       value: '',
                     });
-                    setSignatureFields(currentSignatureFields);
+                    setFieldGroups(currentFieldGroups);
                   }}
                 >
                   <Text
@@ -297,12 +291,12 @@ export const CreateFormTemplateModal = ({
             </Box>
             <Box flex="1">
               <Heading as="h3">Form Preview</Heading>
-              {!hasLocalBlob && (
+              {!blob && (
                 <Skeleton mt="16px" w="400px" h="500px" background="gray" />
               )}
-              {hasLocalBlob && (
+              {blob && (
                 <embed
-                  src={localBlobUrl as string}
+                  src={URL.createObjectURL(blob)}
                   type="application/pdf"
                   width="400px"
                   height="500px"
@@ -323,10 +317,10 @@ export const CreateFormTemplateModal = ({
             width="161px"
             height="40px"
             isDisabled={
-              !hasLocalBlob ||
+              !blob ||
               isFormTemplateNameInvalid ||
-              signatureFields.length == 0 ||
-              signatureFields.some((field) => field.value === '')
+              fieldGroups.length == 0 ||
+              fieldGroups.some((field) => field.value === '')
             }
             onClick={(_) => {
               toast.promise(_submitFormTemplate(), {

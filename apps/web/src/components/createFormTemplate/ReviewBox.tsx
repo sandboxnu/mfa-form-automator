@@ -1,5 +1,6 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { FormEditor, FieldGroups } from './createFormTemplateEditor/FormEditor';
+import { FormEditor } from './createFormTemplateEditor/FormEditor';
+import { FieldGroups } from './types';
 import { useCreateFormTemplate } from '../../context/CreateFormTemplateContext';
 
 /**
@@ -11,12 +12,12 @@ import { useCreateFormTemplate } from '../../context/CreateFormTemplateContext';
  * @param formLink link to form to preview
  */
 export const ReviewBox = ({
-  formLink,
+  pdfFile,
   name,
   description,
   fieldGroups,
 }: {
-  formLink: string;
+  pdfFile: File | null;
   name: string;
   description: string;
   fieldGroups: FieldGroups;
@@ -111,11 +112,18 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <FormEditor
-          formTemplateName={name}
-          pdfUrl={formLink}
-          disableEdit={true}
-        />
+        <Box width="550px">
+          <FormEditor
+            formTemplateName={name}
+            pdfFile={pdfFile}
+            disableEdit={true}
+            fieldGroups={fieldGroups}
+            formFields={formFields}
+            setFormFields={() => {}}
+            setFieldGroups={() => {}}
+            scale={0.6875}
+          />
+        </Box>
       </Flex>
     </Flex>
   );
