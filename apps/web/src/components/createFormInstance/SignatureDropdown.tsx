@@ -8,7 +8,7 @@ import { FieldGroupBaseEntity, PositionEntity } from '@web/client';
 
 const assigneePlaceholderWithIcon = (
   <div style={{ display: 'flex', alignItems: 'center' }}>
-    <SearchIcon />
+    <SearchIcon pl="5px" boxSize="24px" />
     <span style={{ marginLeft: '8px' }}>Select assignee</span>
   </div>
 );
@@ -84,7 +84,7 @@ export const SignatureDropdown = ({
         })}
         placeholder={assigneePlaceholderWithIcon}
         value={selectedPosition} // Create a separate state for Department Head
-        onChange={(selected) => {
+        onChange={(selected: PositionOption | null) => {
           setSelectedPosition(selected);
           // TODO: probably should not be coercing this type
           let selectedAssignedGroupData = assignedGroupData?.at(index)!;

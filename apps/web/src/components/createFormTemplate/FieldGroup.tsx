@@ -1,15 +1,10 @@
 import {
-  useEditableControls,
   Flex,
-  ButtonGroup,
   IconButton,
   HStack,
   Editable,
-  EditablePreview,
-  Input,
-  EditableInput,
-  Box,
   Text,
+  useEditable,
 } from '@chakra-ui/react';
 import {
   CompletedIcon,
@@ -34,43 +29,18 @@ export const FieldGroup = ({
   handleChange: (newFieldGroup: TempFieldGroup) => void;
   handleDelete: (id: string) => void;
 }) => {
-  const FieldGroupEditableControls = () => {
-    const { isEditing, getEditButtonProps } = useEditableControls();
-
-    return isEditing ? (
-      <Flex justifyContent="center">
-        <ButtonGroup justifyContent="center" size="sm" spacing="0">
-          <IconButton
-            aria-label="Submit"
-            icon={<CompletedIcon />}
-            isDisabled={fieldGroup.value === ''}
-            onSubmit={() => handleChange(fieldGroup)}
-          >
-            Submit
-          </IconButton>
-        </ButtonGroup>
-      </Flex>
-    ) : (
-      <Flex justifyContent="center" alignItems="center">
-        <ButtonGroup spacing="0">
-          <IconButton
-            aria-label="Edit Field Group"
-            size="sm"
-            background="transparent"
-            icon={<EditIcon />}
-            {...getEditButtonProps()}
-          />
-          <IconButton
-            aria-label="Delete Field Group"
-            size="sm"
-            background="transparent"
-            icon={<DeleteIcon />}
-            onClick={() => handleDelete(fieldGroup.id)}
-          />
-        </ButtonGroup>
-      </Flex>
-    );
-  };
+  const editable = useEditable({
+    defaultValue: fieldGroup.value,
+    onValueChange: (value) => {
+      handleChange({ id: fieldGroup.id, value: value.value });
+    },
+    onValueCommit: (value) => {
+      handleChange({ id: fieldGroup.id, value: value.value });
+    },
+    onValueRevert: (value) => {
+      handleChange({ id: fieldGroup.id, value: value.value });
+    },
+  });
 
   return (
     <>
@@ -89,31 +59,54 @@ export const FieldGroup = ({
       )}
       <HStack w="100%">
         <DraggerIcon />
-        <Editable
+        <Editable.RootProvider
+          value={editable}
           fontFamily="Hanken Grotesk"
           defaultValue={fieldGroup.value}
           fontSize="16px"
           fontWeight="400"
-          isPreviewFocusable={false}
+          // TODO: do we need this? not sure what the equivalent is when migrating from chakra v2 to v3
+          // isPreviewFocusable={false}
           as={Flex}
           justifyContent="space-between"
           alignItems="center"
           w="100%"
-          startWithEditView={fieldGroup.value === ''}
+          pr="5px"
         >
-          <Box w="100%" pr="5px">
-            <EditablePreview />
-            <Input
-              as={EditableInput}
-              value={fieldGroup.value}
-              onChange={(e) =>
-                handleChange({ id: fieldGroup.id, value: e.target.value })
-              }
-              w="100%"
-            />
-          </Box>
-          <FieldGroupEditableControls />
-        </Editable>
+          <Editable.Preview />
+          <Editable.Input w="100%" />
+          <Editable.Control>
+            <Editable.EditTrigger asChild>
+              <IconButton
+                aria-label="Edit Signature Field"
+                size="sm"
+                background="transparent"
+              >
+                <EditIcon boxSize="24px" />
+              </IconButton>
+            </Editable.EditTrigger>
+            {editable.editing && (
+              <IconButton
+                aria-label="Delete Signature Field"
+                size="sm"
+                background="transparent"
+                onClick={() => handleDelete(fieldGroup.id)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
+            <Editable.SubmitTrigger asChild>
+              <IconButton
+                aria-label="Submit"
+                borderRadius="full"
+                disabled={fieldGroup.value === ''}
+                onClick={() => handleChange(fieldGroup)}
+              >
+                <CompletedIcon />
+              </IconButton>
+            </Editable.SubmitTrigger>
+          </Editable.Control>
+        </Editable.RootProvider>
       </HStack>
     </>
   );

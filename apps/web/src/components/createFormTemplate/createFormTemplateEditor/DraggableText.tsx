@@ -1,6 +1,6 @@
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DraggableEventHandler } from 'react-draggable';
-import { TextFieldPosition } from './FormEditor';
+import { TextFieldPosition } from './FormEditor.tsx';
 import { FaTimes } from 'react-icons/fa';
 
 export default function DraggableText({

@@ -1,7 +1,7 @@
 import { PositionEntity } from '@web/client';
 
 export interface CreateFormInstanceModalProps {
-  isOpen: boolean;
+  open: boolean;
   onClose: () => void;
 }
 
