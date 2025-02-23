@@ -13,7 +13,6 @@ import {
   UploadedFile,
   PipeTransform,
   ValidationPipe,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { FormTemplatesService } from './form-templates.service';
 import {
@@ -120,7 +119,7 @@ export class FormTemplatesController {
     description: 'Limit on number of form templates to return',
     required: false,
   })
-  async findAll(@Query('limit', ParseIntPipe) limit?: number) {
+  async findAll(@Query('limit') limit?: number) {
     const formTemplates = await this.formTemplatesService.findAll(limit);
     return formTemplates.map(
       (formTemplate) => new FormTemplateEntity(formTemplate),
