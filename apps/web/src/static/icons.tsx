@@ -437,19 +437,22 @@ export const RedDeleteIcon = (
 
 export const TextIcon = (
   <svg
-    width="14"
-    height="16"
-    viewBox="0 0 14 16"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path
-      d="M5 15H7M7 15H9M7 15V1M7 1H1V2M7 1H13V2"
-      stroke="white"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
+    <g id="Text icon">
+      <path
+        id="Vector"
+        d="M10 19H12M12 19H14M12 19V5M12 5H6V6M12 5H18V6"
+        stroke="#808080"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </g>
   </svg>
 );
 
