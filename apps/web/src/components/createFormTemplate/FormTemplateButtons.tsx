@@ -81,7 +81,6 @@ export const FormTemplateButtons = ({
           fieldGroups: fieldGroups,
           description: formTemplateDescription ?? '',
           file: pdfFile,
-          formDocLink: '',
         },
       })
       .then((response) => {
