@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import {
   FormFields,
   FieldGroups,
-} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
+} from '@web/components/createFormTemplate/types';
 import { Scope } from '@web/client';
 import { RegisterEmployeeDto } from '@web/client';
 
