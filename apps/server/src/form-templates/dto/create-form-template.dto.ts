@@ -20,11 +20,6 @@ export class CreateFormTemplateDto {
   name: string;
 
   @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  formDocLink: string;
-
-  @IsString()
   @IsOptional()
   @ApiProperty()
   description: string;

@@ -146,7 +146,6 @@ export type CreateFieldGroupDto = {
 export type CreateFormTemplateDto = {
   file: Blob | File;
   name: string;
-  formDocLink: string;
   description: string;
   fieldGroups: Array<CreateFieldGroupDto>;
 };
@@ -234,7 +233,6 @@ export type FormTemplateEntity = {
 export type UpdateFormTemplateDto = {
   file?: Blob | File;
   name?: string;
-  formDocLink?: string;
   description?: string;
 };
 

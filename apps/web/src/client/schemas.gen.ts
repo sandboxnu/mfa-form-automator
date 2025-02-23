@@ -21,6 +21,7 @@ export const RegisterEmployeeDtoSchema = {
     },
     email: {
       type: 'string',
+      format: 'email',
     },
     password: {
       type: 'string',
@@ -183,9 +184,11 @@ export const CreateEmployeeDtoSchema = {
     },
     positionId: {
       type: 'string',
+      format: 'uuid',
     },
     email: {
       type: 'string',
+      format: 'email',
     },
     password: {
       type: 'string',
@@ -221,6 +224,7 @@ export const UpdateEmployeeDtoSchema = {
     },
     positionId: {
       type: 'string',
+      format: 'uuid',
     },
     signatureLink: {
       type: 'string',
@@ -240,6 +244,7 @@ export const CreatePositionDtoSchema = {
     },
     departmentId: {
       type: 'string',
+      format: 'uuid',
     },
   },
   required: ['name', 'departmentId'],
@@ -355,6 +360,7 @@ export const UpdatePositionDtoSchema = {
     },
     departmentId: {
       type: 'string',
+      format: 'uuid',
     },
   },
 } as const;
@@ -424,6 +430,7 @@ export const CreateFieldGroupDtoSchema = {
       type: 'number',
     },
     templateBoxes: {
+      minItems: 1,
       type: 'array',
       items: {
         $ref: '#/components/schemas/CreateTemplateBoxDto',
@@ -443,20 +450,18 @@ export const CreateFormTemplateDtoSchema = {
     name: {
       type: 'string',
     },
-    formDocLink: {
-      type: 'string',
-    },
     description: {
       type: 'string',
     },
     fieldGroups: {
+      minItems: 1,
       type: 'array',
       items: {
         $ref: '#/components/schemas/CreateFieldGroupDto',
       },
     },
   },
-  required: ['file', 'name', 'formDocLink', 'description', 'fieldGroups'],
+  required: ['file', 'name', 'description', 'fieldGroups'],
 } as const;
 
 export const TemplateBoxBaseEntitySchema = {
@@ -825,9 +830,6 @@ export const UpdateFormTemplateDtoSchema = {
     name: {
       type: 'string',
     },
-    formDocLink: {
-      type: 'string',
-    },
     description: {
       type: 'string',
     },
@@ -895,6 +897,7 @@ export const CreateFormInstanceDtoSchema = {
       type: 'string',
     },
     assignedGroups: {
+      minItems: 1,
       type: 'array',
       items: {
         $ref: '#/components/schemas/CreateAssignedGroupDto',
