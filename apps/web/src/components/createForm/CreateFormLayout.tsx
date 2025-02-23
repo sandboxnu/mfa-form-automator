@@ -66,27 +66,15 @@ export const CreateFormLayout = ({
       >
         {boxContent}
       </Flex>
-      {isFormTemplate ? (
-        <FormButtons
-          isFormTemplate={true}
-          heading='Create Form Template'
-          deleteFunction={deleteFunction}
-          submitLink={submitLink}
-          backLink={backLink}
-          disabled={disabled}
-          review={review}
-        />
-      ) : (
-        <FormButtons
-          isFormTemplate={false}
-          heading='Create Form Instance'
-          deleteFunction={deleteFunction}
-          submitLink={submitLink}
-          backLink={backLink}
-          disabled={disabled}
-          review={review}
-        />
-      )}
+      <FormButtons
+        isFormTemplate={isFormTemplate}
+        heading={`Create Form ${isFormTemplate ? "Template" : "Instance"}`}
+        deleteFunction={deleteFunction}
+        submitLink={submitLink}
+        backLink={backLink}
+        disabled={disabled}
+        review={review}
+      />
     </Box>
   );
 };

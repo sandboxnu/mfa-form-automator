@@ -87,7 +87,7 @@ export const SignatureDropdown = ({
     } else if (activeTab === "Department") {
       return (
         <span>
-          <strong>{positions?.find((p) => p.department?.id === value)?.department?.name ?? 'No Department'}</strong>
+          <strong>{positions?.find((p) => p.department?.id === value)?.department?.name ?? ''}</strong>
         </span>
       );
     }

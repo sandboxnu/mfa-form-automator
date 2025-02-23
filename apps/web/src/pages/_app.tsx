@@ -62,6 +62,7 @@ export default function App({
     '/signin',
     '/register',
     '/create-template/success',
+    '/create-instance/success'
   ];
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
