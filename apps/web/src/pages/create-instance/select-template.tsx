@@ -19,7 +19,7 @@ export default function SelectTemplate() {
       }}
       submitLink={'/create-instance/description'}
       backLink={'/'}
-      disabled={!formTemplate}   
+      disabled={!formTemplate} 
     />
   );
  

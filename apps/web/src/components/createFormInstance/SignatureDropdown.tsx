@@ -1,10 +1,11 @@
 import { Box, Button, Flex, Heading, HStack, VStack, Text } from '@chakra-ui/react';
 import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
 import { chakraComponents, Select } from 'chakra-react-select';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AssignedGroupData, PositionOption } from './types';
 import { SearchIcon } from '@web/static/icons';
 import { FieldGroupBaseEntity, PositionEntity } from '@web/client';
+import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
 const assigneePlaceholderWithIcon = (
   <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -30,6 +31,23 @@ export const SignatureDropdown = ({
   const [activeTab, setActiveTab] = useState("Employee");
   const [selectedPosition, setSelectedPosition] =
     useState<PositionOption | null>();
+  const { formTemplate } = useCreateFormInstance();
+
+   /**
+   * Reset signature positions when form template changes
+   */
+   useEffect(() => {
+    if (!formTemplate) return;
+
+    setAssignedGroupData(
+        formTemplate.fieldGroups.map((_, i) => {
+            return {
+                fieldGroupId: formTemplate?.fieldGroups[i].id!,
+                order: i,
+            };
+        }),
+    );
+}, [formTemplate]);
 
   /**
    * Get the employee name from the position
@@ -129,7 +147,7 @@ export const SignatureDropdown = ({
 
   return (
     <Box w="100%">
-      <Flex w="100%"  justifyContent="space-between" paddingBottom="6px">
+      <Flex w="100%" justifyContent="space-between" paddingBottom="6px">
         <Heading as="h3" color="black" marginTop='7px'>
           <GroupItem
             key={index}
@@ -139,8 +157,8 @@ export const SignatureDropdown = ({
           />
         </Heading>
         <VStack align="start" spacing="8px">
-          <HStack width="360px" spacing="0px" 
-          borderWidth="1px" borderRadius="4px" overflow="hidden">
+          <HStack width="360px" spacing="0px"
+            borderWidth="1px" borderRadius="4px" overflow="hidden">
             {["Employee", "Role", "Department"].map((tab) => (
               <Button
                 key={tab}
@@ -166,15 +184,19 @@ export const SignatureDropdown = ({
               value={selectedPosition}
               onChange={(selected) => {
                 setSelectedPosition(selected);
-          // TODO: probably should not be coercing this type
-          let selectedAssignedGroupData = assignedGroupData?.at(index)!;
-          selectedAssignedGroupData.positionId = selected?.value;
-          assignedGroupData[index] = {
-            ...selectedAssignedGroupData,
-            fieldGroupId: selectedAssignedGroupData?.fieldGroupId,
-            positionId: selected?.value,
-          };
-          setAssignedGroupData(assignedGroupData);
+                console.log('selected', selected);
+                // TODO: probably should not be coercing this type
+                let updatedAssignedGroupData = assignedGroupData.at(index)!;
+                console.log('selectedAssignedGroupData', updatedAssignedGroupData);
+                updatedAssignedGroupData.positionId = selected?.value;
+                assignedGroupData[index] = {
+                  ...updatedAssignedGroupData,
+                  fieldGroupId: updatedAssignedGroupData?.fieldGroupId,
+                  positionId: selected?.value,
+                  order: updatedAssignedGroupData?.order,
+
+                };
+                setAssignedGroupData(assignedGroupData);
               }}
               className="custom-dropdown"
               components={{

@@ -1,6 +1,9 @@
-import { Box, Text, Flex } from '@chakra-ui/react';
+import { Box, Text, Flex, useQuery } from '@chakra-ui/react';
 import { FormView } from './FormView';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
+import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
+import { AssignedGroupEntity, employeesControllerFindOne, EmployeesControllerFindOneData } from '@web/client';
 
 export const ReviewBox = ({
     formLink,
@@ -20,7 +23,26 @@ export const ReviewBox = ({
         borderColor: 'transparent',
     };
 
-    const { signaturePositions } = useCreateFormInstance();
+    const { assignedGroupData } = useCreateFormInstance();
+    
+    const getEmployeeData = async (employeeId: string) => {
+        const options = {
+            path: {
+              id: employeeId,  // Provide the ID of the employee you're looking for
+            },
+            url: '/api/employees/{id}',  // Ensure this matches the API's expected URL
+          };
+      
+        try {
+          const response = await employeesControllerFindOne(options);
+          console.log('Employee Data:', response);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    
+
+
 
     const groupColors = [
         ['#1367EA', '#EEF5FF'],
@@ -76,7 +98,7 @@ export const ReviewBox = ({
                     <Flex gap="12px" flexDirection="column" width="480px">
                         <Text fontWeight={600}>Assigned Field Groups</Text>
                     </Flex>
-                    {signaturePositions.map((option, i) => {
+                    {assignedGroupData.map((group, i) => {
                         const [border, background] = groupColors[i % groupColors.length];
                         return (
                             <Flex key={i} align="center" mr={4}>
@@ -84,7 +106,7 @@ export const ReviewBox = ({
                                     color={background}
                                     border={border}
                                 />
-                                <Text ml={2}>{option ? option.label : null}</Text>
+                                <Text ml={2}>{group ? group.positionId : null}</Text>
                             </Flex>
 
                         );

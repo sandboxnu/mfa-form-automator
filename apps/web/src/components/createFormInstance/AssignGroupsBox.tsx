@@ -1,7 +1,7 @@
 import { Text, Flex } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { SignatureDropdown } from './SignatureDropdown';
-import { SignatureFieldEntity } from '../../client/types.gen';
+import { FieldGroupBaseEntity } from '../../client/types.gen';
 import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
 import { FormView } from './FormView';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
@@ -13,18 +13,18 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
  * @param formLink link to form preview
  * @param name form name
  * @param description form description
- * @param signatureFields list of signature fields in the form template
+ * @param fieldGroups list of signature fields in the form template
  */
 export const AssignGroupsBox = ({
   formLink,
   name,
   description,
-  signatureFields,
+  fieldGroups,
 }: {
   formLink: string;
   name: string;
   description: string;
-  signatureFields: SignatureFieldEntity[];
+  fieldGroups: FieldGroupBaseEntity[];
 }) => {
   const textInputStyle = {
     alignSelf: 'stretch',
@@ -36,9 +36,9 @@ export const AssignGroupsBox = ({
   };
 
 
-  const { signaturePositions, setSignaturePositions } = useCreateFormInstance();
-  console.log("sp", signaturePositions)
+  const { assignedGroupData, setAssignedGroupData } = useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
+  console.log('Assigned Groups Data:', assignedGroupData); 
 
   return (
     <Flex
@@ -67,14 +67,14 @@ export const AssignGroupsBox = ({
           <Flex gap="12px" flexDirection="column" width="480px">
             <Text fontWeight={600}>Assign Field Groups</Text>
           </Flex>
-          {signatureFields.map((field, i) => (
+          {fieldGroups.map((field, i) => (
             <SignatureDropdown
             key={field.id}
             field={field}
             index={i}
             positions={positions}
-            signaturePositions={signaturePositions}
-            setSignaturePositions={setSignaturePositions}
+            assignedGroupData={assignedGroupData}
+            setAssignedGroupData={setAssignedGroupData}
           />
         ))}
         </Flex>

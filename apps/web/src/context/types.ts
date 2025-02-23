@@ -4,7 +4,7 @@ import {
   FormFields,
   FieldGroups,
 } from '@web/components/createFormTemplate/types';
-import { FormTemplateEntity, Scope } from '@web/client';
+import { AssignedGroupEntity, FormTemplateEntity, Scope } from '@web/client';
 import { RegisterEmployeeDto } from '@web/client';
 
 // for storage in context
@@ -66,6 +66,6 @@ export interface CreateFormInstanceContextType {
   setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
   formTemplate: FormTemplateEntity | null;
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
-  assignedGroupsData: AssignedGroupData[];
-  setAssignedGroupsData: Dispatch<SetStateAction<AssignedGroupData[]>>;
+  assignedGroupData: AssignedGroupData[];
+  setAssignedGroupData: Dispatch<SetStateAction<AssignedGroupData[]>>;
 }

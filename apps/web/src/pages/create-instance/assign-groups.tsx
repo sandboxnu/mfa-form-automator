@@ -17,7 +17,7 @@ export default function AssignGroups() {
                 formLink={formTemplate?.formDocLink || ''}
                 name={formInstanceName ?? ''}
                 description={formInstanceDescription ?? ''}
-                signatureFields={formTemplate?.signatureFields ?? []}
+                fieldGroups={formTemplate?.fieldGroups ?? []}
             />}
             deleteFunction={() => { }}
             submitLink={'/create-instance/review'}

@@ -1,19 +1,17 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import {
-    CreateFormTemplateDto,
-    CreateSignatureFieldDto,
-    FormTemplateEntity,
-    formTemplatesControllerCreate,
+    AssignedGroupEntity,
+    CreateFieldGroupDto,
     SignerType,
 } from '@web/client';
-import { formInstancesControllerCreateMutation, formTemplatesControllerFindAllQueryKey } from '@web/client/@tanstack/react-query.gen';
+import { formInstancesControllerCreateMutation, formTemplatesControllerCreateMutation, formTemplatesControllerFindAllQueryKey } from '@web/client/@tanstack/react-query.gen';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { Option } from '../createFormInstance/types';
+import { AssignedGroupData, PositionOption } from '../createFormInstance/types';
 import { useAuth } from '@web/hooks/useAuth';
 
 
@@ -44,16 +42,12 @@ export const FormButtons = ({
 }) => {
     const router = useRouter();
 
-    const { formTemplateName, formTemplateDescription, useBlob } =
-    useCreateFormTemplate();
+    const { formTemplateName, pdfFile } = useCreateFormTemplate();
 
     /**
      * Upload and create a form template
      */
     const _submitFormTemplate = async () => {
-
-        const { hasLocalBlob, uploadLocalBlobData } = useBlob;
-
         if (disabled == true) {
             return;
         }
@@ -61,23 +55,42 @@ export const FormButtons = ({
             router.push(submitLink);
             return;
         }
-        if (!hasLocalBlob) {
+        if (!pdfFile) {
             throw new Error('No PDF file uploaded');
         }
-        const signatures: CreateSignatureFieldDto[] = [
+
+        const fieldGroups: CreateFieldGroupDto[] = [
             {
-                name: 'Signature Field 1',
+                name: 'Default',
+                order: 0,
+                templateBoxes: [
+                    {
+                        type: 'SIGNATURE',
+                        x_coordinate: 0,
+                        y_coordinate: 0,
+                    },
+                ],
+            },
+            {
+                name: 'Default',
                 order: 1,
+                templateBoxes: [
+                    {
+                        type: 'SIGNATURE',
+                        x_coordinate: 0,
+                        y_coordinate: 0,
+                    },
+                ],
             },
         ];
 
-        const blob = await uploadLocalBlobData();
-
         createFormTemplateMutation
             .mutateAsync({
-                name: formTemplateName ? formTemplateName : '',
-                formDocLink: blob.url,
-                signatureFields: signatures,
+                body: {
+                    name: formTemplateName ? formTemplateName : '',
+                    fieldGroups: fieldGroups,
+                    file: pdfFile,
+                },
             })
             .then((response) => {
                 return response;
@@ -89,84 +102,73 @@ export const FormButtons = ({
     };
 
     const createFormTemplateMutation = useMutation({
-        mutationFn: async (newFormTemplate: CreateFormTemplateDto) => {
-            return formTemplatesControllerCreate(
-                {
-                    body: newFormTemplate,
-                }
-            );
-        },
+        ...formTemplatesControllerCreateMutation(),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['api', 'form-templates'] });
+            queryClient.invalidateQueries({
+                queryKey: formTemplatesControllerFindAllQueryKey(),
+            });
         },
     });
 
 
 
     const { user } = useAuth();
-  const [isFormTypeDropdownOpen, setIsFormTypeDropdownOpen] = useState(false);
-  const { formTemplate } = useCreateFormInstance();
-  const [formTypeSelected, setFormTypeSelected] = useState(false);
-  const [signaturePositions, setSignaturePositions] = useState<
-    (Option | null)[]
-  >([]);
-  const [formName, setFormName] = useState('Create Form');
-  const createFormInstanceMutation = useMutation({
-    ...formInstancesControllerCreateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-    },
-  });
-
-  /**
-   * Reset signature positions when form template changes
-   */
-  useEffect(() => {
-    setSignaturePositions(
-      new Array(formTemplate?.signatureFields.length).fill(null),
-    );
-  }, [formTemplate]);
-
-  /**
-   * Updates form instance with the selected form template, form name, and signature positions
-   */
-  const _submitFormInstance = async () => {
-    if (!formTemplate) return;
-
-    if (!review) {
-        router.push(submitLink);
-        return;
-    }
-
-    await createFormInstanceMutation
-      .mutateAsync({
-        body: {
-          name: formName,
-          signatures: signaturePositions.map((pos, i) => {
-            return {
-              order: i,
-              signerEmployeeId: pos?.employeeValue!,
-              signerType: SignerType.USER,
-              signerDepartmentId: null,
-              signerPositionId: null,
-              signerEmployeeList: [],
-            };
-          }),
-          originatorId: user?.id!,
-          formTemplateId: formTemplate?.id!,
-          formDocLink: formTemplate?.formDocLink!,
+    const { formTemplate, assignedGroupData} = useCreateFormInstance();
+    const [assignedGroupsData, setAssignedGroupsData] = useState<
+    AssignedGroupData[]
+    >([]);
+    const [formName, setFormName] = useState('Create Form');
+    const createFormInstanceMutation = useMutation({
+        ...formInstancesControllerCreateMutation(),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: formTemplatesControllerFindAllQueryKey(),
+            });
         },
-      })
-      .then((response) => {
-        return response;
-    })
-      .catch((e) => {
-        throw e;
-      });
-      router.push(submitLink);
-  };
+    });
+
+
+    /**
+     * Updates form instance with the selected form template, form name, and signature positions
+     */
+    const _submitFormInstance = async () => {
+        if (!formTemplate) return;
+        if (!assignedGroupsData) return;
+
+        if (!review) {
+            router.push(submitLink);
+            return;
+        }
+
+        await createFormInstanceMutation
+            .mutateAsync({
+                body: {
+                    name: formName,
+                    assignedGroups: assignedGroupData.map((pos, i) => {
+                        return {
+                            order: i,
+                            fieldGroupId: pos?.fieldGroupId,
+                            // signerEmployeeId: undefined,
+                            signerType: SignerType.POSITION,
+                            // signerDepartmentId: undefined,
+                            // TODO: when we support multiple types, we should create this list outside of the mutation
+                            // signerPositionId: pos.positionId!,
+                            signerEmployeeList: [],
+                        };
+                    }),
+                    originatorId: user?.id!,
+                    formTemplateId: formTemplate?.id!,
+                    formDocLink: formTemplate?.formDocLink!,
+                },
+            })
+            .then((response) => {
+                return response;
+            })
+            .catch((e) => {
+                throw e;
+            });
+        router.push(submitLink);
+    };
 
     return (
         <>
@@ -237,7 +239,7 @@ export const FormButtons = ({
                     onClick={() => {
                         if (isFormTemplate) {
                             console.log("Submitting Form Template");
-                            _submitFormTemplate(); 
+                            _submitFormTemplate();
                         } else {
                             console.log("Submitting Form Instance");
                             _submitFormInstance();

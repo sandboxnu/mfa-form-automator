@@ -1,4 +1,4 @@
-import { FormTemplateLayout } from '@web/components/createFormTemplate/FormTemplateLayout';
+import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { FormEditor } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { Box } from '@chakra-ui/react';
@@ -18,8 +18,10 @@ export default function InputFields() {
   } = useCreateFormTemplate();
 
   return (
-    <FormTemplateLayout
+    <CreateFormLayout
+      isFormTemplate={true}
       pageNumber={3}
+      heading={'Create form template'}
       subheading={
         'Select an assignee group and drag to add input fields for each'
       }
