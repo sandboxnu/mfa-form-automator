@@ -31,7 +31,8 @@ export const FormTemplateButtons = ({
   review?: boolean;
 }) => {
   const router = useRouter();
-  const { formTemplateName, pdfFile } = useCreateFormTemplate();
+  const { formTemplateName, pdfFile, formTemplateDescription } =
+    useCreateFormTemplate();
 
   /**
    * Upload and create a form template
@@ -76,8 +77,9 @@ export const FormTemplateButtons = ({
     createFormTemplateMutation
       .mutateAsync({
         body: {
-          name: formTemplateName ? formTemplateName : '',
+          name: formTemplateName ?? '',
           fieldGroups: fieldGroups,
+          description: formTemplateDescription ?? '',
           file: pdfFile,
         },
       })
