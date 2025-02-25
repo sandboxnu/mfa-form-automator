@@ -5,7 +5,7 @@ import {
   type TDataShape,
   type Client,
   formDataBodySerializer,
-} from '@hey-api/client-fetch';
+} from '@hey-api/client-axios';
 import type {
   AppControllerGetHelloData,
   AppControllerGetHelloResponse,

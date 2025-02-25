@@ -2,12 +2,14 @@ import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { FormEditor } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { Box } from '@chakra-ui/react';
+import isAuth from '@web/components/isAuth';
+import { Scope } from '@web/client';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
  */
 
-export default function InputFields() {
+function InputFields() {
   const {
     formTemplateName,
     formFields,
@@ -47,3 +49,5 @@ export default function InputFields() {
     />
   );
 }
+
+export default isAuth(InputFields, Scope.ADMIN);

@@ -6,7 +6,7 @@ export default {
     path: './src/client',
   },
   plugins: [
-    '@hey-api/client-fetch',
+    '@hey-api/client-axios',
     '@tanstack/react-query',
     '@hey-api/schemas',
     {

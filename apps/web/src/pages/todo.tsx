@@ -1,8 +1,9 @@
 import { FormList } from 'apps/web/src/components/FormList';
 import { useForm } from '@web/hooks/useForm';
 import { FormListPageLayout } from '@web/components/FormListPageLayout';
+import isAuth from '@web/components/isAuth';
 
-export default function Todo() {
+function Todo() {
   const { todoForms } = useForm();
 
   return (
@@ -19,3 +20,5 @@ export default function Todo() {
     </>
   );
 }
+
+export default isAuth(Todo);

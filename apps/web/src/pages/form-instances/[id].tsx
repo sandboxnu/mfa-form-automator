@@ -4,11 +4,12 @@ import FormInstance from '@web/components/FormInstance';
 import FormLoading from './../../components/FormLoading';
 import ErrorComponent from './../../components/Error';
 import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/react-query.gen';
+import isAuth from '@web/components/isAuth';
 
 /**
  * @returns a view of a form instance
  */
-export default function FormInstanceView() {
+function FormInstanceView() {
   const router = useRouter();
   const { id } = router.query;
 
@@ -38,3 +39,5 @@ export default function FormInstanceView() {
     </>
   );
 }
+
+export default isAuth(FormInstanceView);

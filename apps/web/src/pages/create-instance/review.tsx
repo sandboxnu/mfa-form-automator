@@ -1,8 +1,9 @@
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { ReviewBox } from '@web/components/createFormInstance/ReviewBox';
+import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
-export default function Review() {
+function Review() {
   const { formInstanceName, formInstanceDescription, formTemplate } =
     useCreateFormInstance();
 
@@ -27,3 +28,5 @@ export default function Review() {
     />
   );
 }
+
+export default isAuth(Review);

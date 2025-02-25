@@ -5,8 +5,9 @@ import FormLoading from './../components/FormLoading';
 import { FormList } from './../components/FormList';
 import { useAuth } from '@web/hooks/useAuth';
 import { OverviewRow } from '@web/components/OverviewRow';
+import isAuth from '@web/components/isAuth';
 
-export default function Overview() {
+function Overview() {
   const {
     todoForms,
     pendingForms,
@@ -54,3 +55,5 @@ export default function Overview() {
     </>
   );
 }
+
+export default isAuth(Overview);

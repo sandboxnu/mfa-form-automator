@@ -1,8 +1,9 @@
 import { FormList } from 'apps/web/src/components/FormList';
 import { useForm } from '@web/hooks/useForm';
 import { FormListPageLayout } from '@web/components/FormListPageLayout';
+import isAuth from '@web/components/isAuth';
 
-export default function Completed() {
+function Completed() {
   const { completedForms } = useForm();
 
   return (
@@ -18,3 +19,5 @@ export default function Completed() {
     </>
   );
 }
+
+export default isAuth(Completed);

@@ -110,14 +110,19 @@ export default function Register() {
       ? // TODO: Do we want to store the URL representation of their signature?
         URL.createObjectURL(blob)
       : 'http://localhost:3002/signature.png';
-    completeRegistration(
-      userData.email,
-      userData.password,
-      currentDepartmentName,
-      currentPositionName,
-      signatureUrl,
-      Scope.BASE_USER,
-    );
+    try {
+      await completeRegistration(
+        // TODO: Why do we specify the email and password? shouldn't we just use the jwt token?
+        userData.email,
+        userData.password,
+        currentDepartmentName,
+        currentPositionName,
+        signatureUrl,
+        Scope.BASE_USER,
+      );
+    } catch (error) {
+      console.error('Error during registration:', error);
+    }
   };
 
   return (

@@ -1,12 +1,13 @@
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
+import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useEffect, useState } from 'react';
 
 /**
  * The description page in the form instance creation flow, where users describe their form.
  */
-export default function Description() {
+function Description() {
   const {
     formInstanceName,
     formInstanceDescription,
@@ -57,3 +58,5 @@ export default function Description() {
     />
   );
 }
+
+export default isAuth(Description);

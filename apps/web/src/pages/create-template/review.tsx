@@ -1,11 +1,13 @@
+import { Scope } from '@web/client';
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { ReviewBox } from '@web/components/createFormTemplate/ReviewBox';
+import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
  */
-export default function Review() {
+function Review() {
   const { formTemplateName, formTemplateDescription, pdfFile, fieldGroups } =
     useCreateFormTemplate();
 
@@ -31,3 +33,5 @@ export default function Review() {
     />
   );
 }
+
+export default isAuth(Review, Scope.ADMIN);

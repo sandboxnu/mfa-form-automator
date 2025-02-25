@@ -1,7 +1,9 @@
+import { Scope } from '@web/client';
 import { SuccessPage } from '@web/components/createForm/SuccessPage';
+import isAuth from '@web/components/isAuth';
 import { useRouter } from 'next/router';
 
-export default function Success() {
+function Success() {
   const router = useRouter();
 
   return (
@@ -12,3 +14,5 @@ export default function Success() {
     />
   );
 }
+
+export default isAuth(Success, Scope.ADMIN);
