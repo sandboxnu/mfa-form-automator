@@ -65,7 +65,7 @@ export const SignatureDropdown = ({
         };
       }),
     );
-  }, [formTemplate]);
+  }, [formTemplate, setAssignedGroupData]);
 
   /**
    * Get filtered options based on active tab

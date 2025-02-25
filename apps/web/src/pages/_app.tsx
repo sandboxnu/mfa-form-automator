@@ -55,7 +55,7 @@ export default function App({
   ...appProps
 }: AppProps) {
   client.setConfig({
-    credentials: 'include',
+    withCredentials: true,
   });
 
   const excludeLayoutPaths = [

@@ -1,8 +1,9 @@
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { AssignGroupsBox } from '@web/components/createFormInstance/AssignGroupsBox';
+import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
-export default function AssignGroups() {
+function AssignGroups() {
   const { formInstanceName, formInstanceDescription, formTemplate } =
     useCreateFormInstance();
 
@@ -29,3 +30,5 @@ export default function AssignGroups() {
     />
   );
 }
+
+export default isAuth(AssignGroups);

@@ -1426,5 +1426,5 @@ export type FormInstancesControllerCompleteFormInstanceResponse =
   FormInstancesControllerCompleteFormInstanceResponses[keyof FormInstancesControllerCompleteFormInstanceResponses];
 
 export type ClientOptions = {
-  baseUrl: string;
+  baseURL: string;
 };

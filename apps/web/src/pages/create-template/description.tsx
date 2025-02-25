@@ -1,11 +1,13 @@
+import { Scope } from '@web/client';
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
+import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
  */
-export default function Description() {
+function Description() {
   const {
     formTemplateName,
     setFormTemplateName,
@@ -39,3 +41,5 @@ export default function Description() {
     />
   );
 }
+
+export default isAuth(Description, Scope.ADMIN);

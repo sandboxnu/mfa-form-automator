@@ -30,9 +30,7 @@ export type jwtPayload = {
 
 export interface AuthContextType {
   user?: User;
-  loading: boolean;
   userData: any;
-  error?: any;
   login: (email: string, password: string) => void;
   azureLogin: () => void;
   completeRegistration: (
@@ -42,7 +40,7 @@ export interface AuthContextType {
     department: string,
     signatureLink: string,
     scope: RegisterEmployeeDto['scope'],
-  ) => void;
+  ) => Promise<Error | undefined>;
   logout: () => void;
 }
 
