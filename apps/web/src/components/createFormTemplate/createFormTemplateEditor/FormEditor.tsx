@@ -1,8 +1,8 @@
 import { Box, Button, Text } from '@chakra-ui/react';
 import { Checkbox, PlusSign, TextIcon } from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
-import { DraggableData, DraggableEvent } from 'react-draggable';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { DraggableData, DraggableEvent } from 'react-draggable';
 import { v4 as uuidv4 } from 'uuid';
 import {
   FieldGroups,
@@ -186,7 +186,7 @@ export const FormEditor = ({
                   currentGroup === key ? groupColors[index][1] : 'white'
                 }
                 borderColor={groupColors[index][0]}
-                textColor={groupColors[index][0]}
+                css={{ '--color': groupColors[index][0] }}
               >
                 Group {index + 1}
               </Button>
@@ -262,7 +262,7 @@ export const FormEditor = ({
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                isDisabled={fieldGroups.size == 0 || disableEdit}
+                disabled={fieldGroups.size == 0 || disableEdit}
                 onClick={handleAddTextField}
               >
                 <div>{TextIcon}</div>
@@ -276,7 +276,7 @@ export const FormEditor = ({
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                isDisabled={fieldGroups.size == 0 || disableEdit}
+                disabled={fieldGroups.size == 0 || disableEdit}
                 onClick={handleAddCheckbox}
               >
                 <div>{Checkbox}</div>
