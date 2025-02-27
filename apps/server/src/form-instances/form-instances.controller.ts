@@ -36,6 +36,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AuthUser } from '../auth/auth.decorators';
 import { UserEntity } from '../auth/entities/user.entity';
 import { LoggerServiceImpl } from '../logger/logger.service';
+import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
 import { ParseFormDataJsonPipe } from '../form-templates/form-templates.controller';
@@ -49,6 +50,7 @@ export class FormInstancesController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @ApiCreatedResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
@@ -65,13 +67,14 @@ export class FormInstancesController {
   }
 
   @Get()
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse({ type: [FormInstanceEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
     name: 'limit',
     type: Number,
-    description: 'Limit on number of positions to return',
+    description: 'Limit on number of form instances to return',
     required: false,
   })
   async findAll(@Query('limit') limit?: number) {
@@ -81,8 +84,8 @@ export class FormInstancesController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: [FormInstanceEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
@@ -96,8 +99,8 @@ export class FormInstancesController {
     );
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('created/me')
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: [FormInstanceEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
@@ -112,6 +115,7 @@ export class FormInstancesController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -132,6 +136,7 @@ export class FormInstancesController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -144,6 +149,7 @@ export class FormInstancesController {
     @Body(new ValidationPipe({ transform: true }))
     updateFormInstanceDto: UpdateFormInstanceDto,
   ) {
+    // TODO: Who is alloed to update a form instance? Creator? Admin? etc?
     try {
       const updatedFormInstance = await this.formInstancesService.update(
         id,
@@ -166,11 +172,13 @@ export class FormInstancesController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse()
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async remove(@Param('id') id: string) {
+    // TODO: Who is alloed to update a form instance? Creator? Admin? etc?
     try {
       await this.formInstancesService.remove(id);
     } catch (e) {
@@ -188,8 +196,8 @@ export class FormInstancesController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':formInstanceId/sign/:signatureId')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiOkResponse({ type: FormInstanceEntity })
@@ -231,8 +239,8 @@ export class FormInstancesController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':formInstanceId/complete')
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })

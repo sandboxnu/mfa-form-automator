@@ -6,9 +6,9 @@ export default function Success() {
 
   return (
     <SuccessPage
-      message={'Your form template has been created!'}
-      linkText={'Create form instance'}
-      linkAction={() => router.push('/create-instance/select-template')}
+      message={'Your form instance has been created!'}
+      linkText={'Edit Form'}
+      linkAction={() => router.push('/')}
     />
   );
 }

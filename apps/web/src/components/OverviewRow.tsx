@@ -1,9 +1,10 @@
-import { HStack, Flex, Text } from '@chakra-ui/react';
+import { Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { FormCard } from './FormCard.tsx';
 import { FormInstanceEntity } from '@web/client/types.gen.ts';
-import React from 'react';
+import React, { useState } from 'react';
 import { FormImageCard } from './FormImageCard.tsx';
 import { ViewAll } from './ViewAll.tsx';
+import { SignFormInstancePreview } from './SignFormInstancePreview.tsx';
 
 /**
  * @param title - the title of the overview row
@@ -28,6 +29,13 @@ export const OverviewRow = ({
     0,
     Math.min(4, formInstances.length),
   );
+  const [isOpen, setIsOpen] = useState(false);
+  const [curForm, setCurForm] = useState<FormInstanceEntity>(formInstances[0]);
+
+  function handleModalOpen(formInstance: FormInstanceEntity) {
+    setCurForm(formInstance);
+    setIsOpen(true);
+  }
 
   return (
     <>
@@ -71,12 +79,13 @@ export const OverviewRow = ({
           (formInstance: FormInstanceEntity, index: number) => {
             return title == 'To-do' ? (
               <FormImageCard
+                onClick={() => handleModalOpen(formInstance)}
                 key={index}
                 formInstance={formInstance}
-                link={'/form-instances/' + formInstance.id}
               />
             ) : (
               <FormCard
+                onClick={() => handleModalOpen(formInstance)}
                 key={index}
                 formName={formInstance.name}
                 assignedGroups={formInstance.assignedGroups}
@@ -86,6 +95,11 @@ export const OverviewRow = ({
           },
         )}
       </Flex>
+      <SignFormInstancePreview
+        isOpen={isOpen}
+        onClose={setIsOpen(false)}
+        formInstance={curForm}
+      />
     </>
   );
 };

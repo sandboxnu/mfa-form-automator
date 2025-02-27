@@ -3,7 +3,7 @@ import { CreateFormTemplateContextType } from './types';
 import {
   FormFields,
   FieldGroups,
-} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
+} from '@web/components/createFormTemplate/types';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
@@ -20,6 +20,7 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [formFields, setFormFields] = useState<FormFields>({});
   const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
+
   const router = useRouter();
 
   useEffect(() => {

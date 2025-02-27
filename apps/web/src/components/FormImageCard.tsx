@@ -1,7 +1,7 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { useRouter } from 'next/router.js';
-import { PDFDocument } from './PDFDocument.tsx';
-import { FormInstanceEntity } from '@web/client/types.gen.ts';
+import { PDFDocument } from './PDFDocument';
+import { FormInstanceEntity } from '@web/client/types.gen';
+import { MouseEventHandler } from 'react';
 
 /**
  * @param formName - the name of the form
@@ -11,13 +11,11 @@ import { FormInstanceEntity } from '@web/client/types.gen.ts';
  */
 export const FormImageCard = ({
   formInstance,
-  link,
+  onClick,
 }: {
   formInstance: FormInstanceEntity;
-  link: string;
+  onClick: MouseEventHandler<HTMLDivElement>;
 }) => {
-  const router = useRouter();
-
   const daysAgo = (date1: Date, date2: Date) => {
     const diffInTime = date1.getTime() - date2.getTime();
     const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
@@ -33,9 +31,7 @@ export const FormImageCard = ({
       border="1px solid #D4D4D4"
       background="#FCFCFC"
       cursor="pointer"
-      onClick={() => {
-        router.push(link);
-      }}
+      onClick={onClick}
       _hover={{
         boxShadow: '0px 0.5px 6px 1px #DCDCDC',
       }}

@@ -1,7 +1,7 @@
 import { Box, Text } from '@chakra-ui/react';
-import { useRouter } from 'next/router.js';
-import { AssignedAvatarGroup } from './AssignedAvatarGroup';
 import { AssignedGroupEntity } from '@web/client';
+import { MouseEventHandler } from 'react';
+import { AssignedAvatarGroup } from './AssignedAvatarGroup';
 
 /**
  * @param formName - the name of the form
@@ -13,13 +13,13 @@ export const FormCard = ({
   formName,
   assignedGroups,
   link,
+  onClick,
 }: {
   formName: String;
   assignedGroups: AssignedGroupEntity[];
   link: string;
+  onClick: MouseEventHandler<HTMLDivElement>;
 }) => {
-  const router = useRouter();
-
   return (
     <>
       <Box
@@ -30,9 +30,7 @@ export const FormCard = ({
         boxShadow="0px 0.5px 3px 1px #DCDCDC"
         background="#FCFCFC"
         cursor="pointer"
-        onClick={() => {
-          router.push(link);
-        }}
+        onClick={onClick}
         _hover={{
           boxShadow: '0px 0.5px 6px 1px #DCDCDC',
         }}

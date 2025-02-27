@@ -1,4 +1,4 @@
-import { FormTemplateLayout } from '@web/components/createFormTemplate/FormTemplateLayout';
+import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { UploadBox } from '@web/components/createFormTemplate/UploadBox';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
@@ -9,8 +9,10 @@ export default function Upload() {
   const { pdfFile, setPdfFile } = useCreateFormTemplate();
 
   return (
-    <FormTemplateLayout
+    <CreateFormLayout
+      isFormTemplate={true}
       pageNumber={1}
+      heading={'Create form template'}
       subheading={'Upload your form PDF'}
       boxContent={
         <UploadBox
@@ -22,6 +24,7 @@ export default function Upload() {
       deleteFunction={() => setPdfFile(null)}
       submitLink={'/create-template/description'}
       backLink={'/'}
+      review={false}
       disabled={!pdfFile}
     />
   );

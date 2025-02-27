@@ -31,7 +31,6 @@
     "@nestjs/platform-express": "11.0.9",
     "@nestjs/swagger": "11.0.3",
     "@prisma/client": "5.2.0",
-    "@trpc/server": "10.38.0",
     "@vercel/blob": "0.27.1",
     "bcrypt": "5.1.1",
     "class-transformer": "0.5.1",
