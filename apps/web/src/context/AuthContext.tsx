@@ -118,7 +118,7 @@ export const AuthProvider = ({ children }: any) => {
     if (user && user.positionId == null) {
       router.push('/register');
     }
-  }, [user]);
+  }, [router, user]);
 
   // Flags the component loading state and posts the login
   // data to the server.
@@ -143,16 +143,6 @@ export const AuthProvider = ({ children }: any) => {
         parseUser(response.data);
         router.push('/');
       });
-      // .catch((error) => {
-      //   if (error.status === 401) {
-      //     // TODO: handle password was incorrect
-      //   }
-
-      //   if (error.status === 500) {
-      //     // TODO: Instead of registering a new user on 500, the backend should handle creating a new user, or we need some separate flow for registration
-      //     register(email, password);
-      //   }
-      // });
     },
     [parseUser, router],
   );
@@ -188,7 +178,7 @@ export const AuthProvider = ({ children }: any) => {
           console.error(error);
         }
       });
-  }, [instance, login]);
+  }, [azureUser, requestProfileDataMutation, instance, login]);
 
   // Request the profile data from the Microsoft Graph API
   const requestProfileData = async () => {
@@ -226,7 +216,7 @@ export const AuthProvider = ({ children }: any) => {
       });
       router.push('/');
     },
-    [onboardEmployeeMutation],
+    [onboardEmployeeMutation, router],
   );
 
   // Make the provider update only when it should.
