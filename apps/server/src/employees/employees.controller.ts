@@ -34,6 +34,7 @@ import { UserEntity } from '../auth/entities/user.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
+import { OnboardEmployeeDto } from './dto/onboard-employee.dto';
 
 @ApiTags('employees')
 @Controller('employees')
@@ -59,6 +60,26 @@ export class EmployeesController {
     // TODO: Auth
     const newEmployee = await this.employeesService.create(createEmployeeDto);
     return new EmployeeEntity(newEmployee);
+  }
+
+  @Patch('/onboarding')
+  @UseGuards(JwtAuthGuard)
+  @ApiCreatedResponse({ type: EmployeeEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async onboardEmployee(
+    @AuthUser() currentUser: UserEntity,
+    @Body(new ValidationPipe({ transform: true }))
+    onboardEmployeeDto: OnboardEmployeeDto,
+  ) {
+    const onboardedEmployee = await this.employeesService.update(
+      currentUser.id,
+      onboardEmployeeDto,
+    );
+    return new EmployeeEntity(onboardedEmployee);
   }
 
   @Get()

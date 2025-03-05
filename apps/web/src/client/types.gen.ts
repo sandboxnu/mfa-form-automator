@@ -4,20 +4,11 @@ export type JwtEntity = {
   accessToken: string;
 };
 
-export enum Scope {
-  BASE_USER = 'BASE_USER',
-  ADMIN = 'ADMIN',
-}
-
 export type RegisterEmployeeDto = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  positionName: string;
-  departmentName: string;
-  signatureLink: string;
-  scope: 'BASE_USER' | 'ADMIN';
 };
 
 export type DepartmentEntity = {
@@ -37,15 +28,20 @@ export type PositionBaseEntity = {
   updatedAt: string;
 };
 
+export enum Scope {
+  BASE_USER = 'BASE_USER',
+  ADMIN = 'ADMIN',
+}
+
 export type EmployeeEntity = {
   id: string;
   firstName: string;
   lastName: string;
   email: string;
-  signatureLink: string;
+  signatureLink: string | null;
   scope: 'BASE_USER' | 'ADMIN';
-  position: PositionBaseEntity;
-  positionId: string;
+  position: PositionBaseEntity | null;
+  positionId: string | null;
   pswdHash: string | null;
   createdAt: string;
   updatedAt: string;
@@ -55,18 +51,21 @@ export type EmployeeEntity = {
 export type CreateEmployeeDto = {
   firstName: string;
   lastName: string;
-  positionId: string;
+  positionId?: string;
   email: string;
   password: string;
-  signatureLink: string;
   scope: 'BASE_USER' | 'ADMIN';
+};
+
+export type OnboardEmployeeDto = {
+  signatureLink: string;
+  positionId: string;
 };
 
 export type UpdateEmployeeDto = {
   firstName?: string;
   lastName?: string;
   positionId?: string;
-  signatureLink?: string;
   scope?: 'BASE_USER' | 'ADMIN';
 };
 
@@ -80,9 +79,9 @@ export type EmployeeBaseEntity = {
   firstName: string;
   lastName: string;
   email: string;
-  signatureLink: string;
+  signatureLink: string | null;
   scope: 'BASE_USER' | 'ADMIN';
-  positionId: string;
+  positionId: string | null;
   pswdHash: string | null;
   createdAt: string;
   updatedAt: string;
@@ -440,6 +439,36 @@ export type EmployeesControllerCreateResponses = {
 
 export type EmployeesControllerCreateResponse =
   EmployeesControllerCreateResponses[keyof EmployeesControllerCreateResponses];
+
+export type EmployeesControllerOnboardEmployeeData = {
+  body: OnboardEmployeeDto;
+  path?: never;
+  query?: never;
+  url: '/api/employees/onboarding';
+};
+
+export type EmployeesControllerOnboardEmployeeErrors = {
+  /**
+   * Bad Request
+   */
+  400: unknown;
+  /**
+   * Unauthorized Request
+   */
+  403: unknown;
+  /**
+   * Bad Request
+   */
+  422: unknown;
+};
+
+export type EmployeesControllerOnboardEmployeeResponses = {
+  200: EmployeeEntity;
+  201: EmployeeEntity;
+};
+
+export type EmployeesControllerOnboardEmployeeResponse =
+  EmployeesControllerOnboardEmployeeResponses[keyof EmployeesControllerOnboardEmployeeResponses];
 
 export type EmployeesControllerFindMeData = {
   body?: never;

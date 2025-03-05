@@ -12,17 +12,19 @@ import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@web/authConfig';
 import { callMsGraph, GraphUser } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
-import { Scope } from '@web/client';
+import { appControllerRegister, OnboardEmployeeDto, Scope } from '@web/client';
 
 import {
   appControllerLogin,
   appControllerLogout,
   employeesControllerFindMe,
   JwtEntity,
-  RegisterEmployeeDto,
 } from '../client';
 import { client } from '@web/client/client.gen';
-import { appControllerRegisterMutation } from '@web/client/@tanstack/react-query.gen';
+import {
+  appControllerRegisterMutation,
+  employeesControllerOnboardEmployeeMutation,
+} from '@web/client/@tanstack/react-query.gen';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -34,10 +36,14 @@ export const AuthProvider = ({ children }: any) => {
   const { instance } = useMsal();
   const [user, setUser] = useState<User>();
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
-  const [userData, setUserData] = useState<GraphUser>();
+  const [azureUser, setAzureUser] = useState<GraphUser>();
 
   const registerEmployeeMutation = useMutation({
     ...appControllerRegisterMutation(),
+  });
+
+  const onboardEmployeeMutation = useMutation({
+    ...employeesControllerOnboardEmployeeMutation(),
   });
 
   const requestProfileDataMutation = useMutation({
@@ -45,7 +51,7 @@ export const AuthProvider = ({ children }: any) => {
       return requestProfileData();
     },
     onSuccess: (data) => {
-      setUserData(data);
+      setAzureUser(data);
     },
   });
 
@@ -92,8 +98,8 @@ export const AuthProvider = ({ children }: any) => {
     if (employee.data) {
       newUser = {
         id: employee.data.id,
-        positionId: employee.data.position.id,
-        departmentId: employee.data.position.departmentId,
+        positionId: employee.data.position?.id ?? null,
+        departmentId: employee.data.position?.departmentId ?? null,
         email: employee.data.email,
         firstName: employee.data.firstName,
         lastName: employee.data.lastName,
@@ -107,6 +113,12 @@ export const AuthProvider = ({ children }: any) => {
     setLoadingInitial(true);
     fetchCurrentUser().then(() => setLoadingInitial(false));
   }, []);
+
+  useEffect(() => {
+    if (user && user.positionId == null) {
+      router.push('/register');
+    }
+  }, [user]);
 
   // Flags the component loading state and posts the login
   // data to the server.
@@ -124,38 +136,57 @@ export const AuthProvider = ({ children }: any) => {
           username: email,
           password: password,
         },
-      })
-        .then((response) => {
-          if (response.data == null) {
-            throw new Error('No JWT data found');
-          }
-          parseUser(response.data);
-          router.push('/');
-        })
-        .catch((error) => {
-          if (error.status === 401) {
-            // TODO: handle password was incorrect
-          }
+      }).then((response) => {
+        if (response.data == null) {
+          throw new Error('No JWT data found');
+        }
+        parseUser(response.data);
+        router.push('/');
+      });
+      // .catch((error) => {
+      //   if (error.status === 401) {
+      //     // TODO: handle password was incorrect
+      //   }
 
-          if (error.status === 500) {
-            // TODO: Why do we want to register if the error status is 500?
-            // register(email, password);
-          }
-        });
+      //   if (error.status === 500) {
+      //     // TODO: Instead of registering a new user on 500, the backend should handle creating a new user, or we need some separate flow for registration
+      //     register(email, password);
+      //   }
+      // });
     },
     [parseUser, router],
   );
 
-  const azureLogin = useCallback(() => {
+  const azureLogin = useCallback(async () => {
     instance
       .loginPopup(loginRequest)
-      .then((response) => {
-        // TODO: why are we using a constant value?
-        login(response.account.username, 'password');
+      .then((_) => {
+        requestProfileDataMutation.mutate();
       })
-      .catch((error) => {
-        // TODO: Should we have better error handling here?
-        console.error(error);
+      .then(() => {
+        if (!azureUser?.mail) {
+          throw new Error('Azure user data not found');
+        }
+        login(azureUser?.mail, azureUser?.id);
+      })
+      .catch(async (error) => {
+        if (error.status == 401) {
+          if (!azureUser) {
+            throw new Error('Azure user data not found');
+          }
+          await appControllerRegister({
+            body: {
+              firstName: azureUser.givenName,
+              lastName: azureUser.surname,
+              email: azureUser.mail,
+              password: azureUser.id,
+            },
+          });
+          login(azureUser.mail, azureUser.id);
+        } else {
+          // TODO: Should we have better error handling here?
+          console.error(error);
+        }
       });
   }, [instance, login]);
 
@@ -176,37 +207,26 @@ export const AuthProvider = ({ children }: any) => {
 
   // Register a user with provided information to the database
   const completeRegistration = useCallback(
-    async (
-      email: string,
-      password: string,
-      position: string,
-      department: string,
-      signatureLink: string,
-      scope: RegisterEmployeeDto['scope'],
-    ) => {
-      if (!userData) {
-        throw new Error('User data not found');
-      }
-      const employee: RegisterEmployeeDto = {
-        email: email,
-        password: password,
-        firstName: userData.givenName || userData.displayName.split(' ')[0],
-        lastName: userData.surname || userData.displayName.split(' ')[1],
-        departmentName: department,
-        positionName: position,
+    async (positionId: string, signatureLink: string) => {
+      const onboardingEmployeeDto: OnboardEmployeeDto = {
+        positionId: positionId,
         signatureLink: signatureLink,
-        scope: scope,
       };
-      try {
-        await registerEmployeeMutation.mutateAsync({
-          body: employee,
-        });
-        login(email, password);
-      } catch (e) {
-        return e as Error;
-      }
+      const onboardedEmployee = await onboardEmployeeMutation.mutateAsync({
+        body: onboardingEmployeeDto,
+      });
+      setUser({
+        id: onboardedEmployee.id,
+        positionId: onboardedEmployee.positionId,
+        departmentId: onboardedEmployee.position?.departmentId ?? null,
+        email: onboardedEmployee.email,
+        firstName: onboardedEmployee.firstName,
+        lastName: onboardedEmployee.lastName,
+        scope: onboardedEmployee.scope as Scope,
+      });
+      router.push('/');
     },
-    [login, registerEmployeeMutation, userData],
+    [onboardEmployeeMutation],
   );
 
   // Make the provider update only when it should.
@@ -221,13 +241,13 @@ export const AuthProvider = ({ children }: any) => {
   const memoedValue = useMemo(
     () => ({
       user,
-      userData,
+      azureUser,
       login,
       azureLogin,
       completeRegistration,
       logout,
     }),
-    [user, userData, login, azureLogin, completeRegistration, logout],
+    [user, azureUser, login, azureLogin, completeRegistration, logout],
   );
 
   return (

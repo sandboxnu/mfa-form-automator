@@ -20,6 +20,8 @@ import type {
   EmployeesControllerFindAllResponse,
   EmployeesControllerCreateData,
   EmployeesControllerCreateResponse,
+  EmployeesControllerOnboardEmployeeData,
+  EmployeesControllerOnboardEmployeeResponse,
   EmployeesControllerFindMeData,
   EmployeesControllerFindMeResponse,
   EmployeesControllerRemoveData,
@@ -203,6 +205,25 @@ export const employeesControllerCreate = <ThrowOnError extends boolean = false>(
       },
     ],
     url: '/api/employees',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+};
+
+export const employeesControllerOnboardEmployee = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<EmployeesControllerOnboardEmployeeData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).patch<
+    EmployeesControllerOnboardEmployeeResponse,
+    unknown,
+    ThrowOnError
+  >({
+    url: '/api/employees/onboarding',
     ...options,
     headers: {
       'Content-Type': 'application/json',

@@ -19,8 +19,6 @@ export class EmployeesService {
         firstName: createEmployeeDto.firstName,
         lastName: createEmployeeDto.lastName,
         email: createEmployeeDto.email,
-        positionId: createEmployeeDto.positionId,
-        signatureLink: createEmployeeDto.signatureLink,
         pswdHash: await bcrypt.hash(
           createEmployeeDto.password,
           await bcrypt.genSalt(),

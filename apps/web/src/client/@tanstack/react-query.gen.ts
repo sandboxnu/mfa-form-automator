@@ -9,6 +9,7 @@ import {
   appControllerLogout,
   employeesControllerFindAll,
   employeesControllerCreate,
+  employeesControllerOnboardEmployee,
   employeesControllerFindMe,
   employeesControllerRemove,
   employeesControllerFindOne,
@@ -59,6 +60,8 @@ import type {
   EmployeesControllerFindAllData,
   EmployeesControllerCreateData,
   EmployeesControllerCreateResponse,
+  EmployeesControllerOnboardEmployeeData,
+  EmployeesControllerOnboardEmployeeResponse,
   EmployeesControllerFindMeData,
   EmployeesControllerRemoveData,
   EmployeesControllerFindOneData,
@@ -339,6 +342,26 @@ export const employeesControllerCreateMutation = (
   > = {
     mutationFn: async (localOptions) => {
       const { data } = await employeesControllerCreate({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const employeesControllerOnboardEmployeeMutation = (
+  options?: Partial<Options<EmployeesControllerOnboardEmployeeData>>,
+) => {
+  const mutationOptions: UseMutationOptions<
+    EmployeesControllerOnboardEmployeeResponse,
+    AxiosError<DefaultError>,
+    Options<EmployeesControllerOnboardEmployeeData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await employeesControllerOnboardEmployee({
         ...options,
         ...localOptions,
         throwOnError: true,

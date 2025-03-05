@@ -5,9 +5,10 @@ export interface GraphUser {
   displayName: string;
   department?: string;
   jobTitle?: string;
-  givenName?: string;
-  surname?: string;
+  givenName: string;
+  surname: string;
   userPrincipalName?: string;
+  mail: string;
 }
 
 /**

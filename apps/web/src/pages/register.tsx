@@ -1,5 +1,5 @@
 import { Flex, Box, Text, Select, Button } from '@chakra-ui/react';
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useBlob } from '@web/hooks/useBlob';
@@ -7,16 +7,14 @@ import { SignaturePad } from './../components/SignaturePad';
 import { DepartmentEntity, PositionEntity } from '@web/client';
 import {
   departmentsControllerFindAllOptions,
-  positionsControllerFindAllInDepartmentNameOptions,
+  positionsControllerFindAllInDepartmentOptions,
 } from '@web/client/@tanstack/react-query.gen';
-import { Scope } from '@web/client';
+import isAuth from '@web/components/isAuth';
 
-export default function Register() {
-  const { completeRegistration, userData } = useAuth();
-  const [currentDepartmentName, setCurrentDepartmentName] =
-    useState<string>('');
-  const [currentPositionName, setCurrentPositionName] = useState<string>('');
-  const [loadingUserData, setLoadingUserData] = useState<boolean>(true);
+function Register() {
+  const { completeRegistration, user } = useAuth();
+  const [currentDepartmentId, setCurrentDepartmentId] = useState<string>();
+  const [currentPositionId, setCurrentPositionId] = useState<string>();
   const [createSignatureType, setCreateSignatureType] =
     useState<string>('draw');
   const [signatureText, setSignatureText] = useState<string>('');
@@ -33,28 +31,16 @@ export default function Register() {
   });
 
   const { data: positionsData } = useQuery({
-    ...positionsControllerFindAllInDepartmentNameOptions({
+    ...positionsControllerFindAllInDepartmentOptions({
       path: {
-        departmentName: currentDepartmentName,
+        departmentId: currentDepartmentId ?? '',
       },
       query: {
         limit: 1000,
       },
     }),
-    enabled: !!currentDepartmentName,
+    enabled: !!currentDepartmentId,
   });
-
-  useEffect(() => {
-    if (userData) {
-      setCurrentDepartmentName(userData.departmentId);
-      setCurrentPositionName(userData.positionId);
-      setLoadingUserData(false);
-    }
-  }, [userData]);
-
-  if (loadingUserData) {
-    return <div>Loading...</div>;
-  }
 
   // Convert data URL to blob for file upload
   const dataURLToBlob = (dataURL: string) => {
@@ -103,7 +89,7 @@ export default function Register() {
 
   // Handle registration submission
   const handleRegistration = async () => {
-    if (!currentDepartmentName || !currentPositionName) return;
+    if (!currentDepartmentId || !currentPositionId) return;
 
     await createSignatureImage();
     const signatureUrl = blob
@@ -111,15 +97,7 @@ export default function Register() {
         URL.createObjectURL(blob)
       : 'http://localhost:3002/signature.png';
     try {
-      await completeRegistration(
-        // TODO: Why do we specify the email and password? shouldn't we just use the jwt token?
-        userData.email,
-        userData.password,
-        currentDepartmentName,
-        currentPositionName,
-        signatureUrl,
-        Scope.BASE_USER,
-      );
+      await completeRegistration(currentPositionId, signatureUrl);
     } catch (error) {
       console.error('Error during registration:', error);
     }
@@ -150,8 +128,7 @@ export default function Register() {
             fontWeight="600"
             fontFamily="Hanken Grotesk"
           >
-            Hi {userData.displayName.split(' ')[0]}, let&apos;s get you
-            registered!
+            Hi {user?.firstName}, let&apos;s get you registered!
           </Text>
           <Text color="#4B4C4F" fontSize="16px" fontWeight="400">
             Please provide your department, position, and signature. <br /> You
@@ -164,14 +141,14 @@ export default function Register() {
           <Select
             id="departmentDropdown"
             placeholder="Select your department"
-            onChange={(e) => setCurrentDepartmentName(e.target.value)}
+            onChange={(e) => setCurrentDepartmentId(e.target.value)}
             marginTop="8px"
           >
             {departmentsData?.map((department: DepartmentEntity) => (
               <option
                 key={department.name}
-                value={department.name}
-                selected={department.name === currentDepartmentName}
+                value={department.id}
+                selected={department.id === currentDepartmentId}
               >
                 {department.name}
               </option>
@@ -184,15 +161,15 @@ export default function Register() {
           <Select
             id="positionDropdown"
             placeholder="Select your position"
-            onChange={(e) => setCurrentPositionName(e.target.value)}
-            disabled={!currentDepartmentName}
+            onChange={(e) => setCurrentPositionId(e.target.value)}
+            disabled={!currentDepartmentId}
             marginTop="8px"
           >
             {positionsData?.map((position: PositionEntity) => (
               <option
                 key={position.name}
-                value={position.name}
-                selected={position.name === currentPositionName}
+                value={position.id}
+                selected={position.id === currentPositionId}
               >
                 {position.name}
               </option>
@@ -211,14 +188,16 @@ export default function Register() {
         <Box>
           <Button
             onClick={handleRegistration}
-            isDisabled={!(currentDepartmentName && currentPositionName)}
+            isDisabled={!(currentDepartmentId && currentPositionId)}
             bg="#1367EA"
             color="#FFF"
           >
-            Sign In
+            Continue
           </Button>
         </Box>
       </Flex>
     </Flex>
   );
 }
+
+export default isAuth(Register);

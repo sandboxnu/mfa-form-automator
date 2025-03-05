@@ -220,6 +220,12 @@ export class FormInstancesService {
       throw new NotFoundException(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
     }
 
+    if (!employee.positionId || !employee.position) {
+      throw new BadRequestException(
+        EmployeeErrorMessage.EMPLOYEE_NOT_ONBOARDED,
+      );
+    }
+
     const formInstances = await this.prisma.formInstance.findMany({
       where: {
         assignedGroups: {
@@ -536,6 +542,12 @@ export class FormInstancesService {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: { id: currentUser.id },
     });
+
+    if (!employee.positionId) {
+      throw new BadRequestException(
+        EmployeeErrorMessage.EMPLOYEE_NOT_ONBOARDED,
+      );
+    }
 
     const position = await this.prisma.position.findFirstOrThrow({
       where: { id: employee.positionId },
