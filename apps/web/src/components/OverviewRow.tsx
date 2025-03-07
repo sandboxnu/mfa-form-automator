@@ -31,7 +31,7 @@ export const OverviewRow = ({
     Math.min(4, formInstances.length),
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [curForm, setCurForm] = useState<FormInstanceEntity>(formInstances[0]);
+  const [curForm, setCurForm] = useState<FormInstanceEntity>();
 
   function handleModalOpen(formInstance: FormInstanceEntity) {
     setCurForm(formInstance);

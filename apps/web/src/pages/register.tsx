@@ -1,5 +1,5 @@
 import { Flex, Box, Text, Select, Button } from '@chakra-ui/react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
 import { useBlob } from '@web/hooks/useBlob';
@@ -10,8 +10,10 @@ import {
   positionsControllerFindAllInDepartmentOptions,
 } from '@web/client/@tanstack/react-query.gen';
 import isAuth from '@web/components/isAuth';
+import { useRouter } from 'next/router';
 
 function Register() {
+  const router = useRouter();
   const { completeRegistration, user } = useAuth();
   const [currentDepartmentId, setCurrentDepartmentId] = useState<string>();
   const [currentPositionId, setCurrentPositionId] = useState<string>();
@@ -20,6 +22,12 @@ function Register() {
   const [signatureText, setSignatureText] = useState<string>('');
   const signatureCanvas = useRef<any>(null);
   const { blob, setBlob } = useBlob();
+
+  useEffect(() => {
+    if (user && user.positionId) {
+      router.push('/');
+    }
+  }, [router, user]);
 
   // Fetch departments and positions
   const { data: departmentsData } = useQuery({

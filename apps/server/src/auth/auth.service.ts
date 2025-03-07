@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
 import { EmployeeScope } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class AuthService {
@@ -22,14 +23,21 @@ export class AuthService {
     email: string,
     pass: string,
   ): Promise<EmployeeEntity | null> {
-    const user = await this.employeesService.findOneByEmail(email);
+    try {
+      const user = await this.employeesService.findOneByEmail(email);
 
-    if (user?.pswdHash && !(await bcrypt.compare(pass, user.pswdHash!))) {
-      return null;
+      if (user?.pswdHash && !(await bcrypt.compare(pass, user.pswdHash!))) {
+        return null;
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { pswdHash, ...result } = user;
+      return new EmployeeEntity(result);
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
+        return null;
+      }
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { pswdHash, ...result } = user;
-    return new EmployeeEntity(result);
+    return null;
   }
 
   /**

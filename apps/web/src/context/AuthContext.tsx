@@ -115,10 +115,15 @@ export const AuthProvider = ({ children }: any) => {
   }, []);
 
   useEffect(() => {
-    if (user && user.positionId == null) {
+    if (
+      !router.pathname.includes('register') &&
+      !loadingInitial &&
+      user &&
+      user.positionId == null
+    ) {
       router.push('/register');
     }
-  }, [router, user]);
+  }, [loadingInitial, router, user]);
 
   // Flags the component loading state and posts the login
   // data to the server.
@@ -130,19 +135,24 @@ export const AuthProvider = ({ children }: any) => {
   // loading state is over.
   const login = useCallback(
     (email: string, password: string) => {
-      appControllerLogin({
+      return appControllerLogin({
         client: client,
         body: {
           username: email,
           password: password,
         },
-      }).then((response) => {
-        if (response.data == null) {
-          throw new Error('No JWT data found');
-        }
-        parseUser(response.data);
-        router.push('/');
-      });
+      })
+        .then((response) => {
+          if (response.data == null) {
+            return false;
+          }
+          parseUser(response.data);
+          router.push('/');
+          return true;
+        })
+        .catch((e) => {
+          throw e;
+        });
     },
     [parseUser, router],
   );
@@ -150,35 +160,34 @@ export const AuthProvider = ({ children }: any) => {
   const azureLogin = useCallback(async () => {
     instance
       .loginPopup(loginRequest)
-      .then((_) => {
-        requestProfileDataMutation.mutate();
+      .then(async (_) => {
+        return await requestProfileDataMutation.mutateAsync();
       })
-      .then(() => {
-        if (!azureUser?.mail) {
+      .then(async (graphUser) => {
+        if (!graphUser?.mail) {
           throw new Error('Azure user data not found');
         }
-        login(azureUser?.mail, azureUser?.id);
-      })
-      .catch(async (error) => {
-        if (error.status == 401) {
-          if (!azureUser) {
+        if (!(await login(graphUser?.mail, graphUser?.id))) {
+          if (!graphUser) {
             throw new Error('Azure user data not found');
           }
           await appControllerRegister({
             body: {
-              firstName: azureUser.givenName,
-              lastName: azureUser.surname,
-              email: azureUser.mail,
-              password: azureUser.id,
+              firstName:
+                graphUser.givenName ?? graphUser.displayName.split(' ')[0],
+              lastName:
+                graphUser.surname ?? graphUser.displayName.split(' ')[1],
+              email: graphUser.mail,
+              password: graphUser.id,
             },
           });
-          login(azureUser.mail, azureUser.id);
-        } else {
-          // TODO: Should we have better error handling here?
-          console.error(error);
+          await login(graphUser.mail, graphUser.id);
         }
+      })
+      .catch((error) => {
+        console.error(error);
       });
-  }, [azureUser, requestProfileDataMutation, instance, login]);
+  }, [requestProfileDataMutation, instance, login]);
 
   // Request the profile data from the Microsoft Graph API
   const requestProfileData = async () => {
