@@ -211,18 +211,10 @@ export const AuthProvider = ({ children }: any) => {
         positionId: positionId,
         signatureLink: signatureLink,
       };
-      const onboardedEmployee = await onboardEmployeeMutation.mutateAsync({
+      await onboardEmployeeMutation.mutateAsync({
         body: onboardingEmployeeDto,
       });
-      setUser({
-        id: onboardedEmployee.id,
-        positionId: onboardedEmployee.positionId,
-        departmentId: onboardedEmployee.position?.departmentId ?? null,
-        email: onboardedEmployee.email,
-        firstName: onboardedEmployee.firstName,
-        lastName: onboardedEmployee.lastName,
-        scope: onboardedEmployee.scope as Scope,
-      });
+      await fetchCurrentUser();
       router.push('/');
     },
     [onboardEmployeeMutation, router],
