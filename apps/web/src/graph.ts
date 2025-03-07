@@ -1,10 +1,23 @@
 import { graphConfig } from '@web/authConfig';
 
+export interface GraphUser {
+  id: string;
+  displayName: string;
+  department?: string;
+  jobTitle?: string;
+  givenName: string;
+  surname: string;
+  userPrincipalName?: string;
+  mail: string;
+}
+
 /**
  * Attaches a given access token to a MS Graph API call. Returns information about the user
  * @param accessToken
  */
-export async function callMsGraph(accessToken: string) {
+export async function callMsGraph(
+  accessToken: string,
+): Promise<GraphUser | undefined> {
   const headers = new Headers();
   const bearer = `Bearer ${accessToken}`;
 
@@ -17,5 +30,11 @@ export async function callMsGraph(accessToken: string) {
 
   return fetch(graphConfig.graphMeEndpoint, options)
     .then((response) => response.json())
-    .catch((error) => console.log(error));
+    .then((data) => {
+      return data as GraphUser;
+    })
+    .catch((error) => {
+      console.log(error);
+      return undefined;
+    });
 }

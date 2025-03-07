@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dto/create-position.dto';
@@ -87,7 +88,7 @@ export class PositionsController {
   })
   async findAllInDepartment(
     @Param('departmentId') departmentId: string,
-    @Query('limit') limit?: number,
+    @Query('limit', ParseIntPipe) limit?: number,
   ) {
     const positions = await this.positionsService.findAllInDepartment(
       departmentId,

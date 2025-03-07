@@ -4,14 +4,14 @@ import {
   FormFields,
   FieldGroups,
 } from '@web/components/createFormTemplate/types';
-import { AssignedGroupEntity, FormTemplateEntity, Scope } from '@web/client';
-import { RegisterEmployeeDto } from '@web/client';
+import { FormTemplateEntity, Scope } from '@web/client';
+import { GraphUser } from '@web/graph';
 
 // for storage in context
 export type User = {
   id: string;
-  positionId: string;
-  departmentId: string;
+  positionId: string | null;
+  departmentId: string | null;
   email: string;
   firstName: string;
   lastName: string;
@@ -30,19 +30,13 @@ export type jwtPayload = {
 
 export interface AuthContextType {
   user?: User;
-  loading: boolean;
-  userData: any;
-  error?: any;
+  userData?: GraphUser;
   login: (email: string, password: string) => void;
   azureLogin: () => void;
   completeRegistration: (
-    email: string,
-    password: string,
-    position: string,
     department: string,
     signatureLink: string,
-    scope: RegisterEmployeeDto['scope'],
-  ) => void;
+  ) => Promise<void>;
   logout: () => void;
 }
 

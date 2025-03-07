@@ -104,7 +104,7 @@ const employees: EmployeeData[] = [
     id: KAI_ZHENG_UUID,
     firstName: 'Kai',
     lastName: 'Zheng',
-    email: 'zheng.kaiy@northeastern.edu',
+    email: 'zheng.kaiy@test.edu',
     positionId: CHIEF_FIN_OFFICER_UUID,
     signatureLink: DEV_SIGNATURE_LINK,
     scope: EmployeeScope.ADMIN,

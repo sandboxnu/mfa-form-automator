@@ -33,6 +33,7 @@ import { EmployeesService } from './employees/employees.service';
 import { jwtDecode } from 'jwt-decode';
 import { RegisterEmployeeDto } from './auth/dto/register-employee.dto';
 import { CreateEmployeeDto } from './employees/dto/create-employee.dto';
+import { EmployeeScope } from '@prisma/client';
 
 @Controller()
 export class AppController {
@@ -130,23 +131,16 @@ export class AppController {
     @Body(new ValidationPipe({ transform: true }))
     registerEmployeeDto: RegisterEmployeeDto,
   ) {
-    const { positionName, departmentName, ...employeeDto } =
-      registerEmployeeDto;
-
     const createEmployeeDtoInstance: CreateEmployeeDto = {
-      firstName: employeeDto.firstName,
-      lastName: employeeDto.lastName,
-      email: employeeDto.email,
-      password: employeeDto.password,
-      signatureLink: employeeDto.signatureLink,
-      positionId: '',
-      scope: employeeDto.scope,
+      firstName: registerEmployeeDto.firstName,
+      lastName: registerEmployeeDto.lastName,
+      email: registerEmployeeDto.email,
+      password: registerEmployeeDto.password,
+      scope: EmployeeScope.BASE_USER,
     };
 
-    const newEmployee = await this.authService.register(
+    const newEmployee = await this.employeeService.create(
       createEmployeeDtoInstance,
-      positionName,
-      departmentName,
     );
 
     return new EmployeeEntity(newEmployee);

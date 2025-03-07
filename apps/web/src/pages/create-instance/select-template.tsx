@@ -1,9 +1,9 @@
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
+import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-import { useEffect } from 'react';
 
-export default function SelectTemplate() {
+function SelectTemplate() {
   const { formTemplate, setFormTemplate } = useCreateFormInstance();
 
   return (
@@ -23,3 +23,5 @@ export default function SelectTemplate() {
     />
   );
 }
+
+export default isAuth(SelectTemplate);
