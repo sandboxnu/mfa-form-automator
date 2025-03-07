@@ -24,6 +24,7 @@ export const useForm = () => {
     data: assignedFIData,
   } = useQuery({
     ...formInstancesControllerFindAllAssignedToCurrentEmployeeOptions(),
+    enabled: !!user,
   });
 
   const {
@@ -32,6 +33,7 @@ export const useForm = () => {
     data: createdFIData,
   } = useQuery({
     ...formInstancesControllerFindAllCreatedByCurrentEmployeeOptions(),
+    enabled: !!user,
   });
 
   const [todoForms, setTodoForms] = useState<FormInstanceEntity[]>([]);

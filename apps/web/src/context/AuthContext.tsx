@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: any) => {
       newUser = {
         id: employee.data.id,
         positionId: employee.data.position?.id ?? null,
-        departmentId: employee.data.position?.departmentId ?? null,
+        departmentId: employee.data.position?.department?.id ?? null,
         email: employee.data.email,
         firstName: employee.data.firstName,
         lastName: employee.data.lastName,
