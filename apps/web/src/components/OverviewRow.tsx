@@ -97,7 +97,7 @@ export const OverviewRow = ({
       </Flex>
       <SignFormInstancePreview
         isOpen={isOpen}
-        onClose={setIsOpen(false)}
+        onClose={() => setIsOpen(false)}
         formInstance={curForm}
       />
     </>

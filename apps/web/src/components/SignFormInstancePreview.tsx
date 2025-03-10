@@ -31,7 +31,7 @@ export const SignFormInstancePreview = ({
   formInstance,
 }: {
   isOpen: boolean;
-  onClose: any;
+  onClose: () => void;
   formInstance?: FormInstanceEntity;
 }) => {
   const router = useRouter();
@@ -44,7 +44,7 @@ export const SignFormInstancePreview = ({
   };
 
   if (!formInstance) {
-    return null;
+    return <></>;
   }
 
   return (
