@@ -22,7 +22,7 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
 const assigneePlaceholderWithIcon = (
   <div style={{ display: 'flex', alignItems: 'center' }}>
-    <SearchIcon />
+    <SearchIcon pl="5px" boxSize="24px" />
     <span style={{ marginLeft: '8px' }}>Select assignee</span>
   </div>
 );
@@ -146,10 +146,10 @@ export const SignatureDropdown = ({
             border={border}
           />
         </Heading>
-        <VStack align="start" spacing="8px">
+        <VStack align="start" gap="8px">
           <HStack
             width="360px"
-            spacing="0px"
+            gap="0px"
             borderWidth="1px"
             borderRadius="4px"
             overflow="hidden"
@@ -177,7 +177,7 @@ export const SignatureDropdown = ({
               options={options}
               placeholder={assigneePlaceholderWithIcon}
               value={selectedPosition}
-              onChange={(selected) => {
+              onChange={(selected: PositionOption) => {
                 setSelectedPosition(selected);
                 // TODO: probably should not be coercing this type
                 let updatedAssignedGroupData = assignedGroupData.at(index)!;

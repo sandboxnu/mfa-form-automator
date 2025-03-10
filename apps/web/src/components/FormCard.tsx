@@ -1,6 +1,7 @@
-import { Box, Text, Avatar, AvatarGroup, Tooltip } from '@chakra-ui/react';
-import { AssignedGroupEntity, FormInstanceEntity } from '@web/client';
+import { Box, Text } from '@chakra-ui/react';
+import { AssignedGroupEntity } from '@web/client';
 import { MouseEventHandler } from 'react';
+import { AssignedAvatarGroup } from './AssignedAvatarGroup';
 
 /**
  * @param formName - the name of the form
@@ -39,52 +40,12 @@ export const FormCard = ({
             fontFamily="Hanken Grotesk"
             fontWeight={800}
             fontSize="18px"
-            isTruncated
+            truncate
           >
             {formName}
           </Text>
-          <AvatarGroup size="sm" max={5} marginTop="9px" spacing={'-3px'}>
-            {assignedGroups
-              .sort((a, b) => a.order - b.order)
-              .map((assignedGroup: AssignedGroupEntity, index: number) => {
-                return (
-                  <Tooltip
-                    bg={'white'}
-                    color={'black'}
-                    placement="bottom-start"
-                    label={
-                      <>
-                        <Text fontSize="16px" fontWeight="bold">
-                          {assignedGroup.signerEmployee?.firstName +
-                            ' ' +
-                            assignedGroup.signerEmployee?.lastName}
-                        </Text>
-                      </>
-                    }
-                    key={index}
-                  >
-                    <Avatar
-                      name={
-                        assignedGroup.signerEmployee?.firstName +
-                        ' ' +
-                        assignedGroup.signerEmployee?.lastName
-                      }
-                      key={index}
-                      boxSize="32px"
-                      backgroundColor={
-                        assignedGroup.signed ? '#D1F0D4' : '#DCDCDC'
-                      }
-                      outline="1px solid #FFFFFF"
-                      color="black"
-                      fontWeight={400}
-                      fontSize="16px"
-                      size="sm"
-                      marginRight={'-3.5px'}
-                    />
-                  </Tooltip>
-                );
-              })}
-          </AvatarGroup>
+
+          <AssignedAvatarGroup assignedGroups={assignedGroups} />
         </Box>
       </Box>
     </>

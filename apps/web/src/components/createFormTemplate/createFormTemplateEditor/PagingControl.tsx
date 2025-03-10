@@ -2,7 +2,7 @@ import { Box, Text, Button } from '@chakra-ui/react';
 import {
   PageSwitcherArrowLeft,
   PageSwitcherArrowRight,
-} from '@web/static/icons';
+} from '@web/static/icons.tsx';
 import { Dispatch, SetStateAction } from 'react';
 
 export default function PagingControl({
@@ -38,21 +38,13 @@ export default function PagingControl({
   return (
     <Box>
       <div style={styles.inlineFlex}>
-        <Button
-          onClick={changePage(-1)}
-          variant={'unstyled'}
-          isDisabled={pageNum == 0}
-        >
+        <Button onClick={changePage(-1)} unstyled disabled={pageNum == 0}>
           {PageSwitcherArrowLeft}
         </Button>
         <Text>
           {pageNum + 1} / {totalPages}
         </Text>
-        <Button
-          variant={'unstyled'}
-          onClick={changePage(1)}
-          isDisabled={pageNum == totalPages - 1}
-        >
+        <Button onClick={changePage(1)} disabled={pageNum == totalPages - 1}>
           {PageSwitcherArrowRight}
         </Button>
       </div>
