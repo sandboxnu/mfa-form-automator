@@ -16,7 +16,7 @@ import {
  * @returns the top bar of the application
  */
 export const TopBar: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { data: positions } = useQuery({
     ...positionsControllerFindAllOptions(),
   });

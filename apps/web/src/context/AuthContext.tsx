@@ -1,25 +1,30 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { User, jwtPayload, AuthContextType } from './types';
 import { useRouter } from 'next/router';
 import { jwtDecode } from 'jwt-decode';
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@web/authConfig';
-import { callMsGraph } from '@web/graph';
+import { callMsGraph, GraphUser } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
-import { Scope } from '@web/client';
+import { appControllerRegister, OnboardEmployeeDto, Scope } from '@web/client';
 
 import {
   appControllerLogin,
   appControllerLogout,
-  appControllerRefresh,
-  appControllerRegister,
   employeesControllerFindMe,
   JwtEntity,
-  positionsControllerFindOne,
-  RegisterEmployeeDto,
 } from '../client';
 import { client } from '@web/client/client.gen';
-import { appControllerRegisterMutation } from '@web/client/@tanstack/react-query.gen';
+import {
+  appControllerRegisterMutation,
+  employeesControllerOnboardEmployeeMutation,
+} from '@web/client/@tanstack/react-query.gen';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -30,13 +35,15 @@ export const AuthProvider = ({ children }: any) => {
   const router = useRouter();
   const { instance } = useMsal();
   const [user, setUser] = useState<User>();
-  const [error, setError] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
-  const [userData, setUserData] = useState<any>(undefined);
+  const [azureUser, setAzureUser] = useState<GraphUser>();
 
   const registerEmployeeMutation = useMutation({
     ...appControllerRegisterMutation(),
+  });
+
+  const onboardEmployeeMutation = useMutation({
+    ...employeesControllerOnboardEmployeeMutation(),
   });
 
   const requestProfileDataMutation = useMutation({
@@ -44,85 +51,79 @@ export const AuthProvider = ({ children }: any) => {
       return requestProfileData();
     },
     onSuccess: (data) => {
-      setUserData(data);
+      setAzureUser(data);
     },
   });
 
-  const parseUser = async (jwt?: JwtEntity) => {
-    if (jwt) {
-      const token = jwt.accessToken;
-      const decoded = jwtDecode(token) as jwtPayload;
+  // Call the logout endpoint and then remove the user
+  // from the state.
+  const logout = useCallback(async () => {
+    await appControllerLogout()
+      .then(() => setUser(undefined))
+      .then(() => {
+        // Don't redirect if we are already on the signin page since it will cause a loop
+        if (router.pathname !== '/signin') {
+          router.push('/signin');
+        }
+      });
+  }, [router]);
 
-      const user: User = {
-        id: decoded.sub,
-        positionId: decoded.positionId,
-        departmentId: decoded.departmentId,
-        email: decoded.email,
-        firstName: decoded.firstName,
-        lastName: decoded.lastName,
-        scope: decoded.scope,
+  const parseUser = useCallback(
+    (jwt?: JwtEntity) => {
+      if (jwt) {
+        const token = jwt.accessToken;
+        const decoded = jwtDecode(token) as jwtPayload;
+
+        const user: User = {
+          id: decoded.sub,
+          positionId: decoded.positionId,
+          departmentId: decoded.departmentId,
+          email: decoded.email,
+          firstName: decoded.firstName,
+          lastName: decoded.lastName,
+          scope: decoded.scope,
+        };
+
+        setUser(user);
+      } else {
+        logout();
+      }
+    },
+    [logout],
+  );
+
+  const fetchCurrentUser = async () => {
+    let newUser: User | undefined = undefined;
+    let employee = await employeesControllerFindMe({ client: client });
+    if (employee.data) {
+      newUser = {
+        id: employee.data.id,
+        positionId: employee.data.position?.id ?? null,
+        departmentId: employee.data.position?.department?.id ?? null,
+        email: employee.data.email,
+        firstName: employee.data.firstName,
+        lastName: employee.data.lastName,
+        scope: employee.data.scope as Scope,
       };
-
-      setUser(user);
-    } else {
-      logout();
+      setUser(newUser);
     }
   };
 
-  // Reset the error state if we change page
-  useEffect(() => {
-    if (error) setError(undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname]);
-
-  // Check if there is a currently active session
-  // when the provider is mounted for the first time.
-  //
-  // If there is an error, it means there is no session.
-  //
-  // Finally, just signal the component that the initial load
-  // is over.
   useEffect(() => {
     setLoadingInitial(true);
-    employeesControllerFindMe({ client: client })
-      .then(async (employee) => {
-        if (employee.data == null) {
-          throw new Error('No employee data found');
-        }
-        // temporary fix for the user object
-        const position = await positionsControllerFindOne({
-          client: client,
-          path: {
-            id: employee.data.position.id,
-          },
-        });
-        if (position.data == null) {
-          throw new Error('No position data found');
-        }
-
-        setUser({
-          id: employee.data.id,
-          positionId: employee.data.position.id,
-          departmentId: position.data.department.id,
-          email: employee.data.email,
-          firstName: employee.data.firstName,
-          lastName: employee.data.lastName,
-          scope: Scope.BASE_USER,
-        });
-      })
-      .catch(async (_error) => {
-        setUser(undefined);
-        appControllerRefresh()
-          .then((response) => {
-            parseUser(response.data);
-          })
-          .catch((_error) => {
-            logout();
-          });
-      })
-      .finally(() => setLoadingInitial(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchCurrentUser().then(() => setLoadingInitial(false));
   }, []);
+
+  useEffect(() => {
+    if (
+      !router.pathname.includes('register') &&
+      !loadingInitial &&
+      user &&
+      user.positionId == null
+    ) {
+      router.push('/register');
+    }
+  }, [loadingInitial, router, user]);
 
   // Flags the component loading state and posts the login
   // data to the server.
@@ -132,47 +133,61 @@ export const AuthProvider = ({ children }: any) => {
   //
   // Finally, just signal the component that loading the
   // loading state is over.
-  const login = (email: string, password: string) => {
-    setLoading(true);
-
-    appControllerLogin({
-      client: client,
-      body: {
-        username: email,
-        password: password,
-      },
-    })
-      .then((response) => {
-        if (response.data == null) {
-          throw new Error('No JWT data found');
-        }
-        parseUser(response.data);
-        router.push('/');
+  const login = useCallback(
+    (email: string, password: string) => {
+      return appControllerLogin({
+        client: client,
+        body: {
+          username: email,
+          password: password,
+        },
       })
-      .catch((error) => {
-        setError(error);
+        .then((response) => {
+          if (response.data == null) {
+            return false;
+          }
+          parseUser(response.data);
+          router.push('/');
+          return true;
+        })
+        .catch((e) => {
+          throw e;
+        });
+    },
+    [parseUser, router],
+  );
 
-        if (error.status === 401) {
-          // handle password was incorrect
-        }
-
-        if (error.status === 500) {
-          register(email, password);
-        }
-      })
-      .finally(() => setLoading(false));
-  };
-
-  const azureLogin = () => {
+  const azureLogin = useCallback(async () => {
     instance
       .loginPopup(loginRequest)
-      .then((response) => {
-        login(response.account.username, 'password');
+      .then(async (_) => {
+        return await requestProfileDataMutation.mutateAsync();
+      })
+      .then(async (graphUser) => {
+        if (!graphUser?.mail) {
+          throw new Error('Azure user data not found');
+        }
+        if (!(await login(graphUser?.mail, graphUser?.id))) {
+          if (!graphUser) {
+            throw new Error('Azure user data not found');
+          }
+          await appControllerRegister({
+            body: {
+              firstName:
+                graphUser.givenName ?? graphUser.displayName.split(' ')[0],
+              lastName:
+                graphUser.surname ?? graphUser.displayName.split(' ')[1],
+              email: graphUser.mail,
+              password: graphUser.id,
+            },
+          });
+          await login(graphUser.mail, graphUser.id);
+        }
       })
       .catch((error) => {
         console.error(error);
       });
-  };
+  }, [requestProfileDataMutation, instance, login]);
 
   // Request the profile data from the Microsoft Graph API
   const requestProfileData = async () => {
@@ -189,61 +204,21 @@ export const AuthProvider = ({ children }: any) => {
     }
   };
 
-  // Direct registering a user in the database to either fill positon + department
-  // fields, or proceed to completeRegistration
-  const register = async (email: string, password: string) => {
-    const userData = await requestProfileDataMutation.mutateAsync();
-
-    // check if either department or position is null, if so, push to register
-    if (userData.department == null || userData.position == null) {
-      userData.email = email;
-      userData.password = password;
-    }
-    router.push('/register');
-  };
-
   // Register a user with provided information to the database
-  const completeRegistration = (
-    email: string,
-    password: string,
-    position: string,
-    department: string,
-    signatureLink: string,
-    scope: RegisterEmployeeDto['scope'],
-  ) => {
-    const employee: RegisterEmployeeDto = {
-      email: email,
-      password: password,
-      firstName: userData.givenName || userData.displayName.split(' ')[0],
-      lastName: userData.surname || userData.displayName.split(' ')[1],
-      departmentName: department,
-      positionName: position,
-      signatureLink: signatureLink,
-      scope: scope,
-    };
-
-    registerEmployeeMutation.mutate(
-      { body: employee },
-      {
-        onSuccess: () => {
-          login(email, password);
-        },
-        onError: (error) => {
-          setError(error);
-        },
-      },
-    );
-  };
-
-  // Call the logout endpoint and then remove the user
-  // from the state.
-  const logout = () => {
-    appControllerLogout().then(() => setUser(undefined));
-    // Don't redirect if we are already on the signin page since it will cause a loop
-    if (router.pathname !== '/signin') {
-      router.replace('/signin');
-    }
-  };
+  const completeRegistration = useCallback(
+    async (positionId: string, signatureLink: string) => {
+      const onboardingEmployeeDto: OnboardEmployeeDto = {
+        positionId: positionId,
+        signatureLink: signatureLink,
+      };
+      await onboardEmployeeMutation.mutateAsync({
+        body: onboardingEmployeeDto,
+      });
+      await fetchCurrentUser();
+      router.push('/');
+    },
+    [onboardEmployeeMutation, router],
+  );
 
   // Make the provider update only when it should.
   // We only want to force re-renders if the user,
@@ -257,16 +232,13 @@ export const AuthProvider = ({ children }: any) => {
   const memoedValue = useMemo(
     () => ({
       user,
-      loading,
-      error,
-      userData,
+      azureUser,
       login,
       azureLogin,
       completeRegistration,
       logout,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, loading, error],
+    [user, azureUser, login, azureLogin, completeRegistration, logout],
   );
 
   return (

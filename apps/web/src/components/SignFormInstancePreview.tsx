@@ -32,7 +32,7 @@ export const SignFormInstancePreview = ({
 }: {
   isOpen: boolean;
   onClose: any;
-  formInstance: FormInstanceEntity;
+  formInstance?: FormInstanceEntity;
 }) => {
   const router = useRouter();
 
@@ -42,6 +42,10 @@ export const SignFormInstancePreview = ({
     fontSize: '16px',
     fontWeight: '600',
   };
+
+  if (!formInstance) {
+    return null;
+  }
 
   return (
     <DialogRoot

@@ -34,7 +34,7 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
     ) {
       router.push('/create-instance/select-template');
     }
-  }, [formTemplate, router.pathname]);
+  }, [formTemplate, router]);
 
   return (
     <CreateFormInstanceContext.Provider

@@ -9,6 +9,7 @@ import {
   appControllerLogout,
   employeesControllerFindAll,
   employeesControllerCreate,
+  employeesControllerOnboardEmployee,
   employeesControllerFindMe,
   employeesControllerRemove,
   employeesControllerFindOne,
@@ -59,6 +60,8 @@ import type {
   EmployeesControllerFindAllData,
   EmployeesControllerCreateData,
   EmployeesControllerCreateResponse,
+  EmployeesControllerOnboardEmployeeData,
+  EmployeesControllerOnboardEmployeeResponse,
   EmployeesControllerFindMeData,
   EmployeesControllerRemoveData,
   EmployeesControllerFindOneData,
@@ -105,10 +108,11 @@ import type {
   FormInstancesControllerCompleteFormInstanceData,
   FormInstancesControllerCompleteFormInstanceResponse,
 } from '../types.gen';
+import type { AxiosError } from 'axios';
 import { client as _heyApiClient } from '../client.gen';
 
 type QueryKey<TOptions extends Options> = [
-  Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
+  Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
     _id: string;
     _infinite?: boolean;
   },
@@ -121,7 +125,7 @@ const createQueryKey = <TOptions extends Options>(
 ): QueryKey<TOptions>[0] => {
   const params: QueryKey<TOptions>[0] = {
     _id: id,
-    baseUrl: (options?.client ?? _heyApiClient).getConfig().baseUrl,
+    baseURL: (options?.client ?? _heyApiClient).getConfig().baseURL,
   } as QueryKey<TOptions>[0];
   if (infinite) {
     params._infinite = infinite;
@@ -188,7 +192,7 @@ export const appControllerLoginMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     AppControllerLoginResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<AppControllerLoginData>
   > = {
     mutationFn: async (localOptions) => {
@@ -250,7 +254,7 @@ export const appControllerRegisterMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     AppControllerRegisterResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<AppControllerRegisterData>
   > = {
     mutationFn: async (localOptions) => {
@@ -333,11 +337,31 @@ export const employeesControllerCreateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     EmployeesControllerCreateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<EmployeesControllerCreateData>
   > = {
     mutationFn: async (localOptions) => {
       const { data } = await employeesControllerCreate({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const employeesControllerOnboardEmployeeMutation = (
+  options?: Partial<Options<EmployeesControllerOnboardEmployeeData>>,
+) => {
+  const mutationOptions: UseMutationOptions<
+    EmployeesControllerOnboardEmployeeResponse,
+    AxiosError<DefaultError>,
+    Options<EmployeesControllerOnboardEmployeeData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await employeesControllerOnboardEmployee({
         ...options,
         ...localOptions,
         throwOnError: true,
@@ -374,7 +398,7 @@ export const employeesControllerRemoveMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     unknown,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<EmployeesControllerRemoveData>
   > = {
     mutationFn: async (localOptions) => {
@@ -415,7 +439,7 @@ export const employeesControllerUpdateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     EmployeesControllerUpdateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<EmployeesControllerUpdateData>
   > = {
     mutationFn: async (localOptions) => {
@@ -477,7 +501,7 @@ export const positionsControllerCreateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     PositionsControllerCreateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<PositionsControllerCreateData>
   > = {
     mutationFn: async (localOptions) => {
@@ -539,7 +563,7 @@ export const positionsControllerRemoveMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     unknown,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<PositionsControllerRemoveData>
   > = {
     mutationFn: async (localOptions) => {
@@ -580,7 +604,7 @@ export const positionsControllerUpdateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     PositionsControllerUpdateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<PositionsControllerUpdateData>
   > = {
     mutationFn: async (localOptions) => {
@@ -623,7 +647,7 @@ export const assignedGroupControllerUpdateAssignedGroupSignerMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     AssignedGroupControllerUpdateAssignedGroupSignerResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<AssignedGroupControllerUpdateAssignedGroupSignerData>
   > = {
     mutationFn: async (localOptions) => {
@@ -685,7 +709,7 @@ export const formTemplatesControllerCreateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     FormTemplatesControllerCreateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<FormTemplatesControllerCreateData>
   > = {
     mutationFn: async (localOptions) => {
@@ -705,7 +729,7 @@ export const formTemplatesControllerRemoveMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     unknown,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<FormTemplatesControllerRemoveData>
   > = {
     mutationFn: async (localOptions) => {
@@ -746,7 +770,7 @@ export const formTemplatesControllerUpdateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     FormTemplatesControllerUpdateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<FormTemplatesControllerUpdateData>
   > = {
     mutationFn: async (localOptions) => {
@@ -808,7 +832,7 @@ export const departmentsControllerCreateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     DepartmentsControllerCreateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<DepartmentsControllerCreateData>
   > = {
     mutationFn: async (localOptions) => {
@@ -828,7 +852,7 @@ export const departmentsControllerRemoveMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     unknown,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<DepartmentsControllerRemoveData>
   > = {
     mutationFn: async (localOptions) => {
@@ -869,7 +893,7 @@ export const departmentsControllerUpdateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     DepartmentsControllerUpdateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<DepartmentsControllerUpdateData>
   > = {
     mutationFn: async (localOptions) => {
@@ -952,7 +976,7 @@ export const formInstancesControllerCreateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     FormInstancesControllerCreateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<FormInstancesControllerCreateData>
   > = {
     mutationFn: async (localOptions) => {
@@ -1028,7 +1052,7 @@ export const formInstancesControllerRemoveMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     unknown,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<FormInstancesControllerRemoveData>
   > = {
     mutationFn: async (localOptions) => {
@@ -1069,7 +1093,7 @@ export const formInstancesControllerUpdateMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     FormInstancesControllerUpdateResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<FormInstancesControllerUpdateData>
   > = {
     mutationFn: async (localOptions) => {
@@ -1089,7 +1113,7 @@ export const formInstancesControllerSignFormInstanceMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     FormInstancesControllerSignFormInstanceResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<FormInstancesControllerSignFormInstanceData>
   > = {
     mutationFn: async (localOptions) => {
@@ -1109,7 +1133,7 @@ export const formInstancesControllerCompleteFormInstanceMutation = (
 ) => {
   const mutationOptions: UseMutationOptions<
     FormInstancesControllerCompleteFormInstanceResponse,
-    DefaultError,
+    AxiosError<DefaultError>,
     Options<FormInstancesControllerCompleteFormInstanceData>
   > = {
     mutationFn: async (localOptions) => {

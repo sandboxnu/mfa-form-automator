@@ -27,30 +27,8 @@ export const RegisterEmployeeDtoSchema = {
       type: 'string',
       minLength: 5,
     },
-    positionName: {
-      type: 'string',
-    },
-    departmentName: {
-      type: 'string',
-    },
-    signatureLink: {
-      type: 'string',
-    },
-    scope: {
-      type: 'string',
-      enum: ['BASE_USER', 'ADMIN'],
-    },
   },
-  required: [
-    'firstName',
-    'lastName',
-    'email',
-    'password',
-    'positionName',
-    'departmentName',
-    'signatureLink',
-    'scope',
-  ],
+  required: ['firstName', 'lastName', 'email', 'password'],
 } as const;
 
 export const DepartmentEntitySchema = {
@@ -129,16 +107,23 @@ export const EmployeeEntitySchema = {
     },
     signatureLink: {
       type: 'string',
+      nullable: true,
     },
     scope: {
       type: 'string',
       enum: ['BASE_USER', 'ADMIN'],
     },
     position: {
-      $ref: '#/components/schemas/PositionBaseEntity',
+      nullable: true,
+      allOf: [
+        {
+          $ref: '#/components/schemas/PositionBaseEntity',
+        },
+      ],
     },
     positionId: {
       type: 'string',
+      nullable: true,
     },
     pswdHash: {
       type: 'string',
@@ -194,23 +179,25 @@ export const CreateEmployeeDtoSchema = {
       type: 'string',
       minLength: 5,
     },
-    signatureLink: {
-      type: 'string',
-    },
     scope: {
       type: 'string',
       enum: ['BASE_USER', 'ADMIN'],
     },
   },
-  required: [
-    'firstName',
-    'lastName',
-    'positionId',
-    'email',
-    'password',
-    'signatureLink',
-    'scope',
-  ],
+  required: ['firstName', 'lastName', 'email', 'password', 'scope'],
+} as const;
+
+export const OnboardEmployeeDtoSchema = {
+  type: 'object',
+  properties: {
+    signatureLink: {
+      type: 'string',
+    },
+    positionId: {
+      type: 'string',
+    },
+  },
+  required: ['signatureLink', 'positionId'],
 } as const;
 
 export const UpdateEmployeeDtoSchema = {
@@ -225,9 +212,6 @@ export const UpdateEmployeeDtoSchema = {
     positionId: {
       type: 'string',
       format: 'uuid',
-    },
-    signatureLink: {
-      type: 'string',
     },
     scope: {
       type: 'string',
@@ -267,6 +251,7 @@ export const EmployeeBaseEntitySchema = {
     },
     signatureLink: {
       type: 'string',
+      nullable: true,
     },
     scope: {
       type: 'string',
@@ -274,6 +259,7 @@ export const EmployeeBaseEntitySchema = {
     },
     positionId: {
       type: 'string',
+      nullable: true,
     },
     pswdHash: {
       type: 'string',
