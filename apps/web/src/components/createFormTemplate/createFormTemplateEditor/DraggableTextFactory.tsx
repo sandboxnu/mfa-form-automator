@@ -26,7 +26,7 @@ export default function DraggableTextFactory({
   highlighted: boolean;
   selected: boolean;
 }) {
-  return type === FieldType.Checkbox ? (
+  return type === FieldType.CHECKBOX ? (
     <Checkbox
       onStop={onStop}
       onResizeStop={onResizeStop}

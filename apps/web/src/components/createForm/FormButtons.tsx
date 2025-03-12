@@ -1,7 +1,6 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import {
-  AssignedGroupEntity,
   CreateFieldGroupDto,
   CreateTemplateBoxDto,
   SignerType,
@@ -18,7 +17,6 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { AssignedGroupData } from '../createFormInstance/types';
 import { useAuth } from '@web/hooks/useAuth';
-import { FieldType } from '../createFormTemplate/types';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -75,6 +73,7 @@ export const FormButtons = ({
     // populate fieldGroups with fieldGroupsContext
     fieldGroupsContext.forEach((value, groupId) => {
       let templateBoxes: CreateTemplateBoxDto[] = [];
+
       // populate templateBoxes with formFieldsContext
       for (const page in formFieldsContext) {
         const fieldGroupsOnPage = formFieldsContext[page];
@@ -83,21 +82,17 @@ export const FormButtons = ({
             return;
           }
 
-          let type: 'TEXT_FIELD' | 'CHECKBOX' | 'SIGNATURE' = 'TEXT_FIELD';
-          if (field.type === FieldType.Checkbox) {
-            type = 'CHECKBOX';
-          }
-          if (field.type === FieldType.Signature) {
-            type = 'SIGNATURE';
-          }
+          const type: CreateTemplateBoxDto['type'] = field.type;
 
           templateBoxes.push({
             type: type,
             x_coordinate: field.position.x,
             y_coordinate: field.position.y,
+            // TODO: add width and height to template boxes
           });
         });
       }
+
       fieldGroups.push({
         name: value.groupName,
         order: orderVal,

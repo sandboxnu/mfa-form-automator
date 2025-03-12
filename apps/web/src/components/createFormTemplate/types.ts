@@ -10,9 +10,9 @@ export type TextFieldPosition = {
 };
 
 export enum FieldType {
-  Text,
-  Checkbox,
-  Signature,
+  TEXT_FIELD = 'TEXT_FIELD',
+  CHECKBOX = 'CHECKBOX',
+  SIGNATURE = 'SIGNATURE',
 }
 
 export type FieldGroupColor = {
