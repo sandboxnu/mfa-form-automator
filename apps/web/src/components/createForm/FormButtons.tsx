@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import {
   AssignedGroupEntity,
   CreateFieldGroupDto,
+  CreateTemplateBoxDto,
   SignerType,
 } from '@web/client';
 import {
@@ -14,9 +15,10 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { AssignedGroupData, PositionOption } from '../createFormInstance/types';
+import { useState } from 'react';
+import { AssignedGroupData } from '../createFormInstance/types';
 import { useAuth } from '@web/hooks/useAuth';
+import { FieldType } from '../createFormTemplate/types';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -45,7 +47,12 @@ export const FormButtons = ({
 }) => {
   const router = useRouter();
 
-  const { formTemplateName, pdfFile } = useCreateFormTemplate();
+  const {
+    formTemplateName,
+    pdfFile,
+    fieldGroups: fieldGroupsContext,
+    formFields: formFieldsContext,
+  } = useCreateFormTemplate();
 
   /**
    * Upload and create a form template
@@ -62,30 +69,43 @@ export const FormButtons = ({
       throw new Error('No PDF file uploaded');
     }
 
-    const fieldGroups: CreateFieldGroupDto[] = [
-      {
-        name: 'Default',
-        order: 0,
-        templateBoxes: [
-          {
-            type: 'SIGNATURE',
-            x_coordinate: 0,
-            y_coordinate: 0,
-          },
-        ],
-      },
-      {
-        name: 'Default',
-        order: 1,
-        templateBoxes: [
-          {
-            type: 'SIGNATURE',
-            x_coordinate: 0,
-            y_coordinate: 0,
-          },
-        ],
-      },
-    ];
+    let fieldGroups: CreateFieldGroupDto[] = [];
+    let orderVal = 0;
+
+    // populate fieldGroups with fieldGroupsContext
+    fieldGroupsContext.forEach((value, groupId) => {
+      let templateBoxes: CreateTemplateBoxDto[] = [];
+      // populate templateBoxes with formFieldsContext
+      for (const page in formFieldsContext) {
+        const fieldGroupsOnPage = formFieldsContext[page];
+        fieldGroupsOnPage.forEach((field, _) => {
+          if (field.groupId !== groupId) {
+            return;
+          }
+
+          let type: 'TEXT_FIELD' | 'CHECKBOX' | 'SIGNATURE' = 'TEXT_FIELD';
+          if (field.type === FieldType.Checkbox) {
+            type = 'CHECKBOX';
+          }
+          if (field.type === FieldType.Signature) {
+            type = 'SIGNATURE';
+          }
+
+          templateBoxes.push({
+            type: type,
+            x_coordinate: field.position.x,
+            y_coordinate: field.position.y,
+          });
+        });
+      }
+      fieldGroups.push({
+        name: value.groupName,
+        order: orderVal,
+        templateBoxes: templateBoxes,
+      });
+
+      orderVal += 1;
+    });
 
     createFormTemplateMutation
       .mutateAsync({

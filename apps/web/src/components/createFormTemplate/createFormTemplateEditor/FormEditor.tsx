@@ -149,6 +149,7 @@ export const FormEditor = ({
       newFieldGroups.set(myuuid, {
         border: groupColors[groupNum][0],
         background: groupColors[groupNum][1],
+        groupName: `Group ${groupNum + 1}`,
       });
       setFieldGroups(newFieldGroups);
       setGroupNum(groupNum + 1);
