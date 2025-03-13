@@ -136,7 +136,7 @@ export const FormButtons = ({
    * Updates form instance with the selected form template, form name, and signature positions
    */
   const _submitFormInstance = async () => {
-    if (!formTemplate || !assignedGroupData || disabled) {
+    if (!formTemplate || !assignedGroupData || disabled || !user) {
       return;
     }
 
@@ -147,21 +147,21 @@ export const FormButtons = ({
 
     await createFormInstanceMutation.mutateAsync({
       body: {
-        name: formInstanceName ?? '',
+        name: formInstanceName ?? formTemplate.name,
         assignedGroups: assignedGroupData.map((data, _) => {
           return {
             order: data.order,
             fieldGroupId: data.fieldGroupId,
             signerType: data.signerType,
             signerEmployeeList: data.signerEmployeeList,
-            signerDepartmentId: data.signerDepartmentId ?? undefined,
-            signerPositionId: data.signerPositionId ?? undefined,
-            signerEmployeeId: data.signerEmployeeId ?? undefined,
+            signerDepartmentId: data.signerDepartmentId,
+            signerPositionId: data.signerPositionId,
+            signerEmployeeId: data.signerEmployeeId,
           };
         }),
-        originatorId: user?.id!,
-        formTemplateId: formTemplate?.id!,
-        formDocLink: formTemplate?.formDocLink!,
+        originatorId: user.id,
+        formTemplateId: formTemplate.id,
+        formDocLink: formTemplate.formDocLink,
       },
     });
 
