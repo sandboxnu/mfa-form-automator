@@ -58,7 +58,7 @@ export const NameAndDescriptionBox = ({
             type="text"
             onChange={(e) => setName(e.target.value)}
             style={{ ...textInputStyle }}
-            placeholder="Form Template Name"
+            placeholder="Form Name"
             value={name!!}
           />
         </Flex>
