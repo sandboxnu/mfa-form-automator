@@ -1,7 +1,6 @@
 import { Box, useDisclosure } from '@chakra-ui/react';
 import { NavBar } from './NavBar';
 import { TopBar } from './TopBar';
-import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal';
 
 /**
  * @param children - the children of the layout
@@ -30,10 +29,6 @@ export const Layout = ({ children }: { children: any }) => {
           {children}
         </Box>
       </Box>
-      <CreateFormInstanceModal
-        isOpen={isCreateFormInstanceOpen}
-        onClose={onCloseCreateFormInstance}
-      />
     </Box>
   );
 };
