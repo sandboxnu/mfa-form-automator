@@ -14,13 +14,13 @@ export class EmployeeBaseEntity implements Employee {
   lastName: string;
 
   @Exclude()
-  positionId: string;
+  positionId: string | null;
 
   @ApiProperty()
   email: string;
 
   @ApiProperty()
-  signatureLink: string;
+  signatureLink: string | null;
 
   @ApiProperty({ enum: EmployeeScope })
   scope: EmployeeScope;
@@ -44,7 +44,7 @@ export class EmployeeBaseEntity implements Employee {
 
 export class EmployeeEntity extends EmployeeBaseEntity {
   @ApiProperty()
-  position: PositionBaseEntity;
+  position: PositionBaseEntity | null;
 
   constructor(partial: Partial<EmployeeEntity>) {
     super(partial);

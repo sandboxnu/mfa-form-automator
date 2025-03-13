@@ -3,17 +3,13 @@ import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EmployeeEntity } from '../employees/entities/employee.entity';
-import { CreateEmployeeDto } from '../employees/dto/create-employee.dto';
-import { DepartmentsService } from '../departments/departments.service';
-import { PositionsService } from '../positions/positions.service';
-import { Department, Position } from '@prisma/client';
+import { EmployeeScope } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class AuthService {
   constructor(
     private employeesService: EmployeesService,
-    private departmentsService: DepartmentsService,
-    private positionsService: PositionsService,
     private jwtService: JwtService,
   ) {}
 
@@ -27,14 +23,37 @@ export class AuthService {
     email: string,
     pass: string,
   ): Promise<EmployeeEntity | null> {
-    const user = await this.employeesService.findOneByEmail(email);
+    try {
+      const user = await this.employeesService.findOneByEmail(email);
 
-    if (user?.pswdHash && !(await bcrypt.compare(pass, user.pswdHash!))) {
-      return null;
+      if (user?.pswdHash && !(await bcrypt.compare(pass, user.pswdHash!))) {
+        return null;
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { pswdHash, ...result } = user;
+      return new EmployeeEntity(result);
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
+        return null;
+      }
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { pswdHash, ...result } = user;
-    return new EmployeeEntity(result);
+    return null;
+  }
+
+  /**
+   * Validate if employee has specified scope.
+   * @param email employee email
+   * @returns validated employee or null
+   */
+  async validateEmployeeScope(
+    email: string,
+    scope: EmployeeScope,
+  ): Promise<EmployeeEntity | null> {
+    const user = await this.employeesService.findOneByEmail(email);
+    if (user.scope == scope) {
+      return user;
+    }
+    return null;
   }
 
   /**
@@ -49,7 +68,7 @@ export class AuthService {
       lastName: user.lastName,
       sub: user.id,
       positionId: user.positionId,
-      departmentId: user.position.departmentId,
+      departmentId: user.position?.departmentId,
       scope: user.scope,
     };
 
@@ -68,31 +87,5 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
-  }
-
-  /**
-   * Register a new employee.
-   * @param createEmployeeDto the employee's data
-   * @param positionName the employee's position name
-   * @param departmentName the employee's department name
-   * @returns the new employee
-   */
-  async register(
-    createEmployeeDto: CreateEmployeeDto,
-    positionName: string,
-    departmentName: string,
-  ) {
-    const department: Department =
-      await this.departmentsService.findOrCreateOneByName(departmentName);
-
-    const position: Position =
-      await this.positionsService.findOrCreateOneByNameInDepartment(
-        positionName,
-        department.id,
-      );
-
-    createEmployeeDto.positionId = position.id;
-    const newEmployee = await this.employeesService.create(createEmployeeDto);
-    return newEmployee;
   }
 }

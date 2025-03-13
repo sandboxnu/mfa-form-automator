@@ -1,120 +1,222 @@
-import { Box, Heading } from '@chakra-ui/react';
-import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
-import { chakraComponents, Select } from 'chakra-react-select';
-import { useState } from 'react';
-import { AssignedGroupData, PositionOption } from './types';
-import { SearchIcon } from '@web/static/icons';
-import { FieldGroupBaseEntity, PositionEntity } from '@web/client';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {
+  CreateAssignedGroupDto,
+  DepartmentEntity,
+  EmployeeEntity,
+  FieldGroupBaseEntity,
+  PositionEntity,
+  SignerType,
+} from '@web/client';
+import { Select } from 'chakra-react-select';
+import { ContextAssignedGroupData } from '@web/context/types';
 
-const assigneePlaceholderWithIcon = (
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    <SearchIcon />
-    <span style={{ marginLeft: '8px' }}>Select assignee</span>
-  </div>
-);
-
-/**
- * @param field - the signature field
- * @param index - the index of the signature field
- * @param positions - the positions to choose from
- * @param signaturePositions - the signature positions
- * @param setSignaturePositions - function to set the signature positions
- * @returns a dropdown to select the assignee for the signature field
- */
 export const SignatureDropdown = ({
   field,
-  index,
+  border,
+  background,
   positions,
+  employees,
+  departments,
   assignedGroupData,
   setAssignedGroupData,
 }: {
   field: FieldGroupBaseEntity;
-  index: number;
+  border: string;
+  background: string;
   positions?: PositionEntity[];
-  assignedGroupData: AssignedGroupData[];
-  setAssignedGroupData: (updatedAssignedGroupData: AssignedGroupData[]) => void;
+  employees?: EmployeeEntity[];
+  departments?: DepartmentEntity[];
+  assignedGroupData: ContextAssignedGroupData[];
+  setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
 }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedPosition, setSelectedPosition] =
-    useState<PositionOption | null>();
+  const [activeTab, setActiveTab] = useState('Employee');
+  const [options, setOptions] = useState<any[]>(employees || []);
+  const [selectedOption, setSelectedOption] = useState<any | null>(null);
 
-  /**
-   * Get the employee name from the position
-   */
-  const _getEmployeeName = ({ position }: { position?: PositionEntity }) => {
-    return (
-      (position?.employees?.at(0)?.firstName ?? '') +
-      ' ' +
-      (position?.employees?.at(0)?.lastName ?? '')
+  // prefill dropdown if assigned group exists
+  useEffect(() => {
+    const assignedGroup = assignedGroupData.find(
+      (group) => group.fieldGroupId === field.id,
     );
+
+    if (!assignedGroup) return;
+
+    const signerType = assignedGroup.signerType;
+
+    switch (signerType) {
+      case SignerType.USER:
+        setActiveTab('Employee');
+        setSelectedOption({
+          value: assignedGroup.signerEmployeeId,
+          label: assignedGroup.name,
+        });
+        break;
+      case SignerType.POSITION:
+        setActiveTab('Role');
+        setSelectedOption({
+          value: assignedGroup.signerPositionId,
+          label: assignedGroup.name,
+        });
+        break;
+      case SignerType.DEPARTMENT:
+        setActiveTab('Department');
+        setSelectedOption({
+          value: assignedGroup.signerDepartmentId,
+          label: assignedGroup.name,
+        });
+        break;
+    }
+  }, [assignedGroupData, field.id]);
+
+  useEffect(() => {
+    switch (activeTab) {
+      case 'Employee':
+        setOptions(
+          employees?.map((emp) => ({
+            value: emp.id,
+            label: `${emp.firstName} ${emp.lastName}`,
+          })) || [],
+        );
+        break;
+      case 'Role':
+        setOptions(
+          positions?.map((role) => ({ value: role.id, label: role.name })) ||
+            [],
+        );
+        break;
+      case 'Department':
+        setOptions(
+          departments?.map((dept) => ({ value: dept.id, label: dept.name })) ||
+            [],
+        );
+        break;
+    }
+  }, [activeTab, employees, positions, departments]);
+
+  const getSignerType = (tab: string): SignerType => {
+    switch (tab) {
+      case 'Employee':
+        return SignerType.USER;
+      case 'Role':
+        return SignerType.POSITION;
+      case 'Department':
+        return SignerType.DEPARTMENT;
+      default:
+        return SignerType.USER;
+    }
   };
 
-  /**
-   * Format the option label
-   */
-  const _formatOptionLabel = ({ value }: PositionOption) => {
-    const positionEntity = positions?.find((position) => position.id === value);
-    const employeeName = positionEntity?.name ?? '';
-
+  const SignatureGroupItem = ({
+    name,
+    color,
+    borderColor,
+  }: {
+    name: string;
+    color: string;
+    borderColor: string;
+  }) => {
     return (
-      <span>
-        <strong>{_getEmployeeName({ position: positionEntity })}</strong>
-        <span style={{ marginLeft: '8px', color: 'gray' }}>{employeeName}</span>
-      </span>
+      <Flex gap="10px" alignItems="center">
+        <Box
+          w="24px"
+          h="24px"
+          backgroundColor={color}
+          border={`1px solid ${borderColor}`}
+        />
+        <Text font-size="16px" fontWeight="400" whiteSpace={'nowrap'}>
+          {name}
+        </Text>
+      </Flex>
     );
   };
 
   return (
-    <Box w="100%">
-      <Heading as="h3" color="black" marginTop="40px" paddingBottom="6px">
-        {field.name}
-      </Heading>
-      <Select
-        useBasicStyles
-        selectedOptionStyle="check"
-        options={positions?.map((position) => {
-          const employee = position.employees?.at(0);
-          const fullName =
-            employee?.firstName ?? '' + ' ' + employee?.lastName ?? '';
-          const fullLabel = fullName + ' ' + position.name;
-          return {
-            value: position.id,
-            label: fullLabel,
-          };
-        })}
-        placeholder={assigneePlaceholderWithIcon}
-        value={selectedPosition} // Create a separate state for Department Head
-        onChange={(selected) => {
-          setSelectedPosition(selected);
-          // TODO: probably should not be coercing this type
-          let selectedAssignedGroupData = assignedGroupData?.at(index)!;
-          selectedAssignedGroupData.positionId = selected?.value;
-          assignedGroupData[index] = {
-            ...selectedAssignedGroupData,
-            fieldGroupId: selectedAssignedGroupData?.fieldGroupId,
-            positionId: selected?.value,
-          };
-          setAssignedGroupData(assignedGroupData);
-        }}
-        className="custom-dropdown"
-        components={{
-          DropdownIndicator: (props: any) => (
-            <chakraComponents.DropdownIndicator {...props}>
-              {isDropdownOpen ? (
-                <DropdownUpArrow maxH="7px" />
-              ) : (
-                <DropdownDownArrow maxH="7px" />
-              )}
-            </chakraComponents.DropdownIndicator>
-          ),
-        }}
-        onMenuOpen={() => setIsDropdownOpen(true)}
-        onMenuClose={() => setIsDropdownOpen(false)}
-        formatOptionLabel={_formatOptionLabel}
-        classNamePrefix="react-select"
-        isClearable
-        closeMenuOnSelect
-      />
-    </Box>
+    <>
+      <Box w="100%">
+        <Heading as="h3" color="black" marginTop="7px">
+          <SignatureGroupItem
+            name={field.name}
+            color={background}
+            borderColor={border}
+          />
+        </Heading>
+        <VStack align="start" spacing="8px" marginTop="12px">
+          <HStack
+            width="360px"
+            spacing="0px"
+            borderWidth="1px"
+            borderRadius="4px"
+            overflow="hidden"
+          >
+            {['Employee', 'Role', 'Department'].map((tab) => (
+              <Button
+                key={tab}
+                onClick={() => {
+                  setActiveTab(tab);
+                  setSelectedOption(null);
+                }}
+                flex="1"
+                borderRadius="0"
+                borderWidth="1px"
+                backgroundColor={activeTab === tab ? 'blue.50' : 'white'}
+                color={activeTab === tab ? '#1367EA' : '#63646B'}
+                fontWeight={activeTab === tab ? '550' : '500'}
+                _hover={{ backgroundColor: 'blue.100' }}
+              >
+                {tab}
+              </Button>
+            ))}
+          </HStack>
+          <Box w="100%">
+            <Select
+              useBasicStyles
+              selectedOptionStyle="check"
+              options={options}
+              onChange={(selected) => {
+                setSelectedOption(selected);
+
+                // create assigned group object
+                const assignedGroup: ContextAssignedGroupData = {
+                  name: selected.label,
+                  order: field.order,
+                  fieldGroupId: field.id,
+                  signerType: getSignerType(activeTab),
+                  signerEmployeeList: [],
+                };
+                assignedGroup[
+                  activeTab === 'Employee'
+                    ? 'signerEmployeeId'
+                    : activeTab === 'Role'
+                    ? 'signerPositionId'
+                    : 'signerDepartmentId'
+                ] = selected?.value;
+
+                // if the group id already exists, update it
+                for (let i = 0; i < assignedGroupData.length; i++) {
+                  if (assignedGroupData[i].fieldGroupId === field.id) {
+                    assignedGroupData[i] = assignedGroup;
+                    setAssignedGroupData(assignedGroupData);
+                    return;
+                  }
+                }
+
+                // otherwise, add it to the list
+                setAssignedGroupData([...assignedGroupData, assignedGroup]);
+              }}
+              value={selectedOption}
+            />
+          </Box>
+        </VStack>
+      </Box>
+    </>
   );
 };

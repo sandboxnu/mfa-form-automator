@@ -2,15 +2,14 @@ import { Box, Flex, Link, Text } from '@chakra-ui/react';
 import { BlueTriangle, WhiteCheck } from '@web/static/icons';
 import { useRouter } from 'next/router';
 
-export const SideCreateForm = ({ curStep }: { curStep: number }) => {
+export const SideCreateForm = ({
+  curStep,
+  isFormTemplate,
+}: {
+  curStep: number;
+  isFormTemplate: boolean;
+}) => {
   const router = useRouter();
-
-  const textStyle = {
-    color: '#010101',
-    fontSize: '16px',
-    fontWeight: '500',
-    lineHeight: '21px',
-  };
 
   const lineStyle = {
     marginLeft: '11px',
@@ -22,6 +21,18 @@ export const SideCreateForm = ({ curStep }: { curStep: number }) => {
   };
 
   const Item = ({ num }: { num: number }) => {
+    const formTemplateLabels = [
+      'Upload PDF',
+      'Enter details',
+      'Add input fields',
+      'Review',
+    ];
+    const formInstanceLabels = [
+      'Select template',
+      'Edit details',
+      'Assign groups',
+      'Review',
+    ];
     return (
       <Flex gap="10px">
         {curStep <= num ? <NumberCircle num={num} /> : <BlueCheck />}
@@ -31,13 +42,9 @@ export const SideCreateForm = ({ curStep }: { curStep: number }) => {
           fontWeight="500"
           lineHeight="21px"
         >
-          {num === 1
-            ? 'Upload PDF'
-            : num === 2
-            ? 'Enter details'
-            : num === 3
-            ? 'Add input fields'
-            : 'Review'}
+          {isFormTemplate
+            ? formTemplateLabels[num - 1]
+            : formInstanceLabels[num - 1]}
         </Text>
       </Flex>
     );

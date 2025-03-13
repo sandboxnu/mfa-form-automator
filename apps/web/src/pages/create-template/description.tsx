@@ -1,11 +1,13 @@
-import { FormTemplateLayout } from '@web/components/createFormTemplate/FormTemplateLayout';
-import { NameAndDescriptionBox } from '@web/components/createFormTemplate/NameAndDescriptionBox';
+import { Scope } from '@web/client';
+import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
+import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
  */
-export default function Description() {
+function Description() {
   const {
     formTemplateName,
     setFormTemplateName,
@@ -15,8 +17,10 @@ export default function Description() {
   } = useCreateFormTemplate();
 
   return (
-    <FormTemplateLayout
+    <CreateFormLayout
+      isFormTemplate={true}
       pageNumber={2}
+      heading={'Create form template'}
       subheading={'Give your form template a name and short description'}
       boxContent={
         <NameAndDescriptionBox
@@ -37,3 +41,5 @@ export default function Description() {
     />
   );
 }
+
+export default isAuth(Description, Scope.ADMIN);

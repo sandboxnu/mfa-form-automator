@@ -1,8 +1,9 @@
 import { FormList } from 'apps/web/src/components/FormList';
 import { useForm } from '@web/hooks/useForm';
 import { FormListPageLayout } from '@web/components/FormListPageLayout';
+import isAuth from '@web/components/isAuth';
 
-export default function Pending() {
+function Pending() {
   const { pendingForms } = useForm();
 
   return (
@@ -18,3 +19,5 @@ export default function Pending() {
     </>
   );
 }
+
+export default isAuth(Pending);

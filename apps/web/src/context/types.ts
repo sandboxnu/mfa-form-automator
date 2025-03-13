@@ -2,15 +2,15 @@ import { Dispatch, SetStateAction } from 'react';
 import {
   FormFields,
   FieldGroups,
-} from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
-import { Scope } from '@web/client';
-import { RegisterEmployeeDto } from '@web/client';
+} from '@web/components/createFormTemplate/types';
+import { CreateAssignedGroupDto, FormTemplateEntity, Scope } from '@web/client';
+import { GraphUser } from '@web/graph';
 
 // for storage in context
 export type User = {
   id: string;
-  positionId: string;
-  departmentId: string;
+  positionId: string | null;
+  departmentId: string | null;
   email: string;
   firstName: string;
   lastName: string;
@@ -29,19 +29,13 @@ export type jwtPayload = {
 
 export interface AuthContextType {
   user?: User;
-  loading: boolean;
-  userData: any;
-  error?: any;
+  userData?: GraphUser;
   login: (email: string, password: string) => void;
   azureLogin: () => void;
   completeRegistration: (
-    email: string,
-    password: string,
-    position: string,
     department: string,
     signatureLink: string,
-    scope: RegisterEmployeeDto['scope'],
-  ) => void;
+  ) => Promise<void>;
   logout: () => void;
 }
 
@@ -57,3 +51,17 @@ export interface CreateFormTemplateContextType {
   fieldGroups: FieldGroups;
   setFieldGroups: Dispatch<SetStateAction<FieldGroups>>;
 }
+export interface CreateFormInstanceContextType {
+  formInstanceName: string | null;
+  formInstanceDescription: string | null;
+  setFormInstanceName: Dispatch<SetStateAction<string | null>>;
+  setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
+  formTemplate: FormTemplateEntity | null;
+  setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
+  assignedGroupData: ContextAssignedGroupData[];
+  setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
+}
+
+export type ContextAssignedGroupData = CreateAssignedGroupDto & {
+  name: string;
+};

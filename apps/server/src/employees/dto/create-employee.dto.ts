@@ -20,9 +20,8 @@ export class CreateEmployeeDto {
   lastName: string;
 
   @IsUUID()
-  @IsNotEmpty()
   @ApiProperty()
-  positionId: string;
+  positionId?: string;
 
   @IsEmail()
   @IsNotEmpty()
@@ -34,11 +33,6 @@ export class CreateEmployeeDto {
   @MinLength(5)
   @ApiProperty()
   password: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  signatureLink: string;
 
   @IsString()
   @IsNotEmpty()

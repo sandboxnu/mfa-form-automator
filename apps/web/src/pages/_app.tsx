@@ -16,6 +16,7 @@ import { msalConfig } from '@web/authConfig';
 import { MsalProvider } from '@azure/msal-react';
 import { ReactNode, useMemo, memo } from 'react';
 import { client } from '@web/client/client.gen';
+import { CreateFormInstanceProvider } from '@web/context/CreateFormInstanceContext';
 
 export const queryClient = new QueryClient();
 const publicClientApplication = new PublicClientApplication(msalConfig);
@@ -54,15 +55,17 @@ export default function App({
   ...appProps
 }: AppProps) {
   client.setConfig({
-    credentials: 'include',
+    withCredentials: true,
   });
 
   const excludeLayoutPaths = [
     '/signin',
     '/register',
     '/create-template/success',
+    '/create-instance/success',
   ];
   const createFormTemplatePath = '/create-template';
+  const createFormInstancePath = '/create-instance';
 
   const head = (
     <Head>
@@ -90,6 +93,20 @@ export default function App({
               <Component {...pageProps} />
             </Layout>
           </CreateFormTemplateProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(createFormInstancePath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <CreateFormInstanceProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </CreateFormInstanceProvider>
         </WrapperComponent>
       </>
     );
