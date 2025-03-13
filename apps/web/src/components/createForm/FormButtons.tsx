@@ -1,10 +1,6 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import {
-  CreateFieldGroupDto,
-  CreateTemplateBoxDto,
-  SignerType,
-} from '@web/client';
+import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
   formTemplatesControllerCreateMutation,
@@ -14,8 +10,6 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { AssignedGroupData } from '../createFormInstance/types';
 import { useAuth } from '@web/hooks/useAuth';
 
 /**
@@ -51,6 +45,27 @@ export const FormButtons = ({
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
   } = useCreateFormTemplate();
+  const { assignedGroupData, formInstanceName, formTemplate } =
+    useCreateFormInstance();
+  const { user } = useAuth();
+
+  const createFormTemplateMutation = useMutation({
+    ...formTemplatesControllerCreateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
+  });
+
+  const createFormInstanceMutation = useMutation({
+    ...formInstancesControllerCreateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
+  });
 
   /**
    * Upload and create a form template
@@ -82,10 +97,8 @@ export const FormButtons = ({
             return;
           }
 
-          const type: CreateTemplateBoxDto['type'] = field.type;
-
           templateBoxes.push({
-            type: type,
+            type: field.type,
             x_coordinate: field.position.x,
             y_coordinate: field.position.y,
             // TODO: add width and height to template boxes
@@ -119,69 +132,39 @@ export const FormButtons = ({
     router.push(submitLink);
   };
 
-  const createFormTemplateMutation = useMutation({
-    ...formTemplatesControllerCreateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-    },
-  });
-
-  const { user } = useAuth();
-  const { formTemplate, assignedGroupData } = useCreateFormInstance();
-  const [assignedGroupsData, setAssignedGroupsData] = useState<
-    AssignedGroupData[]
-  >([]);
-  const [formName, setFormName] = useState('Create Form');
-  const createFormInstanceMutation = useMutation({
-    ...formInstancesControllerCreateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-    },
-  });
-
   /**
    * Updates form instance with the selected form template, form name, and signature positions
    */
   const _submitFormInstance = async () => {
-    if (!formTemplate) return;
-    if (!assignedGroupsData) return;
+    if (!formTemplate || !assignedGroupData || disabled) {
+      return;
+    }
 
     if (!review) {
       router.push(submitLink);
       return;
     }
 
-    await createFormInstanceMutation
-      .mutateAsync({
-        body: {
-          name: formName,
-          assignedGroups: assignedGroupData.map((pos, i) => {
-            return {
-              order: i,
-              fieldGroupId: pos?.fieldGroupId,
-              // signerEmployeeId: undefined,
-              signerType: SignerType.POSITION,
-              // signerDepartmentId: undefined,
-              // TODO: when we support multiple types, we should create this list outside of the mutation
-              // signerPositionId: pos.positionId!,
-              signerEmployeeList: [],
-            };
-          }),
-          originatorId: user?.id!,
-          formTemplateId: formTemplate?.id!,
-          formDocLink: formTemplate?.formDocLink!,
-        },
-      })
-      .then((response) => {
-        return response;
-      })
-      .catch((e) => {
-        throw e;
-      });
+    await createFormInstanceMutation.mutateAsync({
+      body: {
+        name: formInstanceName ?? '',
+        assignedGroups: assignedGroupData.map((data, _) => {
+          return {
+            order: data.order,
+            fieldGroupId: data.fieldGroupId,
+            signerType: data.signerType,
+            signerEmployeeList: data.signerEmployeeList,
+            signerDepartmentId: data.signerDepartmentId ?? undefined,
+            signerPositionId: data.signerPositionId ?? undefined,
+            signerEmployeeId: data.signerEmployeeId ?? undefined,
+          };
+        }),
+        originatorId: user?.id!,
+        formTemplateId: formTemplate?.id!,
+        formDocLink: formTemplate?.formDocLink!,
+      },
+    });
+
     router.push(submitLink);
   };
 

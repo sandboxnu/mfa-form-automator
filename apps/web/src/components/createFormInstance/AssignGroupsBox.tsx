@@ -1,6 +1,5 @@
 import { Text, Flex } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { SignatureDropdown } from './SignatureDropdown';
 import { FieldGroupBaseEntity } from '../../client/types.gen';
 import {
   departmentsControllerFindAllOptions,
@@ -9,7 +8,7 @@ import {
 } from '@web/client/@tanstack/react-query.gen';
 import { FormView } from './FormView';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-import { departmentsControllerFindAll } from '@web/client';
+import { SignatureDropdown } from './SignatureDropdown';
 
 /**
  * The contents of the white box for assigning groups.
@@ -39,6 +38,14 @@ export const AssignGroupsBox = ({
     borderColor: 'transparent',
   };
 
+  const groupColors = [
+    ['#1367EA', '#EEF5FF'],
+    ['#BD21CA', '#FDEAFF'],
+    ['#7645E8', '#ECE4FF'],
+    ['#567E26', '#EDFFD6'],
+    ['#A16308', '#FFFDDB'],
+  ];
+
   const { assignedGroupData, setAssignedGroupData } = useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
   const { data: employees } = useQuery(employeesControllerFindAllOptions());
@@ -49,7 +56,6 @@ export const AssignGroupsBox = ({
       },
     }),
   });
-
   return (
     <Flex
       flexDirection={'row'}
@@ -77,18 +83,22 @@ export const AssignGroupsBox = ({
           <Flex gap="12px" flexDirection="column" width="480px">
             <Text fontWeight={600}>Assign Field Groups</Text>
           </Flex>
-          {fieldGroups.map((field, i) => (
-            <SignatureDropdown
-              key={field.id}
-              field={field}
-              index={i}
-              positions={positions}
-              employees={employees}
-              departments={departments}
-              assignedGroupData={assignedGroupData}
-              setAssignedGroupData={setAssignedGroupData}
-            />
-          ))}
+          {fieldGroups.map((field, i) => {
+            const [border, background] = groupColors[i % groupColors.length];
+            return (
+              <SignatureDropdown
+                key={i}
+                field={field}
+                border={border}
+                background={background}
+                positions={positions}
+                employees={employees}
+                departments={departments}
+                assignedGroupData={assignedGroupData}
+                setAssignedGroupData={setAssignedGroupData}
+              />
+            );
+          })}
         </Flex>
       </Flex>
       <Flex

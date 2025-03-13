@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState } from 'react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { CreateFormInstanceContextType } from './types';
-import { AssignedGroupEntity, FormTemplateEntity } from '@web/client';
-import { AssignedGroupData } from '@web/components/createFormInstance/types';
+import { FormTemplateEntity } from '@web/client';
+import { ContextAssignedGroupData } from './types';
 
 export const CreateFormInstanceContext =
   createContext<CreateFormInstanceContextType>(
@@ -19,10 +19,7 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
     null,
   );
   const [assignedGroupData, setAssignedGroupData] = useState<
-    AssignedGroupData[]
-  >([]);
-  const [assignedGroupEntities, setAssignedGroupEntities] = useState<
-    AssignedGroupEntity[]
+    ContextAssignedGroupData[]
   >([]);
 
   const router = useRouter();

@@ -4,32 +4,25 @@ import {
   Flex,
   Heading,
   HStack,
-  VStack,
   Text,
+  VStack,
 } from '@chakra-ui/react';
-import { DropdownDownArrow, DropdownUpArrow } from '@web/static/icons';
-import { chakraComponents, Select } from 'chakra-react-select';
-import { useEffect, useState } from 'react';
-import { AssignedGroupData, PositionOption } from './types';
-import { SearchIcon } from '@web/static/icons';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
+  CreateAssignedGroupDto,
   DepartmentEntity,
   EmployeeEntity,
   FieldGroupBaseEntity,
   PositionEntity,
+  SignerType,
 } from '@web/client';
-import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-
-const assigneePlaceholderWithIcon = (
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    <SearchIcon />
-    <span style={{ marginLeft: '8px' }}>Select assignee</span>
-  </div>
-);
+import { Select } from 'chakra-react-select';
+import { ContextAssignedGroupData } from '@web/context/types';
 
 export const SignatureDropdown = ({
   field,
-  index,
+  border,
+  background,
   positions,
   employees,
   departments,
@@ -37,116 +30,126 @@ export const SignatureDropdown = ({
   setAssignedGroupData,
 }: {
   field: FieldGroupBaseEntity;
-  index: number;
+  border: string;
+  background: string;
   positions?: PositionEntity[];
   employees?: EmployeeEntity[];
   departments?: DepartmentEntity[];
-  assignedGroupData: AssignedGroupData[];
-  setAssignedGroupData: (updatedAssignedGroupData: AssignedGroupData[]) => void;
+  assignedGroupData: ContextAssignedGroupData[];
+  setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
 }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('Employee');
-  const [selectedPosition, setSelectedPosition] =
-    useState<PositionOption | null>();
-  const [options, setOptions] = useState<PositionOption[]>([]);
-  const { formTemplate } = useCreateFormInstance();
+  const [options, setOptions] = useState<any[]>(employees || []);
+  const [selectedOption, setSelectedOption] = useState<any | null>(null);
 
-  /**
-   * Reset signature positions when form template changes
-   */
+  // prefill dropdown if assigned group exists
   useEffect(() => {
-    if (!formTemplate) return;
-
-    setAssignedGroupData(
-      formTemplate.fieldGroups.map((_, i) => {
-        return {
-          fieldGroupId: formTemplate?.fieldGroups[i].id!,
-          order: i,
-        };
-      }),
+    const assignedGroup = assignedGroupData.find(
+      (group) => group.fieldGroupId === field.id,
     );
-  }, [formTemplate, setAssignedGroupData]);
 
-  /**
-   * Get filtered options based on active tab
-   */
+    if (!assignedGroup) return;
+
+    const signerType = assignedGroup.signerType;
+
+    switch (signerType) {
+      case SignerType.USER:
+        setActiveTab('Employee');
+        setSelectedOption({
+          value: assignedGroup.signerEmployeeId,
+          label: assignedGroup.name,
+        });
+        break;
+      case SignerType.POSITION:
+        setActiveTab('Role');
+        setSelectedOption({
+          value: assignedGroup.signerPositionId,
+          label: assignedGroup.name,
+        });
+        break;
+      case SignerType.DEPARTMENT:
+        setActiveTab('Department');
+        setSelectedOption({
+          value: assignedGroup.signerDepartmentId,
+          label: assignedGroup.name,
+        });
+        break;
+    }
+  }, [assignedGroupData, field.id]);
+
   useEffect(() => {
-    const getFilteredOptions = async () => {
-      let data;
-      switch (activeTab) {
-        case 'Employee':
-          data = employees;
-          setOptions(
-            data?.map((emp) => ({
-              value: emp.id,
-              label: `${emp.firstName} ${emp.lastName}`,
-            })) || [],
-          );
-          break;
-        case 'Role':
-          data = positions;
-          setOptions(
-            data?.map((role) => ({ value: role.id, label: role.name })) || [],
-          );
-          break;
-        case 'Department':
-          data = departments;
-          setOptions(
-            data?.map((dept) => ({ value: dept.id, label: dept.name })) || [],
-          );
-          break;
-      }
-    };
-
-    getFilteredOptions();
+    switch (activeTab) {
+      case 'Employee':
+        setOptions(
+          employees?.map((emp) => ({
+            value: emp.id,
+            label: `${emp.firstName} ${emp.lastName}`,
+          })) || [],
+        );
+        break;
+      case 'Role':
+        setOptions(
+          positions?.map((role) => ({ value: role.id, label: role.name })) ||
+            [],
+        );
+        break;
+      case 'Department':
+        setOptions(
+          departments?.map((dept) => ({ value: dept.id, label: dept.name })) ||
+            [],
+        );
+        break;
+    }
   }, [activeTab, employees, positions, departments]);
 
-  const groupColors = [
-    ['#1367EA', '#EEF5FF'],
-    ['#BD21CA', '#FDEAFF'],
-    ['#7645E8', '#ECE4FF'],
-    ['#567E26', '#EDFFD6'],
-    ['#A16308', '#FFFDDB'],
-  ];
+  const getSignerType = (tab: string): SignerType => {
+    switch (tab) {
+      case 'Employee':
+        return SignerType.USER;
+      case 'Role':
+        return SignerType.POSITION;
+      case 'Department':
+        return SignerType.DEPARTMENT;
+      default:
+        return SignerType.USER;
+    }
+  };
 
-  const GroupItem = ({
-    num,
+  const SignatureGroupItem = ({
+    name,
     color,
-    border,
+    borderColor,
   }: {
-    num: number;
+    name: string;
     color: string;
-    border: string;
+    borderColor: string;
   }) => {
     return (
       <Flex gap="10px" alignItems="center">
         <Box
-          width="24px"
-          height="24px"
+          w="24px"
+          h="24px"
           backgroundColor={color}
-          border={`1px solid ${border}`}
+          border={`1px solid ${borderColor}`}
         />
         <Text font-size="16px" fontWeight="400" whiteSpace={'nowrap'}>
-          Group {num}
+          {name}
         </Text>
       </Flex>
     );
   };
 
-  const [border, background] = groupColors[index % groupColors.length];
-
   return (
-    <Box w="100%">
-      <Flex w="100%" justifyContent="space-between" paddingBottom="6px">
+    <>
+      <Box w="100%">
         <Heading as="h3" color="black" marginTop="7px">
-          <GroupItem
-            key={index}
-            num={index + 1}
+          <SignatureGroupItem
+            name={field.name}
             color={background}
-            border={border}
+            borderColor={border}
           />
         </Heading>
-        <VStack align="start" spacing="8px">
+        <VStack align="start" spacing="8px" marginTop="12px">
           <HStack
             width="360px"
             spacing="0px"
@@ -157,7 +160,10 @@ export const SignatureDropdown = ({
             {['Employee', 'Role', 'Department'].map((tab) => (
               <Button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  setActiveTab(tab);
+                  setSelectedOption(null);
+                }}
                 flex="1"
                 borderRadius="0"
                 borderWidth="1px"
@@ -170,46 +176,47 @@ export const SignatureDropdown = ({
               </Button>
             ))}
           </HStack>
-          <Box width="100%">
+          <Box w="100%">
             <Select
               useBasicStyles
               selectedOptionStyle="check"
               options={options}
-              placeholder={assigneePlaceholderWithIcon}
-              value={selectedPosition}
               onChange={(selected) => {
-                setSelectedPosition(selected);
-                // TODO: probably should not be coercing this type
-                let updatedAssignedGroupData = assignedGroupData.at(index)!;
-                updatedAssignedGroupData.positionId = selected?.value;
-                assignedGroupData[index] = {
-                  ...updatedAssignedGroupData,
-                  fieldGroupId: updatedAssignedGroupData?.fieldGroupId,
-                  positionId: selected?.value,
-                  order: updatedAssignedGroupData?.order,
+                setSelectedOption(selected);
+
+                // create assigned group object
+                const assignedGroup: ContextAssignedGroupData = {
+                  name: selected.label,
+                  order: field.order,
+                  fieldGroupId: field.id,
+                  signerType: getSignerType(activeTab),
+                  signerEmployeeList: [],
                 };
-                setAssignedGroupData(assignedGroupData);
+                assignedGroup[
+                  activeTab === 'Employee'
+                    ? 'signerEmployeeId'
+                    : activeTab === 'Role'
+                    ? 'signerPositionId'
+                    : 'signerDepartmentId'
+                ] = selected?.value;
+
+                // if the group id already exists, update it
+                for (let i = 0; i < assignedGroupData.length; i++) {
+                  if (assignedGroupData[i].fieldGroupId === field.id) {
+                    assignedGroupData[i] = assignedGroup;
+                    setAssignedGroupData(assignedGroupData);
+                    return;
+                  }
+                }
+
+                // otherwise, add it to the list
+                setAssignedGroupData([...assignedGroupData, assignedGroup]);
               }}
-              className="custom-dropdown"
-              components={{
-                DropdownIndicator: (props: any) => (
-                  <chakraComponents.DropdownIndicator {...props}>
-                    {isDropdownOpen ? (
-                      <DropdownUpArrow maxH="7px" />
-                    ) : (
-                      <DropdownDownArrow maxH="7px" />
-                    )}
-                  </chakraComponents.DropdownIndicator>
-                ),
-              }}
-              onMenuOpen={() => setIsDropdownOpen(true)}
-              onMenuClose={() => setIsDropdownOpen(false)}
-              isClearable
-              closeMenuOnSelect
+              value={selectedOption}
             />
           </Box>
         </VStack>
-      </Flex>
-    </Box>
+      </Box>
+    </>
   );
 };

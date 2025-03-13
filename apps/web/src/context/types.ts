@@ -1,10 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
-import { AssignedGroupData } from 'apps/web/src/components/createFormInstance/types';
 import {
   FormFields,
   FieldGroups,
 } from '@web/components/createFormTemplate/types';
-import { FormTemplateEntity, Scope } from '@web/client';
+import { CreateAssignedGroupDto, FormTemplateEntity, Scope } from '@web/client';
 import { GraphUser } from '@web/graph';
 
 // for storage in context
@@ -52,7 +51,6 @@ export interface CreateFormTemplateContextType {
   fieldGroups: FieldGroups;
   setFieldGroups: Dispatch<SetStateAction<FieldGroups>>;
 }
-
 export interface CreateFormInstanceContextType {
   formInstanceName: string | null;
   formInstanceDescription: string | null;
@@ -60,6 +58,10 @@ export interface CreateFormInstanceContextType {
   setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
   formTemplate: FormTemplateEntity | null;
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
-  assignedGroupData: AssignedGroupData[];
-  setAssignedGroupData: Dispatch<SetStateAction<AssignedGroupData[]>>;
+  assignedGroupData: ContextAssignedGroupData[];
+  setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
 }
+
+export type ContextAssignedGroupData = CreateAssignedGroupDto & {
+  name: string;
+};

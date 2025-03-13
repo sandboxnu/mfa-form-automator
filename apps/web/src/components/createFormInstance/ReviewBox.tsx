@@ -1,13 +1,6 @@
-import { Box, Text, Flex, useQuery } from '@chakra-ui/react';
+import { Box, Text, Flex } from '@chakra-ui/react';
 import { FormView } from './FormView';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
-import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
-import {
-  AssignedGroupEntity,
-  employeesControllerFindOne,
-  EmployeesControllerFindOneData,
-} from '@web/client';
 
 export const ReviewBox = ({
   formLink,
@@ -82,7 +75,7 @@ export const ReviewBox = ({
             return (
               <Flex key={i} align="center" mr={4}>
                 <GroupItem color={background} border={border} />
-                <Text ml={2}>{group ? group.positionId : null}</Text>
+                <Text ml={2}>{group ? group.name : 'No Group'}</Text>
               </Flex>
             );
           })}
