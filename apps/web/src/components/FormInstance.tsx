@@ -178,9 +178,7 @@ const FormInstance = ({
         Description
       </Heading>
       <Text color="#000" lineHeight="normal" ml="50px" maxW="450px">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus et
-        imperdiet enim. Ut enim justo, tincidunt ac enim ut, mollis pulvinar
-        neque. Suspendisse id semper nunc.
+        {formInstance.description}
       </Text>
 
       <Grid templateColumns="1fr 1fr" gap="100px" mt={20}>

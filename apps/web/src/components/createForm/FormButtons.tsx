@@ -41,6 +41,7 @@ export const FormButtons = ({
 
   const {
     formTemplateName,
+    formTemplateDescription,
     pdfFile,
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
@@ -121,6 +122,7 @@ export const FormButtons = ({
           name: formTemplateName ? formTemplateName : '',
           fieldGroups: fieldGroups,
           file: pdfFile,
+          description: formTemplateDescription ? formTemplateDescription : '',
         },
       })
       .then((response) => {
@@ -162,6 +164,7 @@ export const FormButtons = ({
         originatorId: user.id,
         formTemplateId: formTemplate.id,
         formDocLink: formTemplate.formDocLink,
+        description: formTemplate.description ? formTemplate.description : '',
       },
     });
 
