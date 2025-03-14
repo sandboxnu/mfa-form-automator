@@ -1,4 +1,5 @@
-import { Box, useDisclosure } from '@chakra-ui/react';
+import { useState } from 'react';
+import { Box } from '@chakra-ui/react';
 import { NavBar } from './NavBar';
 import { TopBar } from './TopBar';
 
@@ -7,11 +8,8 @@ import { TopBar } from './TopBar';
  * @returns overall layout of the application
  */
 export const Layout = ({ children }: { children: any }) => {
-  const {
-    isOpen: isCreateFormInstanceOpen,
-    onOpen: onOpenCreateFormInstance,
-    onClose: onCloseCreateFormInstance,
-  } = useDisclosure();
+  const [isCreateFormInstanceOpen, setIsCreateFormInstanceOpen] =
+    useState(false);
 
   return (
     <Box
@@ -22,7 +20,9 @@ export const Layout = ({ children }: { children: any }) => {
       display="flex"
       flexDirection="column"
     >
-      <NavBar onOpenCreateFormInstance={onOpenCreateFormInstance} />
+      <NavBar
+        onOpenCreateFormInstance={() => setIsCreateFormInstanceOpen(true)}
+      />
       <Box flex="1" display="flex" flexDirection="column">
         <TopBar />
         <Box as="main" ml="60" pt="60px" flex="1">

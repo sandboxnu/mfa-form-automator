@@ -1,5 +1,4 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
 import { PDFDocument } from './PDFDocument';
 import { FormInstanceEntity } from '@web/client/types.gen';
 import { MouseEventHandler } from 'react';
@@ -17,8 +16,6 @@ export const FormImageCard = ({
   formInstance: FormInstanceEntity;
   onClick: MouseEventHandler<HTMLDivElement>;
 }) => {
-  const router = useRouter();
-
   const daysAgo = (date1: Date, date2: Date) => {
     const diffInTime = date1.getTime() - date2.getTime();
     const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
@@ -63,7 +60,7 @@ export const FormImageCard = ({
           fontFamily="Hanken Grotesk"
           fontWeight={500}
           fontSize="15px"
-          isTruncated
+          truncate
           height="21px"
         >
           {formInstance.name}
@@ -76,7 +73,7 @@ export const FormImageCard = ({
             fontFamily="Hanken Grotesk"
             fontWeight={700}
             fontSize="12px"
-            isTruncated
+            truncate
             borderRadius="20px"
             padding="3px 12px"
           >
@@ -89,9 +86,9 @@ export const FormImageCard = ({
             fontFamily="Hanken Grotesk"
             fontWeight={500}
             fontSize="13px"
-            isTruncated
+            truncate
           >
-            Assigned {daysAgo(new Date(formInstance.createdAt), new Date())}
+            Assigned {daysAgo(new Date(), new Date(formInstance.createdAt))}
           </Text>
         </Flex>
       </Flex>

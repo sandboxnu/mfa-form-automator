@@ -121,16 +121,17 @@ export const UserProfileAvatar: React.FC<UserProfileAvatarProps> = ({
   lastName,
 }) => {
   return (
-    <Avatar
+    <Avatar.Root
       bg="#1367EA"
       color="white"
       h="32px"
       w="32px"
       fontSize="16px"
       fontFamily="Hanken Grotesk"
-      name={`${firstName} ${lastName}`}
-      size="sm"
-    ></Avatar>
+      size="md"
+    >
+      <Avatar.Fallback name={`${firstName} ${lastName}`}></Avatar.Fallback>
+    </Avatar.Root>
   );
 };
 

@@ -79,7 +79,7 @@ export const TemplateSelectGrid: React.FC = () => {
             router.push('/create-template/upload');
           }}
         >
-          <Text fontSize="60px" fontWeight="50">
+          <Text fontSize="60px" fontWeight="50" color="black">
             +
           </Text>
         </Button>

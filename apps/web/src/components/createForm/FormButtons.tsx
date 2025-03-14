@@ -172,6 +172,8 @@ export const FormButtons = ({
     <>
       {!review ? (
         <Button
+          w="86px"
+          h="36px"
           borderRadius="6px"
           borderWidth="1.5px"
           borderStyle={'solid'}
@@ -199,6 +201,8 @@ export const FormButtons = ({
 
       <Flex float="right" justifyContent={'space-between'}>
         <Button
+          w="74px"
+          h="36px"
           borderRadius="6px"
           borderWidth="1.5px"
           borderStyle={'solid'}
@@ -222,6 +226,9 @@ export const FormButtons = ({
           </Text>
         </Button>
         <Button
+          // w="164px"
+          w="200px"
+          h="36px"
           borderRadius="6px"
           alignContent={'center'}
           background={
