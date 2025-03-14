@@ -43,7 +43,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 )}
                 boxSize="32px"
                 padding="6px 7px"
-                size="16px"
+                size="md"
                 color="#0C0C0C"
                 bg={
                   assignee.signed ? '#D1F0D4' : awaiting ? '#FFF2D9' : '#E5E5E5'

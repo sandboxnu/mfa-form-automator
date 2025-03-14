@@ -128,7 +128,7 @@ export const UserProfileAvatar: React.FC<UserProfileAvatarProps> = ({
       w="32px"
       fontSize="16px"
       fontFamily="Hanken Grotesk"
-      size="sm"
+      size="md"
     >
       <Avatar.Fallback name={`${firstName} ${lastName}`}></Avatar.Fallback>
     </Avatar.Root>

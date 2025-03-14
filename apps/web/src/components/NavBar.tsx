@@ -112,7 +112,6 @@ export const NavBar = ({
       as="nav"
       pos="fixed"
       top="64px"
-      left="224px"
       left="0"
       zIndex="sticky"
       h="full"
@@ -127,7 +126,7 @@ export const NavBar = ({
       border="true"
       color="inherit"
       borderRightWidth="1px"
-      width="224px"
+      width="224"
       {...props}
     >
       <Flex

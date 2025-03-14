@@ -1,5 +1,4 @@
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
-import { ReactJSXElement } from 'node_modules/@emotion/react/dist/declarations/types/jsx-namespace';
 import { SideCreateForm } from './SideCreateForm';
 import { FormButtons } from './FormButtons';
 
@@ -32,7 +31,7 @@ export const CreateFormLayout = ({
   pageNumber: number;
   heading: string;
   subheading: string;
-  boxContent: ReactJSXElement;
+  boxContent: React.ReactNode;
   deleteFunction: Function;
   submitLink: string;
   backLink: string;
