@@ -1,8 +1,7 @@
-import { Box, Text, Flex, useDisclosure } from '@chakra-ui/react';
+import { Box, Text, Flex } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { PDFDocument } from './PDFDocument';
 import { FormInstanceEntity } from '@web/client/types.gen';
-import { SignFormInstancePreview } from './SignFormInstancePreview';
 import { MouseEventHandler } from 'react';
 
 /**
