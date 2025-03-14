@@ -71,7 +71,7 @@ export const FormEditor = ({
                 height: 30,
               },
               groupId: currentGroup,
-              type: FieldType.Text,
+              type: FieldType.TEXT_FIELD,
             },
           ],
         ]),
@@ -99,7 +99,7 @@ export const FormEditor = ({
                 height: 10,
               },
               groupId: currentGroup,
-              type: FieldType.Checkbox,
+              type: FieldType.CHECKBOX,
             },
           ],
         ]),
@@ -134,7 +134,7 @@ export const FormEditor = ({
         ...formFields[pageNum].set(fieldId, {
           position: pos,
           groupId: groupId,
-          type: formFields[pageNum].get(fieldId)?.type ?? FieldType.Text,
+          type: formFields[pageNum].get(fieldId)?.type ?? FieldType.TEXT_FIELD,
         }),
       ]),
     });
@@ -149,6 +149,7 @@ export const FormEditor = ({
       newFieldGroups.set(myuuid, {
         border: groupColors[groupNum][0],
         background: groupColors[groupNum][1],
+        groupName: `Group ${groupNum + 1}`,
       });
       setFieldGroups(newFieldGroups);
       setGroupNum(groupNum + 1);
@@ -322,7 +323,7 @@ export const FormEditor = ({
                       <DraggableTextFactory
                         type={
                           formFields[pageNum].get(fieldId)?.type ??
-                          FieldType.Text
+                          FieldType.TEXT_FIELD
                         }
                         currentPosition={{
                           x: position.x * scale,

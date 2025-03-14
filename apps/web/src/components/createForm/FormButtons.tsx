@@ -1,10 +1,6 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import {
-  AssignedGroupEntity,
-  CreateFieldGroupDto,
-  SignerType,
-} from '@web/client';
+import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
   formTemplatesControllerCreateMutation,
@@ -14,8 +10,6 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { AssignedGroupData, PositionOption } from '../createFormInstance/types';
 import { useAuth } from '@web/hooks/useAuth';
 
 /**
@@ -45,7 +39,33 @@ export const FormButtons = ({
 }) => {
   const router = useRouter();
 
-  const { formTemplateName, pdfFile } = useCreateFormTemplate();
+  const {
+    formTemplateName,
+    pdfFile,
+    fieldGroups: fieldGroupsContext,
+    formFields: formFieldsContext,
+  } = useCreateFormTemplate();
+  const { assignedGroupData, formInstanceName, formTemplate } =
+    useCreateFormInstance();
+  const { user } = useAuth();
+
+  const createFormTemplateMutation = useMutation({
+    ...formTemplatesControllerCreateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
+  });
+
+  const createFormInstanceMutation = useMutation({
+    ...formInstancesControllerCreateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
+  });
 
   /**
    * Upload and create a form template
@@ -62,30 +82,38 @@ export const FormButtons = ({
       throw new Error('No PDF file uploaded');
     }
 
-    const fieldGroups: CreateFieldGroupDto[] = [
-      {
-        name: 'Default',
-        order: 0,
-        templateBoxes: [
-          {
-            type: 'SIGNATURE',
-            x_coordinate: 0,
-            y_coordinate: 0,
-          },
-        ],
-      },
-      {
-        name: 'Default',
-        order: 1,
-        templateBoxes: [
-          {
-            type: 'SIGNATURE',
-            x_coordinate: 0,
-            y_coordinate: 0,
-          },
-        ],
-      },
-    ];
+    let fieldGroups: CreateFieldGroupDto[] = [];
+    let orderVal = 0;
+
+    // populate fieldGroups with fieldGroupsContext
+    fieldGroupsContext.forEach((value, groupId) => {
+      let templateBoxes: CreateTemplateBoxDto[] = [];
+
+      // populate templateBoxes with formFieldsContext
+      for (const page in formFieldsContext) {
+        const fieldGroupsOnPage = formFieldsContext[page];
+        fieldGroupsOnPage.forEach((field, _) => {
+          if (field.groupId !== groupId) {
+            return;
+          }
+
+          templateBoxes.push({
+            type: field.type,
+            x_coordinate: field.position.x,
+            y_coordinate: field.position.y,
+            // TODO: add width and height to template boxes
+          });
+        });
+      }
+
+      fieldGroups.push({
+        name: value.groupName,
+        order: orderVal,
+        templateBoxes: templateBoxes,
+      });
+
+      orderVal += 1;
+    });
 
     createFormTemplateMutation
       .mutateAsync({
@@ -104,69 +132,39 @@ export const FormButtons = ({
     router.push(submitLink);
   };
 
-  const createFormTemplateMutation = useMutation({
-    ...formTemplatesControllerCreateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-    },
-  });
-
-  const { user } = useAuth();
-  const { formTemplate, assignedGroupData } = useCreateFormInstance();
-  const [assignedGroupsData, setAssignedGroupsData] = useState<
-    AssignedGroupData[]
-  >([]);
-  const [formName, setFormName] = useState('Create Form');
-  const createFormInstanceMutation = useMutation({
-    ...formInstancesControllerCreateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-    },
-  });
-
   /**
    * Updates form instance with the selected form template, form name, and signature positions
    */
   const _submitFormInstance = async () => {
-    if (!formTemplate) return;
-    if (!assignedGroupsData) return;
+    if (!formTemplate || !assignedGroupData || disabled || !user) {
+      return;
+    }
 
     if (!review) {
       router.push(submitLink);
       return;
     }
 
-    await createFormInstanceMutation
-      .mutateAsync({
-        body: {
-          name: formName,
-          assignedGroups: assignedGroupData.map((pos, i) => {
-            return {
-              order: i,
-              fieldGroupId: pos?.fieldGroupId,
-              // signerEmployeeId: undefined,
-              signerType: SignerType.POSITION,
-              // signerDepartmentId: undefined,
-              // TODO: when we support multiple types, we should create this list outside of the mutation
-              // signerPositionId: pos.positionId!,
-              signerEmployeeList: [],
-            };
-          }),
-          originatorId: user?.id!,
-          formTemplateId: formTemplate?.id!,
-          formDocLink: formTemplate?.formDocLink!,
-        },
-      })
-      .then((response) => {
-        return response;
-      })
-      .catch((e) => {
-        throw e;
-      });
+    await createFormInstanceMutation.mutateAsync({
+      body: {
+        name: formInstanceName ?? formTemplate.name,
+        assignedGroups: assignedGroupData.map((data, _) => {
+          return {
+            order: data.order,
+            fieldGroupId: data.fieldGroupId,
+            signerType: data.signerType,
+            signerEmployeeList: data.signerEmployeeList,
+            signerDepartmentId: data.signerDepartmentId,
+            signerPositionId: data.signerPositionId,
+            signerEmployeeId: data.signerEmployeeId,
+          };
+        }),
+        originatorId: user.id,
+        formTemplateId: formTemplate.id,
+        formDocLink: formTemplate.formDocLink,
+      },
+    });
+
     router.push(submitLink);
   };
 

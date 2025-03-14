@@ -1,10 +1,8 @@
-import { Rnd, RndResizeCallback } from 'react-rnd';
+import { RndResizeCallback } from 'react-rnd';
 import { DraggableEventHandler } from 'react-draggable';
 import { FieldType, TextFieldPosition } from '../types';
-import { FaTimes } from 'react-icons/fa';
 import Checkbox from './CheckBox';
 import TextField from './TextField';
-import { on } from 'events';
 
 export default function DraggableTextFactory({
   onStop,
@@ -28,7 +26,7 @@ export default function DraggableTextFactory({
   highlighted: boolean;
   selected: boolean;
 }) {
-  return type === FieldType.Checkbox ? (
+  return type === FieldType.CHECKBOX ? (
     <Checkbox
       onStop={onStop}
       onResizeStop={onResizeStop}

@@ -1,10 +1,3 @@
-import { PositionEntity } from '@web/client';
-
-export interface CreateFormInstanceModalProps {
-  open: boolean;
-  onClose: () => void;
-}
-
 // value represents the position id
 export interface PositionOption {
   value: string;
