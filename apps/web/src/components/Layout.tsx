@@ -1,9 +1,5 @@
-import { Box } from '@chakra-ui/react';
-import { NavBar } from './NavBar.tsx';
-import { TopBar } from './TopBar.tsx';
-import CreateFormInstanceModal from './createFormInstance/CreateFormInstanceModal.tsx';
 import { useState } from 'react';
-import { Box, useDisclosure } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { NavBar } from './NavBar';
 import { TopBar } from './TopBar';
 
@@ -33,10 +29,6 @@ export const Layout = ({ children }: { children: any }) => {
           {children}
         </Box>
       </Box>
-      <CreateFormInstanceModal
-        open={isCreateFormInstanceOpen}
-        onClose={() => setIsCreateFormInstanceOpen(false)}
-      />
     </Box>
   );
 };
