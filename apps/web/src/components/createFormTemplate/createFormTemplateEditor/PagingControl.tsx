@@ -38,13 +38,25 @@ export default function PagingControl({
   return (
     <Box>
       <div style={styles.inlineFlex}>
-        <Button onClick={changePage(-1)} unstyled disabled={pageNum == 0}>
+        <Button
+          onClick={changePage(-1)}
+          disabled={pageNum == 0}
+          marginRight="5px"
+          cursor="pointer"
+          unstyled
+        >
           {PageSwitcherArrowLeft}
         </Button>
         <Text>
           {pageNum + 1} / {totalPages}
         </Text>
-        <Button onClick={changePage(1)} disabled={pageNum == totalPages - 1}>
+        <Button
+          onClick={changePage(1)}
+          disabled={pageNum == totalPages - 1}
+          marginLeft="5px"
+          cursor="pointer"
+          unstyled
+        >
           {PageSwitcherArrowRight}
         </Button>
       </div>

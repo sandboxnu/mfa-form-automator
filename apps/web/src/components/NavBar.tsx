@@ -112,6 +112,7 @@ export const NavBar = ({
       as="nav"
       pos="fixed"
       top="64px"
+      left="224px"
       left="0"
       zIndex="sticky"
       h="full"
@@ -126,7 +127,7 @@ export const NavBar = ({
       border="true"
       color="inherit"
       borderRightWidth="1px"
-      width="224"
+      width="224px"
       {...props}
     >
       <Flex
@@ -154,7 +155,9 @@ export const NavBar = ({
           <MenuContent zIndex={5000}>
             <MenuItem
               rounded="8px"
-              onClick={onOpenCreateFormInstance}
+              onClick={() => {
+                router.push('create-instance/select-template');
+              }}
               value="form"
               padding="10px"
               w="158px"
@@ -169,6 +172,9 @@ export const NavBar = ({
                   router.push('create-template/upload');
                 }}
                 value="template"
+                padding="10px"
+                w="158px"
+                cursor="pointer"
               >
                 Template
               </MenuItem>

@@ -18,6 +18,7 @@ export const SignIn: React.FC = () => {
       <Input
         placeholder="Email"
         marginBottom="20px"
+        padding="10px"
         value={loginForm.email}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setLoginForm({ ...loginForm, email: e.target.value })
@@ -27,6 +28,7 @@ export const SignIn: React.FC = () => {
         type="password"
         placeholder="Password"
         marginBottom="20px"
+        padding="10px"
         value={loginForm.password}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setLoginForm({ ...loginForm, password: e.target.value })
