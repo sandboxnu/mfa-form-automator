@@ -119,10 +119,10 @@ export const FormButtons = ({
     createFormTemplateMutation
       .mutateAsync({
         body: {
-          name: formTemplateName ? formTemplateName : '',
+          name: formTemplateName ?? '',
           fieldGroups: fieldGroups,
           file: pdfFile,
-          description: formTemplateDescription ? formTemplateDescription : '',
+          description: formTemplateDescription ?? '',
         },
       })
       .then((response) => {
@@ -164,7 +164,7 @@ export const FormButtons = ({
         originatorId: user.id,
         formTemplateId: formTemplate.id,
         formDocLink: formTemplate.formDocLink,
-        description: formTemplate.description ? formTemplate.description : '',
+        description: formTemplate.description ?? '',
       },
     });
 
