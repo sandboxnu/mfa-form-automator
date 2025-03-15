@@ -3,6 +3,7 @@ import { FormTemplate } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 import { FormInstanceEntity } from './../../form-instances/entities/form-instance.entity';
 import { FieldGroupBaseEntity } from '../../field-group/entities/field-group.entity';
+import { IsOptional } from 'class-validator';
 
 export class FormTemplateBaseEntity implements FormTemplate {
   @ApiProperty()
@@ -13,6 +14,10 @@ export class FormTemplateBaseEntity implements FormTemplate {
 
   @ApiProperty()
   formDocLink: string;
+
+  @IsOptional()
+  @ApiProperty()
+  description: string | null;
 
   @Exclude()
   createdAt: Date;
