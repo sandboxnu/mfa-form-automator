@@ -43,7 +43,6 @@ export const TopBar: React.FC = () => {
     >
       <Box minWidth={302}>
         <Flex px="8" py="5" align="left">
-          {/* Triangle */}
           <Box
             width="0"
             height="0"
@@ -87,7 +86,7 @@ export const TopBar: React.FC = () => {
                     ? user.firstName + ' ' + user.lastName
                     : 'Firstname Lastname'}
                 </Text>
-                <Text color="#888888" fontSize="18px" cursor="default">
+                <Text color="#888888" fontSize="18px" cursor="default" pt="8px">
                   {userPosition && userPosition.name
                     ? userPosition.name
                     : 'Position'}
