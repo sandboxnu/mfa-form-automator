@@ -226,8 +226,7 @@ export const FormButtons = ({
           </Text>
         </Button>
         <Button
-          // w="164px"
-          w="200px"
+          w="164px"
           h="36px"
           borderRadius="6px"
           alignContent={'center'}

@@ -8,7 +8,7 @@ import {
   FormInstanceIcon,
   GrayPencilIcon,
 } from 'apps/web/src/static/icons.tsx';
-import Link from 'next/link.js';
+import Link from 'next/link';
 import {
   MenuContent,
   MenuRoot,
@@ -20,69 +20,51 @@ import { useAuth } from '@web/hooks/useAuth';
 import { useRouter } from 'next/router';
 
 const icons = {
-  overview: <OverViewIcon marginRight="2" boxSize="24px" />,
-  overviewActive: <OverViewIcon marginRight="2" boxSize="24px" />,
-  todo: <ToDoIcon marginRight="2" boxSize="24px" />,
-  todoActive: <ToDoIcon marginRight="2" boxSize="24px" />,
-  pending: <PendingIcon marginRight="2" boxSize="24px" />,
-  pendingActive: <PendingIcon marginRight="2" boxSize="24px" />,
-  completed: <CompletedIcon marginRight="2" boxSize="24px" />,
-  completedActive: <CompletedIcon marginRight="2" boxSize="24px" />,
-  formInstance: <FormInstanceIcon marginRight="2" boxSize="24px" />,
-  test: <GrayPencilIcon marginRight="2" boxSize="24px" />,
-  testActive: <GrayPencilIcon marginRight="2" boxSize="24px" />,
+  overview: <OverViewIcon boxSize="24px" mr="2" />,
+  overviewActive: <OverViewIcon boxSize="24px" mr="2" />,
+  todo: <ToDoIcon boxSize="24px" mr="2" />,
+  todoActive: <ToDoIcon boxSize="24px" mr="2" />,
+  pending: <PendingIcon boxSize="24px" mr="2" />,
+  pendingActive: <PendingIcon boxSize="24px" mr="2" />,
+  completed: <CompletedIcon boxSize="24px" mr="2" />,
+  completedActive: <CompletedIcon boxSize="24px" mr="2" />,
+  formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
+  test: <GrayPencilIcon boxSize="24px" mr="2" />,
+  testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
 };
+
 type IconKeys = keyof typeof icons;
-/**
- * @param children - the children of the nav item
- * @param icon - the icon of the nav item
- * @param link - the link of the nav item
- * @returns a nav item for the left sidebar
- */
+
 const NavItem = ({
   children,
   icon,
   link,
 }: {
-  children: any;
-  icon: string;
+  children: React.ReactNode;
+  icon: IconKeys;
   link: string;
 }) => {
   const router = useRouter();
   const isActive = router.pathname === link;
-  const iconKey = isActive ? `${icon}Active` : icon;
+  const iconKey = isActive ? (`${icon}Active` as IconKeys) : icon;
 
   return (
-    <Link href={link}>
+    <Link href={link} passHref>
       <Box
-        px="12"
+        px="8"
+        py="2"
+        bg={isActive ? '#EFEFEF' : 'transparent'}
         _hover={{
-          bg: '#EFEFEF !important',
-          color: '#0C0C0C',
+          bg: '#F4F4F4',
         }}
-        bg={isActive ? '#EFEFEF' : 'white'}
-        transition=".15s ease"
+        transition="background-color 0.2s ease"
+        cursor="pointer"
       >
-        <Flex
-          align="center"
-          px="4"
-          pl="4"
-          py="2"
-          cursor="pointer"
-          _dark={{
-            color: 'gray.400',
-          }}
-          style={{
-            fontWeight: isActive ? '800' : 'normal',
-            color: isActive ? '#263345' : 'inherit',
-          }}
-          role="group"
-        >
-          {icons[iconKey as IconKeys]}
+        <Flex align="center">
+          {icons[iconKey]}
           <Text
-            color={isActive ? '#263345 !important' : ''}
-            fontWeight={isActive ? 'bold !important' : 'inherit'}
-            className="p1"
+            fontWeight={isActive ? 'bold' : 'normal'}
+            color={isActive ? '#263345' : 'inherit'}
           >
             {children}
           </Text>
@@ -92,10 +74,6 @@ const NavItem = ({
   );
 };
 
-/**
- * @param onOpenCreateFormInstance - the function to open the create form instance modal
- * @returns  the nav bar for the left sidebar
- */
 export const NavBar = ({
   onOpenCreateFormInstance,
   ...props
@@ -113,67 +91,54 @@ export const NavBar = ({
       pos="fixed"
       top="64px"
       left="0"
-      zIndex="sticky"
+      zIndex="1000"
       h="full"
-      pb="10"
-      overflowX="hidden"
+      width="240px"
       overflowY="auto"
-      boxShadow="1px 0px 4px #E5E5E5"
+      boxShadow="1px 0px 4px rgba(0, 0, 0, 0.1)"
       bg="#FEFEFE"
-      _dark={{
-        bg: 'gray.800',
-      }}
-      border="true"
-      color="inherit"
       borderRightWidth="1px"
-      width="224"
       {...props}
     >
-      <Flex
-        alignItems={'center'}
-        justifyContent={'center'}
-        mt="40px"
-        mb="32px"
-        rounded="8px"
-        cursor="pointer"
-        color="inherit"
-        _dark={{
-          color: 'gray.400',
-        }}
-        role="group"
-        fontWeight="semibold"
-        transition=".15s ease"
-      >
-        <MenuRoot closeOnSelect={true}>
+      <Flex mt="24px" mb="32px" px="8">
+        <MenuRoot closeOnSelect>
           <MenuTrigger asChild>
-            <Button h="40px" w="124px" backgroundColor="#1367EA" color="white">
+            <Button
+              h="40px"
+              w="124px"
+              bg="#1367EA"
+              color="white"
+              _hover={{
+                bg: '#1257C3',
+              }}
+            >
               <PlusIcon />
               Create
             </Button>
           </MenuTrigger>
-          <MenuContent zIndex={5000}>
+          <MenuContent zIndex="1100">
             <MenuItem
-              rounded="8px"
-              onClick={() => {
-                router.push('create-instance/select-template');
-              }}
+              onClick={() => router.push('create-instance/select-template')}
               value="form"
               padding="10px"
               w="158px"
               cursor="pointer"
+              _hover={{
+                bg: '#F4F4F4',
+              }}
             >
               Form
             </MenuItem>
             {isAdmin && (
               <MenuItem
-                rounded="8px"
-                onClick={() => {
-                  router.push('create-template/upload');
-                }}
+                onClick={() => router.push('create-template/upload')}
                 value="template"
                 padding="10px"
                 w="158px"
                 cursor="pointer"
+                _hover={{
+                  bg: '#F4F4F4',
+                }}
               >
                 Template
               </MenuItem>
@@ -182,18 +147,20 @@ export const NavBar = ({
         </MenuRoot>
       </Flex>
 
-      <NavItem icon="overview" link="/">
-        Dashboard
-      </NavItem>
-      <NavItem icon="todo" link="/todo">
-        To do
-      </NavItem>
-      <NavItem icon="pending" link="/pending">
-        Pending
-      </NavItem>
-      <NavItem icon="completed" link="/completed">
-        Completed
-      </NavItem>
+      <Flex direction="column" gap="2" w="100%" justifyContent="center">
+        <NavItem icon="overview" link="/">
+          Dashboard
+        </NavItem>
+        <NavItem icon="todo" link="/todo">
+          To Do
+        </NavItem>
+        <NavItem icon="pending" link="/pending">
+          Pending
+        </NavItem>
+        <NavItem icon="completed" link="/completed">
+          Completed
+        </NavItem>
+      </Flex>
     </Box>
   );
 };
