@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsString,
   ValidateNested,
+  IsOptional,
 } from 'class-validator';
 import { CreateFieldGroupDto } from '../../field-group/dto/create-field-group.dto';
 import { Type } from 'class-transformer';
@@ -17,6 +18,11 @@ export class CreateFormTemplateDto {
   @IsNotEmpty()
   @ApiProperty()
   name: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  description: string;
 
   @IsArray()
   @ArrayMinSize(1)

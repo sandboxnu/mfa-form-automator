@@ -90,6 +90,7 @@ model FormTemplate {
   formDocLink String   @db.VarChar(255)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  description String?   @db.Text()
 
   fieldGroups   FieldGroup[]
   formInstances FormInstance[]
@@ -144,6 +145,7 @@ model FormInstance {
   markedCompleted   Boolean   @default(false)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+  description       String?    @db.Text()
   completedAt       DateTime?
   markedCompletedAt DateTime?
 

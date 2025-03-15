@@ -101,9 +101,7 @@ export const SignFormInstancePreview = ({
               >
                 <Text style={subheadingStyle}>Description</Text>
                 <Text color="#222324" fontSize="16px" fontWeight="400">
-                  For HR needs lorem ipsum dolor sit amet. Consectetur
-                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua.
+                  {formInstance.description}
                 </Text>
               </Flex>
               <Flex
