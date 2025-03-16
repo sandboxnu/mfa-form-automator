@@ -57,7 +57,6 @@ export class EmployeesController {
     @Body(new ValidationPipe({ transform: true }))
     createEmployeeDto: CreateEmployeeDto,
   ) {
-    // TODO: Auth
     const newEmployee = await this.employeesService.create(createEmployeeDto);
     return new EmployeeEntity(newEmployee);
   }
