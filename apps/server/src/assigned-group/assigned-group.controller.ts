@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { AssignedGroupService } from './assigned-group.service';
 import { UpdateAssignedGroupSignerDto } from './dto/update-assigned-group-signer.dto';
-import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { ContributorAuthGuard } from '../auth/guards/contributor-auth.guard';
 
 @Controller('signatures')
