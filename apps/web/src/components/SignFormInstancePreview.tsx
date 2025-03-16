@@ -99,6 +99,7 @@ export const SignFormInstancePreview = ({
                   <CloseIcon onClick={onClose} cursor="pointer" />
                 </Flex>
 
+<<<<<<< HEAD
                 <Flex
                   flexDirection="column"
                   alignItems="flex-start"
@@ -110,6 +111,44 @@ export const SignFormInstancePreview = ({
                     For HR needs lorem ipsum dolor sit amet. Consectetur
                     adipiscing elit, sed do eiusmod tempor incididunt ut labore
                     et dolore magna aliqua.
+=======
+              <Flex
+                flexDirection="column"
+                alignItems="flex-start"
+                gap="8px"
+                alignSelf="stretch"
+              >
+                <Text style={subheadingStyle}>Description</Text>
+                <Text color="#222324" fontSize="16px" fontWeight="400">
+                  {formInstance.description}
+                </Text>
+              </Flex>
+              <Flex
+                flexDirection="column"
+                alignItems="flex-start"
+                gap="12px"
+                alignSelf="stretch"
+              >
+                <Text style={subheadingStyle}>Assigned by</Text>
+                <Flex alignItems="center" gap="8px" alignSelf="stretch">
+                  <Avatar
+                    name={
+                      formInstance.originator.firstName +
+                      ' ' +
+                      formInstance.originator.lastName
+                    }
+                    boxSize="32px"
+                    backgroundColor={'#DDD'}
+                    padding="6px 7px"
+                    border="1px solid #FFFFFF"
+                    color="#0C0C0C"
+                    size="16px"
+                  />
+                  <Text color="#0C0C0C" fontSize="15px">
+                    {formInstance.originator.firstName +
+                      ' ' +
+                      formInstance.originator.lastName}
+>>>>>>> e863f41b1c64c0c9d6f6d32a3e60be1bc9295db5
                   </Text>
                 </Flex>
                 <Flex

@@ -17,6 +17,7 @@ import { appControllerRegister, OnboardEmployeeDto, Scope } from '@web/client';
 import {
   appControllerLogin,
   appControllerLogout,
+  appControllerRefresh,
   employeesControllerFindMe,
   JwtEntity,
 } from '../client';
