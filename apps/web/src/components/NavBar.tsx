@@ -147,7 +147,7 @@ export const NavBar = ({
         </MenuRoot>
       </Flex>
 
-      <Flex direction="column" gap="2" w="100%" justifyContent="center">
+      <Flex direction="column" w="100%" justifyContent="center">
         <NavItem icon="overview" link="/">
           Dashboard
         </NavItem>
