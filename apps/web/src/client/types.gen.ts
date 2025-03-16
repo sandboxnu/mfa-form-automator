@@ -30,6 +30,7 @@ export type PositionBaseEntity = {
 
 export enum Scope {
   BASE_USER = 'BASE_USER',
+  CONTRIBUTOR = 'CONTRIBUTOR',
   ADMIN = 'ADMIN',
 }
 
@@ -39,7 +40,7 @@ export type EmployeeEntity = {
   lastName: string;
   email: string;
   signatureLink: string | null;
-  scope: 'BASE_USER' | 'ADMIN';
+  scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
   position: PositionBaseEntity | null;
   positionId: string | null;
   pswdHash: string | null;
@@ -54,7 +55,7 @@ export type CreateEmployeeDto = {
   positionId?: string;
   email: string;
   password: string;
-  scope: 'BASE_USER' | 'ADMIN';
+  scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
 };
 
 export type OnboardEmployeeDto = {
@@ -66,7 +67,7 @@ export type UpdateEmployeeDto = {
   firstName?: string;
   lastName?: string;
   positionId?: string;
-  scope?: 'BASE_USER' | 'ADMIN';
+  scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
 };
 
 export type CreatePositionDto = {
@@ -80,7 +81,7 @@ export type EmployeeBaseEntity = {
   lastName: string;
   email: string;
   signatureLink: string | null;
-  scope: 'BASE_USER' | 'ADMIN';
+  scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
   positionId: string | null;
   pswdHash: string | null;
   createdAt: string;

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { Scope } from '@web/client';
 import { ErrorIcon } from '@web/static/icons';
 
-export default function isAuth(Component: any, scope?: Scope) {
+export default function isAuth(Component: any, scopes?: Scope[]) {
   return function IsAuth(props: any) {
     const router = useRouter();
     const { user } = useAuth();
@@ -15,7 +15,12 @@ export default function isAuth(Component: any, scope?: Scope) {
       }
     }, [user, router]);
 
-    if (!user || (scope && user?.scope !== scope)) {
+    if (
+      !user ||
+      (scopes &&
+        scopes.length > 0 &&
+        scopes.every((scope) => user.scope !== scope))
+    ) {
       return (
         <div style={{ textAlign: 'center', paddingTop: '144px' }}>
           <ErrorIcon width="44px" height="44px" />
