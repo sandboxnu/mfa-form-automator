@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react';
 import { FormRow } from './FormRow';
-import { Box, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Grid,
+  GridItem,
+  Text,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { FormInstanceEntity } from '@web/client/types.gen';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';

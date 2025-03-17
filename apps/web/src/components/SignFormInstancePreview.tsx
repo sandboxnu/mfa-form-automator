@@ -7,12 +7,13 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import { FormInstanceEntity } from '@web/client/types.gen';
+import { AssignedGroupEntity, FormInstanceEntity } from '@web/client/types.gen';
 
 import { useRouter } from 'next/router';
 import { CloseIcon, PenSigningIcon } from '@web/static/icons';
 import AssigneeMap from './AvatarMap';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
+import { useAuth } from '@web/hooks/useAuth';
 
 /**
  * Modal used in OverviewRow component for To Do forms
@@ -31,6 +32,7 @@ export const SignFormInstancePreview = ({
   formInstance?: FormInstanceEntity;
 }) => {
   const router = useRouter();
+  const { user } = useAuth();
 
   const subheadingStyle = {
     lineHeight: 'normal',
@@ -41,6 +43,41 @@ export const SignFormInstancePreview = ({
 
   if (!formInstance) {
     return null;
+  }
+
+  /**
+   * Determines whether the currently logged in user qualifies as 'next to sign' based on
+   * their position/department/identity.  Used to determine whether the user should have the option to
+   * "Sign Now" from this form instance preview modal.
+   * @returns a boolean representing whether or not the user can sign for the next assigned group
+   */
+  function nextUser() {
+    if (!formInstance) {
+      return false;
+    }
+    // get the AssignedGroupEntity that is next to sign the form
+    let nextToSign: AssignedGroupEntity | null = null;
+    let prev: AssignedGroupEntity | null = null;
+    for (let assigned of formInstance.assignedGroups) {
+      if (prev == null || (prev.signed && !assigned.signed)) {
+        nextToSign = assigned;
+        break;
+      }
+      prev = assigned;
+    }
+    if (nextToSign?.signerType == 'POSITION') {
+      return user?.positionId == nextToSign.signerPositionId;
+    } else if (nextToSign?.signerType == 'DEPARTMENT') {
+      return user?.departmentId == nextToSign.signerDepartmentId;
+    } else if (nextToSign?.signerType == 'USER') {
+      return user?.id == nextToSign.signingEmployeeId;
+    } else if (nextToSign?.signerType == 'USER_LIST') {
+      return nextToSign.signerEmployeeList?.reduce(
+        (acc, empl) => (empl.id == user?.id ? true : acc),
+        false,
+      );
+    }
+    return false;
   }
 
   return (
@@ -59,11 +96,13 @@ export const SignFormInstancePreview = ({
           flexDirection="column"
           justifyContent={'space-between'}
           width="559px"
-          height="554px"
+          minHeight="554px"
+          maxHeight="75vh"
           borderRadius="12px"
           alignItems="flex-end"
           flexShrink={'0'}
           box-shadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
+          overflowY={'scroll'}
         >
           <Flex
             width="495px"
@@ -137,7 +176,6 @@ export const SignFormInstancePreview = ({
                 justifyContent={'space-between'}
                 alignSelf={'stretch'}
                 gap="12px"
-                overflowY={'scroll'}
               >
                 <Text style={subheadingStyle}>Assignees</Text>
                 <AssigneeMap
@@ -153,32 +191,36 @@ export const SignFormInstancePreview = ({
               </Flex>
             </Flex>
           </Flex>
+          {nextUser() == true ? (
+            <Button
+              width="158px"
+              height="32px"
+              padding="4px 16px"
+              borderRadius="6px"
+              background="#1367EA"
+              onClick={() => router.push('form-instances/' + formInstance.id)}
+              _hover={{
+                background: '#1367EA',
+              }}
+              justifyContent="center"
+              alignItems={'center'}
+            >
+              <Flex gap="8px">
+                <PenSigningIcon
+                  color="#FFF"
+                  position={'absolute'}
+                  alignSelf="center"
+                  left="20px"
+                />
 
-          <Button
-            width="158px"
-            height="32px"
-            padding="4px 16px"
-            borderRadius="6px"
-            background="#1367EA"
-            onClick={() => router.push('form-instances/' + formInstance.id)}
-            _hover={{
-              background: '#1367EA',
-            }}
-            justifyContent="center"
-            alignItems={'center'}
-          >
-            <Flex gap="8px">
-              <PenSigningIcon
-                color="#FFF"
-                position={'absolute'}
-                alignSelf="center"
-                left="20px"
-              />
-              <Text color="#FFF" position={'relative'}>
-                Sign Now
-              </Text>
-            </Flex>
-          </Button>
+                <Text color="#FFF" position={'relative'}>
+                  Sign Now
+                </Text>
+              </Flex>
+            </Button>
+          ) : (
+            <></>
+          )}
         </Flex>
       </ModalContent>
     </Modal>
