@@ -70,7 +70,7 @@ export const SignFormInstancePreview = ({
     } else if (nextToSign?.signerType == 'DEPARTMENT') {
       return user?.departmentId == nextToSign.signerDepartmentId;
     } else if (nextToSign?.signerType == 'USER') {
-      return user?.id == nextToSign.signingEmployeeId;
+      return user?.id == nextToSign.signerEmployee?.id;
     } else if (nextToSign?.signerType == 'USER_LIST') {
       return nextToSign.signerEmployeeList?.reduce(
         (acc, empl) => (empl.id == user?.id ? true : acc),
