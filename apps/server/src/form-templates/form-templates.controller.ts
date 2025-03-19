@@ -34,10 +34,10 @@ import { FormTemplateErrorMessage } from './form-templates.errors';
 import { UpdateFormTemplateDto } from './dto/update-form-template.dto';
 import { Prisma } from '@prisma/client';
 import { LoggerServiceImpl } from '../logger/logger.service';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ContributorAuthGuard } from '../auth/guards/contributor-auth.guard';
 
 export class ParseFormDataJsonPipe implements PipeTransform {
   constructor() {}
@@ -85,7 +85,7 @@ export class FormTemplatesController {
   ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -109,7 +109,7 @@ export class FormTemplatesController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ContributorAuthGuard)
   @ApiOkResponse({ type: [FormTemplateEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -127,7 +127,7 @@ export class FormTemplatesController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ContributorAuthGuard)
   @ApiOkResponse({ type: FormTemplateEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
@@ -148,7 +148,7 @@ export class FormTemplatesController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse({ type: FormTemplateEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })

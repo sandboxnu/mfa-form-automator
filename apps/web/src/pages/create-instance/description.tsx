@@ -1,3 +1,4 @@
+import { Scope } from '@web/client/types.gen';
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import isAuth from '@web/components/isAuth';
@@ -59,4 +60,4 @@ function Description() {
   );
 }
 
-export default isAuth(Description);
+export default isAuth(Description, [Scope.CONTRIBUTOR, Scope.ADMIN]);

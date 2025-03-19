@@ -28,7 +28,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
   };
 
   return (
-    <Flex flexDirection="column" gap="24px">
+    <Flex flexDirection="column" gap="24px" position="relative">
       {assignees.map((assignee, index) => {
         const awaiting = previousSigned && !assignee.signed;
         previousSigned = assignee.signed;

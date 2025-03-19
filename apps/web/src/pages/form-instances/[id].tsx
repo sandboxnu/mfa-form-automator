@@ -5,6 +5,7 @@ import FormLoading from './../../components/FormLoading';
 import ErrorComponent from './../../components/Error';
 import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/react-query.gen';
 import isAuth from '@web/components/isAuth';
+import { Scope } from '@web/client';
 
 /**
  * @returns a view of a form instance
@@ -39,5 +40,5 @@ function FormInstanceView() {
     </>
   );
 }
-
-export default isAuth(FormInstanceView);
+// TODO: This should be restricted
+export default isAuth(FormInstanceView, []);

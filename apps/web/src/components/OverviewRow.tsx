@@ -2,9 +2,9 @@ import { Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { FormCard } from './FormCard.tsx';
 import { FormInstanceEntity } from '@web/client/types.gen.ts';
 import React, { useState } from 'react';
-import { FormImageCard } from './FormImageCard.tsx';
-import { ViewAll } from './ViewAll.tsx';
-import { SignFormInstancePreview } from './SignFormInstancePreview.tsx';
+import { FormImageCard } from './FormImageCard';
+import { ViewAll } from './ViewAll';
+import { SignFormInstancePreview } from './SignFormInstancePreview';
 
 /**
  * @param title - the title of the overview row

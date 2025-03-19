@@ -1,22 +1,15 @@
+import { Button, Dialog, Flex, Portal, Text, VStack } from '@chakra-ui/react';
 import {
-  Button,
-  DialogBackdrop,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  Flex,
-  Text,
-} from '@chakra-ui/react';
-import { FormInstanceEntity } from '@web/client/types.gen';
-
+  AssignedGroupEntity,
+  FormInstanceEntity,
+  SignerType,
+} from '@web/client/types.gen';
 import { useRouter } from 'next/router';
 import { CloseIcon, PenSigningIcon } from '@web/static/icons';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
-import { Avatar } from './ui/avatar';
+import { useAuth } from '@web/hooks/useAuth';
 import AssigneeMap from './AssigneeMap';
+import { Avatar } from './ui/avatar.tsx';
 
 /**
  * Modal used in OverviewRow component for To Do forms
@@ -35,6 +28,7 @@ export const SignFormInstancePreview = ({
   formInstance?: FormInstanceEntity;
 }) => {
   const router = useRouter();
+  const { user } = useAuth();
 
   const subheadingStyle = {
     lineHeight: 'normal',
@@ -47,58 +41,89 @@ export const SignFormInstancePreview = ({
     return <></>;
   }
 
+  /**
+   * Determines whether the currently logged in user qualifies as 'next to sign' based on
+   * their position/department/identity.  Used to determine whether the user should have the option to
+   * "Sign Now" from this form instance preview modal.
+   * @returns a boolean representing whether or not the user can sign for the next assigned group
+   */
+  function nextUser() {
+    if (!formInstance) {
+      return false;
+    }
+    // get the AssignedGroupEntity that is next to sign the form
+    let nextToSign: AssignedGroupEntity | null = null;
+    let prev: AssignedGroupEntity | null = null;
+    for (let assigned of formInstance.assignedGroups) {
+      if (prev == null || (prev.signed && !assigned.signed)) {
+        nextToSign = assigned;
+        break;
+      }
+      prev = assigned;
+    }
+    if (nextToSign?.signerType == 'POSITION') {
+      return user?.positionId == nextToSign.signerPositionId;
+    } else if (nextToSign?.signerType == 'DEPARTMENT') {
+      return user?.departmentId == nextToSign.signerDepartmentId;
+    } else if (nextToSign?.signerType == 'USER') {
+      return user?.id == nextToSign.signerEmployee?.id;
+    } else if (nextToSign?.signerType == 'USER_LIST') {
+      return nextToSign.signerEmployeeList?.reduce(
+        (acc, empl) => (empl.id == user?.id ? true : acc),
+        false,
+      );
+    }
+    return false;
+  }
+
   return (
-    <DialogRoot
+    <Dialog.Root
       open={isOpen}
       onOpenChange={onClose}
-      closeOnInteractOutside={false}
+      closeOnInteractOutside={true}
     >
-      <DialogBackdrop bg="rgba(0, 0, 0, 0.5)" backdropFilter="blur(2px)" />
-      <DialogContent alignItems="center" justifyContent={'center'}>
-        <DialogCloseTrigger />
-        <DialogHeader></DialogHeader>
-        <DialogBody>
-          <Flex
-            backgroundColor="#F8F9FA"
-            padding="24px 32px"
+      <Portal>
+        <Dialog.Backdrop bg="rgba(0, 0, 0, 0.5)" />
+        <Dialog.Positioner alignItems="center" justifyContent={'center'}>
+          <Dialog.Content
+            padding={'24px 32px'}
             gap="24px"
-            flexDirection="column"
-            justifyContent={'space-between'}
+            backgroundColor="#F8F9FA"
+            flexDir={'column'}
             width="559px"
-            height="554px"
+            minHeight="554px"
+            maxHeight="75vh"
             borderRadius="12px"
-            alignItems="flex-end"
-            flexShrink={'0'}
-            box-shadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
+            boxShadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
+            overflowY={'scroll'}
           >
-            <Flex
-              width="495px"
-              justifyContent="space-between"
-              alignItems="center"
-              flexDirection="column"
-            >
+            <Dialog.Header>
               <Flex
-                flexDirection="column"
-                alignItems="flex-start"
-                gap="24px"
-                flex="1 0 0"
+                width="100%"
+                flexDirection="row"
+                justifyContent={'space-between'}
+                alignItems={'center'}
               >
-                <Flex
-                  justifyContent={'space-between'}
-                  alignItems="center"
-                  width="495px"
+                <Dialog.Title
+                  fontFamily={'Hanken Grotesk'}
+                  fontSize="19px"
+                  fontWeight="19px"
+                  lineHeight="26px"
                 >
-                  <Text
-                    fontFamily="Hanken Grotesk"
-                    fontSize="19px"
-                    fontWeight="700px"
-                    lineHeight="26px"
-                  >
-                    {formInstance.name}
-                  </Text>
-                  <CloseIcon onClick={onClose} cursor="pointer" />
-                </Flex>
-
+                  {formInstance.name}
+                </Dialog.Title>
+                <CloseIcon
+                  onClick={onClose}
+                  cursor="pointer"
+                  style={{
+                    width: '19px',
+                    height: '19px',
+                  }}
+                />
+              </Flex>
+            </Dialog.Header>
+            <Dialog.Body>
+              <Flex flexDirection="column" alignItems="flex-start" gap="24px">
                 <Flex
                   flexDirection="column"
                   alignItems="flex-start"
@@ -112,12 +137,13 @@ export const SignFormInstancePreview = ({
                 </Flex>
                 <Flex
                   flexDirection="column"
+                  justifyContent={'space-between'}
                   alignItems="flex-start"
-                  gap="12px"
                   alignSelf="stretch"
+                  gap="12px"
                 >
                   <Text style={subheadingStyle}>Assigned by</Text>
-                  <Flex alignItems="center" gap="8px" alignSelf="stretch">
+                  <Flex alignItems={'center'}>
                     <Avatar
                       name={
                         formInstance.originator.firstName +
@@ -125,15 +151,21 @@ export const SignFormInstancePreview = ({
                         formInstance.originator.lastName
                       }
                       boxSize="32px"
-                      backgroundColor={'#DDD'}
                       padding="6px 7px"
-                      border="1px solid #FFFFFF"
+                      size="md"
                       color="#0C0C0C"
+                      bg="#E5E5E5"
+                      border="1px solid #FFFFFF"
                     />
-                    <Text color="#0C0C0C" fontSize="15px">
-                      {formInstance.originator.firstName +
-                        ' ' +
-                        formInstance.originator.lastName}
+                    <Text
+                      color="#0C0C0C"
+                      fontSize="15px"
+                      lineHeight="20px"
+                      paddingLeft="8px"
+                      fontWeight="400"
+                    >
+                      {formInstance.originator.firstName}{' '}
+                      {formInstance.originator.lastName}
                     </Text>
                   </Flex>
                 </Flex>
@@ -142,7 +174,6 @@ export const SignFormInstancePreview = ({
                   justifyContent={'space-between'}
                   alignSelf={'stretch'}
                   gap="12px"
-                  overflowY={'scroll'}
                 >
                   <Text style={subheadingStyle}>Assignees</Text>
                   <AssigneeMap
@@ -157,37 +188,152 @@ export const SignFormInstancePreview = ({
                   />
                 </Flex>
               </Flex>
-            </Flex>
-          </Flex>
-        </DialogBody>
-        <DialogFooter>
-          <Button
-            width="158px"
-            height="32px"
-            padding="4px 16px"
-            borderRadius="6px"
-            background="#1367EA"
-            onClick={() => router.push('form-instances/' + formInstance.id)}
-            _hover={{
-              background: '#1367EA',
-            }}
-            justifyContent="center"
-            alignItems={'center'}
-          >
-            <Flex gap="8px">
-              <PenSigningIcon
-                color="#FFF"
-                position={'absolute'}
-                alignSelf="center"
-                left="20px"
-              />
-              <Text color="#FFF" position={'relative'}>
-                Sign Now
-              </Text>
-            </Flex>
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </DialogRoot>
+            </Dialog.Body>
+            <Dialog.Footer>
+              {nextUser() && (
+                <Button
+                  width="158px"
+                  height="32px"
+                  padding="4px 16px"
+                  borderRadius="6px"
+                  background="#1367EA"
+                  onClick={() =>
+                    router.push('form-instances/' + formInstance.id)
+                  }
+                  _hover={{
+                    background: '#1367EA',
+                  }}
+                >
+                  <Flex gap="8px" alignItems="center" justifyContent="center">
+                    <PenSigningIcon color="#FFF" />
+
+                    <Text color="#FFF">Sign Now</Text>
+                  </Flex>
+                </Button>
+              )}
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
+    // <DialogRoot
+    //   open={isOpen}
+    //   onOpenChange={onClose}
+    //   closeOnInteractOutside={false}
+    // >
+    //   <ModalOverlay bg="rgba(0, 0, 0, 0.5)" />
+    //   <ModalContent alignItems="center" justifyContent={'center'}>
+    //     <Flex
+    //       backgroundColor="#F8F9FA"
+    //       padding="24px 32px"
+    //       gap="24px"
+    //       flexDirection="column"
+    //       justifyContent={'space-between'}
+    //       width="559px"
+    //       minHeight="554px"
+    //       maxHeight="75vh"
+    //       borderRadius="12px"
+    //       alignItems="flex-end"
+    //       flexShrink={'0'}
+    //       box-shadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
+    //       overflowY={'scroll'}
+    //     >
+    //       <Flex
+    //         backgroundColor="#F8F9FA"
+    //         padding="24px 32px"
+    //         gap="24px"
+    //         flexDirection="column"
+    //         justifyContent={'space-between'}
+    //         width="559px"
+    //         height="554px"
+    //         borderRadius="12px"
+    //         alignItems="flex-end"
+    //         flexShrink={'0'}
+    //         box-shadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
+    //       >
+    //         <Flex
+    //           width="495px"
+    //           justifyContent="space-between"
+    //           alignItems="center"
+    //           flexDirection="column"
+    //         >
+    //           <Flex
+    //             flexDirection="column"
+    //             alignItems="flex-start"
+    //             gap="24px"
+    //             flex="1 0 0"
+    //           >
+    //             <Flex
+    //               justifyContent={'space-between'}
+    //               alignItems="center"
+    //               width="495px"
+    //             >
+    //               <Text
+    //                 fontFamily="Hanken Grotesk"
+    //                 fontSize="19px"
+    //                 fontWeight="700px"
+    //                 lineHeight="26px"
+    //               >
+    //                 {formInstance.name}
+    //               </Text>
+    //               <CloseIcon onClick={onClose} cursor="pointer" />
+    //             </Flex>
+
+    //             <Flex
+    //               flexDirection="column"
+    //               alignItems="flex-start"
+    //               gap="8px"
+    //               alignSelf="stretch"
+    //             >
+    //               <Text style={subheadingStyle}>Description</Text>
+    //               <Text color="#222324" fontSize="16px" fontWeight="400">
+    //                 {formInstance.description}
+    //               </Text>
+    //             </Flex>
+    //           </Flex>
+    //           <Flex
+    //             flexDirection="column"
+    //             justifyContent={'space-between'}
+    //             alignSelf={'stretch'}
+    //             gap="12px"
+    //           >
+    //             <Text style={subheadingStyle}>Assignees</Text>
+    //             <AssigneeMap
+    //               assignees={formInstance.assignedGroups.map(
+    //                 (assignedGroup) => ({
+    //                   signed: assignedGroup.signed,
+    //                   title: getNameFromAssignedGroup(assignedGroup),
+    //                   signerType: assignedGroup.signerType as any,
+    //                   updatedAt: assignedGroup.updatedAt,
+    //                 }),
+    //               )}
+    //             />
+    //           </Flex>
+    //         </Flex>
+    //       </Flex>
+    //       {nextUser() == true ? (
+    //         <Button
+    //           width="158px"
+    //           height="32px"
+    //           padding="4px 16px"
+    //           borderRadius="6px"
+    //           background="#1367EA"
+    //           onClick={() => router.push('form-instances/' + formInstance.id)}
+    //           _hover={{
+    //             background: '#1367EA',
+    //           }}
+    //         >
+    //           <Flex gap="8px" alignItems="center" justifyContent="center">
+    //             <PenSigningIcon color="#FFF" />
+
+    //             <Text color="#FFF">Sign Now</Text>
+    //           </Flex>
+    //         </Button>
+    //       ) : (
+    //         <></>
+    //       )}
+    //     </Flex>
+    //   </ModalContent>
+    // </Modal>
   );
 };
