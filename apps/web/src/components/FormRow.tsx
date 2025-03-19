@@ -5,12 +5,14 @@ import {
   Grid,
   GridItem,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 
 import { AssignedGroupEntity, FormInstanceEntity } from '@web/client/types.gen';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
 import { HoverableAvatar } from './HoverableAvatar';
+import { SignFormInstancePreview } from './SignFormInstancePreview';
 
 /**
  * @param formInstance - the form instance
@@ -26,7 +28,7 @@ export const FormRow = ({
   link: string;
 }) => {
   const router = useRouter();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const formatDate = (date: Date) => {
     return date.toLocaleString('en-US', {
       year: 'numeric',
@@ -53,7 +55,7 @@ export const FormRow = ({
         mb={'0px'}
         cursor="pointer"
         position="relative"
-        onClick={() => router.push(link)}
+        onClick={onOpen}
       >
         <GridItem colSpan={8} h="64px">
           <Text pl="24px" pt="20px" fontWeight={500} isTruncated>
@@ -117,6 +119,11 @@ export const FormRow = ({
           </Flex>
         </GridItem>
       </Grid>
+      <SignFormInstancePreview
+        isOpen={isOpen}
+        onClose={onClose}
+        formInstance={formInstance}
+      />
     </>
   );
 };

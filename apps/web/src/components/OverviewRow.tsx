@@ -4,7 +4,6 @@ import { FormInstanceEntity } from '@web/client/types.gen';
 import React, { useState } from 'react';
 import { FormImageCard } from './FormImageCard';
 import { ViewAll } from './ViewAll';
-import { ProfileIcon } from '@web/static/icons';
 import { SignFormInstancePreview } from './SignFormInstancePreview';
 
 /**
