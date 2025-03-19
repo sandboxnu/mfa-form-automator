@@ -202,20 +202,11 @@ export const SignFormInstancePreview = ({
               _hover={{
                 background: '#1367EA',
               }}
-              justifyContent="center"
-              alignItems={'center'}
             >
-              <Flex gap="8px">
-                <PenSigningIcon
-                  color="#FFF"
-                  position={'absolute'}
-                  alignSelf="center"
-                  left="20px"
-                />
+              <Flex gap="8px" alignItems="center" justifyContent="center">
+                <PenSigningIcon color="#FFF" />
 
-                <Text color="#FFF" position={'relative'}>
-                  Sign Now
-                </Text>
+                <Text color="#FFF">Sign Now</Text>
               </Flex>
             </Button>
           ) : (
