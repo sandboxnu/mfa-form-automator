@@ -34,4 +34,4 @@ function Review() {
   );
 }
 
-export default isAuth(Review, Scope.ADMIN);
+export default isAuth(Review, [Scope.ADMIN]);

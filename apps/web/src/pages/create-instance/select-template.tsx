@@ -1,3 +1,4 @@
+import { Scope } from '@web/client/types.gen';
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
 import isAuth from '@web/components/isAuth';
@@ -24,4 +25,4 @@ function SelectTemplate() {
   );
 }
 
-export default isAuth(SelectTemplate);
+export default isAuth(SelectTemplate, [Scope.CONTRIBUTOR, Scope.ADMIN]);

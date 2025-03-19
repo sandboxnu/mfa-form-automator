@@ -1,3 +1,4 @@
+import { Scope } from '@web/client/types.gen';
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { ReviewBox } from '@web/components/createFormInstance/ReviewBox';
 import isAuth from '@web/components/isAuth';
@@ -29,4 +30,4 @@ function Review() {
   );
 }
 
-export default isAuth(Review);
+export default isAuth(Review, [Scope.CONTRIBUTOR, Scope.ADMIN]);

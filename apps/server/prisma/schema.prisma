@@ -24,8 +24,13 @@ enum SignatureBoxFieldType {
   TEXT_FIELD
 }
 
+// `EmployeeScope` represent the various access levels an employee can have.
+// BASE_USER: Can be assigned forms and can sign forms
+// CONTRIBUTOR: Can create form instances and assign employees to sign form instances
+// ADMIN: Can create form templates (as well as instances) and manage employee details in employee directory
 enum EmployeeScope {
   BASE_USER
+  CONTRIBUTOR
   ADMIN
 }
 
@@ -90,7 +95,7 @@ model FormTemplate {
   formDocLink String   @db.VarChar(255)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  description String?   @db.Text()
+  description String?  @db.Text()
 
   fieldGroups   FieldGroup[]
   formInstances FormInstance[]
@@ -145,7 +150,7 @@ model FormInstance {
   markedCompleted   Boolean   @default(false)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
-  description       String?    @db.Text()
+  description       String?   @db.Text()
   completedAt       DateTime?
   markedCompletedAt DateTime?
 

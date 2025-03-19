@@ -1,3 +1,4 @@
+import { Scope } from '@web/client';
 import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
 import { AssignGroupsBox } from '@web/components/createFormInstance/AssignGroupsBox';
 import isAuth from '@web/components/isAuth';
@@ -31,4 +32,4 @@ function AssignGroups() {
   );
 }
 
-export default isAuth(AssignGroups);
+export default isAuth(AssignGroups, [Scope.CONTRIBUTOR, Scope.ADMIN]);

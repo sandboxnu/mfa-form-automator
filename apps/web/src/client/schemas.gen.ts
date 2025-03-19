@@ -111,7 +111,7 @@ export const EmployeeEntitySchema = {
     },
     scope: {
       type: 'string',
-      enum: ['BASE_USER', 'ADMIN'],
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
     position: {
       nullable: true,
@@ -181,7 +181,7 @@ export const CreateEmployeeDtoSchema = {
     },
     scope: {
       type: 'string',
-      enum: ['BASE_USER', 'ADMIN'],
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
   },
   required: ['firstName', 'lastName', 'email', 'password', 'scope'],
@@ -215,7 +215,7 @@ export const UpdateEmployeeDtoSchema = {
     },
     scope: {
       type: 'string',
-      enum: ['BASE_USER', 'ADMIN'],
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
   },
 } as const;
@@ -255,7 +255,7 @@ export const EmployeeBaseEntitySchema = {
     },
     scope: {
       type: 'string',
-      enum: ['BASE_USER', 'ADMIN'],
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
     positionId: {
       type: 'string',
