@@ -41,6 +41,13 @@ export class EmployeesService {
   }
 
   /**
+   * Calls the microsot graph endpoint to check if the employee exists.
+   */
+  async validateEmployee(accessToken: string) {
+    //TODO
+  }
+
+  /**
    * Retrieve all employees.
    * @param limit the number of employees we want to retrieve (optional)
    * @returns all employees, hydrated
