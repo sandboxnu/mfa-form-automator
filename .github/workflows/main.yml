@@ -67,6 +67,7 @@ jobs:
         run: yarn test
         env:
           POSTMARK_SERVER_KEY: ${{ secrets.POSTMARK_SERVER_KEY }}
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
   build-backend-image:
     runs-on: ubuntu-latest
     name: Build backend image
