@@ -1,5 +1,5 @@
 import { Box, Button, Text } from '@chakra-ui/react';
-import { Checkbox, PlusSign, TextIcon } from 'apps/web/src/static/icons';
+import { Checkbox, PlusSign, TextIcon, SignatureIcon } from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -100,6 +100,34 @@ export const FormEditor = ({
               },
               groupId: currentGroup,
               type: FieldType.CHECKBOX,
+            },
+          ],
+        ]),
+      });
+      setHighlightedField(id);
+      setSelectedField(null);
+    }
+  };
+
+  const handleAddSignatureField = () => {
+    if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
+      const { centerX, centerY } = convertCoordinates(documentRef.current);
+      const id = uuidv4();
+      setFormFields({
+        ...formFields,
+        [pageNum]: new Map([
+          ...formFields[pageNum],
+          [
+            id,
+            {
+              position: {
+                x: centerX - 75,
+                y: centerY - 25,
+                width: 150,
+                height: 50,
+              },
+              groupId: currentGroup,
+              type: FieldType.SIGNATURE,
             },
           ],
         ]),
@@ -281,6 +309,20 @@ export const FormEditor = ({
                 onClick={handleAddCheckbox}
               >
                 <div>{Checkbox}</div>
+              </Button>
+              <Button
+                position="relative"
+                width="40px"
+                height="40px"
+                backgroundColor="white"
+                borderRadius="4px"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                isDisabled={fieldGroups.size == 0 || disableEdit}
+                onClick={handleAddSignatureField}
+              >
+                <div>{SignatureIcon}</div>
               </Button>
             </Box>
           )}

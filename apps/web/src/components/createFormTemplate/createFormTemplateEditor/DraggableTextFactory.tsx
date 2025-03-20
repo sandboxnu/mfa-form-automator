@@ -3,6 +3,7 @@ import { DraggableEventHandler } from 'react-draggable';
 import { FieldType, TextFieldPosition } from '../types';
 import Checkbox from './CheckBox';
 import TextField from './TextField';
+import SignatureField from './SignatureField';
 
 export default function DraggableTextFactory({
   onStop,
@@ -26,29 +27,45 @@ export default function DraggableTextFactory({
   highlighted: boolean;
   selected: boolean;
 }) {
-  return type === FieldType.CHECKBOX ? (
-    <Checkbox
-      onStop={onStop}
-      onResizeStop={onResizeStop}
-      color={color}
-      onRemove={onRemove}
-      currentPosition={currentPosition}
-      disableEdit={disableEdit}
-      selected={selected}
-      highlighted={highlighted}
-    ></Checkbox>
-  ) : (
-    // we'll have to add something else for signature fields but right now lets treat it as
-    // a text field
-    <TextField
-      onStop={onStop}
-      onResizeStop={onResizeStop}
-      color={color}
-      onRemove={onRemove}
-      currentPosition={currentPosition}
-      disableEdit={disableEdit}
-      selected={selected}
-      highlighted={highlighted}
-    ></TextField>
-  );
+  switch (type) {
+    case FieldType.CHECKBOX:
+      return (
+        <Checkbox
+          onStop={onStop}
+          onResizeStop={onResizeStop}
+          color={color}
+          onRemove={onRemove}
+          currentPosition={currentPosition}
+          disableEdit={disableEdit}
+          selected={selected}
+          highlighted={highlighted}
+        />
+      );
+    case FieldType.SIGNATURE:
+      return (
+        <SignatureField
+          onStop={onStop}
+          onResizeStop={onResizeStop}
+          color={color}
+          onRemove={onRemove}
+          currentPosition={currentPosition}
+          disableEdit={disableEdit}
+          selected={selected}
+          highlighted={highlighted}
+        />
+      );
+    default:
+      return (
+        <TextField
+          onStop={onStop}
+          onResizeStop={onResizeStop}
+          color={color}
+          onRemove={onRemove}
+          currentPosition={currentPosition}
+          disableEdit={disableEdit}
+          selected={selected}
+          highlighted={highlighted}
+        />
+      );
+  }
 }
