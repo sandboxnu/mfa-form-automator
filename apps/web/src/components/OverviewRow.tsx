@@ -1,6 +1,6 @@
-import { HStack, Flex, Text, useDisclosure } from '@chakra-ui/react';
-import { FormCard } from './FormCard';
-import { FormInstanceEntity } from '@web/client/types.gen';
+import { Flex, Text, useDisclosure } from '@chakra-ui/react';
+import { FormCard } from './FormCard.tsx';
+import { FormInstanceEntity } from '@web/client/types.gen.ts';
 import React, { useState } from 'react';
 import { FormImageCard } from './FormImageCard';
 import { ViewAll } from './ViewAll';
@@ -29,12 +29,12 @@ export const OverviewRow = ({
     0,
     Math.min(4, formInstances.length),
   );
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
   const [curForm, setCurForm] = useState<FormInstanceEntity>();
 
   function handleModalOpen(formInstance: FormInstanceEntity) {
     setCurForm(formInstance);
-    onOpen();
+    setIsOpen(true);
   }
 
   return (
@@ -97,7 +97,7 @@ export const OverviewRow = ({
       </Flex>
       <SignFormInstancePreview
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={() => setIsOpen(false)}
         formInstance={curForm}
       />
     </>

@@ -1,17 +1,17 @@
 import {
+  AssignedGroupEntity,
+  FormInstanceEntity,
+} from '@web/client/types.gen.tsx';
+import { useRouter } from 'next/router.js';
+import { AssignedAvatarGroup } from './AssignedAvatarGroup.tsx';
+import {
   Avatar,
-  AvatarGroup,
   Flex,
   Grid,
   GridItem,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-
-import { AssignedGroupEntity, FormInstanceEntity } from '@web/client/types.gen';
-import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
-import { useRouter } from 'next/router';
-import { HoverableAvatar } from './HoverableAvatar';
 import { SignFormInstancePreview } from './SignFormInstancePreview';
 
 /**
@@ -28,7 +28,7 @@ export const FormRow = ({
   link: string;
 }) => {
   const router = useRouter();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { open, onOpen, onClose } = useDisclosure();
   const formatDate = (date: Date) => {
     return date.toLocaleString('en-US', {
       year: 'numeric',
@@ -58,7 +58,7 @@ export const FormRow = ({
         onClick={onOpen}
       >
         <GridItem colSpan={8} h="64px">
-          <Text pl="24px" pt="20px" fontWeight={500} isTruncated>
+          <Text pl="24px" pt="20px" fontWeight={500} truncate>
             {formInstance.name}
           </Text>
         </GridItem>
@@ -69,12 +69,7 @@ export const FormRow = ({
         </GridItem>
         <GridItem colSpan={4} h="64px">
           <Flex alignItems="center" pt="15px">
-            <Avatar
-              name={
-                formInstance.originator.firstName +
-                ' ' +
-                formInstance.originator.lastName
-              }
+            <Avatar.Root
               boxSize="36px"
               backgroundColor={'#DCDCDC'}
               border="1px solid #FFFFFF"
@@ -82,7 +77,15 @@ export const FormRow = ({
               fontWeight={400}
               fontSize="14px"
               size="sm"
-            />
+            >
+              <Avatar.Fallback
+                name={
+                  formInstance.originator.firstName +
+                  ' ' +
+                  formInstance.originator.lastName
+                }
+              />
+            </Avatar.Root>
             <Text pl="8px">
               {formInstance.originator.firstName}{' '}
               {formInstance.originator.lastName}
@@ -91,22 +94,11 @@ export const FormRow = ({
         </GridItem>
         <GridItem colSpan={5} h="64px">
           <Flex pt="15px">
-            <AvatarGroup size="sm" max={5}>
-              {formInstance.assignedGroups
-                .sort((a, b) => a.order - b.order)
-                .map((assignedGroup: AssignedGroupEntity, index: number) => {
-                  return (
-                    <>
-                      <HoverableAvatar
-                        name={getNameFromAssignedGroup(assignedGroup)}
-                        signed={assignedGroup.signed}
-                        index={index}
-                      />
-                    </>
-                  );
-                })}
-            </AvatarGroup>
-            <Text pl="15px" mt="5px">
+            <AssignedAvatarGroup
+              assignedGroups={formInstance.assignedGroups}
+              detailed
+            />
+            <Text pl="15px" mt="5px" truncate>
               {`${
                 formInstance.assignedGroups.filter(
                   (assignedGroup: AssignedGroupEntity) => {
@@ -120,7 +112,7 @@ export const FormRow = ({
         </GridItem>
       </Grid>
       <SignFormInstancePreview
-        isOpen={isOpen}
+        isOpen={open}
         onClose={onClose}
         formInstance={formInstance}
       />

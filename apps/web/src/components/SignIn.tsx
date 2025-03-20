@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Input } from '@chakra-ui/react';
-import { useAuth } from '@web/hooks/useAuth';
+import { useAuth } from '@web/hooks/useAuth.ts';
 
 /**
  * @param loginForm a form that contains the user's email and password
@@ -18,15 +18,19 @@ export const SignIn: React.FC = () => {
       <Input
         placeholder="Email"
         marginBottom="20px"
+        padding="10px"
         value={loginForm.email}
-        onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setLoginForm({ ...loginForm, email: e.target.value })
+        }
       />
       <Input
         type="password"
         placeholder="Password"
         marginBottom="20px"
+        padding="10px"
         value={loginForm.password}
-        onChange={(e) =>
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setLoginForm({ ...loginForm, password: e.target.value })
         }
       />

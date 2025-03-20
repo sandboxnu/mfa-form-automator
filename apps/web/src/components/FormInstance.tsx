@@ -5,7 +5,6 @@ import {
   Grid,
   Text,
   Spacer,
-  useToast,
   Heading,
 } from '@chakra-ui/react';
 import {
@@ -13,23 +12,24 @@ import {
   PencilIcon,
   EditUnderlineIcon,
   UserProfileAvatar,
-} from 'apps/web/src/static/icons';
-import AssigneeMap from './AvatarMap';
+} from 'apps/web/src/static/icons.tsx';
+import AssigneeMap from './AssigneeMap.tsx';
 import { useState } from 'react';
-import { FormInstanceEntity } from '@web/client/types.gen';
-import { useRouter } from 'next/router';
+import { FormInstanceEntity } from '@web/client/types.gen.ts';
+import { useRouter } from 'next/router.js';
 import { useMutation } from '@tanstack/react-query';
-import { queryClient } from '@web/pages/_app';
-import { useAuth } from '@web/hooks/useAuth';
+import { queryClient } from '@web/pages/_app.tsx';
+import { useAuth } from '@web/hooks/useAuth.ts';
 import {
   getNameFromAssignedGroup,
   signerIsUser,
-} from '@web/utils/formInstanceUtils';
+} from '@web/utils/formInstanceUtils.ts';
 import {
   formInstancesControllerCompleteFormInstanceMutation,
   formInstancesControllerFindAllQueryKey,
   formInstancesControllerSignFormInstanceMutation,
-} from '@web/client/@tanstack/react-query.gen';
+} from '@web/client/@tanstack/react-query.gen.ts';
+import { toaster, Toaster } from './ui/toaster.tsx';
 
 /**
  * @param formInstance - the form instance
@@ -42,7 +42,6 @@ const FormInstance = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
-  const toast = useToast();
   const { user } = useAuth();
 
   const signFormInstanceMutation = useMutation({
@@ -109,6 +108,7 @@ const FormInstance = ({
 
   return (
     <Box>
+      <Toaster />
       <Flex
         ml="50px"
         as="button"
@@ -136,7 +136,6 @@ const FormInstance = ({
           {formInstance.name}
         </Heading>
         <Button
-          variant="link"
           onClick={() => {}}
           color="black"
           fontWeight="normal"
@@ -144,10 +143,11 @@ const FormInstance = ({
           _hover={{ textDecoration: 'none' }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          background="transparent"
         >
           <Flex flexDirection="column">
-            <Flex>
-              <PencilIcon mr={1} mt={6} />
+            <Flex alignItems={'center'}>
+              <PencilIcon mr={1} mt={4} boxSize="18px" />
               <Text
                 color="#000"
                 style={{ fontSize: '18px', textDecoration: 'none' }}
@@ -265,7 +265,7 @@ const FormInstance = ({
                   Assignees
                 </Text>
                 <Flex alignItems="center">
-                  <PencilIcon color="#4C658A" mr={1} />
+                  <PencilIcon boxSize="16px" color="#4C658A" mr={1} />
                   <Text
                     color="#4C658A"
                     style={{ fontSize: '18px', textDecoration: 'none' }}
@@ -293,9 +293,10 @@ const FormInstance = ({
                   ? 'var(--mfa-gray-hex)'
                   : 'var(--mfa-blue-hex)'
               }
+              px="10px"
               color="#FFF"
               onClick={async (_) => {
-                toast.promise(_handleFormSign(), {
+                toaster.promise(_handleFormSign(), {
                   success: {
                     title: 'Success',
                     description: 'Form signed',
@@ -322,7 +323,7 @@ const FormInstance = ({
                   width="111px"
                   height="40px"
                   onClick={async (_) => {
-                    toast.promise(_handleFormApprove(), {
+                    toaster.promise(_handleFormApprove(), {
                       success: {
                         title: 'Success',
                         description: 'Form approved',

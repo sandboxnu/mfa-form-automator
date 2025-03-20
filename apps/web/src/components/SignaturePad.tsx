@@ -1,6 +1,6 @@
 import { Box, Flex, Input, Link } from '@chakra-ui/react';
 import SignatureCanvas from 'react-signature-canvas';
-import { ButtonSwitch } from '@web/components/ButtonSwitch';
+import { ButtonSwitch } from '@web/components/ButtonSwitch.tsx';
 
 interface SignaturePadProps {
   createSignatureType: string;
@@ -86,7 +86,9 @@ export const SignaturePad = ({
               padding="8px"
               borderRadius="6px"
               border="1px solid #C0C0C0"
-              onChange={(e) => setSignature(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSignature(e.target.value)
+              }
               value={signature}
             />
           )}

@@ -4,9 +4,8 @@ import '@fontsource/hanken-grotesk/800.css';
 import '@fontsource/hanken-grotesk/700.css';
 import '@fontsource/hanken-grotesk/400.css';
 import type { AppProps } from 'next/app';
-import { ChakraProvider } from '@chakra-ui/react';
+import { Provider } from '@web/components/ui/provider';
 import { Layout } from 'apps/web/src/components/Layout';
-import theme from '../styles/theme';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from './../context/AuthContext';
 import { CreateFormTemplateProvider } from '@web/context/CreateFormTemplateContext';
@@ -64,7 +63,7 @@ const WrapperComponent = memo(({ children }: { children: ReactNode }) => {
       <MsalProvider instance={publicClientApplication}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <ChakraProvider theme={theme}>{children}</ChakraProvider>
+            <Provider>{children}</Provider>
           </AuthProvider>
         </QueryClientProvider>
       </MsalProvider>

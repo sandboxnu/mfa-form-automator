@@ -9,14 +9,13 @@ import {
 } from '@chakra-ui/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
-  CreateAssignedGroupDto,
   DepartmentEntity,
   EmployeeEntity,
   FieldGroupBaseEntity,
   PositionEntity,
   SignerType,
 } from '@web/client';
-import { Select } from 'chakra-react-select';
+import { ChakraStylesConfig, Select } from 'chakra-react-select';
 import { ContextAssignedGroupData } from '@web/context/types';
 
 export const SignatureDropdown = ({
@@ -41,6 +40,26 @@ export const SignatureDropdown = ({
   const [activeTab, setActiveTab] = useState('Employee');
   const [options, setOptions] = useState<any[]>(employees || []);
   const [selectedOption, setSelectedOption] = useState<any | null>(null);
+
+  const selectStyles: ChakraStylesConfig = {
+    control: (provided) => ({
+      ...provided,
+      border: '1px solid #E5E5E5',
+      boxShadow: 'none',
+      minHeight: '40px',
+      padding: '0px 8px',
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      padding: '10px 12px',
+      cursor: 'pointer',
+    }),
+    container: (provided) => ({
+      ...provided,
+      width: '100%',
+      cursor: 'pointer',
+    }),
+  };
 
   // prefill dropdown if assigned group exists
   useEffect(() => {
@@ -149,10 +168,10 @@ export const SignatureDropdown = ({
             borderColor={border}
           />
         </Heading>
-        <VStack align="start" spacing="8px" marginTop="12px">
+        <VStack align="start" marginTop="12px">
           <HStack
             width="360px"
-            spacing="0px"
+            gap="0px"
             borderWidth="1px"
             borderRadius="4px"
             overflow="hidden"
@@ -181,7 +200,10 @@ export const SignatureDropdown = ({
               useBasicStyles
               selectedOptionStyle="check"
               options={options}
-              onChange={(selected) => {
+              onChange={(selected: {
+                label: any;
+                value: string | undefined;
+              }) => {
                 setSelectedOption(selected);
 
                 // create assigned group object
@@ -213,6 +235,7 @@ export const SignatureDropdown = ({
                 setAssignedGroupData([...assignedGroupData, assignedGroup]);
               }}
               value={selectedOption}
+              chakraStyles={selectStyles}
             />
           </Box>
         </VStack>
