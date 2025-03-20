@@ -138,7 +138,13 @@ export const FormButtons = ({
    * Updates form instance with the selected form template, form name, and signature positions
    */
   const _submitFormInstance = async () => {
-    if (!formTemplate || !assignedGroupData || disabled || !user) {
+    if (
+      !formTemplate ||
+      !assignedGroupData ||
+      disabled ||
+      !user ||
+      assignedGroupData.length != formTemplate.fieldGroups.length
+    ) {
       return;
     }
 
@@ -229,7 +235,7 @@ export const FormButtons = ({
           </Text>
         </Button>
         <Button
-          w="164px"
+          w={review ? '209px' : '164px'}
           h="36px"
           borderRadius="6px"
           alignContent={'center'}

@@ -1,4 +1,4 @@
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import { Checkbox, PlusSign, TextIcon } from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -181,39 +181,43 @@ export const FormEditor = ({
               <Button
                 key={index}
                 onClick={() => setCurrentGroup(key)}
-                variant={'solid'}
-                border={'solid 1px'}
                 backgroundColor={
-                  currentGroup === key ? groupColors[index][1] : 'white'
+                  currentGroup === key ? groupColors[index][1] : '#fff'
                 }
                 borderColor={groupColors[index][0]}
-                css={{ '--color': groupColors[index][0] }}
+                variant="outline"
+                borderWidth="1px"
+                padding="8px 12px"
+                color={groupColors[index][0]}
               >
                 Group {index + 1}
               </Button>
             ),
           )}
 
-          <Button
-            backgroundColor="white"
-            border="1px solid #1367EA"
-            onClick={addGroup}
-          >
-            {PlusSign}
-            <span
-              style={{
-                fontFamily: 'Hanken Grotesk',
-                fontSize: '16px',
-                color: '#1367EA',
-                fontWeight: 600,
-                lineHeight: '22px',
-                textAlign: 'left',
-                marginLeft: '6px',
-              }}
+          {groupNum < 5 && (
+            <Button
+              border="1px solid #1367EA"
+              onClick={addGroup}
+              w="120px"
+              variant="outline"
+              borderWidth="1px"
+              padding="8px 12px"
             >
-              Add group
-            </span>
-          </Button>
+              {PlusSign}
+              <span
+                style={{
+                  fontFamily: 'Hanken Grotesk',
+                  fontSize: '16px',
+                  color: '#1367EA',
+                  fontWeight: 600,
+                  lineHeight: '22px',
+                }}
+              >
+                Add group
+              </span>
+            </Button>
+          )}
         </Box>
       )}
       <Box
