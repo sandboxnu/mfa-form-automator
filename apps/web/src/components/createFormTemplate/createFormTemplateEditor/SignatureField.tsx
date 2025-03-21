@@ -52,10 +52,10 @@ export default function SignatureField({
         justifyContent="center"
         width="100%"
         height="100%"
-        border="1px dashed #808080"
+        border="1px #808080"
         borderRadius="4px"
       >
-        <Text color="#808080" fontSize="14px">Signature Field</Text>
+        <Text color="#808080" fontSize="14px"></Text>
       </Box>
       {!disableEdit && selected && (
         <Box
