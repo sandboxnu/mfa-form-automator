@@ -9,6 +9,7 @@ import {
   GrayPencilIcon,
   DropdownDownArrow,
   DropdownUpArrow,
+  TemplateFolder,
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link';
 import {
@@ -54,6 +55,7 @@ const icons = {
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
   test: <GrayPencilIcon boxSize="24px" mr="2" />,
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
+  template: <TemplateFolder marginRight="2" bgColor={"blue"}/>
 };
 
 type IconKeys = keyof typeof icons;
@@ -203,7 +205,11 @@ export const NavBar = ({
         <NavItem icon="completed" link="/completed">
           Completed
         </NavItem>
+        <NavItem icon="template" link="/template-directory">
+        Templates
+      </NavItem>
       </Flex>
+      
     </Box>
   );
 };

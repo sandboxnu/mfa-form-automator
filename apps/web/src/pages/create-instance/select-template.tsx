@@ -14,7 +14,7 @@ function SelectTemplate() {
       pageNumber={1}
       heading={'Create form instance'}
       subheading={'Select a form template'}
-      boxContent={<TemplateSelectGrid />}
+      boxContent={<TemplateSelectGrid allowCreate={true}/>}
       deleteFunction={() => {
         setFormTemplate(null);
       }}
