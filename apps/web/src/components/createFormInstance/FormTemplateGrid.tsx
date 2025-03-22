@@ -7,7 +7,11 @@ import { FormTemplate } from '@prisma/client';
 import { FormTemplateEntity } from '@web/client';
 import { useCreateFormInstance } from '../../context/CreateFormInstanceContext';
 
-export const TemplateSelectGrid: React.FC = () => {
+export const TemplateSelectGrid = ({
+  allowCreate,
+}: {
+  allowCreate: boolean;
+}) => {
   const { data: formTemplates } = useQuery<FormTemplate[]>({
     queryKey: ['api', 'form-templates'],
     queryFn: async () => {
@@ -66,6 +70,8 @@ export const TemplateSelectGrid: React.FC = () => {
           </Text>
         </Flex>
       ))}
+      {
+        allowCreate ? 
       <Flex flexDirection="column" padding="4px 4px 0px 4px" cursor="pointer">
         <Button
           overflow="hidden"
@@ -93,6 +99,8 @@ export const TemplateSelectGrid: React.FC = () => {
           Create Form Template
         </Text>
       </Flex>
+        : <></>
+        }
     </Grid>
   );
 };
