@@ -60,7 +60,11 @@ export class ParseFormDataJsonPipe implements PipeTransform {
                 return item;
               });
             } else {
-              obj[key] = parsedValue;
+              if (key === 'fieldGroups') {
+                obj[key] = [parsedValue];
+              } else {
+                obj[key] = parsedValue;
+              }
             }
           } catch (e) {
             // If parsing fails, keep the original string value
