@@ -25,6 +25,12 @@ function FormInstanceView() {
       },
     }),
     enabled: !!id,
+    retry: (failureCount, error) => {
+      if (error.message === 'Request failed with status code 401') {
+        return false; // Do not retry on 401 errors
+      }
+      return failureCount < 3; // Retry up to 3 times for other errors
+    },
   });
 
   if (isLoading) {
@@ -34,6 +40,9 @@ function FormInstanceView() {
     <>
       {formInstance && !formInstanceError ? (
         <FormInstance formInstance={formInstance} />
+      ) : formInstanceError?.message ===
+        'Request failed with status code 401' ? (
+        <ErrorComponent primaryErrorMessage="User is not authorized to access this form instance" />
       ) : (
         <ErrorComponent />
       )}
