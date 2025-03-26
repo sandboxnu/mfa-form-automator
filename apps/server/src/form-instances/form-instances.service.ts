@@ -78,6 +78,7 @@ export class FormInstancesService {
         }
       }
     }
+    return true;
   }
 
   /**
@@ -388,7 +389,7 @@ export class FormInstancesService {
    * @returns the selected form instance, hydrated
    */
   async findOne(id: string) {
-    const formInstance = await this.prisma.formInstance.findFirst({
+    const formInstance = await this.prisma.formInstance.findFirstOrThrow({
       where: {
         id: id,
       },
@@ -420,6 +421,9 @@ export class FormInstancesService {
                 templateBoxes: true,
               },
             },
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
       },

@@ -1,14 +1,16 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import { Employee } from '@prisma/client';
+import { ServerClient } from 'postmark';
+import { PrismaService } from '../prisma/prisma.service';
 import { EmailHandler } from './EmailHandlerInterface';
+import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class PostmarkService {
-  constructor(
-    @Inject('EmailHandler')
-    private emailHandler: EmailHandler,
-  ) {}
+export default class PostmarkHandler implements EmailHandler {
+  client: ServerClient;
+
+  constructor(private readonly prisma: PrismaService) {
+    this.client = new ServerClient(process.env.POSTMARK_SERVER_KEY as string);
+  }
 
   /**
    * Send an email using Postmark
@@ -18,7 +20,22 @@ export class PostmarkService {
    * @returns Promise<void>
    */
   async sendEmail(to: string, subject: string, textBody: string) {
-    await this.emailHandler.sendEmail(to, subject, textBody);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Email:', { to, subject, textBody });
+      return;
+    }
+
+    try {
+      this.client.sendEmail({
+        From: 'jfrederick@mfa.org',
+        To: to,
+        Subject: subject,
+        TextBody: textBody,
+        MessageStream: 'outbound',
+      });
+    } catch (error) {
+      console.error('Error sending email through postmark:', error);
+    }
   }
 
   /**
@@ -32,7 +49,10 @@ export class PostmarkService {
     originatorName: string,
     formName: string,
   ) {
-    await this.emailHandler.sendFormCreatedEmail(to, originatorName, formName);
+    const subject: string = `Hi ${originatorName}, you have created a new form: ${formName}.`;
+    const body: string = `Hi ${originatorName}, you have created a new form: ${formName}.`;
+
+    await this.sendEmail(to, subject, body);
   }
 
   /**
@@ -46,11 +66,10 @@ export class PostmarkService {
     signerName: string,
     formName: string,
   ) {
-    await this.emailHandler.sendReadyForSignatureToUserEmail(
-      to,
-      signerName,
-      formName,
-    );
+    const subject: string = `Form ${formName} Ready To Sign`;
+    const body: string = `Hi ${signerName}, you have a form ready for your signature: ${formName}.`;
+
+    await this.sendEmail(to, subject, body);
   }
 
   /**
@@ -62,10 +81,21 @@ export class PostmarkService {
     departmentId: string,
     formName: string,
   ) {
-    await this.emailHandler.sendReadyForSignatureToDepartmentEmail(
-      departmentId,
-      formName,
-    );
+    const employees = await this.prisma.employee.findMany({
+      where: {
+        position: {
+          departmentId,
+        },
+      },
+    });
+
+    employees.forEach(async (employee) => {
+      await this.sendReadyForSignatureToUserEmail(
+        employee.email,
+        `${employee.firstName} ${employee.lastName}`,
+        formName,
+      );
+    });
   }
 
   /**
@@ -77,10 +107,19 @@ export class PostmarkService {
     positionId: string,
     formName: string,
   ) {
-    await this.emailHandler.sendReadyForSignatureToPositionEmail(
-      positionId,
-      formName,
-    );
+    const employees = await this.prisma.employee.findMany({
+      where: {
+        positionId,
+      },
+    });
+
+    employees.forEach(async (employee) => {
+      await this.sendReadyForSignatureToUserEmail(
+        employee.email,
+        `${employee.firstName} ${employee.lastName}`,
+        formName,
+      );
+    });
   }
 
   /**
@@ -92,10 +131,13 @@ export class PostmarkService {
     userList: Employee[],
     formName: string,
   ) {
-    await this.emailHandler.sendReadyForSignatureToUserListEmail(
-      userList,
-      formName,
-    );
+    userList.forEach(async (user) => {
+      await this.sendReadyForSignatureToUserEmail(
+        user.email,
+        `${user.firstName} ${user.lastName}`,
+        formName,
+      );
+    });
   }
 
   /**
@@ -112,12 +154,10 @@ export class PostmarkService {
     signerName: string,
     formName: string,
   ) {
-    await this.emailHandler.sendSignedEmail(
-      to,
-      originatorName,
-      signerName,
-      formName,
-    );
+    const subject: string = `Form ${formName} Signed By ${signerName}`;
+    const body: string = `Hi ${originatorName}, your form ${formName} has been signed by user: ${signerName}.`;
+
+    await this.sendEmail(to, subject, body);
   }
 
   /**
@@ -131,10 +171,9 @@ export class PostmarkService {
     originatorName: string,
     formName: string,
   ) {
-    await this.emailHandler.sendReadyForApprovalEmail(
-      to,
-      originatorName,
-      formName,
-    );
+    const subject: string = `Form ${formName} Ready for Approval`;
+    const body: string = `Hi ${originatorName}, your form ${formName} is completed and is ready for your approval: ${formName}.`;
+
+    await this.sendEmail(to, subject, body);
   }
 }
