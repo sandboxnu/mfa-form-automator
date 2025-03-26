@@ -64,6 +64,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     name: Run tests
     # needs: [lint, tsc] # ensure tests are run only after eslint and tsc pass
     steps:
@@ -83,7 +86,7 @@ jobs:
         env:
           POSTMARK_SERVER_KEY: ${{ secrets.POSTMARK_SERVER_KEY }}
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          DATABASE_URL: postgresql://postgres:postgres@postgres:5432/db?schema=public
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
   build-backend-image:
     runs-on: ubuntu-latest
     name: Build backend image
