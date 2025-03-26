@@ -19,8 +19,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '22.x'
-          # cache: yarn
-          # cache-dependency-path: './apps/web/package-lock.json'
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
@@ -29,68 +27,70 @@ jobs:
         run: yarn lint
       - name: Prettier
         run: yarn workspaces run prettier . --check
+
   tsc:
     runs-on: ubuntu-latest
     name: Check tsc
-    # needs: [lint]
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
         uses: actions/setup-node@v3
         with:
           node-version: '22.x'
-          # cache: yarn
-          # cache-dependency-path: './apps/web/package-lock.json'
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn install
       - name: tsc
         run: yarn tsc
+
   jest:
     runs-on: ubuntu-latest
-    # Service containers to run with `container-job`
     services:
-      # Label used to access the service container
       postgres:
-        # Docker Hub image
         image: postgres
-        # Provide the password for postgres
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        # Set health checks to wait until postgres has started
+          POSTGRES_DB: db
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         ports:
-          # Maps tcp port 5432 on service container to the host
           - 5432:5432
     name: Run tests
-    # needs: [lint, tsc] # ensure tests are run only after eslint and tsc pass
     steps:
       - uses: actions/checkout@v3
       - name: Set up node
         uses: actions/setup-node@v3
         with:
           node-version: '22.x'
-          # cache: yarn
-          # cache-dependency-path: './apps/server/package-lock.json'
       - name: Install yarn
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn install
-      - name: Set up PostgreSQL
+      - name: Install Prisma CLI
+        run: yarn add --dev prisma
+      - name: Wait for PostgreSQL to be ready
         run: |
-          sudo -u postgres psql -c "CREATE ROLE root WITH LOGIN PASSWORD 'password';"
-          sudo -u postgres psql -c "CREATE DATABASE db OWNER root;"
-      - name: Test
+          for i in {1..10}; do
+            pg_isready -h localhost -p 5432 && break
+            echo "Waiting for Postgres..."
+            sleep 3
+          done
+      - name: Run Prisma Migrations
+        run: yarn prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
+      - name: Run tests
         run: yarn test
         env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
           POSTMARK_SERVER_KEY: ${{ secrets.POSTMARK_SERVER_KEY }}
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
+
   build-backend-image:
     runs-on: ubuntu-latest
     name: Build backend image
