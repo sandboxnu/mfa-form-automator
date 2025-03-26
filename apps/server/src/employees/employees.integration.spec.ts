@@ -8,6 +8,7 @@ import { $Enums } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 describe('EmployeesServiceIntegrationTest', () => {
+  let module: TestingModule;
   let service: EmployeesService;
   let departmentsService: DepartmentsService;
   let positionsService: PositionsService;
@@ -17,8 +18,8 @@ describe('EmployeesServiceIntegrationTest', () => {
   let positionId2: string;
   let employeeId1: string;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    module = await Test.createTestingModule({
       providers: [
         EmployeesService,
         PositionsService,
@@ -30,7 +31,9 @@ describe('EmployeesServiceIntegrationTest', () => {
     service = module.get<EmployeesService>(EmployeesService);
     departmentsService = module.get<DepartmentsService>(DepartmentsService);
     positionsService = module.get<PositionsService>(PositionsService);
+  });
 
+  beforeEach(async () => {
     // We need to seed the database with some data
     await module
       .get<PrismaService>(PrismaService)
