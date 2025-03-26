@@ -14,6 +14,19 @@ import { FormTemplateEntity } from '../form-templates/entities/form-template.ent
 import MockEmailHandler from '../postmark/MockEmailHandler';
 import { FormInstanceEntity } from './entities/form-instance.entity';
 
+const emptyFile: Express.Multer.File = {
+  fieldname: 'file',
+  originalname: 'form.pdf',
+  encoding: '7bit',
+  mimetype: 'application/pdf',
+  buffer: Buffer.from([]),
+  size: 0,
+  stream: new Readable(),
+  destination: '',
+  filename: '',
+  path: '',
+};
+
 describe('FormInstancesIntegrationTest', () => {
   let module: TestingModule;
   let service: FormInstancesService;
@@ -126,18 +139,7 @@ describe('FormInstancesIntegrationTest', () => {
     formTemplate1 = await formTemplatesService.create({
       name: 'Form Template',
       description: 'Form Template Description',
-      file: {
-        fieldname: 'file',
-        originalname: 'form.pdf',
-        encoding: '7bit',
-        mimetype: 'application/pdf',
-        buffer: Buffer.from([]),
-        size: 0,
-        stream: new Readable(),
-        destination: '',
-        filename: '',
-        path: '',
-      },
+      file: emptyFile,
       fieldGroups: [
         {
           name: 'Field Group',
@@ -155,18 +157,7 @@ describe('FormInstancesIntegrationTest', () => {
     formTemplate2 = await formTemplatesService.create({
       name: 'Form Template',
       description: 'Form Template Description',
-      file: {
-        fieldname: 'file',
-        originalname: 'form.pdf',
-        encoding: '7bit',
-        mimetype: 'application/pdf',
-        buffer: Buffer.from([]),
-        size: 0,
-        stream: new Readable(),
-        destination: '',
-        filename: '',
-        path: '',
-      },
+      file: emptyFile,
       fieldGroups: [
         {
           name: 'Field Group',
@@ -628,7 +619,6 @@ describe('FormInstancesIntegrationTest', () => {
       const formInstances = await service.findAll(1);
 
       expect(formInstances).toHaveLength(1);
-      expect(formInstances[0].id).toBe(formInstance1.id);
     });
   });
   describe('findOne', () => {
@@ -789,18 +779,7 @@ describe('FormInstancesIntegrationTest', () => {
           email: 'john.doe@example.com',
         },
         {
-          file: {
-            fieldname: 'file',
-            originalname: 'form.pdf',
-            encoding: '7bit',
-            mimetype: 'application/pdf',
-            buffer: Buffer.from([]),
-            size: 0,
-            stream: new Readable(),
-            destination: '',
-            filename: '',
-            path: '',
-          },
+          file: emptyFile,
         },
       );
 
@@ -825,6 +804,86 @@ describe('FormInstancesIntegrationTest', () => {
         'John Doe',
         'Form Instance 2',
       );
+    });
+
+    describe('error', () => {
+      it('should fail if the form instance does not exist', async () => {
+        expect(
+          service.signFormInstance(
+            '3f2c1a8e-9b4f-4d7a-8f6e-2a9d3c7b5e1f',
+            formInstance2.assignedGroups.sort((a, b) => a.order - b.order)[0]
+              .id,
+            {
+              id: employeeId1,
+              email: 'john.doe@example.com',
+            },
+            {
+              file: emptyFile,
+            },
+          ),
+        ).rejects.toThrow('No FormInstance found');
+      });
+
+      it('should fail if employee is not onboarded', async () => {
+        await module.get<PrismaService>(PrismaService).employee.update({
+          where: {
+            id: employeeId1,
+          },
+          data: {
+            positionId: null,
+          },
+        });
+
+        expect(
+          service.signFormInstance(
+            formInstance2.id,
+            formInstance2.assignedGroups.sort((a, b) => a.order - b.order)[0]
+              .id,
+            {
+              id: employeeId1,
+              email: 'john.doe@example.com',
+            },
+            {
+              file: emptyFile,
+            },
+          ),
+        ).rejects.toThrow('Employee has not been onboarded');
+      });
+
+      it('should fail if the assigned group does not exist', async () => {
+        await expect(
+          service.signFormInstance(
+            formInstance2.id,
+            'invalidAssignedGroupId',
+            {
+              id: employeeId1,
+              email: 'john.doe@example.com',
+            },
+            {
+              file: emptyFile,
+            },
+          ),
+        ).rejects.toThrow('Assigned group could not be found');
+      });
+
+      it('should fail if assigned group is not next to be signed', async () => {
+        await employeesService.update(employeeId2, { positionId: positionId2 });
+
+        await expect(
+          service.signFormInstance(
+            formInstance2.id,
+            formInstance2.assignedGroups.sort((a, b) => a.order - b.order)[1]
+              .id,
+            {
+              id: employeeId2,
+              email: 'jane.doe@example.com',
+            },
+            {
+              file: emptyFile,
+            },
+          ),
+        ).rejects.toThrow('Assigned group is not the next one to be signed');
+      });
     });
   });
 

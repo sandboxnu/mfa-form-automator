@@ -538,12 +538,6 @@ export class FormInstancesService {
       );
     }
 
-    if (!signFormInstanceDto.file) {
-      throw new BadRequestException(
-        FormInstanceErrorMessage.FORM_INSTANCE_NO_SIGNED_PDF_PROVIDED,
-      );
-    }
-
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: { id: currentUser.id },
     });
