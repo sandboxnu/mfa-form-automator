@@ -35,8 +35,10 @@ describe('FormInstancesIntegrationTest', () => {
   let employeesService: EmployeesService;
   let formTemplatesService: FormTemplatesService;
   let postmarkService: PostmarkService;
+  let pdfStoreService: PdfStoreService;
 
   let departmentId: string;
+  let departmentId2: string;
   let positionId1: string;
   let positionId2: string;
   let employeeId1: string;
@@ -75,6 +77,7 @@ describe('FormInstancesIntegrationTest', () => {
     formTemplatesService =
       module.get<FormTemplatesService>(FormTemplatesService);
     postmarkService = module.get<PostmarkService>(PostmarkService);
+    pdfStoreService = module.get<PdfStoreService>(PdfStoreService);
     jest
       .spyOn(postmarkService, 'sendFormCreatedEmail')
       .mockResolvedValue(undefined);
@@ -83,6 +86,7 @@ describe('FormInstancesIntegrationTest', () => {
       .spyOn(postmarkService, 'sendReadyForSignatureToPositionEmail')
       .mockResolvedValue(undefined);
     jest.spyOn(postmarkService, 'sendSignedEmail').mockResolvedValue(undefined);
+    jest.spyOn(pdfStoreService, 'uploadPdf').mockResolvedValue('pdfLink');
   });
 
   beforeEach(async () => {
@@ -103,6 +107,7 @@ describe('FormInstancesIntegrationTest', () => {
 
     departmentId = (await departmentsService.create({ name: 'Engineering' }))
       .id;
+    departmentId2 = (await departmentsService.create({ name: 'HR' })).id;
     positionId1 = (
       await positionsService.create({
         name: 'Software Engineer',
@@ -804,6 +809,32 @@ describe('FormInstancesIntegrationTest', () => {
         'John Doe',
         'Form Instance 2',
       );
+      expect(pdfStoreService.uploadPdf).toBeCalledWith(
+        emptyFile.buffer,
+        `${formInstance2.id}-${
+          formInstance2.assignedGroups.sort((a, b) => a.order - b.order)[0].id
+        }-${employeeId1}`,
+      );
+    });
+
+    describe('all signed', () => {
+      it('should mark the form as all signed when ready', async () => {
+        await service.signFormInstance(
+          formInstance1.id,
+          formInstance1.assignedGroups.sort((a, b) => a.order - b.order)[0].id,
+          {
+            id: employeeId1,
+            email: 'john.doe@example.com',
+          },
+          {
+            file: emptyFile,
+          },
+        );
+
+        const formInstance = await service.findOne(formInstance1.id);
+        expect(formInstance).toBeDefined();
+        expect(formInstance.completed).toBe(true);
+      });
     });
 
     describe('error', () => {
@@ -884,8 +915,184 @@ describe('FormInstancesIntegrationTest', () => {
           ),
         ).rejects.toThrow('Assigned group is not the next one to be signed');
       });
+
+      it('should fail if employee is not the assigned signer, position', async () => {
+        formInstance2 = await service.create({
+          name: 'Form Instance 2',
+          assignedGroups: [
+            {
+              order: 0,
+              fieldGroupId: formTemplate2.fieldGroups[0].id,
+              signerType: $Enums.SignerType.POSITION,
+              signerPositionId: positionId1,
+              signerEmployeeList: [],
+            },
+            {
+              order: 1,
+              fieldGroupId: formTemplate2.fieldGroups[1].id,
+              signerType: $Enums.SignerType.POSITION,
+              signerPositionId: positionId2,
+              signerEmployeeList: [],
+            },
+          ],
+          originatorId: employeeId2,
+          formTemplateId: formTemplate2.id,
+          formDocLink: 'formDocLink',
+          description: 'description',
+        });
+        await employeesService.update(employeeId2, { positionId: positionId2 });
+
+        await expect(
+          service.signFormInstance(
+            formInstance2.id,
+            formInstance2.assignedGroups.sort((a, b) => a.order - b.order)[0]
+              .id,
+            {
+              id: employeeId2,
+              email: 'jane.doe@example.com',
+            },
+            {
+              file: emptyFile,
+            },
+          ),
+        ).rejects.toThrow('Employee cannot sign for this Assigned group');
+      });
+
+      it('should fail if employee is not the assigned signer, department', async () => {
+        formInstance2 = await service.create({
+          name: 'Form Instance 2',
+          assignedGroups: [
+            {
+              order: 0,
+              fieldGroupId: formTemplate2.fieldGroups[0].id,
+              signerType: $Enums.SignerType.DEPARTMENT,
+              signerDepartmentId: departmentId2,
+              signerEmployeeList: [],
+            },
+            {
+              order: 1,
+              fieldGroupId: formTemplate2.fieldGroups[1].id,
+              signerType: $Enums.SignerType.POSITION,
+              signerPositionId: positionId2,
+              signerEmployeeList: [],
+            },
+          ],
+          originatorId: employeeId2,
+          formTemplateId: formTemplate2.id,
+          formDocLink: 'formDocLink',
+          description: 'description',
+        });
+
+        await expect(
+          service.signFormInstance(
+            formInstance2.id,
+            formInstance2.assignedGroups.sort((a, b) => a.order - b.order)[0]
+              .id,
+            {
+              id: employeeId1,
+              email: 'john.doe@example.com',
+            },
+            {
+              file: emptyFile,
+            },
+          ),
+        ).rejects.toThrow('Employee cannot sign for this Assigned group');
+      });
+
+      it('should fail if employee is not the assigned signer, user list', async () => {
+        formInstance2 = await service.create({
+          name: 'Form Instance 2',
+          assignedGroups: [
+            {
+              order: 0,
+              fieldGroupId: formTemplate2.fieldGroups[0].id,
+              signerType: $Enums.SignerType.USER_LIST,
+              signerEmployeeList: [{ id: employeeId2 }],
+            },
+            {
+              order: 1,
+              fieldGroupId: formTemplate2.fieldGroups[1].id,
+              signerType: $Enums.SignerType.POSITION,
+              signerPositionId: positionId2,
+              signerEmployeeList: [],
+            },
+          ],
+          originatorId: employeeId2,
+          formTemplateId: formTemplate2.id,
+          formDocLink: 'formDocLink',
+          description: 'description',
+        });
+
+        await expect(
+          service.signFormInstance(
+            formInstance2.id,
+            formInstance2.assignedGroups.sort((a, b) => a.order - b.order)[0]
+              .id,
+            {
+              id: employeeId1,
+              email: 'john.doe@example.com',
+            },
+            {
+              file: emptyFile,
+            },
+          ),
+        ).rejects.toThrow('Employee cannot sign for this Assigned group');
+      });
     });
   });
 
-  describe('markFormInstanceAsCompleted', () => {});
+  describe('markFormInstanceAsCompleted', () => {
+    beforeEach(async () => {
+      formInstance1 = await service.create({
+        name: 'Form Instance',
+        assignedGroups: [
+          {
+            order: 0,
+            fieldGroupId: formTemplate2.fieldGroups[0].id,
+            signerType: $Enums.SignerType.USER,
+            signerEmployeeId: employeeId1,
+            signerEmployeeList: [],
+          },
+        ],
+        originatorId: employeeId1,
+        formTemplateId: formTemplate1.id,
+        formDocLink: 'formDocLink',
+        description: 'description',
+      });
+      await service.signFormInstance(
+        formInstance1.id,
+        formInstance1.assignedGroups.sort((a, b) => a.order - b.order)[0].id,
+        {
+          id: employeeId1,
+          email: 'john.doe@example.com',
+        },
+        {
+          file: emptyFile,
+        },
+      );
+    });
+
+    it('should mark a form instance as completed', async () => {
+      await service.markFormInstanceAsCompleted(employeeId1, formInstance1.id);
+
+      const formInstance = await service.findOne(formInstance1.id);
+      expect(formInstance).toBeDefined();
+      expect(formInstance!.markedCompleted).toBe(true);
+    });
+
+    it('should fail if form instance is not found', async () => {
+      await expect(
+        service.markFormInstanceAsCompleted(
+          employeeId1,
+          'invalidFormInstanceId',
+        ),
+      ).rejects.toThrow();
+    });
+
+    it('should fail if employee is not the originator', async () => {
+      await expect(
+        service.markFormInstanceAsCompleted(employeeId2, formInstance1.id),
+      ).rejects.toThrow();
+    });
+  });
 });
