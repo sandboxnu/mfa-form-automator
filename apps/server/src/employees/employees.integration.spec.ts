@@ -16,7 +16,6 @@ describe('EmployeesServiceIntegrationTest', () => {
   let positionId1: string;
   let positionId2: string;
   let employeeId1: string;
-  let employeeId2: string;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
