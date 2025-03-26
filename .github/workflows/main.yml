@@ -10,19 +10,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
+  setup:
     runs-on: ubuntu-latest
-    name: Run eslint/format
+    outputs:
+      cache-key: ${{ steps.cache-deps.outputs.cache-hit }}
     steps:
       - uses: actions/checkout@v3
-      - name: Set up node
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22.x'
-      - name: Install yarn
-        run: npm install -g yarn
+          cache: 'yarn'
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable
+      - name: Cache dependencies
+        id: cache-deps
+        uses: actions/cache@v3
+        with:
+          path: ~/.yarn
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: deps-${{ runner.os }}-
+  lint:
+    runs-on: ubuntu-latest
+    needs: setup
+    name: Run eslint/format
+    steps:
+      - uses: actions/checkout@v3
+      - name: Restore cached dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.yarn
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Lint
         run: yarn lint
       - name: Prettier
@@ -30,22 +48,21 @@ jobs:
 
   tsc:
     runs-on: ubuntu-latest
+    needs: setup
     name: Check tsc
     steps:
       - uses: actions/checkout@v3
-      - name: Set up node
-        uses: actions/setup-node@v3
+      - name: Restore cached dependencies
+        uses: actions/cache@v3
         with:
-          node-version: '22.x'
-      - name: Install yarn
-        run: npm install -g yarn
-      - name: Install dependencies
-        run: yarn install
+          path: ~/.yarn
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: tsc
         run: yarn tsc
 
   jest:
     runs-on: ubuntu-latest
+    needs: setup
     services:
       postgres:
         image: postgres
@@ -63,21 +80,13 @@ jobs:
     name: Run tests
     steps:
       - uses: actions/checkout@v3
-      - name: Set up node
-        uses: actions/setup-node@v3
+      - name: Restore cached dependencies
+        uses: actions/cache@v3
         with:
-          node-version: '22.x'
-      - name: Install yarn
-        run: npm install -g yarn
-      - name: Install dependencies
-        run: yarn install
+          path: ~/.yarn
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Wait for PostgreSQL to be ready
-        run: |
-          for i in {1..10}; do
-            pg_isready -h localhost -p 5432 && break
-            echo "Waiting for Postgres..."
-            sleep 3
-          done
+        run: until pg_isready -h localhost -p 5432; do sleep 1; done
       - name: Run Prisma Migrations
         run: yarn --cwd apps/server prisma migrate deploy
         env:
@@ -91,10 +100,14 @@ jobs:
 
   build-backend-image:
     runs-on: ubuntu-latest
+    needs: setup
     name: Build backend image
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - run: yarn install --immutable
+      - uses: actions/checkout@v3
+      - name: Restore cached dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.yarn
+          key: deps-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
       - name: Build Docker image for backend
         run: yarn backend:docker:build
