@@ -81,6 +81,10 @@ jobs:
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn install
+      - name: Set up PostgreSQL
+        run: |
+          sudo -u postgres psql -c "CREATE ROLE root WITH LOGIN PASSWORD 'password';"
+          sudo -u postgres psql -c "CREATE DATABASE db OWNER root;"
       - name: Test
         run: yarn test
         env:
