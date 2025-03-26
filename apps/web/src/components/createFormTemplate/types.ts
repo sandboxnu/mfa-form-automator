@@ -1,3 +1,6 @@
+import { DraggableEventHandler } from "react-draggable";
+import { RndResizeCallback } from "react-rnd";
+
 export type TempFieldGroup = {
   id: string;
   value: string;
@@ -20,6 +23,17 @@ export type FieldGroupColor = {
   background: string;
   groupName: string;
 };
+export interface DraggableBoxFactoryProps {
+  onStop: DraggableEventHandler;
+  onResizeStop: RndResizeCallback;
+  color: string;
+  onRemove: () => void;
+  currentPosition: TextFieldPosition;
+  disableEdit: boolean;
+  type: FieldType;
+  highlighted: boolean;
+  selected: boolean;
+}
 
 export type groupId = string;
 export type fieldId = string;

@@ -10,7 +10,7 @@ import {
   FormFields,
   TextFieldPosition,
 } from '../types';
-import DraggableTextFactory from './DraggableTextFactory';
+import DraggableTextFactory from './DraggableBoxFactory';
 import PagingControl from './PagingControl';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -340,7 +340,6 @@ export const FormEditor = ({
                         }}
                         key={index}
                         color={fieldGroups.get(groupId)?.background ?? '#000'}
-                        initialText={null}
                         onStop={(e: DraggableEvent, data: DraggableData) => {
                           setSelectedField(fieldId);
                           setHighlightedField(fieldId);

@@ -15,6 +15,12 @@ export class TemplateBoxBaseEntity implements TemplateBox {
   @ApiProperty()
   y_coordinate: number;
 
+  @ApiProperty()
+  width: number;
+
+  @ApiProperty()
+  height: number;
+
   @Exclude()
   fieldGroupId: string;
 

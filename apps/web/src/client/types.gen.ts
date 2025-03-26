@@ -135,6 +135,8 @@ export type CreateTemplateBoxDto = {
   type: 'SIGNATURE' | 'CHECKBOX' | 'TEXT_FIELD';
   x_coordinate: number;
   y_coordinate: number;
+  width: number;
+  height: number;
 };
 
 export type CreateFieldGroupDto = {
@@ -155,6 +157,8 @@ export type TemplateBoxBaseEntity = {
   type: 'SIGNATURE' | 'CHECKBOX' | 'TEXT_FIELD';
   x_coordinate: number;
   y_coordinate: number;
+  width: number;
+  height: number;
   createdAt: string;
   updatedAt: string;
   fieldGroupId: string;

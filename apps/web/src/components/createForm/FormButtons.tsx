@@ -102,7 +102,8 @@ export const FormButtons = ({
             type: field.type,
             x_coordinate: field.position.x,
             y_coordinate: field.position.y,
-            // TODO: add width and height to template boxes
+            width: field.position.width,
+            height: field.position.height,
           });
         });
       }

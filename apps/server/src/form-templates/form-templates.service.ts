@@ -38,6 +38,8 @@ export class FormTemplatesService {
                     type: templateBox.type,
                     x_coordinate: templateBox.x_coordinate,
                     y_coordinate: templateBox.y_coordinate,
+                    width: templateBox.width,
+                    height: templateBox.height,
                   };
                 }),
               },

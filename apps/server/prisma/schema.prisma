@@ -126,7 +126,8 @@ model TemplateBox {
   y_coordinate Int                   @db.Integer
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
-
+  width       Int                   @db.Integer
+  height      Int                   @db.Integer
   fieldGroup   FieldGroup    @relation(fields: [fieldGroupId], references: [id])
   fieldGroupId String        @db.Uuid
   InstanceBox  InstanceBox[]

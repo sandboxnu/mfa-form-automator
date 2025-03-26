@@ -402,8 +402,14 @@ export const CreateTemplateBoxDtoSchema = {
     y_coordinate: {
       type: 'number',
     },
+    width: {
+      type: 'number',
+    },
+    height: {
+      type: 'number',
+    },
   },
-  required: ['type', 'x_coordinate', 'y_coordinate'],
+  required: ['type', 'x_coordinate', 'y_coordinate', 'width', 'height'],
 } as const;
 
 export const CreateFieldGroupDtoSchema = {
@@ -466,6 +472,12 @@ export const TemplateBoxBaseEntitySchema = {
     y_coordinate: {
       type: 'number',
     },
+    width: {
+      type: 'number',
+    },
+    height: {
+      type: 'number',
+    },
     createdAt: {
       format: 'date-time',
       type: 'string',
@@ -483,6 +495,8 @@ export const TemplateBoxBaseEntitySchema = {
     'type',
     'x_coordinate',
     'y_coordinate',
+    'width',
+    'height',
     'createdAt',
     'updatedAt',
     'fieldGroupId',

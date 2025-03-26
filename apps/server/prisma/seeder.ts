@@ -203,6 +203,8 @@ export class Seeder {
                     type: box.type,
                     x_coordinate: box.x_coordinate,
                     y_coordinate: box.y_coordinate,
+                    width: box.width,
+                    height: box.height,
                   };
                 }),
               },
