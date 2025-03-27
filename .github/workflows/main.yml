@@ -82,7 +82,7 @@ jobs:
       - name: Run tests
         run: yarn test
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
+          DATABASE_URL:  ${{ secrets.DATABASE_CI_URL }}
           POSTMARK_SERVER_KEY: ${{ secrets.POSTMARK_SERVER_KEY }}
           AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
 
