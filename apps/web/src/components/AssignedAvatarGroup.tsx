@@ -1,4 +1,11 @@
-import { Avatar, AvatarGroup, Box, Group, Portal, Tooltip } from '@chakra-ui/react';
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  Group,
+  Portal,
+  Tooltip,
+} from '@chakra-ui/react';
 import { AssignedGroupEntity } from '@web/client/types.gen';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 import { HoverableAvatar } from './HoverableAvatar';

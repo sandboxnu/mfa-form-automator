@@ -1,6 +1,18 @@
 import React, { useEffect } from 'react';
-import { Box, Flex, Stack, Table, Text, Avatar, AvatarGroup, useDisclosure } from '@chakra-ui/react';
-import { AssignedGroupEntity, FormInstanceEntity } from '@web/client/types.gen.ts';
+import {
+  Box,
+  Flex,
+  Stack,
+  Table,
+  Text,
+  Avatar,
+  AvatarGroup,
+  useDisclosure,
+} from '@chakra-ui/react';
+import {
+  AssignedGroupEntity,
+  FormInstanceEntity,
+} from '@web/client/types.gen.ts';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { SearchAndSort } from 'apps/web/src/components/SearchAndSort.tsx';
@@ -35,13 +47,13 @@ export const FormList = ({
   const [sortedFormInstances, setSortedFormInstances] = useState(formInstances);
 
   const [open, setOpen] = useState(false);
-  const [selectedFormInstance, setSelectedFormInstance] = useState<FormInstanceEntity | null>(null);
+  const [selectedFormInstance, setSelectedFormInstance] =
+    useState<FormInstanceEntity | null>(null);
 
   const openModal = (formInstance: FormInstanceEntity) => {
     setSelectedFormInstance(formInstance);
     setOpen(true);
   };
-
 
   useEffect(() => {
     setSortedFormInstances(
@@ -98,68 +110,126 @@ export const FormList = ({
         </Flex>
         <Box>
           <Stack gap="70">
-            <Table.Root key="lg" size="lg" width="full" variant={"outline"} borderWidth="1px" borderRadius="8px">
+            <Table.Root
+              key="lg"
+              size="lg"
+              width="full"
+              variant={'outline'}
+              borderWidth="1px"
+              borderRadius="8px"
+            >
               <Table.Header>
                 <Table.Row bg="white">
-                  <Table.ColumnHeader py="12px" px="24px" fontWeight={700} color="#5E5E5E" >Form</Table.ColumnHeader>
-                  <Table.ColumnHeader py="12px" px="24px" fontWeight={700} color="#5E5E5E" >Date Assigned</Table.ColumnHeader>
-                  <Table.ColumnHeader py="12px" px="24px" fontWeight={700} color="#5E5E5E">Originator</Table.ColumnHeader>
-                  <Table.ColumnHeader py="12px" px="24px" fontWeight={700} color="#5E5E5E">Assignees</Table.ColumnHeader>
+                  <Table.ColumnHeader
+                    py="12px"
+                    px="24px"
+                    fontWeight={700}
+                    color="#5E5E5E"
+                  >
+                    Form
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader
+                    py="12px"
+                    px="24px"
+                    fontWeight={700}
+                    color="#5E5E5E"
+                  >
+                    Date Assigned
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader
+                    py="12px"
+                    px="24px"
+                    fontWeight={700}
+                    color="#5E5E5E"
+                  >
+                    Originator
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader
+                    py="12px"
+                    px="24px"
+                    fontWeight={700}
+                    color="#5E5E5E"
+                  >
+                    Assignees
+                  </Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                 {sortedFormInstances.length > 0 ? (
-                  sortedFormInstances.map((formInstance: FormInstanceEntity, index: number) => (
-                    <Table.Row key={index} cursor="pointer" _hover={{ backgroundColor: "#f5f5f5" }} bg="white" onClick={() => openModal(formInstance)}>
-                      <Table.Cell py="12px" px="24px">
-                        <Text fontWeight={500} >{formInstance.name}</Text>
-                      </Table.Cell >
+                  sortedFormInstances.map(
+                    (formInstance: FormInstanceEntity, index: number) => (
+                      <Table.Row
+                        key={index}
+                        cursor="pointer"
+                        _hover={{ backgroundColor: '#f5f5f5' }}
+                        bg="white"
+                        onClick={() => openModal(formInstance)}
+                      >
+                        <Table.Cell py="12px" px="24px">
+                          <Text fontWeight={500}>{formInstance.name}</Text>
+                        </Table.Cell>
 
-                      <Table.Cell py="12px" px="24px">
-                        <Text fontWeight={400}>
-                          {new Date(formInstance.createdAt).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </Text>
-                      </Table.Cell>
+                        <Table.Cell py="12px" px="24px">
+                          <Text fontWeight={400}>
+                            {new Date(
+                              formInstance.createdAt,
+                            ).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                          </Text>
+                        </Table.Cell>
 
-                      <Table.Cell py="12px" px="24px">
-                        <Flex alignItems="center">
-                          <Avatar.Root
-                            boxSize="36px"
-                            backgroundColor={'#DCDCDC'}
-                            border="1px solid #FFFFFF"
-                            color="black"
-                            fontWeight={400}
-                            fontSize="14px"
-                            size="sm"
-                          >
-                            <Avatar.Fallback
-                              name={`${formInstance.originator.firstName} ${formInstance.originator.lastName}`}
+                        <Table.Cell py="12px" px="24px">
+                          <Flex alignItems="center">
+                            <Avatar.Root
+                              boxSize="36px"
+                              backgroundColor={'#DCDCDC'}
+                              border="1px solid #FFFFFF"
+                              color="black"
+                              fontWeight={400}
+                              fontSize="14px"
+                              size="sm"
+                            >
+                              <Avatar.Fallback
+                                name={`${formInstance.originator.firstName} ${formInstance.originator.lastName}`}
+                              />
+                            </Avatar.Root>
+                            <Text pl="8px">
+                              {formInstance.originator.firstName}{' '}
+                              {formInstance.originator.lastName}
+                            </Text>
+                          </Flex>
+                        </Table.Cell>
+
+                        <Table.Cell py="12px" px="24px">
+                          <Flex>
+                            <AssignedAvatarGroup
+                              assignedGroups={formInstance.assignedGroups}
                             />
-                          </Avatar.Root>
-                          <Text pl="8px">
-                            {formInstance.originator.firstName} {formInstance.originator.lastName}
-                          </Text>
-                        </Flex>
-                      </Table.Cell>
-
-                      <Table.Cell py="12px" px="24px">
-                        <Flex>
-                          <AssignedAvatarGroup assignedGroups={formInstance.assignedGroups} />
-                          <Text pl="15px" mt="5px">
-                            {`${formInstance.assignedGroups.filter((assignedGroup: AssignedGroupEntity) => assignedGroup.signed).length}/${formInstance.assignedGroups.length}`} signed
-                          </Text>
-                        </Flex>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))
+                            <Text pl="15px" mt="5px">
+                              {`${
+                                formInstance.assignedGroups.filter(
+                                  (assignedGroup: AssignedGroupEntity) =>
+                                    assignedGroup.signed,
+                                ).length
+                              }/${formInstance.assignedGroups.length}`}{' '}
+                              signed
+                            </Text>
+                          </Flex>
+                        </Table.Cell>
+                      </Table.Row>
+                    ),
+                  )
                 ) : (
                   <Table.Row bg="white">
                     <Table.Cell colSpan={4} py="40px" textAlign="center">
-                      <Flex flexDirection="column" alignItems="center" gap="16px">
+                      <Flex
+                        flexDirection="column"
+                        alignItems="center"
+                        gap="16px"
+                      >
                         <Flex
                           width="200px"
                           height="200px"
@@ -182,7 +252,8 @@ export const FormList = ({
                           width="296px"
                           textAlign="center"
                         >
-                          It appears there are no forms requiring your attention at the moment.
+                          It appears there are no forms requiring your attention
+                          at the moment.
                         </Text>
                       </Flex>
                     </Table.Cell>
@@ -199,7 +270,6 @@ export const FormList = ({
               formInstance={selectedFormInstance}
             />
           )}
-
         </Box>
       </Box>
     </>

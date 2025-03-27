@@ -142,7 +142,7 @@ export const FormButtons = ({
       router.push(submitLink);
       return;
     }
-    
+
     if (
       !formTemplate ||
       !assignedGroupData ||
