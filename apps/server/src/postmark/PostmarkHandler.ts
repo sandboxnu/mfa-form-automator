@@ -2,7 +2,7 @@ import { Employee } from '@prisma/client';
 import { ServerClient } from 'postmark';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailHandler } from './EmailHandlerInterface';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export default class PostmarkHandler implements EmailHandler {

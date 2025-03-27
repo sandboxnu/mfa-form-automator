@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import { Employee } from '@prisma/client';
 import { EmailHandler } from './EmailHandlerInterface';
 

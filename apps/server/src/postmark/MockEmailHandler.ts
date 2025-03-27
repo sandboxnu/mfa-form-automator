@@ -2,40 +2,78 @@ import { Employee } from '@prisma/client';
 import { EmailHandler } from './EmailHandlerInterface';
 
 export default class MockEmailHandler implements EmailHandler {
-  sendEmail(_: string, __: string, ___: string): Promise<void> {
+  sendEmail(to: string, subject: string, textBody: string): Promise<void> {
+    console.log(
+      `Sent email to ${to} with subject ${subject} and body ${textBody}`,
+    );
     return Promise.resolve();
   }
-  sendFormCreatedEmail(_: string, __: string, ___: string): Promise<void> {
+  sendFormCreatedEmail(
+    to: string,
+    originatorName: string,
+    formName: string,
+  ): Promise<void> {
+    console.log(
+      `Sent form created email to ${to} with originator ${originatorName} and form name ${formName}`,
+    );
     return Promise.resolve();
   }
   sendReadyForSignatureToUserEmail(
-    _: string,
-    __: string,
-    ___: string,
+    to: string,
+    signerName: string,
+    formName: string,
   ): Promise<void> {
+    console.log(
+      `Sent ready for signature email to ${to} with signer ${signerName} and form name ${formName}`,
+    );
     return Promise.resolve();
   }
-  sendReadyForSignatureToDepartmentEmail(_: string, __: string): Promise<void> {
+  sendReadyForSignatureToDepartmentEmail(
+    departmentId: string,
+    formName: string,
+  ): Promise<void> {
+    console.log(
+      `Sent ready for signature email to department ${departmentId} with form name ${formName}`,
+    );
     return Promise.resolve();
   }
-  sendReadyForSignatureToPositionEmail(_: string, __: string): Promise<void> {
+  sendReadyForSignatureToPositionEmail(
+    positionId: string,
+    formName: string,
+  ): Promise<void> {
+    console.log(
+      `Sent ready for signature email to position ${positionId} with form name ${formName}`,
+    );
     return Promise.resolve();
   }
   sendReadyForSignatureToUserListEmail(
-    _: Employee[],
-    __: string,
+    userList: Employee[],
+    formName: string,
   ): Promise<void> {
+    console.log(
+      `Sent ready for signature email to user list ${userList} with form name ${formName}`,
+    );
     return Promise.resolve();
   }
   sendSignedEmail(
-    _: string,
-    __: string,
-    ___: string,
-    ____: string,
+    to: string,
+    originatorName: string,
+    signerName: string,
+    formName: string,
   ): Promise<void> {
+    console.log(
+      `Sent signed email to ${to} with originator ${originatorName}, signer ${signerName}, and form name ${formName}`,
+    );
     return Promise.resolve();
   }
-  sendReadyForApprovalEmail(_: string, __: string, ___: string): Promise<void> {
+  sendReadyForApprovalEmail(
+    to: string,
+    originatorName: string,
+    formName: string,
+  ): Promise<void> {
+    console.log(
+      `Sent ready for approval email to ${to} with originator ${originatorName} and form name ${formName}`,
+    );
     return Promise.resolve();
   }
 }
