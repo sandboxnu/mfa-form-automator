@@ -1,6 +1,4 @@
 import {
-  background,
-  Box,
   Button,
   Flex,
   Modal,
@@ -65,7 +63,7 @@ function TemplateDirectory() {
             background="#EAEEF1"
           >
             <Flex padding="0px 8px" alignItems="center" gap="8px">
-              <CloseIcon width="16px" height="16px" />
+              <CloseIcon width="16px" height="16px" onClick={() => {setFormTemplate(null)}}/>
               <Flex
                 height="38px"
                 padding="8px 16px"
@@ -73,8 +71,8 @@ function TemplateDirectory() {
                 alignItems="center"
                 gap="8px"
               >
-                <EditIcon />
-                <Text>Edit Form</Text>
+                <EditIcon/>
+                <Text color="var(--Gray, #515151)">Edit Form</Text>
               </Flex>
               <SeparatorIcon />
               <Flex
@@ -85,8 +83,8 @@ function TemplateDirectory() {
                 gap="8px"
                 onClick={()=>{setIsOpen(true);}}
               >
-                <DeleteIcon />
-                <Text>Move to trash</Text>
+                <DeleteIcon color="var(--Gray, #515151)"/>
+                <Text color="var(--Gray, #515151)">Move to trash</Text>
               </Flex>
             </Flex>
           </Flex>
@@ -197,7 +195,7 @@ function TemplateDirectory() {
               <em>
                 <strong>{formTemplate?.name} </strong>
               </em>
-              from the template directory?
+              from the template directory permanently?
             </Text>
             <Flex
               justifyContent={'center'}

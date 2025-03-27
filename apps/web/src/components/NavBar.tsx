@@ -174,16 +174,19 @@ export const NavBar = ({
               Form
             </MenuItem>
             {isAdmin && (
-              <MenuItem
-                rounded="8px"
-                onClick={() => {
-                  router.push('create-template/upload');
-                }}
-              >
-                Template
-              </MenuItem>
-            )}
+                <MenuItem
+                  rounded="8px"
+                  onClick={() => {
+                    router.push('create-template/upload');
+                  }}
+                >
+                  Template
+                </MenuItem>
+              )}
+            
           </MenuList>
+           
+           
         </Menu>
       </Flex>
 
@@ -199,6 +202,11 @@ export const NavBar = ({
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
+      <Flex paddingTop="20px" paddingBottom="20px" paddingLeft="50px">
+        <Flex height="1px" width="140px" background={"#E0E0E0"}></Flex>
+      </Flex>
+      
+      
       {
         isAdmin ? 
         <NavItem icon="template" link="/template-directory">
