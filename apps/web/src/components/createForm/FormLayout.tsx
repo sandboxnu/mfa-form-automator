@@ -68,13 +68,13 @@ export const FormLayout = ({
         padding="36px 24px 36px 24px"
         flexDirection="column"
         justifyContent={'center'}
-        alignItems="center"
+        alignItems={!isFormTemplate && pageNumber == 1 ? "auto" : "center"}
         gap="20px"
         borderRadius="12px"
-        border="1px solid #E5E5E5"
+        border={!isFormTemplate && pageNumber == 1 ? "transparent" : "1px solid #E5E5E5"}
         height="auto"
         margin="16px 36px 16px 36px"
-        backgroundColor="#FFF"
+        backgroundColor={!isFormTemplate && pageNumber == 1 ? "transparent" : "#FFF"}
         alignContent={'center'}
       >
         {boxContent}
