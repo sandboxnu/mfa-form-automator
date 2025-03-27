@@ -1,4 +1,4 @@
-import { Avatar, Box, Group, Portal, Tooltip } from '@chakra-ui/react';
+import { Avatar, AvatarGroup, Box, Group, Portal, Tooltip } from '@chakra-ui/react';
 import { AssignedGroupEntity } from '@web/client/types.gen';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 import { HoverableAvatar } from './HoverableAvatar';
@@ -23,7 +23,7 @@ export const AssignedAvatarGroup = ({
   const { items: displayedAssignedGroups } = partition(assignedGroups, 5);
 
   return (
-    <Group gap="0" spaceX="2">
+    <AvatarGroup gap="0" spaceX="-2">
       {detailed
         ? displayedAssignedGroups.map((assignedGroup) => (
             <HoverableAvatar
@@ -75,6 +75,6 @@ export const AssignedAvatarGroup = ({
               </Portal>
             </Tooltip.Root>
           ))}
-    </Group>
+    </AvatarGroup>
   );
 };
