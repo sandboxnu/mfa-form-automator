@@ -138,6 +138,11 @@ export const FormButtons = ({
    * Updates form instance with the selected form template, form name, and signature positions
    */
   const _submitFormInstance = async () => {
+    if (!review) {
+      router.push(submitLink);
+      return;
+    }
+
     if (
       !formTemplate ||
       !assignedGroupData ||
@@ -145,11 +150,6 @@ export const FormButtons = ({
       !user ||
       assignedGroupData.length != formTemplate.fieldGroups.length
     ) {
-      return;
-    }
-
-    if (!review) {
-      router.push(submitLink);
       return;
     }
 
@@ -251,10 +251,8 @@ export const FormButtons = ({
           marginRight="36px"
           onClick={() => {
             if (isFormTemplate) {
-              console.log('Submitting Form Template');
               _submitFormTemplate();
             } else {
-              console.log('Submitting Form Instance');
               _submitFormInstance();
             }
           }}
