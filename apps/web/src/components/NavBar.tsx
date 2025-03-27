@@ -35,7 +35,8 @@ const icons = {
   formInstance: <FormInstanceIcon marginRight="2" />,
   test: <GrayPencilIcon marginRight="2" />,
   testActive: <GrayPencilIcon marginRight="2" />,
-  template: <TemplateFolder marginRight="2" bgColor={"blue"}/>
+  template: <TemplateFolder marginRight="2" />,
+  templateActive: <TemplateFolder marginRight="2" />,
 };
 type IconKeys = keyof typeof icons;
 /**
@@ -198,9 +199,13 @@ export const NavBar = ({
       <NavItem icon="completed" link="/completed">
         Completed
       </NavItem>
-      <NavItem icon="template" link="/template-directory">
+      {
+        isAdmin ? 
+        <NavItem icon="template" link="/template-directory">
         Templates
       </NavItem>
+      : <></>
+      }
     </Box>
   );
 };
