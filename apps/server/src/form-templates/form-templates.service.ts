@@ -94,90 +94,48 @@ export class FormTemplatesService {
    * @returns all form templates, hydrated
    */
   async findAll(limit?: number) {
-    const formTemplates = limit
-      ? await this.prisma.formTemplate.findMany({
-          take: limit,
+    const formTemplates = await this.prisma.formTemplate.findMany({
+      include: {
+        fieldGroups: {
           include: {
-            fieldGroups: {
+            templateBoxes: true,
+          },
+        },
+        formInstances: {
+          include: {
+            formTemplate: true,
+            originator: {
               include: {
-                templateBoxes: true,
-              },
-            },
-            formInstances: {
-              include: {
-                formTemplate: true,
-                originator: {
+                position: {
                   include: {
-                    position: {
-                      include: {
-                        department: true,
-                      },
-                    },
+                    department: true,
                   },
                 },
-                assignedGroups: {
+              },
+            },
+            assignedGroups: {
+              include: {
+                signerPosition: {
                   include: {
-                    signerPosition: {
-                      include: {
-                        department: true,
-                      },
-                    },
-                    signerDepartment: true,
-                    signerEmployee: true,
-                    signerEmployeeList: true,
-                    signingEmployee: true,
-                    fieldGroup: {
-                      include: {
-                        templateBoxes: true,
-                      },
-                    },
+                    department: true,
+                  },
+                },
+                signerDepartment: true,
+                signerEmployee: true,
+                signerEmployeeList: true,
+                signingEmployee: true,
+                fieldGroup: {
+                  include: {
+                    templateBoxes: true,
                   },
                 },
               },
             },
           },
-        })
-      : await this.prisma.formTemplate.findMany({
-          include: {
-            fieldGroups: {
-              include: {
-                templateBoxes: true,
-              },
-            },
-            formInstances: {
-              include: {
-                formTemplate: true,
-                originator: {
-                  include: {
-                    position: {
-                      include: {
-                        department: true,
-                      },
-                    },
-                  },
-                },
-                assignedGroups: {
-                  include: {
-                    signerPosition: {
-                      include: {
-                        department: true,
-                      },
-                    },
-                    signerDepartment: true,
-                    signerEmployee: true,
-                    signerEmployeeList: true,
-                    signingEmployee: true,
-                    fieldGroup: {
-                      include: {
-                        templateBoxes: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        });
+        },
+      },
+      ...(limit && { take: limit }),
+    });
     return formTemplates;
   }
 
@@ -249,6 +207,7 @@ export class FormTemplatesService {
       },
       data: {
         name: updateFormTemplateDto.name,
+        description: updateFormTemplateDto.description,
       },
       include: {
         fieldGroups: {
