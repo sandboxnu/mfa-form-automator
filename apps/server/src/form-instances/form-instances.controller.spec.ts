@@ -17,6 +17,7 @@ import { PostmarkService } from '../postmark/postmark.service';
 import { EmployeesService } from '../employees/employees.service';
 import { DepartmentsService } from '../departments/departments.service';
 import { PdfStoreModule } from '../pdf-store/pdf-storage.module';
+import MockEmailHandler from '../postmark/MockEmailHandler';
 
 describe('FormInstancesController', () => {
   let controller: FormInstancesController;
@@ -35,6 +36,10 @@ describe('FormInstancesController', () => {
         LoggerServiceImpl,
         PostmarkService,
         DepartmentsService,
+        {
+          provide: 'EmailHandler',
+          useValue: MockEmailHandler,
+        },
       ],
       imports: [PdfStoreModule],
     }).compile();

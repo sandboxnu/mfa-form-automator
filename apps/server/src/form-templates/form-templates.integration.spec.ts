@@ -2,10 +2,8 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { $Enums } from '@prisma/client';
 import { DepartmentsService } from '../departments/departments.service';
 import { EmployeesService } from '../employees/employees.service';
-import { FormInstancesService } from '../form-instances/form-instances.service';
 import { PdfStoreService } from '../pdf-store/pdf-store.service';
 import { PositionsService } from '../positions/positions.service';
-import { PostmarkService } from '../postmark/postmark.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormTemplateEntity } from './entities/form-template.entity';
 import { FormTemplatesService } from './form-templates.service';
@@ -31,7 +29,6 @@ describe('FormTemplatesIntegrationTest', () => {
   let departmentsService: DepartmentsService;
   let positionsService: PositionsService;
   let employeesService: EmployeesService;
-  let postmarkService: PostmarkService;
   let pdfStoreService: PdfStoreService;
 
   let departmentId: string | undefined;
@@ -43,12 +40,10 @@ describe('FormTemplatesIntegrationTest', () => {
   beforeAll(async () => {
     module = await Test.createTestingModule({
       providers: [
-        FormInstancesService,
         FormTemplatesService,
         EmployeesService,
         PositionsService,
         DepartmentsService,
-        PostmarkService,
         PdfStoreService,
         PrismaService,
         {
@@ -62,16 +57,7 @@ describe('FormTemplatesIntegrationTest', () => {
     departmentsService = module.get<DepartmentsService>(DepartmentsService);
     positionsService = module.get<PositionsService>(PositionsService);
     employeesService = module.get<EmployeesService>(EmployeesService);
-    postmarkService = module.get<PostmarkService>(PostmarkService);
     pdfStoreService = module.get<PdfStoreService>(PdfStoreService);
-    jest
-      .spyOn(postmarkService, 'sendFormCreatedEmail')
-      .mockResolvedValue(undefined);
-
-    jest
-      .spyOn(postmarkService, 'sendReadyForSignatureToPositionEmail')
-      .mockResolvedValue(undefined);
-    jest.spyOn(postmarkService, 'sendSignedEmail').mockResolvedValue(undefined);
     jest.spyOn(pdfStoreService, 'uploadPdf').mockResolvedValue('pdfLink');
   });
 
