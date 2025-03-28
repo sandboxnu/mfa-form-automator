@@ -36,8 +36,11 @@ describe('FormTemplatesIntegrationTest', () => {
 
   let departmentId: string | undefined;
   let positionId1: string | undefined;
+  let positionId2: string | undefined;
   let employeeId1: string | undefined;
+  let employeeId2: string | undefined;
   let formTemplate1: FormTemplateEntity | undefined;
+  let formTemplate2: FormTemplateEntity | undefined;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -93,7 +96,6 @@ describe('FormTemplatesIntegrationTest', () => {
     // Seed the database
     departmentId = (await departmentsService.create({ name: 'Engineering' }))
       .id;
-    departmentId2 = (await departmentsService.create({ name: 'HR' })).id;
     positionId1 = (
       await positionsService.create({
         name: 'Software Engineer',
@@ -219,7 +221,9 @@ describe('FormTemplatesIntegrationTest', () => {
 
       expect(formTemplates).toHaveLength(2);
       expect(formTemplates[0].name).toBe('Form Template 1');
+      expect(formTemplates[0].id).toBe(formTemplate1!.id);
       expect(formTemplates[1].name).toBe('Form Template 2');
+      expect(formTemplates[1].id).toBe(formTemplate2!.id);
     });
     it('successfully retrieves all form templates with limit', async () => {
       const formTemplates = await service.findAll(1);
