@@ -13,6 +13,7 @@ import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
 import { EmployeesService } from '../employees/employees.service';
 import { PdfStoreModule } from '../pdf-store/pdf-storage.module';
+import PostmarkHandler from '../postmark/PostmarkHandler';
 
 @Module({
   controllers: [FormInstancesController],
@@ -22,6 +23,10 @@ import { PdfStoreModule } from '../pdf-store/pdf-storage.module';
     PositionsService,
     EmployeesService,
     DepartmentsService,
+    {
+      provide: 'EmailHandler',
+      useClass: PostmarkHandler,
+    },
   ],
   exports: [FormInstancesService],
   imports: [
