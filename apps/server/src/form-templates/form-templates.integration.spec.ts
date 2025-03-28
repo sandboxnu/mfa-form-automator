@@ -35,13 +35,9 @@ describe('FormTemplatesIntegrationTest', () => {
   let pdfStoreService: PdfStoreService;
 
   let departmentId: string | undefined;
-  let departmentId2: string | undefined;
   let positionId1: string | undefined;
-  let positionId2: string | undefined;
   let employeeId1: string | undefined;
-  let employeeId2: string | undefined;
   let formTemplate1: FormTemplateEntity | undefined;
-  let formTemplate2: FormTemplateEntity | undefined;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
