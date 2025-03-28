@@ -36,9 +36,7 @@ describe('FormTemplatesIntegrationTest', () => {
 
   let departmentId: string | undefined;
   let positionId1: string | undefined;
-  let positionId2: string | undefined;
   let employeeId1: string | undefined;
-  let employeeId2: string | undefined;
   let formTemplate1: FormTemplateEntity | undefined;
   let formTemplate2: FormTemplateEntity | undefined;
 
@@ -102,12 +100,6 @@ describe('FormTemplatesIntegrationTest', () => {
         departmentId,
       })
     ).id;
-    positionId2 = (
-      await positionsService.create({
-        name: 'QA Engineer',
-        departmentId,
-      })
-    ).id;
     employeeId1 = (
       await employeesService.create({
         firstName: 'John',
@@ -115,15 +107,6 @@ describe('FormTemplatesIntegrationTest', () => {
         email: 'john.doe@example.com',
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
-      })
-    ).id;
-    employeeId2 = (
-      await employeesService.create({
-        firstName: 'Jane',
-        lastName: 'Doe',
-        email: 'jane.doe@example.com',
-        password: 'password',
-        scope: $Enums.EmployeeScope.BASE_USER,
       })
     ).id;
     await module.get<PrismaService>(PrismaService).employee.update({
