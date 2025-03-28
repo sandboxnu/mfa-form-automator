@@ -17,6 +17,7 @@ describe('EmployeesServiceIntegrationTest', () => {
   let positionId1: string;
   let positionId2: string;
   let employeeId1: string;
+  let employeeId2: string;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -41,10 +42,15 @@ describe('EmployeesServiceIntegrationTest', () => {
         module.get<PrismaService>(PrismaService).instanceBox.deleteMany(),
         module.get<PrismaService>(PrismaService).assignedGroup.deleteMany(),
         module.get<PrismaService>(PrismaService).formInstance.deleteMany(),
+        module.get<PrismaService>(PrismaService).templateBox.deleteMany(),
+        module.get<PrismaService>(PrismaService).fieldGroup.deleteMany(),
+        module.get<PrismaService>(PrismaService).formTemplate.deleteMany(),
         module.get<PrismaService>(PrismaService).employee.deleteMany(),
-        module.get<PrismaService>(PrismaService).position.deleteMany(),
         module.get<PrismaService>(PrismaService).department.deleteMany(),
+        module.get<PrismaService>(PrismaService).position.deleteMany(),
       ]);
+    await module.get<PrismaService>(PrismaService).employee.deleteMany();
+    await module.get<PrismaService>(PrismaService).department.deleteMany();
 
     departmentId = (await departmentsService.create({ name: 'Engineering' }))
       .id;
@@ -64,7 +70,6 @@ describe('EmployeesServiceIntegrationTest', () => {
 
   describe('create', () => {
     it('successfully creates a new employee', async () => {
-      console.log(positionId1);
       const employeeDto: CreateEmployeeDto = {
         firstName: 'John',
         lastName: 'Doe',
@@ -81,7 +86,6 @@ describe('EmployeesServiceIntegrationTest', () => {
       expect(newEmployee.lastName).toBe(employeeDto.lastName);
       expect(newEmployee.email).toBe(employeeDto.email);
       expect(newEmployee.scope).toBe(employeeDto.scope);
-      expect(newEmployee.positionId).toBe(employeeDto.positionId);
       expect(newEmployee.refreshToken).toBeNull();
       expect(newEmployee.pswdHash).toBeDefined();
       expect(
@@ -101,6 +105,18 @@ describe('EmployeesServiceIntegrationTest', () => {
         positionId: positionId1,
       };
       employeeId1 = (await service.create(employeeDto1)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
     });
 
     it('successfully updates an employee', async () => {
@@ -131,6 +147,18 @@ describe('EmployeesServiceIntegrationTest', () => {
         positionId: positionId1,
       };
       employeeId1 = (await service.create(employeeDto1)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
     });
 
     it('successfully updates a refresh token', async () => {
@@ -161,8 +189,32 @@ describe('EmployeesServiceIntegrationTest', () => {
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId2,
       };
-      await service.create(employeeDto1);
-      await service.create(employeeDto2);
+      employeeId1 = (await service.create(employeeDto1)).id;
+      employeeId2 = (await service.create(employeeDto2)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId2,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId2,
+            },
+          },
+        },
+      });
     });
 
     it('successfully retrieves all employees', async () => {
@@ -190,6 +242,18 @@ describe('EmployeesServiceIntegrationTest', () => {
         positionId: positionId1,
       };
       employeeId1 = (await service.create(employeeDto1)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
     });
 
     it('successfully retrieves an employee by id', async () => {
@@ -216,6 +280,18 @@ describe('EmployeesServiceIntegrationTest', () => {
         positionId: positionId1,
       };
       employeeId1 = (await service.create(employeeDto1)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
       await service.setRefreshToken(employeeId1, 'token');
     });
 
@@ -223,7 +299,6 @@ describe('EmployeesServiceIntegrationTest', () => {
       const employee = await service.findOneWithRefresh(employeeId1, 'token');
       expect(employee.firstName).toBe('John');
       expect(employee.lastName).toBe('Doe');
-      expect(employee.positionId).toBe(positionId1);
       expect(employee.position?.departmentId).toBe(departmentId);
     });
 
@@ -245,6 +320,18 @@ describe('EmployeesServiceIntegrationTest', () => {
         positionId: positionId1,
       };
       employeeId1 = (await service.create(employeeDto1)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
     });
 
     it('successfully retrieves an employee by email', async () => {

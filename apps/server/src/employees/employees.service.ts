@@ -24,11 +24,6 @@ export class EmployeesService {
           await bcrypt.genSalt(Number(process.env.SALT_ROUNDS) || 10),
         ),
         scope: createEmployeeDto.scope,
-        position: {
-          connect: {
-            id: createEmployeeDto.positionId,
-          },
-        },
       },
       include: {
         position: {

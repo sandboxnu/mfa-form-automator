@@ -1,4 +1,4 @@
-import { Flex, Text, useDisclosure } from '@chakra-ui/react';
+import { Flex, Text, useDisclosure, Wrap } from '@chakra-ui/react';
 import { FormCard } from './FormCard.tsx';
 import { FormInstanceEntity } from '@web/client/types.gen.ts';
 import React, { useState } from 'react';
@@ -69,12 +69,7 @@ export const OverviewRow = ({
           <ViewAll title={title} link={link} />
         </Flex>
       </Flex>
-      <Flex
-        marginTop="20px"
-        flexDirection="row"
-        width="100%"
-        justifyContent={'space-between'}
-      >
+      <Wrap gap="20px" columnGap="20px" justify="flex-start">
         {displayFormInstances.map(
           (formInstance: FormInstanceEntity, index: number) => {
             return title == 'To-do' ? (
@@ -94,7 +89,7 @@ export const OverviewRow = ({
             );
           },
         )}
-      </Flex>
+      </Wrap>
       <SignFormInstancePreview
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}

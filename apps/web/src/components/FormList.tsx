@@ -1,12 +1,25 @@
 import React, { useEffect } from 'react';
-import { FormRow } from './FormRow.tsx';
-import { Box, Flex, Grid, GridItem, Text } from '@chakra-ui/react';
-import { FormInstanceEntity } from '@web/client/types.gen.ts';
+import {
+  Box,
+  Flex,
+  Stack,
+  Table,
+  Text,
+  Avatar,
+  AvatarGroup,
+  useDisclosure,
+} from '@chakra-ui/react';
+import {
+  AssignedGroupEntity,
+  FormInstanceEntity,
+} from '@web/client/types.gen.ts';
 import { useState } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { SearchAndSort } from 'apps/web/src/components/SearchAndSort.tsx';
 import { ViewAll } from 'apps/web/src/components/ViewAll.tsx';
 import { NoForms } from '@web/static/icons.tsx';
+import { AssignedAvatarGroup } from './AssignedAvatarGroup.tsx';
+import { SignFormInstancePreview } from './SignFormInstancePreview.tsx';
 
 /**
  * @param title - the title of the form list
@@ -32,6 +45,15 @@ export const FormList = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortedFormInstances, setSortedFormInstances] = useState(formInstances);
+
+  const [open, setOpen] = useState(false);
+  const [selectedFormInstance, setSelectedFormInstance] =
+    useState<FormInstanceEntity | null>(null);
+
+  const openModal = (formInstance: FormInstanceEntity) => {
+    setSelectedFormInstance(formInstance);
+    setOpen(true);
+  };
 
   useEffect(() => {
     setSortedFormInstances(
@@ -87,94 +109,166 @@ export const FormList = ({
           </>
         </Flex>
         <Box>
-          <Grid
-            templateColumns="repeat(20, 1fr)"
-            gap={0}
-            background="white"
-            borderTopRadius={'8px'}
-            boxShadow="0px 0px 1px 1px #d4d4d4"
-            css={{ '--color': '#5E5E5E' }}
-          >
-            <GridItem colSpan={8} h="48px">
-              <Text fontSize="15px" fontWeight="700" pl="24px" pt="10px">
-                Form
-              </Text>
-            </GridItem>
-            <GridItem colSpan={3} h="48px">
-              <Text fontSize="15px" fontWeight="700" pt="10px">
-                Date Assigned
-              </Text>
-            </GridItem>
-            <GridItem colSpan={4} h="48px">
-              <Text fontSize="15px" fontWeight="700" pt="10px">
-                Originator
-              </Text>
-            </GridItem>
-            <GridItem colSpan={5} h="48px">
-              <Text fontSize="15px" fontWeight="700" pt="10px">
-                Assignees
-              </Text>
-            </GridItem>
-          </Grid>
-          {sortedFormInstances.map(
-            (formInstance: FormInstanceEntity, index: number) => (
-              <FormRow
-                formInstance={formInstance}
-                key={index}
-                last={index === sortedFormInstances.length - 1}
-                link={'/form-instances/' + formInstance.id}
-              />
-            ),
-          )}
-          {sortedFormInstances.length === 0 ? (
-            <Flex
-              height="392px"
-              padding="12px 24px"
-              justifyContent={'center'}
-              alignItems={'center'}
-              gap="24px"
-              alignSelf={'stretch'}
-              borderRadius="0px 0px 8px 8px"
-              border="1px solid #D4D4D4"
-              background="#FFF"
+          <Stack gap="70">
+            <Table.Root
+              key="lg"
+              size="lg"
+              width="full"
+              variant={'outline'}
+              borderWidth="1px"
+              borderRadius="8px"
             >
-              <Flex
-                flexDirection="column"
-                gap="24px"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Flex
-                  width="200px"
-                  height="200px"
-                  padding="37.5px 47px"
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                  borderRadius="200px"
-                  background="#ECF0F2"
-                >
-                  <NoForms width="106" height="125" />
-                </Flex>
-                <Flex flexDirection={'column'} alignItems={'center'} gap="8px">
-                  <Text color="#32353B" fontSize="21px" fontWeight={500}>
-                    {"You're all caught up!"}
-                  </Text>
-                  <Text
-                    color="#7F8185"
-                    fontSize="16px"
-                    fontWeight={400}
-                    lineHeight="21px"
-                    width="296px"
-                    textAlign={'center'}
+              <Table.Header>
+                <Table.Row bg="white">
+                  <Table.ColumnHeader
+                    py="12px"
+                    px="24px"
+                    fontWeight={700}
+                    color="#5E5E5E"
                   >
-                    It appears there are no forms requiring your attention at
-                    the moment.
-                  </Text>
-                </Flex>
-              </Flex>
-            </Flex>
-          ) : (
-            <></>
+                    Form
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader
+                    py="12px"
+                    px="24px"
+                    fontWeight={700}
+                    color="#5E5E5E"
+                  >
+                    Date Assigned
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader
+                    py="12px"
+                    px="24px"
+                    fontWeight={700}
+                    color="#5E5E5E"
+                  >
+                    Originator
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader
+                    py="12px"
+                    px="24px"
+                    fontWeight={700}
+                    color="#5E5E5E"
+                  >
+                    Assignees
+                  </Table.ColumnHeader>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {sortedFormInstances.length > 0 ? (
+                  sortedFormInstances.map(
+                    (formInstance: FormInstanceEntity, index: number) => (
+                      <Table.Row
+                        key={index}
+                        cursor="pointer"
+                        _hover={{ backgroundColor: '#f5f5f5' }}
+                        bg="white"
+                        onClick={() => openModal(formInstance)}
+                      >
+                        <Table.Cell py="12px" px="24px">
+                          <Text fontWeight={500}>{formInstance.name}</Text>
+                        </Table.Cell>
+
+                        <Table.Cell py="12px" px="24px">
+                          <Text fontWeight={400}>
+                            {new Date(
+                              formInstance.createdAt,
+                            ).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                          </Text>
+                        </Table.Cell>
+
+                        <Table.Cell py="12px" px="24px">
+                          <Flex alignItems="center">
+                            <Avatar.Root
+                              boxSize="36px"
+                              backgroundColor={'#DCDCDC'}
+                              border="1px solid #FFFFFF"
+                              color="black"
+                              fontWeight={400}
+                              fontSize="14px"
+                              size="sm"
+                            >
+                              <Avatar.Fallback
+                                name={`${formInstance.originator.firstName} ${formInstance.originator.lastName}`}
+                              />
+                            </Avatar.Root>
+                            <Text pl="8px">
+                              {formInstance.originator.firstName}{' '}
+                              {formInstance.originator.lastName}
+                            </Text>
+                          </Flex>
+                        </Table.Cell>
+
+                        <Table.Cell py="12px" px="24px">
+                          <Flex>
+                            <AssignedAvatarGroup
+                              assignedGroups={formInstance.assignedGroups}
+                            />
+                            <Text pl="15px" mt="5px">
+                              {`${
+                                formInstance.assignedGroups.filter(
+                                  (assignedGroup: AssignedGroupEntity) =>
+                                    assignedGroup.signed,
+                                ).length
+                              }/${formInstance.assignedGroups.length}`}{' '}
+                              signed
+                            </Text>
+                          </Flex>
+                        </Table.Cell>
+                      </Table.Row>
+                    ),
+                  )
+                ) : (
+                  <Table.Row bg="white">
+                    <Table.Cell colSpan={4} py="40px" textAlign="center">
+                      <Flex
+                        flexDirection="column"
+                        alignItems="center"
+                        gap="16px"
+                      >
+                        <Flex
+                          width="200px"
+                          height="200px"
+                          padding="37.5px 47px"
+                          justifyContent={'center'}
+                          alignItems={'center'}
+                          borderRadius="200px"
+                          background="#ECF0F2"
+                        >
+                          <NoForms width="106" height="125" />
+                        </Flex>
+                        <Text color="#32353B" fontSize="21px" fontWeight={500}>
+                          {"You're all caught up!"}
+                        </Text>
+                        <Text
+                          color="#7F8185"
+                          fontSize="16px"
+                          fontWeight={400}
+                          lineHeight="21px"
+                          width="296px"
+                          textAlign="center"
+                        >
+                          It appears there are no forms requiring your attention
+                          at the moment.
+                        </Text>
+                      </Flex>
+                    </Table.Cell>
+                  </Table.Row>
+                )}
+              </Table.Body>
+            </Table.Root>
+          </Stack>
+
+          {selectedFormInstance && (
+            <SignFormInstancePreview
+              isOpen={open}
+              onClose={() => setOpen(false)}
+              formInstance={selectedFormInstance}
+            />
           )}
         </Box>
       </Box>
