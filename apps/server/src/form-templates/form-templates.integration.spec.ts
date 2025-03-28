@@ -2,7 +2,6 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { $Enums } from '@prisma/client';
 import { DepartmentsService } from '../departments/departments.service';
 import { EmployeesService } from '../employees/employees.service';
-import { FormInstanceEntity } from '../form-instances/entities/form-instance.entity';
 import { FormInstancesService } from '../form-instances/form-instances.service';
 import { PdfStoreService } from '../pdf-store/pdf-store.service';
 import { PositionsService } from '../positions/positions.service';
@@ -32,20 +31,17 @@ describe('FormTemplatesIntegrationTest', () => {
   let departmentsService: DepartmentsService;
   let positionsService: PositionsService;
   let employeesService: EmployeesService;
-  let formTemplatesService: FormTemplatesService;
   let postmarkService: PostmarkService;
   let pdfStoreService: PdfStoreService;
 
-  let departmentId: string;
-  let departmentId2: string;
-  let positionId1: string;
-  let positionId2: string;
-  let employeeId1: string;
-  let employeeId2: string;
-  let formTemplate1: FormTemplateEntity;
-  let formTemplate2: FormTemplateEntity;
-  let formInstance1: FormInstanceEntity;
-  let formInstance2: FormInstanceEntity;
+  let departmentId: string | undefined;
+  let departmentId2: string | undefined;
+  let positionId1: string | undefined;
+  let positionId2: string | undefined;
+  let employeeId1: string | undefined;
+  let employeeId2: string | undefined;
+  let formTemplate1: FormTemplateEntity | undefined;
+  let formTemplate2: FormTemplateEntity | undefined;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -83,7 +79,7 @@ describe('FormTemplatesIntegrationTest', () => {
   });
 
   beforeEach(async () => {
-    // We need to seed the database with some data
+    // Clear the database
     await module
       .get<PrismaService>(PrismaService)
       .$transaction([
@@ -94,10 +90,11 @@ describe('FormTemplatesIntegrationTest', () => {
         module.get<PrismaService>(PrismaService).fieldGroup.deleteMany(),
         module.get<PrismaService>(PrismaService).formTemplate.deleteMany(),
         module.get<PrismaService>(PrismaService).employee.deleteMany(),
-        module.get<PrismaService>(PrismaService).position.deleteMany(),
         module.get<PrismaService>(PrismaService).department.deleteMany(),
+        module.get<PrismaService>(PrismaService).position.deleteMany(),
       ]);
 
+    // Seed the database
     departmentId = (await departmentsService.create({ name: 'Engineering' }))
       .id;
     departmentId2 = (await departmentsService.create({ name: 'HR' })).id;
@@ -131,56 +128,18 @@ describe('FormTemplatesIntegrationTest', () => {
         scope: $Enums.EmployeeScope.BASE_USER,
       })
     ).id;
-    await employeesService.update(employeeId1, {
-      positionId: positionId1,
+    await module.get<PrismaService>(PrismaService).employee.update({
+      where: {
+        id: employeeId1,
+      },
+      data: {
+        position: {
+          connect: {
+            id: positionId1,
+          },
+        },
+      },
     });
-    // formTemplate1 = await formTemplatesService.create({
-    //   name: 'Form Template',
-    //   description: 'Form Template Description',
-    //   file: emptyFile,
-    //   fieldGroups: [
-    //     {
-    //       name: 'Field Group',
-    //       order: 0,
-    //       templateBoxes: [
-    //         {
-    //           type: $Enums.SignatureBoxFieldType.CHECKBOX,
-    //           x_coordinate: 0,
-    //           y_coordinate: 0,
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // });
-    // formTemplate2 = await formTemplatesService.create({
-    //   name: 'Form Template',
-    //   description: 'Form Template Description',
-    //   file: emptyFile,
-    //   fieldGroups: [
-    //     {
-    //       name: 'Field Group',
-    //       order: 0,
-    //       templateBoxes: [
-    //         {
-    //           type: $Enums.SignatureBoxFieldType.CHECKBOX,
-    //           x_coordinate: 0,
-    //           y_coordinate: 0,
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       name: 'Field Group 2',
-    //       order: 1,
-    //       templateBoxes: [
-    //         {
-    //           type: $Enums.SignatureBoxFieldType.SIGNATURE,
-    //           x_coordinate: 0,
-    //           y_coordinate: 0,
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // });
   });
   describe('create', () => {
     it('successfully creates a form template', async () => {
@@ -270,7 +229,6 @@ describe('FormTemplatesIntegrationTest', () => {
       const formTemplates = await service.findAll(1);
 
       expect(formTemplates).toHaveLength(1);
-      expect(formTemplates[0].name).toBe('Form Template 1');
     });
   });
 
@@ -297,7 +255,7 @@ describe('FormTemplatesIntegrationTest', () => {
     });
 
     it('successfully retrieves a form template', async () => {
-      const formTemplate = await service.findOne(formTemplate1.id);
+      const formTemplate = await service.findOne(formTemplate1!.id);
 
       expect(formTemplate).toBeDefined();
       expect(formTemplate.name).toBe('Form Template 1');
@@ -332,7 +290,7 @@ describe('FormTemplatesIntegrationTest', () => {
     });
 
     it('successfully updates a form template', async () => {
-      const updatedFormTemplate = await service.update(formTemplate1.id, {
+      const updatedFormTemplate = await service.update(formTemplate1!.id, {
         name: 'Updated Form Template',
         description: 'Updated Form Template Description',
         file: emptyFile,

@@ -257,11 +257,27 @@ export class FormTemplatesService {
    * @param id the form template id
    */
   async remove(id: string) {
-    // TODO: Support cascade delete of dependent entities?
-    await this.prisma.formTemplate.delete({
-      where: {
-        id: id,
-      },
-    });
+    await this.prisma.$transaction([
+      // Delete TemplateBox records first
+      this.prisma.templateBox.deleteMany({
+        where: {
+          fieldGroup: {
+            formTemplateId: id,
+          },
+        },
+      }),
+      // Then delete FieldGroup records
+      this.prisma.fieldGroup.deleteMany({
+        where: {
+          formTemplateId: id,
+        },
+      }),
+      // Finally, delete the FormTemplate
+      this.prisma.formTemplate.delete({
+        where: {
+          id,
+        },
+      }),
+    ]);
   }
 }
