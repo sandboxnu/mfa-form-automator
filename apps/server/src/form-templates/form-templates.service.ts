@@ -298,6 +298,7 @@ export class FormTemplatesService {
    * @param id the form template id
    */
   async remove(id: string) {
+    console.log('made it to remove');
     // TODO: Support cascade delete of dependent entities?
     await this.prisma.formTemplate.delete({
       where: {

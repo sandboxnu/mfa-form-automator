@@ -6,7 +6,16 @@ import {
   ModalOverlay,
   Text,
 } from '@chakra-ui/react';
-import { FormTemplateEntity, formTemplatesControllerRemove, Scope } from '@web/client';
+import { useMutation } from '@tanstack/react-query';
+import {
+  FormTemplateEntity,
+  formTemplatesControllerRemove,
+  Scope,
+} from '@web/client';
+import {
+  formTemplatesControllerFindAllQueryKey,
+  formTemplatesControllerRemoveMutation,
+} from '@web/client/@tanstack/react-query.gen';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
 import isAuth from '@web/components/isAuth';
@@ -16,9 +25,9 @@ import {
   EditIcon,
   SeparatorIcon,
 } from '@web/static/icons';
-
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { queryClient } from './_app';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -29,6 +38,7 @@ function TemplateDirectory() {
     null,
   );
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [myTemplatesOnly, setMyTemplatesOnly] = useState<boolean>(false);
 
   const handleSelectTemplate = async (id: string) => {
     try {
@@ -42,6 +52,31 @@ function TemplateDirectory() {
       console.error(error);
     }
   };
+
+  const removeFormTemplateMutation = useMutation({
+    ...formTemplatesControllerRemoveMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
+  });
+
+  const _submitRemove = async () => {
+    if (!formTemplate) {
+      return;
+    }
+
+    await removeFormTemplateMutation.mutateAsync({
+      path: {
+        id: formTemplate.id,
+      },
+    });
+    console.log('finished');
+    setIsOpen(false);
+    setFormTemplate(null);
+  };
+
   return (
     <>
       <Flex
@@ -63,7 +98,13 @@ function TemplateDirectory() {
             background="#EAEEF1"
           >
             <Flex padding="0px 8px" alignItems="center" gap="8px">
-              <CloseIcon width="16px" height="16px" onClick={() => {setFormTemplate(null)}}/>
+              <CloseIcon
+                width="16px"
+                height="16px"
+                onClick={() => {
+                  setFormTemplate(null);
+                }}
+              />
               <Flex
                 height="38px"
                 padding="8px 16px"
@@ -71,7 +112,7 @@ function TemplateDirectory() {
                 alignItems="center"
                 gap="8px"
               >
-                <EditIcon/>
+                <EditIcon />
                 <Text color="var(--Gray, #515151)">Edit Form</Text>
               </Flex>
               <SeparatorIcon />
@@ -81,10 +122,12 @@ function TemplateDirectory() {
                 justifyContent={'center'}
                 alignItems="center"
                 gap="8px"
-                onClick={()=>{setIsOpen(true);}}
+                onClick={() => {
+                  setIsOpen(true);
+                }}
               >
-                <DeleteIcon color="var(--Gray, #515151)"/>
-                <Text color="var(--Gray, #515151)">Move to trash</Text>
+                <DeleteIcon color="var(--Gray, #515151)" />
+                <Text color="var(--Gray, #515151)">Delete</Text>
               </Flex>
             </Flex>
           </Flex>
@@ -137,7 +180,9 @@ function TemplateDirectory() {
         )}
         <TemplateSelectGrid
           allowCreate={false}
-          selectionFunction={handleSelectTemplate}
+          handleSelectTemplate={handleSelectTemplate}
+          myTemplatesOnly={myTemplatesOnly}
+          selectedFormTemplate={formTemplate}
         />
 
         <Flex
@@ -151,7 +196,7 @@ function TemplateDirectory() {
           borderRadius={'8px'}
         >
           <Text fontSize="19px">
-            Not seeing the form template you're looking for?
+            Not seeing the form template you&apos;re looking for?
           </Text>
           <Button
             borderRadius="6px"
@@ -173,11 +218,17 @@ function TemplateDirectory() {
           </Button>
         </Flex>
       </Flex>
-      <Modal isOpen={isOpen} onClose={() => {}} isCentered={true}>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          formTemplatesControllerRemoveMutation;
+        }}
+        isCentered={true}
+      >
         <ModalOverlay bg="rgba(0, 0, 0, 0.5)" />
         <ModalContent alignItems="center" justifyContent={'center'}>
           <Flex
-          zIndex="1000"
+            zIndex="1000"
             width="391px"
             padding="24px 32px"
             flexDirection={'column'}
@@ -215,7 +266,9 @@ function TemplateDirectory() {
                 width="100px"
                 height="29px"
                 fontWeight={'normal'}
-                onClick={() => {setIsOpen(false)}}
+                onClick={() => {
+                  setIsOpen(false);
+                }}
               >
                 Cancel
               </Button>
@@ -229,7 +282,10 @@ function TemplateDirectory() {
                 color="white"
                 width="100px"
                 height="29px"
-                onClick={() => {(formTemplate)}}
+                onClick={() => {
+                  console.log('Removing template ' + formTemplate?.name);
+                  _submitRemove();
+                }}
               >
                 Remove
               </Button>
