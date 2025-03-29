@@ -209,13 +209,16 @@ export const NavBar = ({
         Templates
       </NavItem>
       <Flex paddingTop="20px" paddingBottom="20px" paddingLeft="50px">
-        <Flex height="1px" width="140px" background={"#E0E0E0"}></Flex>
+        <Flex height="1px" width="140px" background={'#E0E0E0'}></Flex>
       </Flex>
-      
-      
-        
-      </Flex>
-      
+
+      {isAdmin ? (
+        <NavItem icon="template" link="/template-directory">
+          Templates
+        </NavItem>
+      ) : (
+        <></>
+      )}
     </Box>
   );
 };
