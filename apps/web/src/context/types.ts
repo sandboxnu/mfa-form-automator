@@ -1,10 +1,16 @@
-import { Dispatch, SetStateAction } from 'react';
 import {
-  FormFields,
+  CreateAssignedGroupDto,
+  FormInstanceEntity,
+  FormTemplateEntity,
+  Scope,
+  TemplateBoxBaseEntity,
+} from '@web/client';
+import {
   FieldGroups,
+  FormFields,
 } from '@web/components/createFormTemplate/types';
-import { CreateAssignedGroupDto, FormTemplateEntity, Scope } from '@web/client';
 import { GraphUser } from '@web/graph';
+import { Dispatch, SetStateAction } from 'react';
 
 // for storage in context
 export type User = {
@@ -61,6 +67,39 @@ export interface CreateFormInstanceContextType {
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
 }
+
+export interface SignFormInstanceContextType {
+  formInstance: FormInstanceEntity | undefined; // Replace 'any' with your actual formInstance type
+  formInstanceError: Error | null;
+  isLoading: boolean;
+  fields: FormField[][];
+  pdfLink: string;
+  formTemplateName: string;
+  setFields: Dispatch<SetStateAction<FormField[][]>>;
+  groupNumber: number;
+  updateField: (pageNum: number, id: string, data: boolean | string) => void;
+  updatePDF: () => Promise<void>;
+}
+
+export type Checkbox = {
+  isChecked: boolean;
+  id: string;
+  x: number;
+  y: number;
+};
+
+export type Signature = {
+  isSigned: boolean;
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export type FormField = TemplateBoxBaseEntity & {
+  data: { filled?: boolean; text?: string };
+};
 
 export type ContextAssignedGroupData = CreateAssignedGroupDto & {
   name: string;

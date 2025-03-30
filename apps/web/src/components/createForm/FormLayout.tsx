@@ -1,3 +1,8 @@
+import { Box, Flex, Heading, Text } from '@chakra-ui/react';
+import { SideCreateForm } from './SideCreateForm';
+import { FormButtons } from './FormButtons';
+import { FormInteractionType } from './types';
+
 /**
  * The layout for a page in the create form template onboarding flow.  Used in pages.
  * @param pageNumber the step in the process (e.g. upload is 1).  Used in side nav bar
@@ -11,22 +16,38 @@
  * @returns the formatted content of a form template creation page.
  */
 
-import { Box, Flex, Heading, Text } from '@chakra-ui/react';
-import { SignFormButtons } from './SignFormButtons';
-
-export const SignFormLayout = ({
+export const FormLayout = ({
+  type,
+  pageNumber,
   heading,
   subheading,
   boxContent,
+  deleteFunction,
   submitLink,
+  backLink,
+  disabled,
+  review,
 }: {
+  type: FormInteractionType;
+  pageNumber: number;
   heading: string;
   subheading: string;
   boxContent: React.ReactNode;
+  deleteFunction: Function;
   submitLink: string;
+  backLink: string;
+  disabled: boolean;
+  review?: boolean;
 }) => {
   return (
     <Box height="100vh" marginTop="36px">
+      <Flex position="absolute" margin="0px" zIndex={5000}>
+        <SideCreateForm
+          curStep={pageNumber}
+          isFormTemplate={type == FormInteractionType.CreateFormTemplate}
+        />
+      </Flex>
+
       <Heading
         color="#2A2B2D"
         fontSize="30px"
@@ -47,7 +68,7 @@ export const SignFormLayout = ({
       </Text>
       <Flex
         /* outer white box */
-        padding="24px"
+        padding="36px 24px 36px 24px"
         flexDirection="column"
         justifyContent={'center'}
         alignItems="center"
@@ -61,7 +82,21 @@ export const SignFormLayout = ({
       >
         {boxContent}
       </Flex>
-      <SignFormButtons />
+      <FormButtons
+        type={type}
+        heading={
+          type == FormInteractionType.CreateFormTemplate
+            ? 'Create form template'
+            : type == FormInteractionType.CreateFormInstance
+            ? 'Create form instance'
+            : 'Submit form'
+        }
+        deleteFunction={deleteFunction}
+        submitLink={submitLink}
+        backLink={backLink}
+        disabled={disabled}
+        review={review}
+      />
     </Box>
   );
 };

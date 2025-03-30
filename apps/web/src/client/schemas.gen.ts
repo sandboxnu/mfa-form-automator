@@ -169,6 +169,7 @@ export const CreateEmployeeDtoSchema = {
     },
     positionId: {
       type: 'string',
+      nullable: true,
       format: 'uuid',
     },
     email: {
@@ -211,6 +212,7 @@ export const UpdateEmployeeDtoSchema = {
     },
     positionId: {
       type: 'string',
+      nullable: true,
       format: 'uuid',
     },
     scope: {
@@ -408,8 +410,11 @@ export const CreateTemplateBoxDtoSchema = {
     height: {
       type: 'number',
     },
+    page: {
+      type: 'number',
+    },
   },
-  required: ['type', 'x_coordinate', 'y_coordinate', 'width', 'height'],
+  required: ['type', 'x_coordinate', 'y_coordinate', 'width', 'height', 'page'],
 } as const;
 
 export const CreateFieldGroupDtoSchema = {
@@ -478,6 +483,9 @@ export const TemplateBoxBaseEntitySchema = {
     height: {
       type: 'number',
     },
+    page: {
+      type: 'number',
+    },
     createdAt: {
       format: 'date-time',
       type: 'string',
@@ -497,6 +505,7 @@ export const TemplateBoxBaseEntitySchema = {
     'y_coordinate',
     'width',
     'height',
+    'page',
     'createdAt',
     'updatedAt',
     'fieldGroupId',

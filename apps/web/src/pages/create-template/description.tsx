@@ -1,6 +1,7 @@
 import { Scope } from '@web/client';
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { FormLayout } from '@web/components/createForm/FormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
+import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
@@ -17,8 +18,8 @@ function Description() {
   } = useCreateFormTemplate();
 
   return (
-    <CreateFormLayout
-      isFormTemplate={true}
+    <FormLayout
+      type={FormInteractionType.CreateFormTemplate}
       pageNumber={2}
       heading={'Create form template'}
       subheading={'Give your form template a name and short description'}

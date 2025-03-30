@@ -40,6 +40,7 @@ export class FormTemplatesService {
                     y_coordinate: templateBox.y_coordinate,
                     width: templateBox.width,
                     height: templateBox.height,
+                    page: templateBox.page,
                   };
                 }),
               },

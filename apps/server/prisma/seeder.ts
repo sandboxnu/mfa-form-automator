@@ -205,6 +205,7 @@ export class Seeder {
                     y_coordinate: box.y_coordinate,
                     width: box.width,
                     height: box.height,
+                    page: box.page,
                   };
                 }),
               },

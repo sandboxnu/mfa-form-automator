@@ -1,5 +1,6 @@
 import { Scope } from '@web/client/types.gen';
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { FormLayout } from '@web/components/createForm/FormLayout';
+import { FormInteractionType } from '@web/components/createForm/types';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
@@ -8,8 +9,8 @@ function SelectTemplate() {
   const { formTemplate, setFormTemplate } = useCreateFormInstance();
 
   return (
-    <CreateFormLayout
-      isFormTemplate={false}
+    <FormLayout
+      type={FormInteractionType.CreateFormInstance}
       pageNumber={1}
       heading={'Create form instance'}
       subheading={'Select a form template'}

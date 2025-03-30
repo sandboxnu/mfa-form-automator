@@ -11,6 +11,8 @@ import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
 import { useAuth } from '@web/hooks/useAuth';
+import { FormInteractionType } from './types';
+import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -21,7 +23,7 @@ import { useAuth } from '@web/hooks/useAuth';
  * @param review if review page, there is no delete/clear button and the Save & Continue becomes Create Form Template
  */
 export const FormButtons = ({
-  isFormTemplate,
+  type,
   deleteFunction,
   submitLink,
   backLink,
@@ -29,7 +31,7 @@ export const FormButtons = ({
   review,
   heading,
 }: {
-  isFormTemplate: boolean;
+  type: FormInteractionType;
   deleteFunction: Function;
   submitLink: string;
   backLink: string;
@@ -48,6 +50,19 @@ export const FormButtons = ({
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
+
+  const {
+    formInstanceError,
+    isLoading,
+    pdfLink,
+    fields,
+    setFields,
+    formInstance,
+    groupNumber,
+    updateField,
+    updatePDF,
+  } = useSignFormInstance();
+
   const { user } = useAuth();
 
   const createFormTemplateMutation = useMutation({
@@ -104,6 +119,7 @@ export const FormButtons = ({
             y_coordinate: field.position.y,
             width: field.position.width,
             height: field.position.height,
+            page: parseInt(page),
           });
         });
       }
@@ -176,6 +192,17 @@ export const FormButtons = ({
     });
 
     router.push(submitLink);
+  };
+
+  const __submitSignedForm = async () => {
+    if (!review) {
+      // modify PDF to show in review box
+      console.log('entered before await');
+      await updatePDF();
+      console.log('entered after await');
+      router.push(submitLink);
+      return;
+    }
   };
 
   return (
@@ -251,10 +278,12 @@ export const FormButtons = ({
           marginLeft="12px"
           marginRight="36px"
           onClick={() => {
-            if (isFormTemplate) {
+            if (type == FormInteractionType.CreateFormTemplate) {
               _submitFormTemplate();
-            } else {
+            } else if (type == FormInteractionType.CreateFormInstance) {
               _submitFormInstance();
+            } else {
+              __submitSignedForm();
             }
           }}
         >

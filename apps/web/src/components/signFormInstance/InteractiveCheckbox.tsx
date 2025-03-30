@@ -1,16 +1,25 @@
 import { Rnd } from 'react-rnd';
 import { TextFieldPosition } from '../createFormTemplate/types';
 import { Checkbox } from '@chakra-ui/react';
+import { useSignFormInstance } from '../../hooks/useSignFormInstance';
+import { useCallback } from 'react';
 
 export default function InteractiveCheckbox({
   color,
   currentPosition,
   highlighted,
+  pageNum,
+  id,
 }: {
   color: string;
   currentPosition: TextFieldPosition;
   highlighted: boolean;
+  pageNum: number;
+  id: string;
 }) {
+  const { fields, setFields } = useSignFormInstance();
+  const { updateField } = useSignFormInstance();
+
   return (
     <Rnd
       lockAspectRatio={true}
@@ -41,7 +50,11 @@ export default function InteractiveCheckbox({
         justifyContent: 'flex-end',
       }}
     >
-      <Checkbox.Control />
+      <Checkbox.Root
+        onCheckedChange={(val) => updateField(pageNum, id, val.checked)}
+      >
+        <Checkbox.Control />
+      </Checkbox.Root>
     </Rnd>
   );
 }

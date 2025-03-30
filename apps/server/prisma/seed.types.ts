@@ -33,6 +33,7 @@ export type TemplateBoxData = {
   y_coordinate: number;
   width: number;
   height: number;
+  page: number;
 };
 
 export type FieldGroupData = {

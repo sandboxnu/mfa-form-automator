@@ -52,7 +52,7 @@ export type EmployeeEntity = {
 export type CreateEmployeeDto = {
   firstName: string;
   lastName: string;
-  positionId?: string;
+  positionId?: string | null;
   email: string;
   password: string;
   scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
@@ -66,7 +66,7 @@ export type OnboardEmployeeDto = {
 export type UpdateEmployeeDto = {
   firstName?: string;
   lastName?: string;
-  positionId?: string;
+  positionId?: string | null;
   scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
 };
 
@@ -137,6 +137,7 @@ export type CreateTemplateBoxDto = {
   y_coordinate: number;
   width: number;
   height: number;
+  page: number;
 };
 
 export type CreateFieldGroupDto = {
@@ -159,6 +160,7 @@ export type TemplateBoxBaseEntity = {
   y_coordinate: number;
   width: number;
   height: number;
+  page: number;
   createdAt: string;
   updatedAt: string;
   fieldGroupId: string;

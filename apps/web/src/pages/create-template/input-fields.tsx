@@ -1,9 +1,10 @@
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormEditor } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { Box } from '@chakra-ui/react';
 import isAuth from '@web/components/isAuth';
 import { Scope } from '@web/client';
+import { FormInteractionType } from '@web/components/createForm/types';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -20,8 +21,8 @@ function InputFields() {
   } = useCreateFormTemplate();
 
   return (
-    <CreateFormLayout
-      isFormTemplate={true}
+    <FormLayout
+      type={FormInteractionType.CreateFormTemplate}
       pageNumber={3}
       heading={'Create form template'}
       subheading={

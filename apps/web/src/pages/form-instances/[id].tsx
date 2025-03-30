@@ -1,22 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
-import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/react-query.gen';
+import { Box } from '@chakra-ui/react';
 import { FieldType } from '@web/components/createFormTemplate/types';
+import { FormLayout } from '@web/components/createForm/FormLayout';
+import { FormInteractionType } from '@web/components/createForm/types';
+import FormLoading from '@web/components/FormLoading';
 import isAuth from '@web/components/isAuth';
 import EditableFieldFactory from '@web/components/signFormInstance/EditableFieldFactory';
 import { PDFDisplayed } from '@web/components/signFormInstance/PDFDisplayed';
-import { useAuth } from '@web/hooks/useAuth';
+import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 import ErrorComponent from './../../components/Error';
-import FormLoading from './../../components/FormLoading';
-import { Box } from '@chakra-ui/react';
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
-import { SignFormLayout } from '@web/components/signFormInstance/SignFormLayout';
+import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
-/**
- * @returns a view of a form instance
- */
-function FormInstanceView() {
+export function SignFormPage() {
   const groupColors = [
     ['#1367EA', '#EEF5FF'],
     ['#BD21CA', '#FDEAFF'],
@@ -26,46 +21,29 @@ function FormInstanceView() {
   ];
   const router = useRouter();
   const { id } = router.query;
-  const { user } = useAuth();
 
-  const {
-    data: formInstance,
-    error: formInstanceError,
-    isLoading,
-  } = useQuery({
-    ...formInstancesControllerFindOneOptions({
-      path: {
-        id: String(id),
-      },
-    }),
-    enabled: !!id,
-  });
+  const { formInstance, isLoading, formInstanceError, fields, groupNumber } =
+    useSignFormInstance();
 
-  const FieldBoxes = formInstance?.assignedGroups.map((assignedGroup) => {
-    if (
-      assignedGroup.signerDepartmentId == user?.departmentId ||
-      assignedGroup.signerEmployeeId == user?.id ||
-      assignedGroup.signerPositionId == user?.positionId
-    ) {
-      return assignedGroup.fieldGroup.templateBoxes.map((templateBox) => {
-        return (
-          <EditableFieldFactory
-            key={templateBox.id}
-            type={templateBox.type as FieldType}
-            currentPosition={{
-              x: templateBox.x_coordinate,
-              y: templateBox.y_coordinate,
-              width: templateBox.width,
-              height: templateBox.height,
-            }}
-            highlighted={false}
-            color={groupColors[assignedGroup.order][1]}
-          />
-        );
-      });
-    } else {
-      return [];
-    }
+  const FieldBoxes = fields.map((page, index) => {
+    return page.map((templateBox) => {
+      return (
+        <EditableFieldFactory
+          pageNum={templateBox.page}
+          id={templateBox.id}
+          key={templateBox.id}
+          type={templateBox.type as FieldType}
+          currentPosition={{
+            x: templateBox.x_coordinate,
+            y: templateBox.y_coordinate,
+            width: templateBox.width,
+            height: templateBox.height,
+          }}
+          highlighted={false}
+          color={groupColors[groupNumber][1]}
+        />
+      );
+    });
   });
 
   if (isLoading) {
@@ -74,11 +52,11 @@ function FormInstanceView() {
   return (
     <>
       {formInstance && !formInstanceError ? (
-        <SignFormLayout
+        <FormLayout
+          pageNumber={1}
+          type={FormInteractionType.SignFormInstance}
           heading={'Sign MFA Oracle Logon Request Form'}
-          subheading={
-            'Click the highlighted spaces to sign the form'
-          }
+          subheading={'Click the highlighted spaces to sign the form'}
           boxContent={
             <Box width="100%">
               <PDFDisplayed
@@ -88,9 +66,9 @@ function FormInstanceView() {
               />
             </Box>
           }
+          submitLink={`/form-instances/review/${id}`}
+          backLink={'/'}
           deleteFunction={() => {}}
-          submitLink={''}
-          backLink={''}
           disabled={false}
         />
       ) : (
@@ -99,5 +77,5 @@ function FormInstanceView() {
     </>
   );
 }
-// TODO: This should be restricted
-export default isAuth(FormInstanceView, []);
+
+export default isAuth(SignFormPage, []);

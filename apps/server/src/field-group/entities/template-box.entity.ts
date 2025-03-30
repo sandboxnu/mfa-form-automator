@@ -21,6 +21,9 @@ export class TemplateBoxBaseEntity implements TemplateBox {
   @ApiProperty()
   height: number;
 
+  @ApiProperty()
+  page: number;
+
   @Exclude()
   fieldGroupId: string;
 

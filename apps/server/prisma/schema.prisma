@@ -128,6 +128,7 @@ model TemplateBox {
   updatedAt    DateTime              @updatedAt
   width       Int                   @db.Integer
   height      Int                   @db.Integer
+  page        Int                   @db.Integer
   fieldGroup   FieldGroup    @relation(fields: [fieldGroupId], references: [id])
   fieldGroupId String        @db.Uuid
   InstanceBox  InstanceBox[]

@@ -2,17 +2,22 @@ import { Textarea } from '@chakra-ui/react';
 import { Rnd } from 'react-rnd';
 import { TextFieldPosition } from '../createFormTemplate/types';
 import { useState } from 'react';
+import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 
 export default function TextField({
   color,
   currentPosition,
   highlighted,
+  pageNum,
+  id,
 }: {
   color: string;
   currentPosition: TextFieldPosition;
   highlighted: boolean;
+  pageNum: number;
+  id: string;
 }) {
-  const [value, setValue] = useState<string>();
+  const { updateField } = useSignFormInstance();
   return (
     <Rnd
       bounds="parent"
@@ -45,14 +50,13 @@ export default function TextField({
     >
       <Textarea
         lineHeight={'normal'}
-        value={value}
         scrollMarginBlockStart={'100px'}
         width={'100%'}
         border={'none'}
         height={'100%'}
         resize={'none'}
         onChange={(e) => {
-          setValue(e.currentTarget.value);
+          updateField(pageNum, id, e.target.value);
         }}
       ></Textarea>
     </Rnd>
