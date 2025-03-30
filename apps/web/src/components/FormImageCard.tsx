@@ -25,6 +25,7 @@ export const FormImageCard = ({
   return (
     <Box
       width="272px"
+      minW="272px"
       paddingBottom="10px"
       borderRadius="8px"
       backgroundColor="#FFFFFF"
