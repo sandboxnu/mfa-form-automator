@@ -78,6 +78,7 @@ export class FormInstancesService {
         }
       }
     }
+    return true;
   }
 
   /**
@@ -388,7 +389,7 @@ export class FormInstancesService {
    * @returns the selected form instance, hydrated
    */
   async findOne(id: string) {
-    const formInstance = await this.prisma.formInstance.findFirst({
+    const formInstance = await this.prisma.formInstance.findFirstOrThrow({
       where: {
         id: id,
       },
@@ -420,6 +421,9 @@ export class FormInstancesService {
                 templateBoxes: true,
               },
             },
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
       },
@@ -531,12 +535,6 @@ export class FormInstancesService {
     if (!formInstance) {
       throw new NotFoundException(
         FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
-      );
-    }
-
-    if (!signFormInstanceDto.file) {
-      throw new BadRequestException(
-        FormInstanceErrorMessage.FORM_INSTANCE_NO_SIGNED_PDF_PROVIDED,
       );
     }
 

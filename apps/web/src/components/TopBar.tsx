@@ -12,6 +12,8 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '../components/ui/popover';
+import { Scope } from '@web/client/types.gen.ts';
+
 /**
  * @returns the top bar of the application
  */
@@ -85,6 +87,13 @@ export const TopBar: React.FC = () => {
                   {user?.firstName && user?.lastName
                     ? user.firstName + ' ' + user.lastName
                     : 'Firstname Lastname'}
+                </Text>
+                <Text color="#888888" fontSize="18px" cursor="default" pt="8px">
+                  {user?.scope === Scope.ADMIN
+                    ? 'Administrator'
+                    : user?.scope === Scope.CONTRIBUTOR
+                    ? 'Contributor'
+                    : 'Viewer'}
                 </Text>
                 <Text color="#888888" fontSize="18px" cursor="default" pt="8px">
                   {userPosition && userPosition.name

@@ -21,7 +21,7 @@ export class EmployeesService {
         email: createEmployeeDto.email,
         pswdHash: await bcrypt.hash(
           createEmployeeDto.password,
-          await bcrypt.genSalt(),
+          await bcrypt.genSalt(Number(process.env.SALT_ROUNDS) || 10),
         ),
         scope: createEmployeeDto.scope,
       },
@@ -33,10 +33,6 @@ export class EmployeesService {
         },
       },
     });
-    newEmployee.pswdHash = bcrypt.hashSync(
-      createEmployeeDto.password,
-      Number(process.env.SALT_ROUNDS) || 10,
-    );
     return newEmployee;
   }
 
@@ -105,7 +101,7 @@ export class EmployeesService {
    * @returns the selected employee, hydrated
    */
   async findOneWithRefresh(id: string, refreshToken: string) {
-    const employee = await this.prisma.employee.findFirst({
+    const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         AND: [{ id: id }, { refreshToken: refreshToken }],
       },
