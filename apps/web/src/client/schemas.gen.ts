@@ -482,6 +482,9 @@ export const CreateFormTemplateDtoSchema = {
         $ref: '#/components/schemas/CreateFieldGroupDto',
       },
     },
+    disabled: {
+      type: 'boolean',
+    },
   },
   required: [
     'file',
@@ -489,7 +492,7 @@ export const CreateFormTemplateDtoSchema = {
     'description',
     'pageWidth',
     'pageHeight',
-    'fieldGroups',
+    'fieldGroups', 'disabled',
   ],
 } as const;
 
@@ -607,6 +610,9 @@ export const FormTemplateBaseEntitySchema = {
       type: 'string',
       nullable: true,
     },
+    disabled: {
+      type: 'boolean',
+    },
     createdAt: {
       format: 'date-time',
       type: 'string',
@@ -623,6 +629,7 @@ export const FormTemplateBaseEntitySchema = {
     'pageHeight',
     'formDocLink',
     'description',
+    'disabled',
     'createdAt',
     'updatedAt',
   ],
@@ -842,6 +849,9 @@ export const FormTemplateEntitySchema = {
       type: 'string',
       nullable: true,
     },
+    disabled: {
+      type: 'boolean',
+    },
     fieldGroups: {
       type: 'array',
       items: {
@@ -870,6 +880,7 @@ export const FormTemplateEntitySchema = {
     'pageHeight',
     'formDocLink',
     'description',
+    'disabled',
     'fieldGroups',
     'formInstances',
     'createdAt',
@@ -889,6 +900,9 @@ export const UpdateFormTemplateDtoSchema = {
     },
     description: {
       type: 'string',
+    },
+    disabled: {
+      type: 'boolean',
     },
     pageWidth: {
       type: 'number',

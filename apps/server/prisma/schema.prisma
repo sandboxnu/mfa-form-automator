@@ -95,6 +95,7 @@ model FormTemplate {
   description String?  @db.Text()
   pageWidth   Int      @db.Integer()
   pageHeight  Int      @db.Integer()
+  disabled    Boolean  @default(false) 
 
   fieldGroups   FieldGroup[]
   formInstances FormInstance[]
