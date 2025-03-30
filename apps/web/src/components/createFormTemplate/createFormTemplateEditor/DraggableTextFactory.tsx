@@ -54,7 +54,7 @@ export default function DraggableTextFactory({
           highlighted={highlighted}
         />
       );
-    default:
+    case FieldType.TEXT_FIELD:
       return (
         <TextField
           onStop={onStop}
@@ -67,5 +67,7 @@ export default function DraggableTextFactory({
           highlighted={highlighted}
         />
       );
+    default:
+      throw new Error(`Unknown field type: ${type}`);
   }
 }
