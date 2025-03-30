@@ -198,6 +198,7 @@ export const AuthProvider = ({ children }: any) => {
         account: instance.getAllAccounts()[0],
       });
       const profileData = await callMsGraph(response.accessToken);
+      console.log(profileData);
       return profileData;
     } catch (error) {
       console.error('Error fetching profile data:', error);
