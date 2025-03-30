@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -24,8 +21,13 @@ enum SignatureBoxFieldType {
   TEXT_FIELD
 }
 
+// `EmployeeScope` represent the various access levels an employee can have.
+// BASE_USER: Can be assigned forms and can sign forms
+// CONTRIBUTOR: Can create form instances and assign employees to sign form instances
+// ADMIN: Can create form templates (as well as instances) and manage employee details in employee directory
 enum EmployeeScope {
   BASE_USER
+  CONTRIBUTOR
   ADMIN
 }
 
@@ -52,7 +54,7 @@ model Position {
   assignedGroups AssignedGroup[]
   employees      Employee[]
 
-  department   Department @relation(fields: [departmentId], references: [id])
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId String     @db.Uuid
 
   @@unique([name, departmentId])
@@ -90,6 +92,7 @@ model FormTemplate {
   formDocLink String   @db.VarChar(255)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  description String?  @db.Text()
 
   fieldGroups   FieldGroup[]
   formInstances FormInstance[]
@@ -109,7 +112,7 @@ model FieldGroup {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  formTemplate   FormTemplate    @relation(fields: [formTemplateId], references: [id])
+  formTemplate   FormTemplate    @relation(fields: [formTemplateId], references: [id], onDelete: Cascade)
   formTemplateId String          @db.Uuid
   templateBoxes  TemplateBox[]
   assignedGroups AssignedGroup[]
@@ -144,6 +147,7 @@ model FormInstance {
   markedCompleted   Boolean   @default(false)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+  description       String?   @db.Text()
   completedAt       DateTime?
   markedCompletedAt DateTime?
 
@@ -189,10 +193,10 @@ model AssignedGroup {
   signingEmployeeId  String?     @db.Uuid
   signerType         SignerType
 
-  formInstance   FormInstance  @relation(fields: [formInstanceId], references: [id])
+  formInstance   FormInstance  @relation(fields: [formInstanceId], references: [id], onDelete: Cascade)
   formInstanceId String        @db.Uuid
   instanceBoxes  InstanceBox[]
-  fieldGroup     FieldGroup    @relation(fields: [fieldGroupId], references: [id])
+  fieldGroup     FieldGroup    @relation(fields: [fieldGroupId], references: [id], onDelete: Cascade)
   fieldGroupId   String        @db.Uuid
 }
 
@@ -202,8 +206,8 @@ model InstanceBox {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  assignedGroup   AssignedGroup @relation(fields: [assignedGroupId], references: [id])
+  assignedGroup   AssignedGroup @relation(fields: [assignedGroupId], references: [id], onDelete: Cascade)
   assignedGroupId String        @db.Uuid
-  templateBox     TemplateBox   @relation(fields: [templateBoxId], references: [id])
+  templateBox     TemplateBox   @relation(fields: [templateBoxId], references: [id], onDelete: Cascade)
   templateBoxId   String        @db.Uuid
 }

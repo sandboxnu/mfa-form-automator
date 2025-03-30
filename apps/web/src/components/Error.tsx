@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorIcon } from 'apps/web/src/static/icons';
+import { ErrorIcon } from 'apps/web/src/static/icons.tsx';
 
 /**
  * @returns an error message when the page fails to load the forms

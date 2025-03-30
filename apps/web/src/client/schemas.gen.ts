@@ -111,7 +111,7 @@ export const EmployeeEntitySchema = {
     },
     scope: {
       type: 'string',
-      enum: ['BASE_USER', 'ADMIN'],
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
     position: {
       nullable: true,
@@ -181,7 +181,7 @@ export const CreateEmployeeDtoSchema = {
     },
     scope: {
       type: 'string',
-      enum: ['BASE_USER', 'ADMIN'],
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
   },
   required: ['firstName', 'lastName', 'email', 'password', 'scope'],
@@ -215,7 +215,7 @@ export const UpdateEmployeeDtoSchema = {
     },
     scope: {
       type: 'string',
-      enum: ['BASE_USER', 'ADMIN'],
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
   },
 } as const;
@@ -255,7 +255,7 @@ export const EmployeeBaseEntitySchema = {
     },
     scope: {
       type: 'string',
-      enum: ['BASE_USER', 'ADMIN'],
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
     positionId: {
       type: 'string',
@@ -436,6 +436,9 @@ export const CreateFormTemplateDtoSchema = {
     name: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+    },
     fieldGroups: {
       minItems: 1,
       type: 'array',
@@ -444,7 +447,7 @@ export const CreateFormTemplateDtoSchema = {
       },
     },
   },
-  required: ['file', 'name', 'fieldGroups'],
+  required: ['file', 'name', 'description', 'fieldGroups'],
 } as const;
 
 export const TemplateBoxBaseEntitySchema = {
@@ -539,6 +542,10 @@ export const FormTemplateBaseEntitySchema = {
     formDocLink: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+      nullable: true,
+    },
     createdAt: {
       format: 'date-time',
       type: 'string',
@@ -548,7 +555,14 @@ export const FormTemplateBaseEntitySchema = {
       type: 'string',
     },
   },
-  required: ['id', 'name', 'formDocLink', 'createdAt', 'updatedAt'],
+  required: [
+    'id',
+    'name',
+    'formDocLink',
+    'description',
+    'createdAt',
+    'updatedAt',
+  ],
 } as const;
 
 export const AssignedGroupEntitySchema = {
@@ -649,11 +663,21 @@ export const AssignedGroupEntitySchema = {
     'fieldGroupId',
     'order',
     'signed',
+    'signedDocLink',
     'createdAt',
     'updatedAt',
+    'signerPositionId',
+    'signerDepartmentId',
+    'signerEmployeeId',
+    'signingEmployeeId',
     'signerType',
     'formInstanceId',
     'fieldGroup',
+    'signingEmployee',
+    'signerPosition',
+    'signerDepartment',
+    'signerEmployee',
+    'signerEmployeeList',
   ],
 } as const;
 
@@ -665,6 +689,10 @@ export const FormInstanceEntitySchema = {
     },
     name: {
       type: 'string',
+    },
+    description: {
+      type: 'string',
+      nullable: true,
     },
     formDocLink: {
       type: 'string',
@@ -715,6 +743,7 @@ export const FormInstanceEntitySchema = {
   required: [
     'id',
     'name',
+    'description',
     'formDocLink',
     'completed',
     'markedCompleted',
@@ -739,6 +768,10 @@ export const FormTemplateEntitySchema = {
     },
     formDocLink: {
       type: 'string',
+    },
+    description: {
+      type: 'string',
+      nullable: true,
     },
     fieldGroups: {
       type: 'array',
@@ -765,6 +798,7 @@ export const FormTemplateEntitySchema = {
     'id',
     'name',
     'formDocLink',
+    'description',
     'fieldGroups',
     'formInstances',
     'createdAt',
@@ -780,6 +814,9 @@ export const UpdateFormTemplateDtoSchema = {
       format: 'binary',
     },
     name: {
+      type: 'string',
+    },
+    description: {
       type: 'string',
     },
   },
@@ -842,6 +879,9 @@ export const CreateFormInstanceDtoSchema = {
     name: {
       type: 'string',
     },
+    description: {
+      type: 'string',
+    },
     assignedGroups: {
       minItems: 1,
       type: 'array',
@@ -861,6 +901,7 @@ export const CreateFormInstanceDtoSchema = {
   },
   required: [
     'name',
+    'description',
     'assignedGroups',
     'originatorId',
     'formTemplateId',
@@ -872,6 +913,9 @@ export const UpdateFormInstanceDtoSchema = {
   type: 'object',
   properties: {
     name: {
+      type: 'string',
+    },
+    description: {
       type: 'string',
     },
     formDocLink: {

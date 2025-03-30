@@ -30,6 +30,7 @@ export type PositionBaseEntity = {
 
 export enum Scope {
   BASE_USER = 'BASE_USER',
+  CONTRIBUTOR = 'CONTRIBUTOR',
   ADMIN = 'ADMIN',
 }
 
@@ -39,7 +40,7 @@ export type EmployeeEntity = {
   lastName: string;
   email: string;
   signatureLink: string | null;
-  scope: 'BASE_USER' | 'ADMIN';
+  scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
   position: PositionBaseEntity | null;
   positionId: string | null;
   pswdHash: string | null;
@@ -54,7 +55,7 @@ export type CreateEmployeeDto = {
   positionId?: string;
   email: string;
   password: string;
-  scope: 'BASE_USER' | 'ADMIN';
+  scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
 };
 
 export type OnboardEmployeeDto = {
@@ -66,7 +67,7 @@ export type UpdateEmployeeDto = {
   firstName?: string;
   lastName?: string;
   positionId?: string;
-  scope?: 'BASE_USER' | 'ADMIN';
+  scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
 };
 
 export type CreatePositionDto = {
@@ -80,7 +81,7 @@ export type EmployeeBaseEntity = {
   lastName: string;
   email: string;
   signatureLink: string | null;
-  scope: 'BASE_USER' | 'ADMIN';
+  scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
   positionId: string | null;
   pswdHash: string | null;
   createdAt: string;
@@ -145,6 +146,7 @@ export type CreateFieldGroupDto = {
 export type CreateFormTemplateDto = {
   file: Blob | File;
   name: string;
+  description: string;
   fieldGroups: Array<CreateFieldGroupDto>;
 };
 
@@ -172,6 +174,7 @@ export type FormTemplateBaseEntity = {
   id: string;
   name: string;
   formDocLink: string;
+  description: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -181,26 +184,27 @@ export type AssignedGroupEntity = {
   fieldGroupId: string;
   order: number;
   signed: boolean;
-  signedDocLink?: string | null;
+  signedDocLink: string | null;
   createdAt: string;
   updatedAt: string;
-  signerPositionId?: string | null;
-  signerDepartmentId?: string | null;
-  signerEmployeeId?: string | null;
-  signingEmployeeId?: string | null;
+  signerPositionId: string | null;
+  signerDepartmentId: string | null;
+  signerEmployeeId: string | null;
+  signingEmployeeId: string | null;
   signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
   formInstanceId: string;
   fieldGroup: FieldGroupBaseEntity;
-  signingEmployee?: EmployeeBaseEntity | null;
-  signerPosition?: PositionBaseEntity | null;
-  signerDepartment?: DepartmentEntity | null;
-  signerEmployee?: EmployeeBaseEntity | null;
-  signerEmployeeList?: Array<EmployeeBaseEntity> | null;
+  signingEmployee: EmployeeBaseEntity | null;
+  signerPosition: PositionBaseEntity | null;
+  signerDepartment: DepartmentEntity | null;
+  signerEmployee: EmployeeBaseEntity | null;
+  signerEmployeeList: Array<EmployeeBaseEntity> | null;
 };
 
 export type FormInstanceEntity = {
   id: string;
   name: string;
+  description: string | null;
   formDocLink: string;
   completed: boolean;
   markedCompleted: boolean;
@@ -219,6 +223,7 @@ export type FormTemplateEntity = {
   id: string;
   name: string;
   formDocLink: string;
+  description: string | null;
   fieldGroups: Array<FieldGroupBaseEntity>;
   formInstances: Array<FormInstanceEntity>;
   createdAt: string;
@@ -228,6 +233,7 @@ export type FormTemplateEntity = {
 export type UpdateFormTemplateDto = {
   file?: Blob | File;
   name?: string;
+  description?: string;
 };
 
 export type CreateDepartmentDto = {
@@ -250,6 +256,7 @@ export type CreateAssignedGroupDto = {
 
 export type CreateFormInstanceDto = {
   name: string;
+  description: string;
   assignedGroups: Array<CreateAssignedGroupDto>;
   originatorId: string;
   formTemplateId: string;
@@ -258,6 +265,7 @@ export type CreateFormInstanceDto = {
 
 export type UpdateFormInstanceDto = {
   name?: string;
+  description?: string;
   formDocLink?: string;
 };
 

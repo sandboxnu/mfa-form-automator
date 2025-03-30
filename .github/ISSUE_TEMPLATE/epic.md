@@ -2,9 +2,8 @@
 name: Epic
 about: Create larger project that can be broken down into several tasks
 title: "[EPIC]"
-labels: ''
-assignees: ''
-
+labels: ""
+assignees: ""
 ---
 
 **Description**

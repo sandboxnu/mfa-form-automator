@@ -6,6 +6,7 @@ const nextConfig = {
       '.js': ['.tsx', '.ts', '.jsx', '.js'],
     },
     turbo: {},
+    optimizePackageImports: ['@chakra-ui/react'],
   },
   reactStrictMode: true,
   env: {
@@ -17,4 +18,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

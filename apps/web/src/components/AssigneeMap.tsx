@@ -1,7 +1,8 @@
-import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
-import { AwaitingIcon, CheckIcon } from 'apps/web/src/static/icons';
-import { AvatarMapProps } from './types';
-import { SignerType } from '@web/client';
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { AwaitingIcon, CheckIcon } from 'apps/web/src/static/icons.tsx';
+import { AvatarMapProps } from './types.ts';
+import { SignerType } from '@web/client/types.gen.ts';
+import { Avatar } from './ui/avatar.tsx';
 
 /**
  * @param assignees - an array of assignees
@@ -27,7 +28,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
   };
 
   return (
-    <Flex flexDirection="column" gap="24px">
+    <Flex flexDirection="column" gap="24px" position="relative">
       {assignees.map((assignee, index) => {
         const awaiting = previousSigned && !assignee.signed;
         previousSigned = assignee.signed;
@@ -42,7 +43,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 )}
                 boxSize="32px"
                 padding="6px 7px"
-                size="16px"
+                size="md"
                 color="#0C0C0C"
                 bg={
                   assignee.signed ? '#D1F0D4' : awaiting ? '#FFF2D9' : '#E5E5E5'

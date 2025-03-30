@@ -1,21 +1,18 @@
+import { Box, IconButton, Text, Flex, Spacer, Button } from '@chakra-ui/react';
+import { MFALogoIcon, UserProfileAvatar } from 'apps/web/src/static/icons.tsx';
+import { useAuth } from '@web/hooks/useAuth.ts';
+import { useQuery } from '@tanstack/react-query';
+import { AzureSignout } from './AzureSignout.tsx';
+import { SignOut } from './SignOut.tsx';
+import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen.ts';
 import {
-  Box,
-  IconButton,
-  Text,
-  Flex,
-  Spacer,
-  Popover,
   PopoverBody,
   PopoverContent,
+  PopoverRoot,
+  PopoverTitle,
   PopoverTrigger,
-  Divider,
-} from '@chakra-ui/react';
-import { MFALogoIcon, UserProfileAvatar } from 'apps/web/src/static/icons';
-import { useAuth } from '@web/hooks/useAuth';
-import { useQuery } from '@tanstack/react-query';
-import { AzureSignout } from './AzureSignout';
-import { SignOut } from './SignOut';
-import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
+} from '../components/ui/popover';
+import { Scope } from '@web/client/types.gen.ts';
 
 /**
  * @returns the top bar of the application
@@ -48,7 +45,6 @@ export const TopBar: React.FC = () => {
     >
       <Box minWidth={302}>
         <Flex px="8" py="5" align="left">
-          {/* Triangle */}
           <Box
             width="0"
             height="0"
@@ -62,49 +58,56 @@ export const TopBar: React.FC = () => {
         </Flex>
       </Box>
       <Spacer />
-
       <Flex align="center" pl="10" mr="32px">
-        <Popover placement="bottom-end" closeOnBlur={true}>
-          <PopoverTrigger>
+        <PopoverRoot positioning={{ placement: 'bottom-end' }}>
+          <PopoverTrigger asChild>
             <button>
               <Flex align="center">
                 <IconButton
                   aria-label="Visit profile"
-                  icon={
-                    user?.firstName && user?.lastName ? (
-                      <UserProfileAvatar
-                        firstName={user.firstName}
-                        lastName={user.lastName}
-                      />
-                    ) : (
-                      <UserProfileAvatar firstName="Default" lastName="User" />
-                    )
-                  }
                   colorScheme="none"
-                />
+                  background="white"
+                >
+                  {user?.firstName && user?.lastName ? (
+                    <UserProfileAvatar
+                      firstName={user.firstName}
+                      lastName={user.lastName}
+                    />
+                  ) : (
+                    <UserProfileAvatar firstName="Default" lastName="User" />
+                  )}
+                </IconButton>
               </Flex>
             </button>
           </PopoverTrigger>
           <PopoverContent maxW="288px">
-            <PopoverBody borderRadius="6px" p="0">
+            <PopoverBody divideX="2px" borderRadius="6px" mb="14px">
               <Box pl="24px" pb="14px">
                 <Text fontSize="18px" cursor="default" pt="18px">
                   {user?.firstName && user?.lastName
                     ? user.firstName + ' ' + user.lastName
                     : 'Firstname Lastname'}
                 </Text>
-                <Text color="#888888" fontSize="18px" cursor="default">
+                <Text color="#888888" fontSize="18px" cursor="default" pt="8px">
+                  {user?.scope === Scope.ADMIN
+                    ? 'Administrator'
+                    : user?.scope === Scope.CONTRIBUTOR
+                    ? 'Contributor'
+                    : 'Viewer'}
+                </Text>
+                <Text color="#888888" fontSize="18px" cursor="default" pt="8px">
                   {userPosition && userPosition.name
                     ? userPosition.name
                     : 'Position'}
                 </Text>
               </Box>
-              <Divider />
-              <AzureSignout />
-              <SignOut />
+              <Box w="100%">
+                <AzureSignout />
+                <SignOut />
+              </Box>
             </PopoverBody>
           </PopoverContent>
-        </Popover>
+        </PopoverRoot>
       </Flex>
     </Flex>
   );

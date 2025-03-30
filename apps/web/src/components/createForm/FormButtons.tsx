@@ -41,6 +41,7 @@ export const FormButtons = ({
 
   const {
     formTemplateName,
+    formTemplateDescription,
     pdfFile,
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
@@ -118,9 +119,10 @@ export const FormButtons = ({
     createFormTemplateMutation
       .mutateAsync({
         body: {
-          name: formTemplateName ? formTemplateName : '',
+          name: formTemplateName ?? '',
           fieldGroups: fieldGroups,
           file: pdfFile,
+          description: formTemplateDescription ?? '',
         },
       })
       .then((response) => {
@@ -136,12 +138,18 @@ export const FormButtons = ({
    * Updates form instance with the selected form template, form name, and signature positions
    */
   const _submitFormInstance = async () => {
-    if (!formTemplate || !assignedGroupData || disabled || !user) {
+    if (!review) {
+      router.push(submitLink);
       return;
     }
 
-    if (!review) {
-      router.push(submitLink);
+    if (
+      !formTemplate ||
+      !assignedGroupData ||
+      disabled ||
+      !user ||
+      assignedGroupData.length != formTemplate.fieldGroups.length
+    ) {
       return;
     }
 
@@ -162,6 +170,7 @@ export const FormButtons = ({
         originatorId: user.id,
         formTemplateId: formTemplate.id,
         formDocLink: formTemplate.formDocLink,
+        description: formTemplate.description ?? '',
       },
     });
 
@@ -172,6 +181,8 @@ export const FormButtons = ({
     <>
       {!review ? (
         <Button
+          w="86px"
+          h="36px"
           borderRadius="6px"
           borderWidth="1.5px"
           borderStyle={'solid'}
@@ -199,6 +210,8 @@ export const FormButtons = ({
 
       <Flex float="right" justifyContent={'space-between'}>
         <Button
+          w="74px"
+          h="36px"
           borderRadius="6px"
           borderWidth="1.5px"
           borderStyle={'solid'}
@@ -222,6 +235,8 @@ export const FormButtons = ({
           </Text>
         </Button>
         <Button
+          w={review ? '209px' : '164px'}
+          h="36px"
           borderRadius="6px"
           alignContent={'center'}
           background={
@@ -236,10 +251,8 @@ export const FormButtons = ({
           marginRight="36px"
           onClick={() => {
             if (isFormTemplate) {
-              console.log('Submitting Form Template');
               _submitFormTemplate();
             } else {
-              console.log('Submitting Form Instance');
               _submitFormInstance();
             }
           }}

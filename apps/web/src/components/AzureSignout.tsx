@@ -1,8 +1,8 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
-import { useAuth } from '@web/hooks/useAuth';
-import { Flex, Text } from '@chakra-ui/react';
-import { SignoutIcon } from '@web/static/icons';
+import { useAuth } from '@web/hooks/useAuth.ts';
+import { Button, Flex, Text } from '@chakra-ui/react';
+import { SignoutIcon } from '@web/static/icons.tsx';
 
 /**
  * @returns a button that allows users to sign out of Azure
@@ -33,8 +33,8 @@ export const AzureSignout: React.FC = () => {
   };
 
   return (
-    <button onClick={handleLogout}>
-      <Flex align="center">
+    <Button background="white" onClick={handleLogout} cursor="pointer">
+      <Flex alignItems="center" justifyContent="start">
         <Text
           color="#4C658A"
           fontSize="18px"
@@ -45,8 +45,8 @@ export const AzureSignout: React.FC = () => {
         >
           Sign out with Azure
         </Text>
-        <SignoutIcon />
+        <SignoutIcon boxSize="24px" />
       </Flex>
-    </button>
+    </Button>
   );
 };

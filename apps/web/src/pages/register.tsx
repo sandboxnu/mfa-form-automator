@@ -1,4 +1,4 @@
-import { Flex, Box, Text, Select, Button } from '@chakra-ui/react';
+import { Flex, Box, Text, Button } from '@chakra-ui/react';
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
@@ -144,13 +144,18 @@ function Register() {
           </Text>
         </Box>
 
-        <Box width="100%">
+        <Flex width="100%" flexDirection="column">
           <label htmlFor="departmentDropdown">Department</label>
-          <Select
+          <select
             id="departmentDropdown"
             placeholder="Select your department"
             onChange={(e) => setCurrentDepartmentId(e.target.value)}
-            marginTop="8px"
+            style={{
+              marginTop: '8px',
+              border: '1px solid #C0C0C0',
+              borderRadius: '6px',
+              padding: '10px',
+            }}
           >
             {departmentsData?.map((department: DepartmentEntity) => (
               <option
@@ -161,17 +166,22 @@ function Register() {
                 {department.name}
               </option>
             ))}
-          </Select>
-        </Box>
+          </select>
+        </Flex>
 
-        <Box width="100%">
+        <Flex width="100%" flexDirection="column">
           <label htmlFor="positionDropdown">Position</label>
-          <Select
+          <select
             id="positionDropdown"
             placeholder="Select your position"
             onChange={(e) => setCurrentPositionId(e.target.value)}
             disabled={!currentDepartmentId}
-            marginTop="8px"
+            style={{
+              marginTop: '8px',
+              border: '1px solid #C0C0C0',
+              borderRadius: '6px',
+              padding: '10px',
+            }}
           >
             {positionsData?.map((position: PositionEntity) => (
               <option
@@ -182,8 +192,8 @@ function Register() {
                 {position.name}
               </option>
             ))}
-          </Select>
-        </Box>
+          </select>
+        </Flex>
 
         <SignaturePad
           createSignatureType={createSignatureType}
@@ -196,9 +206,13 @@ function Register() {
         <Box>
           <Button
             onClick={handleRegistration}
-            isDisabled={!(currentDepartmentId && currentPositionId)}
+            disabled={!(currentDepartmentId || currentPositionId)}
             bg="#1367EA"
             color="#FFF"
+            fontSize="16px"
+            fontWeight="500"
+            borderRadius="6px"
+            padding="10px"
           >
             Continue
           </Button>

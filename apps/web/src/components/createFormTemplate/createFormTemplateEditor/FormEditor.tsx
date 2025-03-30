@@ -1,8 +1,8 @@
 import { Box, Button, Text } from '@chakra-ui/react';
-import { Checkbox, PlusSign, TextIcon, SignatureIcon } from 'apps/web/src/static/icons';
+import { Checkbox, PlusSign, TextIcon } from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
-import { DraggableData, DraggableEvent } from 'react-draggable';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { DraggableData, DraggableEvent } from 'react-draggable';
 import { v4 as uuidv4 } from 'uuid';
 import {
   FieldGroups,
@@ -209,39 +209,43 @@ export const FormEditor = ({
               <Button
                 key={index}
                 onClick={() => setCurrentGroup(key)}
-                variant={'solid'}
-                border={'solid 1px'}
                 backgroundColor={
-                  currentGroup === key ? groupColors[index][1] : 'white'
+                  currentGroup === key ? groupColors[index][1] : '#fff'
                 }
                 borderColor={groupColors[index][0]}
-                textColor={groupColors[index][0]}
+                variant="outline"
+                borderWidth="1px"
+                padding="8px 12px"
+                color={groupColors[index][0]}
               >
                 Group {index + 1}
               </Button>
             ),
           )}
 
-          <Button
-            backgroundColor="white"
-            border="1px solid #1367EA"
-            onClick={addGroup}
-          >
-            {PlusSign}
-            <span
-              style={{
-                fontFamily: 'Hanken Grotesk',
-                fontSize: '16px',
-                color: '#1367EA',
-                fontWeight: 600,
-                lineHeight: '22px',
-                textAlign: 'left',
-                marginLeft: '6px',
-              }}
+          {groupNum < 5 && (
+            <Button
+              border="1px solid #1367EA"
+              onClick={addGroup}
+              w="120px"
+              variant="outline"
+              borderWidth="1px"
+              padding="8px 12px"
             >
-              Add group
-            </span>
-          </Button>
+              {PlusSign}
+              <span
+                style={{
+                  fontFamily: 'Hanken Grotesk',
+                  fontSize: '16px',
+                  color: '#1367EA',
+                  fontWeight: 600,
+                  lineHeight: '22px',
+                }}
+              >
+                Add group
+              </span>
+            </Button>
+          )}
         </Box>
       )}
       <Box
@@ -291,7 +295,7 @@ export const FormEditor = ({
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                isDisabled={fieldGroups.size == 0 || disableEdit}
+                disabled={fieldGroups.size == 0 || disableEdit}
                 onClick={handleAddTextField}
               >
                 <div>{TextIcon}</div>
@@ -305,7 +309,7 @@ export const FormEditor = ({
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                isDisabled={fieldGroups.size == 0 || disableEdit}
+                disabled={fieldGroups.size == 0 || disableEdit}
                 onClick={handleAddCheckbox}
               >
                 <div>{Checkbox}</div>

@@ -20,79 +20,68 @@ export const SideCreateForm = ({
     height: '28px',
   };
 
-  const Item = ({ num }: { num: number }) => {
-    const formTemplateLabels = [
-      'Upload PDF',
-      'Enter details',
-      'Add input fields',
-      'Review',
-    ];
-    const formInstanceLabels = [
-      'Select template',
-      'Edit details',
-      'Assign groups',
-      'Review',
-    ];
-    return (
-      <Flex gap="10px">
-        {curStep <= num ? <NumberCircle num={num} /> : <BlueCheck />}
-        <Text
-          color={num <= curStep ? '#010101' : '#808080'}
-          fontSize="16px"
-          fontWeight="500"
-          lineHeight="21px"
-        >
-          {isFormTemplate
-            ? formTemplateLabels[num - 1]
-            : formInstanceLabels[num - 1]}
-        </Text>
-      </Flex>
-    );
-  };
+  const formTemplateLabels = [
+    'Upload PDF',
+    'Enter details',
+    'Add input fields',
+    'Review',
+  ];
+  const formInstanceLabels = [
+    'Select template',
+    'Edit details',
+    'Assign groups',
+    'Review',
+  ];
 
-  const BlueCheck = () => {
-    return (
-      <Flex
-        width="24px"
-        height="24px"
-        padding="4px"
-        flexDirection="column"
-        justifyContent={'center'}
-        alignItems={'center'}
-        gap="10px"
-        borderRadius="40px"
-        background="#1367EA"
+  const Item = ({ num }: { num: number }) => (
+    <Flex gap="10px" alignItems="center">
+      {curStep <= num ? <NumberCircle num={num} /> : <BlueCheck />}
+      <Text
+        color={num <= curStep ? '#010101' : '#808080'}
+        fontSize="16px"
+        fontWeight="500"
+        lineHeight="21px"
       >
-        <WhiteCheck height="10px" width="12px" />
-      </Flex>
-    );
-  };
+        {isFormTemplate
+          ? formTemplateLabels[num - 1]
+          : formInstanceLabels[num - 1]}
+      </Text>
+    </Flex>
+  );
 
-  const NumberCircle = ({ num }: { num: number }) => {
-    return (
-      <Flex
-        width="24px"
-        height="24px"
-        padding="4px"
-        flexDirection="column"
-        justifyContent={'center'}
-        alignItems={'center'}
-        gap="10px"
-        borderRadius="40px"
-        border={num === curStep ? 'none' : '1px solid #A1A1A1'}
-        backgroundColor={num === curStep ? '#1367EA' : 'transparent'}
+  const BlueCheck = () => (
+    <Flex
+      width="24px"
+      height="24px"
+      justifyContent="center"
+      alignItems="center"
+      borderRadius="40px"
+      bg="#1367EA"
+    >
+      <WhiteCheck height="10px" width="12px" />
+    </Flex>
+  );
+
+  const NumberCircle = ({ num }: { num: number }) => (
+    <Flex
+      width="24px"
+      height="24px"
+      justifyContent="center"
+      alignItems="center"
+      borderRadius="40px"
+      border={num === curStep ? 'none' : '1px solid #A1A1A1'}
+      bg={num === curStep ? '#1367EA' : 'transparent'}
+    >
+      <Text
+        color={num === curStep ? 'white' : '#808080'}
+        fontSize="15px"
+        fontWeight="500"
+        lineHeight="21px"
       >
-        <Text
-          color={num === curStep ? 'white' : '#808080'}
-          fontSize="15px"
-          fontWeight={500}
-          lineHeight="21px"
-        >
-          {num}
-        </Text>
-      </Flex>
-    );
-  };
+        {num}
+      </Text>
+    </Flex>
+  );
 
   return (
     <Box
@@ -100,70 +89,42 @@ export const SideCreateForm = ({
       pos="fixed"
       top="64px"
       left="0"
-      zIndex="sticky"
+      zIndex="1000"
       h="full"
       pb="10"
-      overflowX="hidden"
-      overflowY="auto"
+      overflow="visible"
       boxShadow="1px 0px 4px #E5E5E5"
       bg="#FEFEFE"
       _dark={{
         bg: 'gray.800',
       }}
-      border="true"
-      color="inherit"
       borderRightWidth="1px"
-      width="224"
+      width="242px"
     >
       <Flex
-        alignItems={'center'}
-        justifyContent={'center'}
-        padding="24px 32px 0px 40px"
-        rounded="8px"
-        cursor="pointer"
-        color="inherit"
-        _dark={{
-          color: 'gray.400',
-        }}
-        role="group"
-        fontWeight="semibold"
-        transition=".15s ease"
-        width="242px"
+        direction="column"
+        px="32px"
+        pt="24px"
+        gap="48px"
+        alignItems="flex-start"
       >
-        <Flex
-          width="165px"
-          height="260px"
-          flexDirection="column"
-          alignItems="flex-start"
-          gap="48px"
-        >
-          <Link
-            onClick={(e) => {
-              router.push('/');
-            }}
-          >
-            <Flex alignItems={'center'} gap="8px">
-              <BlueTriangle width="7.5px" height="8.75px" />
-              <Text
-                color="#1367EA"
-                textAlign="right"
-                fontSize="15px"
-                fontWeight={500}
-              >
-                Back To Dashboard
-              </Text>
+        <Link onClick={() => router.push('/')}>
+          <Flex alignItems="center" gap="8px">
+            <BlueTriangle width="7.5px" height="8.75px" />
+            <Text color="#1367EA" fontSize="15px" fontWeight="500">
+              Back To Dashboard
+            </Text>
+          </Flex>
+        </Link>
+
+        <Box>
+          {[1, 2, 3, 4].map((num) => (
+            <Flex key={num} direction="column">
+              <Item num={num} />
+              {num < 4 && <Flex {...lineStyle} />}
             </Flex>
-          </Link>
-          <Box height="192px" flexShrink="0px" alignSelf="stretch">
-            <Item num={1} />
-            <Flex {...lineStyle}></Flex>
-            <Item num={2} />
-            <Flex {...lineStyle}></Flex>
-            <Item num={3} />
-            <Flex {...lineStyle}></Flex>
-            <Item num={4} />
-          </Box>
-        </Flex>
+          ))}
+        </Box>
       </Flex>
     </Box>
   );

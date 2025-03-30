@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { PdfStoreService } from './pdf-store.service';
-import { VercelFileStorageHandler } from './file-storage/VercelFileStorageHandler';
+import { AzureFileStorageHandler } from './file-storage/AzureFileStorageHandler';
 
 @Module({
   providers: [
     PdfStoreService,
     {
       provide: 'FileStorageHandler',
-      useClass: VercelFileStorageHandler,
+      useClass: AzureFileStorageHandler,
     },
   ],
   exports: [PdfStoreService],

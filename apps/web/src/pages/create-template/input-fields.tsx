@@ -50,4 +50,4 @@ function InputFields() {
   );
 }
 
-export default isAuth(InputFields, Scope.ADMIN);
+export default isAuth(InputFields, [Scope.ADMIN]);

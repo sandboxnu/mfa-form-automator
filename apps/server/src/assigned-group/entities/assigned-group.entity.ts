@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { AssignedGroup, SignerType } from '@prisma/client';
 import { IsDate, IsOptional, IsString } from 'class-validator';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
@@ -21,7 +21,7 @@ export class AssignedGroupBaseEntity implements AssignedGroup {
 
   @IsString()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiProperty()
   signedDocLink: string | null;
 
   @IsDate()
@@ -34,22 +34,22 @@ export class AssignedGroupBaseEntity implements AssignedGroup {
 
   @IsString()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiProperty()
   signerPositionId: string | null;
 
   @IsString()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiProperty()
   signerDepartmentId: string | null;
 
   @IsString()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiProperty()
   signerEmployeeId: string | null;
 
   @IsString()
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiProperty()
   signingEmployeeId: string | null;
 
   @ApiProperty({ enum: SignerType })
@@ -69,23 +69,23 @@ export class AssignedGroupEntity extends AssignedGroupBaseEntity {
   fieldGroup: FieldGroupBaseEntity;
 
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiProperty()
   signingEmployee: EmployeeBaseEntity | null;
 
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiProperty()
   signerPosition: PositionBaseEntity | null;
 
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiProperty()
   signerDepartment: DepartmentEntity | null;
 
   @IsOptional()
-  @ApiPropertyOptional()
+  @ApiProperty()
   signerEmployee: EmployeeBaseEntity | null;
 
   @IsOptional()
-  @ApiPropertyOptional({
+  @ApiProperty({
     type: EmployeeBaseEntity,
     isArray: true,
   })

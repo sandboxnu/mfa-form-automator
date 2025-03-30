@@ -98,7 +98,7 @@ const employees: EmployeeData[] = [
     email: 'zhang.iri@northeastern.edu',
     positionId: CHIEF_OF_STAFF_UUID,
     signatureLink: DEV_SIGNATURE_LINK,
-    scope: EmployeeScope.BASE_USER,
+    scope: EmployeeScope.CONTRIBUTOR,
   },
   {
     id: KAI_ZHENG_UUID,
@@ -162,10 +162,12 @@ const formTemplates: FormTemplateData[] = [
         ],
       },
     ],
+    description: 'IT exit form description',
   },
   {
     id: STAFFING_REQUISITION_UUID,
     name: 'Staffing Requisition',
+    description: 'Staffing Requisition description',
     formDocLink: DEV_FORM_DOC_LINK,
     fieldGroups: [
       {
@@ -199,6 +201,7 @@ const formTemplates: FormTemplateData[] = [
   {
     id: NETWORK_ADD_CHANGE_UUID,
     name: 'Network Add Change',
+    description: 'Network Add Change description',
     formDocLink: DEV_FORM_DOC_LINK,
     fieldGroups: [
       {
@@ -219,6 +222,7 @@ const formTemplates: FormTemplateData[] = [
   {
     id: MFA_ORACLE_LOGON_REQUEST_UUID,
     name: 'MFA Oracle Logon Request',
+    description: 'MFA Oracle Logon Request description',
     formDocLink: DEV_FORM_DOC_LINK,
     fieldGroups: [
       {
@@ -252,6 +256,7 @@ const formTemplates: FormTemplateData[] = [
   {
     id: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
     name: 'Hybrid and Remote Work Agreement',
+    description: 'Hybrid and Remote Work Agreement description',
     formDocLink: DEV_FORM_DOC_LINK,
     fieldGroups: [
       {
@@ -272,6 +277,7 @@ const formTemplates: FormTemplateData[] = [
   {
     id: VPN_REQUEST_UUID,
     name: 'VPN Request',
+    description: 'VPN Request description',
     formDocLink: DEV_FORM_DOC_LINK,
     fieldGroups: [
       {
@@ -292,6 +298,7 @@ const formTemplates: FormTemplateData[] = [
   {
     id: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
     name: 'Digital MFA ID Badge Request',
+    description: 'Digital MFA ID Badge Request description',
     formDocLink: DEV_FORM_DOC_LINK,
     fieldGroups: [
       {
@@ -312,6 +319,7 @@ const formTemplates: FormTemplateData[] = [
   {
     id: TRAVEL_AUTHORIZATION_UUID,
     name: 'Travel Authorization',
+    description: 'Travel Authorization description',
     formDocLink: DEV_FORM_DOC_LINK,
     fieldGroups: [
       {
@@ -335,6 +343,7 @@ const formInstances: FormInstanceData[] = [
   {
     id: uuidv4(),
     name: 'IT Exit Form Instance',
+    description: 'IT Exit Form Instance description',
     formDocLink: DEV_FORM_DOC_LINK,
     originatorId: KAI_ZHENG_UUID,
     formTemplateId: IT_EXIT_FORM_UUID,
@@ -363,6 +372,7 @@ const formInstances: FormInstanceData[] = [
   {
     id: uuidv4(),
     name: 'Staffing Requisition Form Instance',
+    description: 'Staffing Requisition Form Instance description',
     formDocLink: DEV_FORM_DOC_LINK,
     originatorId: IRIS_ZHANG_UUID,
     formTemplateId: STAFFING_REQUISITION_UUID,
@@ -391,6 +401,7 @@ const formInstances: FormInstanceData[] = [
   {
     id: uuidv4(),
     name: 'Network Add Change Form Instance',
+    description: 'Network Add Change Form Instance description',
     formDocLink: DEV_FORM_DOC_LINK,
     originatorId: ANSHUL_SHIRUDE_UUID,
     formTemplateId: NETWORK_ADD_CHANGE_UUID,
@@ -407,6 +418,7 @@ const formInstances: FormInstanceData[] = [
   {
     id: uuidv4(),
     name: 'MFA Oracle Logon Request Form Instance',
+    description: 'MFA Oracle Logon Request Form Instance description',
     formDocLink: DEV_FORM_DOC_LINK,
     originatorId: ANGELA_WEIGL_UUID,
     formTemplateId: MFA_ORACLE_LOGON_REQUEST_UUID,
@@ -430,6 +442,7 @@ const formInstances: FormInstanceData[] = [
   {
     id: uuidv4(),
     name: 'Hybrid and Remote Work Agreement Form Instance',
+    description: 'Hybrid and Remote Work Agreement Form Instance description',
     formDocLink: DEV_FORM_DOC_LINK,
     originatorId: ANSHUL_SHIRUDE_UUID,
     formTemplateId: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
@@ -446,6 +459,7 @@ const formInstances: FormInstanceData[] = [
   {
     id: uuidv4(),
     name: 'VPN Request Form Instance',
+    description: 'VPN Request Form Instance description',
     formDocLink: DEV_FORM_DOC_LINK,
     originatorId: IRIS_ZHANG_UUID,
     formTemplateId: VPN_REQUEST_UUID,
@@ -462,6 +476,7 @@ const formInstances: FormInstanceData[] = [
   {
     id: uuidv4(),
     name: 'Digital MFA ID Badge Request Form Instance',
+    description: 'Digital MFA ID Badge Request Form Instance description',
     formDocLink: DEV_FORM_DOC_LINK,
     originatorId: KAI_ZHENG_UUID,
     formTemplateId: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
@@ -478,6 +493,7 @@ const formInstances: FormInstanceData[] = [
   {
     id: uuidv4(),
     name: 'Travel Authorization Form Instance',
+    description: 'Travel Authorization Form Instance description',
     formDocLink: DEV_FORM_DOC_LINK,
     originatorId: ANGELA_WEIGL_UUID,
     formTemplateId: TRAVEL_AUTHORIZATION_UUID,

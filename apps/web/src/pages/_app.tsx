@@ -4,9 +4,8 @@ import '@fontsource/hanken-grotesk/800.css';
 import '@fontsource/hanken-grotesk/700.css';
 import '@fontsource/hanken-grotesk/400.css';
 import type { AppProps } from 'next/app';
-import { ChakraProvider } from '@chakra-ui/react';
+import { Provider } from '@web/components/ui/provider';
 import { Layout } from 'apps/web/src/components/Layout';
-import theme from '../styles/theme';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { AuthProvider } from './../context/AuthContext';
 import { CreateFormTemplateProvider } from '@web/context/CreateFormTemplateContext';
@@ -17,6 +16,31 @@ import { MsalProvider } from '@azure/msal-react';
 import { ReactNode, useMemo, memo } from 'react';
 import { client } from '@web/client/client.gen';
 import { CreateFormInstanceProvider } from '@web/context/CreateFormInstanceContext';
+import { appControllerRefresh } from '@web/client';
+
+client.instance.interceptors.response.use(
+  (response) => response, // Directly return successful responses.
+  async (error) => {
+    const originalRequest = error.config;
+    if (
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      error.response.config.url !== '/api/auth/refresh'
+    ) {
+      originalRequest._retry = true; // Mark the request as retried to avoid infinite loops.
+      try {
+        // Make a request to your auth server to refresh the token.
+        await appControllerRefresh();
+        return client.instance(originalRequest); // Retry the original request with the new access token.
+      } catch (refreshError) {
+        // Handle refresh token errors by clearing stored tokens and redirecting to the login page.
+        window.location.href = '/signin';
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error); // For all other errors, return the error as is.
+  },
+);
 
 export const queryClient = new QueryClient();
 const publicClientApplication = new PublicClientApplication(msalConfig);
@@ -39,7 +63,7 @@ const WrapperComponent = memo(({ children }: { children: ReactNode }) => {
       <MsalProvider instance={publicClientApplication}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <ChakraProvider theme={theme}>{children}</ChakraProvider>
+            <Provider>{children}</Provider>
           </AuthProvider>
         </QueryClientProvider>
       </MsalProvider>

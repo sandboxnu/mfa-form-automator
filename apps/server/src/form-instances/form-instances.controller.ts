@@ -40,6 +40,7 @@ import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
 import { ParseFormDataJsonPipe } from '../form-templates/form-templates.controller';
+import { ContributorAuthGuard } from '../auth/guards/contributor-auth.guard';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
@@ -50,7 +51,7 @@ export class FormInstancesController {
   ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(ContributorAuthGuard)
   @ApiCreatedResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({

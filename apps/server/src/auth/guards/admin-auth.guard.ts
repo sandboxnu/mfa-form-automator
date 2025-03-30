@@ -1,42 +1,10 @@
-import {
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Injectable } from '@nestjs/common';
 import { EmployeeScope } from '@prisma/client';
-import { Request } from 'express';
+import { TemplateAuthGuard } from './template-auth.guard';
 
 @Injectable()
-export class AdminAuthGuard extends AuthGuard('jwt') {
-  canActivate(context: ExecutionContext) {
-    // Add your custom authentication logic here
-    // for example, call super.logIn(request) to establish a session.
-    const request = context.switchToHttp().getRequest<Request>();
-    const hasToken =
-      this.isTokenInHeader(request) || this.isTokenInCookie(request);
-    if (!hasToken) {
-      throw new UnauthorizedException();
-    }
-
-    return super.canActivate(context);
-  }
-
-  handleRequest(err: any, user: any, info: any) {
-    // You can throw an exception based on either "info" or "err" arguments
-    if (err || !user || !(user.scope == EmployeeScope.ADMIN)) {
-      console.log(info);
-      throw err || new UnauthorizedException();
-    }
-    return user;
-  }
-
-  private isTokenInCookie(request: Request): boolean {
-    return 'jwt' in request.cookies;
-  }
-
-  private isTokenInHeader(request: Request): boolean {
-    const [type] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer';
+export class AdminAuthGuard extends TemplateAuthGuard {
+  constructor() {
+    super([EmployeeScope.ADMIN]);
   }
 }

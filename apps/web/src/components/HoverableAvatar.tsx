@@ -1,11 +1,5 @@
-import {
-  Avatar,
-  Popover,
-  PopoverArrow,
-  PopoverContent,
-  PopoverTrigger,
-} from '@chakra-ui/react';
-import { ProfileHover } from './ProfileHover';
+import { Avatar, Box, Portal, Tooltip } from '@chakra-ui/react';
+import { ProfileHover } from './ProfileHover.tsx';
 
 /**
  * Wraps an Avatar with a profive signature hover that shows the name of the signer
@@ -19,32 +13,42 @@ import { ProfileHover } from './ProfileHover';
 export const HoverableAvatar = ({
   name,
   signed,
-  index,
 }: {
   name: string;
   signed: boolean;
-  index: any;
 }) => {
   return (
-    <Popover trigger="hover" openDelay={800} closeDelay={0}>
-      <PopoverTrigger>
-        <Avatar
-          name={name}
-          key={index}
-          boxSize="36px"
-          backgroundColor={signed ? '#D0F0DC' : '#DCDCDC'}
-          border="1px solid #FFFFFF"
-          color="black"
-          fontWeight={400}
-          fontSize="14px"
-          size="sm"
-          cursor="pointer"
-        />
-      </PopoverTrigger>
-      <PopoverContent boxSize={'fit-content'}>
-        <PopoverArrow />
-        <ProfileHover name={name} signed={signed} />
-      </PopoverContent>
-    </Popover>
+    <Tooltip.Root>
+      <Tooltip.Trigger asChild>
+        <Box>
+          <Avatar.Root
+            boxSize="32px"
+            backgroundColor={signed ? '#D0F0DC' : '#DCDCDC'}
+            border="1px solid #FFFFFF"
+            color="black"
+            fontWeight={400}
+            fontSize="14px"
+            size="sm"
+            cursor="pointer"
+          >
+            <Avatar.Fallback name={name} />
+          </Avatar.Root>
+        </Box>
+      </Tooltip.Trigger>
+      <Portal>
+        <Tooltip.Positioner>
+          <Tooltip.Content
+            fontSize="16px"
+            fontWeight="bold"
+            p="5px"
+            color="black"
+            background="white"
+            boxSize={'fit-content'}
+          >
+            <ProfileHover name={name} signed={signed} />
+          </Tooltip.Content>
+        </Tooltip.Positioner>
+      </Portal>
+    </Tooltip.Root>
   );
 };

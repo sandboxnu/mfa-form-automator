@@ -17,14 +17,12 @@ import { appControllerRegister, OnboardEmployeeDto, Scope } from '@web/client';
 import {
   appControllerLogin,
   appControllerLogout,
+  appControllerRefresh,
   employeesControllerFindMe,
   JwtEntity,
 } from '../client';
 import { client } from '@web/client/client.gen';
-import {
-  appControllerRegisterMutation,
-  employeesControllerOnboardEmployeeMutation,
-} from '@web/client/@tanstack/react-query.gen';
+import { employeesControllerOnboardEmployeeMutation } from '@web/client/@tanstack/react-query.gen';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -37,10 +35,6 @@ export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState<User>();
   const [loadingInitial, setLoadingInitial] = useState<boolean>(true);
   const [azureUser, setAzureUser] = useState<GraphUser>();
-
-  const registerEmployeeMutation = useMutation({
-    ...appControllerRegisterMutation(),
-  });
 
   const onboardEmployeeMutation = useMutation({
     ...employeesControllerOnboardEmployeeMutation(),

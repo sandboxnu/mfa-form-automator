@@ -1,3 +1,4 @@
+import { Scope } from '@web/client/types.gen';
 import { SuccessPage } from '@web/components/createForm/SuccessPage';
 import isAuth from '@web/components/isAuth';
 import { useRouter } from 'next/router';
@@ -14,4 +15,4 @@ function Success() {
   );
 }
 
-export default isAuth(Success);
+export default isAuth(Success, [Scope.CONTRIBUTOR, Scope.ADMIN]);
