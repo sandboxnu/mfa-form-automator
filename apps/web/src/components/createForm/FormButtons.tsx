@@ -270,6 +270,7 @@ export const FormButtons = ({
           }}
           marginLeft="12px"
           marginRight="36px"
+          disabled={disabled}
           onClick={() => {
             if (isFormTemplate) {
               _submitFormTemplate();
