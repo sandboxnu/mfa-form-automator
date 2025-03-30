@@ -127,6 +127,7 @@ export const FormButtons = ({
         },
       })
       .then((response) => {
+        router.push(submitLink);
         return response;
       })
       .catch((e) => {
@@ -138,7 +139,6 @@ export const FormButtons = ({
         });
         throw e;
       });
-    router.push(submitLink);
   };
 
   /**
@@ -182,6 +182,7 @@ export const FormButtons = ({
         },
       })
       .then((response) => {
+        router.push(submitLink);
         return response;
       })
       .catch((e) => {
@@ -193,8 +194,6 @@ export const FormButtons = ({
         });
         throw e;
       });
-
-    router.push(submitLink);
   };
 
   return (
