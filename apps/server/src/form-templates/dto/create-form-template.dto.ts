@@ -6,6 +6,7 @@ import {
   IsString,
   ValidateNested,
   IsOptional,
+  IsBoolean,
 } from 'class-validator';
 import { CreateFieldGroupDto } from '../../field-group/dto/create-field-group.dto';
 import { Type } from 'class-transformer';
@@ -33,4 +34,9 @@ export class CreateFormTemplateDto {
     type: CreateFieldGroupDto,
   })
   fieldGroups: CreateFieldGroupDto[];
+
+  @IsBoolean()
+  @IsNotEmpty()
+  @ApiProperty()
+  disabled: boolean;
 }

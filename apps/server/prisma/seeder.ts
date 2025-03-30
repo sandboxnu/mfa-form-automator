@@ -180,7 +180,7 @@ export class Seeder {
   }
 
   private async upsertFormTemplate(data: FormTemplateData) {
-    const { id, name, formDocLink, description, fieldGroups } = data;
+    const { id, name, formDocLink, description, fieldGroups, disabled } = data;
 
     await this.prisma.formTemplate.upsert({
       where: { id },
@@ -209,6 +209,7 @@ export class Seeder {
             };
           }),
         },
+        disabled,
       },
     });
   }

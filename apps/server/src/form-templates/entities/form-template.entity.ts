@@ -19,6 +19,9 @@ export class FormTemplateBaseEntity implements FormTemplate {
   @ApiProperty()
   description: string | null;
 
+  @ApiProperty()
+  disabled: boolean;
+
   @Exclude()
   createdAt: Date;
 

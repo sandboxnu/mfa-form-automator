@@ -28,6 +28,9 @@ import {
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { queryClient } from './_app';
+import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
+import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -39,6 +42,13 @@ function TemplateDirectory() {
   );
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [myTemplatesOnly, setMyTemplatesOnly] = useState<boolean>(false);
+  const {
+    formTemplateName,
+    setFormTemplateName,
+    formTemplateDescription,
+    setFormTemplateDescription,
+    pdfFile,
+  } = useCreateFormTemplate();
 
   const handleSelectTemplate = async (id: string) => {
     try {
@@ -47,7 +57,6 @@ function TemplateDirectory() {
 
       const template: FormTemplateEntity = await response.json();
       setFormTemplate(template);
-      console.log('success');
     } catch (error) {
       console.error(error);
     }
@@ -75,6 +84,14 @@ function TemplateDirectory() {
     console.log('finished');
     setIsOpen(false);
     setFormTemplate(null);
+  };
+
+  const navigateToFormTemplateEditMode = () => {
+    if (!formTemplate) {
+      return;
+    }
+    setFormTemplateName(formTemplate.name);
+    router.push('/create-template/description');
   };
 
   return (
@@ -111,6 +128,7 @@ function TemplateDirectory() {
                 justifyContent={'center'}
                 alignItems="center"
                 gap="8px"
+                onClick={navigateToFormTemplateEditMode}
               >
                 <EditIcon />
                 <Text color="var(--Gray, #515151)">Edit Form</Text>
@@ -152,20 +170,6 @@ function TemplateDirectory() {
               >
                 <Text color="#FFF" fontSize={'17px'} fontWeight={'500'}>
                   All Templates
-                </Text>
-              </Button>
-              <Button
-                borderRadius="28px"
-                background={'var(--Highlight, #EEF5FF)'}
-                padding="4px 12px"
-                display={'inline-flex'}
-                height="28px"
-                _hover={{
-                  bgColor: 'var(--Highlight, #EEF5FF)',
-                }}
-              >
-                <Text fontSize={'17px'} fontWeight={'500'}>
-                  My Templates
                 </Text>
               </Button>
             </Flex>
@@ -297,4 +301,4 @@ function TemplateDirectory() {
   );
 }
 
-export default isAuth(TemplateDirectory, [Scope.CONTRIBUTOR, Scope.ADMIN]);
+export default isAuth(TemplateDirectory, [Scope.ADMIN]);

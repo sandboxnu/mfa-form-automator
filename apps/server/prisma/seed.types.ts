@@ -46,6 +46,7 @@ export type FormTemplateData = {
   formDocLink: string;
   fieldGroups: FieldGroupData[];
   description?: string;
+  disabled: boolean;
 };
 
 export type AssignedGroupData = {
