@@ -4,6 +4,7 @@ import { FieldType, TextFieldPosition } from '../types';
 import Checkbox from './CheckBox';
 import TextField from './TextField';
 import SignatureField from './SignatureField';
+import Error from '@web/components/Error';
 
 export default function DraggableTextFactory({
   onStop,
@@ -67,7 +68,7 @@ export default function DraggableTextFactory({
           highlighted={highlighted}
         />
       );
-    default:
-      throw new Error(`Unknown field type: ${type}`);
+      default: 
+      throw Error;
   }
 }
