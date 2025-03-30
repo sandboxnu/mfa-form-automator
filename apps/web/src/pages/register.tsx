@@ -11,7 +11,7 @@ import {
 } from '@web/client/@tanstack/react-query.gen';
 import isAuth from '@web/components/isAuth';
 import { useRouter } from 'next/router';
-import { toaster } from '@web/components/ui/toaster';
+import { Toaster, toaster } from '@web/components/ui/toaster';
 
 function Register() {
   const router = useRouter();
@@ -127,6 +127,7 @@ function Register() {
       alignItems="center"
       justifyContent="center"
     >
+      <Toaster />
       <Flex
         bg="#FFF"
         padding="40px 64px 40px 48px"

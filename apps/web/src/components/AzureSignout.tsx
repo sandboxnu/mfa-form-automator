@@ -3,7 +3,7 @@ import { useMsal } from '@azure/msal-react';
 import { useAuth } from '@web/hooks/useAuth.ts';
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { SignoutIcon } from '@web/static/icons.tsx';
-import { toaster } from './ui/toaster';
+import { Toaster, toaster } from './ui/toaster';
 
 /**
  * @returns a button that allows users to sign out of Azure
@@ -41,6 +41,7 @@ export const AzureSignout: React.FC = () => {
 
   return (
     <Button background="white" onClick={handleLogout} cursor="pointer">
+      <Toaster />
       <Flex alignItems="center" justifyContent="start">
         <Text
           color="#4C658A"

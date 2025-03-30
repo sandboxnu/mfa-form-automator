@@ -145,12 +145,6 @@ export const AuthProvider = ({ children }: any) => {
           return true;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to log in',
-            description: 'Please try again.',
-            type: 'error',
-            duration: 3000,
-          });
           throw e;
         });
     },
@@ -185,12 +179,6 @@ export const AuthProvider = ({ children }: any) => {
         }
       })
       .catch((error) => {
-        toaster.create({
-          title: 'Failed to log in',
-          description: 'Please try again.',
-          type: 'error',
-          duration: 3000,
-        });
         console.error(error);
       });
   }, [requestProfileDataMutation, instance, login]);
