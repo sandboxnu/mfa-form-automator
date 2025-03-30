@@ -11,6 +11,7 @@ import {
 } from '@web/client/@tanstack/react-query.gen';
 import isAuth from '@web/components/isAuth';
 import { useRouter } from 'next/router';
+import { toaster } from '@web/components/ui/toaster';
 
 function Register() {
   const router = useRouter();
@@ -107,6 +108,12 @@ function Register() {
     try {
       await completeRegistration(currentPositionId, signatureUrl);
     } catch (error) {
+      toaster.create({
+        title: 'Failed to complete onboarding',
+        description: 'Please try again.',
+        type: 'error',
+        duration: 3000,
+      });
       console.error('Error during registration:', error);
     }
   };

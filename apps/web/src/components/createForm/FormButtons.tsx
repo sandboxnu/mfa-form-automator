@@ -11,6 +11,7 @@ import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
 import { useAuth } from '@web/hooks/useAuth';
+import { toaster } from '../ui/toaster';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -129,6 +130,12 @@ export const FormButtons = ({
         return response;
       })
       .catch((e) => {
+        toaster.create({
+          title: 'Failed to create form template',
+          description: 'Please try again.',
+          type: 'error',
+          duration: 3000,
+        });
         throw e;
       });
     router.push(submitLink);

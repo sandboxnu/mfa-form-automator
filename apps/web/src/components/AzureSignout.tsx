@@ -3,6 +3,7 @@ import { useMsal } from '@azure/msal-react';
 import { useAuth } from '@web/hooks/useAuth.ts';
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { SignoutIcon } from '@web/static/icons.tsx';
+import { toaster } from './ui/toaster';
 
 /**
  * @returns a button that allows users to sign out of Azure
@@ -25,6 +26,12 @@ export const AzureSignout: React.FC = () => {
           logout();
         })
         .catch((error) => {
+          toaster.create({
+            title: 'Failed to log out',
+            description: 'Please try again.',
+            type: 'error',
+            duration: 3000,
+          });
           console.error(error);
         });
     } catch (error) {

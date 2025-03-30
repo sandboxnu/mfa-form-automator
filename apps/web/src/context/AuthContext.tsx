@@ -17,12 +17,12 @@ import { appControllerRegister, OnboardEmployeeDto, Scope } from '@web/client';
 import {
   appControllerLogin,
   appControllerLogout,
-  appControllerRefresh,
   employeesControllerFindMe,
   JwtEntity,
 } from '../client';
 import { client } from '@web/client/client.gen';
 import { employeesControllerOnboardEmployeeMutation } from '@web/client/@tanstack/react-query.gen';
+import { toaster } from './../components/ui/toaster';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -145,6 +145,12 @@ export const AuthProvider = ({ children }: any) => {
           return true;
         })
         .catch((e) => {
+          toaster.create({
+            title: 'Failed to log in',
+            description: 'Please try again.',
+            type: 'error',
+            duration: 3000,
+          });
           throw e;
         });
     },
@@ -179,6 +185,12 @@ export const AuthProvider = ({ children }: any) => {
         }
       })
       .catch((error) => {
+        toaster.create({
+          title: 'Failed to log in',
+          description: 'Please try again.',
+          type: 'error',
+          duration: 3000,
+        });
         console.error(error);
       });
   }, [requestProfileDataMutation, instance, login]);

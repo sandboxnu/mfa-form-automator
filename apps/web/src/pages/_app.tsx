@@ -17,6 +17,7 @@ import { ReactNode, useMemo, memo } from 'react';
 import { client } from '@web/client/client.gen';
 import { CreateFormInstanceProvider } from '@web/context/CreateFormInstanceContext';
 import { appControllerRefresh } from '@web/client';
+import { Toaster } from './../components/ui/toaster';
 
 client.instance.interceptors.response.use(
   (response) => response, // Directly return successful responses.
@@ -102,6 +103,7 @@ export default function App({
     return (
       <>
         <WrapperComponent>
+          <Toaster />
           <Component {...pageProps} />
         </WrapperComponent>
       </>
@@ -114,6 +116,7 @@ export default function App({
         <WrapperComponent>
           <CreateFormTemplateProvider>
             <Layout>
+              <Toaster />
               <Component {...pageProps} />
             </Layout>
           </CreateFormTemplateProvider>
@@ -128,6 +131,7 @@ export default function App({
         <WrapperComponent>
           <CreateFormInstanceProvider>
             <Layout>
+              <Toaster />
               <Component {...pageProps} />
             </Layout>
           </CreateFormInstanceProvider>
@@ -140,6 +144,7 @@ export default function App({
     <>
       <WrapperComponent>
         <Layout>
+          <Toaster />
           <Component {...pageProps} />
         </Layout>
       </WrapperComponent>
