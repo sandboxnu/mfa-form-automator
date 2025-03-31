@@ -23,11 +23,23 @@ export const SearchAndSort = ({
   setSearchQuery: (searchQuery: string) => void;
 }) => {
   const [showSearchField, setShowSearchField] = useState(false);
-  const [showButton, setShowButton] = useState(false);
+  const [showButton, setShowButton] = useState(true);
 
   return (
     <>
       <Flex alignItems="flex-end">
+        {showButton && !showSearchField && (
+          <Button
+            unstyled
+            onClick={() => setShowSearchField(!showSearchField)}
+            height="32px"
+            alignItems="center"
+            p={0}
+            pr={1}
+          >
+            <RightSearchIcon color="#595959" w="25px" h="25px" />
+          </Button>
+        )}
         <motion.div
           initial={{ width: 0, opacity: 0 }}
           animate={{
@@ -37,63 +49,39 @@ export const SearchAndSort = ({
           transition={{ duration: 0.3 }}
           onAnimationComplete={() => setShowButton(!showSearchField)}
         >
-          <InputGroup
-            marginRight="12px"
-            startElement={
-              showSearchField ?? (
-                <Button
-                  onClick={() => setShowSearchField(!showSearchField)}
-                  justifyContent="flex-start"
-                >
-                  <RightSearchIcon color="#595959" w="25px" h="25px" />
-                </Button>
-              )
-            }
-            endElement={
-              !showSearchField ? (
-                <Button
-                  unstyled
-                  onClick={() => setShowSearchField(!showSearchField)}
-                  p={0}
-                >
-                  <RightSearchIcon color="#595959" w="25px" h="25px" />
-                </Button>
-              ) : undefined
-            }
-          >
-            <Input
-              // TODO: Used to be 16px, but we can't use absolute values in Chakra v3
-              size="sm"
-              borderRadius="0"
-              border="none"
-              marginRight="12px"
-              borderBottom="1px solid"
-              borderColor="#B0B0B0"
-              boxShadow="none"
-              _hover={{ borderColor: '#595959' }}
-              _focus={{
-                borderColor: '#595959',
-                boxShadow: 'none',
-              }}
-              placeholder="Search for forms"
-              value={searchQuery}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearchQuery(e.target.value)
-              }
-            />
-          </InputGroup>
+          <Flex alignItems="center" pr="10px">
+            <Button
+              unstyled
+              onClick={() => setShowSearchField(!showSearchField)}
+              height="32px"
+              alignItems="center"
+              p={0}
+              pr={1}
+            >
+              <RightSearchIcon color="#595959" w="25px" h="25px" />
+            </Button>
+            <InputGroup>
+              <Input
+                // TODO: Used to be 16px, but we can't use absolute values in Chakra v3
+                size="sm"
+                h="25px"
+                pl="2"
+                borderColor="#B0B0B0"
+                boxShadow="none"
+                _hover={{ borderColor: '#595959' }}
+                _focus={{
+                  borderColor: '#595959',
+                  boxShadow: 'none',
+                }}
+                placeholder="Search for forms"
+                value={searchQuery}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchQuery(e.target.value)
+                }
+              />
+            </InputGroup>
+          </Flex>
         </motion.div>
-        {showButton && !open && (
-          <Button
-            unstyled
-            onClick={() => setShowSearchField(!showSearchField)}
-            height="32px"
-            alignItems="center"
-            p={0}
-          >
-            <RightSearchIcon color="#595959" w="25px" h="25px" />
-          </Button>
-        )}
         <Text
           fontSize="16px"
           fontWeight="400"
