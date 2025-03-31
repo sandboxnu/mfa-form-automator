@@ -9,12 +9,11 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import {
   FormTemplateEntity,
-  formTemplatesControllerRemove,
   Scope,
 } from '@web/client';
 import {
   formTemplatesControllerFindAllQueryKey,
-  formTemplatesControllerRemoveMutation,
+  formTemplatesControllerDisableMutation
 } from '@web/client/@tanstack/react-query.gen';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
@@ -28,8 +27,6 @@ import {
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { queryClient } from './_app';
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
-import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 /**
@@ -62,26 +59,26 @@ function TemplateDirectory() {
     }
   };
 
-  const removeFormTemplateMutation = useMutation({
-    ...formTemplatesControllerRemoveMutation(),
+  const disableFormTemplateMutation = useMutation({
+    ...formTemplatesControllerDisableMutation(),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
     },
   });
 
-  const _submitRemove = async () => {
+  const submitRemove = async () => {
     if (!formTemplate) {
       return;
     }
 
-    await removeFormTemplateMutation.mutateAsync({
+    await disableFormTemplateMutation.mutateAsync({
       path: {
-        id: formTemplate.id,
-      },
+        id: formTemplate.id
+      }
+    }).catch((e) => {
+      throw e;
     });
     console.log('finished');
+    console.log(formTemplate);
     setIsOpen(false);
     setFormTemplate(null);
   };
@@ -225,7 +222,7 @@ function TemplateDirectory() {
       <Modal
         isOpen={isOpen}
         onClose={() => {
-          formTemplatesControllerRemoveMutation;
+          formTemplatesControllerDisableMutation;
         }}
         isCentered={true}
       >
@@ -286,10 +283,7 @@ function TemplateDirectory() {
                 color="white"
                 width="100px"
                 height="29px"
-                onClick={() => {
-                  console.log('Removing template ' + formTemplate?.name);
-                  _submitRemove();
-                }}
+                onClick={() => submitRemove()}
               >
                 Remove
               </Button>

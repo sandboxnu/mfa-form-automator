@@ -988,8 +988,8 @@ export type FormTemplatesControllerFindOneResponses = {
 export type FormTemplatesControllerFindOneResponse =
   FormTemplatesControllerFindOneResponses[keyof FormTemplatesControllerFindOneResponses];
 
-export type FormTemplatesControllerUpdateData = {
-  body: UpdateFormTemplateDto;
+export type FormTemplatesControllerDisableData = {
+  body?: never;
   path: {
     id: string;
   };
@@ -997,7 +997,7 @@ export type FormTemplatesControllerUpdateData = {
   url: '/api/form-templates/{id}';
 };
 
-export type FormTemplatesControllerUpdateErrors = {
+export type FormTemplatesControllerDisableErrors = {
   /**
    * Bad Request
    */
@@ -1016,12 +1016,12 @@ export type FormTemplatesControllerUpdateErrors = {
   422: unknown;
 };
 
-export type FormTemplatesControllerUpdateResponses = {
+export type FormTemplatesControllerDisableResponses = {
   200: FormTemplateEntity;
 };
 
-export type FormTemplatesControllerUpdateResponse =
-  FormTemplatesControllerUpdateResponses[keyof FormTemplatesControllerUpdateResponses];
+export type FormTemplatesControllerDisableResponse =
+  FormTemplatesControllerDisableResponses[keyof FormTemplatesControllerDisableResponses];
 
 export type DepartmentsControllerFindAllData = {
   body?: never;
