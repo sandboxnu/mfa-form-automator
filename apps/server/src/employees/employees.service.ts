@@ -4,6 +4,7 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { ValidateEmployeeHandler } from './validate-employee/ValidateEmployeeHandlerInterface';
+import { EmployeeErrorMessage } from './employees.errors';
 
 @Injectable()
 export class EmployeesService {
@@ -26,7 +27,7 @@ export class EmployeesService {
         createEmployeeDto.email,
       ))
     ) {
-      throw new Error('Invalid employee');
+      throw new Error(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_IN_AUTH_PROVIDER);
     }
 
     const newEmployee = await this.create(createEmployeeDto);

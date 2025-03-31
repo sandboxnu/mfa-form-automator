@@ -38,6 +38,9 @@ export class AzureGraphValidateEmployeeHandler
       return false;
     }
 
+    console.log(graphUser);
+    console.log(email);
+
     return graphUser.mail === email;
   }
 }

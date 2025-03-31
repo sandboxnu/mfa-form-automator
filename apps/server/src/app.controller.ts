@@ -140,7 +140,7 @@ export class AppController {
       accessToken: registerEmployeeDto.accessToken,
     };
 
-    const newEmployee = await this.employeeService.create(
+    const newEmployee = await this.employeeService.createAndValidate(
       createEmployeeDtoInstance,
     );
 
