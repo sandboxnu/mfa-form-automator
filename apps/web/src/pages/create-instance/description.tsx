@@ -60,4 +60,4 @@ function Description() {
   );
 }
 
-export default isAuth(Description, [Scope.CONTRIBUTOR, Scope.ADMIN]);
+export default isAuth(Description);
