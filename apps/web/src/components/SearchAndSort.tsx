@@ -129,7 +129,7 @@ export const SearchAndSort = ({
 
       <Menu.Root>
         <Menu.Trigger asChild>
-          <Button variant="outline" size="sm" p={1}>
+          <Button variant="outline" size="sm" p={2}>
             {sortValue}
           </Button>
         </Menu.Trigger>
@@ -154,7 +154,7 @@ export const SearchAndSort = ({
                     label: 'A to Z',
                   },
                 ].map((item) => (
-                  <Menu.RadioItem key={item.value} value={item.value} p={1}>
+                  <Menu.RadioItem key={item.value} value={item.value} p={2}>
                     {item.label}
                     <Menu.ItemIndicator />
                   </Menu.RadioItem>
