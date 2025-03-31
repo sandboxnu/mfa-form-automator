@@ -27,7 +27,7 @@ import {
   formTemplatesControllerCreate,
   formTemplatesControllerRemove,
   formTemplatesControllerFindOne,
-  formTemplatesControllerUpdate,
+  formTemplatesControllerDisable,
   departmentsControllerFindAll,
   departmentsControllerCreate,
   departmentsControllerRemove,
@@ -84,8 +84,8 @@ import type {
   FormTemplatesControllerCreateResponse,
   FormTemplatesControllerRemoveData,
   FormTemplatesControllerFindOneData,
-  FormTemplatesControllerUpdateData,
-  FormTemplatesControllerUpdateResponse,
+  FormTemplatesControllerDisableData,
+  FormTemplatesControllerDisableResponse,
   DepartmentsControllerFindAllData,
   DepartmentsControllerCreateData,
   DepartmentsControllerCreateResponse,
@@ -765,16 +765,16 @@ export const formTemplatesControllerFindOneOptions = (
   });
 };
 
-export const formTemplatesControllerUpdateMutation = (
-  options?: Partial<Options<FormTemplatesControllerUpdateData>>,
+export const formTemplatesControllerDisableMutation = (
+  options?: Partial<Options<FormTemplatesControllerDisableData>>,
 ) => {
   const mutationOptions: UseMutationOptions<
-    FormTemplatesControllerUpdateResponse,
+    FormTemplatesControllerDisableResponse,
     AxiosError<DefaultError>,
-    Options<FormTemplatesControllerUpdateData>
+    Options<FormTemplatesControllerDisableData>
   > = {
     mutationFn: async (localOptions) => {
-      const { data } = await formTemplatesControllerUpdate({
+      const { data } = await formTemplatesControllerDisable({
         ...options,
         ...localOptions,
         throwOnError: true,

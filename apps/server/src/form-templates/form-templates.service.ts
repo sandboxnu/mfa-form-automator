@@ -253,6 +253,65 @@ export class FormTemplatesService {
             },
           },
         },
+        
+      },
+    });
+    return updatedFormTemplate;
+  }
+
+  /**
+   * Disable a form template.
+   * @param id the form template id
+   * @param updateFormTemplateDto update form template dto
+   * @returns the updated form template, hydrated
+   */
+  async disable(id: string) {
+    // TODO: Support updating signature fields (updating name/order/position, adding, deleting, etc)
+    const updatedFormTemplate = await this.prisma.formTemplate.update({
+      where: {
+        id: id,
+      },
+      data: {
+        disabled: true,
+      },
+      include: {
+        fieldGroups: {
+          include: {
+            templateBoxes: true,
+          },
+        },
+        formInstances: {
+          include: {
+            formTemplate: true,
+            originator: {
+              include: {
+                position: {
+                  include: {
+                    department: true,
+                  },
+                },
+              },
+            },
+            assignedGroups: {
+              include: {
+                signerPosition: {
+                  include: {
+                    department: true,
+                  },
+                },
+                signerDepartment: true,
+                signerEmployee: true,
+                signerEmployeeList: true,
+                signingEmployee: true,
+                fieldGroup: {
+                  include: {
+                    templateBoxes: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
     return updatedFormTemplate;

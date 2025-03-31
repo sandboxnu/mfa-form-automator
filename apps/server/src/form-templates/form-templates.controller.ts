@@ -125,10 +125,11 @@ export class FormTemplatesController {
     required: false,
   })
   async findAll(@Query('limit') limit?: number) {
-    const formTemplates = await this.formTemplatesService.findAll(limit);
+    const formTemplates = (await this.formTemplatesService.findAll(limit))
     return formTemplates.map(
       (formTemplate) => new FormTemplateEntity(formTemplate),
-    );
+    ).filter(
+      (template) => !template.disabled);
   }
 
   @Get(':id')
@@ -198,6 +199,38 @@ export class FormTemplatesController {
     // TODO: Should only admins be able to delete templates?
     try {
       await this.formTemplatesService.remove(id);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          this.loggerService.error(
+            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+          );
+          throw new NotFoundException(
+            FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND_CLIENT,
+          );
+        }
+      }
+      throw e;
+    }
+  }
+
+
+  @Patch(':id')
+  @UseGuards(AdminAuthGuard)
+  @ApiOkResponse({ type: FormTemplateEntity })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async disable(@Param('id') id: string,
+) {
+    try {
+      const updatedFormTemplate = await this.formTemplatesService.disable(
+        id
+      );
+      return new FormTemplateEntity(updatedFormTemplate);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {

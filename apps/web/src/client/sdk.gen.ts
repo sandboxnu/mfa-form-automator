@@ -53,8 +53,8 @@ import type {
   FormTemplatesControllerRemoveData,
   FormTemplatesControllerFindOneData,
   FormTemplatesControllerFindOneResponse,
-  FormTemplatesControllerUpdateData,
-  FormTemplatesControllerUpdateResponse,
+  FormTemplatesControllerDisableData,
+  FormTemplatesControllerDisableResponse,
   DepartmentsControllerFindAllData,
   DepartmentsControllerFindAllResponse,
   DepartmentsControllerCreateData,
@@ -511,22 +511,18 @@ export const formTemplatesControllerFindOne = <
   });
 };
 
-export const formTemplatesControllerUpdate = <
+export const formTemplatesControllerDisable = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<FormTemplatesControllerUpdateData, ThrowOnError>,
+  options: Options<FormTemplatesControllerDisableData, ThrowOnError>,
 ) => {
   return (options.client ?? _heyApiClient).patch<
-    FormTemplatesControllerUpdateResponse,
+    FormTemplatesControllerDisableResponse,
     unknown,
     ThrowOnError
   >({
     url: '/api/form-templates/{id}',
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
   });
 };
 
