@@ -25,4 +25,4 @@ function SelectTemplate() {
   );
 }
 
-export default isAuth(SelectTemplate, [Scope.CONTRIBUTOR, Scope.ADMIN]);
+export default isAuth(SelectTemplate);

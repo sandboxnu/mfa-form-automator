@@ -15,4 +15,4 @@ function Success() {
   );
 }
 
-export default isAuth(Success, [Scope.ADMIN]);
+export default isAuth(Success, [Scope.ADMIN, Scope.CONTRIBUTOR]);

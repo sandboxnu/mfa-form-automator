@@ -89,7 +89,7 @@ export class FormTemplatesController {
   ) {}
 
   @Post()
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(ContributorAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
