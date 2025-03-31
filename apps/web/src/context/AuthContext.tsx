@@ -17,12 +17,12 @@ import { appControllerRegister, OnboardEmployeeDto, Scope } from '@web/client';
 import {
   appControllerLogin,
   appControllerLogout,
-  appControllerRefresh,
   employeesControllerFindMe,
   JwtEntity,
 } from '../client';
 import { client } from '@web/client/client.gen';
 import { employeesControllerOnboardEmployeeMutation } from '@web/client/@tanstack/react-query.gen';
+import { toaster } from './../components/ui/toaster';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(

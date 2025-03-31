@@ -11,6 +11,7 @@ import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
 import { useAuth } from '@web/hooks/useAuth';
+import { Toaster, toaster } from '../ui/toaster';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -116,7 +117,7 @@ export const FormButtons = ({
       orderVal += 1;
     });
 
-    createFormTemplateMutation
+    await createFormTemplateMutation
       .mutateAsync({
         body: {
           name: formTemplateName ?? '',
@@ -126,12 +127,18 @@ export const FormButtons = ({
         },
       })
       .then((response) => {
+        router.push(submitLink);
         return response;
       })
       .catch((e) => {
+        toaster.create({
+          title: 'Failed to create form template',
+          description: (e as Error).message,
+          type: 'error',
+          duration: 3000,
+        });
         throw e;
       });
-    router.push(submitLink);
   };
 
   /**
@@ -153,28 +160,40 @@ export const FormButtons = ({
       return;
     }
 
-    await createFormInstanceMutation.mutateAsync({
-      body: {
-        name: formInstanceName ?? formTemplate.name,
-        assignedGroups: assignedGroupData.map((data, _) => {
-          return {
-            order: data.order,
-            fieldGroupId: data.fieldGroupId,
-            signerType: data.signerType,
-            signerEmployeeList: data.signerEmployeeList,
-            signerDepartmentId: data.signerDepartmentId,
-            signerPositionId: data.signerPositionId,
-            signerEmployeeId: data.signerEmployeeId,
-          };
-        }),
-        originatorId: user.id,
-        formTemplateId: formTemplate.id,
-        formDocLink: formTemplate.formDocLink,
-        description: formTemplate.description ?? '',
-      },
-    });
-
-    router.push(submitLink);
+    await createFormInstanceMutation
+      .mutateAsync({
+        body: {
+          name: formInstanceName ?? formTemplate.name,
+          assignedGroups: assignedGroupData.map((data, _) => {
+            return {
+              order: data.order,
+              fieldGroupId: data.fieldGroupId,
+              signerType: data.signerType,
+              signerEmployeeList: data.signerEmployeeList,
+              signerDepartmentId: data.signerDepartmentId,
+              signerPositionId: data.signerPositionId,
+              signerEmployeeId: data.signerEmployeeId,
+            };
+          }),
+          originatorId: user.id,
+          formTemplateId: formTemplate.id,
+          formDocLink: formTemplate.formDocLink,
+          description: formTemplate.description ?? '',
+        },
+      })
+      .then((response) => {
+        router.push(submitLink);
+        return response;
+      })
+      .catch((e) => {
+        toaster.create({
+          title: 'Failed to create form instance',
+          description: (e as Error).message,
+          type: 'error',
+          duration: 3000,
+        });
+        throw e;
+      });
   };
 
   return (
@@ -209,6 +228,7 @@ export const FormButtons = ({
       )}
 
       <Flex float="right" justifyContent={'space-between'}>
+        <Toaster />
         <Button
           w="74px"
           h="36px"
@@ -249,6 +269,7 @@ export const FormButtons = ({
           }}
           marginLeft="12px"
           marginRight="36px"
+          disabled={disabled}
           onClick={() => {
             if (isFormTemplate) {
               _submitFormTemplate();
