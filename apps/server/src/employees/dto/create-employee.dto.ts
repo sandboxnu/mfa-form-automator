@@ -38,4 +38,9 @@ export class CreateEmployeeDto {
   @IsNotEmpty()
   @ApiProperty({ enum: EmployeeScope })
   scope: EmployeeScope;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  accessToken: string;
 }

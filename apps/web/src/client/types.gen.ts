@@ -9,6 +9,7 @@ export type RegisterEmployeeDto = {
   lastName: string;
   email: string;
   password: string;
+  accessToken: string;
 };
 
 export type DepartmentEntity = {
@@ -52,10 +53,11 @@ export type EmployeeEntity = {
 export type CreateEmployeeDto = {
   firstName: string;
   lastName: string;
-  positionId?: string;
+  positionId?: string | null;
   email: string;
   password: string;
   scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
+  accessToken: string;
 };
 
 export type OnboardEmployeeDto = {
@@ -66,8 +68,9 @@ export type OnboardEmployeeDto = {
 export type UpdateEmployeeDto = {
   firstName?: string;
   lastName?: string;
-  positionId?: string;
+  positionId?: string | null;
   scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
+  accessToken?: string;
 };
 
 export type CreatePositionDto = {

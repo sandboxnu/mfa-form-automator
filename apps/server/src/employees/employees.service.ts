@@ -1,12 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { ValidateEmployeeHandler } from './validate-employee/ValidateEmployeeHandlerInterface';
 
 @Injectable()
 export class EmployeesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    @Inject('ValidateEmployeeHandler')
+    private validateEmployeeHandler: ValidateEmployeeHandler,
+    private prisma: PrismaService,
+  ) {}
+
+  /**
+   * Creates and validates a new employee.
+   * @param createEmployeeDto create employee dto
+   * @returns the created employee, hydrated
+   * @throws
+   */
+  async createAndValidate(createEmployeeDto: CreateEmployeeDto) {
+    if (
+      !(await this.validateEmployeeHandler.validateEmployee(
+        createEmployeeDto.accessToken,
+        createEmployeeDto.email,
+      ))
+    ) {
+      throw new Error('Invalid employee');
+    }
+
+    const newEmployee = await this.create(createEmployeeDto);
+    return newEmployee;
+  }
 
   /**
    * Create a new employee.
@@ -34,13 +59,6 @@ export class EmployeesService {
       },
     });
     return newEmployee;
-  }
-
-  /**
-   * Calls the microsot graph endpoint to check if the employee exists.
-   */
-  async validateEmployee(accessToken: string) {
-    //TODO
   }
 
   /**

@@ -12,6 +12,7 @@ import { EmployeesService } from '../employees/employees.service';
 import { DepartmentsService } from '../departments/departments.service';
 import { EmployeeErrorMessage } from '../employees/employees.errors';
 import { PdfStoreService } from '../pdf-store/pdf-store.service';
+import { MockValidateEmployeeHandler } from '../employees/validate-employee/MockValidateEmployeeHandler';
 
 const formInstance1Id = 'formInstanceId1';
 const formInstance2Id = 'formInstanceId2';
@@ -292,6 +293,10 @@ describe('FormInstancesService', () => {
         {
           provide: PdfStoreService,
           useValue: mockPdfStoreService,
+        },
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
         },
       ],
     }).compile();

@@ -137,6 +137,7 @@ export class AppController {
       email: registerEmployeeDto.email,
       password: registerEmployeeDto.password,
       scope: EmployeeScope.BASE_USER,
+      accessToken: registerEmployeeDto.accessToken,
     };
 
     const newEmployee = await this.employeeService.create(

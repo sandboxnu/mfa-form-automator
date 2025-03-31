@@ -40,15 +40,6 @@ export const AuthProvider = ({ children }: any) => {
     ...employeesControllerOnboardEmployeeMutation(),
   });
 
-  const requestProfileDataMutation = useMutation({
-    mutationFn: async () => {
-      return requestProfileData();
-    },
-    onSuccess: (data) => {
-      setAzureUser(data);
-    },
-  });
-
   // Call the logout endpoint and then remove the user
   // from the state.
   const logout = useCallback(async () => {
@@ -152,52 +143,53 @@ export const AuthProvider = ({ children }: any) => {
   );
 
   const azureLogin = useCallback(async () => {
-    instance
-      .loginPopup(loginRequest)
-      .then(async (_) => {
-        return await requestProfileDataMutation.mutateAsync();
-      })
-      .then(async (graphUser) => {
-        if (!graphUser?.mail) {
-          throw new Error('Azure user data not found');
-        }
-        if (!(await login(graphUser?.mail, graphUser?.id))) {
-          if (!graphUser) {
-            throw new Error('Azure user data not found');
-          }
-          await appControllerRegister({
-            body: {
-              firstName:
-                graphUser.givenName ?? graphUser.displayName.split(' ')[0],
-              lastName:
-                graphUser.surname ?? graphUser.displayName.split(' ')[1],
-              email: graphUser.mail,
-              password: graphUser.id,
-            },
-          });
-          await login(graphUser.mail, graphUser.id);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [requestProfileDataMutation, instance, login]);
-
-  // Request the profile data from the Microsoft Graph API
-  const requestProfileData = async () => {
-    try {
+    // Get the access token for the Microsoft Graph API
+    const getAccessToken = async () => {
       const response = await instance.acquireTokenSilent({
         ...loginRequest,
         account: instance.getAllAccounts()[0],
       });
-      const profileData = await callMsGraph(response.accessToken);
-      console.log(profileData);
-      return profileData;
-    } catch (error) {
-      console.error('Error fetching profile data:', error);
-      throw error; // Optional: rethrow if you want to handle this upstream
+      return response.accessToken;
+    };
+
+    // Request the profile data from the Microsoft Graph API
+    const requestProfileData = async (accessToken: string) => {
+      try {
+        const profileData = await callMsGraph(accessToken);
+        return profileData;
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+        throw error;
+      }
+    };
+
+    await instance.loginPopup(loginRequest);
+
+    const accessToken = await getAccessToken();
+    const graphUser = await requestProfileData(accessToken);
+
+    if (!graphUser) {
+      throw new Error('Azure user data not found');
     }
-  };
+
+    setAzureUser(graphUser);
+
+    if (!(await login(graphUser?.mail, graphUser?.id))) {
+      if (!graphUser) {
+        throw new Error('Azure user data not found');
+      }
+      await appControllerRegister({
+        body: {
+          firstName: graphUser.givenName ?? graphUser.displayName.split(' ')[0],
+          lastName: graphUser.surname ?? graphUser.displayName.split(' ')[1],
+          email: graphUser.mail,
+          password: graphUser.id,
+          accessToken: accessToken,
+        },
+      });
+      await login(graphUser.mail, graphUser.id);
+    }
+  }, [instance, login]);
 
   // Register a user with provided information to the database
   const completeRegistration = useCallback(

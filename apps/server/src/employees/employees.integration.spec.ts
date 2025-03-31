@@ -6,6 +6,7 @@ import { DepartmentsService } from '../departments/departments.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { $Enums } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { MockValidateEmployeeHandler } from './validate-employee/MockValidateEmployeeHandler';
 
 describe('EmployeesServiceIntegrationTest', () => {
   let module: TestingModule;
@@ -26,6 +27,10 @@ describe('EmployeesServiceIntegrationTest', () => {
         PositionsService,
         DepartmentsService,
         PrismaService,
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
+        },
       ],
     }).compile();
 
@@ -77,6 +82,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
 
       const newEmployee = await service.create(employeeDto);
@@ -103,6 +109,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.BASE_USER,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -145,6 +152,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.BASE_USER,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -180,6 +188,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       const employeeDto2: CreateEmployeeDto = {
         firstName: 'Jane',
@@ -188,6 +197,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password123',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId2,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       employeeId2 = (await service.create(employeeDto2)).id;
@@ -240,6 +250,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -278,6 +289,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -318,6 +330,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -358,6 +371,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
     });

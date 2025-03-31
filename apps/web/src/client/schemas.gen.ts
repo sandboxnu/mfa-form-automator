@@ -27,8 +27,11 @@ export const RegisterEmployeeDtoSchema = {
       type: 'string',
       minLength: 5,
     },
+    accessToken: {
+      type: 'string',
+    },
   },
-  required: ['firstName', 'lastName', 'email', 'password'],
+  required: ['firstName', 'lastName', 'email', 'password', 'accessToken'],
 } as const;
 
 export const DepartmentEntitySchema = {
@@ -169,6 +172,7 @@ export const CreateEmployeeDtoSchema = {
     },
     positionId: {
       type: 'string',
+      nullable: true,
       format: 'uuid',
     },
     email: {
@@ -183,8 +187,18 @@ export const CreateEmployeeDtoSchema = {
       type: 'string',
       enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
+    accessToken: {
+      type: 'string',
+    },
   },
-  required: ['firstName', 'lastName', 'email', 'password', 'scope'],
+  required: [
+    'firstName',
+    'lastName',
+    'email',
+    'password',
+    'scope',
+    'accessToken',
+  ],
 } as const;
 
 export const OnboardEmployeeDtoSchema = {
@@ -211,11 +225,15 @@ export const UpdateEmployeeDtoSchema = {
     },
     positionId: {
       type: 'string',
+      nullable: true,
       format: 'uuid',
     },
     scope: {
       type: 'string',
       enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
+    },
+    accessToken: {
+      type: 'string',
     },
   },
 } as const;

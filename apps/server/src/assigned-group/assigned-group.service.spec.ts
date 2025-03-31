@@ -6,6 +6,7 @@ import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
 import { AssignedGroupService } from './assigned-group.service';
 import { ConnectEmployeeDto } from './dto/create-assigned-group.dto';
+import { MockValidateEmployeeHandler } from '../employees/validate-employee/MockValidateEmployeeHandler';
 
 const assignedGroupPositionSigner = {
   id: 'assignedGroup-id',
@@ -73,6 +74,10 @@ describe('AssignedGroupService', () => {
         {
           provide: PrismaService,
           useValue: db,
+        },
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
         },
       ],
     }).compile();

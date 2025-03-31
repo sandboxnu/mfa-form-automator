@@ -18,6 +18,7 @@ import { EmployeesService } from '../employees/employees.service';
 import { DepartmentsService } from '../departments/departments.service';
 import { PdfStoreModule } from '../pdf-store/pdf-storage.module';
 import MockEmailHandler from '../postmark/MockEmailHandler';
+import { MockValidateEmployeeHandler } from '../employees/validate-employee/MockValidateEmployeeHandler';
 
 describe('FormInstancesController', () => {
   let controller: FormInstancesController;
@@ -39,6 +40,10 @@ describe('FormInstancesController', () => {
         {
           provide: 'EmailHandler',
           useValue: MockEmailHandler,
+        },
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
         },
       ],
       imports: [PdfStoreModule],
