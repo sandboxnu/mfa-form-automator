@@ -1,5 +1,10 @@
 import { Box, Button, Text } from '@chakra-ui/react';
-import { Checkbox, PlusSign, TextIcon } from 'apps/web/src/static/icons';
+import {
+  Checkbox,
+  PlusSign,
+  SignatureIcon,
+  TextIcon,
+} from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { DraggableData, DraggableEvent } from 'react-draggable';
@@ -323,7 +328,7 @@ export const FormEditor = ({
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                isDisabled={fieldGroups.size == 0 || disableEdit}
+                disabled={fieldGroups.size == 0 || disableEdit}
                 onClick={handleAddSignatureField}
               >
                 <div>{SignatureIcon}</div>

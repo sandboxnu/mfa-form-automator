@@ -46,9 +46,9 @@ export default function SignatureField({
       onResizeStop={onResizeStop}
       disableDragging={disableEdit}
     >
-      <Box 
-        display="flex" 
-        alignItems="center" 
+      <Box
+        display="flex"
+        alignItems="center"
         justifyContent="center"
         width="100%"
         height="100%"
@@ -74,4 +74,4 @@ export default function SignatureField({
       )}
     </Rnd>
   );
-} 
+}

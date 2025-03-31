@@ -68,7 +68,7 @@ export default function DraggableTextFactory({
           highlighted={highlighted}
         />
       );
-      default: 
+    default:
       throw Error;
   }
 }
