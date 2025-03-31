@@ -49,6 +49,8 @@ export type FormTemplateData = {
   formDocLink: string;
   fieldGroups: FieldGroupData[];
   description?: string;
+  pageWidth: number;
+  pageHeight: number;
 };
 
 export type AssignedGroupData = {

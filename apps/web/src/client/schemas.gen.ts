@@ -450,6 +450,12 @@ export const CreateFormTemplateDtoSchema = {
     description: {
       type: 'string',
     },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
+    },
     fieldGroups: {
       minItems: 1,
       type: 'array',
@@ -458,7 +464,14 @@ export const CreateFormTemplateDtoSchema = {
       },
     },
   },
-  required: ['file', 'name', 'description', 'fieldGroups'],
+  required: [
+    'file',
+    'name',
+    'description',
+    'pageWidth',
+    'pageHeight',
+    'fieldGroups',
+  ],
 } as const;
 
 export const TemplateBoxBaseEntitySchema = {
@@ -562,6 +575,12 @@ export const FormTemplateBaseEntitySchema = {
     name: {
       type: 'string',
     },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
+    },
     formDocLink: {
       type: 'string',
     },
@@ -581,6 +600,8 @@ export const FormTemplateBaseEntitySchema = {
   required: [
     'id',
     'name',
+    'pageWidth',
+    'pageHeight',
     'formDocLink',
     'description',
     'createdAt',
@@ -789,6 +810,12 @@ export const FormTemplateEntitySchema = {
     name: {
       type: 'string',
     },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
+    },
     formDocLink: {
       type: 'string',
     },
@@ -820,6 +847,8 @@ export const FormTemplateEntitySchema = {
   required: [
     'id',
     'name',
+    'pageWidth',
+    'pageHeight',
     'formDocLink',
     'description',
     'fieldGroups',
@@ -841,6 +870,12 @@ export const UpdateFormTemplateDtoSchema = {
     },
     description: {
       type: 'string',
+    },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
     },
   },
 } as const;
@@ -954,6 +989,9 @@ export const SignFormInstanceDtoSchema = {
       type: 'string',
       format: 'binary',
     },
+    assignedGroupId: {
+      type: 'string',
+    },
   },
-  required: ['file'],
+  required: ['file', 'assignedGroupId'],
 } as const;

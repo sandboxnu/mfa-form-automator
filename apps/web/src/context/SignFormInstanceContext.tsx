@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/react-query.gen';
-import { Field } from '@web/components/createFormTemplate/types';
 import { FormField, SignFormInstanceContextType } from '@web/context/types';
 import { useAuth } from '@web/hooks/useAuth';
-import { PDFDocument } from 'pdf-lib';
+import { PDFButton, PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
 
 export const SignFormInstanceContext =
@@ -34,6 +33,8 @@ export const SignFormInstanceContextProvider = ({
   const [groupNumber, setGroupNumber] = useState<number>(0);
   const [pdfLink, setPdfLink] = useState('');
   const [formTemplateName, setFormTemplateName] = useState('');
+  const [pdfBlob, setPdfBlob] = useState<Blob>();
+  const [assignedGroupId, setAssignedGroupId] = useState<string>();
 
   useEffect(() => {
     if (!formInstance || formInstanceError) return;
@@ -45,6 +46,7 @@ export const SignFormInstanceContextProvider = ({
     );
     if (assignedGroups && assignedGroups.length === 1) {
       setGroupNumber(assignedGroups[0]?.order);
+      setAssignedGroupId(assignedGroups[0].id);
     }
 
     const getFields = () => {
@@ -103,7 +105,6 @@ export const SignFormInstanceContextProvider = ({
           updatedField.data.text = data as string;
         }
       }
-      console.log('Updated Fields Test: ', updatedFields);
       return updatedFields;
     });
   };
@@ -119,44 +120,70 @@ export const SignFormInstanceContextProvider = ({
       const page = pdfDoc.getPage(pageNum);
       const { width: pageWidth, height: pageHeight } = page.getSize();
 
-      formFields.forEach((field) => {
+      formFields.forEach(async (field) => {
         const { width, height, x_coordinate: x, y_coordinate: y } = field;
-        switch (field.type) {
-          case 'SIGNATURE':
-            // EMBED IMAGE
-            return;
-          case 'CHECKBOX':
-            const checkboxField = form.createCheckBox(field.id);
-            checkboxField.check();
-            checkboxField.addToPage(page, {
-              width,
-              height,
-              x: (x * pageWidth) / 700,
-              y: pageHeight - (y * pageHeight) / 900,
+        if (
+          formInstance?.formTemplate.pageHeight &&
+          formInstance?.formTemplate.pageWidth
+        ) {
+          const formWidth = formInstance?.formTemplate.pageWidth;
+          const formHeight = formInstance?.formTemplate.pageHeight;
+
+          const widthOnPdf = (width * pageWidth) / formWidth;
+          const heightOnPdf = (height * pageHeight) / formHeight;
+          const xCoordOnPdf = (x * pageWidth) / formWidth;
+          const yCoordOnPdf =
+            pageHeight - (y * pageHeight) / formHeight - heightOnPdf;
+
+          let fieldToBeAdded: PDFCheckBox | PDFTextField | undefined;
+          switch (field.type) {
+            //TODO: TEMPORARY
+            case 'SIGNATURE':
+              const emblemUrl =
+                'https://pdf-lib.js.org/assets/mario_emblem.png';
+              const emblemImageBytes = await fetch(emblemUrl).then((res) =>
+                res.arrayBuffer(),
+              );
+              const jpgImage = await pdfDoc.embedPng(emblemImageBytes);
+              page.drawImage(jpgImage, {
+                x: xCoordOnPdf,
+                y: yCoordOnPdf,
+                width: widthOnPdf,
+                height: heightOnPdf,
+              });
+              break;
+            case 'CHECKBOX':
+              fieldToBeAdded = form.createCheckBox(field.id);
+              fieldToBeAdded.check();
+              break;
+            case 'TEXT_FIELD':
+              fieldToBeAdded = form.createTextField(field.id);
+              fieldToBeAdded.setText(field.data.text);
+              break;
+          }
+
+          if (fieldToBeAdded) {
+            fieldToBeAdded.addToPage(page, {
+              width: widthOnPdf,
+              height: heightOnPdf,
+              x: xCoordOnPdf,
+              y: yCoordOnPdf,
             });
-            return;
-          case 'TEXT_FIELD':
-            const textField = form.createTextField(field.id);
-            textField.setText(field.data.text);
-            textField.addToPage(page, {
-              width: (width * pageWidth) / 700,
-              height: (height * pageHeight) / 900,
-              x: (x * pageWidth) / 700,
-              y: pageHeight - (y * pageHeight) / 900,
-            });
-            return;
+          }
         }
       });
     });
     const pdfBytes = await pdfDoc.save();
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
+    setPdfBlob(blob);
     setPdfLink(url);
   };
 
   return (
     <SignFormInstanceContext.Provider
       value={{
+        formId: id,
         formInstanceError,
         isLoading,
         pdfLink,
@@ -167,6 +194,9 @@ export const SignFormInstanceContextProvider = ({
         groupNumber,
         updateField,
         updatePDF,
+        pdfBlob,
+        setPdfBlob,
+        assignedGroupId,
       }}
     >
       {children}

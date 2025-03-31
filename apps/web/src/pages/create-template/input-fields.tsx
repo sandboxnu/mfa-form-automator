@@ -18,6 +18,7 @@ function InputFields() {
     fieldGroups,
     setFieldGroups,
     pdfFile,
+    setFormDimensions,
   } = useCreateFormTemplate();
 
   return (
@@ -39,6 +40,7 @@ function InputFields() {
             fieldGroups={fieldGroups}
             setFieldGroups={setFieldGroups}
             scale={1}
+            setFormDimensions={setFormDimensions}
           />
         </Box>
       }

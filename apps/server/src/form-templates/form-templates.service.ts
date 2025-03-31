@@ -27,6 +27,9 @@ export class FormTemplatesService {
         name: createFormTemplateDto.name,
         formDocLink: formTemplatePdfFormDockLink,
         description: createFormTemplateDto.description,
+        pageHeight: createFormTemplateDto.pageHeight,
+        pageWidth: createFormTemplateDto.pageWidth,
+
         fieldGroups: {
           create: createFormTemplateDto.fieldGroups.map((fieldGroup) => {
             return {

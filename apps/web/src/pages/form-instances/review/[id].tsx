@@ -19,7 +19,7 @@ function Review() {
 
   return (
     <FormLayout
-      type={FormInteractionType.CreateFormTemplate}
+      type={FormInteractionType.SignFormInstance}
       pageNumber={4}
       heading={'Create form template'}
       subheading={'Review your form template'}

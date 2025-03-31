@@ -210,7 +210,6 @@ export class FormInstancesController {
   async signFormInstance(
     @AuthUser() currentUser: UserEntity,
     @Param('formInstanceId') formInstanceId: string,
-    @Param('assignedGroupId') assignedGroupId: string,
     @Body(new ParseFormDataJsonPipe(), new ValidationPipe({ transform: true }))
     signFormInstanceDto: SignFormInstanceDto,
     @UploadedFile() file: Express.Multer.File,
@@ -220,7 +219,7 @@ export class FormInstancesController {
       const updatedFormInstance =
         await this.formInstancesService.signFormInstance(
           formInstanceId,
-          assignedGroupId,
+          signFormInstanceDto.assignedGroupId,
           currentUser,
           signFormInstanceDto,
         );

@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
+  formInstancesControllerSignFormInstanceMutation,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
@@ -47,21 +48,12 @@ export const FormButtons = ({
     pdfFile,
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
+    formDimensions,
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
 
-  const {
-    formInstanceError,
-    isLoading,
-    pdfLink,
-    fields,
-    setFields,
-    formInstance,
-    groupNumber,
-    updateField,
-    updatePDF,
-  } = useSignFormInstance();
+  const { updatePDF, pdfBlob, formId, assignedGroupId } = useSignFormInstance();
 
   const { user } = useAuth();
 
@@ -81,6 +73,10 @@ export const FormButtons = ({
         queryKey: formTemplatesControllerFindAllQueryKey(),
       });
     },
+  });
+
+  const signFormInstanceMutation = useMutation({
+    ...formInstancesControllerSignFormInstanceMutation(),
   });
 
   /**
@@ -132,10 +128,11 @@ export const FormButtons = ({
 
       orderVal += 1;
     });
-
     createFormTemplateMutation
       .mutateAsync({
         body: {
+          pageHeight: formDimensions?.height ?? 1035,
+          pageWidth: formDimensions?.width ?? 800,
           name: formTemplateName ?? '',
           fieldGroups: fieldGroups,
           file: pdfFile,
@@ -196,12 +193,20 @@ export const FormButtons = ({
 
   const __submitSignedForm = async () => {
     if (!review) {
-      // modify PDF to show in review box
-      console.log('entered before await');
       await updatePDF();
-      console.log('entered after await');
       router.push(submitLink);
       return;
+    }
+    if (assignedGroupId && pdfBlob) {
+      const res = await signFormInstanceMutation.mutateAsync({
+        body: {
+          file: pdfBlob,
+          assignedGroupId,
+        },
+        path: {
+          formInstanceId: formId,
+        },
+      });
     }
   };
 

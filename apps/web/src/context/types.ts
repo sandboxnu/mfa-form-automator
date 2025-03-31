@@ -56,6 +56,16 @@ export interface CreateFormTemplateContextType {
   setFormFields: Dispatch<SetStateAction<FormFields>>;
   fieldGroups: FieldGroups;
   setFieldGroups: Dispatch<SetStateAction<FieldGroups>>;
+  formDimensions: { width: number; height: number } | undefined;
+  setFormDimensions: Dispatch<
+    React.SetStateAction<
+      | {
+          width: number;
+          height: number;
+        }
+      | undefined
+    >
+  >;
 }
 export interface CreateFormInstanceContextType {
   formInstanceName: string | null;
@@ -79,23 +89,11 @@ export interface SignFormInstanceContextType {
   groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;
   updatePDF: () => Promise<void>;
+  pdfBlob: Blob | undefined;
+  setPdfBlob: React.Dispatch<React.SetStateAction<Blob | undefined>>;
+  formId: string;
+  assignedGroupId: string | undefined;
 }
-
-export type Checkbox = {
-  isChecked: boolean;
-  id: string;
-  x: number;
-  y: number;
-};
-
-export type Signature = {
-  isSigned: boolean;
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
 
 export type FormField = TemplateBoxBaseEntity & {
   data: { filled?: boolean; text?: string };

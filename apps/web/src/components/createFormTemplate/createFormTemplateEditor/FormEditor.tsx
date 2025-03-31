@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Text } from '@chakra-ui/react';
 import { Checkbox, PlusSign, TextIcon } from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -24,6 +24,7 @@ export const FormEditor = ({
   fieldGroups,
   setFieldGroups,
   scale,
+  setFormDimensions,
 }: {
   formTemplateName: string;
   pdfFile: File | null;
@@ -33,13 +34,20 @@ export const FormEditor = ({
   fieldGroups: FieldGroups;
   setFieldGroups: (groups: FieldGroups) => void;
   scale: number;
+  setFormDimensions?: ({
+    width,
+    height,
+  }: {
+    width: number;
+    height: number;
+  }) => void;
 }) => {
   const [currentGroup, setCurrentGroup] = useState<string>(
     fieldGroups.keys().next().value ?? '',
   );
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const documentRef = useRef<HTMLDivElement>(null);
+  const documentRef = useRef(null);
   const [groupNum, setGroupNum] = useState(fieldGroups.size);
   const [selectedField, setSelectedField] = useState<string | null>();
   const [highlightedField, setHighlightedField] = useState<string>();
@@ -159,9 +167,17 @@ export const FormEditor = ({
 
   // converts HTML web coordinates to PDF coordinates
   const convertCoordinates = (container: HTMLDivElement) => {
-    const { scrollLeft, scrollTop, clientWidth, clientHeight } = container;
-    const centerX = scrollLeft + clientWidth / 2;
-    const centerY = scrollTop + clientHeight / 2;
+    const {
+      scrollLeft,
+      scrollTop,
+      clientWidth: width,
+      clientHeight: height,
+    } = container;
+    if (setFormDimensions) {
+      setFormDimensions({ width, height });
+    }
+    const centerX = scrollLeft + width / 2;
+    const centerY = scrollTop + height / 2;
     return { centerX, centerY };
   };
 
@@ -292,14 +308,14 @@ export const FormEditor = ({
             height="474px"
             width="800px"
             overflow="scroll"
-            ref={documentRef}
             display="flex"
             flexDirection="column"
           >
             <Document
               file={pdfFile}
-              onLoadSuccess={(data) => {
+              onLoadSuccess={async (data) => {
                 setTotalPages(data.numPages);
+
                 setFormFields(
                   Array.from({ length: data.numPages }).reduce<FormFields>(
                     (acc, _, i) => {
@@ -316,6 +332,7 @@ export const FormEditor = ({
               }}
             >
               <Page
+                inputRef={documentRef}
                 renderAnnotationLayer={false}
                 renderTextLayer={false}
                 pageNumber={pageNum + 1}
@@ -363,6 +380,7 @@ export const FormEditor = ({
 
                           let newWidth = parseFloat(elementRef.style.width);
                           let newHeight = parseFloat(elementRef.style.height);
+
                           handleFieldUpdate(groupId, fieldId, {
                             width: Number.isNaN(newWidth)
                               ? position.width
