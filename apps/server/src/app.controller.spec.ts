@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from './prisma/prisma.service';
 import { DepartmentsService } from './departments/departments.service';
 import { PositionsService } from './positions/positions.service';
+import { MockValidateEmployeeHandler } from './employees/validate-employee/MockValidateEmployeeHandler';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -22,6 +23,10 @@ describe('AppController', () => {
         PositionsService,
         JwtService,
         PrismaService,
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
+        },
       ],
     }).compile();
 

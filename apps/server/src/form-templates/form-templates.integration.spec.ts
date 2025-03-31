@@ -50,6 +50,10 @@ describe('FormTemplatesIntegrationTest', () => {
           provide: 'FileStorageHandler',
           useClass: MockFileStorageHandler,
         },
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockFileStorageHandler,
+        },
       ],
     }).compile();
 
@@ -93,6 +97,7 @@ describe('FormTemplatesIntegrationTest', () => {
         email: 'john.doe@example.com',
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
+        accessToken: '123456',
       })
     ).id;
     await module.get<PrismaService>(PrismaService).employee.update({

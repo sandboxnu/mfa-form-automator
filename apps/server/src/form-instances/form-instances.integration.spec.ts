@@ -13,6 +13,7 @@ import { Readable } from 'stream';
 import { FormTemplateEntity } from '../form-templates/entities/form-template.entity';
 import MockEmailHandler from '../postmark/MockEmailHandler';
 import { FormInstanceEntity } from './entities/form-instance.entity';
+import { MockValidateEmployeeHandler } from '../employees/validate-employee/MockValidateEmployeeHandler';
 
 const emptyFile: Express.Multer.File = {
   fieldname: 'file',
@@ -66,6 +67,10 @@ describe('FormInstancesIntegrationTest', () => {
         {
           provide: 'EmailHandler',
           useClass: MockEmailHandler,
+        },
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
         },
       ],
     }).compile();
@@ -127,6 +132,7 @@ describe('FormInstancesIntegrationTest', () => {
         email: 'john.doe@example.com',
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
+        accessToken: '123456',
       })
     ).id;
     employeeId2 = (
@@ -136,6 +142,7 @@ describe('FormInstancesIntegrationTest', () => {
         email: 'jane.doe@example.com',
         password: 'password',
         scope: $Enums.EmployeeScope.BASE_USER,
+        accessToken: '123456',
       })
     ).id;
     await employeesService.update(employeeId1, {

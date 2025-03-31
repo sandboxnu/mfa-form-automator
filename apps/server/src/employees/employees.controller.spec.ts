@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { EmployeeEntity } from './entities/employee.entity';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { EmployeeScope } from '@prisma/client';
+import { MockValidateEmployeeHandler } from './validate-employee/MockValidateEmployeeHandler';
 
 describe('EmployeesController', () => {
   let controller: EmployeesController;
@@ -13,7 +14,15 @@ describe('EmployeesController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EmployeesController],
-      providers: [EmployeesService, PrismaService, LoggerServiceImpl],
+      providers: [
+        EmployeesService,
+        PrismaService,
+        LoggerServiceImpl,
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
+        },
+      ],
     }).compile();
 
     controller = module.get<EmployeesController>(EmployeesController);

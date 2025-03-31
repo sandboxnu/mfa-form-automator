@@ -6,12 +6,16 @@ import { DepartmentsService } from '../departments/departments.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { $Enums } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { ValidateEmployeeHandler } from './validate-employee/ValidateEmployeeHandlerInterface';
+import { MockValidateEmployeeHandler } from './validate-employee/MockValidateEmployeeHandler';
+import { EmployeeErrorMessage } from './employees.errors';
 
 describe('EmployeesServiceIntegrationTest', () => {
   let module: TestingModule;
   let service: EmployeesService;
   let departmentsService: DepartmentsService;
   let positionsService: PositionsService;
+  let validateEmployeeHandler: ValidateEmployeeHandler;
 
   let departmentId: string;
   let positionId1: string;
@@ -26,12 +30,19 @@ describe('EmployeesServiceIntegrationTest', () => {
         PositionsService,
         DepartmentsService,
         PrismaService,
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
+        },
       ],
     }).compile();
 
     service = module.get<EmployeesService>(EmployeesService);
     departmentsService = module.get<DepartmentsService>(DepartmentsService);
     positionsService = module.get<PositionsService>(PositionsService);
+    validateEmployeeHandler = module.get<ValidateEmployeeHandler>(
+      'ValidateEmployeeHandler',
+    );
   });
 
   beforeEach(async () => {
@@ -67,30 +78,92 @@ describe('EmployeesServiceIntegrationTest', () => {
       })
     ).id;
   });
+  describe('createAndValidate', () => {
+    beforeEach(async () => {
+      jest
+        .spyOn(validateEmployeeHandler, 'validateEmployee')
+        .mockResolvedValue(true);
+    });
 
-  describe('create', () => {
-    it('successfully creates a new employee', async () => {
-      const employeeDto: CreateEmployeeDto = {
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        password: 'password',
-        scope: $Enums.EmployeeScope.ADMIN,
-        positionId: positionId1,
-      };
+    describe('success', () => {
+      it('successfully creates and validates an employee', async () => {
+        const employeeDto: CreateEmployeeDto = {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john.doe@example.com',
+          password: 'password',
+          scope: $Enums.EmployeeScope.ADMIN,
+          positionId: positionId1,
+          accessToken: '123456',
+        };
 
-      const newEmployee = await service.create(employeeDto);
-      expect(newEmployee).toBeDefined();
-      expect(newEmployee.id).toBeDefined();
-      expect(newEmployee.firstName).toBe(employeeDto.firstName);
-      expect(newEmployee.lastName).toBe(employeeDto.lastName);
-      expect(newEmployee.email).toBe(employeeDto.email);
-      expect(newEmployee.scope).toBe(employeeDto.scope);
-      expect(newEmployee.refreshToken).toBeNull();
-      expect(newEmployee.pswdHash).toBeDefined();
-      expect(
-        bcrypt.compare(employeeDto.password, newEmployee.pswdHash!),
-      ).toBeTruthy();
+        const newEmployee = await service.createAndValidate(employeeDto);
+        expect(newEmployee).toBeDefined();
+        expect(newEmployee).toBeDefined();
+        expect(newEmployee.id).toBeDefined();
+        expect(newEmployee.firstName).toBe(employeeDto.firstName);
+        expect(newEmployee.lastName).toBe(employeeDto.lastName);
+        expect(newEmployee.email).toBe(employeeDto.email);
+        expect(newEmployee.scope).toBe(employeeDto.scope);
+        expect(newEmployee.refreshToken).toBeNull();
+        expect(newEmployee.pswdHash).toBeDefined();
+        expect(
+          bcrypt.compare(employeeDto.password, newEmployee.pswdHash!),
+        ).toBeTruthy();
+        expect(validateEmployeeHandler.validateEmployee).toHaveBeenCalled();
+      });
+
+      describe('fail', () => {
+        beforeEach(() => {
+          jest
+            .spyOn(validateEmployeeHandler, 'validateEmployee')
+            .mockResolvedValue(false);
+        });
+
+        it('should throw an error if the employee is not valid', async () => {
+          const employeeDto: CreateEmployeeDto = {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@example.com',
+            password: 'password',
+            scope: $Enums.EmployeeScope.ADMIN,
+            positionId: positionId1,
+            accessToken: '123456',
+          };
+          expect(service.createAndValidate(employeeDto)).rejects.toThrow(
+            EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_IN_AUTH_PROVIDER,
+          );
+        });
+      });
+    });
+
+    describe;
+
+    describe('create', () => {
+      it('successfully creates a new employee', async () => {
+        const employeeDto: CreateEmployeeDto = {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john.doe@example.com',
+          password: 'password',
+          scope: $Enums.EmployeeScope.ADMIN,
+          positionId: positionId1,
+          accessToken: '123456',
+        };
+
+        const newEmployee = await service.create(employeeDto);
+        expect(newEmployee).toBeDefined();
+        expect(newEmployee.id).toBeDefined();
+        expect(newEmployee.firstName).toBe(employeeDto.firstName);
+        expect(newEmployee.lastName).toBe(employeeDto.lastName);
+        expect(newEmployee.email).toBe(employeeDto.email);
+        expect(newEmployee.scope).toBe(employeeDto.scope);
+        expect(newEmployee.refreshToken).toBeNull();
+        expect(newEmployee.pswdHash).toBeDefined();
+        expect(
+          bcrypt.compare(employeeDto.password, newEmployee.pswdHash!),
+        ).toBeTruthy();
+      });
     });
   });
 
@@ -103,6 +176,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.BASE_USER,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -145,6 +219,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.BASE_USER,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -180,6 +255,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       const employeeDto2: CreateEmployeeDto = {
         firstName: 'Jane',
@@ -188,6 +264,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password123',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId2,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       employeeId2 = (await service.create(employeeDto2)).id;
@@ -240,6 +317,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -278,6 +356,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -318,6 +397,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
@@ -358,6 +438,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
+        accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
     });

@@ -14,6 +14,7 @@ import { PositionsService } from '../positions/positions.service';
 import { EmployeesService } from '../employees/employees.service';
 import { PdfStoreModule } from '../pdf-store/pdf-storage.module';
 import PostmarkHandler from '../postmark/PostmarkHandler';
+import { AzureGraphValidateEmployeeHandler } from '../employees/validate-employee/AzureGraphValidateEmployeeHandler';
 
 @Module({
   controllers: [FormInstancesController],
@@ -26,6 +27,10 @@ import PostmarkHandler from '../postmark/PostmarkHandler';
     {
       provide: 'EmailHandler',
       useClass: PostmarkHandler,
+    },
+    {
+      provide: 'ValidateEmployeeHandler',
+      useClass: AzureGraphValidateEmployeeHandler,
     },
   ],
   exports: [FormInstancesService],
