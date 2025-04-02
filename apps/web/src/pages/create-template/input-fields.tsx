@@ -17,13 +17,14 @@ function InputFields() {
     fieldGroups,
     setFieldGroups,
     pdfFile,
+    inEditMode,
   } = useCreateFormTemplate();
 
   return (
     <CreateFormLayout
       isFormTemplate={true}
       pageNumber={3}
-      heading={'Create form template'}
+      heading={inEditMode ? 'Edit form template' : 'Create form template'}
       subheading={
         'Select an assignee group and drag to add input fields for each'
       }

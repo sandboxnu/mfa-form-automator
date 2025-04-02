@@ -45,6 +45,7 @@ export const FormButtons = ({
     pdfFile,
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
+    inEditMode,
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
@@ -116,22 +117,27 @@ export const FormButtons = ({
       orderVal += 1;
     });
 
-    createFormTemplateMutation
-      .mutateAsync({
-        body: {
-          name: formTemplateName ?? '',
-          fieldGroups: fieldGroups,
-          file: pdfFile,
-          description: formTemplateDescription ?? '',
-          disabled: false
-        },
-      })
-      .then((response) => {
-        return response;
-      })
-      .catch((e) => {
-        throw e;
-      });
+    if (inEditMode) {
+      // TODO: Add updateFormTemplateMutation
+    } else {
+      createFormTemplateMutation
+        .mutateAsync({
+          body: {
+            name: formTemplateName!!,
+            fieldGroups: fieldGroups,
+            file: pdfFile,
+            description: formTemplateDescription!!,
+            disabled: false,
+          },
+        })
+        .then((response) => {
+          return response;
+        })
+        .catch((e) => {
+          throw e;
+        });
+    }
+
     router.push(submitLink);
   };
 

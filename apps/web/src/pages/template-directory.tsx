@@ -7,14 +7,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import {
-  FormTemplateEntity,
-  Scope,
-} from '@web/client';
-import {
-  formTemplatesControllerFindAllQueryKey,
-  formTemplatesControllerDisableMutation
-} from '@web/client/@tanstack/react-query.gen';
+import { FormTemplateEntity, Scope } from '@web/client';
+import { formTemplatesControllerDisableMutation } from '@web/client/@tanstack/react-query.gen';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
 import isAuth from '@web/components/isAuth';
@@ -26,27 +20,32 @@ import {
 } from '@web/static/icons';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { queryClient } from './_app';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
  */
 function TemplateDirectory() {
+  const {
+    setFormTemplateName,
+    setFormTemplateDescription,
+    setPdfFile,
+    setInEditMode,
+  } = useCreateFormTemplate();
   const router = useRouter();
+
   const [formTemplate, setFormTemplate] = useState<FormTemplateEntity | null>(
     null,
   );
+  // isOpen for the 'are you sure you want to delete' modal
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [myTemplatesOnly, setMyTemplatesOnly] = useState<boolean>(false);
-  const {
-    formTemplateName,
-    setFormTemplateName,
-    formTemplateDescription,
-    setFormTemplateDescription,
-    pdfFile,
-  } = useCreateFormTemplate();
 
+  /**
+   * Sets the clicked form template to be chosen, allowing the user to select other
+   * features like editing and deleting for this form.  Note this does NOT prefill
+   * the useCreateFormTemplate data.
+   * @param id the id of the form template selected on screen
+   */
   const handleSelectTemplate = async (id: string) => {
     try {
       const response = await fetch(`/api/form-templates/${id}`);
@@ -59,37 +58,66 @@ function TemplateDirectory() {
     }
   };
 
+  /**
+   * Fetches the pdf file from the link of the selected form template
+   * and uses it to initialize the create form template context.
+   * Used to pre-fill information before navigating to form template edit mode.
+   */
+  const fetchPdfFile = async () => {
+    if (formTemplate?.formDocLink) {
+      const response = await fetch(formTemplate.formDocLink);
+      const blob = await response.blob();
+      const file = new File([blob], 'document.pdf', {
+        type: 'application/pdf',
+      });
+      setPdfFile(file);
+    }
+  };
+
   const disableFormTemplateMutation = useMutation({
     ...formTemplatesControllerDisableMutation(),
-    onSuccess: () => {
-    },
+    onSuccess: () => {},
   });
 
+  /**
+   * Marks the form template as "disabled" so it will appear as deleted to
+   * users.  This action will not affect existing form instances.  This
+   * action cannot be undone from the site, but the template will remain
+   * in the database.
+   */
   const submitRemove = async () => {
     if (!formTemplate) {
       return;
     }
 
-    await disableFormTemplateMutation.mutateAsync({
-      path: {
-        id: formTemplate.id
-      }
-    }).catch((e) => {
-      throw e;
-    });
+    await disableFormTemplateMutation
+      .mutateAsync({
+        path: {
+          id: formTemplate.id,
+        },
+      })
+      .catch((e) => {
+        throw e;
+      });
     console.log('finished');
     console.log(formTemplate);
     setIsOpen(false);
     setFormTemplate(null);
   };
 
-  const navigateToFormTemplateEditMode = () => {
+  /**
+   * Called on selection of editing a form template.  Prefills useCreateFormTemplate
+   * data and navigates to create template flow in edit mode.
+   */
+  function navigateToFormTemplateEditMode() {
     if (!formTemplate) {
       return;
     }
     setFormTemplateName(formTemplate.name);
-    router.push('/create-template/description');
-  };
+    setFormTemplateDescription(formTemplate.description);
+    setInEditMode(true);
+    fetchPdfFile().then(() => router.push('/create-template/description'));
+  }
 
   return (
     <>
@@ -182,7 +210,6 @@ function TemplateDirectory() {
         <TemplateSelectGrid
           allowCreate={false}
           handleSelectTemplate={handleSelectTemplate}
-          myTemplatesOnly={myTemplatesOnly}
           selectedFormTemplate={formTemplate}
         />
 

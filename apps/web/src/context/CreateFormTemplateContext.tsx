@@ -20,11 +20,16 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [formFields, setFormFields] = useState<FormFields>({});
   const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
+  const [inEditMode, setInEditMode] = useState<boolean>(false);
 
   const router = useRouter();
 
   useEffect(() => {
-    if (!pdfFile && router.pathname !== '/create-template/upload') {
+    if (
+      !pdfFile &&
+      router.pathname !== '/create-template/upload' &&
+      router.pathname !== '/template-directory'
+    ) {
       router.push('/create-template/upload');
     }
   }, [pdfFile, router]);
@@ -42,6 +47,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFormFields,
         fieldGroups,
         setFieldGroups,
+        inEditMode,
+        setInEditMode,
       }}
     >
       {children}

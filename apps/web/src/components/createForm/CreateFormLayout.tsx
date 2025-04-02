@@ -44,7 +44,6 @@ export const CreateFormLayout = ({
       <Flex position="absolute" margin="0px" zIndex={5000}>
         <SideCreateForm curStep={pageNumber} isFormTemplate={isFormTemplate} />
       </Flex>
-
       <Heading
         color="#2A2B2D"
         fontSize="30px"

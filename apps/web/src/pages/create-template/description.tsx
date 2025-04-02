@@ -14,13 +14,19 @@ function Description() {
     formTemplateDescription,
     setFormTemplateDescription,
     pdfFile,
+    inEditMode,
   } = useCreateFormTemplate();
+
+  function nullify() {
+    setFormTemplateName(null);
+    setFormTemplateDescription(null);
+  }
 
   return (
     <CreateFormLayout
       isFormTemplate={true}
       pageNumber={2}
-      heading={'Create form template'}
+      heading={inEditMode ? 'Edit form template' : 'Create form template'}
       subheading={'Give your form template a name and short description'}
       boxContent={
         <NameAndDescriptionBox
@@ -31,12 +37,9 @@ function Description() {
           setDescription={setFormTemplateDescription}
         />
       }
-      deleteFunction={() => {
-        setFormTemplateName(null);
-        setFormTemplateDescription(null);
-      }}
+      deleteFunction={nullify}
       submitLink={'/create-template/input-fields'}
-      backLink={'/create-template/upload'}
+      backLink={inEditMode ? '/template-directory' : '/create-template/upload'}
       disabled={!formTemplateName}
     />
   );

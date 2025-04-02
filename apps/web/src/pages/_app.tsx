@@ -91,6 +91,7 @@ export default function App({
   ];
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
+  const formDirectoryPath = '/template-directory';
 
   const head = (
     <Head>
@@ -110,6 +111,20 @@ export default function App({
   }
 
   if (appProps.router.pathname.includes(createFormTemplatePath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <CreateFormTemplateProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </CreateFormTemplateProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(formDirectoryPath)) {
     return (
       <>
         <WrapperComponent>

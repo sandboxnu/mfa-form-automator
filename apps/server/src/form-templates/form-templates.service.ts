@@ -288,7 +288,6 @@ export class FormTemplatesService {
             },
           },
         },
-        
       },
     });
     return updatedFormTemplate;
