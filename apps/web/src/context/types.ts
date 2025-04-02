@@ -69,6 +69,8 @@ export interface CreateFormTemplateContextType {
       | undefined
     >
   >;
+  inEditMode: boolean;
+  setInEditMode: Dispatch<SetStateAction<boolean>>;
 }
 export interface CreateFormInstanceContextType {
   formInstanceName: string | null;

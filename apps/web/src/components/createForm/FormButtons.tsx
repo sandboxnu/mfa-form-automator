@@ -51,6 +51,7 @@ export const FormButtons = ({
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
     formDimensions,
+    inEditMode,
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();

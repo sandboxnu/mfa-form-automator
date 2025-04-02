@@ -9,14 +9,19 @@ import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
  * The upload page in the form template creation flow, where users add their pdf.
  */
 function Review() {
-  const { formTemplateName, formTemplateDescription, pdfFile, fieldGroups } =
-    useCreateFormTemplate();
+  const {
+    formTemplateName,
+    formTemplateDescription,
+    pdfFile,
+    fieldGroups,
+    inEditMode,
+  } = useCreateFormTemplate();
 
   return (
     <FormLayout
       type={FormInteractionType.CreateFormTemplate}
       pageNumber={4}
-      heading={'Create form template'}
+      heading={inEditMode ? 'Edit form template' : 'Create form template'}
       subheading={'Review your form template'}
       boxContent={
         <ReviewBox

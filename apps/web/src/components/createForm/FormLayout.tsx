@@ -44,7 +44,6 @@ export const FormLayout = ({
       <Flex position="absolute" margin="0px" zIndex={5000}>
         <SideCreateForm curStep={pageNumber} interactionType={type} />
       </Flex>
-
       <Heading
         color="#2A2B2D"
         fontSize="30px"

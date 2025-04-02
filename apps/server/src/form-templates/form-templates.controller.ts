@@ -125,11 +125,10 @@ export class FormTemplatesController {
     required: false,
   })
   async findAll(@Query('limit') limit?: number) {
-    const formTemplates = (await this.formTemplatesService.findAll(limit))
-    return formTemplates.map(
-      (formTemplate) => new FormTemplateEntity(formTemplate),
-    ).filter(
-      (template) => !template.disabled);
+    const formTemplates = await this.formTemplatesService.findAll(limit);
+    return formTemplates
+      .map((formTemplate) => new FormTemplateEntity(formTemplate))
+      .filter((template) => !template.disabled);
   }
 
   @Get(':id')
@@ -214,7 +213,6 @@ export class FormTemplatesController {
     }
   }
 
-
   @Patch(':id')
   @UseGuards(AdminAuthGuard)
   @ApiOkResponse({ type: FormTemplateEntity })
@@ -224,12 +222,9 @@ export class FormTemplatesController {
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async disable(@Param('id') id: string,
-) {
+  async disable(@Param('id') id: string) {
     try {
-      const updatedFormTemplate = await this.formTemplatesService.disable(
-        id
-      );
+      const updatedFormTemplate = await this.formTemplatesService.disable(id);
       return new FormTemplateEntity(updatedFormTemplate);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {

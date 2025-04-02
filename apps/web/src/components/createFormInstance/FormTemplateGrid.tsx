@@ -7,12 +7,10 @@ import { FormTemplateEntity } from '@web/client';
 export const TemplateSelectGrid = ({
   allowCreate,
   handleSelectTemplate,
-  myTemplatesOnly,
   selectedFormTemplate,
 }: {
   allowCreate: boolean;
   handleSelectTemplate: any;
-  myTemplatesOnly?: boolean;
   selectedFormTemplate: FormTemplateEntity | null;
 }) => {
   const { data: formTemplates } = useQuery<FormTemplateEntity[]>({

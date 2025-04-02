@@ -96,6 +96,7 @@ export default function App({
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
   const signFormInstancePath = '/sign-form';
+  const formDirectoryPath = '/template-directory';
 
   // Check if the current page is an error page
   const isErrorPage =
@@ -122,6 +123,20 @@ export default function App({
   }
 
   if (appProps.router.pathname.includes(createFormTemplatePath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <CreateFormTemplateProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </CreateFormTemplateProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(formDirectoryPath)) {
     return (
       <>
         <WrapperComponent>

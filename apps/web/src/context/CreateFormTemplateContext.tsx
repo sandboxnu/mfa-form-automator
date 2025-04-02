@@ -24,11 +24,16 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
     width: number;
     height: number;
   }>();
+  const [inEditMode, setInEditMode] = useState<boolean>(false);
 
   const router = useRouter();
 
   useEffect(() => {
-    if (!pdfFile && router.pathname !== '/create-template/upload') {
+    if (
+      !pdfFile &&
+      router.pathname !== '/create-template/upload' &&
+      router.pathname !== '/template-directory'
+    ) {
       router.push('/create-template/upload');
     }
   }, [pdfFile, router]);
@@ -48,6 +53,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFieldGroups,
         formDimensions,
         setFormDimensions,
+        inEditMode,
+        setInEditMode,
       }}
     >
       {children}
