@@ -3,6 +3,7 @@ import InteractiveCheckbox from './InteractiveCheckbox';
 import TextField from './InteractiveTextField';
 
 export default function EditableFieldFactory({
+  data,
   color,
   currentPosition,
   type,
@@ -10,6 +11,10 @@ export default function EditableFieldFactory({
   pageNum,
   id,
 }: {
+  data: {
+    filled?: boolean;
+    text?: string;
+  };
   color: string;
   currentPosition: TextFieldPosition;
   type: FieldType;
@@ -19,6 +24,7 @@ export default function EditableFieldFactory({
 }) {
   return type === FieldType.CHECKBOX ? (
     <InteractiveCheckbox
+      data={data.filled ?? false}
       color={color}
       currentPosition={currentPosition}
       highlighted={highlighted}
@@ -27,6 +33,7 @@ export default function EditableFieldFactory({
     ></InteractiveCheckbox>
   ) : (
     <TextField
+      data={data.text ?? ''}
       color={color}
       currentPosition={currentPosition}
       highlighted={highlighted}

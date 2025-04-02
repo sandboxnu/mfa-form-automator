@@ -5,12 +5,14 @@ import { useState } from 'react';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 
 export default function TextField({
+  data, 
   color,
   currentPosition,
   highlighted,
   pageNum,
   id,
 }: {
+  data: string
   color: string;
   currentPosition: TextFieldPosition;
   highlighted: boolean;
@@ -55,6 +57,7 @@ export default function TextField({
         border={'none'}
         height={'100%'}
         resize={'none'}
+        defaultValue={data}
         onChange={(e) => {
           updateField(pageNum, id, e.target.value);
         }}

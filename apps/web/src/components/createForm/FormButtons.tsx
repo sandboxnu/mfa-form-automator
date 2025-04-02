@@ -191,7 +191,7 @@ export const FormButtons = ({
     router.push(submitLink);
   };
 
-  const __submitSignedForm = async () => {
+  const _submitSignedForm = async () => {
     if (!review) {
       await updatePDF();
       router.push(submitLink);
@@ -207,6 +207,7 @@ export const FormButtons = ({
           formInstanceId: formId,
         },
       });
+      router.push(submitLink);
     }
   };
 
@@ -288,7 +289,7 @@ export const FormButtons = ({
             } else if (type == FormInteractionType.CreateFormInstance) {
               _submitFormInstance();
             } else {
-              __submitSignedForm();
+              _submitSignedForm();
             }
           }}
         >

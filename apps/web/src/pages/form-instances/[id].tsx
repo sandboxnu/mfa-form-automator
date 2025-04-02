@@ -25,10 +25,11 @@ export function SignFormPage() {
   const { formInstance, isLoading, formInstanceError, fields, groupNumber } =
     useSignFormInstance();
 
-  const FieldBoxes = fields.map((page, index) => {
+  const FieldBoxes = fields.map((page) => {
     return page.map((templateBox) => {
       return (
         <EditableFieldFactory
+          data={templateBox.data}
           pageNum={templateBox.page}
           id={templateBox.id}
           key={templateBox.id}

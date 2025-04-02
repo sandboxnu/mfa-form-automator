@@ -5,12 +5,14 @@ import { useSignFormInstance } from '../../hooks/useSignFormInstance';
 import { useCallback } from 'react';
 
 export default function InteractiveCheckbox({
+  data,
   color,
   currentPosition,
   highlighted,
   pageNum,
   id,
 }: {
+  data: boolean;
   color: string;
   currentPosition: TextFieldPosition;
   highlighted: boolean;
@@ -51,6 +53,7 @@ export default function InteractiveCheckbox({
       }}
     >
       <Checkbox.Root
+        defaultChecked={data}
         onCheckedChange={(val) => updateField(pageNum, id, val.checked)}
       >
         <Checkbox.Control />
