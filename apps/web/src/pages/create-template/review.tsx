@@ -14,14 +14,14 @@ function Review() {
     formTemplateDescription,
     pdfFile,
     fieldGroups,
-    inEditMode,
+    useId,
   } = useCreateFormTemplate();
 
   return (
     <FormLayout
       type={FormInteractionType.CreateFormTemplate}
       pageNumber={4}
-      heading={inEditMode ? 'Edit form template' : 'Create form template'}
+      heading={useId ? 'Edit form template' : 'Create form template'}
       subheading={'Review your form template'}
       boxContent={
         <ReviewBox

@@ -5,6 +5,7 @@ import {
   formInstancesControllerCreateMutation,
   formInstancesControllerFindAllQueryKey,
   formTemplatesControllerCreateMutation,
+  formTemplatesControllerUpdateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
@@ -52,6 +53,7 @@ export const FormButtons = ({
     formFields: formFieldsContext,
     formDimensions,
     inEditMode,
+    useId,
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
@@ -76,6 +78,11 @@ export const FormButtons = ({
         queryKey: formInstancesControllerFindAllQueryKey(),
       });
     },
+  });
+
+  const updateFormTemplateMutation = useMutation({
+    ...formTemplatesControllerUpdateMutation(),
+    onSuccess: () => {},
   });
 
   /**

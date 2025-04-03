@@ -891,15 +891,18 @@ export const FormTemplateEntitySchema = {
 export const UpdateFormTemplateDtoSchema = {
   type: 'object',
   properties: {
-    file: {
-      type: 'string',
-      format: 'binary',
-    },
     name: {
       type: 'string',
     },
     description: {
       type: 'string',
+    },
+    fieldGroups: {
+      minItems: 1,
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/CreateFieldGroupDto',
+      },
     },
     disabled: {
       type: 'boolean',
