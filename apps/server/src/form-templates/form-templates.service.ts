@@ -249,6 +249,8 @@ export class FormTemplatesService {
       },
       data: {
         name: updateFormTemplateDto.name,
+        description: updateFormTemplateDto.description,
+        disabled: updateFormTemplateDto.disabled,
       },
       include: {
         fieldGroups: {

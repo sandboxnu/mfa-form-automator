@@ -6,12 +6,12 @@ import { useRouter } from 'next/router';
 
 function Success() {
   const router = useRouter();
-  const { inEditMode } = useCreateFormTemplate();
+  const { useId } = useCreateFormTemplate();
 
   return (
     <SuccessPage
       message={
-        inEditMode
+        useId
           ? 'Your form template has been updated!'
           : 'Your form template has been created!'
       }

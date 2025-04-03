@@ -4,6 +4,7 @@ import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
   formTemplatesControllerCreateMutation,
+  formTemplatesControllerUpdateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
@@ -45,7 +46,7 @@ export const FormButtons = ({
     pdfFile,
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
-    inEditMode,
+    useId,
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
@@ -67,6 +68,11 @@ export const FormButtons = ({
         queryKey: formTemplatesControllerFindAllQueryKey(),
       });
     },
+  });
+
+  const updateFormTemplateMutation = useMutation({
+    ...formTemplatesControllerUpdateMutation(),
+    onSuccess: () => {},
   });
 
   /**
@@ -117,16 +123,33 @@ export const FormButtons = ({
       orderVal += 1;
     });
 
-    if (inEditMode) {
+    if (useId) {
       // TODO: Add updateFormTemplateMutation
-    } else {
-      createFormTemplateMutation
+      await updateFormTemplateMutation
         .mutateAsync({
           body: {
             name: formTemplateName!!,
+            description: formTemplateDescription!!,
+            disabled: false,
+          },
+          path: {
+            id: useId,
+          },
+        })
+        .then((response) => {
+          return response;
+        })
+        .catch((e) => {
+          throw e;
+        });
+    } else {
+      await createFormTemplateMutation
+        .mutateAsync({
+          body: {
+            name: formTemplateName ?? '',
             fieldGroups: fieldGroups,
             file: pdfFile,
-            description: formTemplateDescription!!,
+            description: formTemplateDescription ?? '',
             disabled: false,
           },
         })
@@ -137,7 +160,6 @@ export const FormButtons = ({
           throw e;
         });
     }
-
     router.push(submitLink);
   };
 

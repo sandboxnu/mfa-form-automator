@@ -234,9 +234,9 @@ export type FormTemplateEntity = {
 };
 
 export type UpdateFormTemplateDto = {
-  file?: Blob | File;
   name?: string;
   description?: string;
+  fieldGroups?: Array<CreateFieldGroupDto>;
   disabled?: boolean;
 };
 
@@ -988,8 +988,8 @@ export type FormTemplatesControllerFindOneResponses = {
 export type FormTemplatesControllerFindOneResponse =
   FormTemplatesControllerFindOneResponses[keyof FormTemplatesControllerFindOneResponses];
 
-export type FormTemplatesControllerDisableData = {
-  body?: never;
+export type FormTemplatesControllerUpdateData = {
+  body: UpdateFormTemplateDto;
   path: {
     id: string;
   };
@@ -997,7 +997,7 @@ export type FormTemplatesControllerDisableData = {
   url: '/api/form-templates/{id}';
 };
 
-export type FormTemplatesControllerDisableErrors = {
+export type FormTemplatesControllerUpdateErrors = {
   /**
    * Bad Request
    */
@@ -1016,12 +1016,12 @@ export type FormTemplatesControllerDisableErrors = {
   422: unknown;
 };
 
-export type FormTemplatesControllerDisableResponses = {
+export type FormTemplatesControllerUpdateResponses = {
   200: FormTemplateEntity;
 };
 
-export type FormTemplatesControllerDisableResponse =
-  FormTemplatesControllerDisableResponses[keyof FormTemplatesControllerDisableResponses];
+export type FormTemplatesControllerUpdateResponse =
+  FormTemplatesControllerUpdateResponses[keyof FormTemplatesControllerUpdateResponses];
 
 export type DepartmentsControllerFindAllData = {
   body?: never;

@@ -50,8 +50,8 @@ export interface CreateFormTemplateContextType {
   setFormFields: Dispatch<SetStateAction<FormFields>>;
   fieldGroups: FieldGroups;
   setFieldGroups: Dispatch<SetStateAction<FieldGroups>>;
-  inEditMode: boolean;
-  setInEditMode: Dispatch<SetStateAction<boolean>>;
+  useId: string | null;
+  setUseId: Dispatch<SetStateAction<string | null>>;
 }
 export interface CreateFormInstanceContextType {
   formInstanceName: string | null;

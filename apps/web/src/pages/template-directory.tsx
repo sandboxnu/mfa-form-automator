@@ -8,7 +8,10 @@ import {
 } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import { FormTemplateEntity, Scope } from '@web/client';
-import { formTemplatesControllerDisableMutation } from '@web/client/@tanstack/react-query.gen';
+import {
+  formTemplatesControllerFindAllQueryKey,
+  formTemplatesControllerUpdateMutation,
+} from '@web/client/@tanstack/react-query.gen';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
 import isAuth from '@web/components/isAuth';
@@ -19,8 +22,9 @@ import {
   SeparatorIcon,
 } from '@web/static/icons';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
+import { queryClient } from './_app';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -30,7 +34,8 @@ function TemplateDirectory() {
     setFormTemplateName,
     setFormTemplateDescription,
     setPdfFile,
-    setInEditMode,
+    pdfFile,
+    setUseId,
   } = useCreateFormTemplate();
   const router = useRouter();
 
@@ -56,6 +61,7 @@ function TemplateDirectory() {
     } catch (error) {
       console.error(error);
     }
+    console.log(formTemplate);
   };
 
   /**
@@ -75,8 +81,12 @@ function TemplateDirectory() {
   };
 
   const disableFormTemplateMutation = useMutation({
-    ...formTemplatesControllerDisableMutation(),
-    onSuccess: () => {},
+    ...formTemplatesControllerUpdateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
   });
 
   /**
@@ -89,9 +99,13 @@ function TemplateDirectory() {
     if (!formTemplate) {
       return;
     }
+    await fetchPdfFile();
 
     await disableFormTemplateMutation
       .mutateAsync({
+        body: {
+          disabled: true,
+        },
         path: {
           id: formTemplate.id,
         },
@@ -115,7 +129,7 @@ function TemplateDirectory() {
     }
     setFormTemplateName(formTemplate.name);
     setFormTemplateDescription(formTemplate.description);
-    setInEditMode(true);
+    setUseId(formTemplate.id);
     fetchPdfFile().then(() => router.push('/create-template/description'));
   }
 
@@ -249,7 +263,7 @@ function TemplateDirectory() {
       <Modal
         isOpen={isOpen}
         onClose={() => {
-          formTemplatesControllerDisableMutation;
+          submitRemove;
         }}
         isCentered={true}
       >

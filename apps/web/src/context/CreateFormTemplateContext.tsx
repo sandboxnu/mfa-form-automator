@@ -20,7 +20,7 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [formFields, setFormFields] = useState<FormFields>({});
   const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
-  const [inEditMode, setInEditMode] = useState<boolean>(false);
+  const [useId, setUseId] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -47,8 +47,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFormFields,
         fieldGroups,
         setFieldGroups,
-        inEditMode,
-        setInEditMode,
+        useId,
+        setUseId,
       }}
     >
       {children}

@@ -96,7 +96,7 @@ model FormTemplate {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   description String?  @db.Text()
-  disabled    Boolean  @default(false) @db.Boolean
+  disabled    Boolean  @db.Boolean() @default(false)
 
   fieldGroups   FieldGroup[]
   formInstances FormInstance[]
