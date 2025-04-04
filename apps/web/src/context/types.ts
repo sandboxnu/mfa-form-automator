@@ -83,6 +83,8 @@ export interface CreateFormInstanceContextType {
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
+  useId: string | null;
+  setUseId: Dispatch<SetStateAction<string | null>>;
 }
 
 export interface SignFormInstanceContextType {
