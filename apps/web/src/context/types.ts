@@ -71,8 +71,8 @@ export interface CreateFormTemplateContextType {
   >;
   inEditMode: boolean;
   setInEditMode: Dispatch<SetStateAction<boolean>>;
-  useId: string | null;
-  setUseId: Dispatch<SetStateAction<string | null>>;
+  formTemplateUseId: string | null;
+  setFormTemplateUseId: Dispatch<SetStateAction<string | null>>;
 }
 export interface CreateFormInstanceContextType {
   formInstanceName: string | null;
@@ -83,8 +83,8 @@ export interface CreateFormInstanceContextType {
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
-  useId: string | null;
-  setUseId: Dispatch<SetStateAction<string | null>>;
+  formInstanceUseId: string | null;
+  setFormInstanceUseId: Dispatch<SetStateAction<string | null>>;
 }
 
 export interface SignFormInstanceContextType {

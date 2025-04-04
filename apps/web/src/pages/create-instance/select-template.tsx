@@ -8,7 +8,7 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useState } from 'react';
 
 function SelectTemplate() {
-  const { formTemplate } = useCreateFormInstance();
+  const { formTemplate, formInstanceUseId } = useCreateFormInstance();
   const { setFormTemplate, setFormInstanceName } = useCreateFormInstance();
 
   const handleSelectTemplate = async (id: string) => {
@@ -28,7 +28,9 @@ function SelectTemplate() {
     <FormLayout
       type={FormInteractionType.CreateFormInstance}
       pageNumber={1}
-      heading={'Create form instance'}
+      heading={
+        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
+      }
       subheading={'Select a form template'}
       boxContent={
         <TemplateSelectGrid

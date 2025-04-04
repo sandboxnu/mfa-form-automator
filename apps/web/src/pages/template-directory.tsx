@@ -42,7 +42,7 @@ function TemplateDirectory() {
     setFormTemplateDescription,
     setPdfFile,
     pdfFile,
-    setUseId,
+    setFormTemplateUseId,
     fieldGroups,
     setFieldGroups,
   } = useCreateFormTemplate();
@@ -185,7 +185,7 @@ function TemplateDirectory() {
 
     setFormTemplateName(formTemplate.name);
     setFormTemplateDescription(formTemplate.description);
-    setUseId(formTemplate.id);
+    setFormTemplateUseId(formTemplate.id);
     setFieldGroups(newGroups);
     fetchPdfFile().then(() => router.push('/create-template/description'));
   }

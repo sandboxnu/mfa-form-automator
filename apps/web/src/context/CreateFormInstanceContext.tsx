@@ -21,14 +21,17 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
   const [assignedGroupData, setAssignedGroupData] = useState<
     ContextAssignedGroupData[]
   >([]);
-  const [useId, setUseId] = useState<string | null>(null);
+  const [formInstanceUseId, setFormInstanceUseId] = useState<string | null>(
+    null,
+  );
 
   const router = useRouter();
 
   useEffect(() => {
     if (
       !formTemplate &&
-      router.pathname !== '/create-instance/select-template'
+      router.pathname !== '/create-instance/select-template' &&
+      router.pathname !== '/create-instance/success'
     ) {
       router.push('/create-instance/select-template');
     }
@@ -45,8 +48,8 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
         setFormTemplate,
         assignedGroupData: assignedGroupData,
         setAssignedGroupData: setAssignedGroupData,
-        useId,
-        setUseId,
+        formInstanceUseId,
+        setFormInstanceUseId,
       }}
     >
       {children}

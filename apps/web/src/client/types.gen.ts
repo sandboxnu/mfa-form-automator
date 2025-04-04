@@ -288,6 +288,7 @@ export type CreateFormInstanceDto = {
 export type UpdateFormInstanceDto = {
   name?: string;
   description?: string;
+  assignedGroups?: Array<CreateAssignedGroupDto>;
   formDocLink?: string;
 };
 

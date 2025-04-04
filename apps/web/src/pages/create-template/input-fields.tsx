@@ -20,14 +20,16 @@ function InputFields() {
     pdfFile,
     setFormDimensions,
     inEditMode,
-    useId,
+    formTemplateUseId,
   } = useCreateFormTemplate();
 
   return (
     <FormLayout
       type={FormInteractionType.CreateFormTemplate}
       pageNumber={3}
-      heading={useId ? 'Edit form template' : 'Create form template'}
+      heading={
+        formTemplateUseId ? 'Edit form template' : 'Create form template'
+      }
       subheading={
         'Select an assignee group and drag to add input fields for each'
       }
