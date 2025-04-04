@@ -131,6 +131,7 @@ export const FormButtons = ({
             name: formTemplateName!!,
             description: formTemplateDescription!!,
             disabled: false,
+            fieldGroups: fieldGroups,
           },
           path: {
             id: useId,

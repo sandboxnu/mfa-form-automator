@@ -21,6 +21,7 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
   const [assignedGroupData, setAssignedGroupData] = useState<
     ContextAssignedGroupData[]
   >([]);
+  const [useId, setUseId] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -44,6 +45,8 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
         setFormTemplate,
         assignedGroupData: assignedGroupData,
         setAssignedGroupData: setAssignedGroupData,
+        useId,
+        setUseId,
       }}
     >
       {children}

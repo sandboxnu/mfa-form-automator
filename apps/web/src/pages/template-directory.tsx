@@ -7,7 +7,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import { FormTemplateEntity, Scope } from '@web/client';
+import { FieldGroupBaseEntity, FormTemplateEntity, Scope } from '@web/client';
 import {
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
@@ -25,6 +25,13 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from './_app';
+import {
+  Field,
+  FieldGroupColor,
+  FieldGroups,
+  fieldId,
+  groupId,
+} from '@web/components/createFormTemplate/types';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -36,6 +43,8 @@ function TemplateDirectory() {
     setPdfFile,
     pdfFile,
     setUseId,
+    fieldGroups,
+    setFieldGroups,
   } = useCreateFormTemplate();
   const router = useRouter();
 
@@ -127,9 +136,57 @@ function TemplateDirectory() {
     if (!formTemplate) {
       return;
     }
+    const oldGroups: FieldGroupBaseEntity[] = formTemplate.fieldGroups;
+    let newGroups: Map<groupId, FieldGroupColor> = new Map<
+      groupId,
+      FieldGroupColor
+    >();
+
+    let newFields: Record<number, Map<fieldId, Field>> = {};
+    for (let oldGroup of oldGroups) {
+      newGroups.set(oldGroup.id, {
+        background: 'red',
+        border: 'red',
+        groupName: oldGroup.name,
+      });
+      for (let oldField of oldGroup.templateBoxes) {
+      }
+    }
+
+    /**
+
+     * export class TemplateBoxBaseEntity implements TemplateBox {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty({ enum: SignatureBoxFieldType })
+  type: SignatureBoxFieldType;
+
+  @ApiProperty()
+  x_coordinate: number;
+
+  @ApiProperty()
+  y_coordinate: number;
+
+  @Exclude()
+  fieldGroupId: string;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
+
+  constructor(partial: Partial<TemplateBoxBaseEntity>) {
+    Object.assign(this, partial);
+  }
+}
+     */
+
     setFormTemplateName(formTemplate.name);
     setFormTemplateDescription(formTemplate.description);
     setUseId(formTemplate.id);
+    setFieldGroups(newGroups);
     fetchPdfFile().then(() => router.push('/create-template/description'));
   }
 

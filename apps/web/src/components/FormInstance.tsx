@@ -73,6 +73,7 @@ const FormInstance = ({
    */
   const _handleFormSign = async () => {
     if (_nextAssignedGroup == null || !_userCanSign) return;
+    console.log(formInstance);
     signFormInstanceMutation
       .mutateAsync({
         path: {
