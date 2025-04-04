@@ -27,6 +27,12 @@ export const SignFormInstanceContextProvider = ({
       },
     }),
     enabled: !!id,
+    retry: (failureCount, error) => {
+      if (error.message === 'Request failed with status code 401') {
+        return false; // Do not retry on 401 errors
+      }
+      return failureCount < 3; // Retry up to 3 times for other errors
+    },
   });
 
   const [fields, setFields] = useState<FormField[][]>([]);
