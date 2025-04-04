@@ -25,7 +25,7 @@ jobs:
 
       - name: yarn install, build, and test
         run: |
-          yarn install -g @nestjs/cli
+          yarn global add @nestjs/cli
           yarn install
           yarn --cwd apps/server build
 
