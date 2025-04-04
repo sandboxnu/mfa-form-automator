@@ -29,7 +29,7 @@ function Review() {
         />
       }
       deleteFunction={() => {}}
-      submitLink={'/form-instance/success'}
+      submitLink={'/form-instances/success'}
       backLink={`/form-instances/${id}`}
       disabled={false}
       review={true}
@@ -37,4 +37,4 @@ function Review() {
   );
 }
 
-export default isAuth(Review, [Scope.ADMIN]);
+export default isAuth(Review,[Scope.CONTRIBUTOR, Scope.ADMIN]);

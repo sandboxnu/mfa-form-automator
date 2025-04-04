@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/react-query.gen';
 import { FormField, SignFormInstanceContextType } from '@web/context/types';
 import { useAuth } from '@web/hooks/useAuth';
-import { PDFButton, PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
+import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
 
 export const SignFormInstanceContext =
@@ -15,7 +15,7 @@ export const SignFormInstanceContextProvider = ({
   id: string;
   children: React.ReactNode;
 }) => {
-  const { userData, user } = useAuth();
+  const { user } = useAuth();
   const {
     data: formInstance,
     error: formInstanceError,
@@ -82,7 +82,18 @@ export const SignFormInstanceContextProvider = ({
     const fields = getFields();
 
     setFields(fields);
-    setPdfLink(formInstance.formDocLink);
+    let i = 0;
+    let currentFormDocLink = null;
+    console.log('Form Instance: ', formInstance);
+    while (
+      i < formInstance.assignedGroups.length &&
+      formInstance.assignedGroups[i].signedDocLink != null
+    ) {
+      currentFormDocLink = formInstance.assignedGroups[i].signedDocLink;
+      console.log('Current: ', currentFormDocLink);
+      i++;
+    }
+    setPdfLink(currentFormDocLink ?? formInstance.formDocLink);
     setFormTemplateName(formInstance.formTemplate.name);
   }, [
     formInstance,
@@ -108,13 +119,37 @@ export const SignFormInstanceContextProvider = ({
       return updatedFields;
     });
   };
+
+  const clearAddedBoxes = async () => {
+    const existingPdfBytes = await fetch(pdfLink).then((res) =>
+      res.arrayBuffer(),
+    );
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const form = pdfDoc.getForm();
+    if (fields) {
+      fields.forEach((formFields, pageNum) => {
+        formFields.forEach((field, index) => {
+          form.getFields().forEach((fieldOnForm) => {
+            if (fieldOnForm.getName() == field.id) {
+              form.removeField(fieldOnForm);
+            }
+          });
+        });
+      });
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      setPdfBlob(blob);
+      setPdfLink(url);
+    }
+  };
+
   const updatePDF = async () => {
     const existingPdfBytes = await fetch(pdfLink).then((res) =>
       res.arrayBuffer(),
     );
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const form = pdfDoc.getForm();
-    form.getFields().forEach((field) => form.removeField(field));
 
     fields.forEach((formFields, pageNum) => {
       const page = pdfDoc.getPage(pageNum);
@@ -197,6 +232,7 @@ export const SignFormInstanceContextProvider = ({
         pdfBlob,
         setPdfBlob,
         assignedGroupId,
+        clearAddedBoxes,
       }}
     >
       {children}

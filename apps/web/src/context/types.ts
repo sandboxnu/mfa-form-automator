@@ -85,6 +85,7 @@ export interface SignFormInstanceContextType {
   fields: FormField[][];
   pdfLink: string;
   formTemplateName: string;
+  clearAddedBoxes: () => void;
   setFields: Dispatch<SetStateAction<FormField[][]>>;
   groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;

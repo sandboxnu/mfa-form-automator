@@ -47,16 +47,16 @@ export const SignFormInstancePreview = ({
     if (!formInstance) {
       return false;
     }
-    // get the AssignedGroupEntity that is next to sign the form
     let nextToSign: AssignedGroupEntity | null = null;
-    let prev: AssignedGroupEntity | null = null;
-    for (let assigned of formInstance.assignedGroups) {
-      if (prev == null || (prev.signed && !assigned.signed)) {
-        nextToSign = assigned;
-        break;
-      }
-      prev = assigned;
+    let i = 0;
+    while (
+      i < formInstance.assignedGroups.length &&
+      formInstance.assignedGroups[i].signed == true
+    ) {
+      i += 1;
     }
+    nextToSign = formInstance.assignedGroups[i];
+
     if (nextToSign?.signerType == 'POSITION') {
       return user?.positionId == nextToSign.signerPositionId;
     } else if (nextToSign?.signerType == 'DEPARTMENT') {

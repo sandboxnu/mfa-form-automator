@@ -10,6 +10,7 @@ import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { useRouter } from 'next/router';
 import ErrorComponent from './../../components/Error';
 import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import { Scope } from '@web/client';
 
 export function SignFormPage() {
   const groupColors = [
@@ -79,4 +80,4 @@ export function SignFormPage() {
   );
 }
 
-export default isAuth(SignFormPage, []);
+export default isAuth(SignFormPage, [Scope.CONTRIBUTOR, Scope.ADMIN]);

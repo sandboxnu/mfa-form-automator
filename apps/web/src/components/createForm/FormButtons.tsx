@@ -53,7 +53,8 @@ export const FormButtons = ({
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
 
-  const { updatePDF, pdfBlob, formId, assignedGroupId } = useSignFormInstance();
+  const { updatePDF, pdfBlob, formId, assignedGroupId, clearAddedBoxes } =
+    useSignFormInstance();
 
   const { user } = useAuth();
 
@@ -207,6 +208,7 @@ export const FormButtons = ({
           formInstanceId: formId,
         },
       });
+      console.log('Submit: ', res);
       router.push(submitLink);
     }
   };
@@ -256,6 +258,9 @@ export const FormButtons = ({
             bgColor: 'transparent',
           }}
           onClick={() => {
+            if (type == FormInteractionType.SignFormInstance) {
+              clearAddedBoxes();
+            }
             router.push(backLink);
           }}
         >
