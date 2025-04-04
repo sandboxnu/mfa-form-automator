@@ -31,4 +31,4 @@ function Review() {
   );
 }
 
-export default isAuth(Review, [Scope.CONTRIBUTOR, Scope.ADMIN]);
+export default isAuth(Review);

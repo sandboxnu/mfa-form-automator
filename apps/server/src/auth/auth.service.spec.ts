@@ -9,6 +9,7 @@ import { PositionBaseEntity } from '../positions/entities/position.entity';
 import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
 import { EmployeeScope } from '@prisma/client';
+import { MockValidateEmployeeHandler } from '../employees/validate-employee/MockValidateEmployeeHandler';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -24,6 +25,10 @@ describe('AuthService', () => {
         PositionsService,
         PrismaService,
         JwtService,
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
+        },
       ],
     }).compile();
 

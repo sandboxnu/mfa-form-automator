@@ -22,4 +22,9 @@ export class RegisterEmployeeDto {
   @MinLength(5)
   @ApiProperty()
   password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  accessToken: string;
 }

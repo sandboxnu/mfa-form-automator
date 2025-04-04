@@ -32,4 +32,4 @@ function AssignGroups() {
   );
 }
 
-export default isAuth(AssignGroups, [Scope.CONTRIBUTOR, Scope.ADMIN]);
+export default isAuth(AssignGroups);

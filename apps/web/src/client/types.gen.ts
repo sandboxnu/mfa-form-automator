@@ -9,6 +9,7 @@ export type RegisterEmployeeDto = {
   lastName: string;
   email: string;
   password: string;
+  accessToken: string;
 };
 
 export type DepartmentEntity = {
@@ -56,6 +57,7 @@ export type CreateEmployeeDto = {
   email: string;
   password: string;
   scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
+  accessToken: string;
 };
 
 export type OnboardEmployeeDto = {
@@ -68,6 +70,7 @@ export type UpdateEmployeeDto = {
   lastName?: string;
   positionId?: string | null;
   scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
+  accessToken?: string;
 };
 
 export type CreatePositionDto = {

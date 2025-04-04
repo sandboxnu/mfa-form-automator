@@ -46,7 +46,8 @@ export function SignFormPage() {
         />
       );
     });
-  });
+  })
+  
 
   if (isLoading) {
     return <FormLoading />;
@@ -73,6 +74,9 @@ export function SignFormPage() {
           deleteFunction={() => {}}
           disabled={false}
         />
+     ) : formInstanceError?.message ===
+        'Request failed with status code 401' ? (
+        <ErrorComponent primaryErrorMessage="User is not authorized to access this form instance" />
       ) : (
         <ErrorComponent />
       )}

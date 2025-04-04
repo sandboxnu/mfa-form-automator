@@ -36,7 +36,7 @@ export type jwtPayload = {
 export interface AuthContextType {
   user?: User;
   userData?: GraphUser;
-  login: (email: string, password: string) => void;
+  login: (email: string, password: string) => Promise<boolean>;
   azureLogin: () => void;
   completeRegistration: (
     department: string,

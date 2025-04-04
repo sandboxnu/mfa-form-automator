@@ -12,6 +12,7 @@ import {
   ValidationPipe,
   UseInterceptors,
   UploadedFile,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { FormInstancesService } from './form-instances.service';
 import { CreateFormInstanceDto } from './dto/create-form-instance.dto';
@@ -28,7 +29,7 @@ import {
   ApiQuery,
   ApiConsumes,
 } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
+import { $Enums, Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { FormInstanceEntity } from './entities/form-instance.entity';
 import { FormInstanceErrorMessage } from './form-instance.errors';
@@ -40,18 +41,19 @@ import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
 import { ParseFormDataJsonPipe } from '../form-templates/form-templates.controller';
-import { ContributorAuthGuard } from '../auth/guards/contributor-auth.guard';
+import { EmployeesService } from '../employees/employees.service';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
 export class FormInstancesController {
   constructor(
     private readonly formInstancesService: FormInstancesService,
+    private readonly employeesService: EmployeesService,
     private readonly loggerService: LoggerServiceImpl,
   ) {}
 
   @Post()
-  @UseGuards(ContributorAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiCreatedResponse({ type: FormInstanceEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
@@ -121,8 +123,9 @@ export class FormInstancesController {
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @AuthUser() currentUser: UserEntity) {
     const formInstance = await this.formInstancesService.findOne(id);
+    const employee = await this.employeesService.findOne(currentUser.id);
 
     if (formInstance == null) {
       this.loggerService.error(
@@ -130,6 +133,26 @@ export class FormInstancesController {
       );
       throw new NotFoundException(
         FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
+      );
+    }
+
+    // check originator and signers, and if user is an admin
+    if (
+      employee.scope !== $Enums.EmployeeScope.ADMIN &&
+      formInstance.originatorId !== currentUser.id &&
+      !formInstance.assignedGroups.some((group) => {
+        return (
+          group.signerEmployeeId === currentUser.id ||
+          group.signerDepartmentId === employee.position?.departmentId ||
+          group.signerPositionId === employee.position?.id
+        );
+      })
+    ) {
+      this.loggerService.error(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_AUTHORIZED,
+      );
+      throw new UnauthorizedException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_AUTHORIZED,
       );
     }
 

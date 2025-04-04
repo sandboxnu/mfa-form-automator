@@ -33,4 +33,4 @@ function Upload() {
   );
 }
 
-export default isAuth(Upload, [Scope.ADMIN]);
+export default isAuth(Upload, [Scope.ADMIN, Scope.CONTRIBUTOR]);

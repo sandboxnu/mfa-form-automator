@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Input } from '@chakra-ui/react';
 import { useAuth } from '@web/hooks/useAuth.ts';
+import { toaster, Toaster } from './ui/toaster';
 
 /**
  * @param loginForm a form that contains the user's email and password
@@ -15,6 +16,7 @@ export const SignIn: React.FC = () => {
 
   return (
     <>
+      <Toaster />
       <Input
         placeholder="Email"
         marginBottom="20px"
@@ -38,7 +40,26 @@ export const SignIn: React.FC = () => {
         background="#4C658A"
         color="#FFF"
         marginBottom="20px"
-        onClick={() => login(loginForm.email, loginForm.password)}
+        onClick={async () => {
+          try {
+            if (!(await login(loginForm.email, loginForm.password))) {
+              toaster.create({
+                title: 'Failed to log in',
+                description: 'Invalid credentials.',
+                type: 'error',
+                duration: 3000,
+              });
+            }
+          } catch (e) {
+            console.log(e);
+            toaster.create({
+              title: 'Failed to log in',
+              description: 'Please try again.',
+              type: 'error',
+              duration: 3000,
+            });
+          }
+        }}
       >
         Sign in
       </Button>

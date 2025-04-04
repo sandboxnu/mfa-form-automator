@@ -1,16 +1,9 @@
-import {
-  Button,
-  Flex,
-  Input,
-  NativeSelectField,
-  NativeSelectRoot,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
-import { useState } from 'react';
+import { Button, Flex, Input, Menu, Portal, Text } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import { RightSearchIcon } from '@web/static/icons.tsx';
 import { motion } from 'framer-motion';
 import { InputGroup } from './ui/input-group';
+import { FormInstanceEntity } from '@web/client';
 
 /**
  * @returns a search bar and sort by dropdown
@@ -18,16 +11,68 @@ import { InputGroup } from './ui/input-group';
 export const SearchAndSort = ({
   searchQuery,
   setSearchQuery,
+  formInstances,
+  setSortedFormInstances,
 }: {
   searchQuery: string;
   setSearchQuery: (searchQuery: string) => void;
+  formInstances: FormInstanceEntity[]; // This is used to sort the form instances
+  setSortedFormInstances: (sortedFormInstances: FormInstanceEntity[]) => void;
 }) => {
   const [showSearchField, setShowSearchField] = useState(false);
-  const [showButton, setShowButton] = useState(false);
+  const [showButton, setShowButton] = useState(true);
+  const [sortValue, setSortValue] = useState('Recent'); // Default sort value
+
+  useEffect(() => {
+    switch (sortValue.toLowerCase()) {
+      case 'recent':
+        setSortedFormInstances(
+          [...formInstances].sort((a, b) => {
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          }),
+        );
+        return;
+      case 'oldest':
+        setSortedFormInstances(
+          [...formInstances].sort((a, b) => {
+            return (
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            );
+          }),
+        );
+        return;
+      case 'a to z':
+        setSortedFormInstances(
+          [...formInstances].sort((a, b) => {
+            // Sort alphabetically by name
+            return a.name.localeCompare(b.name);
+          }),
+        );
+        return;
+    }
+  }, [sortValue]);
 
   return (
-    <>
-      <Flex alignItems="flex-end">
+    <Flex alignItems="flex-end">
+      <Flex>
+        {showButton && !showSearchField && (
+          <Button
+            unstyled
+            onClick={() => setShowSearchField(!showSearchField)}
+            height="32px"
+            alignItems="center"
+            p={0}
+            pr={1.5}
+            _hover={{
+              background: 'transparent', // Keep it transparent on hover
+              cursor: 'pointer',
+            }}
+          >
+            <RightSearchIcon color="#595959" w="28px" h="28px" />
+          </Button>
+        )}
         <motion.div
           initial={{ width: 0, opacity: 0 }}
           animate={{
@@ -37,63 +82,39 @@ export const SearchAndSort = ({
           transition={{ duration: 0.3 }}
           onAnimationComplete={() => setShowButton(!showSearchField)}
         >
-          <InputGroup
-            marginRight="12px"
-            startElement={
-              showSearchField ?? (
-                <Button
-                  onClick={() => setShowSearchField(!showSearchField)}
-                  justifyContent="flex-start"
-                >
-                  <RightSearchIcon color="#595959" w="25px" h="25px" />
-                </Button>
-              )
-            }
-            endElement={
-              !showSearchField ? (
-                <Button
-                  unstyled
-                  onClick={() => setShowSearchField(!showSearchField)}
-                  p={0}
-                >
-                  <RightSearchIcon color="#595959" w="25px" h="25px" />
-                </Button>
-              ) : undefined
-            }
-          >
-            <Input
-              // TODO: Used to be 16px, but we can't use absolute values in Chakra v3
-              size="sm"
-              borderRadius="0"
-              border="none"
-              marginRight="12px"
-              borderBottom="1px solid"
-              borderColor="#B0B0B0"
-              boxShadow="none"
-              _hover={{ borderColor: '#595959' }}
-              _focus={{
-                borderColor: '#595959',
-                boxShadow: 'none',
-              }}
-              placeholder="Search for forms"
-              value={searchQuery}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setSearchQuery(e.target.value)
-              }
-            />
-          </InputGroup>
+          <Flex alignItems="center" pr="10px">
+            <Button
+              unstyled
+              onClick={() => setShowSearchField(!showSearchField)}
+              height="32px"
+              alignItems="center"
+              p={0}
+              pr={1.5}
+            >
+              <RightSearchIcon color="#595959" w="28px" h="28px" />
+            </Button>
+            <InputGroup>
+              <Input
+                // TODO: Used to be 16px, but we can't use absolute values in Chakra v3
+                size="sm"
+                h="25px"
+                pl="2"
+                borderColor="#B0B0B0"
+                boxShadow="none"
+                _hover={{ borderColor: '#595959' }}
+                _focus={{
+                  borderColor: '#595959',
+                  boxShadow: 'none',
+                }}
+                placeholder="Search for forms"
+                value={searchQuery}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchQuery(e.target.value)
+                }
+              />
+            </InputGroup>
+          </Flex>
         </motion.div>
-        {showButton && !open && (
-          <Button
-            unstyled
-            onClick={() => setShowSearchField(!showSearchField)}
-            height="32px"
-            alignItems="center"
-            p={0}
-          >
-            <RightSearchIcon color="#595959" w="25px" h="25px" />
-          </Button>
-        )}
         <Text
           fontSize="16px"
           fontWeight="400"
@@ -104,24 +125,45 @@ export const SearchAndSort = ({
         >
           Sort by:
         </Text>
-        {/* TODO: https://chakra-ui.com/docs/components/menu Use Radio items here instead? */}
-        <NativeSelectRoot
-          minW="100px"
-          maxW="100px"
-          minH="32px"
-          maxH="32px"
-          backgroundColor="white"
-          borderRadius="md"
-          // TODO: Used to be 16px, but we can't use absolute values in Chakra v3
-          size="sm"
-        >
-          <NativeSelectField>
-            <option value="recent">&nbsp;&nbsp;Recent</option>
-            <option value="option2">&nbsp;&nbsp;Option 2</option>
-            <option value="option3">&nbsp;&nbsp;Option 3</option>
-          </NativeSelectField>
-        </NativeSelectRoot>
       </Flex>
-    </>
+
+      <Menu.Root>
+        <Menu.Trigger asChild>
+          <Button variant="outline" size="sm" p={2}>
+            {sortValue}
+          </Button>
+        </Menu.Trigger>
+        <Portal>
+          <Menu.Positioner>
+            <Menu.Content>
+              <Menu.RadioItemGroup
+                value={sortValue}
+                onValueChange={(e) => setSortValue(e.value)}
+              >
+                {[
+                  {
+                    value: 'Recent',
+                    label: 'Recent',
+                  },
+                  {
+                    value: 'Oldest',
+                    label: 'Oldest',
+                  },
+                  {
+                    value: 'A to Z',
+                    label: 'A to Z',
+                  },
+                ].map((item) => (
+                  <Menu.RadioItem key={item.value} value={item.value} p={2}>
+                    {item.label}
+                    <Menu.ItemIndicator />
+                  </Menu.RadioItem>
+                ))}
+              </Menu.RadioItemGroup>
+            </Menu.Content>
+          </Menu.Positioner>
+        </Portal>
+      </Menu.Root>
+    </Flex>
   );
 };
