@@ -15,6 +15,7 @@ function Description() {
     setFormInstanceName,
     setFormInstanceDescription,
     formTemplate,
+    formInstanceUseId,
   } = useCreateFormInstance();
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -38,7 +39,9 @@ function Description() {
     <CreateFormLayout
       isFormTemplate={false}
       pageNumber={2}
-      heading={'Create form instance'}
+      heading={
+        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
+      }
       subheading={'Edit your form instance name and description'}
       boxContent={
         <NameAndDescriptionBox

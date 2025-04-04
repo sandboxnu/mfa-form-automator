@@ -1,10 +1,18 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
+import {
+  CreateFieldGroupDto,
+  CreateTemplateBoxDto,
+  FormInstanceEntity,
+  formInstancesControllerFindAll,
+  formInstancesControllerFindAllCreatedByCurrentEmployee,
+  formInstancesControllerFindOne,
+} from '@web/client';
 import {
   formInstancesControllerCreateMutation,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerUpdateMutation,
+  formInstancesControllerUpdateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
@@ -12,6 +20,7 @@ import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
 import { useAuth } from '@web/hooks/useAuth';
+import { useForm } from '@web/hooks/useForm';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -39,6 +48,7 @@ export const FormButtons = ({
   heading: string;
 }) => {
   const router = useRouter();
+  const { pendingForms, todoForms } = useForm();
 
   const {
     formTemplateName,
@@ -46,10 +56,15 @@ export const FormButtons = ({
     pdfFile,
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
-    useId,
+    formTemplateUseId,
   } = useCreateFormTemplate();
-  const { assignedGroupData, formInstanceName, formTemplate } =
-    useCreateFormInstance();
+  const {
+    assignedGroupData,
+    formInstanceName,
+    formTemplate,
+    setFormInstanceUseId,
+    formInstanceUseId,
+  } = useCreateFormInstance();
   const { user } = useAuth();
 
   const createFormTemplateMutation = useMutation({
@@ -72,7 +87,20 @@ export const FormButtons = ({
 
   const updateFormTemplateMutation = useMutation({
     ...formTemplatesControllerUpdateMutation(),
-    onSuccess: () => {},
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
+  });
+
+  const updateFormInstanceMutation = useMutation({
+    ...formInstancesControllerUpdateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
   });
 
   /**
@@ -123,7 +151,7 @@ export const FormButtons = ({
       orderVal += 1;
     });
 
-    if (useId) {
+    if (formTemplateUseId) {
       // TODO: Add updateFormTemplateMutation
       await updateFormTemplateMutation
         .mutateAsync({
@@ -134,7 +162,7 @@ export const FormButtons = ({
             fieldGroups: fieldGroups,
           },
           path: {
-            id: useId,
+            id: formTemplateUseId,
           },
         })
         .then((response) => {
@@ -177,27 +205,62 @@ export const FormButtons = ({
       return;
     }
 
-    await createFormInstanceMutation.mutateAsync({
-      body: {
-        name: formInstanceName ?? formTemplate.name,
-        assignedGroups: assignedGroupData.map((data, _) => {
-          return {
-            order: data.order,
-            fieldGroupId: data.fieldGroupId,
-            signerType: data.signerType,
-            signerEmployeeList: data.signerEmployeeList,
-            signerDepartmentId: data.signerDepartmentId,
-            signerPositionId: data.signerPositionId,
-            signerEmployeeId: data.signerEmployeeId,
-          };
-        }),
-        originatorId: user.id,
-        formTemplateId: formTemplate.id,
-        formDocLink: formTemplate.formDocLink,
-        description: formTemplate.description ?? '',
-      },
-    });
+    // if the useId is not populated, we do not have an id for the instance we have been
+    // populating information for, so it is a *new* instance to create
+    if (!formInstanceUseId) {
+      await createFormInstanceMutation.mutateAsync({
+        body: {
+          name: formInstanceName ?? formTemplate.name,
+          assignedGroups: assignedGroupData.map((data, _) => {
+            return {
+              order: data.order,
+              fieldGroupId: data.fieldGroupId,
+              signerType: data.signerType,
+              signerEmployeeList: data.signerEmployeeList,
+              signerDepartmentId: data.signerDepartmentId,
+              signerPositionId: data.signerPositionId,
+              signerEmployeeId: data.signerEmployeeId,
+            };
+          }),
+          originatorId: user.id,
+          formTemplateId: formTemplate.id,
+          formDocLink: formTemplate.formDocLink,
+          description: formTemplate.description ?? '',
+        },
+      });
+    } else {
+      // when useId is populated, we are modifying an existing instance
+      await updateFormInstanceMutation.mutateAsync({
+        body: {
+          name: formInstanceName ?? formTemplate.name,
+          assignedGroups: assignedGroupData.map((data, _) => {
+            return {
+              order: data.order,
+              fieldGroupId: data.fieldGroupId,
+              signerType: data.signerType,
+              signerEmployeeList: data.signerEmployeeList,
+              signerDepartmentId: data.signerDepartmentId,
+              signerPositionId: data.signerPositionId,
+              signerEmployeeId: data.signerEmployeeId,
+            };
+          }),
+          formDocLink: formTemplate.formDocLink,
+          description: formTemplate.description ?? '',
+        },
+        path: {
+          id: formInstanceUseId,
+        },
+      });
+    }
 
+    // After a form is created, will either be in pending or (less likely but possible, todo)
+    // populate useId with the
+    for (let form of pendingForms.concat(todoForms)) {
+      if (form.name == formInstanceName) {
+        setFormInstanceUseId(form.id);
+        break;
+      }
+    }
     router.push(submitLink);
   };
 

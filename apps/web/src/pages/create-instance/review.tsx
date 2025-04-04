@@ -5,14 +5,20 @@ import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
 function Review() {
-  const { formInstanceName, formInstanceDescription, formTemplate } =
-    useCreateFormInstance();
+  const {
+    formInstanceName,
+    formInstanceDescription,
+    formTemplate,
+    formInstanceUseId,
+  } = useCreateFormInstance();
 
   return (
     <CreateFormLayout
       isFormTemplate={false}
       pageNumber={4}
-      heading={'Create form instance'}
+      heading={
+        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
+      }
       subheading={'Review your form instance'}
       boxContent={
         <ReviewBox

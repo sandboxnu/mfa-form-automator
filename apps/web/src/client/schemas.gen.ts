@@ -935,6 +935,13 @@ export const UpdateFormInstanceDtoSchema = {
     description: {
       type: 'string',
     },
+    assignedGroups: {
+      minItems: 1,
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/CreateAssignedGroupDto',
+      },
+    },
     formDocLink: {
       type: 'string',
     },

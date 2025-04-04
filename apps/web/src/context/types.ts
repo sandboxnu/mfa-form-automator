@@ -50,8 +50,8 @@ export interface CreateFormTemplateContextType {
   setFormFields: Dispatch<SetStateAction<FormFields>>;
   fieldGroups: FieldGroups;
   setFieldGroups: Dispatch<SetStateAction<FieldGroups>>;
-  useId: string | null;
-  setUseId: Dispatch<SetStateAction<string | null>>;
+  formTemplateUseId: string | null;
+  setFormTemplateUseId: Dispatch<SetStateAction<string | null>>;
 }
 export interface CreateFormInstanceContextType {
   formInstanceName: string | null;
@@ -62,8 +62,8 @@ export interface CreateFormInstanceContextType {
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
-  useId: string | null;
-  setUseId: Dispatch<SetStateAction<string | null>>;
+  formInstanceUseId: string | null;
+  setFormInstanceUseId: Dispatch<SetStateAction<string | null>>;
 }
 
 export type ContextAssignedGroupData = CreateAssignedGroupDto & {

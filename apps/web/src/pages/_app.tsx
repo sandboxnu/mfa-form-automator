@@ -83,14 +83,10 @@ export default function App({
     withCredentials: true,
   });
 
-  const excludeLayoutPaths = [
-    '/signin',
-    '/register',
-    '/create-template/success',
-    '/create-instance/success',
-  ];
+  const excludeLayoutPaths = ['/signin', '/register'];
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
+  // to allow template context to be populated before moving into edit mode
   const formDirectoryPath = '/template-directory';
 
   const head = (

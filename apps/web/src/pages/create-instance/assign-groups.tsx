@@ -5,14 +5,20 @@ import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
 function AssignGroups() {
-  const { formInstanceName, formInstanceDescription, formTemplate } =
-    useCreateFormInstance();
+  const {
+    formInstanceName,
+    formInstanceDescription,
+    formTemplate,
+    formInstanceUseId,
+  } = useCreateFormInstance();
 
   return (
     <CreateFormLayout
       isFormTemplate={false}
       pageNumber={3}
-      heading={'Create form instance'}
+      heading={
+        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
+      }
       subheading={
         'Assign your input field groups to a person, role, or department'
       }
