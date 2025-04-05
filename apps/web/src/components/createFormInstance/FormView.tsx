@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Box, Text } from '@chakra-ui/react';
 import PagingControl from '../createFormTemplate/createFormTemplateEditor/PagingControl';
@@ -16,11 +16,15 @@ const groupColors = [
   ['#A16308', '#FFFDDB'],
 ];
 
+// PDF and container dimensions
+const PDF_WIDTH = 1000;
+const CONTAINER_WIDTH = 800;
+
 export const FormView = ({
   formTemplateName,
   pdfUrl,
   fieldGroups,
-  scale = 1,
+  scale = 0.6875,
 }: {
   formTemplateName: string;
   pdfUrl: string;
@@ -30,6 +34,32 @@ export const FormView = ({
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const { assignedGroupData } = useCreateFormInstance();
+  const textRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  // to calculate box dimensions
+  const calculateDimensions = (type: string, assignedTo: string) => {
+    
+    let minWidth = 80;
+    let height = 30;
+    
+    if (type === 'CHECKBOX') {
+      minWidth = height = 30;
+    } else if (type === 'SIGNATURE') {
+      minWidth = 150;
+      height = 50;
+    }
+
+    const key = `${assignedTo}-${type}`;
+    const textElement = textRefs.current[key];
+    let width = minWidth;
+    
+    if (textElement) {
+      const textWidth = textElement.scrollWidth + 20;
+      width = Math.max(minWidth, textWidth);
+    }
+
+    return { width, height };
+  };
 
   return (
     <Box
@@ -68,29 +98,44 @@ export const FormView = ({
                   renderTextLayer={false}
                   pageNumber={pageNum + 1}
                 />
+                {/* Hidden text elements for measuring */}
+                <Box position="absolute" visibility="hidden" pointerEvents="none">
+                  {fieldGroups?.map((fieldGroup, groupIndex) => {
+                    const assignedTo = assignedGroupData[groupIndex]?.name || 'Unassigned';
+                    return fieldGroup.templateBoxes.map((box, boxIndex) => (
+                      <Text
+                        key={`measure-${groupIndex}-${boxIndex}`}
+                        ref={el => textRefs.current[`${assignedTo}-${box.type}`] = el}
+                        fontSize="12px"
+                        fontWeight="500"
+                      >
+                        {assignedTo}
+                      </Text>
+                    ));
+                  })}
+                </Box>
                 {fieldGroups?.map((fieldGroup, groupIndex) => {
                   const [borderColor, bgColor] = groupColors[groupIndex % groupColors.length];
                   const assignedTo = assignedGroupData[groupIndex]?.name || 'Unassigned';
                   
                   return fieldGroup.templateBoxes.map((box, boxIndex) => {
-                    // Calculate dimensions based on field type
-                    let width = 80; // Default for text fields
-                    let height = 30;
-                    if (box.type === 'CHECKBOX') {
-                      width = height = 10;
-                    } else if (box.type === 'SIGNATURE') {
-                      width = 150;
-                      height = 50;
-                    }
+                    // Calculate dimensions
+                    const { width, height } = calculateDimensions(box.type, assignedTo);
+
+                    // Scale the coordinates
+                    const x = box.x_coordinate * scale;
+                    const y = box.y_coordinate * scale;
+                    const scaledWidth = width * scale;
+                    const scaledHeight = height * scale;
 
                     return (
                       <Box
                         key={`${groupIndex}-${boxIndex}`}
                         position="absolute"
-                        left={`${box.x_coordinate * scale}px`}
-                        top={`${box.y_coordinate * scale}px`}
-                        width={`${width * scale}px`}
-                        height={`${height * scale}px`}
+                        left={`${x}px`}
+                        top={`${y}px`}
+                        width={`${scaledWidth}px`}
+                        height={`${scaledHeight}px`}
                         border={`1px solid ${borderColor}`}
                         backgroundColor={bgColor}
                         opacity="0.7"
@@ -109,6 +154,8 @@ export const FormView = ({
                           overflow="hidden"
                           textOverflow="ellipsis"
                           whiteSpace="nowrap"
+                          width="100%"
+                          paddingX="4px"
                         >
                           {assignedTo}
                         </Text>
