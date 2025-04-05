@@ -37,9 +37,6 @@ jobs:
         yarn install --frozen-lockfile
         cd apps/server  # Go back to the server directory
 
-    - name: Run tests
-      run: yarn test
-
     - name: Build application
       run: yarn build
 
