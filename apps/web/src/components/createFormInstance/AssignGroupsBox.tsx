@@ -49,13 +49,12 @@ export const AssignGroupsBox = ({
   const { assignedGroupData, setAssignedGroupData } = useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
   const { data: employees } = useQuery(employeesControllerFindAllOptions());
-  const { data: departments } = useQuery({
-    ...departmentsControllerFindAllOptions({
-      query: {
-        limit: 1000,
-      },
-    }),
-  });
+  const { data: departments } = useQuery(departmentsControllerFindAllOptions({
+    query: {
+      limit: 1000,
+    },
+  }));
+
   return (
     <Flex
       flexDirection={'row'}
@@ -115,7 +114,11 @@ export const AssignGroupsBox = ({
         >
           Preview Only
         </Text>
-        <FormView formTemplateName={name} pdfUrl={formLink} />
+        <FormView 
+          formTemplateName={name} 
+          pdfUrl={formLink} 
+          fieldGroups={fieldGroups}
+        />
       </Flex>
     </Flex>
   );
