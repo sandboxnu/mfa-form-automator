@@ -16,8 +16,7 @@ const groupColors = [
   ['#A16308', '#FFFDDB'],
 ];
 
-// PDF and container dimensions
-const PDF_WIDTH = 1000;
+// Container width
 const CONTAINER_WIDTH = 800;
 
 export const FormView = ({
@@ -80,7 +79,7 @@ export const FormView = ({
         <Box display="flex" justifyContent="center">
           <Box
             height="474px"
-            width="800px"
+            width={`${CONTAINER_WIDTH}px`}
             overflow="scroll"
             display="flex"
             flexDirection="column"
@@ -93,7 +92,7 @@ export const FormView = ({
             >
               <Box position="relative">
                 <Page
-                  width={1000}
+                  width={CONTAINER_WIDTH}
                   renderAnnotationLayer={false}
                   renderTextLayer={false}
                   pageNumber={pageNum + 1}
