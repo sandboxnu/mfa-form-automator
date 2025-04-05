@@ -180,7 +180,15 @@ export class Seeder {
   }
 
   private async upsertFormTemplate(data: FormTemplateData) {
-    const { id, name, formDocLink, description, fieldGroups } = data;
+    const {
+      id,
+      name,
+      formDocLink,
+      description,
+      fieldGroups,
+      pageHeight,
+      pageWidth,
+    } = data;
 
     await this.prisma.formTemplate.upsert({
       where: { id },
@@ -190,6 +198,8 @@ export class Seeder {
         name,
         formDocLink,
         description,
+        pageHeight,
+        pageWidth,
         fieldGroups: {
           create: fieldGroups.map((fieldGroup) => {
             return {
@@ -203,6 +213,9 @@ export class Seeder {
                     type: box.type,
                     x_coordinate: box.x_coordinate,
                     y_coordinate: box.y_coordinate,
+                    width: box.width,
+                    height: box.height,
+                    page: box.page,
                   };
                 }),
               },

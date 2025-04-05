@@ -1,5 +1,6 @@
 import { Scope } from '@web/client';
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { FormLayout } from '@web/components/createForm/FormLayout';
+import { FormInteractionType } from '@web/components/createForm/types';
 import { UploadBox } from '@web/components/createFormTemplate/UploadBox';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
@@ -11,8 +12,8 @@ function Upload() {
   const { pdfFile, setPdfFile } = useCreateFormTemplate();
 
   return (
-    <CreateFormLayout
-      isFormTemplate={true}
+    <FormLayout
+      type={FormInteractionType.CreateFormTemplate}
       pageNumber={1}
       heading={'Create form template'}
       subheading={'Upload your form PDF'}

@@ -20,6 +20,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [formFields, setFormFields] = useState<FormFields>({});
   const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
+  const [formDimensions, setFormDimensions] = useState<{width: number, height: number}>();
+
 
   const router = useRouter();
 
@@ -42,6 +44,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFormFields,
         fieldGroups,
         setFieldGroups,
+        formDimensions,
+        setFormDimensions
       }}
     >
       {children}

@@ -1,5 +1,6 @@
 import { Scope } from '@web/client/types.gen';
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { FormLayout } from '@web/components/createForm/FormLayout';
+import { FormInteractionType } from '@web/components/createForm/types';
 import { ReviewBox } from '@web/components/createFormInstance/ReviewBox';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
@@ -9,8 +10,8 @@ function Review() {
     useCreateFormInstance();
 
   return (
-    <CreateFormLayout
-      isFormTemplate={false}
+    <FormLayout
+      type={FormInteractionType.CreateFormInstance}
       pageNumber={4}
       heading={'Create form instance'}
       subheading={'Review your form instance'}

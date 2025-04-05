@@ -1,5 +1,6 @@
 import { Scope } from '@web/client';
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { FormLayout } from '@web/components/createForm/FormLayout';
+import { FormInteractionType } from '@web/components/createForm/types';
 import { ReviewBox } from '@web/components/createFormTemplate/ReviewBox';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
@@ -12,8 +13,8 @@ function Review() {
     useCreateFormTemplate();
 
   return (
-    <CreateFormLayout
-      isFormTemplate={true}
+    <FormLayout
+      type={FormInteractionType.CreateFormTemplate}
       pageNumber={4}
       heading={'Create form template'}
       subheading={'Review your form template'}

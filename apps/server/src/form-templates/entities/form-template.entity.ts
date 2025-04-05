@@ -13,6 +13,12 @@ export class FormTemplateBaseEntity implements FormTemplate {
   name: string;
 
   @ApiProperty()
+  pageWidth: number;
+
+  @ApiProperty()
+  pageHeight: number;
+
+  @ApiProperty()
   formDocLink: string;
 
   @IsOptional()

@@ -134,6 +134,8 @@ const formTemplates: FormTemplateData[] = [
     id: IT_EXIT_FORM_UUID,
     name: 'IT Exit Form',
     formDocLink: DEV_FORM_DOC_LINK,
+    pageWidth: 800,
+    pageHeight: 1035,
     fieldGroups: [
       {
         id: IT_EXIT_FORM_FIELD_GROUP_0_UUID,
@@ -145,6 +147,9 @@ const formTemplates: FormTemplateData[] = [
             type: SignatureBoxFieldType.SIGNATURE,
             x_coordinate: 0,
             y_coordinate: 0,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -158,6 +163,9 @@ const formTemplates: FormTemplateData[] = [
             type: SignatureBoxFieldType.SIGNATURE,
             x_coordinate: 0,
             y_coordinate: 0,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -169,6 +177,8 @@ const formTemplates: FormTemplateData[] = [
     name: 'Staffing Requisition',
     description: 'Staffing Requisition description',
     formDocLink: DEV_FORM_DOC_LINK,
+    pageWidth: 800,
+    pageHeight: 1035,
     fieldGroups: [
       {
         id: STAFFING_REQUISITION_FIELD_GROUP_0_UUID,
@@ -180,6 +190,9 @@ const formTemplates: FormTemplateData[] = [
             type: SignatureBoxFieldType.SIGNATURE,
             x_coordinate: 0,
             y_coordinate: 0,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -193,6 +206,9 @@ const formTemplates: FormTemplateData[] = [
             type: SignatureBoxFieldType.SIGNATURE,
             x_coordinate: 0,
             y_coordinate: 0,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -203,6 +219,8 @@ const formTemplates: FormTemplateData[] = [
     name: 'Network Add Change',
     description: 'Network Add Change description',
     formDocLink: DEV_FORM_DOC_LINK,
+    pageWidth: 800,
+    pageHeight: 1035,
     fieldGroups: [
       {
         id: NETWORK_ADD_CHANGE_FIELD_GROUP_0_UUID,
@@ -212,8 +230,11 @@ const formTemplates: FormTemplateData[] = [
           {
             id: uuidv4(),
             type: 'SIGNATURE',
-            x_coordinate: 0,
-            y_coordinate: 0,
+            x_coordinate: 50,
+            y_coordinate: 40,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -224,6 +245,8 @@ const formTemplates: FormTemplateData[] = [
     name: 'MFA Oracle Logon Request',
     description: 'MFA Oracle Logon Request description',
     formDocLink: DEV_FORM_DOC_LINK,
+    pageWidth: 800,
+    pageHeight: 1035,
     fieldGroups: [
       {
         id: MFA_ORACLE_LOGON_REQUEST_FIELD_GROUP_0_UUID,
@@ -233,8 +256,11 @@ const formTemplates: FormTemplateData[] = [
           {
             id: uuidv4(),
             type: SignatureBoxFieldType.SIGNATURE,
-            x_coordinate: 0,
-            y_coordinate: 0,
+            x_coordinate: 50,
+            y_coordinate: 100,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -246,8 +272,11 @@ const formTemplates: FormTemplateData[] = [
           {
             id: uuidv4(),
             type: SignatureBoxFieldType.SIGNATURE,
-            x_coordinate: 0,
-            y_coordinate: 0,
+            x_coordinate: 400,
+            y_coordinate: 400,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -258,6 +287,8 @@ const formTemplates: FormTemplateData[] = [
     name: 'Hybrid and Remote Work Agreement',
     description: 'Hybrid and Remote Work Agreement description',
     formDocLink: DEV_FORM_DOC_LINK,
+    pageWidth: 800,
+    pageHeight: 1035,
     fieldGroups: [
       {
         id: HYBRID_AND_REMOTE_WORK_AGREEMENT_FIELD_GROUP_0_UUID,
@@ -269,6 +300,9 @@ const formTemplates: FormTemplateData[] = [
             type: SignatureBoxFieldType.SIGNATURE,
             x_coordinate: 0,
             y_coordinate: 0,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -279,6 +313,8 @@ const formTemplates: FormTemplateData[] = [
     name: 'VPN Request',
     description: 'VPN Request description',
     formDocLink: DEV_FORM_DOC_LINK,
+    pageWidth: 800,
+    pageHeight: 1035,
     fieldGroups: [
       {
         id: VPN_REQUEST_FIELD_GROUP_0_UUID,
@@ -290,6 +326,9 @@ const formTemplates: FormTemplateData[] = [
             type: SignatureBoxFieldType.SIGNATURE,
             x_coordinate: 0,
             y_coordinate: 0,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -300,6 +339,8 @@ const formTemplates: FormTemplateData[] = [
     name: 'Digital MFA ID Badge Request',
     description: 'Digital MFA ID Badge Request description',
     formDocLink: DEV_FORM_DOC_LINK,
+    pageWidth: 800,
+    pageHeight: 1035,
     fieldGroups: [
       {
         id: DIGITAL_MFA_ID_BADGE_REQUEST_FIELD_GROUP_0_UUID,
@@ -311,6 +352,9 @@ const formTemplates: FormTemplateData[] = [
             type: SignatureBoxFieldType.SIGNATURE,
             x_coordinate: 0,
             y_coordinate: 0,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },
@@ -321,6 +365,8 @@ const formTemplates: FormTemplateData[] = [
     name: 'Travel Authorization',
     description: 'Travel Authorization description',
     formDocLink: DEV_FORM_DOC_LINK,
+    pageWidth: 800,
+    pageHeight: 1035,
     fieldGroups: [
       {
         id: TRAVEL_AUTHORIZATION_FIELD_GROUP_0_UUID,
@@ -332,6 +378,9 @@ const formTemplates: FormTemplateData[] = [
             type: SignatureBoxFieldType.SIGNATURE,
             x_coordinate: 0,
             y_coordinate: 0,
+            width: 100,
+            height: 100,
+            page: 0,
           },
         ],
       },

@@ -1,6 +1,7 @@
 import { Scope } from '@web/client/types.gen';
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { FormLayout } from '@web/components/createForm/FormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
+import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useEffect, useState } from 'react';
@@ -35,8 +36,8 @@ function Description() {
   }, [formTemplate?.formDocLink]);
 
   return (
-    <CreateFormLayout
-      isFormTemplate={false}
+    <FormLayout
+      type={FormInteractionType.CreateFormInstance}
       pageNumber={2}
       heading={'Create form instance'}
       subheading={'Edit your form instance name and description'}
