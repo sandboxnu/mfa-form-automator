@@ -118,6 +118,7 @@ export const AssignGroupsBox = ({
           formTemplateName={name} 
           pdfUrl={formLink} 
           fieldGroups={fieldGroups}
+          scale={0.6875}
         />
       </Flex>
     </Flex>

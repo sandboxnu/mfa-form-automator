@@ -17,12 +17,15 @@ const groupColors = [
 ];
 
 export const FormView = ({
+  formTemplateName,
   pdfUrl,
   fieldGroups,
+  scale = 1,
 }: {
   formTemplateName: string;
   pdfUrl: string;
-  fieldGroups?: FieldGroupBaseEntity[];
+  fieldGroups: FieldGroupBaseEntity[];
+  scale?: number;
 }) => {
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -31,76 +34,91 @@ export const FormView = ({
   return (
     <Box
       background="white"
-      borderRadius="0px"
-      width="100%"
+      borderRadius="12px"
       display="flex"
       flexDir="column"
       gap="20px"
+      width="100%"
     >
       <Box
         background="#F6F5F5"
-        borderRadius="5px"
+        borderRadius="8px"
         border="1px #E5E5E5 solid"
-        height="525px"
+        height="525"
         position="relative"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
       >
-        <Box
-          height="100%"
-          width="100%"
-          overflow="auto"
-          display="flex"
-          justifyContent="center"
-          position="relative"
-        >
-          <Document
-            file={pdfUrl}
-            onLoadSuccess={(data) => setTotalPages(data.numPages)}
+        <Box display="flex" justifyContent="center">
+          <Box
+            height="474px"
+            width="800px"
+            overflow="scroll"
+            display="flex"
+            flexDirection="column"
           >
-            <Page
-              width={1000}
-              renderAnnotationLayer={false}
-              renderTextLayer={false}
-              pageNumber={pageNum + 1}
-            />
-            {/* Overlay the template boxes */}
-            {fieldGroups?.map((fieldGroup, groupIndex) => {
-              const [borderColor, bgColor] = groupColors[groupIndex % groupColors.length];
-              const assignedTo = assignedGroupData[groupIndex]?.name || 'Unassigned';
-              
-              return fieldGroup.templateBoxes.map((box, boxIndex) => (
-                <Box
-                  key={`${groupIndex}-${boxIndex}`}
-                  position="absolute"
-                  left={`${box.x_coordinate}px`}
-                  top={`${box.y_coordinate}px`}
-                  width="80px"
-                  height="30px"
-                  border={`1px solid ${borderColor}`}
-                  backgroundColor={bgColor}
-                  opacity="0.7"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  _hover={{
-                    opacity: "1",
-                  }}
-                >
-                  <Text
-                    fontSize="12px"
-                    color={borderColor}
-                    fontWeight="500"
-                    textAlign="center"
-                    truncate
-                  >
-                    {assignedTo}
-                  </Text>
-                </Box>
-              ));
-            })}
-          </Document>
+            <Document
+              file={pdfUrl}
+              onLoadSuccess={(data) => {
+                setTotalPages(data.numPages);
+              }}
+            >
+              <Box position="relative">
+                <Page
+                  width={1000}
+                  renderAnnotationLayer={false}
+                  renderTextLayer={false}
+                  pageNumber={pageNum + 1}
+                />
+                {fieldGroups?.map((fieldGroup, groupIndex) => {
+                  const [borderColor, bgColor] = groupColors[groupIndex % groupColors.length];
+                  const assignedTo = assignedGroupData[groupIndex]?.name || 'Unassigned';
+                  
+                  return fieldGroup.templateBoxes.map((box, boxIndex) => {
+                    // Calculate dimensions based on field type
+                    let width = 80; // Default for text fields
+                    let height = 30;
+                    if (box.type === 'CHECKBOX') {
+                      width = height = 10;
+                    } else if (box.type === 'SIGNATURE') {
+                      width = 150;
+                      height = 50;
+                    }
+
+                    return (
+                      <Box
+                        key={`${groupIndex}-${boxIndex}`}
+                        position="absolute"
+                        left={`${box.x_coordinate * scale}px`}
+                        top={`${box.y_coordinate * scale}px`}
+                        width={`${width * scale}px`}
+                        height={`${height * scale}px`}
+                        border={`1px solid ${borderColor}`}
+                        backgroundColor={bgColor}
+                        opacity="0.7"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        _hover={{
+                          opacity: "1",
+                        }}
+                      >
+                        <Text
+                          fontSize="12px"
+                          color={borderColor}
+                          fontWeight="500"
+                          textAlign="center"
+                          overflow="hidden"
+                          textOverflow="ellipsis"
+                          whiteSpace="nowrap"
+                        >
+                          {assignedTo}
+                        </Text>
+                      </Box>
+                    );
+                  });
+                })}
+              </Box>
+            </Document>
+          </Box>
         </Box>
       </Box>
       <PagingControl
