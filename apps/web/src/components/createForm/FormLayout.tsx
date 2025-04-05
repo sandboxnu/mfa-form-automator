@@ -44,7 +44,7 @@ export const FormLayout = ({
       <Flex position="absolute" margin="0px" zIndex={5000}>
         <SideCreateForm
           curStep={pageNumber}
-          isFormTemplate={type == FormInteractionType.CreateFormTemplate}
+          isFormTemplate={type === FormInteractionType.CreateFormTemplate}
         />
       </Flex>
 
@@ -85,7 +85,7 @@ export const FormLayout = ({
       <FormButtons
         type={type}
         heading={
-          type == FormInteractionType.CreateFormTemplate
+          type === FormInteractionType.CreateFormTemplate
             ? 'Create form template'
             : type == FormInteractionType.CreateFormInstance
             ? 'Create form instance'

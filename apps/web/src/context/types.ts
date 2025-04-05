@@ -79,20 +79,18 @@ export interface CreateFormInstanceContextType {
 }
 
 export interface SignFormInstanceContextType {
-  formInstance: FormInstanceEntity | undefined; // Replace 'any' with your actual formInstance type
+  formInstance: FormInstanceEntity | undefined;
   formInstanceError: Error | null;
   isLoading: boolean;
   fields: FormField[][];
-  pdfLink: string;
+  originalPdfLink: string;
+  modifiedPdfLink: string;
   formTemplateName: string;
-  clearAddedBoxes: () => void;
   setFields: Dispatch<SetStateAction<FormField[][]>>;
   groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;
   updatePDF: () => Promise<void>;
-  pdfBlob: Blob | undefined;
-  setPdfBlob: React.Dispatch<React.SetStateAction<Blob | undefined>>;
-  formId: string;
+  modifiedPdfBlob: Blob | undefined;
   assignedGroupId: string | undefined;
 }
 

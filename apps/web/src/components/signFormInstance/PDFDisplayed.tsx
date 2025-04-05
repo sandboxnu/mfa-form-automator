@@ -1,9 +1,7 @@
 import { Box, Text } from '@chakra-ui/react';
-import { ReactNode, useRef, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { useState } from 'react';
+import { Document, Page } from 'react-pdf';
 import PagingControl from '../createFormTemplate/createFormTemplateEditor/PagingControl';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export const PDFDisplayed = ({
   formTemplateName,
@@ -16,10 +14,8 @@ export const PDFDisplayed = ({
 }) => {
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const documentRef = useRef<HTMLDivElement>(null);
 
   return (
-    
     <Box
       background="white"
       borderRadius="12px"
@@ -53,7 +49,6 @@ export const PDFDisplayed = ({
             height="474px"
             width="800px"
             overflow="scroll"
-            ref={documentRef}
             display="flex"
             flexDirection="column"
           >
@@ -69,8 +64,7 @@ export const PDFDisplayed = ({
                 pageNumber={pageNum + 1}
                 width={1000}
               >
-                {formFields[pageNum] &&
-                  formFields[pageNum].map((formBox) => formBox)}
+                {formFields[pageNum]}
               </Page>
             </Document>
           </Box>

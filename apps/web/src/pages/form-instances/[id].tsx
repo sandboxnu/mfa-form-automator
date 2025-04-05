@@ -9,7 +9,6 @@ import { PDFDisplayed } from '@web/components/signFormInstance/PDFDisplayed';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { useRouter } from 'next/router';
 import ErrorComponent from './../../components/Error';
-import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { Scope } from '@web/client';
 
 export function SignFormPage() {

@@ -3,7 +3,7 @@ import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/rea
 import { FormField, SignFormInstanceContextType } from '@web/context/types';
 import { useAuth } from '@web/hooks/useAuth';
 import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useRef, useState } from 'react';
 
 export const SignFormInstanceContext =
   createContext<SignFormInstanceContextType>({} as SignFormInstanceContextType);
@@ -37,13 +37,15 @@ export const SignFormInstanceContextProvider = ({
 
   const [fields, setFields] = useState<FormField[][]>([]);
   const [groupNumber, setGroupNumber] = useState<number>(0);
-  const [pdfLink, setPdfLink] = useState('');
+  const [modifiedPdfLink, setModifiedPdfLink] = useState('');
+  const [originalPdfLink, setOriginalPdfLink] = useState('');
   const [formTemplateName, setFormTemplateName] = useState('');
-  const [pdfBlob, setPdfBlob] = useState<Blob>();
+  const [modifiedPdfBlob, setModifiedPdfBlob] = useState<Blob>();
   const [assignedGroupId, setAssignedGroupId] = useState<string>();
 
   useEffect(() => {
     if (!formInstance || formInstanceError) return;
+
     const assignedGroups = formInstance?.assignedGroups.filter(
       (assignedGroup) =>
         assignedGroup.signerDepartmentId == user?.departmentId ||
@@ -90,16 +92,16 @@ export const SignFormInstanceContextProvider = ({
     setFields(fields);
     let i = 0;
     let currentFormDocLink = null;
-    console.log('Form Instance: ', formInstance);
     while (
       i < formInstance.assignedGroups.length &&
       formInstance.assignedGroups[i].signedDocLink != null
     ) {
       currentFormDocLink = formInstance.assignedGroups[i].signedDocLink;
-      console.log('Current: ', currentFormDocLink);
       i++;
     }
-    setPdfLink(currentFormDocLink ?? formInstance.formDocLink);
+    const pdfLink = currentFormDocLink ?? formInstance.formDocLink;
+    setOriginalPdfLink(pdfLink);
+    setModifiedPdfLink(pdfLink);
     setFormTemplateName(formInstance.formTemplate.name);
   }, [
     formInstance,
@@ -126,108 +128,86 @@ export const SignFormInstanceContextProvider = ({
     });
   };
 
-  const clearAddedBoxes = async () => {
-    const existingPdfBytes = await fetch(pdfLink).then((res) =>
+  const updatePDF = async () => {
+    const existingPdfBytes = await fetch(originalPdfLink).then((res) =>
       res.arrayBuffer(),
     );
-    const pdfDoc = await PDFDocument.load(existingPdfBytes);
-    const form = pdfDoc.getForm();
-    if (fields) {
+    if (existingPdfBytes) {
+      const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      const form = pdfDoc.getForm();
+
       fields.forEach((formFields, pageNum) => {
-        formFields.forEach((field, index) => {
-          form.getFields().forEach((fieldOnForm) => {
-            if (fieldOnForm.getName() == field.id) {
-              form.removeField(fieldOnForm);
+        const page = pdfDoc.getPage(pageNum);
+        const { width: pageWidth, height: pageHeight } = page.getSize();
+
+        formFields.forEach(async (field) => {
+          const { width, height, x_coordinate: x, y_coordinate: y } = field;
+          if (
+            formInstance?.formTemplate.pageHeight &&
+            formInstance?.formTemplate.pageWidth
+          ) {
+            const formWidth = formInstance?.formTemplate.pageWidth;
+            const formHeight = formInstance?.formTemplate.pageHeight;
+
+            const widthOnPdf = (width * pageWidth) / formWidth;
+            const heightOnPdf = (height * pageHeight) / formHeight;
+            const xCoordOnPdf = (x * pageWidth) / formWidth;
+            const yCoordOnPdf =
+              pageHeight - (y * pageHeight) / formHeight - heightOnPdf;
+
+            let fieldToBeAdded: PDFCheckBox | PDFTextField | undefined;
+            switch (field.type) {
+              //TODO: TEMPORARY
+              case 'SIGNATURE':
+                const emblemUrl =
+                  'https://pdf-lib.js.org/assets/mario_emblem.png';
+                const emblemImageBytes = await fetch(emblemUrl).then((res) =>
+                  res.arrayBuffer(),
+                );
+                const jpgImage = await pdfDoc.embedPng(emblemImageBytes);
+                page.drawImage(jpgImage, {
+                  x: xCoordOnPdf,
+                  y: yCoordOnPdf,
+                  width: widthOnPdf,
+                  height: heightOnPdf,
+                });
+                break;
+              case 'CHECKBOX':
+                fieldToBeAdded = form.createCheckBox(field.id);
+                fieldToBeAdded.check();
+                break;
+              case 'TEXT_FIELD':
+                fieldToBeAdded = form.createTextField(field.id);
+                fieldToBeAdded.setText(field.data.text);
+                break;
             }
-          });
+
+            if (fieldToBeAdded) {
+              fieldToBeAdded.addToPage(page, {
+                width: widthOnPdf,
+                height: heightOnPdf,
+                x: xCoordOnPdf,
+                y: yCoordOnPdf,
+              });
+            }
+          }
         });
       });
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
-      setPdfBlob(blob);
-      setPdfLink(url);
+      setModifiedPdfBlob(blob);
+      setModifiedPdfLink(url);
     }
-  };
-
-  const updatePDF = async () => {
-    const existingPdfBytes = await fetch(pdfLink).then((res) =>
-      res.arrayBuffer(),
-    );
-    const pdfDoc = await PDFDocument.load(existingPdfBytes);
-    const form = pdfDoc.getForm();
-
-    fields.forEach((formFields, pageNum) => {
-      const page = pdfDoc.getPage(pageNum);
-      const { width: pageWidth, height: pageHeight } = page.getSize();
-
-      formFields.forEach(async (field) => {
-        const { width, height, x_coordinate: x, y_coordinate: y } = field;
-        if (
-          formInstance?.formTemplate.pageHeight &&
-          formInstance?.formTemplate.pageWidth
-        ) {
-          const formWidth = formInstance?.formTemplate.pageWidth;
-          const formHeight = formInstance?.formTemplate.pageHeight;
-
-          const widthOnPdf = (width * pageWidth) / formWidth;
-          const heightOnPdf = (height * pageHeight) / formHeight;
-          const xCoordOnPdf = (x * pageWidth) / formWidth;
-          const yCoordOnPdf =
-            pageHeight - (y * pageHeight) / formHeight - heightOnPdf;
-
-          let fieldToBeAdded: PDFCheckBox | PDFTextField | undefined;
-          switch (field.type) {
-            //TODO: TEMPORARY
-            case 'SIGNATURE':
-              const emblemUrl =
-                'https://pdf-lib.js.org/assets/mario_emblem.png';
-              const emblemImageBytes = await fetch(emblemUrl).then((res) =>
-                res.arrayBuffer(),
-              );
-              const jpgImage = await pdfDoc.embedPng(emblemImageBytes);
-              page.drawImage(jpgImage, {
-                x: xCoordOnPdf,
-                y: yCoordOnPdf,
-                width: widthOnPdf,
-                height: heightOnPdf,
-              });
-              break;
-            case 'CHECKBOX':
-              fieldToBeAdded = form.createCheckBox(field.id);
-              fieldToBeAdded.check();
-              break;
-            case 'TEXT_FIELD':
-              fieldToBeAdded = form.createTextField(field.id);
-              fieldToBeAdded.setText(field.data.text);
-              break;
-          }
-
-          if (fieldToBeAdded) {
-            fieldToBeAdded.addToPage(page, {
-              width: widthOnPdf,
-              height: heightOnPdf,
-              x: xCoordOnPdf,
-              y: yCoordOnPdf,
-            });
-          }
-        }
-      });
-    });
-    const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    setPdfBlob(blob);
-    setPdfLink(url);
   };
 
   return (
     <SignFormInstanceContext.Provider
       value={{
-        formId: id,
         formInstanceError,
         isLoading,
-        pdfLink,
+        originalPdfLink,
+        modifiedPdfLink,
         formTemplateName,
         fields,
         setFields,
@@ -235,10 +215,8 @@ export const SignFormInstanceContextProvider = ({
         groupNumber,
         updateField,
         updatePDF,
-        pdfBlob,
-        setPdfBlob,
+        modifiedPdfBlob,
         assignedGroupId,
-        clearAddedBoxes,
       }}
     >
       {children}

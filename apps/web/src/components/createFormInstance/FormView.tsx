@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page } from 'react-pdf';
 import { Box, Text } from '@chakra-ui/react';
 import PagingControl from '../createFormTemplate/createFormTemplateEditor/PagingControl';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export const FormView = ({
   pdfUrl,

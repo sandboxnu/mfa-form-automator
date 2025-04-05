@@ -6,7 +6,7 @@ import {
   TextIcon,
 } from 'apps/web/src/static/icons';
 import { useRef, useState } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Document, Page } from 'react-pdf';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -17,8 +17,6 @@ import {
 } from '../types';
 import DraggableTextFactory from './DraggableBoxFactory';
 import PagingControl from './PagingControl';
-
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export const FormEditor = ({
   formTemplateName,
@@ -206,9 +204,8 @@ export const FormEditor = ({
       clientWidth: width,
       clientHeight: height,
     } = container;
-    if (setFormDimensions) {
-      setFormDimensions({ width, height });
-    }
+    if (setFormDimensions) setFormDimensions({ width, height });
+
     const centerX = scrollLeft + width / 2;
     const centerY = scrollTop + height / 2;
     return { centerX, centerY };
@@ -360,7 +357,7 @@ export const FormEditor = ({
           >
             <Document
               file={pdfFile}
-              onLoadSuccess={async (data) => {
+              onLoadSuccess={(data) => {
                 setTotalPages(data.numPages);
 
                 setFormFields(

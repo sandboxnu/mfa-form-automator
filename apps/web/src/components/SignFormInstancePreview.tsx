@@ -47,29 +47,29 @@ export const SignFormInstancePreview = ({
     if (!formInstance) {
       return false;
     }
-    let nextToSign: AssignedGroupEntity | null = null;
-    let i = 0;
-    while (
-      i < formInstance.assignedGroups.length &&
-      formInstance.assignedGroups[i].signed == true
-    ) {
-      i += 1;
-    }
-    nextToSign = formInstance.assignedGroups[i];
 
-    if (nextToSign?.signerType == 'POSITION') {
-      return user?.positionId == nextToSign.signerPositionId;
-    } else if (nextToSign?.signerType == 'DEPARTMENT') {
-      return user?.departmentId == nextToSign.signerDepartmentId;
-    } else if (nextToSign?.signerType == 'USER') {
-      return user?.id == nextToSign.signerEmployee?.id;
-    } else if (nextToSign?.signerType == 'USER_LIST') {
-      return nextToSign.signerEmployeeList?.reduce(
-        (acc, empl) => (empl.id == user?.id ? true : acc),
-        false,
-      );
+    const nextToSign = formInstance.assignedGroups.find(
+      (group) => !group.signed,
+    );
+    if (!nextToSign) {
+      return false;
     }
-    return false;
+
+    switch (nextToSign.signerType) {
+      case 'POSITION':
+        return user?.positionId === nextToSign.signerPositionId;
+      case 'DEPARTMENT':
+        return user?.departmentId === nextToSign.signerDepartmentId;
+      case 'USER':
+        return user?.id === nextToSign.signerEmployee?.id;
+      case 'USER_LIST':
+        return nextToSign.signerEmployeeList?.reduce(
+          (acc, empl) => (empl.id == user?.id ? true : acc),
+          false,
+        );
+      default:
+        return false;
+    }
   }
 
   return (

@@ -18,7 +18,9 @@ import { client } from '@web/client/client.gen';
 import { CreateFormInstanceProvider } from '@web/context/CreateFormInstanceContext';
 import { appControllerRefresh } from '@web/client';
 import { SignFormInstanceContextProvider } from '@web/context/SignFormInstanceContext';
-import { sign } from 'crypto';
+import { pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 client.instance.interceptors.response.use(
   (response) => response, // Directly return successful responses.

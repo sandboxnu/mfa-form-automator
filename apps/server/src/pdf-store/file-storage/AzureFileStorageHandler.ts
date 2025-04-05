@@ -16,10 +16,6 @@ export class AzureFileStorageHandler implements FileStorageHandler {
   async uploadFile(file: Buffer, fileName: string, fileExtension: string) {
     try {
       const path = `${BASE_PATH}/${fileName}.${fileExtension}`;
-      console.log(path);
-      console.log(
-        this.connectionString.slice(1, this.connectionString.length - 1),
-      );
       const containerClient = new ContainerClient(
         this.connectionString,
         CONTAINER_NAME,

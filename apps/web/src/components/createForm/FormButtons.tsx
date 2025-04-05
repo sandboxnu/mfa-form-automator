@@ -54,7 +54,7 @@ export const FormButtons = ({
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
 
-  const { updatePDF, pdfBlob, formId, assignedGroupId, clearAddedBoxes } =
+  const { updatePDF, modifiedPdfBlob, formInstance, assignedGroupId } =
     useSignFormInstance();
 
   const { user } = useAuth();
@@ -130,31 +130,31 @@ export const FormButtons = ({
 
       orderVal += 1;
     });
-
-    await createFormTemplateMutation
-      .mutateAsync({
-        body: {
-          pageHeight: formDimensions?.height ?? 1035,
-          pageWidth: formDimensions?.width ?? 800,
-          name: formTemplateName ?? '',
-          fieldGroups: fieldGroups,
-          file: pdfFile,
-          description: formTemplateDescription ?? '',
-        },
-      })
-      .then((response) => {
-        router.push(submitLink);
-        return response;
-      })
-      .catch((e) => {
-        toaster.create({
-          title: 'Failed to create form template',
-          description: (e as Error).message,
-          type: 'error',
-          duration: 3000,
+    if (formDimensions)
+      await createFormTemplateMutation
+        .mutateAsync({
+          body: {
+            pageHeight: formDimensions.height,
+            pageWidth: formDimensions.width,
+            name: formTemplateName ?? '',
+            fieldGroups: fieldGroups,
+            file: pdfFile,
+            description: formTemplateDescription ?? '',
+          },
+        })
+        .then((response) => {
+          router.push(submitLink);
+          return response;
+        })
+        .catch((e) => {
+          toaster.create({
+            title: 'Failed to create form template',
+            description: (e as Error).message,
+            type: 'error',
+            duration: 3000,
+          });
+          throw e;
         });
-        throw e;
-      });
   };
 
   /**
@@ -218,17 +218,16 @@ export const FormButtons = ({
       router.push(submitLink);
       return;
     }
-    if (assignedGroupId && pdfBlob) {
+    if (assignedGroupId && modifiedPdfBlob && formInstance) {
       const res = await signFormInstanceMutation.mutateAsync({
         body: {
-          file: pdfBlob,
+          file: modifiedPdfBlob,
           assignedGroupId,
         },
         path: {
-          formInstanceId: formId,
+          formInstanceId: formInstance?.id,
         },
       });
-      console.log('Submit: ', res);
       router.push(submitLink);
     }
   };
@@ -279,9 +278,6 @@ export const FormButtons = ({
             bgColor: 'transparent',
           }}
           onClick={() => {
-            if (type == FormInteractionType.SignFormInstance) {
-              clearAddedBoxes();
-            }
             router.push(backLink);
           }}
         >
@@ -311,12 +307,15 @@ export const FormButtons = ({
           marginRight="36px"
           disabled={disabled}
           onClick={() => {
-            if (type == FormInteractionType.CreateFormTemplate) {
-              _submitFormTemplate();
-            } else if (type == FormInteractionType.CreateFormInstance) {
-              _submitFormInstance();
-            } else {
-              _submitSignedForm();
+            switch (type) {
+              case FormInteractionType.CreateFormTemplate:
+                _submitFormTemplate();
+                break;
+              case FormInteractionType.CreateFormInstance:
+                _submitFormInstance();
+                break;
+              default:
+                _submitSignedForm();
             }
           }}
         >

@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
  * The upload page in the form template creation flow, where users add their pdf.
  */
 function Review() {
-  const { formInstance, pdfLink } = useSignFormInstance();
+  const { formInstance, modifiedPdfLink } = useSignFormInstance();
   const router = useRouter();
 
   const { id } = router.query;
@@ -23,7 +23,7 @@ function Review() {
       subheading={'Review your form submission'}
       boxContent={
         <ReviewBox
-          formLink={pdfLink ?? ''}
+          formLink={modifiedPdfLink ?? ''}
           name={formInstance?.name ?? ''}
           description={formInstance?.description ?? ''}
         />

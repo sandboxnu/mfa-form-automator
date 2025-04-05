@@ -1,6 +1,5 @@
 export enum FormInteractionType {
-    SignFormInstance = "SignFormInstance",
-    CreateFormInstance = 'CreateFormInstance',
-    CreateFormTemplate = 'CreateFormTemplate',
-
+  SignFormInstance = 'SignFormInstance',
+  CreateFormInstance = 'CreateFormInstance',
+  CreateFormTemplate = 'CreateFormTemplate',
 }
