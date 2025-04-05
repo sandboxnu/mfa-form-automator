@@ -28,7 +28,6 @@ jobs:
       with:
         node-version: '22'  # Use Node.js v22
         cache: 'yarn'
-        cache-dependency-path: '**/apps/server/yarn.lock'  # Target the server's yarn.lock
 
     - name: Install dependencies
       run: |
