@@ -43,6 +43,26 @@ jobs:
     - name: Package application
       run: |
         mkdir -p ../../deployment
+        # Add web.config for Node.js applications
+        echo '<?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+          <system.webServer>
+            <webSocket enabled="false" />
+            <handlers>
+              <add name="iisnode" path="dist/main.js" verb="*" modules="iisnode" />
+            </handlers>
+            <rewrite>
+              <rules>
+                <rule name="DynamicContent">
+                  <match url="/*" />
+                  <action type="Rewrite" url="dist/main.js"/>
+                </rule>
+              </rules>
+            </rewrite>
+            <iisnode watchedFiles="web.config;*.js"/>
+          </system.webServer>
+        </configuration>' > ../../deployment/web.config
+        
         cp -r dist ../../deployment/
         cp -r node_modules ../../deployment/
         cp package.json ../../deployment/
@@ -57,6 +77,9 @@ jobs:
         app-name: 'mfa-forms-test'           # Your Azure Web App name
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: './deployment/nestjs-server.zip'
+        slot-name: 'production'
+        respect-pom-xml: false
+        clean: true
 
     - name: Post-deployment notification
       if: success()
