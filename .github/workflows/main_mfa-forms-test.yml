@@ -1,7 +1,6 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - mfa-forms-test
+name: Build and deploy Next.js app to Azure Web App - mfa-forms-test
 
 on:
   push:
@@ -14,28 +13,42 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: "22.x"
+          node-version: '18.x' # Using LTS version for better compatibility with Azure
 
-      - name: npm install, build, and test
+      - name: Setup Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies and build
         run: |
-          yarn global add @nestjs/cli
           yarn install
           yarn --cwd apps/server build
 
+      # For Next.js Server-Side Rendering (SSR) deployment
+      - name: Prepare deployment package
+        run: |
+          mkdir -p deployment
+          cp -r apps/server/.next deployment/
+          cp -r apps/server/public deployment/ || true
+          cp apps/server/package.json deployment/
+          cp apps/server/next.config.js deployment/ || true
+          cp yarn.lock deployment/ || true
+          
+          # Ensure package.json has the right start script for Azure
+          node -e "const fs = require('fs'); const pkg = JSON.parse(fs.readFileSync('deployment/package.json')); if (!pkg.scripts || !pkg.scripts.start) { pkg.scripts = pkg.scripts || {}; pkg.scripts.start = 'next start'; } fs.writeFileSync('deployment/package.json', JSON.stringify(pkg, null, 2));"
+          
       - name: Zip artifact for deployment
-        run: cd apps/server && zip -r ../../release.zip ./*
-
+        run: cd deployment && zip -r ../release.zip ./*
+        
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
+          name: next-app
           path: release.zip
 
   deploy:
@@ -44,16 +57,26 @@ jobs:
     environment:
       name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: node-app
-
+          name: next-app
+          
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
+      # Add a delay to ensure no other deployments are in progress
+      - name: Wait for potential in-progress deployments
+        run: sleep 30
+        
+      # Download a fresh publish profile to avoid stale credentials
+      - name: Download fresh publish profile
+        uses: azure/actions/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        continue-on-error: true
+          
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -62,3 +85,5 @@ jobs:
           slot-name: "Production"
           package: .
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          respect-pom-xml: false
+          clean: true # This ensures a clean deployment
