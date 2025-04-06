@@ -88,6 +88,8 @@ const formTemplate = {
   name: 'Form-Template-1',
   formDocLink: 'mfa.org/form1',
   description: 'description',
+  pageWidth: 800,
+  pageHeight: 1035,
   signatureFields: [
     {
       id: '086885ca-ecc8-4614-8103-9a99fa0bdf6d',
@@ -113,6 +115,9 @@ const formTemplate = {
           type: SignatureBoxFieldType.TEXT_FIELD,
           x_coordinate: 0,
           y_coordinate: 0,
+          width: 100,
+          height: 100,
+          page: 0,
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
           fieldGroupId: 'fieldGroupId',
