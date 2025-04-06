@@ -33,7 +33,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd ../../  # Go to the root of the repo
-        yarn install --frozen-lockfile
+        yarn install --frozen-lockfile --production
         cd apps/web  # Go back to the web directory
 
     - name: Build application
@@ -50,7 +50,7 @@ jobs:
 
         cp -r node_modules deployment/
         cp package.json deployment/
-        
+
         # Create the deployment package
         cd deployment
         zip -r ../nextjs-server.zip .
