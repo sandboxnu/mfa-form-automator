@@ -51,6 +51,7 @@ jobs:
         # Create the deployment package
         cd ../../deployment
         yarn install --production
+        yarn prisma generate
         zip -r nestjs-server.zip .
 
     - name: Deploy to Azure Web App
