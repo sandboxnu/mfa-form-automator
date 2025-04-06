@@ -30,7 +30,7 @@ export const FormButtons = ({
   submitLink,
   backLink,
   disabled,
-  review,
+  review = false,
   heading,
 }: {
   type: FormInteractionType;
@@ -54,8 +54,7 @@ export const FormButtons = ({
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
 
-  const { updatePDF, modifiedPdfBlob, formInstance, assignedGroupId } =
-    useSignFormInstance();
+  const { submitSignFormPage } = useSignFormInstance();
 
   const { user } = useAuth();
 
@@ -212,26 +211,6 @@ export const FormButtons = ({
       });
   };
 
-  const _submitSignedForm = async () => {
-    if (!review) {
-      await updatePDF();
-      router.push(submitLink);
-      return;
-    }
-    if (assignedGroupId && modifiedPdfBlob && formInstance) {
-      const res = await signFormInstanceMutation.mutateAsync({
-        body: {
-          file: modifiedPdfBlob,
-          assignedGroupId,
-        },
-        path: {
-          formInstanceId: formInstance?.id,
-        },
-      });
-      router.push(submitLink);
-    }
-  };
-
   return (
     <>
       {!review ? (
@@ -315,7 +294,8 @@ export const FormButtons = ({
                 _submitFormInstance();
                 break;
               default:
-                _submitSignedForm();
+                submitSignFormPage(submitLink, review);
+                break;
             }
           }}
         >

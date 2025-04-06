@@ -89,9 +89,11 @@ export interface SignFormInstanceContextType {
   setFields: Dispatch<SetStateAction<FormField[][]>>;
   groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;
-  updatePDF: () => Promise<void>;
-  modifiedPdfBlob: Blob | undefined;
   assignedGroupId: string | undefined;
+  submitSignFormPage: (
+    submitLink: string,
+    isReviewPage: boolean,
+  ) => Promise<void>;
 }
 
 export type FormField = TemplateBoxBaseEntity & {

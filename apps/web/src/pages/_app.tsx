@@ -94,7 +94,7 @@ export default function App({
   ];
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
-  const signFormInstancePath = '/form-instances';
+  const signFormInstancePath = '/sign-form';
 
   const head = (
     <Head>

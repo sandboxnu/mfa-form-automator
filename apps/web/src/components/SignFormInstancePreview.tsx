@@ -193,9 +193,7 @@ export const SignFormInstancePreview = ({
                   padding="4px 16px"
                   borderRadius="6px"
                   background="#1367EA"
-                  onClick={() =>
-                    router.push('form-instances/' + formInstance.id)
-                  }
+                  onClick={() => router.push('sign-form/' + formInstance.id)}
                   _hover={{
                     background: '#1367EA',
                   }}

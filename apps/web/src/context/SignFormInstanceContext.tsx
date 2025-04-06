@@ -1,9 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
-import { formInstancesControllerFindOneOptions } from '@web/client/@tanstack/react-query.gen';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  formInstancesControllerFindOneOptions,
+  formInstancesControllerSignFormInstanceMutation,
+} from '@web/client/@tanstack/react-query.gen';
 import { FormField, SignFormInstanceContextType } from '@web/context/types';
 import { useAuth } from '@web/hooks/useAuth';
+import router, { useRouter } from 'next/router';
 import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
-import React, { createContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 export const SignFormInstanceContext =
   createContext<SignFormInstanceContextType>({} as SignFormInstanceContextType);
@@ -40,9 +44,11 @@ export const SignFormInstanceContextProvider = ({
   const [modifiedPdfLink, setModifiedPdfLink] = useState('');
   const [originalPdfLink, setOriginalPdfLink] = useState('');
   const [formTemplateName, setFormTemplateName] = useState('');
-  const [modifiedPdfBlob, setModifiedPdfBlob] = useState<Blob>();
   const [assignedGroupId, setAssignedGroupId] = useState<string>();
-
+  const router = useRouter();
+  const signFormInstanceMutation = useMutation({
+    ...formInstancesControllerSignFormInstanceMutation(),
+  });
   useEffect(() => {
     if (!formInstance || formInstanceError) return;
 
@@ -128,76 +134,114 @@ export const SignFormInstanceContextProvider = ({
     });
   };
 
-  const updatePDF = async () => {
-    const existingPdfBytes = await fetch(originalPdfLink).then((res) =>
-      res.arrayBuffer(),
-    );
-    if (existingPdfBytes) {
-      const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      const form = pdfDoc.getForm();
+  const modifyPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
+    const form = pdfDoc.getForm();
 
-      fields.forEach((formFields, pageNum) => {
-        const page = pdfDoc.getPage(pageNum);
-        const { width: pageWidth, height: pageHeight } = page.getSize();
+    fields.forEach((formFields, pageNum) => {
+      const page = pdfDoc.getPage(pageNum);
+      const { width: pageWidth, height: pageHeight } = page.getSize();
 
-        formFields.forEach(async (field) => {
-          const { width, height, x_coordinate: x, y_coordinate: y } = field;
-          if (
-            formInstance?.formTemplate.pageHeight &&
-            formInstance?.formTemplate.pageWidth
-          ) {
-            const formWidth = formInstance?.formTemplate.pageWidth;
-            const formHeight = formInstance?.formTemplate.pageHeight;
+      formFields.forEach(async (field) => {
+        const { width, height, x_coordinate: x, y_coordinate: y } = field;
+        if (
+          formInstance?.formTemplate.pageHeight &&
+          formInstance?.formTemplate.pageWidth
+        ) {
+          const formWidth = formInstance?.formTemplate.pageWidth;
+          const formHeight = formInstance?.formTemplate.pageHeight;
 
-            const widthOnPdf = (width * pageWidth) / formWidth;
-            const heightOnPdf = (height * pageHeight) / formHeight;
-            const xCoordOnPdf = (x * pageWidth) / formWidth;
-            const yCoordOnPdf =
-              pageHeight - (y * pageHeight) / formHeight - heightOnPdf;
+          const widthOnPdf = (width * pageWidth) / formWidth;
+          const heightOnPdf = (height * pageHeight) / formHeight;
+          const xCoordOnPdf = (x * pageWidth) / formWidth;
+          const yCoordOnPdf =
+            pageHeight - (y * pageHeight) / formHeight - heightOnPdf;
 
-            let fieldToBeAdded: PDFCheckBox | PDFTextField | undefined;
-            switch (field.type) {
-              //TODO: TEMPORARY
-              case 'SIGNATURE':
-                const emblemUrl =
-                  'https://pdf-lib.js.org/assets/mario_emblem.png';
-                const emblemImageBytes = await fetch(emblemUrl).then((res) =>
-                  res.arrayBuffer(),
-                );
-                const jpgImage = await pdfDoc.embedPng(emblemImageBytes);
-                page.drawImage(jpgImage, {
-                  x: xCoordOnPdf,
-                  y: yCoordOnPdf,
-                  width: widthOnPdf,
-                  height: heightOnPdf,
-                });
-                break;
-              case 'CHECKBOX':
-                fieldToBeAdded = form.createCheckBox(field.id);
-                fieldToBeAdded.check();
-                break;
-              case 'TEXT_FIELD':
-                fieldToBeAdded = form.createTextField(field.id);
-                fieldToBeAdded.setText(field.data.text);
-                break;
-            }
-
-            if (fieldToBeAdded) {
-              fieldToBeAdded.addToPage(page, {
-                width: widthOnPdf,
-                height: heightOnPdf,
+          let fieldToBeAdded: PDFCheckBox | PDFTextField | undefined;
+          switch (field.type) {
+            //TODO: TEMPORARY
+            case 'SIGNATURE':
+              const emblemUrl =
+                'https://pdf-lib.js.org/assets/mario_emblem.png';
+              const emblemImageBytes = await fetch(emblemUrl).then((res) =>
+                res.arrayBuffer(),
+              );
+              const jpgImage = await pdfDoc.embedPng(emblemImageBytes);
+              page.drawImage(jpgImage, {
                 x: xCoordOnPdf,
                 y: yCoordOnPdf,
+                width: widthOnPdf,
+                height: heightOnPdf,
               });
-            }
+              break;
+            case 'CHECKBOX':
+              fieldToBeAdded = form.createCheckBox(field.id);
+              fieldToBeAdded.check();
+              break;
+            case 'TEXT_FIELD':
+              fieldToBeAdded = form.createTextField(field.id);
+              fieldToBeAdded.setText(field.data.text);
+              break;
           }
-        });
+
+          if (fieldToBeAdded) {
+            fieldToBeAdded.addToPage(page, {
+              width: widthOnPdf,
+              height: heightOnPdf,
+              x: xCoordOnPdf,
+              y: yCoordOnPdf,
+            });
+          }
+          router.push(submitLink);
+        }
       });
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      setModifiedPdfBlob(blob);
-      setModifiedPdfLink(url);
+    });
+    form.getFields().forEach((fieldOnForm) => {
+      fieldOnForm.enableReadOnly();
+    });
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    setModifiedPdfLink(url);
+  };
+
+  const submitPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
+    const form = pdfDoc.getForm();
+    form.getFields().forEach((fieldOnForm) => {
+      fieldOnForm.disableReadOnly();
+    });
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    if (assignedGroupId && blob && formInstance) {
+      const res = await signFormInstanceMutation.mutateAsync({
+        body: {
+          file: blob,
+          assignedGroupId,
+        },
+        path: {
+          formInstanceId: formInstance?.id,
+        },
+      });
+      console.log(res.assignedGroups[1].signedDocLink);
+      if (res) {
+        router.push(submitLink);
+      }
+    }
+  };
+  const submitSignFormPage = async (
+    submitLink: string,
+    isReviewPage: boolean,
+  ) => {
+    const existingPdfBytes = !isReviewPage
+      ? await fetch(originalPdfLink).then((res) => res.arrayBuffer())
+      : await fetch(modifiedPdfLink).then((res) => res.arrayBuffer());
+
+    if (existingPdfBytes) {
+      const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      if (!isReviewPage) {
+        modifyPdf(submitLink, pdfDoc);
+      } else {
+        submitPdf(submitLink, pdfDoc);
+      }
     }
   };
 
@@ -213,10 +257,9 @@ export const SignFormInstanceContextProvider = ({
         setFields,
         formInstance,
         groupNumber,
-        updateField,
-        updatePDF,
-        modifiedPdfBlob,
+        submitSignFormPage,
         assignedGroupId,
+        updateField,
       }}
     >
       {children}

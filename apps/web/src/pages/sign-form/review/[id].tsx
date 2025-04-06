@@ -29,8 +29,8 @@ function Review() {
         />
       }
       deleteFunction={() => {}}
-      submitLink={'/form-instances/success'}
-      backLink={`/form-instances/${id}`}
+      submitLink={'/sign-form/success'}
+      backLink={`/sign-form/${id}`}
       disabled={false}
       review={true}
     />

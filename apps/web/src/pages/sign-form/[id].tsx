@@ -8,7 +8,7 @@ import EditableFieldFactory from '@web/components/signFormInstance/EditableField
 import { PDFDisplayed } from '@web/components/signFormInstance/PDFDisplayed';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { useRouter } from 'next/router';
-import ErrorComponent from './../../components/Error';
+import ErrorComponent from '../../components/Error';
 import { Scope } from '@web/client';
 
 export function SignFormPage() {
@@ -67,7 +67,7 @@ export function SignFormPage() {
               />
             </Box>
           }
-          submitLink={`/form-instances/review/${id}`}
+          submitLink={`/sign-form/review/${id}`}
           backLink={'/'}
           deleteFunction={() => {}}
           disabled={false}
