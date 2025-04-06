@@ -42,13 +42,20 @@ jobs:
 
     - name: Package application
       run: |
+        # Create deployment directory
         mkdir -p deployment
-
-        # Copy necessary files
-        cp -r .next deployment/
+        
+        # Copy standalone build output
+        cp -r .next/standalone/* deployment/
+        
+        # Copy static and public assets
+        mkdir -p deployment/.next/static
+        cp -r .next/static deployment/.next/
         cp -r public deployment/
-        cp package.json deployment/
-
+        
+        # Add web.config
+        cp web.config deployment/
+        
         # Create the deployment package
         cd deployment
         zip -r ../nextjs-server.zip .
