@@ -50,6 +50,7 @@ jobs:
         
         # Create the deployment package
         cd ../../deployment
+        yarn install --production
         zip -r nestjs-server.zip .
 
     - name: Deploy to Azure Web App
