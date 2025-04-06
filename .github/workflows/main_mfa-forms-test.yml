@@ -44,21 +44,12 @@ jobs:
       run: |
         mkdir -p ../../deployment
 
-        # Copy application files
+        # Copy only the necessary files for Azure to build
         cp -r dist ../../deployment/
         cp package.json ../../deployment/
-
-        # Navigate to root directory to find the root package.json and yarn.lock
-        cd ../..
-        pwd
-        ls -la
-        
-        # Copy node_modules directly - simpler approach
-        mkdir -p deployment/node_modules
-        cp -r apps/server/node_modules/* deployment/node_modules/
         
         # Create the deployment package
-        cd deployment
+        cd ../../deployment
         zip -r nestjs-server.zip .
 
     - name: Deploy to Azure Web App
