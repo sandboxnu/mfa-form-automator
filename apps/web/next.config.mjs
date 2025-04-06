@@ -8,6 +8,7 @@ const nextConfig = {
     turbo: {},
     optimizePackageImports: ['@chakra-ui/react'],
   },
+  output: 'standalone',
   reactStrictMode: true,
   env: {
     PORT: process.env.FRONTEND_PORT,
