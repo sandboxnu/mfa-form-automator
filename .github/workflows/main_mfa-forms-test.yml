@@ -43,42 +43,22 @@ jobs:
     - name: Package application
       run: |
         mkdir -p ../../deployment
-        # Add web.config for Node.js applications
-        echo '<?xml version="1.0" encoding="utf-8"?>
-        <configuration>
-          <system.webServer>
-            <webSocket enabled="false" />
-            <handlers>
-              <add name="iisnode" path="dist/main.js" verb="*" modules="iisnode" />
-            </handlers>
-            <rewrite>
-              <rules>
-                <rule name="DynamicContent">
-                  <match url="/*" />
-                  <action type="Rewrite" url="dist/main.js"/>
-                </rule>
-              </rules>
-            </rewrite>
-            <iisnode watchedFiles="web.config;*.js"/>
-          </system.webServer>
-        </configuration>' > ../../deployment/web.config
 
         # Copy application files
         cp -r dist ../../deployment/
         cp package.json ../../deployment/
-        
-        # Instead of just copying node_modules, install production dependencies in the deployment directory
-        cd ../../deployment
-        cp ../apps/server/package.json ./
-        
-        # If using workspace dependencies, copy the root package.json and yarn.lock
-        cp ../../package.json ./workspace-package.json
-        cp ../../yarn.lock ./
-        
-        # Install production dependencies
-        echo "Installing production dependencies..."
-        yarn install --production --frozen-lockfile
 
+        # Navigate to root directory to find the root package.json and yarn.lock
+        cd ../..
+        pwd
+        ls -la
+        
+        # Copy node_modules directly - simpler approach
+        mkdir -p deployment/node_modules
+        cp -r apps/server/node_modules/* deployment/node_modules/
+        
+        # Create the deployment package
+        cd deployment
         zip -r nestjs-server.zip .
 
     - name: Deploy to Azure Web App
