@@ -60,7 +60,6 @@ jobs:
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: './deployment/nestjs-server.zip'
         slot-name: 'production'
-        clean: true
 
     - name: Post-deployment notification
       if: success()
