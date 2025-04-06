@@ -47,6 +47,7 @@ jobs:
         # Copy only the necessary files for Azure to build
         cp -r dist ../../deployment/
         cp package.json ../../deployment/
+        cp -r ../../apps/server/prisma/* ../../deployment/prisma/
         
         # Create the deployment package
         cd ../../deployment
