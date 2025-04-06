@@ -33,7 +33,6 @@ jobs:
     - name: Install dependencies
       run: |
         cd ../../  # Go to the root of the repo
-        yarn global add @nestjs/cli
         yarn install --frozen-lockfile
         cd apps/web  # Go back to the server directory
 
