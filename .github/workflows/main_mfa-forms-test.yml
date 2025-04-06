@@ -9,6 +9,7 @@ on:
     branches: [ main ]
     paths:
       - 'apps/server/**'  # Only trigger when server code changes
+  workflow_dispatch:    # Allow manual triggering
 
 jobs:
   build-and-deploy:
