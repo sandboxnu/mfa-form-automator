@@ -43,6 +43,7 @@ jobs:
     - name: Package application
       run: |
         mkdir -p ../../deployment
+        mkdir -p ../../deployment/prisma
 
         # Copy only the necessary files for Azure to build
         cp -r dist ../../deployment/
