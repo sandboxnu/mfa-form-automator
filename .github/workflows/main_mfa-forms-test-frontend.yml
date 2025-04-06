@@ -34,7 +34,7 @@ jobs:
       run: |
         cd ../../  # Go to the root of the repo
         yarn install --frozen-lockfile
-        cd apps/web  # Go back to the server directory
+        cd apps/web  # Go back to the web directory
 
     - name: Build application
       run: |
@@ -42,20 +42,24 @@ jobs:
 
     - name: Package application
       run: |
-        mkdir -p ../../deployment
+        mkdir -p deployment
 
-        mv .next ../../deployment/
-        mv public ../../deployment/
+        # Copy necessary files
+        cp -r .next deployment/
+        cp -r public deployment/
+        cp package.json deployment/
 
         # Create the deployment package
-        zip -r nextjs-server.zip .
+        cd deployment
+        zip -r ../nextjs-server.zip .
+        cd ..
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'mfa-forms-test-frontend'           # Your Azure Web App name
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
-        package: './deployment/nextjs-server.zip'
+        package: './apps/web/nextjs-server.zip'
         slot-name: 'production'
 
     - name: Post-deployment notification
