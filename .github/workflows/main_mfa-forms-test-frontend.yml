@@ -39,11 +39,14 @@ jobs:
     - name: Build application
       run: |
         yarn build
-        mv .next/static .next/standalone/.next/static
-        mv public .next/standalone/public
 
     - name: Package application
       run: |
+        mkdir -p ../../deployment
+
+        mv .next ../../deployment/
+        mv public ../../deployment/
+
         # Create the deployment package
         zip -r nextjs-server.zip .
 
