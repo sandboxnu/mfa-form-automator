@@ -1,18 +1,17 @@
 import { Textarea } from '@chakra-ui/react';
 import { Rnd } from 'react-rnd';
 import { TextFieldPosition } from '../createFormTemplate/types';
-import { useState } from 'react';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 
 export default function TextField({
-  data, 
+  data,
   color,
   currentPosition,
   highlighted,
   pageNum,
   id,
 }: {
-  data: string
+  data: string;
   color: string;
   currentPosition: TextFieldPosition;
   highlighted: boolean;

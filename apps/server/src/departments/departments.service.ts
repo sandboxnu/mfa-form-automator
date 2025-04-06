@@ -74,7 +74,7 @@ export class DepartmentsService {
    */
   async findOrCreateOneByName(name: string) {
     try {
-      let department = await this.findOneByName(name, false);
+      const department = await this.findOneByName(name, false);
       return department;
     } catch (error) {
       if (error.message !== 'Department not found') {

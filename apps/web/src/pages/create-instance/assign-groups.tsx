@@ -1,4 +1,3 @@
-import { Scope } from '@web/client';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { AssignGroupsBox } from '@web/components/createFormInstance/AssignGroupsBox';
@@ -27,7 +26,6 @@ function AssignGroups() {
       submitLink={'/create-instance/review'}
       backLink={'/create-instance/description'}
       disabled={false}
-      
     />
   );
 }

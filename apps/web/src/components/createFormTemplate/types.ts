@@ -1,12 +1,10 @@
-import { DraggableEventHandler } from "react-draggable";
-import { RndResizeCallback } from "react-rnd";
+import { DraggableEventHandler } from 'react-draggable';
+import { RndResizeCallback } from 'react-rnd';
 
 export type TempFieldGroup = {
   id: string;
   value: string;
 };
-
-
 
 export type TextFieldPosition = {
   x: number;
