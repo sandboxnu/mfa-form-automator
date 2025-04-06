@@ -4,11 +4,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'apps/server/**'  # Only trigger when server code changes
+      - 'apps/server/**'
   pull_request:
     branches: [ main ]
     paths:
-      - 'apps/server/**'  # Only trigger when server code changes
+      - 'apps/server/**'
   workflow_dispatch:    # Allow manual triggering
 
 jobs:
