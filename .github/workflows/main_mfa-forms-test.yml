@@ -62,13 +62,23 @@ jobs:
             <iisnode watchedFiles="web.config;*.js"/>
           </system.webServer>
         </configuration>' > ../../deployment/web.config
-        
+
+        # Copy application files
         cp -r dist ../../deployment/
-        cp -r node_modules ../../deployment/
         cp package.json ../../deployment/
-        # Copy root yarn.lock for completeness
-        cp ../../yarn.lock ../../deployment/
+        
+        # Instead of just copying node_modules, install production dependencies in the deployment directory
         cd ../../deployment
+        cp ../apps/server/package.json ./
+        
+        # If using workspace dependencies, copy the root package.json and yarn.lock
+        cp ../../package.json ./workspace-package.json
+        cp ../../yarn.lock ./
+        
+        # Install production dependencies
+        echo "Installing production dependencies..."
+        yarn install --production --frozen-lockfile
+
         zip -r nestjs-server.zip .
 
     - name: Deploy to Azure Web App
