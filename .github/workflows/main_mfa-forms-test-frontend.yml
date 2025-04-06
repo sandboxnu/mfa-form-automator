@@ -1,0 +1,62 @@
+name: Deploy NextJS to Azure
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'apps/web/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'apps/web/**'
+  workflow_dispatch:    # Allow manual triggering
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./apps/web  # Set the working directory to the server folder
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'  # Use Node.js v22
+        cache: 'yarn'
+        cache-dependency-path: './yarn.lock'  # Root level yarn.lock for workspaces
+
+    - name: Install dependencies
+      run: |
+        cd ../../  # Go to the root of the repo
+        yarn global add @nestjs/cli
+        yarn install --frozen-lockfile
+        cd apps/web  # Go back to the server directory
+
+    - name: Build application
+      run: |
+        yarn build
+        mv .next/static .next/standalone/.next/static
+        mv public .next/standalone/public
+
+    - name: Package application
+      run: |
+        # Create the deployment package
+        zip -r nextjs-server.zip .
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'mfa-forms-test-frontend'           # Your Azure Web App name
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
+        package: './deployment/nextjs-server.zip'
+        slot-name: 'production'
+
+    - name: Post-deployment notification
+      if: success()
+      run: |
+        echo "🚀 Webserver deployment completed successfully!"
