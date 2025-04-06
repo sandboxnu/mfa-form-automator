@@ -21,6 +21,7 @@ export type User = {
   firstName: string;
   lastName: string;
   scope: Scope;
+  signatureLink: string;
 };
 // jwt payload returned from server
 export type jwtPayload = {
@@ -31,6 +32,7 @@ export type jwtPayload = {
   firstName: string;
   lastName: string;
   scope: Scope;
+  signatureLink: string;
 };
 
 export interface AuthContextType {
@@ -85,11 +87,8 @@ export interface SignFormInstanceContextType {
   fields: FormField[][];
   originalPdfLink: string;
   modifiedPdfLink: string;
-  formTemplateName: string;
-  setFields: Dispatch<SetStateAction<FormField[][]>>;
   groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;
-  assignedGroupId: string | undefined;
   submitSignFormPage: (
     submitLink: string,
     isReviewPage: boolean,

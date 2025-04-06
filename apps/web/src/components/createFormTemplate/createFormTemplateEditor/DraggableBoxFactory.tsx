@@ -8,12 +8,13 @@ import {
 import Checkbox from './CheckBox';
 import TextField from './TextField';
 
-export default function DraggableTextFactory(props: DraggableBoxFactoryProps) {
-  return props.type === FieldType.CHECKBOX ? (
-    <Checkbox {...props}></Checkbox>
-  ) : (
-    // we'll have to add something else for signature fields but right now lets treat it as
-    // a text field
-    <TextField {...props}> </TextField>
-  );
+export default function DraggableBoxFactory(props: DraggableBoxFactoryProps) {
+  switch (props.type) {
+    case FieldType.CHECKBOX:
+      return <Checkbox {...props}></Checkbox>;
+    case FieldType.TEXT_FIELD:
+      return <TextField {...props}> </TextField>;
+    default:
+      return <></>;
+  }
 }

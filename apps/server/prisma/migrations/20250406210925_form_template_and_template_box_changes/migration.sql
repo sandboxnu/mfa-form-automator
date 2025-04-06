@@ -11,7 +11,8 @@ ALTER TABLE "AssignedGroup" ALTER COLUMN "signedDocLink" SET DATA TYPE TEXT;
 
 -- AlterTable
 ALTER TABLE "FormTemplate" ADD COLUMN     "pageHeight" INTEGER NOT NULL,
-ADD COLUMN     "pageWidth" INTEGER NOT NULL;
+ADD COLUMN     "pageWidth" INTEGER NOT NULL,
+ALTER COLUMN "name" SET DATA TYPE TEXT;
 
 -- AlterTable
 ALTER TABLE "TemplateBox" ADD COLUMN     "page" INTEGER NOT NULL;

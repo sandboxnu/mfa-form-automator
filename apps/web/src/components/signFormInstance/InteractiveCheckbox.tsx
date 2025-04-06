@@ -19,7 +19,6 @@ export default function InteractiveCheckbox({
   pageNum: number;
   id: string;
 }) {
-  const { fields, setFields } = useSignFormInstance();
   const { updateField } = useSignFormInstance();
 
   return (

@@ -43,7 +43,6 @@ export const SignFormInstanceContextProvider = ({
   const [groupNumber, setGroupNumber] = useState<number>(0);
   const [modifiedPdfLink, setModifiedPdfLink] = useState('');
   const [originalPdfLink, setOriginalPdfLink] = useState('');
-  const [formTemplateName, setFormTemplateName] = useState('');
   const [assignedGroupId, setAssignedGroupId] = useState<string>();
   const router = useRouter();
   const signFormInstanceMutation = useMutation({
@@ -108,7 +107,6 @@ export const SignFormInstanceContextProvider = ({
     const pdfLink = currentFormDocLink ?? formInstance.formDocLink;
     setOriginalPdfLink(pdfLink);
     setModifiedPdfLink(pdfLink);
-    setFormTemplateName(formInstance.formTemplate.name);
   }, [
     formInstance,
     formInstanceError,
@@ -158,20 +156,20 @@ export const SignFormInstanceContextProvider = ({
 
           let fieldToBeAdded: PDFCheckBox | PDFTextField | undefined;
           switch (field.type) {
-            //TODO: TEMPORARY
             case 'SIGNATURE':
-              const emblemUrl =
-                'https://pdf-lib.js.org/assets/mario_emblem.png';
-              const emblemImageBytes = await fetch(emblemUrl).then((res) =>
-                res.arrayBuffer(),
-              );
-              const jpgImage = await pdfDoc.embedPng(emblemImageBytes);
-              page.drawImage(jpgImage, {
-                x: xCoordOnPdf,
-                y: yCoordOnPdf,
-                width: widthOnPdf,
-                height: heightOnPdf,
-              });
+              if (user?.signatureLink) {
+                const emblemImageBytes = await fetch(user?.signatureLink).then(
+                  (res) => res.arrayBuffer(),
+                );
+
+                const jpgImage = await pdfDoc.embedPng(emblemImageBytes);
+                page.drawImage(jpgImage, {
+                  x: xCoordOnPdf,
+                  y: yCoordOnPdf,
+                  width: widthOnPdf,
+                  height: heightOnPdf,
+                });
+              }
               break;
             case 'CHECKBOX':
               fieldToBeAdded = form.createCheckBox(field.id);
@@ -252,13 +250,10 @@ export const SignFormInstanceContextProvider = ({
         isLoading,
         originalPdfLink,
         modifiedPdfLink,
-        formTemplateName,
         fields,
-        setFields,
         formInstance,
         groupNumber,
         submitSignFormPage,
-        assignedGroupId,
         updateField,
       }}
     >

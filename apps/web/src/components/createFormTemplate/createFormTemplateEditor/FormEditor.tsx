@@ -15,7 +15,7 @@ import {
   FormFields,
   TextFieldPosition,
 } from '../types';
-import DraggableTextFactory from './DraggableBoxFactory';
+import DraggableBoxFactory from './DraggableBoxFactory';
 import PagingControl from './PagingControl';
 
 export const FormEditor = ({
@@ -385,7 +385,7 @@ export const FormEditor = ({
                 {formFields[pageNum] &&
                   Array.from(formFields[pageNum].entries()).map(
                     ([fieldId, { position, groupId }], index) => (
-                      <DraggableTextFactory
+                      <DraggableBoxFactory
                         type={
                           formFields[pageNum].get(fieldId)?.type ??
                           FieldType.TEXT_FIELD
