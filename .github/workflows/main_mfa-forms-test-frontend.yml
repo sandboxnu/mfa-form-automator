@@ -53,9 +53,6 @@ jobs:
         cp -r .next/static deployment/.next/
         cp -r public deployment/
         
-        # Add web.config
-        cp web.config deployment/
-        
         # Create the deployment package
         cd deployment
         zip -r ../nextjs-server.zip .
