@@ -46,12 +46,10 @@ jobs:
         mkdir -p deployment
         
         # Copy standalone build output
-        cp -r .next/standalone/* deployment/
-        
-        # Copy static and public assets
-        mkdir -p deployment/.next/static
-        cp -r .next/static deployment/.next/
-        cp -r public deployment/
+        cp -r .next deployment/
+
+        cp -r node_modules deployment/
+        cp package.json deployment/
         
         # Create the deployment package
         cd deployment
