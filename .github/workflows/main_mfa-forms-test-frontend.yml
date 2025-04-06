@@ -34,6 +34,7 @@ jobs:
       run: |
         cd ../../  # Go to the root of the repo
         yarn install --frozen-lockfile --production
+        yarn add --dev typescript
         cd apps/web  # Go back to the web directory
 
     - name: Build application
