@@ -85,15 +85,11 @@ COPY apps/web/nginx.conf /etc/nginx/nginx.conf.template
 COPY apps/web/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-# Create supervisord configuration
-RUN echo "[supervisord]" > /etc/supervisor/conf.d/supervisord.conf && \
-    echo "nodaemon=true" >> /etc/supervisor/conf.d/supervisord.conf && \
-    echo "" >> /etc/supervisor/conf.d/supervisord.conf && \
-    echo "[program:nginx]" >> /etc/supervisor/conf.d/supervisord.conf && \
-    echo "command=nginx -g 'daemon off;'" >> /etc/supervisor/conf.d/supervisord.conf && \
-    echo "" >> /etc/supervisor/conf.d/supervisord.conf && \
-    echo "[program:node]" >> /etc/supervisor/conf.d/supervisord.conf && \
-    echo "command=node server.js" >> /etc/supervisor/conf.d/supervisord.conf
+# Copy the static supervisord configuration file
+COPY apps/web/supervisord.conf /etc/supervisord.conf
+
+# Create required directories for supervisor
+RUN mkdir -p /var/log/supervisor
 
 # Expose port for NGINX
 EXPOSE 80
