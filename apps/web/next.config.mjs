@@ -14,7 +14,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `mfa-forms-test-eke5f4dtajdcgdhg.canadaeast-01.azurewebsites.net/api/:path*`,
+        destination: `https://mfa-forms-test-eke5f4dtajdcgdhg.canadaeast-01.azurewebsites.net/api/:path*`,
       },
     ];
   },
