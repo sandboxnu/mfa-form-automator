@@ -1,4 +1,4 @@
-name: Frontend CD - Azure App Service
+name: Deploy - Frontend CD - Azure App Service
 
 on:
   # This will trigger on any push to main, regardless of path changes
