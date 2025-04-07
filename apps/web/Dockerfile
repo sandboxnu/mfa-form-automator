@@ -35,31 +35,58 @@ ENV NODE_PATH=/app/node_modules:/app/apps/web/node_modules
 RUN yarn add @vercel/blob
 RUN yarn run build
 
-# Production image, copy all the files and run next
-FROM base AS runner
-WORKDIR /app
+# Final production image with NGINX
+FROM nginx:alpine
 
-ENV NODE_ENV=production
-# Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED=1
+# Install envsubst utility
+RUN apk add --no-cache gettext
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Copy NGINX configuration as a template
+COPY apps/web/nginx.conf /etc/nginx/nginx.conf.template
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+# Copy the entrypoint script
+COPY apps/web/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
-COPY --from=builder /app/apps/web/public ./apps/web/public
+# Create a directory structure for the Next.js static files
+WORKDIR /usr/share/nginx/html
 
-USER nextjs
+# Copy the standalone Next.js build
+COPY --from=builder /app/apps/web/.next/standalone/. ./
+COPY --from=builder /app/apps/web/.next/static ./_next/static/
+COPY --from=builder /app/apps/web/public ./public/
 
-EXPOSE 3000
+# Expose port 80
+EXPOSE 80
 
-ENV PORT=3000
+# Use entrypoint script to substitute environment variables
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
-# server.js is created by next build from the standalone output
-# https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
-ENV HOSTNAME="0.0.0.0"
-CMD ["node", "apps/web/server.js"]
+# # Production image, copy all the files and run next
+# FROM base AS runner
+# WORKDIR /app
+
+# ENV NODE_ENV=production
+# # Uncomment the following line in case you want to disable telemetry during runtime.
+# # ENV NEXT_TELEMETRY_DISABLED=1
+
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 nextjs
+
+# # Automatically leverage output traces to reduce image size
+# # https://nextjs.org/docs/advanced-features/output-file-tracing
+# COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+# COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+
+# COPY --from=builder /app/apps/web/public ./apps/web/public
+
+# USER nextjs
+
+# EXPOSE 3000
+
+# ENV PORT=3000
+
+# # server.js is created by next build from the standalone output
+# # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
+# ENV HOSTNAME="0.0.0.0"
+# CMD ["node", "apps/web/server.js"]
