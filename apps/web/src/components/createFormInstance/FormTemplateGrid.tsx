@@ -3,12 +3,11 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PDFDocument } from '../PDFDocument';
 import router from 'next/router';
-import { FormTemplate } from '@prisma/client';
 import { FormTemplateEntity } from '@web/client';
 import { useCreateFormInstance } from '../../context/CreateFormInstanceContext';
 
 export const TemplateSelectGrid: React.FC = () => {
-  const { data: formTemplates } = useQuery<FormTemplate[]>({
+  const { data: formTemplates } = useQuery<FormTemplateEntity[]>({
     queryKey: ['api', 'form-templates'],
     queryFn: async () => {
       const response = await fetch('/api/form-templates');
