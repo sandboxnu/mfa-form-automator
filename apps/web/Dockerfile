@@ -35,36 +35,72 @@ ENV NODE_PATH=/app/node_modules:/app/apps/web/node_modules
 RUN yarn add @vercel/blob
 RUN yarn run build
 
-# Final production image with NGINX
-FROM nginx:alpine
+# # Final production image with NGINX
+# FROM nginx:alpine
 
-# Install envsubst utility
-RUN apk add --no-cache gettext
+# # Install envsubst utility
+# RUN apk add --no-cache gettext
 
-# Copy NGINX configuration as a template
+# # Copy NGINX configuration as a template
+# COPY apps/web/nginx.conf /etc/nginx/nginx.conf.template
+
+# # Copy the entrypoint script
+# COPY apps/web/docker-entrypoint.sh /docker-entrypoint.sh
+# RUN chmod +x /docker-entrypoint.sh
+
+# # Create a directory structure for the Next.js static files
+# WORKDIR /usr/share/nginx/html
+
+# # Copy the standalone Next.js build
+# COPY --from=builder /app/apps/web/.next/standalone/. ./
+# COPY --from=builder /app/apps/web/.next/static ./_next/static/
+# COPY --from=builder /app/apps/web/public ./public/
+
+# # Expose port 80
+# EXPOSE 80
+
+# # Use entrypoint script to substitute environment variables
+# ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Production image, copy all the files and run next
+FROM base AS runner
+# Install NGINX and other utilities
+RUN apk add --no-cache nginx gettext supervisor
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+
+COPY --from=builder /app/apps/web/public ./apps/web/public
+
+# Copy NGINX configuration and entrypoint
 COPY apps/web/nginx.conf /etc/nginx/nginx.conf.template
-
-# Copy the entrypoint script
 COPY apps/web/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-# Create a directory structure for the Next.js static files
-WORKDIR /usr/share/nginx/html
+# Create supervisord configuration
+RUN echo "[supervisord]" > /etc/supervisor/conf.d/supervisord.conf && \
+    echo "nodaemon=true" >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo "" >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo "[program:nginx]" >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo "command=nginx -g 'daemon off;'" >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo "" >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo "[program:node]" >> /etc/supervisor/conf.d/supervisord.conf && \
+    echo "command=node apps/web/server.js" >> /etc/supervisor/conf.d/supervisord.conf
 
-# Copy the standalone Next.js build
-COPY --from=builder /app/apps/web/.next/standalone/. ./
-COPY --from=builder /app/apps/web/.next/static ./_next/static/
-COPY --from=builder /app/apps/web/public ./public/
-
-# Expose port 80
+# Expose port for NGINX
 EXPOSE 80
 
-# Use entrypoint script to substitute environment variables
+# Start both services using supervisord
 ENTRYPOINT ["/docker-entrypoint.sh"]
-
-# # Production image, copy all the files and run next
-# FROM base AS runner
-# WORKDIR /app
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
 # ENV NODE_ENV=production
 # # Uncomment the following line in case you want to disable telemetry during runtime.
