@@ -93,7 +93,7 @@ RUN echo "[supervisord]" > /etc/supervisor/conf.d/supervisord.conf && \
     echo "command=nginx -g 'daemon off;'" >> /etc/supervisor/conf.d/supervisord.conf && \
     echo "" >> /etc/supervisor/conf.d/supervisord.conf && \
     echo "[program:node]" >> /etc/supervisor/conf.d/supervisord.conf && \
-    echo "command=node apps/web/server.js" >> /etc/supervisor/conf.d/supervisord.conf
+    echo "command=node server.js" >> /etc/supervisor/conf.d/supervisord.conf
 
 # Expose port for NGINX
 EXPOSE 80
