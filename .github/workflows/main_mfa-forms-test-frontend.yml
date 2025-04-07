@@ -3,8 +3,12 @@ name: Build and deploy to Azure App Service
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'apps/web/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'apps/web/**'
   workflow_dispatch:  # Allows manual triggering
 
 env:
