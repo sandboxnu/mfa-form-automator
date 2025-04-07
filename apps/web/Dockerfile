@@ -35,90 +35,31 @@ ENV NODE_PATH=/app/node_modules:/app/apps/web/node_modules
 RUN yarn add @vercel/blob
 RUN yarn run build
 
-# # Final production image with NGINX
-# FROM nginx:alpine
-
-# # Install envsubst utility
-# RUN apk add --no-cache gettext
-
-# # Copy NGINX configuration as a template
-# COPY apps/web/nginx.conf /etc/nginx/nginx.conf.template
-
-# # Copy the entrypoint script
-# COPY apps/web/docker-entrypoint.sh /docker-entrypoint.sh
-# RUN chmod +x /docker-entrypoint.sh
-
-# # Create a directory structure for the Next.js static files
-# WORKDIR /usr/share/nginx/html
-
-# # Copy the standalone Next.js build
-# COPY --from=builder /app/apps/web/.next/standalone/. ./
-# COPY --from=builder /app/apps/web/.next/static ./_next/static/
-# COPY --from=builder /app/apps/web/public ./public/
-
-# # Expose port 80
-# EXPOSE 80
-
-# # Use entrypoint script to substitute environment variables
-# ENTRYPOINT ["/docker-entrypoint.sh"]
-
 # Production image, copy all the files and run next
 FROM base AS runner
-# Install NGINX and other utilities
-RUN apk add --no-cache nginx gettext supervisor
 WORKDIR /app
 
 ENV NODE_ENV=production
+# Uncomment the following line in case you want to disable telemetry during runtime.
+# ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone/. ./
-COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 
-COPY --from=builder /app/apps/web/public ./public
+COPY --from=builder /app/apps/web/public ./apps/web/public
 
-# Copy NGINX configuration and entrypoint
-COPY apps/web/nginx.conf /etc/nginx/nginx.conf.template
-COPY apps/web/docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+USER nextjs
 
-# Copy the static supervisord configuration file
-COPY apps/web/supervisord.conf /etc/supervisord.conf
+EXPOSE 3000
 
-# Create required directories for supervisor
-RUN mkdir -p /var/log/supervisor
+ENV PORT=3000
 
-# Expose port for NGINX
-EXPOSE 80
-
-# Start both services using supervisord
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
-# ENV NODE_ENV=production
-# # Uncomment the following line in case you want to disable telemetry during runtime.
-# # ENV NEXT_TELEMETRY_DISABLED=1
-
-# RUN addgroup --system --gid 1001 nodejs
-# RUN adduser --system --uid 1001 nextjs
-
-# # Automatically leverage output traces to reduce image size
-# # https://nextjs.org/docs/advanced-features/output-file-tracing
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
-# COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
-
-# COPY --from=builder /app/apps/web/public ./apps/web/public
-
-# USER nextjs
-
-# EXPOSE 3000
-
-# ENV PORT=3000
-
-# # server.js is created by next build from the standalone output
-# # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
-# ENV HOSTNAME="0.0.0.0"
-# CMD ["node", "apps/web/server.js"]
+# server.js is created by next build from the standalone output
+# https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
+ENV HOSTNAME="0.0.0.0"
+CMD ["node", "apps/web/server.js"]
