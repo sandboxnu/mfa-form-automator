@@ -82,9 +82,9 @@ jobs:
       - name: Run tests
         run: yarn test
         env:
-          DATABASE_URL:  ${{ secrets.DATABASE_CI_URL }}
-          POSTMARK_SERVER_KEY: ${{ secrets.POSTMARK_SERVER_KEY }}
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
+          POSTMARK_SERVER_KEY: placeholder
+          AZURE_STORAGE_CONNECTION_STRING: placeholder
 
   build-backend-image:
     runs-on: ubuntu-latest
