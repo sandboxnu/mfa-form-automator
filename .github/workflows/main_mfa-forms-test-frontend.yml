@@ -5,6 +5,10 @@ on:
     branches: [ "main" ]
     paths:
       - 'apps/web/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'apps/server/**'
   workflow_dispatch:  # Keep manual triggering for convenience
 
 env:
