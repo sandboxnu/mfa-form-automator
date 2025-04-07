@@ -12,6 +12,10 @@ on:
   # Keep manual triggering for convenience
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   AZURE_CONTAINER_REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY_FRONTEND }}
   CONTAINER_NAME: ${{ secrets.AZURE_CONTAINER_NAME_FRONTEND }}

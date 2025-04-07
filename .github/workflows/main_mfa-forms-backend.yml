@@ -12,6 +12,10 @@ on:
   # Keep manual triggering for convenience
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   AZURE_CONTAINER_REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY_BACKEND }}
   CONTAINER_NAME: ${{ secrets.AZURE_CONTAINER_NAME_BACKEND }}
@@ -39,8 +43,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: ./apps/server/Dockerfile
+          context: ./apps/server
           push: true
           tags: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:${{ github.sha }}
           cache-from: type=registry,ref=${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:latest
