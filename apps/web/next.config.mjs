@@ -9,6 +9,7 @@ const nextConfig = {
     optimizePackageImports: ['@chakra-ui/react'],
   },
   reactStrictMode: true,
+  output: 'standalone',
   env: {
     PORT: process.env.FRONTEND_PORT,
     AZURE_CLIENT_ID: process.env.AZURE_CLIENT_ID,
