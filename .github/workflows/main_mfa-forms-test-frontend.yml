@@ -29,24 +29,24 @@ jobs:
     - name: Install dependencies and build
       run: |
         yarn install --frozen-lockfile
-        cd apps/web  # Go back to the web directory
 
     - name: Build application
       run: |
+        cd apps/web
         yarn build
 
     - name: Package application
       run: |
-        cd .next/standalone
+        cd apps/web/.next/standalone
         zip -r ../nextjs-server.zip .
-        cd ..
+        cd ../..
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'mfa-forms-test-frontend'           # Your Azure Web App name
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
-        package: 'nextjs-server.zip'
+        package: 'apps/web/.next/nextjs-server.zip'
         slot-name: 'production'
 
     - name: Post-deployment notification
