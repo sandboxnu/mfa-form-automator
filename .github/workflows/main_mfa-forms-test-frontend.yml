@@ -5,11 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - 'apps/web/**'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'apps/web/**'
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:  # Keep manual triggering for convenience
 
 env:
   AZURE_CONTAINER_REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
@@ -19,6 +15,9 @@ env:
 
 jobs:
   build:
+    # This ensures the job only runs on pushes to main (which includes PR merges)
+    # and not on PR open/update events
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
@@ -44,6 +43,8 @@ jobs:
 
   deploy:
     needs: build
+    # Ensure deploy job only runs when build job runs
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     
     steps:
