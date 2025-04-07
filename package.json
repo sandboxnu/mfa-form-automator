@@ -20,7 +20,8 @@
     "dev:db:down": "docker compose -f apps/server/docker-compose.db.yml down",
     "backend:docker:build": "docker compose -f apps/server/docker-compose.yml build",
     "backend:docker:run": "docker compose -f apps/server/docker-compose.yml up -d",
-    "backend:docker:down": "docker compose -f apps/server/docker-compose.yml down"
+    "backend:docker:down": "docker compose -f apps/server/docker-compose.yml down",
+    "frontend:docker:build": "docker build -t nextjs-docker -f apps/web/Dockerfile ."
   },
   "prisma": {
     "seed": "ts-node apps/server/prisma/seed.ts"
