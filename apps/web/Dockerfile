@@ -32,6 +32,7 @@ ENV NODE_PATH=/app/node_modules:/app/apps/web/node_modules
 # ENV NEXT_TELEMETRY_DISABLED=1
 
 # RUN yarn add next
+RUN yarn add @vercel/blob
 RUN yarn run build
 
 # Production image, copy all the files and run next
