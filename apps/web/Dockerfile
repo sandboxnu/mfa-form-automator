@@ -56,6 +56,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/
 
 COPY --from=builder /app/apps/web/public ./apps/web/public
 
+# Add this after the COPY commands in your Dockerfile
+COPY --from=builder /app/apps/web/custom-server.js ./apps/web/custom-server.js
+
 USER nextjs
 
 EXPOSE 3000
@@ -65,4 +68,5 @@ ENV PORT=3000
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/config/next-config-js/output
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "apps/web/server.js"]
+# CMD ["node", "apps/web/server.js"]
+CMD ["node", "apps/web/custom-server.js"]
