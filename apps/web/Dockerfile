@@ -3,7 +3,7 @@
 FROM node:22-alpine3.20 AS base
 
 ARG API_URL
-ENV API_URL=${API_URL}
+ENV API_URL=https://mfa-forms-test-eke5f4dtajdcgdhg.canadaeast-01.azurewebsites.net
 
 # Install dependencies only when needed
 FROM base AS deps

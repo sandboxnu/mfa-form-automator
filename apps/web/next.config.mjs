@@ -15,7 +15,7 @@ const nextConfig = {
       {
         source: '/api/:path*',
         // destination: `${process.env.API_URL}/api/:path*`,
-        destination: `https://mfa-forms-test-eke5f4dtajdcgdhg.canadaeast-01.azurewebsites.net/api/:path*`,
+        destination: `${process.env.API_URL}/api/:path*`,
       },
     ];
   },
