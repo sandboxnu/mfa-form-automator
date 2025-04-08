@@ -51,7 +51,7 @@ jobs:
           cache-from: type=registry,ref=${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:latest
           cache-to: type=inline
           build-args: |
-            API_URL=${{ secrets.API_URL }}
+            PROXY_API_URL=${{ env.API_URL }}
 
   deploy:
     needs: build
