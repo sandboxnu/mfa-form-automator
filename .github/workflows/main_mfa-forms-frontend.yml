@@ -21,6 +21,7 @@ env:
   CONTAINER_NAME: ${{ secrets.AZURE_CONTAINER_NAME_FRONTEND }}
   RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
   APP_SERVICE_NAME: ${{ secrets.AZURE_APP_SERVICE_NAME_FRONTEND }}
+  API_URL: ${{ secrets.API_URL }}
 
 jobs:
   build:
