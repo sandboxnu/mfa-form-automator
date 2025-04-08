@@ -29,8 +29,6 @@ export default function Checkbox({
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
-      minWidth={'10px'}
-      minHeight={'10px'}
       border={selected ? `1px solid blue` : ''}
       enableResizing={{
         bottom: false,

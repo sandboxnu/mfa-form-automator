@@ -5,7 +5,7 @@ import {
 } from '@web/client/@tanstack/react-query.gen';
 import { FormField, SignFormInstanceContextType } from '@web/context/types';
 import { useAuth } from '@web/hooks/useAuth';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
 
@@ -135,18 +135,18 @@ export const SignFormInstanceContextProvider = ({
   const modifyPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
     const form = pdfDoc.getForm();
 
-    fields.forEach((formFields, pageNum) => {
+    for (const [pageNum, formFields] of fields.entries()) {
       const page = pdfDoc.getPage(pageNum);
       const { width: pageWidth, height: pageHeight } = page.getSize();
 
-      formFields.forEach(async (field) => {
+      for (const field of formFields) {
         const { width, height, x_coordinate: x, y_coordinate: y } = field;
         if (
           formInstance?.formTemplate.pageHeight &&
           formInstance?.formTemplate.pageWidth
         ) {
-          const formWidth = formInstance?.formTemplate.pageWidth;
-          const formHeight = formInstance?.formTemplate.pageHeight;
+          const formWidth = formInstance.formTemplate.pageWidth;
+          const formHeight = formInstance.formTemplate.pageHeight;
 
           const widthOnPdf = (width * pageWidth) / formWidth;
           const heightOnPdf = (height * pageHeight) / formHeight;
@@ -155,15 +155,15 @@ export const SignFormInstanceContextProvider = ({
             pageHeight - (y * pageHeight) / formHeight - heightOnPdf;
 
           let fieldToBeAdded: PDFCheckBox | PDFTextField | undefined;
+
           switch (field.type) {
             case 'SIGNATURE':
-              if (user?.signatureLink) {
-                const emblemImageBytes = await fetch(user?.signatureLink).then(
-                  (res) => res.arrayBuffer(),
-                );
-
-                const jpgImage = await pdfDoc.embedPng(emblemImageBytes);
-                page.drawImage(jpgImage, {
+              if (user?.signatureLink && field.data.filled) {
+                const signatureImageBytes = await fetch(
+                  user.signatureLink,
+                ).then((res) => res.arrayBuffer());
+                const pngImage = await pdfDoc.embedPng(signatureImageBytes);
+                page.drawImage(pngImage, {
                   x: xCoordOnPdf,
                   y: yCoordOnPdf,
                   width: widthOnPdf,
@@ -173,33 +173,40 @@ export const SignFormInstanceContextProvider = ({
               break;
             case 'CHECKBOX':
               fieldToBeAdded = form.createCheckBox(field.id);
-              fieldToBeAdded.check();
+              fieldToBeAdded.addToPage(page, {
+                width: widthOnPdf,
+                height: heightOnPdf,
+                x: xCoordOnPdf,
+                y: yCoordOnPdf,
+              });
+              if (field.data.filled) {
+                fieldToBeAdded.check();
+              }
               break;
             case 'TEXT_FIELD':
               fieldToBeAdded = form.createTextField(field.id);
               fieldToBeAdded.setText(field.data.text);
+              fieldToBeAdded.addToPage(page, {
+                width: widthOnPdf,
+                height: heightOnPdf,
+                x: xCoordOnPdf,
+                y: yCoordOnPdf,
+              });
               break;
           }
-
-          if (fieldToBeAdded) {
-            fieldToBeAdded.addToPage(page, {
-              width: widthOnPdf,
-              height: heightOnPdf,
-              x: xCoordOnPdf,
-              y: yCoordOnPdf,
-            });
-          }
-          router.push(submitLink);
         }
-      });
-    });
+      }
+    }
+
     form.getFields().forEach((fieldOnForm) => {
       fieldOnForm.enableReadOnly();
     });
+
     const pdfBytes = await pdfDoc.save();
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
     setModifiedPdfLink(url);
+    router.push(submitLink);
   };
 
   const submitPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
@@ -219,7 +226,6 @@ export const SignFormInstanceContextProvider = ({
           formInstanceId: formInstance?.id,
         },
       });
-      console.log(res.assignedGroups[1].signedDocLink);
       if (res) {
         router.push(submitLink);
       }

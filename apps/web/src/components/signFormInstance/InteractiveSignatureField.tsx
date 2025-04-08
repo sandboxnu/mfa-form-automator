@@ -1,9 +1,9 @@
-import { Textarea } from '@chakra-ui/react';
+import { Checkbox } from '@chakra-ui/react';
 import { Rnd } from 'react-rnd';
 import { TextFieldPosition } from '../createFormTemplate/types';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 
-export default function InteractiveTextField({
+export default function InteractiveSignatureField({
   data,
   color,
   currentPosition,
@@ -11,7 +11,7 @@ export default function InteractiveTextField({
   pageNum,
   id,
 }: {
-  data: string;
+  data: boolean;
   color: string;
   currentPosition: TextFieldPosition;
   highlighted: boolean;
@@ -49,18 +49,13 @@ export default function InteractiveTextField({
         justifyContent: 'flex-end',
       }}
     >
-      <Textarea
-        lineHeight={'normal'}
-        scrollMarginBlockStart={'100px'}
-        width={'100%'}
-        border={'none'}
-        height={'100%'}
-        resize={'none'}
-        defaultValue={data}
-        onChange={(e) => {
-          updateField(pageNum, id, e.target.value);
-        }}
-      ></Textarea>
+      <Checkbox.Root
+        defaultChecked={data}
+        onCheckedChange={(val) => updateField(pageNum, id, val.checked)}
+      >
+        <Checkbox.HiddenInput />
+        <Checkbox.Control />
+      </Checkbox.Root>
     </Rnd>
   );
 }

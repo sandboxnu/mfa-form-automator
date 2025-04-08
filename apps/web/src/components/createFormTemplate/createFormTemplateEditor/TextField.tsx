@@ -28,8 +28,8 @@ export default function TextField({
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
-      minWidth={'50px'}
-      minHeight={'10px'}
+      minWidth={!disableEdit ? '50px' : ''}
+      minHeight={!disableEdit ? '10px' : ''}
       border={selected ? `1px solid blue` : ''}
       style={{
         zIndex: 10,
