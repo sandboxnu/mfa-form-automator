@@ -16,7 +16,7 @@
   "dependencies": {
     "@azure/identity": "4.0.1",
     "@azure/msal-browser": "3.24.0",
-    "@azure/msal-react": "2.1.0",
+    "@azure/msal-react": "3.0.8",
     "@azure/storage-blob": "12.17.0",
     "@chakra-ui/react": "3.8.0",
     "@emotion/react": "^11.14.0",
