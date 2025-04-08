@@ -11,6 +11,11 @@ ENV AZURE_TENANT_ID=${ARG_AZURE_TENANT_ID}
 ARG ARG_AZURE_REDIRECT_URI
 ENV AZURE_REDIRECT_URI=${ARG_AZURE_REDIRECT_URI}
 
+RUN echo ${API_URL}
+RUN echo ${AZURE_CLIENT_ID}
+RUN echo ${AZURE_TENANT_ID}
+RUN echo ${AZURE_REDIRECT_URI}
+
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
