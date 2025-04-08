@@ -49,6 +49,8 @@ jobs:
           tags: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:${{ github.sha }}
           cache-from: type=registry,ref=${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:latest
           cache-to: type=inline
+        env:
+          API_URL: ${{ secrets.API_URL }}
 
   deploy:
     needs: build
