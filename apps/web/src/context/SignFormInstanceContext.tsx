@@ -231,7 +231,8 @@ export const SignFormInstanceContextProvider = ({
       }
     }
   };
-  const submitSignFormPage = async (
+
+  const nextSignFormPage = async (
     submitLink: string,
     isReviewPage: boolean,
   ) => {
@@ -259,7 +260,7 @@ export const SignFormInstanceContextProvider = ({
         fields,
         formInstance,
         groupNumber,
-        submitSignFormPage,
+        nextSignFormPage,
         updateField,
       }}
     >

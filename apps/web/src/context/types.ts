@@ -89,7 +89,7 @@ export interface SignFormInstanceContextType {
   modifiedPdfLink: string;
   groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;
-  submitSignFormPage: (
+  nextSignFormPage: (
     submitLink: string,
     isReviewPage: boolean,
   ) => Promise<void>;

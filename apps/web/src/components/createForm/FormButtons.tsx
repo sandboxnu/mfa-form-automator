@@ -54,7 +54,7 @@ export const FormButtons = ({
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
 
-  const { submitSignFormPage } = useSignFormInstance();
+  const { nextSignFormPage } = useSignFormInstance();
 
   const { user } = useAuth();
 
@@ -294,7 +294,7 @@ export const FormButtons = ({
                 _submitFormInstance();
                 break;
               default:
-                submitSignFormPage(submitLink, review);
+                nextSignFormPage(submitLink, review);
                 break;
             }
           }}
