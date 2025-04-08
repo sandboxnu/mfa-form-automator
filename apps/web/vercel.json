@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://mfa-forms-test-eke5f4dtajdcgdhg.canadaeast-01.azurewebsites.net/api/:path*"
+      "destination": "https://mfa-form-automator.onrender.com/api/:path*"
     }
   ]
 }
