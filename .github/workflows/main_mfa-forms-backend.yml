@@ -1,15 +1,10 @@
 name: Deploy - Backend CD - Azure App Service
 
 on:
-  # This will trigger on any push to main, regardless of path changes
+  # This will trigger only on pushes to main (including PR merges)
   push:
     branches: [ "main" ]
-  # This will keep your existing path-specific behavior for PRs
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'apps/web/**'
-  # Keep manual triggering for convenience
+  # Manual triggering option
   workflow_dispatch:
 
 concurrency:
