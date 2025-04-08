@@ -22,6 +22,9 @@ env:
   RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
   APP_SERVICE_NAME: ${{ secrets.AZURE_APP_SERVICE_NAME_FRONTEND }}
   API_URL: ${{ secrets.API_URL }}
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_REDIRECT_URI: ${{ secrets.AZURE_REDIRECT_URI }}
 
 jobs:
   build:
@@ -52,6 +55,9 @@ jobs:
           cache-to: type=inline
           build-args: |
             PROXY_API_URL=${{ env.API_URL }}
+            ARG_AZURE_CLIENT_ID=${{ env.AZURE_CLIENT_ID }}
+            ARG_AZURE_TENANT_ID=${{ env.AZURE_TENANT_ID }}
+            ARG_AZURE_REDIRECT_URI=${{ env.AZURE_REDIRECT_URI }}
 
   deploy:
     needs: build
