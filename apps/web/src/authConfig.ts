@@ -2,11 +2,12 @@ import { LogLevel } from '@azure/msal-browser';
 
 export const msalConfig = {
   auth: {
-    clientId: process.env.AZURE_CLIENT_ID || 'AZURE_CLIENT_ID',
+    clientId: process.env.NEXT_PUBLIC_AZURE_CLIENT_ID || 'AZURE_CLIENT_ID',
     authority: `https://login.microsoftonline.com/${
-      process.env.AZURE_TENANT_ID || 'common'
+      process.env.NEXT_PUBLIC_AZURE_TENANT_ID || 'common'
     }`,
-    redirectUri: process.env.AZURE_REDIRECT_URI || 'http://localhost:3002',
+    redirectUri:
+      process.env.NEXT_PUBLIC_AZURE_REDIRECT_URI || 'http://localhost:3002',
   },
   cache: {
     cacheLocation: 'sessionStorage',
