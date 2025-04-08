@@ -10,15 +10,15 @@ const nextConfig = {
   },
   reactStrictMode: true,
   output: 'standalone',
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/api/:path*',
-  //       destination: `${process.env.API_URL}/api/:path*`,
-  //       basePath: false,
-  //     },
-  //   ];
-  // },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        // destination: `${process.env.API_URL}/api/:path*`,
+        destination: `https://mfa-forms-test-eke5f4dtajdcgdhg.canadaeast-01.azurewebsites.net/api/:path*`,
+      },
+    ];
+  },
   env: {
     PORT: process.env.FRONTEND_PORT,
     AZURE_CLIENT_ID: process.env.AZURE_CLIENT_ID,
