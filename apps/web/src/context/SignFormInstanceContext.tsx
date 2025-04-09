@@ -6,6 +6,7 @@ import {
 import { FormField, SignFormInstanceContextType } from '@web/context/types';
 import { useAuth } from '@web/hooks/useAuth';
 import { useRouter } from 'next/router';
+import { c } from 'node_modules/framer-motion/dist/types.d-6pKw1mTI';
 import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
 
@@ -53,11 +54,18 @@ export const SignFormInstanceContextProvider = ({
 
     const assignedGroups = formInstance?.assignedGroups.filter(
       (assignedGroup) =>
-        assignedGroup.signerDepartmentId == user?.departmentId ||
-        assignedGroup.signerEmployeeId == user?.id ||
-        assignedGroup.signerPositionId == user?.positionId,
+        assignedGroup.signerDepartmentId === user?.departmentId ||
+        assignedGroup.signerEmployeeId === user?.id ||
+        assignedGroup.signerPositionId === user?.positionId ||
+        assignedGroup.signerEmployeeList
+          ?.map((employee) => employee.id)
+          .find((id) => id === user?.id),
     );
     if (assignedGroups) {
+      console.log(assignedGroups);
+      assignedGroups.map((group) => {
+        [group.fieldGroupId, group.order];
+      });
       setGroupNumbers(
         new Map(
           assignedGroups.map((group) => [group.fieldGroupId, group.order]),
@@ -85,7 +93,6 @@ export const SignFormInstanceContextProvider = ({
               },
             });
           } else {
-
             fields[templateBox.page].push({
               ...templateBox,
               data: {
@@ -224,6 +231,7 @@ export const SignFormInstanceContextProvider = ({
     if (blob && formInstance && assignedGroupIds) {
       let error = false;
       for (const [i, assignedGroupId] of assignedGroupIds.entries()) {
+        console.log('ENTEREDDDD');
         const res = await signFormInstanceMutation.mutateAsync({
           body: {
             file: blob,
