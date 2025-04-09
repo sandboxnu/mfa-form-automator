@@ -1,6 +1,6 @@
 import React from 'react';
 import { SignoutIcon } from '@web/static/icons.tsx';
-import { Button, Flex, Text } from '@chakra-ui/react';
+import { Button, Text } from '@chakra-ui/react';
 import { useAuth } from '@web/hooks/useAuth.ts';
 
 export const SignOut: React.FC = () => {

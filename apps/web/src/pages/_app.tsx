@@ -91,12 +91,19 @@ export default function App({
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
 
-  const head = (
-    <Head>
-      <title>MFA Forms</title>
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    </Head>
-  );
+  // Check if the current page is an error page
+  const isErrorPage =
+    Component.displayName === 'ErrorPage' ||
+    appProps.router.pathname === '/_error';
+
+  // If it's an error page, render just the component without Layout
+  if (isErrorPage) {
+    return (
+      <WrapperComponent>
+        <Component {...pageProps} />
+      </WrapperComponent>
+    );
+  }
 
   if (excludeLayoutPaths.includes(appProps.router.pathname)) {
     return (
