@@ -52,7 +52,7 @@ export const SearchAndSort = ({
         );
         return;
     }
-  }, [sortValue]);
+  }, [sortValue, formInstances, setSortedFormInstances]);
 
   return (
     <Flex alignItems="flex-end">

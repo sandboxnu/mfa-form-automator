@@ -119,6 +119,8 @@ describe('FormTemplatesIntegrationTest', () => {
         name: 'Form Template',
         description: 'Form Template Description',
         file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
         fieldGroups: [
           {
             name: 'Field Group',
@@ -128,6 +130,9 @@ describe('FormTemplatesIntegrationTest', () => {
                 type: $Enums.SignatureBoxFieldType.CHECKBOX,
                 x_coordinate: 0,
                 y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
               },
             ],
           },
@@ -156,6 +161,8 @@ describe('FormTemplatesIntegrationTest', () => {
         name: 'Form Template 1',
         description: 'Form Template Description 1',
         file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
         fieldGroups: [
           {
             name: 'Field Group 1',
@@ -165,6 +172,9 @@ describe('FormTemplatesIntegrationTest', () => {
                 type: $Enums.SignatureBoxFieldType.CHECKBOX,
                 x_coordinate: 0,
                 y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
               },
             ],
           },
@@ -174,6 +184,8 @@ describe('FormTemplatesIntegrationTest', () => {
         name: 'Form Template 2',
         description: 'Form Template Description 2',
         file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
         fieldGroups: [
           {
             name: 'Field Group 2',
@@ -183,6 +195,9 @@ describe('FormTemplatesIntegrationTest', () => {
                 type: $Enums.SignatureBoxFieldType.CHECKBOX,
                 x_coordinate: 0,
                 y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
               },
             ],
           },
@@ -212,6 +227,8 @@ describe('FormTemplatesIntegrationTest', () => {
         name: 'Form Template 1',
         description: 'Form Template Description 1',
         file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
         fieldGroups: [
           {
             name: 'Field Group 1',
@@ -221,6 +238,9 @@ describe('FormTemplatesIntegrationTest', () => {
                 type: $Enums.SignatureBoxFieldType.CHECKBOX,
                 x_coordinate: 0,
                 y_coordinate: 0,
+                height: 100,
+                width: 100,
+                page: 0,
               },
             ],
           },
@@ -247,6 +267,8 @@ describe('FormTemplatesIntegrationTest', () => {
         name: 'Form Template 1',
         description: 'Form Template Description 1',
         file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
         fieldGroups: [
           {
             name: 'Field Group 1',
@@ -256,6 +278,9 @@ describe('FormTemplatesIntegrationTest', () => {
                 type: $Enums.SignatureBoxFieldType.CHECKBOX,
                 x_coordinate: 0,
                 y_coordinate: 0,
+                height: 100,
+                width: 100,
+                page: 0,
               },
             ],
           },
@@ -294,6 +319,8 @@ describe('FormTemplatesIntegrationTest', () => {
         name: 'Form Template 1',
         description: 'Form Template Description 1',
         file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
         fieldGroups: [
           {
             name: 'Field Group 1',
@@ -303,6 +330,9 @@ describe('FormTemplatesIntegrationTest', () => {
                 type: $Enums.SignatureBoxFieldType.CHECKBOX,
                 x_coordinate: 0,
                 y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
               },
             ],
           },

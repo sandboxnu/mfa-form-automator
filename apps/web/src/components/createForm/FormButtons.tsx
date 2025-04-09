@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
+  formInstancesControllerSignFormInstanceMutation,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
@@ -11,6 +12,8 @@ import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
 import { useAuth } from '@web/hooks/useAuth';
+import { FormInteractionType } from './types';
+import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 
 /**
@@ -22,15 +25,15 @@ import { Toaster, toaster } from '../ui/toaster';
  * @param review if review page, there is no delete/clear button and the Save & Continue becomes Create Form Template
  */
 export const FormButtons = ({
-  isFormTemplate,
+  type,
   deleteFunction,
   submitLink,
   backLink,
   disabled,
-  review,
+  review = false,
   heading,
 }: {
-  isFormTemplate: boolean;
+  type: FormInteractionType;
   deleteFunction: Function;
   submitLink: string;
   backLink: string;
@@ -46,9 +49,13 @@ export const FormButtons = ({
     pdfFile,
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
+    formDimensions,
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
+
+  const { nextSignFormPage } = useSignFormInstance();
+
   const { user } = useAuth();
 
   const createFormTemplateMutation = useMutation({
@@ -67,6 +74,10 @@ export const FormButtons = ({
         queryKey: formTemplatesControllerFindAllQueryKey(),
       });
     },
+  });
+
+  const signFormInstanceMutation = useMutation({
+    ...formInstancesControllerSignFormInstanceMutation(),
   });
 
   /**
@@ -103,7 +114,9 @@ export const FormButtons = ({
             type: field.type,
             x_coordinate: field.position.x,
             y_coordinate: field.position.y,
-            // TODO: add width and height to template boxes
+            width: field.position.width,
+            height: field.position.height,
+            page: parseInt(page),
           });
         });
       }
@@ -116,29 +129,31 @@ export const FormButtons = ({
 
       orderVal += 1;
     });
-
-    await createFormTemplateMutation
-      .mutateAsync({
-        body: {
-          name: formTemplateName ?? '',
-          fieldGroups: fieldGroups,
-          file: pdfFile,
-          description: formTemplateDescription ?? '',
-        },
-      })
-      .then((response) => {
-        router.push(submitLink);
-        return response;
-      })
-      .catch((e) => {
-        toaster.create({
-          title: 'Failed to create form template',
-          description: (e as Error).message,
-          type: 'error',
-          duration: 3000,
+    if (formDimensions)
+      await createFormTemplateMutation
+        .mutateAsync({
+          body: {
+            pageHeight: formDimensions.height,
+            pageWidth: formDimensions.width,
+            name: formTemplateName ?? '',
+            fieldGroups: fieldGroups,
+            file: pdfFile,
+            description: formTemplateDescription ?? '',
+          },
+        })
+        .then((response) => {
+          router.push(submitLink);
+          return response;
+        })
+        .catch((e) => {
+          toaster.create({
+            title: 'Failed to create form template',
+            description: (e as Error).message,
+            type: 'error',
+            duration: 3000,
+          });
+          throw e;
         });
-        throw e;
-      });
   };
 
   /**
@@ -271,10 +286,16 @@ export const FormButtons = ({
           marginRight="36px"
           disabled={disabled}
           onClick={() => {
-            if (isFormTemplate) {
-              _submitFormTemplate();
-            } else {
-              _submitFormInstance();
+            switch (type) {
+              case FormInteractionType.CreateFormTemplate:
+                _submitFormTemplate();
+                break;
+              case FormInteractionType.CreateFormInstance:
+                _submitFormInstance();
+                break;
+              default:
+                nextSignFormPage(submitLink, review);
+                break;
             }
           }}
         >

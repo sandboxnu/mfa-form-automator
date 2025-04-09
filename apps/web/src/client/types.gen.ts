@@ -138,6 +138,9 @@ export type CreateTemplateBoxDto = {
   type: 'SIGNATURE' | 'CHECKBOX' | 'TEXT_FIELD';
   x_coordinate: number;
   y_coordinate: number;
+  width: number;
+  height: number;
+  page: number;
 };
 
 export type CreateFieldGroupDto = {
@@ -150,6 +153,8 @@ export type CreateFormTemplateDto = {
   file: Blob | File;
   name: string;
   description: string;
+  pageWidth: number;
+  pageHeight: number;
   fieldGroups: Array<CreateFieldGroupDto>;
 };
 
@@ -158,9 +163,12 @@ export type TemplateBoxBaseEntity = {
   type: 'SIGNATURE' | 'CHECKBOX' | 'TEXT_FIELD';
   x_coordinate: number;
   y_coordinate: number;
+  width: number;
+  height: number;
+  page: number;
+  fieldGroupId: string;
   createdAt: string;
   updatedAt: string;
-  fieldGroupId: string;
 };
 
 export type FieldGroupBaseEntity = {
@@ -176,6 +184,8 @@ export type FieldGroupBaseEntity = {
 export type FormTemplateBaseEntity = {
   id: string;
   name: string;
+  pageWidth: number;
+  pageHeight: number;
   formDocLink: string;
   description: string | null;
   createdAt: string;
@@ -225,6 +235,8 @@ export type FormInstanceEntity = {
 export type FormTemplateEntity = {
   id: string;
   name: string;
+  pageWidth: number;
+  pageHeight: number;
   formDocLink: string;
   description: string | null;
   fieldGroups: Array<FieldGroupBaseEntity>;
@@ -237,6 +249,8 @@ export type UpdateFormTemplateDto = {
   file?: Blob | File;
   name?: string;
   description?: string;
+  pageWidth?: number;
+  pageHeight?: number;
 };
 
 export type CreateDepartmentDto = {
@@ -274,6 +288,7 @@ export type UpdateFormInstanceDto = {
 
 export type SignFormInstanceDto = {
   file: Blob | File;
+  assignedGroupId: string;
 };
 
 export type AppControllerGetHelloData = {
@@ -1406,7 +1421,6 @@ export type FormInstancesControllerSignFormInstanceData = {
   body: SignFormInstanceDto;
   path: {
     formInstanceId: string;
-    assignedGroupId: string;
   };
   query?: never;
   url: '/api/form-instances/{formInstanceId}/sign/{signatureId}';

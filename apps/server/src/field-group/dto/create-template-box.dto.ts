@@ -17,4 +17,19 @@ export class CreateTemplateBoxDto {
   @IsNotEmpty()
   @ApiProperty()
   y_coordinate: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  @ApiProperty()
+  width: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  @ApiProperty()
+  height: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  @ApiProperty()
+  page: number;
 }

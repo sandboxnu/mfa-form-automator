@@ -115,7 +115,7 @@ export const AssignGroupsBox = ({
         >
           Preview Only
         </Text>
-        <FormView formTemplateName={name} pdfUrl={formLink} />
+        <FormView pdfUrl={formLink} />
       </Flex>
     </Flex>
   );

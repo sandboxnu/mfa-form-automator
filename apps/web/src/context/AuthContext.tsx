@@ -67,6 +67,7 @@ export const AuthProvider = ({ children }: any) => {
           firstName: decoded.firstName,
           lastName: decoded.lastName,
           scope: decoded.scope,
+          signatureLink: decoded.signatureLink,
         };
 
         setUser(user);
@@ -89,6 +90,7 @@ export const AuthProvider = ({ children }: any) => {
         firstName: employee.data.firstName,
         lastName: employee.data.lastName,
         scope: employee.data.scope as Scope,
+        signatureLink: employee.data.signatureLink ?? '',
       };
       setUser(newUser);
     }

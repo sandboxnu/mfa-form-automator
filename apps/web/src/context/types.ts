@@ -1,10 +1,16 @@
-import { Dispatch, SetStateAction } from 'react';
 import {
-  FormFields,
+  CreateAssignedGroupDto,
+  FormInstanceEntity,
+  FormTemplateEntity,
+  Scope,
+  TemplateBoxBaseEntity,
+} from '@web/client';
+import {
   FieldGroups,
+  FormFields,
 } from '@web/components/createFormTemplate/types';
-import { CreateAssignedGroupDto, FormTemplateEntity, Scope } from '@web/client';
 import { GraphUser } from '@web/graph';
+import { Dispatch, SetStateAction } from 'react';
 
 // for storage in context
 export type User = {
@@ -15,6 +21,7 @@ export type User = {
   firstName: string;
   lastName: string;
   scope: Scope;
+  signatureLink: string;
 };
 // jwt payload returned from server
 export type jwtPayload = {
@@ -25,6 +32,7 @@ export type jwtPayload = {
   firstName: string;
   lastName: string;
   scope: Scope;
+  signatureLink: string;
 };
 
 export interface AuthContextType {
@@ -50,6 +58,16 @@ export interface CreateFormTemplateContextType {
   setFormFields: Dispatch<SetStateAction<FormFields>>;
   fieldGroups: FieldGroups;
   setFieldGroups: Dispatch<SetStateAction<FieldGroups>>;
+  formDimensions: { width: number; height: number } | undefined;
+  setFormDimensions: Dispatch<
+    React.SetStateAction<
+      | {
+          width: number;
+          height: number;
+        }
+      | undefined
+    >
+  >;
 }
 export interface CreateFormInstanceContextType {
   formInstanceName: string | null;
@@ -61,6 +79,25 @@ export interface CreateFormInstanceContextType {
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
 }
+
+export interface SignFormInstanceContextType {
+  formInstance: FormInstanceEntity | undefined;
+  formInstanceError: Error | null;
+  isLoading: boolean;
+  fields: FormField[][];
+  originalPdfLink: string;
+  modifiedPdfLink: string;
+  groupNumbers: Map<string, number> | undefined;
+  updateField: (pageNum: number, id: string, data: boolean | string) => void;
+  nextSignFormPage: (
+    submitLink: string,
+    isReviewPage: boolean,
+  ) => Promise<void>;
+}
+
+export type FormField = TemplateBoxBaseEntity & {
+  data: { filled?: boolean; text?: string };
+};
 
 export type ContextAssignedGroupData = CreateAssignedGroupDto & {
   name: string;

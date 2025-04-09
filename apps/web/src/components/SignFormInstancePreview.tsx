@@ -47,29 +47,29 @@ export const SignFormInstancePreview = ({
     if (!formInstance) {
       return false;
     }
-    // get the AssignedGroupEntity that is next to sign the form
-    let nextToSign: AssignedGroupEntity | null = null;
-    let prev: AssignedGroupEntity | null = null;
-    for (let assigned of formInstance.assignedGroups) {
-      if (prev == null || (prev.signed && !assigned.signed)) {
-        nextToSign = assigned;
-        break;
-      }
-      prev = assigned;
+
+    const nextToSign = formInstance.assignedGroups.find(
+      (group) => !group.signed,
+    );
+    if (!nextToSign) {
+      return false;
     }
-    if (nextToSign?.signerType == 'POSITION') {
-      return user?.positionId == nextToSign.signerPositionId;
-    } else if (nextToSign?.signerType == 'DEPARTMENT') {
-      return user?.departmentId == nextToSign.signerDepartmentId;
-    } else if (nextToSign?.signerType == 'USER') {
-      return user?.id == nextToSign.signerEmployee?.id;
-    } else if (nextToSign?.signerType == 'USER_LIST') {
-      return nextToSign.signerEmployeeList?.reduce(
-        (acc, empl) => (empl.id == user?.id ? true : acc),
-        false,
-      );
+
+    switch (nextToSign.signerType) {
+      case 'POSITION':
+        return user?.positionId === nextToSign.signerPositionId;
+      case 'DEPARTMENT':
+        return user?.departmentId === nextToSign.signerDepartmentId;
+      case 'USER':
+        return user?.id === nextToSign.signerEmployee?.id;
+      case 'USER_LIST':
+        return nextToSign.signerEmployeeList?.reduce(
+          (acc, empl) => (empl.id == user?.id ? true : acc),
+          false,
+        );
+      default:
+        return false;
     }
-    return false;
   }
 
   return (
@@ -193,9 +193,7 @@ export const SignFormInstancePreview = ({
                   padding="4px 16px"
                   borderRadius="6px"
                   background="#1367EA"
-                  onClick={() =>
-                    router.push('form-instances/' + formInstance.id)
-                  }
+                  onClick={() => router.push('sign-form/' + formInstance.id)}
                   _hover={{
                     background: '#1367EA',
                   }}

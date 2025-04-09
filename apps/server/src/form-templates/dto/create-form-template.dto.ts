@@ -6,6 +6,7 @@ import {
   IsString,
   ValidateNested,
   IsOptional,
+  IsInt,
 } from 'class-validator';
 import { CreateFieldGroupDto } from '../../field-group/dto/create-field-group.dto';
 import { Type } from 'class-transformer';
@@ -23,6 +24,14 @@ export class CreateFormTemplateDto {
   @IsOptional()
   @ApiProperty()
   description: string;
+
+  @IsInt()
+  @ApiProperty()
+  pageWidth: number;
+
+  @IsInt()
+  @ApiProperty()
+  pageHeight: number;
 
   @IsArray()
   @ArrayMinSize(1)

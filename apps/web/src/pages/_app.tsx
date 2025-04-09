@@ -17,6 +17,10 @@ import { ReactNode, useMemo, memo } from 'react';
 import { client } from '@web/client/client.gen';
 import { CreateFormInstanceProvider } from '@web/context/CreateFormInstanceContext';
 import { appControllerRefresh } from '@web/client';
+import { SignFormInstanceContextProvider } from '@web/context/SignFormInstanceContext';
+import { pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 client.instance.interceptors.response.use(
   (response) => response, // Directly return successful responses.
@@ -90,6 +94,7 @@ export default function App({
   ];
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
+  const signFormInstancePath = '/sign-form';
 
   // Check if the current page is an error page
   const isErrorPage =
@@ -142,7 +147,20 @@ export default function App({
       </>
     );
   }
-
+  if (appProps.router.pathname.includes(signFormInstancePath)) {
+    const { id } = appProps.router.query;
+    return (
+      <>
+        <WrapperComponent>
+          <SignFormInstanceContextProvider id={id as string}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </SignFormInstanceContextProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
   return (
     <>
       <WrapperComponent>

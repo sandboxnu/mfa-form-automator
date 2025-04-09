@@ -84,7 +84,7 @@ export const OverviewRow = ({
                 key={index}
                 formName={formInstance.name}
                 assignedGroups={formInstance.assignedGroups}
-                link={'/form-instances/' + formInstance.id}
+                link={'/sign-form/' + formInstance.id}
               />
             );
           },
