@@ -63,13 +63,17 @@ export const FormButtons = ({
     formFields: formFieldsContext,
     formDimensions,
     inEditMode,
-    useId,
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
   const [createFormLoading, setCreateFormLoading] = useState(false);
   const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
 
+  const {
+    setFormInstanceUseId,
+    formInstanceUseId,
+    formInstanceDescription,
+  } = useCreateFormInstance();
   const { user } = useAuth();
 
   const createFormTemplateMutation = useMutation({
@@ -125,6 +129,7 @@ export const FormButtons = ({
 
     setCreateFormLoading(true);
 
+    console.log('submitting template');
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
 
@@ -150,7 +155,6 @@ export const FormButtons = ({
           });
         });
       }
-
       fieldGroups.push({
         name: value.groupName,
         order: orderVal,
@@ -229,7 +233,7 @@ export const FormButtons = ({
           originatorId: user.id,
           formTemplateId: formTemplate.id,
           formDocLink: formTemplate.formDocLink,
-          description: formTemplate.description ?? '',
+          description: formInstanceDescription ?? formTemplate.description!!,
         },
       })
       .then((response) => {

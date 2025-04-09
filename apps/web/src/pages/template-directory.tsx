@@ -30,7 +30,10 @@ import {
   FieldGroupColor,
   FieldGroups,
   fieldId,
+  FieldType,
+  FormFields,
   groupId,
+  TextFieldPosition,
 } from '@web/components/createFormTemplate/types';
 
 /**
@@ -45,6 +48,7 @@ function TemplateDirectory() {
     setFormTemplateUseId,
     fieldGroups,
     setFieldGroups,
+    setFormFields,
   } = useCreateFormTemplate();
   const router = useRouter();
 
@@ -53,6 +57,8 @@ function TemplateDirectory() {
   );
   // isOpen for the 'are you sure you want to delete' modal
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  // refresh form select template on change
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   /**
    * Sets the clicked form template to be chosen, allowing the user to select other
@@ -124,6 +130,7 @@ function TemplateDirectory() {
       });
     console.log('finished');
     console.log(formTemplate);
+    setRefresh(!refresh);
     setIsOpen(false);
     setFormTemplate(null);
   };
@@ -149,44 +156,41 @@ function TemplateDirectory() {
         border: 'red',
         groupName: oldGroup.name,
       });
+      let count = 0;
+      let newFieldMap = new Map<fieldId, Field>();
       for (let oldField of oldGroup.templateBoxes) {
+        let newType;
+        if (oldGroup.id == 'SIGNATURE') {
+          newType = FieldType.SIGNATURE;
+        } else if (oldGroup.id == 'CHECK BOX') {
+          newType = FieldType.CHECKBOX;
+        } else {
+          newType = FieldType.TEXT_FIELD;
+        }
+
+        newFieldMap.set(oldField.id, {
+          position: {
+            x: oldField.x_coordinate,
+            y: oldField.y_coordinate,
+            width: 10,
+            height: 10,
+          },
+          groupId: oldGroup.id,
+          type: newType,
+        });
+        newFields[count] = newFieldMap;
       }
     }
-
-    /**
-
-     * export class TemplateBoxBaseEntity implements TemplateBox {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty({ enum: SignatureBoxFieldType })
-  type: SignatureBoxFieldType;
-
-  @ApiProperty()
-  x_coordinate: number;
-
-  @ApiProperty()
-  y_coordinate: number;
-
-  @Exclude()
-  fieldGroupId: string;
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  updatedAt: Date;
-
-  constructor(partial: Partial<TemplateBoxBaseEntity>) {
-    Object.assign(this, partial);
-  }
-}
-     */
 
     setFormTemplateName(formTemplate.name);
     setFormTemplateDescription(formTemplate.description);
     setFormTemplateUseId(formTemplate.id);
-    setFieldGroups(newGroups);
+    let castNewGroups: FieldGroups = newGroups;
+    setFieldGroups(castNewGroups);
+    let castNewFields: FormFields = newFields;
+    setFormFields(castNewFields);
+    console.log(castNewGroups);
+    console.log(castNewFields);
     fetchPdfFile().then(() => router.push('/create-template/description'));
   }
 
@@ -282,6 +286,8 @@ function TemplateDirectory() {
           allowCreate={false}
           handleSelectTemplate={handleSelectTemplate}
           selectedFormTemplate={formTemplate}
+          refresh={refresh}
+          setRefresh={setRefresh}
         />
 
         <Flex

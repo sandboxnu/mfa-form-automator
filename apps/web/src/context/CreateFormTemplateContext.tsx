@@ -25,7 +25,9 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
     height: number;
   }>();
   const [inEditMode, setInEditMode] = useState<boolean>(false);
-  const [useId, setUseId] = useState<string | null>(null);
+  const [formTemplateUseId, setFormTemplateUseId] = useState<string | null>(
+    null,
+  );
 
   const router = useRouter();
 
@@ -56,8 +58,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFormDimensions,
         inEditMode,
         setInEditMode,
-        useId,
-        setUseId,
+        formTemplateUseId,
+        setFormTemplateUseId,
       }}
     >
       {children}

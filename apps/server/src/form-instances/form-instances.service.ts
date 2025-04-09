@@ -438,13 +438,60 @@ export class FormInstancesService {
    * @returns the updated form instance, hydrated
    */
   async update(id: string, updateFormInstanceDto: UpdateFormInstanceDto) {
+    let formTemplate;
+    try {
+      formTemplate = await this.formTemplateService.findOne(id);
+    } catch (e) {
+      throw new NotFoundException(
+        FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+      );
+    }
+
+    if (!formTemplate) {
+      throw new NotFoundException(
+        FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND,
+      );
+    }
+    const fieldGroups = await this.prisma.fieldGroup.findMany({
+      where: {
+        id: {
+          in: formTemplate.fieldGroups.map((group) => group.id),
+        },
+      },
+      include: {
+        templateBoxes: true,
+      },
+    });
     const updatedFormInstance = this.prisma.formInstance.update({
       where: {
         id: id,
       },
       data: {
         name: updateFormInstanceDto.name,
+        description: updateFormInstanceDto.description,
         formDocLink: updateFormInstanceDto.formDocLink,
+        assignedGroups: {
+          create: updateFormInstanceDto.assignedGroups?.map(
+            (assignedGroup) => ({
+              ...assignedGroup,
+              signerEmployeeList: {
+                connect: assignedGroup.signerEmployeeList.map((user) => ({
+                  id: user.id,
+                })),
+              },
+              instanceBoxes: {
+                create: fieldGroups
+                  .find(
+                    (fieldGroup) =>
+                      fieldGroup.id === assignedGroup.fieldGroupId,
+                  )
+                  ?.templateBoxes.map((templateBox) => ({
+                    templateBoxId: templateBox.id,
+                  })),
+              },
+            }),
+          ),
+        },
       },
       include: {
         originator: {
