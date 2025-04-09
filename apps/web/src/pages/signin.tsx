@@ -3,8 +3,17 @@ import { Flex } from '@chakra-ui/react';
 import { MFALogoIcon } from '@web/static/icons';
 import { AzureSignin } from '@web/components/AzureSignin';
 import { SignIn } from '@web/components/SignIn';
+import { useAuth } from '@web/hooks/useAuth';
+import { useRouter } from 'next/router';
 
 export default function Signin() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  if (user) {
+    router.push('/');
+  }
+
   return (
     <>
       <Flex
