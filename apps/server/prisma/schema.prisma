@@ -68,7 +68,7 @@ model Employee {
   firstName     String        @db.VarChar(255)
   lastName      String        @db.VarChar(255)
   email         String        @unique @db.VarChar(255)
-  signatureLink String?       @db.VarChar(255)
+  signatureLink String?       @db.Text()
   scope         EmployeeScope @default(BASE_USER)
   pswdHash      String?       @db.VarChar(255)
   createdAt     DateTime      @default(now())
@@ -93,9 +93,8 @@ model FormTemplate {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   description String?  @db.Text()
-  pageWidth   Int       @db.Integer()
-  pageHeight  Int       @db.Integer()
-
+  pageWidth   Int      @db.Integer()
+  pageHeight  Int      @db.Integer()
 
   fieldGroups   FieldGroup[]
   formInstances FormInstance[]
@@ -129,11 +128,11 @@ model TemplateBox {
   y_coordinate Int                   @db.Integer
   createdAt    DateTime              @default(now())
   updatedAt    DateTime              @updatedAt
-  width       Int                   @db.Integer
-  height      Int                   @db.Integer
-  page        Int                   @db.Integer
-  fieldGroup   FieldGroup    @relation(fields: [fieldGroupId], references: [id])
-  fieldGroupId String        @db.Uuid
+  width        Int                   @db.Integer
+  height       Int                   @db.Integer
+  page         Int                   @db.Integer
+  fieldGroup   FieldGroup            @relation(fields: [fieldGroupId], references: [id])
+  fieldGroupId String                @db.Uuid
   InstanceBox  InstanceBox[]
 }
 

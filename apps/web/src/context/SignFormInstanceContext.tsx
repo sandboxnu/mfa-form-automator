@@ -243,6 +243,12 @@ export const SignFormInstanceContextProvider = ({
         }
       }
       if (!error) {
+        // Clear all the form context state to prevent backward navigation
+        setFields([]);
+        setModifiedPdfLink('');
+        setOriginalPdfLink('');
+        setAssignedGroupIds(undefined);
+        setGroupNumbers(undefined);
         router.push(submitLink);
       }
     }

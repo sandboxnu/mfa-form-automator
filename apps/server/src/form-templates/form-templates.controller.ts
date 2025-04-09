@@ -38,6 +38,7 @@ import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ContributorAuthGuard } from '../auth/guards/contributor-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 export class ParseFormDataJsonPipe implements PipeTransform {
   constructor() {}
@@ -113,7 +114,7 @@ export class FormTemplatesController {
   }
 
   @Get()
-  @UseGuards(ContributorAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: [FormTemplateEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -131,7 +132,7 @@ export class FormTemplatesController {
   }
 
   @Get(':id')
-  @UseGuards(ContributorAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: FormTemplateEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
