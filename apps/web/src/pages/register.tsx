@@ -64,9 +64,7 @@ function Register() {
   };
 
   // Create signature image (either text or canvas)
-  const createSignatureImage = async () => {
-    let file;
-
+  const createSignatureImage: () => Promise<string> = async () => {
     if (createSignatureType === 'type' && signatureText) {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -83,28 +81,18 @@ function Register() {
       );
 
       const dataUrl = canvas.toDataURL();
-      file = new File([dataURLToBlob(dataUrl)], 'signature.png', {
-        type: 'image/png',
-      });
+      return dataUrl;
     } else {
       const dataUrl = signatureCanvas.current.toDataURL();
-      file = new File([dataURLToBlob(dataUrl)], 'signature.png', {
-        type: 'image/png',
-      });
+      return dataUrl;
     }
-
-    return await setBlob(file);
   };
 
   // Handle registration submission
   const handleRegistration = async () => {
     if (!currentDepartmentId || !currentPositionId) return;
 
-    await createSignatureImage();
-    const signatureUrl = blob
-      ? // TODO: Do we want to store the URL representation of their signature?
-        URL.createObjectURL(blob)
-      : 'http://localhost:3002/signature.png';
+    const signatureUrl = await createSignatureImage();
     try {
       await completeRegistration(currentPositionId, signatureUrl);
     } catch (error) {
