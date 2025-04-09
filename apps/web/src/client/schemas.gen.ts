@@ -515,15 +515,15 @@ export const TemplateBoxBaseEntitySchema = {
     page: {
       type: 'number',
     },
+    fieldGroupId: {
+      type: 'string',
+    },
     createdAt: {
       format: 'date-time',
       type: 'string',
     },
     updatedAt: {
       format: 'date-time',
-      type: 'string',
-    },
-    fieldGroupId: {
       type: 'string',
     },
   },
@@ -535,9 +535,9 @@ export const TemplateBoxBaseEntitySchema = {
     'width',
     'height',
     'page',
+    'fieldGroupId',
     'createdAt',
     'updatedAt',
-    'fieldGroupId',
   ],
 } as const;
 
