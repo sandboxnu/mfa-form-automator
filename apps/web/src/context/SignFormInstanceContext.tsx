@@ -6,7 +6,6 @@ import {
 import { FormField, SignFormInstanceContextType } from '@web/context/types';
 import { useAuth } from '@web/hooks/useAuth';
 import { useRouter } from 'next/router';
-import { c } from 'node_modules/framer-motion/dist/types.d-6pKw1mTI';
 import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
 

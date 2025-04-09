@@ -93,18 +93,19 @@ function Register() {
       });
     }
 
-    return await setBlob(file);
+    setBlob(file);
+    return file;
   };
 
   // Handle registration submission
   const handleRegistration = async () => {
     if (!currentDepartmentId || !currentPositionId) return;
 
-    await createSignatureImage();
-    const signatureUrl = blob
-      ? // TODO: Do we want to store the URL representation of their signature?
-        URL.createObjectURL(blob)
-      : 'http://localhost:3002/signature.png';
+    const signatureBlob = await createSignatureImage();
+    if (!signatureBlob) {
+      throw new Error('Failed to create signature image');
+    }
+    const signatureUrl = URL.createObjectURL(signatureBlob);
     try {
       await completeRegistration(currentPositionId, signatureUrl);
     } catch (error) {
