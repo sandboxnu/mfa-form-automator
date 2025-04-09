@@ -42,10 +42,7 @@ export const FormLayout = ({
   return (
     <Box height="100vh" marginTop="36px">
       <Flex position="absolute" margin="0px" zIndex={5000}>
-        <SideCreateForm
-          curStep={pageNumber}
-          isFormTemplate={type === FormInteractionType.CreateFormTemplate}
-        />
+        <SideCreateForm curStep={pageNumber} interactionType={type} />
       </Flex>
 
       <Heading

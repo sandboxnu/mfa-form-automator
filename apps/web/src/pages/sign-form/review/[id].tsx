@@ -18,7 +18,7 @@ function Review() {
   return (
     <FormLayout
       type={FormInteractionType.SignFormInstance}
-      pageNumber={4}
+      pageNumber={2}
       heading={'Sign form'}
       subheading={'Review your form submission'}
       boxContent={

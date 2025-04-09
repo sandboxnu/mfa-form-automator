@@ -62,7 +62,6 @@ export const SignFormInstanceContextProvider = ({
           .find((id) => id === user?.id),
     );
     if (assignedGroups) {
-      console.log(assignedGroups);
       assignedGroups.map((group) => {
         [group.fieldGroupId, group.order];
       });
@@ -231,7 +230,6 @@ export const SignFormInstanceContextProvider = ({
     if (blob && formInstance && assignedGroupIds) {
       let error = false;
       for (const [i, assignedGroupId] of assignedGroupIds.entries()) {
-        console.log('ENTEREDDDD');
         const res = await signFormInstanceMutation.mutateAsync({
           body: {
             file: blob,
