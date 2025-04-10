@@ -235,6 +235,9 @@ export const UpdateEmployeeDtoSchema = {
     accessToken: {
       type: 'string',
     },
+    signatureLink: {
+      type: 'string',
+    },
   },
 } as const;
 

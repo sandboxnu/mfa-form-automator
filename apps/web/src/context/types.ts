@@ -45,6 +45,7 @@ export interface AuthContextType {
     signatureLink: string,
   ) => Promise<void>;
   logout: () => void;
+  refreshUser: () => void;
 }
 
 export interface CreateFormTemplateContextType {
