@@ -67,6 +67,16 @@ export const FormButtons = ({
       queryClient.invalidateQueries({
         queryKey: formTemplatesControllerFindAllQueryKey(),
       });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+      });
     },
   });
 
@@ -75,6 +85,16 @@ export const FormButtons = ({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: formInstancesControllerFindAllQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
       });
     },
   });
