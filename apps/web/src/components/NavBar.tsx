@@ -7,6 +7,8 @@ import {
   PlusIcon,
   FormInstanceIcon,
   GrayPencilIcon,
+  DropdownDownArrow,
+  DropdownUpArrow,
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link';
 import {
@@ -18,16 +20,37 @@ import {
 import { Scope } from '@web/client/types.gen';
 import { useAuth } from '@web/hooks/useAuth';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 const icons = {
-  overview: <OverViewIcon boxSize="24px" mr="2" />,
-  overviewActive: <OverViewIcon boxSize="24px" mr="2" />,
-  todo: <ToDoIcon boxSize="24px" mr="2" />,
-  todoActive: <ToDoIcon boxSize="24px" mr="2" />,
-  pending: <PendingIcon boxSize="24px" mr="2" />,
-  pendingActive: <PendingIcon boxSize="24px" mr="2" />,
-  completed: <CompletedIcon boxSize="24px" mr="2" />,
-  completedActive: <CompletedIcon boxSize="24px" mr="2" />,
+  overview: <OverViewIcon boxSize="20px" fill="#5E5E5E" />,
+  overviewActive: <OverViewIcon boxSize="20px" fill="black" />,
+  todo: (
+    <ToDoIcon
+      boxSize="28px"
+      ml="-1"
+      mr="-1"
+      fill="#5E5E5E"
+      stroke="#5E5E5E"
+      strokeWidth="0.27"
+    />
+  ),
+  todoActive: (
+    <ToDoIcon
+      boxSize="28px"
+      ml="-1"
+      mr="-1"
+      fill="black"
+      stroke="black"
+      strokeWidth="0.27"
+    />
+  ),
+  pending: <PendingIcon boxSize="24px" fill="#5E5E5E" />,
+  pendingActive: <PendingIcon boxSize="24px" fill="black" strokeWidth="0.27" />,
+  completed: <CompletedIcon boxSize="24px" stroke="#5E5E5E" fill="#5E5E5E" />,
+  completedActive: (
+    <CompletedIcon boxSize="24px" color="black" stroke="black" fill="black" />
+  ),
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
   test: <GrayPencilIcon boxSize="24px" mr="2" />,
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
@@ -53,15 +76,17 @@ const NavItem = ({
       <Box
         px="8"
         py="2"
-        bg={isActive ? '#EFEFEF' : 'transparent'}
+        bg={isActive ? '#F3F6F8' : 'transparent'}
         _hover={{
-          bg: '#F4F4F4',
+          bg: '#F3F6F8',
         }}
         transition="background-color 0.2s ease"
         cursor="pointer"
       >
         <Flex align="center">
-          {icons[iconKey]}
+          <Flex minW="8" align="center">
+            {icons[iconKey]}
+          </Flex>
           <Text
             fontWeight={isActive ? 'bold' : 'normal'}
             color={isActive ? '#263345' : 'inherit'}
@@ -84,6 +109,7 @@ export const NavBar = ({
   const router = useRouter();
   const { user } = useAuth();
   const isAdmin = user?.scope === Scope.ADMIN;
+  const [isCreateDropdownOpen, setIsCreateDropdownOpen] = useState(false);
 
   return (
     <Box
@@ -101,48 +127,65 @@ export const NavBar = ({
       {...props}
     >
       <Flex mt="24px" mb="32px" px="8">
-        <MenuRoot closeOnSelect>
+        <MenuRoot
+          closeOnSelect
+          open={isCreateDropdownOpen}
+          onOpenChange={(e) => setIsCreateDropdownOpen(e.open)}
+        >
           <MenuTrigger asChild>
             <Button
               h="40px"
-              w="124px"
+              w="120px"
               bg="#1367EA"
               color="white"
               _hover={{
-                bg: '#1257C3',
+                bg: '#1058C7',
               }}
+              fontSize={'16px'}
+              fontWeight={600}
+              borderRadius={'6px'}
             >
-              <PlusIcon />
+              <PlusIcon
+                boxSize="14px"
+                fill="white"
+                stroke="white"
+                stroke-width="0.38"
+              />
               Create
+              {isCreateDropdownOpen ? (
+                <DropdownUpArrow boxSize="10px" />
+              ) : (
+                <DropdownDownArrow boxSize="10px" />
+              )}
             </Button>
           </MenuTrigger>
-          <MenuContent zIndex="1100">
-            <MenuItem
-              onClick={() => router.push('create-instance/select-template')}
-              value="form"
-              padding="10px"
-              w="158px"
-              cursor="pointer"
-              _hover={{
-                bg: '#F4F4F4',
-              }}
-            >
-              Form
-            </MenuItem>
+          <MenuContent zIndex="1100" py="6px">
             {isAdmin && (
               <MenuItem
                 onClick={() => router.push('create-template/upload')}
                 value="template"
                 padding="10px"
-                w="158px"
+                w="140px"
                 cursor="pointer"
                 _hover={{
-                  bg: '#F4F4F4',
+                  bg: '#EDF2F5',
                 }}
               >
-                Template
+                Form template
               </MenuItem>
             )}
+            <MenuItem
+              onClick={() => router.push('create-instance/select-template')}
+              value="form"
+              padding="10px"
+              w="140px"
+              cursor="pointer"
+              _hover={{
+                bg: '#EDF2F5',
+              }}
+            >
+              Form instance
+            </MenuItem>
           </MenuContent>
         </MenuRoot>
       </Flex>
@@ -152,7 +195,7 @@ export const NavBar = ({
           Dashboard
         </NavItem>
         <NavItem icon="todo" link="/todo">
-          To Do
+          To-Do
         </NavItem>
         <NavItem icon="pending" link="/pending">
           Pending
