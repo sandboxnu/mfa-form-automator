@@ -1,5 +1,6 @@
 import {
   AssignedGroupEntity,
+  EmployeeBaseEntity,
   FormInstanceEntity,
   SignerType,
 } from '@web/client';
@@ -120,8 +121,8 @@ export const nextSigner = (formInstance: FormInstanceEntity) => {
  * @returns true if the next signer is the current user, false otherwise
  */
 export const signerIsUser = (
-  assignedGroup?: AssignedGroupEntity,
-  user?: User,
+  assignedGroup: AssignedGroupEntity,
+  user: User,
 ) => {
   if (!assignedGroup || !user) return false;
 
@@ -138,4 +139,27 @@ export const signerIsUser = (
         (employee) => employee.id === user?.id,
       ))
   );
+};
+
+/**
+ * Determines if a form instance is signed by the current user
+ *
+ * @param formInstance the form instance to check
+ * @returns true if the form instance is signed by the current user, false otherwise
+ */
+export const isSignedByUser = (
+  formInstance: FormInstanceEntity,
+  user: User,
+) => {
+  const assignedGroups: AssignedGroupEntity[] = formInstance.assignedGroups;
+
+  if (!assignedGroups || !user) return false;
+
+  return assignedGroups.some((assignedGroup: AssignedGroupEntity) => {
+    return (
+      assignedGroup.signed &&
+      assignedGroup.signingEmployeeId &&
+      assignedGroup.signingEmployeeId === user.id
+    );
+  });
 };

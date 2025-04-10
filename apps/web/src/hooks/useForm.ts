@@ -5,8 +5,9 @@ import {
   isFullySigned,
   nextSigner,
   signerIsUser,
+  isSignedByUser,
 } from '@web/utils/formInstanceUtils';
-import { AssignedGroupEntity, FormInstanceEntity } from '@web/client';
+import { FormInstanceEntity } from '@web/client';
 import {
   formInstancesControllerFindAllAssignedToCurrentEmployeeOptions,
   formInstancesControllerFindAllCreatedByCurrentEmployeeOptions,
@@ -42,33 +43,18 @@ export const useForm = () => {
     [],
   );
 
-  /**
-   * Determines if a form instance is created by the current user
-   *
-   * @param formInstance the form instance to check
-   * @returns true if the form instance is created by the current user, false otherwise
-   */
-  const isOriginator = (formInstance: FormInstanceEntity) => {
-    return formInstance.originator.id === user?.id;
-  };
-
-  /**
-   * Determines if a form instance is signed by the current user
-   *
-   * @param formInstance the form instance to check
-   * @returns true if the form instance is signed by the current user, false otherwise
-   */
-  const isSignedByUser = (formInstance: FormInstanceEntity) => {
-    const assignedGroups: AssignedGroupEntity[] = formInstance.assignedGroups;
-
-    return assignedGroups.some((assignedGroup: AssignedGroupEntity) => {
-      return (
-        assignedGroup.signerEmployeeId === user?.id && assignedGroup.signed
-      );
-    });
-  };
-
   useMemo(() => {
+    console.log(assignedFIData);
+    /**
+     * Determines if a form instance is created by the current user
+     *
+     * @param formInstance the form instance to check
+     * @returns true if the form instance is created by the current user, false otherwise
+     */
+    const isOriginator = (formInstance: FormInstanceEntity) => {
+      return formInstance.originator.id === user?.id;
+    };
+
     if (!assignedFIData || !createdFIData || !user) {
       setTodoForms([]);
       setPendingForms([]);
@@ -107,7 +93,7 @@ export const useForm = () => {
     const signerPendingForms: FormInstanceEntity[] = assignedFIData.filter(
       (formInstance: FormInstanceEntity) => {
         return (
-          isSignedByUser(formInstance) &&
+          isSignedByUser(formInstance, user) &&
           !formInstance.markedCompleted &&
           !isOriginator(formInstance)
         );
@@ -135,7 +121,6 @@ export const useForm = () => {
     setTodoForms([...todoForms, ...todoApproveForms]);
     setPendingForms([...originatorPendingForms, ...signerPendingForms]);
     setCompletedForms([...originatorCompletedForms, ...signerCompletedForms]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assignedFIData, createdFIData, user]);
 
   return {
