@@ -1,5 +1,5 @@
 import { Button, Dialog, Flex, Portal, Text } from '@chakra-ui/react';
-import { FormInstanceEntity } from '@web/client/types.gen';
+import { FormInstanceEntity, SignerType } from '@web/client/types.gen';
 import { useRouter } from 'next/router';
 import { CloseIcon, PenSigningIcon } from '@web/static/icons';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
@@ -39,10 +39,6 @@ export const SignFormInstancePreview = ({
   }
 
   const nextAssignedGroup = nextSigner(formInstance);
-
-  if (!nextAssignedGroup) {
-    return <></>;
-  }
 
   return (
     <Dialog.Root
@@ -149,7 +145,7 @@ export const SignFormInstancePreview = ({
                       (assignedGroup) => ({
                         signed: assignedGroup.signed,
                         title: getNameFromAssignedGroup(assignedGroup),
-                        signerType: assignedGroup.signerType as any,
+                        signerType: assignedGroup.signerType as SignerType,
                         updatedAt: assignedGroup.updatedAt,
                       }),
                     )}
@@ -158,7 +154,7 @@ export const SignFormInstancePreview = ({
               </Flex>
             </Dialog.Body>
             <Dialog.Footer>
-              {signerIsUser(nextAssignedGroup, user) && (
+              {nextAssignedGroup && signerIsUser(nextAssignedGroup, user) && (
                 <Button
                   width="158px"
                   height="32px"

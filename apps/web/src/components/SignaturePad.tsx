@@ -35,7 +35,7 @@ export const SignaturePad = ({
       signatureCanvas.current.clear();
       signatureCanvas.current.fromDataURL(signatureLink);
     }
-  }, [signatureLink]);
+  }, [signatureCanvas, signatureLink]);
 
   return (
     <>

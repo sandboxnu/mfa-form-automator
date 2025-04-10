@@ -30,37 +30,29 @@ export const isFullySigned = (formInstance: FormInstanceEntity) => {
  */
 export const getNameFromAssignedGroup = (
   assignedGroup: AssignedGroupEntity,
-) => {
-  const signerType = assignedGroup.signerType as any;
+): string => {
+  const signerType = assignedGroup.signerType;
 
-  if (assignedGroup.signed || signerType === SignerType.USER) {
-    return (
-      assignedGroup.signerEmployee?.firstName! +
-      ' ' +
-      assignedGroup.signerEmployee?.lastName!
-    );
-  } else if (signerType === SignerType.DEPARTMENT) {
-    return assignedGroup.signerDepartment?.name!;
-  } else if (signerType === SignerType.POSITION) {
-    return assignedGroup.signerPosition?.name!;
-  } else if (signerType === SignerType.USER_LIST) {
-    if (assignedGroup.signed) {
+  switch (signerType) {
+    case SignerType.USER:
       return (
         assignedGroup.signerEmployee?.firstName! +
         ' ' +
         assignedGroup.signerEmployee?.lastName!
       );
-    }
-    return (
-      assignedGroup.signerEmployeeList
-        ?.map((employee) => {
-          return employee.firstName + ' ' + employee.lastName;
-        })
-        .join(', ')
-        .slice(0, 30) + '...'
-    );
+    case SignerType.DEPARTMENT:
+      return assignedGroup.signerDepartment?.name!;
+    case SignerType.POSITION:
+      return assignedGroup.signerPosition?.name!;
+    case SignerType.USER_LIST:
+      return (
+        assignedGroup.signerEmployeeList
+          ?.map((employee) => employee.firstName + ' ' + employee.lastName)
+          .join(', ') || ''
+      );
+    default:
+      return '';
   }
-  return '';
 };
 
 /**
