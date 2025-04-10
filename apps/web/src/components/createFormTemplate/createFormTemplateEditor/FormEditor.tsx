@@ -415,118 +415,128 @@ export const FormEditor = ({
             }}
             ref={scrollContainerRef}
           >
-            <Document
-              file={pdfFile}
-              onLoadSuccess={(data) => {
-                setTotalPages(data.numPages);
-                setPageNum(1); // Reset to first page when document loads
-
-                setFormFields(
-                  Array.from({ length: data.numPages }).reduce<FormFields>(
-                    (acc, _, i) => {
-                      if (formFields[i + 1]) {
-                        // Changed from i to i+1 to match 1-indexed pages
-                        acc[i + 1] = formFields[i + 1];
-                      } else {
-                        acc[i + 1] = new Map();
-                      }
-                      return acc;
-                    },
-                    {},
-                  ),
-                );
-              }}
+            <Box
+              height="474px"
+              width="800px"
+              overflow="scroll"
+              display="flex"
+              flexDirection="column"
             >
-              {Array.from(new Array(totalPages), (_, index) => (
-                <div
-                  key={`page_container_${index + 1}`}
-                  ref={(el) => {
-                    pageRefs.current[index] = el;
-                  }}
-                  style={{
-                    marginBottom: '12px',
-                    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
-                    background: 'white',
-                  }}
-                >
-                  <Page
-                    inputRef={index + 1 === pageNum ? documentRef : null}
-                    renderAnnotationLayer={false}
-                    renderTextLayer={false}
-                    pageNumber={index + 1}
-                    width={1000}
+              <Document
+                file={pdfFile}
+                onLoadSuccess={(data) => {
+                  setTotalPages(data.numPages);
+                  setPageNum(1); // Reset to first page when document loads
+
+                  setFormFields(
+                    Array.from({ length: data.numPages }).reduce<FormFields>(
+                      (acc, _, i) => {
+                        if (formFields[i + 1]) {
+                          // Changed from i to i+1 to match 1-indexed pages
+                          acc[i + 1] = formFields[i + 1];
+                        } else {
+                          acc[i + 1] = new Map();
+                        }
+                        return acc;
+                      },
+                      {},
+                    ),
+                  );
+                }}
+              >
+                {Array.from(new Array(totalPages), (_, index) => (
+                  <div
+                    key={`page_container_${index + 1}`}
+                    ref={(el) => {
+                      pageRefs.current[index] = el;
+                    }}
+                    style={{
+                      marginBottom: '12px',
+                      boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+                      background: 'white',
+                    }}
                   >
-                    {formFields[index + 1] &&
-                      Array.from(formFields[index + 1].entries()).map(
-                        (
-                          [fieldId, { position, groupId, type }],
-                          fieldIndex,
-                        ) => (
-                          <DraggableBoxFactory
-                            type={type ?? FieldType.TEXT_FIELD}
-                            currentPosition={{
-                              x: position.x * scale,
-                              y: position.y * scale,
-                              width: position.width * scale,
-                              height: position.height * scale,
-                            }}
-                            onRemove={() => {
-                              handleRemoveField(fieldId);
-                            }}
-                            key={fieldIndex}
-                            color={
-                              fieldGroups.get(groupId)?.background ?? '#000'
-                            }
-                            onStop={(
-                              e: DraggableEvent,
-                              data: DraggableData,
-                            ) => {
-                              setSelectedField(fieldId);
-                              setHighlightedField(fieldId);
+                    <Page
+                      inputRef={index + 1 === pageNum ? documentRef : null}
+                      renderAnnotationLayer={false}
+                      renderTextLayer={false}
+                      pageNumber={index + 1}
+                      width={1000}
+                    >
+                      {formFields[index + 1] &&
+                        Array.from(formFields[index + 1].entries()).map(
+                          (
+                            [fieldId, { position, groupId, type }],
+                            fieldIndex,
+                          ) => (
+                            <DraggableBoxFactory
+                              type={type ?? FieldType.TEXT_FIELD}
+                              currentPosition={{
+                                x: position.x * scale,
+                                y: position.y * scale,
+                                width: position.width * scale,
+                                height: position.height * scale,
+                              }}
+                              onRemove={() => {
+                                handleRemoveField(fieldId);
+                              }}
+                              key={fieldIndex}
+                              color={
+                                fieldGroups.get(groupId)?.background ?? '#000'
+                              }
+                              onStop={(
+                                e: DraggableEvent,
+                                data: DraggableData,
+                              ) => {
+                                setSelectedField(fieldId);
+                                setHighlightedField(fieldId);
 
-                              handleFieldUpdate(groupId, fieldId, {
-                                width: position.width,
-                                height: position.height,
-                                x: data.x,
-                                y: data.y,
-                              });
-                            }}
-                            onResizeStop={(
-                              e: MouseEvent | TouchEvent,
-                              dir,
-                              elementRef,
-                              delta,
-                              pos,
-                            ) => {
-                              setSelectedField(fieldId);
-                              setHighlightedField(fieldId);
+                                handleFieldUpdate(groupId, fieldId, {
+                                  width: position.width,
+                                  height: position.height,
+                                  x: data.x,
+                                  y: data.y,
+                                });
+                              }}
+                              onResizeStop={(
+                                e: MouseEvent | TouchEvent,
+                                dir,
+                                elementRef,
+                                delta,
+                                pos,
+                              ) => {
+                                setSelectedField(fieldId);
+                                setHighlightedField(fieldId);
 
-                              let newWidth = parseFloat(elementRef.style.width);
-                              let newHeight = parseFloat(
-                                elementRef.style.height,
-                              );
+                                let newWidth = parseFloat(
+                                  elementRef.style.width,
+                                );
+                                let newHeight = parseFloat(
+                                  elementRef.style.height,
+                                );
 
-                              handleFieldUpdate(groupId, fieldId, {
-                                width: Number.isNaN(newWidth)
-                                  ? position.width
-                                  : newWidth,
-                                height: Number.isNaN(newHeight)
-                                  ? position.height
-                                  : newHeight,
-                                x: pos.x,
-                                y: pos.y,
-                              });
-                            }}
-                            disableEdit={disableEdit}
-                            selected={selectedField === fieldId}
-                            highlighted={highlightedField === fieldId}
-                          />
-                        ),
-                      )}
-                  </Page>
-                </div>
-              ))}
-            </Document>
+                                handleFieldUpdate(groupId, fieldId, {
+                                  width: Number.isNaN(newWidth)
+                                    ? position.width
+                                    : newWidth,
+                                  height: Number.isNaN(newHeight)
+                                    ? position.height
+                                    : newHeight,
+                                  x: pos.x,
+                                  y: pos.y,
+                                });
+                              }}
+                              disableEdit={disableEdit}
+                              selected={selectedField === fieldId}
+                              highlighted={highlightedField === fieldId}
+                            />
+                          ),
+                        )}
+                    </Page>
+                  </div>
+                ))}
+              </Document>
+            </Box>
           </div>
         </Box>
       </Box>

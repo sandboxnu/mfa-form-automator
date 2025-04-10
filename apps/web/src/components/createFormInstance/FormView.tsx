@@ -45,7 +45,13 @@ export const FormView = ({
                   onLoadSuccess={(data) => setTotalPages(data.numPages)}
                 >
                   {Array.from(new Array(totalPages), (_, index) => (
-                    <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+                    <Page
+                      key={`page_${index + 1}`}
+                      width={1000}
+                      renderAnnotationLayer={false}
+                      renderTextLayer={false}
+                      pageNumber={index + 1}
+                    />
                   ))}
                 </Document>
               </div>
