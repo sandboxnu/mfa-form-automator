@@ -141,7 +141,9 @@ export const FormButtons = ({
           },
         })
         .then((response) => {
-          router.push(submitLink);
+          router.push(submitLink).then(() => {
+            setCreateFormLoading(false);
+          });
           return response;
         })
         .catch((e) => {
@@ -152,9 +154,6 @@ export const FormButtons = ({
             duration: 3000,
           });
           throw e;
-        })
-        .finally(() => {
-          setCreateFormLoading(false);
         });
   };
 
@@ -202,7 +201,9 @@ export const FormButtons = ({
         },
       })
       .then((response) => {
-        router.push(submitLink);
+        router.push(submitLink).then(() => {
+          setCreateFormLoading(false);
+        });
         return response;
       })
       .catch((e) => {
@@ -213,9 +214,6 @@ export const FormButtons = ({
           duration: 3000,
         });
         throw e;
-      })
-      .finally(() => {
-        setCreateFormLoading(false);
       });
   };
 
