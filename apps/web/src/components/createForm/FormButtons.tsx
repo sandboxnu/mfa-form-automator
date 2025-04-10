@@ -142,7 +142,10 @@ export const FormButtons = ({
             description: formTemplateDescription ?? '',
           },
         })
-        .then((response) => {
+        .then(async (response) => {
+          await queryClient.invalidateQueries({
+            queryKey: formTemplatesControllerFindAllQueryKey(),
+          });
           router.push(submitLink).then(() => {
             setCreateFormLoading(false);
           });
