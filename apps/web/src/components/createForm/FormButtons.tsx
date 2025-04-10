@@ -152,9 +152,10 @@ export const FormButtons = ({
             duration: 3000,
           });
           throw e;
+        })
+        .finally(() => {
+          setCreateFormLoading(false);
         });
-
-    setCreateFormLoading(false);
   };
 
   /**
@@ -211,9 +212,10 @@ export const FormButtons = ({
           duration: 3000,
         });
         throw e;
+      })
+      .finally(() => {
+        setCreateFormLoading(false);
       });
-
-    setCreateFormLoading(false);
   };
 
   return (
@@ -289,7 +291,7 @@ export const FormButtons = ({
           }}
           marginLeft="12px"
           marginRight="36px"
-          disabled={disabled}
+          disabled={disabled || signFormInstanceLoading || createFormLoading}
           loading={signFormInstanceLoading || createFormLoading}
           onClick={() => {
             switch (type) {
