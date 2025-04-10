@@ -1,5 +1,5 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
-import { AwaitingIcon, CheckIcon } from 'apps/web/src/static/icons.tsx';
+import { Flex, Text } from '@chakra-ui/react';
+import { AwaitingIcon } from 'apps/web/src/static/icons.tsx';
 import { AvatarMapProps } from './types.ts';
 import { SignerType } from '@web/client/types.gen.ts';
 import { Avatar } from './ui/avatar.tsx';

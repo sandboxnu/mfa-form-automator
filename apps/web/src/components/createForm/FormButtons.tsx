@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
+  formInstancesControllerFindAllQueryKey,
   formInstancesControllerSignFormInstanceMutation,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
@@ -71,13 +72,9 @@ export const FormButtons = ({
     ...formInstancesControllerCreateMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
+        queryKey: formInstancesControllerFindAllQueryKey(),
       });
     },
-  });
-
-  const signFormInstanceMutation = useMutation({
-    ...formInstancesControllerSignFormInstanceMutation(),
   });
 
   /**

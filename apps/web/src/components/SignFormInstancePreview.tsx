@@ -7,6 +7,13 @@ import { useAuth } from '@web/hooks/useAuth';
 import AssigneeMap from './AssigneeMap';
 import { Avatar } from './ui/avatar.tsx';
 import { nextSigner, signerIsUser } from '@web/utils/formInstanceUtils';
+import {
+  formInstancesControllerCompleteFormInstanceMutation,
+  formInstancesControllerFindAllQueryKey,
+} from '@web/client/@tanstack/react-query.gen.ts';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryClient } from '@web/pages/_app.tsx';
+import { formInstancesControllerFindAllAssignedToCurrentEmployee } from '@web/client/sdk.gen.ts';
 
 /**
  * Modal used in OverviewRow component for To Do forms
@@ -27,6 +34,14 @@ export const SignFormInstancePreview = ({
   const router = useRouter();
   const { user } = useAuth();
 
+  const completeFormInstanceMutation = useMutation({
+    ...formInstancesControllerCompleteFormInstanceMutation(),
+    onSuccess: () => {
+      // temp - what should do here?
+      router.push('/completed');
+    },
+  });
+
   const subheadingStyle = {
     lineHeight: 'normal',
     color: '#010101',
@@ -37,6 +52,14 @@ export const SignFormInstancePreview = ({
   if (!formInstance || !user) {
     return <></>;
   }
+
+  const handleApproveFormInstance = () => {
+    completeFormInstanceMutation.mutate({
+      path: {
+        formInstanceId: formInstance?.id,
+      },
+    });
+  };
 
   const nextAssignedGroup = nextSigner(formInstance);
 
@@ -173,6 +196,27 @@ export const SignFormInstancePreview = ({
                   </Flex>
                 </Button>
               )}
+              {!nextAssignedGroup &&
+                !formInstance.markedCompleted &&
+                user.id === formInstance.originator.id && (
+                  <Button
+                    width="158px"
+                    height="32px"
+                    padding="4px 16px"
+                    borderRadius="6px"
+                    background="#1367EA"
+                    onClick={handleApproveFormInstance}
+                    _hover={{
+                      background: '#1367EA',
+                    }}
+                  >
+                    <Flex gap="8px" alignItems="center" justifyContent="center">
+                      <PenSigningIcon color="#FFF" />
+
+                      <Text color="#FFF">Mark Completed</Text>
+                    </Flex>
+                  </Button>
+                )}
             </Dialog.Footer>
           </Dialog.Content>
         </Dialog.Positioner>
