@@ -70,7 +70,6 @@ export class AuthService {
       positionId: user.positionId,
       departmentId: user.position?.departmentId,
       scope: user.scope,
-      signatureLink: user.signatureLink,
     };
 
     const [accessToken, refreshToken] = await Promise.all([

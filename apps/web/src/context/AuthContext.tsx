@@ -54,10 +54,11 @@ export const AuthProvider = ({ children }: any) => {
   }, [router]);
 
   const parseUser = useCallback(
-    (jwt?: JwtEntity) => {
+    async (jwt?: JwtEntity) => {
       if (jwt) {
         const token = jwt.accessToken;
         const decoded = jwtDecode(token) as jwtPayload;
+        const signatureLink = (await fetchCurrentUser())?.signatureLink;
 
         const user: User = {
           id: decoded.sub,
@@ -67,7 +68,7 @@ export const AuthProvider = ({ children }: any) => {
           firstName: decoded.firstName,
           lastName: decoded.lastName,
           scope: decoded.scope,
-          signatureLink: decoded.signatureLink,
+          signatureLink: signatureLink ?? '',
         };
 
         setUser(user);
@@ -92,13 +93,15 @@ export const AuthProvider = ({ children }: any) => {
         scope: employee.data.scope as Scope,
         signatureLink: employee.data.signatureLink ?? '',
       };
-      setUser(newUser);
+      return newUser;
     }
   };
 
   useEffect(() => {
     setLoadingInitial(true);
-    fetchCurrentUser().then(() => setLoadingInitial(false));
+    fetchCurrentUser()
+      .then((fetchedUser) => setUser(fetchedUser))
+      .finally(() => setLoadingInitial(false));
   }, []);
 
   useEffect(() => {
@@ -129,11 +132,11 @@ export const AuthProvider = ({ children }: any) => {
           password: password,
         },
       })
-        .then((response) => {
+        .then(async (response) => {
           if (response.data == null) {
             return false;
           }
-          parseUser(response.data);
+          await parseUser(response.data);
           router.push('/');
           return true;
         })
@@ -203,7 +206,8 @@ export const AuthProvider = ({ children }: any) => {
       await onboardEmployeeMutation.mutateAsync({
         body: onboardingEmployeeDto,
       });
-      await fetchCurrentUser();
+      const user = await fetchCurrentUser();
+      setUser(user);
       router.push('/');
     },
     [onboardEmployeeMutation, router],
