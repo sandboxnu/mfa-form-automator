@@ -3,6 +3,8 @@ import { useMutation } from '@tanstack/react-query';
 import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
+  formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
   formInstancesControllerFindAllQueryKey,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
@@ -200,7 +202,18 @@ export const FormButtons = ({
           description: formTemplate.description ?? '',
         },
       })
-      .then((response) => {
+      .then(async (response) => {
+        await queryClient.invalidateQueries({
+          queryKey: formInstancesControllerFindAllQueryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+        });
         router.push(submitLink).then(() => {
           setCreateFormLoading(false);
         });
