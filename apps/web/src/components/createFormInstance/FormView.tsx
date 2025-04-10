@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Document, Page } from 'react-pdf';
-import { Box, Text } from '@chakra-ui/react';
-import PagingControl from '../createFormTemplate/createFormTemplateEditor/PagingControl';
+import { Box } from '@chakra-ui/react';
 
 export const FormView = ({
   pdfUrl,
@@ -10,7 +9,6 @@ export const FormView = ({
   pdfUrl: string;
   useEmbed?: boolean;
 }) => {
-  const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
   return (
@@ -41,24 +39,18 @@ export const FormView = ({
               display="flex"
               justifyContent="center"
             >
-              <Document
-                file={pdfUrl}
-                onLoadSuccess={(data) => setTotalPages(data.numPages)}
-              >
-                <Page
-                  width={1000}
-                  renderAnnotationLayer={false}
-                  renderTextLayer={false}
-                  pageNumber={pageNum + 1}
-                />
-              </Document>
+              <div style={{ overflowY: 'auto', maxHeight: '800px' }}>
+                <Document
+                  file={pdfUrl}
+                  onLoadSuccess={(data) => setTotalPages(data.numPages)}
+                >
+                  {Array.from(new Array(totalPages), (_, index) => (
+                    <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+                  ))}
+                </Document>
+              </div>
             </Box>
           </Box>
-          <PagingControl
-            pageNum={pageNum}
-            setPageNum={setPageNum}
-            totalPages={totalPages}
-          />
         </>
       ) : (
         <embed style={{ height: '525px' }} src={pdfUrl}></embed>

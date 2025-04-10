@@ -1,11 +1,14 @@
-import { Box, Button, Text } from '@chakra-ui/react';
+import { Box, Button, Text, Icon, Spacer } from '@chakra-ui/react';
 import {
   Checkbox,
+  LeftArrowIcon,
   PlusSign,
+  RightArrowIcon,
+  RightSearchIcon,
   SignatureIcon,
   TextIcon,
 } from 'apps/web/src/static/icons';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Document, Page } from 'react-pdf';
 import { DraggableData, DraggableEvent } from 'react-draggable';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,7 +19,7 @@ import {
   TextFieldPosition,
 } from '../types';
 import DraggableBoxFactory from './DraggableBoxFactory';
-import PagingControl from './PagingControl';
+import { debounce } from '@web/utils/misc';
 
 export const FormEditor = ({
   formTemplateName,
@@ -48,12 +51,63 @@ export const FormEditor = ({
   const [currentGroup, setCurrentGroup] = useState<string>(
     fieldGroups.keys().next().value ?? '',
   );
-  const [pageNum, setPageNum] = useState(0);
+  const [pageNum, setPageNum] = useState(1); // Changed from 0 to 1 to match PDF indexing
   const [totalPages, setTotalPages] = useState(0);
   const documentRef = useRef(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [groupNum, setGroupNum] = useState(fieldGroups.size);
   const [selectedField, setSelectedField] = useState<string | null>();
   const [highlightedField, setHighlightedField] = useState<string>();
+
+  // Initialize pageRefs when totalPages changes
+  useEffect(() => {
+    pageRefs.current = Array(totalPages).fill(null);
+  }, [totalPages]);
+
+  // Track current page on scroll
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+
+    if (!scrollContainer) return;
+
+    const handleScroll = debounce(() => {
+      const containerTop = scrollContainer.scrollTop;
+      const containerHeight = scrollContainer.clientHeight;
+      const containerCenter = containerTop + containerHeight / 2;
+
+      // Find which page is most visible in the viewport
+      let bestVisiblePage = pageNum;
+      let maxVisibleArea = 0;
+
+      pageRefs.current.forEach((pageRef, index) => {
+        if (!pageRef) return;
+
+        const pageRect = pageRef.getBoundingClientRect();
+        const containerRect = scrollContainer.getBoundingClientRect();
+
+        // Calculate visible area of the page
+        const visibleTop = Math.max(containerRect.top, pageRect.top);
+        const visibleBottom = Math.min(containerRect.bottom, pageRect.bottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+
+        if (visibleHeight > maxVisibleArea) {
+          maxVisibleArea = visibleHeight;
+          bestVisiblePage = index + 1; // +1 because PDF pages are 1-indexed
+        }
+      });
+
+      if (bestVisiblePage !== pageNum) {
+        setPageNum(bestVisiblePage);
+      }
+    }, 100);
+
+    scrollContainer.addEventListener('scroll', handleScroll);
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, [pageNum, totalPages]);
 
   //colors for group buttons: colors[0] = border/text color, colors[1] = background color
   const groupColors = [
@@ -211,6 +265,17 @@ export const FormEditor = ({
     return { centerX, centerY };
   };
 
+  // Function to handle manual page navigation
+  const goToPage = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setPageNum(pageNumber);
+      const pageRef = pageRefs.current[pageNumber - 1];
+      if (pageRef && scrollContainerRef.current) {
+        pageRef.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <Box
       background="white"
@@ -221,7 +286,7 @@ export const FormEditor = ({
       width="100%"
     >
       {!disableEdit && (
-        <Box display="flex" gap="12px">
+        <Box display="flex" gap="12px" justifyContent={'flex-start'}>
           {Array.from(fieldGroups.entries()).map(
             ([key, _]: [string, any], index: number) => (
               <Button
@@ -286,6 +351,7 @@ export const FormEditor = ({
         >
           {formTemplateName}
         </Text>
+
         <Box display="flex" justifyContent="center">
           {!disableEdit && (
             <Box
@@ -348,25 +414,29 @@ export const FormEditor = ({
               </Button>
             </Box>
           )}
-          <Box
-            height="474px"
-            width="800px"
-            overflow="scroll"
-            display="flex"
-            flexDirection="column"
+          <div
+            style={{
+              overflowY: 'auto',
+              maxHeight: '800px',
+              padding: '12px',
+              background: '#F0F0F0',
+            }}
+            ref={scrollContainerRef}
           >
             <Document
               file={pdfFile}
               onLoadSuccess={(data) => {
                 setTotalPages(data.numPages);
+                setPageNum(1); // Reset to first page when document loads
 
                 setFormFields(
                   Array.from({ length: data.numPages }).reduce<FormFields>(
                     (acc, _, i) => {
-                      if (formFields[i]) {
-                        acc[i] = formFields[i];
+                      if (formFields[i + 1]) {
+                        // Changed from i to i+1 to match 1-indexed pages
+                        acc[i + 1] = formFields[i + 1];
                       } else {
-                        acc[i] = new Map();
+                        acc[i + 1] = new Map();
                       }
                       return acc;
                     },
@@ -375,83 +445,144 @@ export const FormEditor = ({
                 );
               }}
             >
-              <Page
-                inputRef={documentRef}
-                renderAnnotationLayer={false}
-                renderTextLayer={false}
-                pageNumber={pageNum + 1}
-                width={1000}
-              >
-                {formFields[pageNum] &&
-                  Array.from(formFields[pageNum].entries()).map(
-                    ([fieldId, { position, groupId }], index) => (
-                      <DraggableBoxFactory
-                        type={
-                          formFields[pageNum].get(fieldId)?.type ??
-                          FieldType.TEXT_FIELD
-                        }
-                        currentPosition={{
-                          x: position.x * scale,
-                          y: position.y * scale,
-                          width: position.width * scale,
-                          height: position.height * scale,
-                        }}
-                        onRemove={() => {
-                          handleRemoveField(fieldId);
-                        }}
-                        key={index}
-                        color={fieldGroups.get(groupId)?.background ?? '#000'}
-                        onStop={(e: DraggableEvent, data: DraggableData) => {
-                          setSelectedField(fieldId);
-                          setHighlightedField(fieldId);
+              {Array.from(new Array(totalPages), (_, index) => (
+                <div
+                  key={`page_container_${index + 1}`}
+                  ref={(el) => {
+                    pageRefs.current[index] = el;
+                  }}
+                  style={{
+                    marginBottom: '12px',
+                    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
+                    background: 'white',
+                  }}
+                >
+                  <Page
+                    inputRef={index + 1 === pageNum ? documentRef : null}
+                    renderAnnotationLayer={false}
+                    renderTextLayer={false}
+                    pageNumber={index + 1}
+                    width={1000}
+                  >
+                    {formFields[index + 1] &&
+                      Array.from(formFields[index + 1].entries()).map(
+                        (
+                          [fieldId, { position, groupId, type }],
+                          fieldIndex,
+                        ) => (
+                          <DraggableBoxFactory
+                            type={type ?? FieldType.TEXT_FIELD}
+                            currentPosition={{
+                              x: position.x * scale,
+                              y: position.y * scale,
+                              width: position.width * scale,
+                              height: position.height * scale,
+                            }}
+                            onRemove={() => {
+                              handleRemoveField(fieldId);
+                            }}
+                            key={fieldIndex}
+                            color={
+                              fieldGroups.get(groupId)?.background ?? '#000'
+                            }
+                            onStop={(
+                              e: DraggableEvent,
+                              data: DraggableData,
+                            ) => {
+                              setSelectedField(fieldId);
+                              setHighlightedField(fieldId);
 
-                          handleFieldUpdate(groupId, fieldId, {
-                            width: position.width,
-                            height: position.height,
-                            x: data.x,
-                            y: data.y,
-                          });
-                        }}
-                        onResizeStop={(
-                          e: MouseEvent | TouchEvent,
-                          dir,
-                          elementRef,
-                          delta,
-                          pos,
-                        ) => {
-                          setSelectedField(fieldId);
-                          setHighlightedField(fieldId);
+                              handleFieldUpdate(groupId, fieldId, {
+                                width: position.width,
+                                height: position.height,
+                                x: data.x,
+                                y: data.y,
+                              });
+                            }}
+                            onResizeStop={(
+                              e: MouseEvent | TouchEvent,
+                              dir,
+                              elementRef,
+                              delta,
+                              pos,
+                            ) => {
+                              setSelectedField(fieldId);
+                              setHighlightedField(fieldId);
 
-                          let newWidth = parseFloat(elementRef.style.width);
-                          let newHeight = parseFloat(elementRef.style.height);
+                              let newWidth = parseFloat(elementRef.style.width);
+                              let newHeight = parseFloat(
+                                elementRef.style.height,
+                              );
 
-                          handleFieldUpdate(groupId, fieldId, {
-                            width: Number.isNaN(newWidth)
-                              ? position.width
-                              : newWidth,
-                            height: Number.isNaN(newHeight)
-                              ? position.height
-                              : newHeight,
-                            x: pos.x,
-                            y: pos.y,
-                          });
-                        }}
-                        disableEdit={disableEdit}
-                        selected={selectedField === fieldId}
-                        highlighted={highlightedField === fieldId}
-                      />
-                    ),
-                  )}
-              </Page>
+                              handleFieldUpdate(groupId, fieldId, {
+                                width: Number.isNaN(newWidth)
+                                  ? position.width
+                                  : newWidth,
+                                height: Number.isNaN(newHeight)
+                                  ? position.height
+                                  : newHeight,
+                                x: pos.x,
+                                y: pos.y,
+                              });
+                            }}
+                            disableEdit={disableEdit}
+                            selected={selectedField === fieldId}
+                            highlighted={highlightedField === fieldId}
+                          />
+                        ),
+                      )}
+                  </Page>
+                </div>
+              ))}
             </Document>
-          </Box>
+          </div>
         </Box>
       </Box>
-      <PagingControl
-        pageNum={pageNum}
-        setPageNum={setPageNum}
-        totalPages={totalPages}
-      />
+
+      {/* Page indicator and navigation controls with arrows */}
+      <Box
+        mt="8px"
+        display="flex"
+        alignItems="center"
+        spaceX="16px"
+        width="100%"
+      >
+        <Spacer />
+        <Button
+          bg="white"
+          borderRadius="6px"
+          fontWeight="500"
+          p={2}
+          minW="20px"
+          height="40px"
+          _hover={{ bg: '#F3F6F8' }}
+          disabled={pageNum <= 1}
+          onClick={() => goToPage(pageNum - 1)}
+          aria-label="Previous page"
+        >
+          <LeftArrowIcon boxSize={6} fill="#1367EA" />
+        </Button>
+
+        <Text fontSize="14px" color="#5A6474">
+          Page {pageNum} of {totalPages}
+        </Text>
+
+        <Button
+          bg="white"
+          borderRadius="6px"
+          fontWeight="500"
+          p={2}
+          minW="20px"
+          height="40px"
+          _hover={{ bg: '#F3F6F8' }}
+          disabled={pageNum >= totalPages}
+          onClick={() => goToPage(pageNum + 1)}
+          aria-label="Next page"
+        >
+          <RightArrowIcon boxSize={6} />
+        </Button>
+        <Spacer />
+      </Box>
     </Box>
   );
 };
