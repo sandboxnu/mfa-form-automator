@@ -29,7 +29,12 @@ export const createSignatureImage: (
     const dataUrl = canvas.toDataURL();
     return dataUrl;
   } else {
-    const dataUrl = signatureCanvas?.current?.toDataURL();
-    return dataUrl;
+    // Get the signature canvas reference
+    const signPad = signatureCanvas?.current;
+    if (!signPad || signPad.isEmpty()) return undefined;
+
+    // Use trimmed data URL to avoid excessive whitespace
+    // This preserves the exact signature as drawn by the user with proper size
+    return signPad.getTrimmedCanvas().toDataURL('image/png');
   }
 };
