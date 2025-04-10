@@ -243,9 +243,10 @@ export const SignFormInstanceContextProvider = ({
           error = true;
         }
       }
-      setSignFormInstanceLoading(false);
       if (!error) {
-        router.push(submitLink);
+        router.push(submitLink).then(() => {
+          setSignFormInstanceLoading(false);
+        });
       }
     }
   };
