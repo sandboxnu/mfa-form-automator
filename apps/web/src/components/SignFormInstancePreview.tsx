@@ -9,11 +9,12 @@ import { Avatar } from './ui/avatar.tsx';
 import { nextSigner, signerIsUser } from '@web/utils/formInstanceUtils';
 import {
   formInstancesControllerCompleteFormInstanceMutation,
+  formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
   formInstancesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen.ts';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app.tsx';
-import { formInstancesControllerFindAllAssignedToCurrentEmployee } from '@web/client/sdk.gen.ts';
 
 /**
  * Modal used in OverviewRow component for To Do forms
@@ -36,8 +37,18 @@ export const SignFormInstancePreview = ({
 
   const completeFormInstanceMutation = useMutation({
     ...formInstancesControllerCompleteFormInstanceMutation(),
-    onSuccess: () => {
-      // temp - what should do here?
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: formInstancesControllerFindAllQueryKey(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+      });
       router.push('/completed');
     },
   });
@@ -53,8 +64,8 @@ export const SignFormInstancePreview = ({
     return <></>;
   }
 
-  const handleApproveFormInstance = () => {
-    completeFormInstanceMutation.mutate({
+  const handleApproveFormInstance = async () => {
+    await completeFormInstanceMutation.mutateAsync({
       path: {
         formInstanceId: formInstance?.id,
       },
@@ -82,7 +93,6 @@ export const SignFormInstancePreview = ({
             maxHeight="75vh"
             borderRadius="12px"
             boxShadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
-            overflowY={'scroll'}
           >
             <Dialog.Header>
               <Flex
