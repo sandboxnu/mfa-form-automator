@@ -15,6 +15,7 @@ import {
 } from '@web/client/@tanstack/react-query.gen.ts';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app.tsx';
+import { useState } from 'react';
 
 /**
  * Modal used in OverviewRow component for To Do forms
@@ -33,6 +34,7 @@ export const SignFormInstancePreview = ({
   formInstance?: FormInstanceEntity;
 }) => {
   const router = useRouter();
+  const [markedCompletedLoading, setMarkedCompletedLoading] = useState(false);
   const { user } = useAuth();
 
   const completeFormInstanceMutation = useMutation({
@@ -65,11 +67,13 @@ export const SignFormInstancePreview = ({
   }
 
   const handleApproveFormInstance = async () => {
+    setMarkedCompletedLoading(true);
     await completeFormInstanceMutation.mutateAsync({
       path: {
         formInstanceId: formInstance?.id,
       },
     });
+    setMarkedCompletedLoading(false);
   };
 
   const nextAssignedGroup = nextSigner(formInstance);
@@ -219,6 +223,8 @@ export const SignFormInstancePreview = ({
                     _hover={{
                       background: '#1367EA',
                     }}
+                    loading={markedCompletedLoading}
+                    disabled={markedCompletedLoading}
                   >
                     <Flex gap="8px" alignItems="center" justifyContent="center">
                       <PenSigningIcon color="#FFF" />

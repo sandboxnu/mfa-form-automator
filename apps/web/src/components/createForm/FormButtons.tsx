@@ -4,7 +4,6 @@ import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
   formInstancesControllerFindAllQueryKey,
-  formInstancesControllerSignFormInstanceMutation,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
@@ -16,6 +15,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { FormInteractionType } from './types';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
+import { useState } from 'react';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -54,8 +54,8 @@ export const FormButtons = ({
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
-
-  const { nextSignFormPage } = useSignFormInstance();
+  const [createFormLoading, setCreateFormLoading] = useState(false);
+  const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
 
   const { user } = useAuth();
 
@@ -91,6 +91,8 @@ export const FormButtons = ({
     if (!pdfFile) {
       throw new Error('No PDF file uploaded');
     }
+
+    setCreateFormLoading(true);
 
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
@@ -151,6 +153,8 @@ export const FormButtons = ({
           });
           throw e;
         });
+
+    setCreateFormLoading(false);
   };
 
   /**
@@ -171,6 +175,8 @@ export const FormButtons = ({
     ) {
       return;
     }
+
+    setCreateFormLoading(true);
 
     await createFormInstanceMutation
       .mutateAsync({
@@ -206,6 +212,8 @@ export const FormButtons = ({
         });
         throw e;
       });
+
+    setCreateFormLoading(false);
   };
 
   return (
@@ -282,6 +290,7 @@ export const FormButtons = ({
           marginLeft="12px"
           marginRight="36px"
           disabled={disabled}
+          loading={signFormInstanceLoading || createFormLoading}
           onClick={() => {
             switch (type) {
               case FormInteractionType.CreateFormTemplate:

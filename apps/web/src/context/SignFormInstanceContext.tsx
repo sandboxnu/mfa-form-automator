@@ -38,7 +38,7 @@ export const SignFormInstanceContextProvider = ({
       return failureCount < 3; // Retry up to 3 times for other errors
     },
   });
-
+  const [signFormInstanceLoading, setSignFormInstanceLoading] = useState(false);
   const [fields, setFields] = useState<FormField[][]>([]);
   const [groupNumbers, setGroupNumbers] = useState<Map<string, number>>();
   const [modifiedPdfLink, setModifiedPdfLink] = useState('');
@@ -228,6 +228,7 @@ export const SignFormInstanceContextProvider = ({
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     if (blob && formInstance && assignedGroupIds) {
       let error = false;
+      setSignFormInstanceLoading(true);
       for (const [i, assignedGroupId] of assignedGroupIds.entries()) {
         const res = await signFormInstanceMutation.mutateAsync({
           body: {
@@ -242,6 +243,7 @@ export const SignFormInstanceContextProvider = ({
           error = true;
         }
       }
+      setSignFormInstanceLoading(false);
       if (!error) {
         router.push(submitLink);
       }
@@ -276,6 +278,7 @@ export const SignFormInstanceContextProvider = ({
         fields,
         formInstance,
         groupNumbers,
+        signFormInstanceLoading,
         nextSignFormPage,
         updateField,
       }}
