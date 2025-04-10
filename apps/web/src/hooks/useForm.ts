@@ -44,7 +44,6 @@ export const useForm = () => {
   );
 
   useMemo(() => {
-    console.log(assignedFIData);
     /**
      * Determines if a form instance is created by the current user
      *
