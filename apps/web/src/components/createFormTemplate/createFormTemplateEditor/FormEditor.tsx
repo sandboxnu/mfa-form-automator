@@ -1,10 +1,9 @@
-import { Box, Button, Text, Icon, Spacer } from '@chakra-ui/react';
+import { Box, Button, Text, Spacer } from '@chakra-ui/react';
 import {
   Checkbox,
   LeftArrowIcon,
   PlusSign,
   RightArrowIcon,
-  RightSearchIcon,
   SignatureIcon,
   TextIcon,
 } from 'apps/web/src/static/icons';
@@ -20,6 +19,7 @@ import {
 } from '../types';
 import DraggableBoxFactory from './DraggableBoxFactory';
 import { debounce } from '@web/utils/misc';
+import { groupColors } from '@web/utils/formTemplateUtils';
 
 export const FormEditor = ({
   formTemplateName,
@@ -108,15 +108,6 @@ export const FormEditor = ({
       scrollContainer.removeEventListener('scroll', handleScroll);
     };
   }, [pageNum, totalPages]);
-
-  //colors for group buttons: colors[0] = border/text color, colors[1] = background color
-  const groupColors = [
-    ['#1367EA', '#EEF5FF'],
-    ['#BD21CA', '#FDEAFF'],
-    ['#7645E8', '#ECE4FF'],
-    ['#567E26', '#EDFFD6'],
-    ['#A16308', '#FFFDDB'],
-  ];
 
   const handleAddTextField = () => {
     if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
@@ -301,7 +292,9 @@ export const FormEditor = ({
                 padding="8px 12px"
                 color={groupColors[index][0]}
               >
-                Group {index + 1}
+                <Text fontSize={'16px'} fontWeight={800}>
+                  Group {index + 1}
+                </Text>
               </Button>
             ),
           )}
@@ -316,17 +309,16 @@ export const FormEditor = ({
               padding="8px 12px"
             >
               {PlusSign}
-              <span
+              <Text
                 style={{
                   fontFamily: 'Hanken Grotesk',
                   fontSize: '16px',
                   color: '#1367EA',
-                  fontWeight: 600,
-                  lineHeight: '22px',
+                  fontWeight: 800,
                 }}
               >
                 Add group
-              </span>
+              </Text>
             </Button>
           )}
         </Box>
