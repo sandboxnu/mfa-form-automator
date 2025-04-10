@@ -51,6 +51,19 @@ export const SignFormInstanceContextProvider = ({
   const router = useRouter();
   const signFormInstanceMutation = useMutation({
     ...formInstancesControllerSignFormInstanceMutation(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: formInstancesControllerFindAllQueryKey(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+      });
+    },
   });
   useEffect(() => {
     if (!formInstance || formInstanceError) return;
@@ -248,17 +261,6 @@ export const SignFormInstanceContextProvider = ({
         }
       }
       if (!error) {
-        await queryClient.invalidateQueries({
-          queryKey: formInstancesControllerFindAllQueryKey(),
-        });
-        await queryClient.invalidateQueries({
-          queryKey:
-            formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
-        });
-        await queryClient.invalidateQueries({
-          queryKey:
-            formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
-        });
         router.push(submitLink).then(() => {
           setSignFormInstanceLoading(false);
         });

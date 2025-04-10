@@ -1,10 +1,4 @@
-import { RndResizeCallback } from 'react-rnd';
-import { DraggableEventHandler } from 'react-draggable';
-import {
-  DraggableBoxFactoryProps,
-  FieldType,
-  TextFieldPosition,
-} from '../types';
+import { DraggableBoxFactoryProps, FieldType } from '../types';
 import Checkbox from './CheckBox';
 import TextField from './TextField';
 import SignatureField from './SignatureField';
