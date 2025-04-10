@@ -62,6 +62,7 @@ export const FormImageCard = ({
           fontWeight={500}
           fontSize="15px"
           height="21px"
+          truncate={true}
         >
           {formInstance.name}
         </Text>
