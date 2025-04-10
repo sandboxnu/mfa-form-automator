@@ -81,7 +81,7 @@ export const FormButtons = ({
    * Upload and create a form template
    */
   const _submitFormTemplate = async () => {
-    if (disabled == true) {
+    if (disabled || createFormLoading) {
       return;
     }
     if (!review) {
@@ -172,7 +172,8 @@ export const FormButtons = ({
       !assignedGroupData ||
       disabled ||
       !user ||
-      assignedGroupData.length != formTemplate.fieldGroups.length
+      assignedGroupData.length != formTemplate.fieldGroups.length ||
+      createFormLoading
     ) {
       return;
     }
