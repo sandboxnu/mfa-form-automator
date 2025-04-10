@@ -1,11 +1,12 @@
 import { Button, Dialog, Flex, Portal, Text } from '@chakra-ui/react';
-import { AssignedGroupEntity, FormInstanceEntity } from '@web/client/types.gen';
+import { FormInstanceEntity } from '@web/client/types.gen';
 import { useRouter } from 'next/router';
 import { CloseIcon, PenSigningIcon } from '@web/static/icons';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 import { useAuth } from '@web/hooks/useAuth';
 import AssigneeMap from './AssigneeMap';
 import { Avatar } from './ui/avatar.tsx';
+import { nextSigner, signerIsUser } from '@web/utils/formInstanceUtils';
 
 /**
  * Modal used in OverviewRow component for To Do forms
@@ -33,43 +34,14 @@ export const SignFormInstancePreview = ({
     fontWeight: '600',
   };
 
-  if (!formInstance) {
+  if (!formInstance || !user) {
     return <></>;
   }
 
-  /**
-   * Determines whether the currently logged in user qualifies as 'next to sign' based on
-   * their position/department/identity.  Used to determine whether the user should have the option to
-   * "Sign Now" from this form instance preview modal.
-   * @returns a boolean representing whether or not the user can sign for the next assigned group
-   */
-  function nextUser() {
-    if (!formInstance) {
-      return false;
-    }
+  const nextAssignedGroup = nextSigner(formInstance);
 
-    const nextToSign = formInstance.assignedGroups.find(
-      (group) => !group.signed,
-    );
-    if (!nextToSign) {
-      return false;
-    }
-
-    switch (nextToSign.signerType) {
-      case 'POSITION':
-        return user?.positionId === nextToSign.signerPositionId;
-      case 'DEPARTMENT':
-        return user?.departmentId === nextToSign.signerDepartmentId;
-      case 'USER':
-        return user?.id === nextToSign.signerEmployee?.id;
-      case 'USER_LIST':
-        return nextToSign.signerEmployeeList?.reduce(
-          (acc, empl) => (empl.id == user?.id ? true : acc),
-          false,
-        );
-      default:
-        return false;
-    }
+  if (!nextAssignedGroup) {
+    return <></>;
   }
 
   return (
@@ -186,7 +158,7 @@ export const SignFormInstancePreview = ({
               </Flex>
             </Dialog.Body>
             <Dialog.Footer>
-              {nextUser() && (
+              {signerIsUser(nextAssignedGroup, user) && (
                 <Button
                   width="158px"
                   height="32px"

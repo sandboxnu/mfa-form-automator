@@ -120,8 +120,8 @@ export const nextSigner = (formInstance: FormInstanceEntity) => {
  * @returns true if the next signer is the current user, false otherwise
  */
 export const signerIsUser = (
-  assignedGroup?: AssignedGroupEntity,
-  user?: User,
+  assignedGroup: AssignedGroupEntity,
+  user: User,
 ) => {
   if (!assignedGroup || !user) return false;
 
