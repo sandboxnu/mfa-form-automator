@@ -24,6 +24,7 @@ function Register() {
     useState<string>('draw');
   const [signatureText, setSignatureText] = useState<string>('');
   const signatureCanvas = useRef<SignatureCanvas>(null);
+  const originalSignatureLink = user?.signatureLink;
 
   useEffect(() => {
     if (user && user.positionId) {
@@ -56,13 +57,17 @@ function Register() {
   const handleRegistration = async () => {
     if (!currentDepartmentId || !currentPositionId) return;
 
-    const signatureUrl = await createSignatureImage(
+    const newSignatureLink = await createSignatureImage(
       createSignatureType,
       signatureText,
       signatureCanvas,
     );
+    if (newSignatureLink === originalSignatureLink) {
+      return;
+    }
+
     try {
-      await completeRegistration(currentPositionId, signatureUrl!);
+      await completeRegistration(currentPositionId, newSignatureLink!);
     } catch (error) {
       toaster.create({
         title: 'Failed to complete onboarding',
