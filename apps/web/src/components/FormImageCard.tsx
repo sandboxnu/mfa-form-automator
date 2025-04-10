@@ -4,10 +4,9 @@ import { FormInstanceEntity } from '@web/client/types.gen';
 import { MouseEventHandler } from 'react';
 
 /**
- * @param formName - the name of the form
- * @param signatures - the signatures on the form
- * @param link - the link to the form
- * @returns a card for a form
+ * @param formInstance - the form instance entity
+ * @param onClick - the click handler for the card
+ * @returns a responsive card for a form with image preview
  */
 export const FormImageCard = ({
   formInstance,
@@ -26,6 +25,7 @@ export const FormImageCard = ({
     <Box
       width="272px"
       minW="272px"
+      maxW="272px"
       paddingBottom="10px"
       borderRadius="8px"
       backgroundColor="#FFFFFF"
@@ -61,7 +61,6 @@ export const FormImageCard = ({
           fontFamily="Hanken Grotesk"
           fontWeight={500}
           fontSize="15px"
-          truncate
           height="21px"
         >
           {formInstance.name}
@@ -74,7 +73,6 @@ export const FormImageCard = ({
             fontFamily="Hanken Grotesk"
             fontWeight={700}
             fontSize="12px"
-            truncate
             borderRadius="20px"
             padding="3px 12px"
           >
@@ -87,7 +85,6 @@ export const FormImageCard = ({
             fontFamily="Hanken Grotesk"
             fontWeight={500}
             fontSize="13px"
-            truncate
           >
             Assigned {daysAgo(new Date(), new Date(formInstance.createdAt))}
           </Text>
