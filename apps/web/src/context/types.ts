@@ -88,8 +88,7 @@ export interface SignFormInstanceContextType {
   fields: FormField[][];
   originalPdfLink: string;
   modifiedPdfLink: string;
-  groupNumbers: Map<string, number> | undefined;
-  signFormInstanceLoading: boolean;
+  groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;
   nextSignFormPage: (
     submitLink: string,

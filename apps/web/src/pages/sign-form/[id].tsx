@@ -21,7 +21,7 @@ export function SignFormPage() {
   const router = useRouter();
   const { id } = router.query;
 
-  const { formInstance, isLoading, formInstanceError, fields, groupNumbers } =
+  const { formInstance, isLoading, formInstanceError, fields, groupNumber } =
     useSignFormInstance();
 
   const FieldBoxes = fields.map((page) => {
@@ -40,9 +40,7 @@ export function SignFormPage() {
             height: templateBox.height,
           }}
           highlighted={false}
-          color={
-            groupColors[groupNumbers?.get(templateBox.fieldGroupId) ?? 0][1]
-          }
+          color={groupColors[groupNumber][1]}
         />
       );
     });

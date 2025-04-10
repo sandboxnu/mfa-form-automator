@@ -167,9 +167,9 @@ export type TemplateBoxBaseEntity = {
   width: number;
   height: number;
   page: number;
-  fieldGroupId: string;
   createdAt: string;
   updatedAt: string;
+  fieldGroupId: string;
 };
 
 export type FieldGroupBaseEntity = {
