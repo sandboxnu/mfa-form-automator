@@ -12,6 +12,8 @@ import {
 import isAuth from '@web/components/isAuth';
 import { useRouter } from 'next/router';
 import { Toaster, toaster } from '@web/components/ui/toaster';
+import SignatureCanvas from 'react-signature-canvas';
+import { createSignatureImage } from '@web/utils/signatureUtils';
 
 function Register() {
   const router = useRouter();
@@ -21,8 +23,7 @@ function Register() {
   const [createSignatureType, setCreateSignatureType] =
     useState<string>('draw');
   const [signatureText, setSignatureText] = useState<string>('');
-  const signatureCanvas = useRef<any>(null);
-  const { blob, setBlob } = useBlob();
+  const signatureCanvas = useRef<SignatureCanvas>(null);
 
   useEffect(() => {
     if (user && user.positionId) {
@@ -51,50 +52,17 @@ function Register() {
     enabled: !!currentDepartmentId,
   });
 
-  // Convert data URL to blob for file upload
-  const dataURLToBlob = (dataURL: string) => {
-    const [header, byteString] = dataURL.split(',');
-    const mimeString = header.split(':')[1].split(';')[0];
-    const arrayBuffer = new Uint8Array(
-      atob(byteString)
-        .split('')
-        .map((char) => char.charCodeAt(0)),
-    );
-    return new Blob([arrayBuffer], { type: mimeString });
-  };
-
-  // Create signature image (either text or canvas)
-  const createSignatureImage: () => Promise<string> = async () => {
-    if (createSignatureType === 'type' && signatureText) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      canvas.width = 500;
-      canvas.height = 120;
-      ctx.font = '40px "TheChairman"';
-      const textWidth = ctx.measureText(signatureText).width;
-      ctx.fillText(
-        signatureText,
-        canvas.width / 2 - textWidth / 2,
-        canvas.height / 2 + 15,
-      );
-
-      const dataUrl = canvas.toDataURL();
-      return dataUrl;
-    } else {
-      const dataUrl = signatureCanvas.current.toDataURL();
-      return dataUrl;
-    }
-  };
-
   // Handle registration submission
   const handleRegistration = async () => {
     if (!currentDepartmentId || !currentPositionId) return;
 
-    const signatureUrl = await createSignatureImage();
+    const signatureUrl = await createSignatureImage(
+      createSignatureType,
+      signatureText,
+      signatureCanvas,
+    );
     try {
-      await completeRegistration(currentPositionId, signatureUrl);
+      await completeRegistration(currentPositionId, signatureUrl!);
     } catch (error) {
       toaster.create({
         title: 'Failed to complete onboarding',

@@ -71,6 +71,7 @@ export type UpdateEmployeeDto = {
   positionId?: string | null;
   scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
   accessToken?: string;
+  signatureLink?: string;
 };
 
 export type CreatePositionDto = {

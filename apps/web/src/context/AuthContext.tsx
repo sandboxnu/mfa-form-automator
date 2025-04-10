@@ -22,7 +22,6 @@ import {
 } from '../client';
 import { client } from '@web/client/client.gen';
 import { employeesControllerOnboardEmployeeMutation } from '@web/client/@tanstack/react-query.gen';
-import { toaster } from './../components/ui/toaster';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -213,6 +212,15 @@ export const AuthProvider = ({ children }: any) => {
     [onboardEmployeeMutation, router],
   );
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const userData = await fetchCurrentUser();
+      setUser(userData);
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+    }
+  }, []);
+
   // Make the provider update only when it should.
   // We only want to force re-renders if the user,
   // loading or error states change.
@@ -230,8 +238,17 @@ export const AuthProvider = ({ children }: any) => {
       azureLogin,
       completeRegistration,
       logout,
+      refreshUser,
     }),
-    [user, azureUser, login, azureLogin, completeRegistration, logout],
+    [
+      user,
+      azureUser,
+      login,
+      azureLogin,
+      completeRegistration,
+      logout,
+      refreshUser,
+    ],
   );
 
   return (
