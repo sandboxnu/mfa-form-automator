@@ -1,14 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  Box,
-  Flex,
-  Stack,
-  Table,
-  Text,
-  Avatar,
-  AvatarGroup,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Flex, Stack, Table, Text, Avatar } from '@chakra-ui/react';
 import {
   AssignedGroupEntity,
   FormInstanceEntity,
@@ -264,16 +255,15 @@ export const FormList = ({
               </Table.Body>
             </Table.Root>
           </Stack>
-
-          {selectedFormInstance && (
-            <SignFormInstancePreview
-              isOpen={open}
-              onClose={() => setOpen(false)}
-              formInstance={selectedFormInstance}
-            />
-          )}
         </Box>
       </Box>
+      {selectedFormInstance && (
+        <SignFormInstancePreview
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          formInstance={selectedFormInstance}
+        />
+      )}
     </>
   );
 };

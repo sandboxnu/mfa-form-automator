@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
-  formInstancesControllerSignFormInstanceMutation,
+  formInstancesControllerFindAllQueryKey,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
@@ -15,6 +15,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { FormInteractionType } from './types';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
+import { useState } from 'react';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -53,8 +54,8 @@ export const FormButtons = ({
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
-
-  const { nextSignFormPage } = useSignFormInstance();
+  const [createFormLoading, setCreateFormLoading] = useState(false);
+  const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
 
   const { user } = useAuth();
 
@@ -71,20 +72,16 @@ export const FormButtons = ({
     ...formInstancesControllerCreateMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
+        queryKey: formInstancesControllerFindAllQueryKey(),
       });
     },
-  });
-
-  const signFormInstanceMutation = useMutation({
-    ...formInstancesControllerSignFormInstanceMutation(),
   });
 
   /**
    * Upload and create a form template
    */
   const _submitFormTemplate = async () => {
-    if (disabled == true) {
+    if (disabled || createFormLoading) {
       return;
     }
     if (!review) {
@@ -94,6 +91,8 @@ export const FormButtons = ({
     if (!pdfFile) {
       throw new Error('No PDF file uploaded');
     }
+
+    setCreateFormLoading(true);
 
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
@@ -153,6 +152,9 @@ export const FormButtons = ({
             duration: 3000,
           });
           throw e;
+        })
+        .finally(() => {
+          setCreateFormLoading(false);
         });
   };
 
@@ -170,10 +172,13 @@ export const FormButtons = ({
       !assignedGroupData ||
       disabled ||
       !user ||
-      assignedGroupData.length != formTemplate.fieldGroups.length
+      assignedGroupData.length != formTemplate.fieldGroups.length ||
+      createFormLoading
     ) {
       return;
     }
+
+    setCreateFormLoading(true);
 
     await createFormInstanceMutation
       .mutateAsync({
@@ -208,6 +213,9 @@ export const FormButtons = ({
           duration: 3000,
         });
         throw e;
+      })
+      .finally(() => {
+        setCreateFormLoading(false);
       });
   };
 
@@ -284,7 +292,8 @@ export const FormButtons = ({
           }}
           marginLeft="12px"
           marginRight="36px"
-          disabled={disabled}
+          disabled={disabled || signFormInstanceLoading || createFormLoading}
+          loading={signFormInstanceLoading || createFormLoading}
           onClick={() => {
             switch (type) {
               case FormInteractionType.CreateFormTemplate:
