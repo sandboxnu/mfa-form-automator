@@ -1,10 +1,14 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
+  formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllQueryKey,
   formInstancesControllerFindOneOptions,
   formInstancesControllerSignFormInstanceMutation,
 } from '@web/client/@tanstack/react-query.gen';
 import { FormField, SignFormInstanceContextType } from '@web/context/types';
 import { useAuth } from '@web/hooks/useAuth';
+import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
 import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
@@ -244,6 +248,17 @@ export const SignFormInstanceContextProvider = ({
         }
       }
       if (!error) {
+        await queryClient.invalidateQueries({
+          queryKey: formInstancesControllerFindAllQueryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+        });
         router.push(submitLink).then(() => {
           setSignFormInstanceLoading(false);
         });
