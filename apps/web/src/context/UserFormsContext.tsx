@@ -1,22 +1,28 @@
-import { useMemo, useState } from 'react';
-import { useAuth } from './useAuth';
 import { useQuery } from '@tanstack/react-query';
-import {
-  isFullySigned,
-  nextSigner,
-  signerIsUser,
-  isSignedByUser,
-} from '@web/utils/formInstanceUtils';
 import { FormInstanceEntity } from '@web/client';
 import {
   formInstancesControllerFindAllAssignedToCurrentEmployeeOptions,
   formInstancesControllerFindAllCreatedByCurrentEmployeeOptions,
 } from '@web/client/@tanstack/react-query.gen';
+import {
+  signerIsUser,
+  nextSigner,
+  isFullySigned,
+  isSignedByUser,
+} from '@web/utils/formInstanceUtils';
+import { UserFormsContextType } from './types';
+import { createContext, useContext, useMemo, useState } from 'react';
+import { useAuth } from '@web/hooks/useAuth';
 
-/**
- * @returns an object containing the todo, pending, and completed forms
- */
-export const useForm = () => {
+export const UserFormsContext = createContext<UserFormsContextType>(
+  {} as UserFormsContextType,
+);
+
+export const UserFormsContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const { user } = useAuth();
 
   const {
@@ -122,13 +128,21 @@ export const useForm = () => {
     setCompletedForms([...originatorCompletedForms, ...signerCompletedForms]);
   }, [assignedFIData, createdFIData, user]);
 
-  return {
-    todoForms,
-    pendingForms,
-    completedForms,
-    assignedFILoading,
-    assignedFIError,
-    createdFILoading,
-    createdFIError,
-  };
+  return (
+    <UserFormsContext.Provider
+      value={{
+        todoForms,
+        pendingForms,
+        completedForms,
+        assignedFILoading,
+        assignedFIError,
+        createdFILoading,
+        createdFIError,
+      }}
+    >
+      {children}
+    </UserFormsContext.Provider>
+  );
 };
+
+export const useUserFormsContext = () => useContext(UserFormsContext);
