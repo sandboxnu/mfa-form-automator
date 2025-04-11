@@ -10,6 +10,8 @@ import {
 } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
+  formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
   formInstancesControllerFindAllQueryKey,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerUpdateMutation,
@@ -82,6 +84,16 @@ export const FormButtons = ({
       queryClient.invalidateQueries({
         queryKey: formTemplatesControllerFindAllQueryKey(),
       });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+      });
     },
   });
 
@@ -90,6 +102,16 @@ export const FormButtons = ({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: formInstancesControllerFindAllQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
       });
     },
   });
@@ -177,7 +199,10 @@ export const FormButtons = ({
             disabled: false,
           },
         })
-        .then((response) => {
+        .then(async (response) => {
+          await queryClient.invalidateQueries({
+            queryKey: formTemplatesControllerFindAllQueryKey(),
+          });
           router.push(submitLink).then(() => {
             setCreateFormLoading(false);
           });
@@ -242,7 +267,18 @@ export const FormButtons = ({
           description: formInstanceDescription ?? formTemplate.description!!,
         },
       })
-      .then((response) => {
+      .then(async (response) => {
+        await queryClient.invalidateQueries({
+          queryKey: formInstancesControllerFindAllQueryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+        });
         router.push(submitLink).then(() => {
           setCreateFormLoading(false);
         });

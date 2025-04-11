@@ -44,6 +44,16 @@ export const PDFDisplayed = ({
         >
           {formTemplateName}
         </Text>
+        {/* <div style={{ overflowY: 'auto', maxHeight: '800px' }}>
+          <Document
+            file={pdfLink}
+            onLoadSuccess={(data) => setTotalPages(data.numPages)}
+          >
+            {Array.from(new Array(totalPages), (_, index) => (
+              <Page key={`page_${index + 1}`} pageNumber={index + 1} />
+            ))}
+          </Document>
+        </div> */}
         <Box display="flex" justifyContent="center">
           <Box
             height="474px"
@@ -69,12 +79,12 @@ export const PDFDisplayed = ({
             </Document>
           </Box>
         </Box>
+        <PagingControl
+          pageNum={pageNum}
+          setPageNum={setPageNum}
+          totalPages={totalPages}
+        />
       </Box>
-      <PagingControl
-        pageNum={pageNum}
-        setPageNum={setPageNum}
-        totalPages={totalPages}
-      />
     </Box>
   );
 };
