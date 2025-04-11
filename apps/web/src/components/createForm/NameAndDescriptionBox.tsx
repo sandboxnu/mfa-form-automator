@@ -1,6 +1,7 @@
-import { Text, Flex } from '@chakra-ui/react';
+import { Text, Flex, Box } from '@chakra-ui/react';
 import React, { useMemo } from 'react';
 import { Dispatch, SetStateAction } from 'react';
+import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
 
 /**
  * The contents of the white box for the page (step 2) that asks the user for the form's name and
@@ -91,21 +92,22 @@ export const NameAndDescriptionBox = ({
           >
             Preview Only
           </Text>
-          <embed
-            src={memoPdfLink}
-            type="application/pdf"
-            width="400px"
-            height="600px"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              alignSelf: 'stretch',
-              border: '1px solid #E5E5E5',
-              borderRadius: '8px',
-              width: '100%',
-            }}
-          />
+          <Box width="580px">
+            <FormEditor
+              formTemplateName={name ?? ''}
+              pdfFile={pdfFile}
+              disableEdit={true}
+              // TODO: to be updated with field groups
+              fieldGroups={new Map()}
+              // TODO: to be updated with form fields
+              formFields={[]}
+              setFormFields={() => {}}
+              setFieldGroups={() => {}}
+              scale={0.6875}
+              documentWidth={550}
+              showNav={false}
+            />
+          </Box>
         </Flex>
       </Flex>
     </Flex>

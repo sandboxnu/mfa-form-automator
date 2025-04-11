@@ -1,10 +1,10 @@
 import {
   AssignedGroupEntity,
-  EmployeeBaseEntity,
   FormInstanceEntity,
   SignerType,
 } from '@web/client';
 import { User } from '@web/context/types';
+import { Dispatch, SetStateAction } from 'react';
 
 /**
  * Determines if a form instance is fully signed
@@ -154,4 +154,18 @@ export const isSignedByUser = (
       assignedGroup.signingEmployeeId === user.id
     );
   });
+};
+
+export const fetchPdfFile = async (
+  setPdfFile: Dispatch<SetStateAction<File | null>>,
+  formDocLink?: string,
+) => {
+  if (formDocLink) {
+    const response = await fetch(formDocLink);
+    const blob = await response.blob();
+    const file = new File([blob], 'document.pdf', {
+      type: 'application/pdf',
+    });
+    setPdfFile(file);
+  }
 };

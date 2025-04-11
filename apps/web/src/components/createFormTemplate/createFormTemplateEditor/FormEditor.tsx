@@ -31,6 +31,8 @@ export const FormEditor = ({
   setFieldGroups,
   scale,
   setFormDimensions,
+  documentWidth = 800,
+  showNav = true,
 }: {
   formTemplateName: string;
   pdfFile: File | null;
@@ -47,6 +49,8 @@ export const FormEditor = ({
     width: number;
     height: number;
   }) => void;
+  documentWidth?: number;
+  showNav?: boolean;
 }) => {
   const [currentGroup, setCurrentGroup] = useState<string>(
     fieldGroups.keys().next().value ?? '',
@@ -413,14 +417,14 @@ export const FormEditor = ({
               padding: '12px',
               background: '#F0F0F0',
             }}
-            ref={scrollContainerRef}
           >
             <Box
               height="474px"
-              width="800px"
+              width={`${documentWidth}px`}
               overflow="scroll"
               display="flex"
               flexDirection="column"
+              ref={scrollContainerRef}
             >
               <Document
                 file={pdfFile}
@@ -542,49 +546,51 @@ export const FormEditor = ({
       </Box>
 
       {/* Page indicator and navigation controls with arrows */}
-      <Box
-        mt="8px"
-        display="flex"
-        alignItems="center"
-        spaceX="16px"
-        width="100%"
-      >
-        <Spacer />
-        <Button
-          bg="white"
-          borderRadius="6px"
-          fontWeight="500"
-          p={2}
-          minW="20px"
-          height="40px"
-          _hover={{ bg: '#F3F6F8' }}
-          disabled={pageNum <= 1}
-          onClick={() => goToPage(pageNum - 1)}
-          aria-label="Previous page"
+      {showNav && (
+        <Box
+          mt="8px"
+          display="flex"
+          alignItems="center"
+          spaceX="16px"
+          width="100%"
         >
-          <LeftArrowIcon boxSize={6} fill="#1367EA" />
-        </Button>
+          <Spacer />
+          <Button
+            bg="white"
+            borderRadius="6px"
+            fontWeight="500"
+            p={2}
+            minW="20px"
+            height="40px"
+            _hover={{ bg: '#F3F6F8' }}
+            disabled={pageNum <= 1}
+            onClick={() => goToPage(pageNum - 1)}
+            aria-label="Previous page"
+          >
+            <LeftArrowIcon boxSize={6} fill="#1367EA" />
+          </Button>
 
-        <Text fontSize="14px" color="#5A6474">
-          Page {pageNum} of {totalPages}
-        </Text>
+          <Text fontSize="14px" color="#5A6474">
+            Page {pageNum} of {totalPages}
+          </Text>
 
-        <Button
-          bg="white"
-          borderRadius="6px"
-          fontWeight="500"
-          p={2}
-          minW="20px"
-          height="40px"
-          _hover={{ bg: '#F3F6F8' }}
-          disabled={pageNum >= totalPages}
-          onClick={() => goToPage(pageNum + 1)}
-          aria-label="Next page"
-        >
-          <RightArrowIcon boxSize={6} />
-        </Button>
-        <Spacer />
-      </Box>
+          <Button
+            bg="white"
+            borderRadius="6px"
+            fontWeight="500"
+            p={2}
+            minW="20px"
+            height="40px"
+            _hover={{ bg: '#F3F6F8' }}
+            disabled={pageNum >= totalPages}
+            onClick={() => goToPage(pageNum + 1)}
+            aria-label="Next page"
+          >
+            <RightArrowIcon boxSize={6} />
+          </Button>
+          <Spacer />
+        </Box>
+      )}
     </Box>
   );
 };
