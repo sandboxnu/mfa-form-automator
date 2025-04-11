@@ -19,6 +19,7 @@ import { CreateFormInstanceProvider } from '@web/context/CreateFormInstanceConte
 import { appControllerRefresh } from '@web/client';
 import { SignFormInstanceContextProvider } from '@web/context/SignFormInstanceContext';
 import { pdfjs } from 'react-pdf';
+import { UserFormsContextProvider } from '@web/context/UserFormsContext';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -166,7 +167,9 @@ export default function App({
     <>
       <WrapperComponent>
         <Layout>
-          <Component {...pageProps} />
+          <UserFormsContextProvider>
+            <Component {...pageProps} />
+          </UserFormsContextProvider>
         </Layout>
       </WrapperComponent>
     </>

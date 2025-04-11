@@ -97,6 +97,16 @@ export interface SignFormInstanceContextType {
   ) => Promise<void>;
 }
 
+export interface UserFormsContextType {
+  todoForms: FormInstanceEntity[];
+  pendingForms: FormInstanceEntity[];
+  completedForms: FormInstanceEntity[];
+  assignedFILoading: boolean;
+  assignedFIError: Error | null;
+  createdFILoading: boolean;
+  createdFIError: Error | null;
+}
+
 export type FormField = TemplateBoxBaseEntity & {
   data: { filled?: boolean; text?: string };
 };
