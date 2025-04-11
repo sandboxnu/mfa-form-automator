@@ -56,13 +56,13 @@ export const FormButtons = ({
   const { pendingForms, todoForms } = useForm();
 
   const {
+    formTemplateUseId,
     formTemplateName,
     formTemplateDescription,
     pdfFile,
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
     formDimensions,
-    inEditMode,
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
@@ -163,7 +163,8 @@ export const FormButtons = ({
 
       orderVal += 1;
     });
-    if (formDimensions)
+    // if formTemplateUseId
+    if (formDimensions && type == FormInteractionType.CreateFormTemplate)
       await createFormTemplateMutation
         .mutateAsync({
           body: {
@@ -191,6 +192,10 @@ export const FormButtons = ({
           });
           throw e;
         });
+    else if(formDimensions && type == FormInteractionType.EditFormTemplate) {
+      // TODO
+    }
+        
   };
 
   /**
@@ -215,7 +220,8 @@ export const FormButtons = ({
 
     setCreateFormLoading(true);
 
-    await createFormInstanceMutation
+    if(FormInteractionType.CreateFormInstance) {
+      await createFormInstanceMutation
       .mutateAsync({
         body: {
           name: formInstanceName ?? formTemplate.name,
@@ -251,6 +257,11 @@ export const FormButtons = ({
         });
         throw e;
       });
+
+    } else { // form instance edit mode -> submit changes 
+
+    }
+    
   };
 
   return (

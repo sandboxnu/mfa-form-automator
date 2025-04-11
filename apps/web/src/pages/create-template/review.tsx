@@ -19,8 +19,8 @@ function Review() {
 
   return (
     <FormLayout
-      type={FormInteractionType.CreateFormTemplate}
-      pageNumber={4}
+    type={formTemplateUseId ? FormInteractionType.EditFormTemplate : FormInteractionType.CreateFormTemplate}
+    pageNumber={4}
       heading={
         formTemplateUseId ? 'Edit form template' : 'Create form template'
       }

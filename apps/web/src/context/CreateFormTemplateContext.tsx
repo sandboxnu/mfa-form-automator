@@ -24,7 +24,6 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
     width: number;
     height: number;
   }>();
-  const [inEditMode, setInEditMode] = useState<boolean>(false);
   const [formTemplateUseId, setFormTemplateUseId] = useState<string | null>(
     null,
   );
@@ -56,8 +55,6 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFieldGroups,
         formDimensions,
         setFormDimensions,
-        inEditMode,
-        setInEditMode,
         formTemplateUseId,
         setFormTemplateUseId,
       }}

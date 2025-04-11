@@ -55,7 +55,8 @@ const icons = {
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
   test: <GrayPencilIcon boxSize="24px" mr="2" />,
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
-  template: <TemplateFolder marginRight="2" bgColor={"blue"}/>
+  template: <TemplateFolder boxSize="24px" mr="2" fill="#5E5E5E"/>,
+  templateActive: <TemplateFolder boxSize="24px" mr="2" fill="black"/>
 };
 
 type IconKeys = keyof typeof icons;
@@ -205,20 +206,16 @@ export const NavBar = ({
         <NavItem icon="completed" link="/completed">
           Completed
         </NavItem>
-        <NavItem icon="template" link="/template-directory">
-        Templates
-      </NavItem>
-      <Flex paddingTop="20px" paddingBottom="20px" paddingLeft="50px">
-        <Flex height="1px" width="140px" background={'#E0E0E0'}></Flex>
-      </Flex>
-
-      {isAdmin ? (
+        <Flex paddingTop="20px" paddingBottom="20px" paddingLeft="50px">
+          <Flex height="1px" width="140px" background={'#E0E0E0'}/>
+        </Flex>
+        {isAdmin ? (
         <NavItem icon="template" link="/template-directory">
           Templates
         </NavItem>
       ) : (
         <></>
       )}
+      </Flex>
     </Box>
-  );
-};
+  )};

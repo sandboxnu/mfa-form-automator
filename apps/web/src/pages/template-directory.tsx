@@ -1,13 +1,12 @@
 import {
   Button,
+  Dialog,
   Flex,
-  Modal,
-  ModalContent,
-  ModalOverlay,
+  Portal,
   Text,
 } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import { FieldGroupBaseEntity, FormTemplateEntity, Scope } from '@web/client';
+import { FieldGroupBaseEntity, FormInstanceEntity, FormTemplateEntity, Scope } from '@web/client';
 import {
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
@@ -35,6 +34,7 @@ import {
   groupId,
   TextFieldPosition,
 } from '@web/components/createFormTemplate/types';
+import { useForm } from '@web/hooks/useForm';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -59,6 +59,10 @@ function TemplateDirectory() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   // refresh form select template on change
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { todoForms, pendingForms, completedForms } = useForm();
+  const formInstances = todoForms.concat(pendingForms).concat(completedForms);
+  const [sortedFormInstances, setSortedFormInstances] = useState(formInstances);
 
   /**
    * Sets the clicked form template to be chosen, allowing the user to select other
@@ -273,13 +277,13 @@ function TemplateDirectory() {
                 </Text>
               </Button>
             </Flex>
-
-            <SearchAndSort
-              searchQuery={''}
-              setSearchQuery={function (searchQuery: string): void {
-                throw new Error('Function not implemented.');
-              }}
-            />
+<SearchAndSort
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                formInstances={formInstances}
+                setSortedFormInstances={setSortedFormInstances}
+              />
+           
           </Flex>
         )}
         <TemplateSelectGrid
@@ -307,6 +311,7 @@ function TemplateDirectory() {
             borderRadius="6px"
             border="1px solid #1367EA"
             background="#FFF"
+            padding="5px"
           >
             <Text
               fontFamily="Hanken Grotesk"
@@ -323,15 +328,13 @@ function TemplateDirectory() {
           </Button>
         </Flex>
       </Flex>
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          submitRemove;
-        }}
-        isCentered={true}
+      <Dialog.Root
+        open={isOpen}
       >
-        <ModalOverlay bg="rgba(0, 0, 0, 0.5)" />
-        <ModalContent alignItems="center" justifyContent={'center'}>
+        <Portal>
+        <Dialog.Positioner alignItems="center" justifyContent={'center'}/>
+        <Dialog.Backdrop bg="rgba(0, 0, 0, 0.5)" />
+        <Dialog.Content alignItems="center" justifyContent={'center'}>
           <Flex
             zIndex="1000"
             width="391px"
@@ -346,7 +349,7 @@ function TemplateDirectory() {
             <Flex fontSize="19px" fontWeight="700">
               Delete Template?
             </Flex>
-            <Text align={'center'}>
+            <Text alignItems={'center'}>
               Are you sure you want to remove{' '}
               <em>
                 <strong>{formTemplate?.name} </strong>
@@ -393,8 +396,9 @@ function TemplateDirectory() {
               </Button>
             </Flex>
           </Flex>
-        </ModalContent>
-      </Modal>
+        </Dialog.Content>
+        </Portal>
+      </Dialog.Root>
     </>
   );
 }

@@ -25,7 +25,7 @@ function Description() {
 
   return (
     <FormLayout
-      type={FormInteractionType.CreateFormTemplate}
+      type={formTemplateUseId ? FormInteractionType.EditFormTemplate : FormInteractionType.CreateFormTemplate}
       pageNumber={2}
       heading={
         formTemplateUseId ? 'Edit form template' : 'Create form template'

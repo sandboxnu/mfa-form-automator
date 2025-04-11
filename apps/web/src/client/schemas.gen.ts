@@ -492,7 +492,8 @@ export const CreateFormTemplateDtoSchema = {
     'description',
     'pageWidth',
     'pageHeight',
-    'fieldGroups', 'disabled',
+    'fieldGroups',
+    'disabled',
   ],
 } as const;
 
@@ -897,6 +898,12 @@ export const UpdateFormTemplateDtoSchema = {
     description: {
       type: 'string',
     },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
+    },
     fieldGroups: {
       minItems: 1,
       type: 'array',
@@ -906,12 +913,6 @@ export const UpdateFormTemplateDtoSchema = {
     },
     disabled: {
       type: 'boolean',
-    },
-    pageWidth: {
-      type: 'number',
-    },
-    pageHeight: {
-      type: 'number',
     },
   },
 } as const;
