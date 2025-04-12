@@ -10,7 +10,7 @@ function Todo() {
     <>
       <FormListPageLayout>
         <FormList
-          title={'Todo'}
+          title={'To-Do'}
           formInstances={todoForms}
           color={'#FFDFDE'}
           isDashboard={false}

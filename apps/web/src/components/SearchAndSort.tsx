@@ -11,13 +11,13 @@ import { FormInstanceEntity, FormTemplateEntity } from '@web/client';
 export const SearchAndSort = ({
   searchQuery,
   setSearchQuery,
-  formInstances,
-  setSortedFormInstances,
+  sortedForms,
+  setSortedForms,
 }: {
   searchQuery: string;
   setSearchQuery: (searchQuery: string) => void;
-  formInstances: (FormTemplateEntity | FormInstanceEntity)[]; // This is used to sort the form instances
-  setSortedFormInstances: any;
+  sortedForms: (FormTemplateEntity | FormInstanceEntity)[]; // This is used to sort the form instances
+  setSortedForms: any;
 }) => {
   const [showSearchField, setShowSearchField] = useState(false);
   const [showButton, setShowButton] = useState(true);
@@ -26,8 +26,8 @@ export const SearchAndSort = ({
   useEffect(() => {
     switch (sortValue.toLowerCase()) {
       case 'recent':
-        setSortedFormInstances(
-          [...formInstances].sort((a, b) => {
+        setSortedForms(
+          [...sortedForms].sort((a, b) => {
             return (
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
             );
@@ -35,8 +35,8 @@ export const SearchAndSort = ({
         );
         return;
       case 'oldest':
-        setSortedFormInstances(
-          [...formInstances].sort((a, b) => {
+        setSortedForms(
+          [...sortedForms].sort((a, b) => {
             return (
               new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
             );
@@ -44,15 +44,15 @@ export const SearchAndSort = ({
         );
         return;
       case 'a to z':
-        setSortedFormInstances(
-          [...formInstances].sort((a, b) => {
+        setSortedForms(
+          [...sortedForms].sort((a, b) => {
             // Sort alphabetically by name
             return a.name.localeCompare(b.name);
           }),
         );
         return;
     }
-  }, [sortValue, formInstances, setSortedFormInstances]);
+  }, [sortValue, sortedForms, setSortedForms]);
 
   return (
     <Flex alignItems="flex-end">

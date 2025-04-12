@@ -9,7 +9,6 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   FieldGroupBaseEntity,
-  FormInstanceEntity,
   FormTemplateEntity,
   Scope,
 } from '@web/client';
@@ -38,9 +37,7 @@ import {
   FieldType,
   FormFields,
   groupId,
-  TextFieldPosition,
 } from '@web/components/createFormTemplate/types';
-import { useForm } from '@web/hooks/useForm';
 import { distance } from 'fastest-levenshtein';
 import { groupColors } from '@web/utils/formTemplateUtils';
 
@@ -317,8 +314,8 @@ function TemplateDirectory() {
               <SearchAndSort
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                formInstances={formTemplates!!}
-                setSortedFormInstances={setSortedFormTemplates}
+                sortedForms={formTemplates!!}
+                setSortedForms={setSortedFormTemplates}
               />
             ) : (
               <></>
