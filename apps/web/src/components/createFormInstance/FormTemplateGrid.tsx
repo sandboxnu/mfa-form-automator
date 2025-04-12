@@ -8,27 +8,20 @@ import { queryClient } from '@web/pages/_app';
 import { formTemplatesControllerFindAllQueryKey } from '@web/client/@tanstack/react-query.gen';
 
 export const TemplateSelectGrid = ({
+  formTemplates,
   allowCreate,
   handleSelectTemplate,
   selectedFormTemplate,
   refresh,
   setRefresh,
 }: {
+  formTemplates: FormTemplateEntity[];
   allowCreate: boolean;
   handleSelectTemplate: any;
   selectedFormTemplate: FormTemplateEntity | null;
   refresh?: boolean;
   setRefresh?: any;
 }) => {
-  const { data: formTemplates } = useQuery<FormTemplateEntity[]>({
-    queryKey: ['api', 'form-templates', refresh],
-    queryFn: async () => {
-      const response = await fetch('/api/form-templates');
-      if (!response.ok) throw new Error('Failed to get form templates');
-      return response.json();
-    },
-  });
-
   return (
     <Grid
       id="frame"
@@ -77,7 +70,7 @@ export const TemplateSelectGrid = ({
           </Flex>
         </>
       ))}
-      {allowCreate ? 
+      {allowCreate ? (
         <Flex flexDirection="column" cursor="pointer">
           <Button
             overflow="hidden"
@@ -106,9 +99,9 @@ export const TemplateSelectGrid = ({
             Create Form Template
           </Text>
         </Flex>
-       : 
+      ) : (
         <></>
-      }
+      )}
     </Grid>
   );
 };

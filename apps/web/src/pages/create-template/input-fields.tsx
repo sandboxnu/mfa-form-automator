@@ -24,8 +24,12 @@ function InputFields() {
 
   return (
     <FormLayout
-    type={formTemplateUseId ? FormInteractionType.EditFormTemplate : FormInteractionType.CreateFormTemplate}
-    pageNumber={3}
+      type={
+        formTemplateUseId
+          ? FormInteractionType.EditFormTemplate
+          : FormInteractionType.CreateFormTemplate
+      }
+      pageNumber={3}
       heading={
         formTemplateUseId ? 'Edit form template' : 'Create form template'
       }

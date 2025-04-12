@@ -67,7 +67,11 @@ export const FormLayout = ({
         padding="36px 24px 36px 24px"
         flexDirection="column"
         justifyContent={'center'}
-        alignItems={FormInteractionType.CreateFormInstance && pageNumber == 1 ? 'auto' : 'center'}
+        alignItems={
+          FormInteractionType.CreateFormInstance && pageNumber == 1
+            ? 'auto'
+            : 'center'
+        }
         gap="20px"
         borderRadius="12px"
         border={
@@ -78,7 +82,9 @@ export const FormLayout = ({
         height="auto"
         margin="16px 36px 16px 36px"
         backgroundColor={
-          FormInteractionType.CreateFormInstance && pageNumber == 1 ? 'transparent' : '#FFF'
+          FormInteractionType.CreateFormInstance && pageNumber == 1
+            ? 'transparent'
+            : '#FFF'
         }
         alignContent={'center'}
       >
@@ -91,6 +97,10 @@ export const FormLayout = ({
             ? 'Create form template'
             : type == FormInteractionType.CreateFormInstance
             ? 'Create form instance'
+            : type == FormInteractionType.EditFormTemplate
+            ? 'Edit form template'
+            : type == FormInteractionType.EditFormInstance
+            ? 'Edit form instance'
             : 'Submit form'
         }
         deleteFunction={deleteFunction}

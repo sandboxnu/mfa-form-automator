@@ -217,6 +217,11 @@ export class FormTemplatesService {
         disabled: updateFormTemplateDto.disabled,
       },
       include: {
+        fieldGroups: {
+          include: {
+            templateBoxes: true,
+          },
+        },
         formInstances: {
           include: {
             formTemplate: true,

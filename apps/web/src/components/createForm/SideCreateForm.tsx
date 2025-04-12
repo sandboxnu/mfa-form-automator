@@ -40,7 +40,7 @@ export const SideCreateForm = ({
     [FormInteractionType.CreateFormInstance]: formInstanceLabels,
     [FormInteractionType.SignFormInstance]: signFormInstanceLabels,
     [FormInteractionType.EditFormInstance]: formInstanceLabels,
-    [FormInteractionType.EditFormTemplate]: formTemplateLabels
+    [FormInteractionType.EditFormTemplate]: formTemplateLabels,
   };
 
   const Item = ({ num }: { num: number }) => (

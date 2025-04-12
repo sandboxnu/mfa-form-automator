@@ -6,6 +6,7 @@ import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTempl
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 function SelectTemplate() {
   const { formTemplate, formInstanceUseId } = useCreateFormInstance();
@@ -24,9 +25,22 @@ function SelectTemplate() {
     }
   };
 
+  const { data: formTemplates } = useQuery<FormTemplateEntity[]>({
+    queryKey: ['api', 'form-templates'],
+    queryFn: async () => {
+      const response = await fetch('/api/form-templates');
+      if (!response.ok) throw new Error('Failed to get form templates');
+      return response.json();
+    },
+  });
+
   return (
     <FormLayout
-      type={FormInteractionType.CreateFormInstance}
+      type={
+        formInstanceUseId
+          ? FormInteractionType.EditFormInstance
+          : FormInteractionType.CreateFormInstance
+      }
       pageNumber={1}
       heading={
         formInstanceUseId ? 'Edit form instance' : 'Create form instance'
@@ -34,6 +48,7 @@ function SelectTemplate() {
       subheading={'Select a form template'}
       boxContent={
         <TemplateSelectGrid
+          formTemplates={formTemplates!!}
           allowCreate={true}
           handleSelectTemplate={handleSelectTemplate}
           selectedFormTemplate={formTemplate}

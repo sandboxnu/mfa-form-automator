@@ -1,12 +1,13 @@
 import {
   Button,
   Dialog,
+  DialogPositioner,
   Flex,
   Portal,
   Text,
 } from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
-import { FieldGroupBaseEntity, FormInstanceEntity, FormTemplateEntity, Scope } from '@web/client';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { FieldGroupBaseEntity, FormTemplateEntity, Scope } from '@web/client';
 import {
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
@@ -35,6 +36,8 @@ import {
   TextFieldPosition,
 } from '@web/components/createFormTemplate/types';
 import { useForm } from '@web/hooks/useForm';
+import { distance } from 'fastest-levenshtein';
+import { groupColors } from '@web/utils/formTemplateUtils';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -44,11 +47,10 @@ function TemplateDirectory() {
     setFormTemplateName,
     setFormTemplateDescription,
     setPdfFile,
-    pdfFile,
     setFormTemplateUseId,
-    fieldGroups,
     setFieldGroups,
     setFormFields,
+    setFormDimensions,
   } = useCreateFormTemplate();
   const router = useRouter();
 
@@ -60,10 +62,15 @@ function TemplateDirectory() {
   // refresh form select template on change
   const [refresh, setRefresh] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { todoForms, pendingForms, completedForms } = useForm();
-  const formInstances = todoForms.concat(pendingForms).concat(completedForms);
-  const [sortedFormInstances, setSortedFormInstances] = useState(formInstances);
-
+  // instances for
+  const { data: formTemplates } = useQuery<FormTemplateEntity[]>({
+    queryKey: ['api', 'form-templates', refresh],
+    queryFn: async () => {
+      const response = await fetch('/api/form-templates');
+      if (!response.ok) throw new Error('Failed to get form templates');
+      return response.json();
+    },
+  });
   /**
    * Sets the clicked form template to be chosen, allowing the user to select other
    * features like editing and deleting for this form.  Note this does NOT prefill
@@ -80,7 +87,6 @@ function TemplateDirectory() {
     } catch (error) {
       console.error(error);
     }
-    console.log(formTemplate);
   };
 
   /**
@@ -134,6 +140,7 @@ function TemplateDirectory() {
       });
     console.log('finished');
     console.log(formTemplate);
+
     setRefresh(!refresh);
     setIsOpen(false);
     setFormTemplate(null);
@@ -147,19 +154,25 @@ function TemplateDirectory() {
     if (!formTemplate) {
       return;
     }
+    // TRANSLATOR FROM BACKEND TYPE GROUPS TO FRONTEND TYPE GROUPS
+    // old groups for the backend type
     const oldGroups: FieldGroupBaseEntity[] = formTemplate.fieldGroups;
+    // new groups for the frontend type
     let newGroups: Map<groupId, FieldGroupColor> = new Map<
       groupId,
       FieldGroupColor
     >();
-
     let newFields: Record<number, Map<fieldId, Field>> = {};
+
+    let groupNum: number = 0;
     for (let oldGroup of oldGroups) {
       newGroups.set(oldGroup.id, {
-        background: 'red',
-        border: 'red',
+        background: groupColors[groupNum][1],
+        border: groupColors[groupNum][0],
         groupName: oldGroup.name,
       });
+      groupNum += 1;
+
       let count = 0;
       let newFieldMap = new Map<fieldId, Field>();
       for (let oldField of oldGroup.templateBoxes) {
@@ -176,8 +189,8 @@ function TemplateDirectory() {
           position: {
             x: oldField.x_coordinate,
             y: oldField.y_coordinate,
-            width: 10,
-            height: 10,
+            width: oldField.width,
+            height: oldField.height,
           },
           groupId: oldGroup.id,
           type: newType,
@@ -193,8 +206,10 @@ function TemplateDirectory() {
     setFieldGroups(castNewGroups);
     let castNewFields: FormFields = newFields;
     setFormFields(castNewFields);
-    console.log(castNewGroups);
-    console.log(castNewFields);
+    setFormDimensions({
+      width: formTemplate.pageWidth,
+      height: formTemplate.pageHeight,
+    });
     fetchPdfFile().then(() => router.push('/create-template/description'));
   }
 
@@ -234,10 +249,10 @@ function TemplateDirectory() {
                 gap="8px"
                 onClick={navigateToFormTemplateEditMode}
               >
-                <EditIcon />
+                <EditIcon mb="4px" />
                 <Text color="var(--Gray, #515151)">Edit Form</Text>
               </Flex>
-              <SeparatorIcon />
+              <SeparatorIcon width="2px" height="22px" />
               <Flex
                 height="38px"
                 padding="8px 16px"
@@ -248,7 +263,7 @@ function TemplateDirectory() {
                   setIsOpen(true);
                 }}
               >
-                <DeleteIcon color="var(--Gray, #515151)" />
+                <DeleteIcon mt="6px" ml="4px" color="var(--Gray, #515151)" />
                 <Text color="var(--Gray, #515151)">Delete</Text>
               </Flex>
             </Flex>
@@ -277,16 +292,13 @@ function TemplateDirectory() {
                 </Text>
               </Button>
             </Flex>
-<SearchAndSort
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                formInstances={formInstances}
-                setSortedFormInstances={setSortedFormInstances}
-              />
-           
+            {
+              // search and sort goes here
+            }
           </Flex>
         )}
         <TemplateSelectGrid
+          formTemplates={formTemplates!!}
           allowCreate={false}
           handleSelectTemplate={handleSelectTemplate}
           selectedFormTemplate={formTemplate}
@@ -303,6 +315,7 @@ function TemplateDirectory() {
           backgroundColor="#FFF"
           borderColor="1px solid #E5E5E5"
           borderRadius={'8px'}
+          marginBottom={"10px"}
         >
           <Text fontSize="19px">
             Not seeing the form template you&apos;re looking for?
@@ -311,7 +324,7 @@ function TemplateDirectory() {
             borderRadius="6px"
             border="1px solid #1367EA"
             background="#FFF"
-            padding="5px"
+            padding="7px"
           >
             <Text
               fontFamily="Hanken Grotesk"
@@ -328,75 +341,73 @@ function TemplateDirectory() {
           </Button>
         </Flex>
       </Flex>
-      <Dialog.Root
-        open={isOpen}
-      >
+      <Dialog.Root open={isOpen} placement={'center'} size="sm">
         <Portal>
-        <Dialog.Positioner alignItems="center" justifyContent={'center'}/>
-        <Dialog.Backdrop bg="rgba(0, 0, 0, 0.5)" />
-        <Dialog.Content alignItems="center" justifyContent={'center'}>
-          <Flex
-            zIndex="1000"
-            width="391px"
-            padding="24px 32px"
-            flexDirection={'column'}
-            justifyContent={'center'}
-            alignItems="center"
-            gap="24px"
-            background="#FFF"
-            borderRadius={'5px'}
-          >
-            <Flex fontSize="19px" fontWeight="700">
-              Delete Template?
-            </Flex>
-            <Text alignItems={'center'}>
-              Are you sure you want to remove{' '}
-              <em>
-                <strong>{formTemplate?.name} </strong>
-              </em>
-              from the template directory permanently?
-            </Text>
-            <Flex
-              justifyContent={'center'}
-              alignItems={'center'}
-              gap="40px"
-              height="29px"
-            >
-              <Button
-                padding="4px 10px"
-                background="transparent"
-                _hover={{
-                  bgColor: 'transparent',
-                }}
-                border="1px solid var(--Blue, #1367EA)"
-                borderRadius="5px"
-                color="#1367EA"
-                width="100px"
-                height="29px"
-                fontWeight={'normal'}
-                onClick={() => {
-                  setIsOpen(false);
-                }}
+          <Dialog.Backdrop bg="rgba(0, 0, 0, 0.5)" />
+          <DialogPositioner>
+            <Dialog.Content alignItems="center" justifyContent={'center'}>
+              <Flex
+                zIndex="1000"
+                padding="24px 32px"
+                flexDirection={'column'}
+                justifyContent={'center'}
+                alignItems="center"
+                gap="24px"
+                background="#FFF"
+                borderRadius={'5px'}
               >
-                Cancel
-              </Button>
-              <Button
-                padding="4px 10px"
-                background={' var(--MFA-Red, #ED2324)'}
-                borderRadius="5px"
-                _hover={{
-                  bgColor: ' var(--MFA-Red, #ED2324)',
-                }}
-                color="white"
-                width="100px"
-                height="29px"
-                onClick={() => submitRemove()}
-              >
-                Remove
-              </Button>
-            </Flex>
-          </Flex>
-        </Dialog.Content>
+                <Flex fontSize="19px" fontWeight="700">
+                  Delete Template?
+                </Flex>
+                <Text textAlign={'center'}>
+                  Are you sure you want to remove{' '}
+                  <em>
+                    <strong>{formTemplate?.name} </strong>
+                  </em>
+                  from the template directory permanently?
+                </Text>
+                <Flex
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  gap="40px"
+                  height="29px"
+                >
+                  <Button
+                    padding="4px 10px"
+                    background="transparent"
+                    _hover={{
+                      bgColor: 'transparent',
+                    }}
+                    border="1px solid var(--Blue, #1367EA)"
+                    borderRadius="5px"
+                    color="#1367EA"
+                    width="100px"
+                    height="29px"
+                    fontWeight={'normal'}
+                    onClick={() => {
+                      setIsOpen(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    padding="4px 10px"
+                    background={' var(--MFA-Red, #ED2324)'}
+                    borderRadius="5px"
+                    _hover={{
+                      bgColor: ' var(--MFA-Red, #ED2324)',
+                    }}
+                    color="white"
+                    width="100px"
+                    height="29px"
+                    onClick={() => submitRemove()}
+                  >
+                    Remove
+                  </Button>
+                </Flex>
+              </Flex>
+            </Dialog.Content>
+          </DialogPositioner>
         </Portal>
       </Dialog.Root>
     </>

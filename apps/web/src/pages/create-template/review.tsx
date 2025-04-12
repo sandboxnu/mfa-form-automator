@@ -19,8 +19,12 @@ function Review() {
 
   return (
     <FormLayout
-    type={formTemplateUseId ? FormInteractionType.EditFormTemplate : FormInteractionType.CreateFormTemplate}
-    pageNumber={4}
+      type={
+        formTemplateUseId
+          ? FormInteractionType.EditFormTemplate
+          : FormInteractionType.CreateFormTemplate
+      }
+      pageNumber={4}
       heading={
         formTemplateUseId ? 'Edit form template' : 'Create form template'
       }
@@ -35,7 +39,11 @@ function Review() {
       }
       deleteFunction={() => {}}
       submitLink={'/create-template/success'}
-      backLink={'/create-template/input-fields'}
+      backLink={
+        formTemplateUseId
+          ? '/create-template/success'
+          : '/create-template/input-fields'
+      }
       disabled={false}
       review={true}
     />

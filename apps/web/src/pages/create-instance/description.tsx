@@ -38,7 +38,11 @@ function Description() {
 
   return (
     <FormLayout
-      type={FormInteractionType.CreateFormInstance}
+      type={
+        formInstanceUseId
+          ? FormInteractionType.EditFormInstance
+          : FormInteractionType.CreateFormInstance
+      }
       pageNumber={2}
       heading={
         formInstanceUseId ? 'Edit form instance' : 'Create form instance'

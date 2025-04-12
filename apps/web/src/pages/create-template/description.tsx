@@ -25,7 +25,11 @@ function Description() {
 
   return (
     <FormLayout
-      type={formTemplateUseId ? FormInteractionType.EditFormTemplate : FormInteractionType.CreateFormTemplate}
+      type={
+        formTemplateUseId
+          ? FormInteractionType.EditFormTemplate
+          : FormInteractionType.CreateFormTemplate
+      }
       pageNumber={2}
       heading={
         formTemplateUseId ? 'Edit form template' : 'Create form template'
@@ -41,7 +45,11 @@ function Description() {
         />
       }
       deleteFunction={nullify}
-      submitLink={'/create-template/input-fields'}
+      submitLink={
+        formTemplateUseId
+          ? '/create-template/review'
+          : '/create-template/input-fields'
+      }
       backLink={
         formTemplateUseId ? '/template-directory' : '/create-template/upload'
       }
