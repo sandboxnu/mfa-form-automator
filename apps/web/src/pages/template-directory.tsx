@@ -7,7 +7,12 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { FieldGroupBaseEntity, FormTemplateEntity, Scope } from '@web/client';
+import {
+  FieldGroupBaseEntity,
+  FormInstanceEntity,
+  FormTemplateEntity,
+  Scope,
+} from '@web/client';
 import {
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
@@ -62,7 +67,9 @@ function TemplateDirectory() {
   // refresh form select template on change
   const [refresh, setRefresh] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
-  // instances for
+  const [sortedFormTemplates, setSortedFormTemplates] = useState<
+    FormTemplateEntity[]
+  >([]);
   const { data: formTemplates } = useQuery<FormTemplateEntity[]>({
     queryKey: ['api', 'form-templates', refresh],
     queryFn: async () => {
@@ -71,6 +78,20 @@ function TemplateDirectory() {
       return response.json();
     },
   });
+  useEffect(() => {
+    setSortedFormTemplates(
+      formTemplates!!
+        .map((template) => ({
+          ...template,
+          levenshteinDistance: distance(
+            searchQuery.toLowerCase().slice(0, 10),
+            template.name.toLowerCase().slice(0, 10),
+          ),
+        }))
+        .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance),
+    );
+  }, [searchQuery, formTemplates]);
+
   /**
    * Sets the clicked form template to be chosen, allowing the user to select other
    * features like editing and deleting for this form.  Note this does NOT prefill
@@ -292,13 +313,20 @@ function TemplateDirectory() {
                 </Text>
               </Button>
             </Flex>
-            {
-              // search and sort goes here
-            }
+            {formTemplates ? (
+              <SearchAndSort
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                formInstances={formTemplates!!}
+                setSortedFormInstances={setSortedFormTemplates}
+              />
+            ) : (
+              <></>
+            )}
           </Flex>
         )}
         <TemplateSelectGrid
-          formTemplates={formTemplates!!}
+          formTemplates={sortedFormTemplates!!}
           allowCreate={false}
           handleSelectTemplate={handleSelectTemplate}
           selectedFormTemplate={formTemplate}
@@ -315,7 +343,7 @@ function TemplateDirectory() {
           backgroundColor="#FFF"
           borderColor="1px solid #E5E5E5"
           borderRadius={'8px'}
-          marginBottom={"10px"}
+          marginBottom={'10px'}
         >
           <Text fontSize="19px">
             Not seeing the form template you&apos;re looking for?

@@ -137,6 +137,7 @@ describe('FormTemplatesIntegrationTest', () => {
             ],
           },
         ],
+        disabled: false,
       });
 
       expect(formTemplate).toBeDefined();
@@ -179,6 +180,7 @@ describe('FormTemplatesIntegrationTest', () => {
             ],
           },
         ],
+        disabled: false,
       });
       formTemplate2 = await service.create({
         name: 'Form Template 2',
@@ -202,6 +204,7 @@ describe('FormTemplatesIntegrationTest', () => {
             ],
           },
         ],
+        disabled: false,
       });
     });
 
@@ -245,6 +248,7 @@ describe('FormTemplatesIntegrationTest', () => {
             ],
           },
         ],
+        disabled: false,
       });
     });
 
@@ -285,6 +289,7 @@ describe('FormTemplatesIntegrationTest', () => {
             ],
           },
         ],
+        disabled: false,
       });
     });
 
@@ -292,7 +297,6 @@ describe('FormTemplatesIntegrationTest', () => {
       const updatedFormTemplate = await service.update(formTemplate1!.id, {
         name: 'Updated Form Template',
         description: 'Updated Form Template Description',
-        file: emptyFile,
       });
 
       expect(updatedFormTemplate).toBeDefined();
@@ -307,9 +311,17 @@ describe('FormTemplatesIntegrationTest', () => {
         service.update('non-existent-id', {
           name: 'Updated Form Template',
           description: 'Updated Form Template Description',
-          file: emptyFile,
         }),
       ).rejects.toThrowError();
+    });
+
+    it('successfully disables a form template', async () => {
+      const updatedFormTemplate = await service.update(formTemplate1!.id, {
+        disabled: false,
+      });
+
+      expect(updatedFormTemplate).toBeDefined();
+      expect(updatedFormTemplate.disabled).toBe(false);
     });
   });
 
@@ -337,6 +349,7 @@ describe('FormTemplatesIntegrationTest', () => {
             ],
           },
         ],
+        disabled: false,
       });
 
       await service.remove(formTemplate1.id);

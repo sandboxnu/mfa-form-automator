@@ -1,9 +1,9 @@
 import { Button, Flex, Input, Menu, Portal, Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { RightSearchIcon } from '@web/static/icons.tsx';
 import { motion } from 'framer-motion';
 import { InputGroup } from './ui/input-group';
-import { FormInstanceEntity } from '@web/client';
+import { FormInstanceEntity, FormTemplateEntity } from '@web/client';
 
 /**
  * @returns a search bar and sort by dropdown
@@ -16,8 +16,8 @@ export const SearchAndSort = ({
 }: {
   searchQuery: string;
   setSearchQuery: (searchQuery: string) => void;
-  formInstances: FormInstanceEntity[]; // This is used to sort the form instances
-  setSortedFormInstances: (sortedFormInstances: FormInstanceEntity[]) => void;
+  formInstances: (FormTemplateEntity | FormInstanceEntity)[]; // This is used to sort the form instances
+  setSortedFormInstances: any;
 }) => {
   const [showSearchField, setShowSearchField] = useState(false);
   const [showButton, setShowButton] = useState(true);

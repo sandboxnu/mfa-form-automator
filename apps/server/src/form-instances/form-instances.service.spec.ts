@@ -129,6 +129,7 @@ const formTemplate = {
   ],
   createdAt: new Date(1672531200),
   updatedAt: new Date(1672531200),
+  disabled: false,
 };
 const signatureId1 = 'signatureId1';
 const signatureId2 = 'signatureId1';
