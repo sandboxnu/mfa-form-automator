@@ -7,11 +7,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import {
-  FieldGroupBaseEntity,
-  FormTemplateEntity,
-  Scope,
-} from '@web/client';
+import { FieldGroupBaseEntity, FormTemplateEntity, Scope } from '@web/client';
 import {
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,

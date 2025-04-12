@@ -41,7 +41,7 @@ function Review() {
       submitLink={'/create-template/success'}
       backLink={
         formTemplateUseId
-          ? '/create-template/success'
+          ? '/create-template/description'
           : '/create-template/input-fields'
       }
       disabled={false}

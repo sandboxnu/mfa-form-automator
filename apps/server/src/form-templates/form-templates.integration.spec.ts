@@ -304,6 +304,10 @@ describe('FormTemplatesIntegrationTest', () => {
       expect(updatedFormTemplate.description).toBe(
         'Updated Form Template Description',
       );
+      // field groups are not updated
+      expect(updatedFormTemplate.fieldGroups).toEqual(
+        formTemplate1?.fieldGroups,
+      );
     });
 
     it('throws an error when form template is not found', async () => {
@@ -313,15 +317,6 @@ describe('FormTemplatesIntegrationTest', () => {
           description: 'Updated Form Template Description',
         }),
       ).rejects.toThrowError();
-    });
-
-    it('successfully disables a form template', async () => {
-      const updatedFormTemplate = await service.update(formTemplate1!.id, {
-        disabled: false,
-      });
-
-      expect(updatedFormTemplate).toBeDefined();
-      expect(updatedFormTemplate.disabled).toBe(false);
     });
   });
 
@@ -356,6 +351,43 @@ describe('FormTemplatesIntegrationTest', () => {
 
       const formTemplates = await service.findAll();
       expect(formTemplates).toHaveLength(0);
+    });
+  });
+
+  describe('disable', () => {
+    it('successfully disables a form template', async () => {
+      formTemplate1 = await service.create({
+        name: 'Form Template 1',
+        description: 'Form Template Description 1',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+
+      const updatedFormTemplate = await service.update(formTemplate1!.id, {
+        disabled: true,
+      });
+
+      const formTemplates = await service.findAll();
+      expect(formTemplates).toHaveLength(1);
+      expect(updatedFormTemplate.disabled).toEqual(true);
     });
   });
 });
