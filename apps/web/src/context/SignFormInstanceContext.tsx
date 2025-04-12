@@ -270,6 +270,7 @@ export const SignFormInstanceContextProvider = ({
         groupNumber,
         nextSignFormPage,
         updateField,
+        signFormInstanceLoading,
       }}
     >
       {children}

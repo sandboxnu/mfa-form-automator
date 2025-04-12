@@ -87,6 +87,7 @@ export interface SignFormInstanceContextType {
   isLoading: boolean;
   fields: FormField[][];
   originalPdfLink: string;
+  signFormInstanceLoading: boolean;
   modifiedPdfLink: string;
   groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;
