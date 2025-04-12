@@ -12,7 +12,6 @@ export const PDFDisplayed = ({
   pdfLink: string;
   formFields: JSX.Element[][];
 }) => {
-  console.log(formFields);
   const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
