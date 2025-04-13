@@ -56,7 +56,7 @@ export const SearchAndSort = ({
 
   return (
     <Flex alignItems="flex-end">
-      <Flex>
+      <Flex alignItems="center">
         {showButton && !showSearchField && (
           <Button
             unstyled
