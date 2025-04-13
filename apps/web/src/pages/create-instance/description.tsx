@@ -1,9 +1,9 @@
-import { Scope } from '@web/client/types.gen';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useEffect, useState } from 'react';
 
 /**
@@ -11,29 +11,13 @@ import { useEffect, useState } from 'react';
  */
 function Description() {
   const {
+    formTemplate,
     formInstanceName,
     formInstanceDescription,
     setFormInstanceName,
     setFormInstanceDescription,
-    formTemplate,
+    pdfFile,
   } = useCreateFormInstance();
-
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    const fetchPdfFile = async () => {
-      if (formTemplate?.formDocLink) {
-        const response = await fetch(formTemplate.formDocLink);
-        const blob = await response.blob();
-        const file = new File([blob], 'document.pdf', {
-          type: 'application/pdf',
-        });
-        setPdfFile(file);
-      }
-    };
-
-    fetchPdfFile();
-  }, [formTemplate?.formDocLink]);
 
   return (
     <FormLayout
@@ -44,6 +28,7 @@ function Description() {
       boxContent={
         <NameAndDescriptionBox
           pdfFile={pdfFile}
+          fieldGroups={formTemplate?.fieldGroups ?? []}
           name={formInstanceName}
           description={formInstanceDescription}
           setName={setFormInstanceName}

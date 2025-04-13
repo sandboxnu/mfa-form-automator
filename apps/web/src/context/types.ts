@@ -79,6 +79,7 @@ export interface CreateFormInstanceContextType {
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
+  pdfFile: File | null;
 }
 
 export interface SignFormInstanceContextType {
@@ -87,9 +88,9 @@ export interface SignFormInstanceContextType {
   isLoading: boolean;
   fields: FormField[][];
   originalPdfLink: string;
-  modifiedPdfLink: string;
-  groupNumbers: Map<string, number> | undefined;
   signFormInstanceLoading: boolean;
+  modifiedPdfLink: string;
+  groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;
   nextSignFormPage: (
     submitLink: string,

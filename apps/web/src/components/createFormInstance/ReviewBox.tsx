@@ -1,15 +1,23 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { FormView } from './FormView';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
+import { FieldGroupBaseEntity } from '@web/client';
+import {
+  formEditorTranslateFieldGroups,
+  formEditorTranslateFormFields,
+} from '@web/utils/formInstanceUtils';
+import { groupColors } from '@web/utils/formTemplateUtils';
 
 export const ReviewBox = ({
-  formLink,
+  pdfFile,
   name,
   description,
+  fieldGroups,
 }: {
-  formLink: string;
+  pdfFile: File | null;
   name: string;
   description: string;
+  fieldGroups: FieldGroupBaseEntity[];
 }) => {
   const textInputStyle = {
     alignSelf: 'stretch',
@@ -21,14 +29,6 @@ export const ReviewBox = ({
   };
 
   const { assignedGroupData } = useCreateFormInstance();
-
-  const groupColors = [
-    ['#1367EA', '#EEF5FF'],
-    ['#BD21CA', '#FDEAFF'],
-    ['#7645E8', '#ECE4FF'],
-    ['#567E26', '#EDFFD6'],
-    ['#A16308', '#FFFDDB'],
-  ];
 
   const GroupItem = ({ color, border }: { color: string; border: string }) => {
     return (
@@ -95,7 +95,20 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <FormView pdfUrl={formLink} />
+        <Box width="580px">
+          <FormEditor
+            formTemplateName={name ?? ''}
+            pdfFile={pdfFile}
+            disableEdit
+            fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
+            formFields={formEditorTranslateFormFields(fieldGroups)}
+            setFormFields={() => {}}
+            setFieldGroups={() => {}}
+            scale={0.6875}
+            documentWidth={550}
+            showNav={false}
+          />
+        </Box>
       </Flex>
     </Flex>
   );

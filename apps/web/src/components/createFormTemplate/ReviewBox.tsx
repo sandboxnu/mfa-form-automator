@@ -112,16 +112,18 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <Box width="550px">
+        <Box width="580px">
           <FormEditor
             formTemplateName={name}
             pdfFile={pdfFile}
-            disableEdit={true}
+            disableEdit
             fieldGroups={fieldGroups}
             formFields={formFields}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
             scale={0.6875}
+            documentWidth={550}
+            showNav={false}
           />
         </Box>
       </Flex>

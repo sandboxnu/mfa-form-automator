@@ -5,6 +5,8 @@ import { ReviewBox } from '@web/components/signFormInstance/ReviewBox';
 import isAuth from '@web/components/isAuth';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -12,6 +14,11 @@ import { useRouter } from 'next/router';
 function Review() {
   const { formInstance, modifiedPdfLink } = useSignFormInstance();
   const router = useRouter();
+  const [modifiedPdfFile, setModifiedPdfFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    fetchPdfFile(setModifiedPdfFile, modifiedPdfLink);
+  }, [modifiedPdfLink]);
 
   const { id } = router.query;
 
@@ -23,7 +30,8 @@ function Review() {
       subheading={'Review your form submission'}
       boxContent={
         <ReviewBox
-          formLink={modifiedPdfLink ?? ''}
+          pdfFile={modifiedPdfFile}
+          fieldGroups={[]}
           name={formInstance?.name ?? ''}
           description={formInstance?.description ?? ''}
         />

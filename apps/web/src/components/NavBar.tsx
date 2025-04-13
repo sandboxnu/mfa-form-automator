@@ -9,7 +9,9 @@ import {
   GrayPencilIcon,
   DropdownDownArrow,
   DropdownUpArrow,
-  InstancesIcon,
+  UserProfileAvatar,
+  EmployeeDirectory,
+  InstancesIcon
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link';
 import {
@@ -55,6 +57,8 @@ const icons = {
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
   test: <GrayPencilIcon boxSize="24px" mr="2" />,
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
+  employeeDirectory: <EmployeeDirectory boxSize="24px" mr="2" />,
+  employeeDirectoryActive: <EmployeeDirectory boxSize="24px" mr="2" />,
   instances: <InstancesIcon boxSize="24px" mr="2" />,
   instancesActive: <InstancesIcon boxSize="24px" mr="2" stroke="#5E5E5E" fill="#5E5E5E" />,
 };
@@ -205,6 +209,9 @@ export const NavBar = ({
         </NavItem>
         <NavItem icon="completed" link="/completed">
           Completed
+        </NavItem>
+        <NavItem icon="employeeDirectory" link="/employee-directory">
+          Employee Directory
         </NavItem>
         <Separator orientation="horizontal" height="1px" marginLeft="8" width="168px"/>
         <NavItem icon="instances" link="/instance-directory">

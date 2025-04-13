@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { CreateFormInstanceContextType } from './types';
 import { FormTemplateEntity } from '@web/client';
 import { ContextAssignedGroupData } from './types';
+import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 
 export const CreateFormInstanceContext =
   createContext<CreateFormInstanceContextType>(
@@ -21,6 +22,11 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
   const [assignedGroupData, setAssignedGroupData] = useState<
     ContextAssignedGroupData[]
   >([]);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
+  }, [formTemplate?.formDocLink]);
 
   const router = useRouter();
 
@@ -44,6 +50,7 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
         setFormTemplate,
         assignedGroupData: assignedGroupData,
         setAssignedGroupData: setAssignedGroupData,
+        pdfFile: pdfFile,
       }}
     >
       {children}

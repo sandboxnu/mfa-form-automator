@@ -1,4 +1,4 @@
-import { Text, Flex } from '@chakra-ui/react';
+import { Text, Flex, Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { FieldGroupBaseEntity } from '../../client/types.gen';
 import {
@@ -6,9 +6,14 @@ import {
   employeesControllerFindAllOptions,
   positionsControllerFindAllOptions,
 } from '@web/client/@tanstack/react-query.gen';
-import { FormView } from './FormView';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { SignatureDropdown } from './SignatureDropdown';
+import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
+import {
+  formEditorTranslateFieldGroups,
+  formEditorTranslateFormFields,
+} from '@web/utils/formInstanceUtils';
+import { groupColors } from '@web/utils/formTemplateUtils';
 
 /**
  * The contents of the white box for assigning groups.
@@ -19,12 +24,12 @@ import { SignatureDropdown } from './SignatureDropdown';
  * @param fieldGroups list of signature fields in the form template
  */
 export const AssignGroupsBox = ({
-  formLink,
+  pdfFile,
   name,
   description,
   fieldGroups,
 }: {
-  formLink: string;
+  pdfFile: File | null;
   name: string;
   description: string;
   fieldGroups: FieldGroupBaseEntity[];
@@ -38,24 +43,17 @@ export const AssignGroupsBox = ({
     borderColor: 'transparent',
   };
 
-  const groupColors = [
-    ['#1367EA', '#EEF5FF'],
-    ['#BD21CA', '#FDEAFF'],
-    ['#7645E8', '#ECE4FF'],
-    ['#567E26', '#EDFFD6'],
-    ['#A16308', '#FFFDDB'],
-  ];
-
   const { assignedGroupData, setAssignedGroupData } = useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
   const { data: employees } = useQuery(employeesControllerFindAllOptions());
-  const { data: departments } = useQuery({
-    ...departmentsControllerFindAllOptions({
+  const { data: departments } = useQuery(
+    departmentsControllerFindAllOptions({
       query: {
         limit: 1000,
       },
     }),
-  });
+  );
+
   return (
     <Flex
       flexDirection={'row'}
@@ -115,7 +113,20 @@ export const AssignGroupsBox = ({
         >
           Preview Only
         </Text>
-        <FormView pdfUrl={formLink} />
+        <Box width="580px">
+          <FormEditor
+            formTemplateName={name ?? ''}
+            pdfFile={pdfFile}
+            disableEdit
+            fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
+            formFields={formEditorTranslateFormFields(fieldGroups)}
+            setFormFields={() => {}}
+            setFieldGroups={() => {}}
+            scale={0.6875}
+            documentWidth={550}
+            showNav={false}
+          />
+        </Box>
       </Flex>
     </Flex>
   );

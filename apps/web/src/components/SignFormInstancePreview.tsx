@@ -51,7 +51,10 @@ export const SignFormInstancePreview = ({
         queryKey:
           formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
       });
-      router.push('/completed');
+      router.push('/completed').then(() => {
+        setMarkedCompletedLoading(false);
+        onClose();
+      });
     },
   });
 
@@ -73,7 +76,6 @@ export const SignFormInstancePreview = ({
         formInstanceId: formInstance?.id,
       },
     });
-    setMarkedCompletedLoading(false);
   };
 
   const nextAssignedGroup = nextSigner(formInstance);

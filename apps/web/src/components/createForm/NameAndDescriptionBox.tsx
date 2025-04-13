@@ -1,6 +1,12 @@
-import { Text, Flex } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
+import { Text, Flex, Box } from '@chakra-ui/react';
+import React from 'react';
 import { Dispatch, SetStateAction } from 'react';
+import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
+import { FieldGroupBaseEntity } from '@web/client';
+import {
+  formEditorTranslateFieldGroups,
+  formEditorTranslateFormFields,
+} from '@web/utils/formInstanceUtils';
 
 /**
  * The contents of the white box for the page (step 2) that asks the user for the form's name and
@@ -12,12 +18,14 @@ import { Dispatch, SetStateAction } from 'react';
  */
 export const NameAndDescriptionBox = ({
   pdfFile,
+  fieldGroups,
   name,
   setName,
   description,
   setDescription,
 }: {
   pdfFile: File | null;
+  fieldGroups: FieldGroupBaseEntity[];
   name: string | null;
   setName: Dispatch<SetStateAction<string | null>>;
   description: string | null;
@@ -33,11 +41,6 @@ export const NameAndDescriptionBox = ({
     outlineColor: 'transparent',
     borderColor: 'transparent',
   };
-
-  const memoPdfLink = useMemo(
-    () => (pdfFile ? URL.createObjectURL(pdfFile) : undefined),
-    [pdfFile],
-  );
 
   return (
     <Flex
@@ -91,21 +94,20 @@ export const NameAndDescriptionBox = ({
           >
             Preview Only
           </Text>
-          <embed
-            src={memoPdfLink}
-            type="application/pdf"
-            width="400px"
-            height="600px"
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              alignSelf: 'stretch',
-              border: '1px solid #E5E5E5',
-              borderRadius: '8px',
-              width: '100%',
-            }}
-          />
+          <Box width="580px">
+            <FormEditor
+              formTemplateName={name ?? ''}
+              pdfFile={pdfFile}
+              disableEdit
+              fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
+              formFields={formEditorTranslateFormFields(fieldGroups)}
+              setFormFields={() => {}}
+              setFieldGroups={() => {}}
+              scale={0.6875}
+              documentWidth={550}
+              showNav={false}
+            />
+          </Box>
         </Flex>
       </Flex>
     </Flex>
