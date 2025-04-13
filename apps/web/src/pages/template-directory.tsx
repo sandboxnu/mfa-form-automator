@@ -12,6 +12,7 @@ import {
   formTemplatesControllerFindAllOptions,
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
+  formTemplatesControllerFindOneOptions,
 } from '@web/client/@tanstack/react-query.gen';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
@@ -68,6 +69,23 @@ function TemplateDirectory() {
     formTemplatesControllerFindAllOptions(),
   );
 
+  const findOneTemplateMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await queryClient.fetchQuery(
+        formTemplatesControllerFindOneOptions({
+          path: { id },
+        }),
+      );
+      return response;
+    },
+    onSuccess: (data) => {
+      setFormTemplate(data);
+    },
+    onError: (error) => {
+      console.error('Failed to find form template:', error);
+    },
+  });
+
   useEffect(() => {
     if (!formTemplates) return;
     setSortedFormTemplates(
@@ -90,15 +108,7 @@ function TemplateDirectory() {
    * @param id the id of the form template selected on screen
    */
   const handleSelectTemplate = async (id: string) => {
-    try {
-      const response = await fetch(`/api/form-templates/${id}`);
-      if (!response.ok) throw new Error('Failed to find form template');
-
-      const template: FormTemplateEntity = await response.json();
-      setFormTemplate(template);
-    } catch (error) {
-      console.error(error);
-    }
+    await findOneTemplateMutation.mutateAsync(id);
   };
 
   /**
@@ -150,8 +160,6 @@ function TemplateDirectory() {
       .catch((e) => {
         throw e;
       });
-    console.log('finished');
-    console.log(formTemplate);
 
     setRefresh(!refresh);
     setIsOpen(false);
@@ -252,6 +260,7 @@ function TemplateDirectory() {
                 onClick={() => {
                   setFormTemplate(null);
                 }}
+                cursor="pointer"
               />
               <Flex
                 height="38px"
@@ -260,6 +269,7 @@ function TemplateDirectory() {
                 alignItems="center"
                 gap="8px"
                 onClick={navigateToFormTemplateEditMode}
+                cursor={'pointer'}
               >
                 <EditIcon mb="4px" />
                 <Text color="var(--Gray, #515151)">Edit Form</Text>
@@ -274,6 +284,7 @@ function TemplateDirectory() {
                 onClick={() => {
                   setIsOpen(true);
                 }}
+                cursor={'pointer'}
               >
                 <DeleteIcon mt="6px" ml="4px" color="var(--Gray, #515151)" />
                 <Text color="var(--Gray, #515151)">Delete</Text>
