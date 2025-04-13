@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text, Separator } from '@chakra-ui/react';
 import {
   OverViewIcon,
   ToDoIcon,
@@ -9,6 +9,7 @@ import {
   GrayPencilIcon,
   DropdownDownArrow,
   DropdownUpArrow,
+  InstancesIcon,
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link';
 import {
@@ -54,6 +55,8 @@ const icons = {
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
   test: <GrayPencilIcon boxSize="24px" mr="2" />,
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
+  instances: <InstancesIcon boxSize="24px" mr="2" />,
+  instancesActive: <InstancesIcon boxSize="24px" mr="2" stroke="#5E5E5E" fill="#5E5E5E" />,
 };
 
 type IconKeys = keyof typeof icons;
@@ -202,6 +205,10 @@ export const NavBar = ({
         </NavItem>
         <NavItem icon="completed" link="/completed">
           Completed
+        </NavItem>
+        <Separator orientation="horizontal" height="1px" marginLeft="8" width="168px"/>
+        <NavItem icon="instances" link="/instance-directory">
+          Instances
         </NavItem>
       </Flex>
     </Box>

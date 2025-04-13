@@ -97,6 +97,7 @@ export default function App({
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
   const signFormInstancePath = '/sign-form';
+  const previewForm = '/preview-form';
 
   // Check if the current page is an error page
   const isErrorPage =
@@ -119,6 +120,16 @@ export default function App({
           <Component {...pageProps} />
         </WrapperComponent>
       </>
+    );
+  }
+
+  if (appProps.router.pathname.startsWith(previewForm)) {
+    return (
+      <WrapperComponent>
+        <Layout>
+              <Component {...pageProps} />
+            </Layout>
+      </WrapperComponent>
     );
   }
 
@@ -149,6 +160,7 @@ export default function App({
       </>
     );
   }
+
   if (appProps.router.pathname.includes(signFormInstancePath)) {
     const { id } = appProps.router.query;
     return (
