@@ -27,15 +27,57 @@ const mockEmployees = [
         position: 'Developer',
         email: 'brisette.l@northeastern.edu',
     },
+    {
+        firstName: 'Bryan',
+        lastName: 'Baboolal',
+        department: 'Sandbox',
+        position: 'Developer',
+        email: 'baboolal.b@northeastern.edu',
+    },
+    {
+        firstName: 'Donny',
+        lastName: 'Le',
+        department: 'Sandbox',
+        position: 'Developer',
+        email: 'le.d@northeastern.edu',
+    },
+    {
+        firstName: 'Gabi',
+        lastName: 'Schwarz',
+        department: 'Sandbox',
+        position: 'Designer',
+        email: 'schwarz.g@northeastern.edu',
+    },
+    {
+        firstName: 'Kevin',
+        lastName: 'Eng',
+        department: 'Sandbox',
+        position: 'Designer',
+        email: 'eng.k@northeastern.edu',
+    },
+    {
+        firstName: 'Gayatri',
+        lastName: 'Kondabathini',
+        department: 'Sandbox',
+        position: 'Developer',
+        email: 'kondabathini.g@northeastern.edu',
+    },
+    {
+        firstName: 'Angela',
+        lastName: 'Weigl',
+        department: 'Sandbox',
+        position: 'Developer',
+        email: 'weigl.a@northeastern.edu',
+    },
 ]
 
 export default function EmployeeDirectory() {
-    const numEmployees = 100;
+    const numEmployees = 9;
 
     return (
-        // TODO header
-        <>
-            <Box p={8}>
+        // TODO 
+        <Box maxW="100%" p={8}>
+            <Box>
                 <Heading as="h1" fontSize="32px" fontWeight="500" mb={2}>
                     Employees
                 </Heading>
@@ -44,31 +86,60 @@ export default function EmployeeDirectory() {
                 </Text>
 
                 <Flex justify="space-between" align="center" mb={6}>
-                    <InputGroup maxW="500px">
+                    <InputGroup maxW="800px">
                         <Input
+                            px={4}
                             placeholder="Search Employees"
-                            bg="white"
-                            border="1px solid #E2E8F0"
+                            border="2px solid #E2E8F0"
                             borderRadius="6px"
                             fontSize="16px"
-                        />
+                        >
+                            {/* <RightSearchIcon /> */}
+                        </Input>
                     </InputGroup>
                 </Flex>
             </Box>
 
-        // TODO table of employees
-            <Box bg="white" borderRadius="md" shadow="sm">
+            <Box bg="white" borderRadius="md" border="1px solid" borderColor="gray.200">
+                <Flex
+                    p={4}
+                    borderBottom="1px solid"
+                    borderColor="gray.200"
+                    color="gray.700"
+                    fontWeight="500"
+                >
+                    <Box flex={2}>
+                        <Flex align="center">
+                            <Text fontWeight="600">Name</Text>
+                        </Flex>
+                    </Box>
+                    <Box flex={2}>
+                        <Flex align="center" >
+                            <Text fontWeight="600">Department</Text>
+                        </Flex>
+                    </Box>
+                    <Box flex={2}>
+                        <Flex align="center" >
+                            <Text fontWeight="600">Position</Text>
+                        </Flex>
+                    </Box>
+                    <Box flex={2}>
+                        <Flex align="center" >
+                            <Text fontWeight="600">Email</Text>
+                        </Flex>
+                    </Box>
+                </Flex>
                 {mockEmployees.map((employee, index) => {
                     return (
                         <Flex
                             key={index}
                             p={4}
                             align="center"
-                            borderBottom="1px"
+                            borderBottom="1px solid"
                             borderColor="gray.200"
                             _hover={{ bg: 'gray.50' }}
                         >
-                            <Box flex={2}>
+                            <Box flex={1}>
                                 <Flex align="center" gap={3}>
                                     <UserProfileAvatar
                                         firstName={employee.firstName}
@@ -90,6 +161,6 @@ export default function EmployeeDirectory() {
                     )
                 })}
             </Box>
-        </>
+        </Box>
     )
 }
