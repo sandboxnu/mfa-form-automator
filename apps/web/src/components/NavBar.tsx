@@ -114,7 +114,7 @@ export const NavBar = ({
 }) => {
   const router = useRouter();
   const { user } = useAuth();
-  const isAdmin = user?.scope === Scope.ADMIN;
+  const isAdmin = user?.scope == Scope.ADMIN;
   const [isCreateDropdownOpen, setIsCreateDropdownOpen] = useState(false);
 
   return (
@@ -212,7 +212,7 @@ export const NavBar = ({
         <Flex paddingTop="20px" paddingBottom="20px" paddingLeft="50px">
           <Flex height="1px" width="140px" background={'#E0E0E0'} />
         </Flex>
-        {isAdmin ?? (
+        {isAdmin && (
           <>
             <NavItem icon="template" link="/template-directory">
               Templates

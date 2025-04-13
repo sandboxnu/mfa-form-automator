@@ -9,6 +9,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { FieldGroupBaseEntity, FormTemplateEntity, Scope } from '@web/client';
 import {
+  formTemplatesControllerFindAllOptions,
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
 } from '@web/client/@tanstack/react-query.gen';
@@ -63,18 +64,15 @@ function TemplateDirectory() {
   const [sortedFormTemplates, setSortedFormTemplates] = useState<
     FormTemplateEntity[]
   >([]);
-  const { data: formTemplates } = useQuery<FormTemplateEntity[]>({
-    queryKey: ['api', 'form-templates', refresh],
-    queryFn: async () => {
-      const response = await fetch('/api/form-templates');
-      if (!response.ok) throw new Error('Failed to get form templates');
-      return response.json();
-    },
-  });
+  const { data: formTemplates } = useQuery(
+    formTemplatesControllerFindAllOptions(),
+  );
+
   useEffect(() => {
+    if (!formTemplates) return;
     setSortedFormTemplates(
-      formTemplates!!
-        .map((template) => ({
+      formTemplates
+        ?.map((template) => ({
           ...template,
           levenshteinDistance: distance(
             searchQuery.toLowerCase().slice(0, 10),
