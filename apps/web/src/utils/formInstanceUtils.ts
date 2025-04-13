@@ -162,6 +162,7 @@ export const isSignedByUser = (
   });
 };
 
+// todo: use this in place where pdf is fetched
 export const fetchPdfFile = async (
   setPdfFile: Dispatch<SetStateAction<File | null>>,
   formDocLink?: string,

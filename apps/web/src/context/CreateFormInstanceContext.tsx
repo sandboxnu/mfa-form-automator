@@ -31,6 +31,13 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
     fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
   }, [formTemplate?.formDocLink]);
 
+  useEffect(() => {
+    if (formTemplate) {
+      setFormInstanceDescription(formTemplate.description ?? null);
+      setFormInstanceName(formTemplate.name ?? null);
+    }
+  }, [formTemplate]);
+
   const router = useRouter();
 
   useEffect(() => {
