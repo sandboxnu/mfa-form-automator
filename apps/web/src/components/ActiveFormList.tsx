@@ -10,9 +10,11 @@ import { distance } from 'fastest-levenshtein';
 import { PreviewIcon } from '@web/static/icons';
 import { useQuery } from '@tanstack/react-query';
 import { isFullySigned } from '@web/utils/formInstanceUtils';
+import { useAuth } from '@web/hooks/useAuth';
 
 export const ActiveFormList = ({ title }: { title: string }) => {
   const router = useRouter();
+  const { user } = useAuth();
 
   const {
     data: allActiveForms,
@@ -20,7 +22,10 @@ export const ActiveFormList = ({ title }: { title: string }) => {
     isLoading,
   } = useQuery({
     ...formInstancesControllerFindAllOptions(),
+    enabled: !!user,
   });
+
+  console.log('hi');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortedFormInstances, setSortedFormInstances] = useState<
@@ -86,8 +91,8 @@ export const ActiveFormList = ({ title }: { title: string }) => {
               <SearchAndSort
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                formInstances={allActiveForms}
-                setSortedFormInstances={setSortedFormInstances}
+                sortedForms={allActiveForms}
+                setSortedForms={setSortedFormInstances}
               />
             </Box>
           </Flex>

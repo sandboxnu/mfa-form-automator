@@ -157,6 +157,7 @@ export type CreateFormTemplateDto = {
   pageWidth: number;
   pageHeight: number;
   fieldGroups: Array<CreateFieldGroupDto>;
+  disabled: boolean;
 };
 
 export type TemplateBoxBaseEntity = {
@@ -189,6 +190,7 @@ export type FormTemplateBaseEntity = {
   pageHeight: number;
   formDocLink: string;
   description: string | null;
+  disabled: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -240,6 +242,7 @@ export type FormTemplateEntity = {
   pageHeight: number;
   formDocLink: string;
   description: string | null;
+  disabled: boolean;
   fieldGroups: Array<FieldGroupBaseEntity>;
   formInstances: Array<FormInstanceEntity>;
   createdAt: string;
@@ -247,11 +250,12 @@ export type FormTemplateEntity = {
 };
 
 export type UpdateFormTemplateDto = {
-  file?: Blob | File;
   name?: string;
   description?: string;
   pageWidth?: number;
   pageHeight?: number;
+  fieldGroups?: Array<CreateFieldGroupDto>;
+  disabled?: boolean;
 };
 
 export type CreateDepartmentDto = {
@@ -284,6 +288,7 @@ export type CreateFormInstanceDto = {
 export type UpdateFormInstanceDto = {
   name?: string;
   description?: string;
+  assignedGroups?: Array<CreateAssignedGroupDto>;
   formDocLink?: string;
 };
 

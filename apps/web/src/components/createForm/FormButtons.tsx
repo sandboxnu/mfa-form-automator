@@ -7,6 +7,8 @@ import {
   formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
   formInstancesControllerFindAllQueryKey,
   formTemplatesControllerCreateMutation,
+  formTemplatesControllerUpdateMutation,
+  formInstancesControllerUpdateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
@@ -47,6 +49,7 @@ export const FormButtons = ({
   const router = useRouter();
 
   const {
+    formTemplateUseId,
     formTemplateName,
     formTemplateDescription,
     pdfFile,
@@ -54,8 +57,12 @@ export const FormButtons = ({
     formFields: formFieldsContext,
     formDimensions,
   } = useCreateFormTemplate();
-  const { assignedGroupData, formInstanceName, formTemplate } =
-    useCreateFormInstance();
+  const {
+    assignedGroupData,
+    formInstanceName,
+    formTemplate,
+    formInstanceDescription,
+  } = useCreateFormInstance();
   const [createFormLoading, setCreateFormLoading] = useState(false);
   const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
 
@@ -99,6 +106,24 @@ export const FormButtons = ({
     },
   });
 
+  const updateFormTemplateMutation = useMutation({
+    ...formTemplatesControllerUpdateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
+  });
+
+  const updateFormInstanceMutation = useMutation({
+    ...formInstancesControllerUpdateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
+  });
+
   /**
    * Upload and create a form template
    */
@@ -116,8 +141,10 @@ export const FormButtons = ({
 
     setCreateFormLoading(true);
 
+    console.log('submitting template');
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
+    console.log(fieldGroupsContext);
 
     // populate fieldGroups with fieldGroupsContext
     fieldGroupsContext.forEach((value, groupId) => {
@@ -141,7 +168,6 @@ export const FormButtons = ({
           });
         });
       }
-
       fieldGroups.push({
         name: value.groupName,
         order: orderVal,
@@ -150,8 +176,7 @@ export const FormButtons = ({
 
       orderVal += 1;
     });
-
-    if (formDimensions)
+    if (formDimensions && type == FormInteractionType.CreateFormTemplate)
       await createFormTemplateMutation
         .mutateAsync({
           body: {
@@ -161,6 +186,7 @@ export const FormButtons = ({
             fieldGroups: fieldGroups,
             file: pdfFile,
             description: formTemplateDescription ?? '',
+            disabled: false,
           },
         })
         .then(async (response) => {
@@ -181,6 +207,37 @@ export const FormButtons = ({
           });
           throw e;
         });
+    else if (type == FormInteractionType.EditFormTemplate) {
+      await updateFormTemplateMutation
+        .mutateAsync({
+          body: {
+            name: formTemplateName ?? '',
+            description: formTemplateDescription ?? '',
+            disabled: false,
+          },
+          path: {
+            id: formTemplateUseId!!,
+          },
+        })
+        .then(async (response) => {
+          await queryClient.invalidateQueries({
+            queryKey: formTemplatesControllerFindAllQueryKey(),
+          });
+          router.push(submitLink).then(() => {
+            setCreateFormLoading(false);
+          });
+          return response;
+        })
+        .catch((e) => {
+          toaster.create({
+            title: 'Failed to create form template',
+            description: (e as Error).message,
+            type: 'error',
+            duration: 3000,
+          });
+          throw e;
+        });
+    }
   };
 
   /**
@@ -205,53 +262,57 @@ export const FormButtons = ({
 
     setCreateFormLoading(true);
 
-    await createFormInstanceMutation
-      .mutateAsync({
-        body: {
-          name: formInstanceName ?? formTemplate.name,
-          assignedGroups: assignedGroupData.map((data, _) => {
-            return {
-              order: data.order,
-              fieldGroupId: data.fieldGroupId,
-              signerType: data.signerType,
-              signerEmployeeList: data.signerEmployeeList,
-              signerDepartmentId: data.signerDepartmentId,
-              signerPositionId: data.signerPositionId,
-              signerEmployeeId: data.signerEmployeeId,
-            };
-          }),
-          originatorId: user.id,
-          formTemplateId: formTemplate.id,
-          formDocLink: formTemplate.formDocLink,
-          description: formTemplate.description ?? '',
-        },
-      })
-      .then(async (response) => {
-        await queryClient.invalidateQueries({
-          queryKey: formInstancesControllerFindAllQueryKey(),
+    if (FormInteractionType.CreateFormInstance) {
+      await createFormInstanceMutation
+        .mutateAsync({
+          body: {
+            name: formInstanceName ?? formTemplate.name,
+            assignedGroups: assignedGroupData.map((data, _) => {
+              return {
+                order: data.order,
+                fieldGroupId: data.fieldGroupId,
+                signerType: data.signerType,
+                signerEmployeeList: data.signerEmployeeList,
+                signerDepartmentId: data.signerDepartmentId,
+                signerPositionId: data.signerPositionId,
+                signerEmployeeId: data.signerEmployeeId,
+              };
+            }),
+            originatorId: user.id,
+            formTemplateId: formTemplate.id,
+            formDocLink: formTemplate.formDocLink,
+            description: formInstanceDescription ?? formTemplate.description!!,
+          },
+        })
+        .then(async (response) => {
+          await queryClient.invalidateQueries({
+            queryKey: formInstancesControllerFindAllQueryKey(),
+          });
+          await queryClient.invalidateQueries({
+            queryKey:
+              formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+          });
+          await queryClient.invalidateQueries({
+            queryKey:
+              formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+          });
+          router.push(submitLink).then(() => {
+            setCreateFormLoading(false);
+          });
+          return response;
+        })
+        .catch((e) => {
+          toaster.create({
+            title: 'Failed to create form instance',
+            description: (e as Error).message,
+            type: 'error',
+            duration: 3000,
+          });
+          throw e;
         });
-        await queryClient.invalidateQueries({
-          queryKey:
-            formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
-        });
-        await queryClient.invalidateQueries({
-          queryKey:
-            formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
-        });
-        router.push(submitLink).then(() => {
-          setCreateFormLoading(false);
-        });
-        return response;
-      })
-      .catch((e) => {
-        toaster.create({
-          title: 'Failed to create form instance',
-          description: (e as Error).message,
-          type: 'error',
-          duration: 3000,
-        });
-        throw e;
-      });
+    } else {
+      // form instance edit mode -> submit changes
+    }
   };
 
   return (
@@ -337,9 +398,14 @@ export const FormButtons = ({
               case FormInteractionType.CreateFormInstance:
                 _submitFormInstance();
                 break;
+              case FormInteractionType.EditFormInstance:
+                _submitFormInstance();
+                break;
+              case FormInteractionType.EditFormTemplate:
+                _submitFormTemplate();
+                break;
               default:
                 nextSignFormPage(submitLink, review);
-                break;
             }
           }}
         >

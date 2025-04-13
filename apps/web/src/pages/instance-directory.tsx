@@ -1,3 +1,4 @@
+import { Scope } from '@web/client';
 import { ActiveFormList } from '@web/components/ActiveFormList';
 import { FormListPageLayout } from '@web/components/FormListPageLayout';
 import isAuth from '@web/components/isAuth';
@@ -12,4 +13,4 @@ function ActiveFormInstanceDirectory() {
   );
 }
 
-export default isAuth(ActiveFormInstanceDirectory);
+export default isAuth(ActiveFormInstanceDirectory, [Scope.ADMIN]);

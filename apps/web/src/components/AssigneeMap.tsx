@@ -3,6 +3,7 @@ import { AwaitingIcon } from 'apps/web/src/static/icons.tsx';
 import { AvatarMapProps } from './types.ts';
 import { SignerType } from '@web/client/types.gen.ts';
 import { Avatar } from './ui/avatar.tsx';
+import { useAuth } from '@web/hooks/useAuth.ts';
 
 /**
  * @param assignees - an array of assignees
@@ -10,6 +11,7 @@ import { Avatar } from './ui/avatar.tsx';
  */
 const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
   let previousSigned = true;
+  const { user } = useAuth();
 
   const getInitialsFromTitle = (
     title: string,
@@ -80,7 +82,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                           fontSize="13px"
                           fontWeight="500px"
                         >
-                          Awaiting Your Signature
+                          Awaiting Signature
                         </Text>
                       </Flex>
                     )

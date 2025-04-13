@@ -10,7 +10,7 @@ function Success() {
     <SuccessPage
       message={'Your form instance has been created!'}
       linkText={'Edit Form'}
-      linkAction={() => router.push('/')}
+      linkAction={() => router.push('/create-instance/description')}
     />
   );
 }

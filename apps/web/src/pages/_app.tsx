@@ -87,16 +87,12 @@ export default function App({
     withCredentials: true,
   });
 
-  const excludeLayoutPaths = [
-    '/signin',
-    '/register',
-    '/create-template/success',
-    '/create-instance/success',
-    '/sign-form/success',
-  ];
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
   const signFormInstancePath = '/sign-form';
+  const excludeLayoutPaths = ['/signin', '/register'];
+  // to allow template context to be populated before moving into edit mode
+  const formDirectoryPath = '/template-directory';
   const previewForm = '/preview-form';
 
   // Check if the current page is an error page
@@ -134,6 +130,20 @@ export default function App({
   }
 
   if (appProps.router.pathname.includes(createFormTemplatePath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <CreateFormTemplateProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </CreateFormTemplateProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(formDirectoryPath)) {
     return (
       <>
         <WrapperComponent>

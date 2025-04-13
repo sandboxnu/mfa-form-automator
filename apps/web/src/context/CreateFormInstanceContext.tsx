@@ -22,6 +22,9 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
   const [assignedGroupData, setAssignedGroupData] = useState<
     ContextAssignedGroupData[]
   >([]);
+  const [formInstanceUseId, setFormInstanceUseId] = useState<string | null>(
+    null,
+  );
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -33,7 +36,8 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
   useEffect(() => {
     if (
       !formTemplate &&
-      router.pathname !== '/create-instance/select-template'
+      router.pathname !== '/create-instance/select-template' &&
+      router.pathname !== '/create-instance/success'
     ) {
       router.push('/create-instance/select-template');
     }
@@ -50,7 +54,9 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
         setFormTemplate,
         assignedGroupData: assignedGroupData,
         setAssignedGroupData: setAssignedGroupData,
-        pdfFile: pdfFile,
+        formInstanceUseId,
+        setFormInstanceUseId,
+        pdfFile,
       }}
     >
       {children}

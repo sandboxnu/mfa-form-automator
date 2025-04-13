@@ -170,6 +170,7 @@ describe('FormInstancesIntegrationTest', () => {
           ],
         },
       ],
+      disabled: false,
     });
     formTemplate2 = await formTemplatesService.create({
       name: 'Form Template',
@@ -207,6 +208,7 @@ describe('FormInstancesIntegrationTest', () => {
           ],
         },
       ],
+      disabled: false,
     });
   });
 
@@ -701,13 +703,35 @@ describe('FormInstancesIntegrationTest', () => {
     it('should update a form instance', async () => {
       const formInstance = await service.update(formInstance1.id, {
         name: 'Updated Form Instance',
+        description: 'Updated description',
         formDocLink: 'link',
+        assignedGroups: [
+          {
+            order: 0,
+            fieldGroupId: formTemplate1.fieldGroups[0].id,
+            signerType: $Enums.SignerType.POSITION,
+            signerEmployeeId: employeeId2,
+            signerEmployeeList: [],
+          },
+        ],
       });
 
       expect(formInstance).toBeDefined();
       expect(formInstance.id).toBe(formInstance1.id);
       expect(formInstance.name).toBe('Updated Form Instance');
+      expect(formInstance.description).toBe('Updated description');
       expect(formInstance.formDocLink).toBe('link');
+
+      // Check only the relevant properties of the first assigned group
+      expect(formInstance.assignedGroups.length).toBe(1);
+      expect(formInstance.assignedGroups[0].order).toBe(0);
+      expect(formInstance.assignedGroups[0].fieldGroupId).toBe(
+        formTemplate1.fieldGroups[0].id,
+      );
+      expect(formInstance.assignedGroups[0].signerType).toBe(
+        $Enums.SignerType.POSITION,
+      );
+      expect(formInstance.assignedGroups[0].signerEmployeeId).toBe(employeeId2);
     });
     it('should fail if the form instance does not exist', async () => {
       await expect(

@@ -172,6 +172,7 @@ const formTemplates: FormTemplateData[] = [
       },
     ],
     description: 'IT exit form description',
+    disabled: false,
   },
   {
     id: STAFFING_REQUISITION_UUID,
@@ -214,6 +215,7 @@ const formTemplates: FormTemplateData[] = [
         ],
       },
     ],
+    disabled: false,
   },
   {
     id: NETWORK_ADD_CHANGE_UUID,
@@ -240,6 +242,7 @@ const formTemplates: FormTemplateData[] = [
         ],
       },
     ],
+    disabled: false,
   },
   {
     id: MFA_ORACLE_LOGON_REQUEST_UUID,
@@ -282,6 +285,7 @@ const formTemplates: FormTemplateData[] = [
         ],
       },
     ],
+    disabled: false,
   },
   {
     id: HYBRID_AND_REMOTE_WORK_AGREEMENT_UUID,
@@ -308,6 +312,7 @@ const formTemplates: FormTemplateData[] = [
         ],
       },
     ],
+    disabled: false,
   },
   {
     id: VPN_REQUEST_UUID,
@@ -334,6 +339,7 @@ const formTemplates: FormTemplateData[] = [
         ],
       },
     ],
+    disabled: false,
   },
   {
     id: DIGITAL_MFA_ID_BADGE_REQUEST_UUID,
@@ -360,6 +366,7 @@ const formTemplates: FormTemplateData[] = [
         ],
       },
     ],
+    disabled: false,
   },
   {
     id: TRAVEL_AUTHORIZATION_UUID,
@@ -386,6 +393,7 @@ const formTemplates: FormTemplateData[] = [
         ],
       },
     ],
+    disabled: false,
   },
 ];
 

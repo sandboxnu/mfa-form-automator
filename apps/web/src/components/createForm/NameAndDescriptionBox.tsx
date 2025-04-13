@@ -62,7 +62,7 @@ export const NameAndDescriptionBox = ({
             onChange={(e) => setName(e.target.value)}
             style={{ ...textInputStyle }}
             placeholder="Form Name"
-            value={name!!}
+            value={name ?? ''}
           />
         </Flex>
         <Flex gap="10px" flexDirection="column" width="100%">
@@ -75,7 +75,7 @@ export const NameAndDescriptionBox = ({
               resize: 'none',
             }}
             placeholder="For HR processing lorem ipsum dolor sit"
-            value={description!!}
+            value={description ?? ''}
           />
         </Flex>
       </Flex>

@@ -482,6 +482,9 @@ export const CreateFormTemplateDtoSchema = {
         $ref: '#/components/schemas/CreateFieldGroupDto',
       },
     },
+    disabled: {
+      type: 'boolean',
+    },
   },
   required: [
     'file',
@@ -490,6 +493,7 @@ export const CreateFormTemplateDtoSchema = {
     'pageWidth',
     'pageHeight',
     'fieldGroups',
+    'disabled',
   ],
 } as const;
 
@@ -607,6 +611,9 @@ export const FormTemplateBaseEntitySchema = {
       type: 'string',
       nullable: true,
     },
+    disabled: {
+      type: 'boolean',
+    },
     createdAt: {
       format: 'date-time',
       type: 'string',
@@ -623,6 +630,7 @@ export const FormTemplateBaseEntitySchema = {
     'pageHeight',
     'formDocLink',
     'description',
+    'disabled',
     'createdAt',
     'updatedAt',
   ],
@@ -842,6 +850,9 @@ export const FormTemplateEntitySchema = {
       type: 'string',
       nullable: true,
     },
+    disabled: {
+      type: 'boolean',
+    },
     fieldGroups: {
       type: 'array',
       items: {
@@ -870,6 +881,7 @@ export const FormTemplateEntitySchema = {
     'pageHeight',
     'formDocLink',
     'description',
+    'disabled',
     'fieldGroups',
     'formInstances',
     'createdAt',
@@ -880,10 +892,6 @@ export const FormTemplateEntitySchema = {
 export const UpdateFormTemplateDtoSchema = {
   type: 'object',
   properties: {
-    file: {
-      type: 'string',
-      format: 'binary',
-    },
     name: {
       type: 'string',
     },
@@ -895,6 +903,16 @@ export const UpdateFormTemplateDtoSchema = {
     },
     pageHeight: {
       type: 'number',
+    },
+    fieldGroups: {
+      minItems: 1,
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/CreateFieldGroupDto',
+      },
+    },
+    disabled: {
+      type: 'boolean',
     },
   },
 } as const;
@@ -994,6 +1012,13 @@ export const UpdateFormInstanceDtoSchema = {
     },
     description: {
       type: 'string',
+    },
+    assignedGroups: {
+      minItems: 1,
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/CreateAssignedGroupDto',
+      },
     },
     formDocLink: {
       type: 'string',

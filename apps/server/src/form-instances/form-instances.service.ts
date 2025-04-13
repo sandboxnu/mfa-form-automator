@@ -438,47 +438,117 @@ export class FormInstancesService {
    * @returns the updated form instance, hydrated
    */
   async update(id: string, updateFormInstanceDto: UpdateFormInstanceDto) {
-    const updatedFormInstance = this.prisma.formInstance.update({
-      where: {
-        id: id,
-      },
-      data: {
-        name: updateFormInstanceDto.name,
-        formDocLink: updateFormInstanceDto.formDocLink,
-      },
-      include: {
-        originator: {
+    // Use a transaction to ensure all operations are atomic
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Update the form instance basic properties
+      await tx.formInstance.update({
+        where: { id },
+        data: {
+          name: updateFormInstanceDto.name,
+          description: updateFormInstanceDto.description,
+          formDocLink: updateFormInstanceDto.formDocLink,
+        },
+      });
+
+      // 2. Handle assigned groups if they're being updated
+      if (updateFormInstanceDto.assignedGroups?.length) {
+        // First, delete all existing assigned groups if we're replacing them
+        // This is more efficient than trying to determine which ones to update vs create
+        await tx.assignedGroup.deleteMany({
+          where: { formInstanceId: id },
+        });
+
+        // Get all required field groups with their template boxes in a single query
+        const fieldGroupIds = updateFormInstanceDto.assignedGroups.map(
+          (group) => group.fieldGroupId,
+        );
+        const fieldGroups = await tx.fieldGroup.findMany({
+          where: {
+            id: {
+              in: fieldGroupIds,
+            },
+          },
           include: {
-            position: {
-              include: {
-                department: true,
+            templateBoxes: true,
+          },
+        });
+
+        // Create all the new assigned groups
+        for (const assignedGroup of updateFormInstanceDto.assignedGroups) {
+          const fieldGroup = fieldGroups.find(
+            (fg) => fg.id === assignedGroup.fieldGroupId,
+          );
+
+          if (!fieldGroup) {
+            throw new NotFoundException(
+              `Field group with ID ${assignedGroup.fieldGroupId} not found`,
+            );
+          }
+
+          // Create the assigned group with its instance boxes
+          await tx.assignedGroup.create({
+            data: {
+              formInstanceId: id,
+              fieldGroupId: assignedGroup.fieldGroupId,
+              order: assignedGroup.order,
+              signerType: assignedGroup.signerType,
+              signerEmployeeId: assignedGroup.signerEmployeeId,
+              signerPositionId: assignedGroup.signerPositionId,
+              signerDepartmentId: assignedGroup.signerDepartmentId,
+              signed: false,
+              signedDocLink: null,
+              signingEmployeeId: null,
+              signerEmployeeList: {
+                connect: (assignedGroup.signerEmployeeList || []).map(
+                  (user) => ({ id: user.id }),
+                ),
+              },
+              instanceBoxes: {
+                create: fieldGroup.templateBoxes.map((templateBox) => ({
+                  templateBoxId: templateBox.id,
+                })),
+              },
+            },
+          });
+        }
+      }
+
+      // Return the fully hydrated updated form instance
+      return tx.formInstance.findFirstOrThrow({
+        where: { id },
+        include: {
+          originator: {
+            include: {
+              position: {
+                include: {
+                  department: true,
+                },
+              },
+            },
+          },
+          formTemplate: true,
+          assignedGroups: {
+            include: {
+              signerPosition: {
+                include: {
+                  department: true,
+                },
+              },
+              signerDepartment: true,
+              signerEmployee: true,
+              signerEmployeeList: true,
+              signingEmployee: true,
+              instanceBoxes: true,
+              fieldGroup: {
+                include: {
+                  templateBoxes: true,
+                },
               },
             },
           },
         },
-        formTemplate: true,
-        assignedGroups: {
-          include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-            signerDepartment: true,
-            signerEmployee: true,
-            signerEmployeeList: true,
-            signingEmployee: true,
-            instanceBoxes: true,
-            fieldGroup: {
-              include: {
-                templateBoxes: true,
-              },
-            },
-          },
-        },
-      },
+      });
     });
-    return updatedFormInstance;
   }
 
   /**

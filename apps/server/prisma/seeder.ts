@@ -188,6 +188,7 @@ export class Seeder {
       fieldGroups,
       pageHeight,
       pageWidth,
+      disabled,
     } = data;
 
     await this.prisma.formTemplate.upsert({
@@ -222,6 +223,7 @@ export class Seeder {
             };
           }),
         },
+        disabled,
       },
     });
   }
