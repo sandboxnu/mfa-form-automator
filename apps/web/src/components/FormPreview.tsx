@@ -6,13 +6,11 @@ import { formEditorTranslateFormFields } from '@web/utils/formInstanceUtils';
 import { FormEditor } from './createFormTemplate/createFormTemplateEditor/FormEditor';
 import { groupColors } from '@web/utils/formTemplateUtils';
 
-
 export const FormPreview = ({
   formInstance,
 }: {
   formInstance: FormInstanceEntity;
 }) => {
-  
   const fieldGroups = new Map(
     formInstance?.assignedGroups.map((assignedGroup, i) => {
       const [border, background] = groupColors[i % groupColors.length];
@@ -27,22 +25,22 @@ export const FormPreview = ({
           background,
         },
       ];
-    })
+    }),
   );
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
-    useEffect(() => {
-      const fetchPdf = async () => {
-        if (formInstance?.formDocLink) {
-          const response = await fetch(formInstance.formDocLink);
-          const blob = await response.blob();
-          const file = new File([blob], 'form.pdf', { type: blob.type });
-          setPdfFile(file);
-        }
-      };
-      fetchPdf();
-    }, [formInstance?.formDocLink]);
+  useEffect(() => {
+    const fetchPdf = async () => {
+      if (formInstance?.formDocLink) {
+        const response = await fetch(formInstance.formDocLink);
+        const blob = await response.blob();
+        const file = new File([blob], 'form.pdf', { type: blob.type });
+        setPdfFile(file);
+      }
+    };
+    fetchPdf();
+  }, [formInstance?.formDocLink]);
 
   return (
     <>
@@ -83,19 +81,19 @@ export const FormPreview = ({
               maxHeight="calc(100vh - 180px)"
             >
               <FormEditor
-                    formTemplateName={formInstance.name}
-                    pdfFile={pdfFile}
-                    disableEdit={true}
-                    fieldGroups={fieldGroups}
-                    formFields={formEditorTranslateFormFields(
-                        Array.from(fieldGroups.values()).map(v => v.fieldGroup)
-                      )}
-                    setFormFields={() => {}}
-                    setFieldGroups={() => {}}
-                    scale={0.6875}
-                    documentWidth={662}
-                    showNav={false}
-                />
+                formTemplateName={formInstance.name}
+                pdfFile={pdfFile}
+                disableEdit={true}
+                fieldGroups={fieldGroups}
+                formFields={formEditorTranslateFormFields(
+                  Array.from(fieldGroups.values()).map((v) => v.fieldGroup),
+                )}
+                setFormFields={() => {}}
+                setFieldGroups={() => {}}
+                scale={0.6875}
+                documentWidth={662}
+                showNav={false}
+              />
             </Flex>
           </Box>
         </Flex>

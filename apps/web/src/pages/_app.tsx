@@ -127,8 +127,8 @@ export default function App({
     return (
       <WrapperComponent>
         <Layout>
-              <Component {...pageProps} />
-            </Layout>
+          <Component {...pageProps} />
+        </Layout>
       </WrapperComponent>
     );
   }
