@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Text, Separator } from '@chakra-ui/react';
 import {
   OverViewIcon,
   ToDoIcon,
@@ -11,6 +11,7 @@ import {
   DropdownUpArrow,
   TemplateFolder,
   EmployeeDirectory,
+  InstancesIcon,
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link';
 import {
@@ -60,6 +61,10 @@ const icons = {
   templateActive: <TemplateFolder boxSize="24px" mr="2" fill="black" />,
   employeeDirectory: <EmployeeDirectory boxSize="24px" mr="2" />,
   employeeDirectoryActive: <EmployeeDirectory boxSize="24px" mr="2" />,
+  instances: <InstancesIcon boxSize="24px" mr="2" />,
+  instancesActive: (
+    <InstancesIcon boxSize="24px" mr="2" stroke="#5E5E5E" fill="#5E5E5E" />
+  ),
 };
 
 type IconKeys = keyof typeof icons;
@@ -209,16 +214,20 @@ export const NavBar = ({
         <NavItem icon="completed" link="/completed">
           Completed
         </NavItem>
-        <Flex paddingTop="20px" paddingBottom="20px" paddingLeft="50px">
-          <Flex height="1px" width="140px" background={'#E0E0E0'} />
-        </Flex>
+
         {isAdmin && (
           <>
+            <Flex paddingTop="20px" paddingBottom="20px" paddingLeft="50px">
+              <Flex height="1px" width="140px" background={'#E0E0E0'} />
+            </Flex>
             <NavItem icon="template" link="/template-directory">
               Templates
             </NavItem>
+            <NavItem icon="instances" link="/instance-directory">
+              Instances
+            </NavItem>
             <NavItem icon="employeeDirectory" link="/employee-directory">
-              Employee Directory
+              Employees
             </NavItem>
           </>
         )}
