@@ -25,7 +25,7 @@ export const Layout = ({ children }: { children: any }) => {
       />
       <Box flex="1" display="flex" flexDirection="column">
         <TopBar />
-        <Box as="main" ml="60" pt="60px" flex="1">
+        <Box as="main" ml="60" pt="60px" pb="30px" px="8">
           {children}
         </Box>
       </Box>
