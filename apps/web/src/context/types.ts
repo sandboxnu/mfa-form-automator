@@ -69,6 +69,8 @@ export interface CreateFormTemplateContextType {
       | undefined
     >
   >;
+  formTemplateUseId: string | null;
+  setFormTemplateUseId: Dispatch<SetStateAction<string | null>>;
 }
 export interface CreateFormInstanceContextType {
   formInstanceName: string | null;
@@ -79,6 +81,8 @@ export interface CreateFormInstanceContextType {
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
+  formInstanceUseId: string | null;
+  setFormInstanceUseId: Dispatch<SetStateAction<string | null>>;
   pdfFile: File | null;
 }
 

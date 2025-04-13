@@ -3,8 +3,6 @@ import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescrip
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-import { fetchPdfFile } from '@web/utils/formInstanceUtils';
-import { useEffect, useState } from 'react';
 
 /**
  * The description page in the form instance creation flow, where users describe their form.
@@ -16,14 +14,21 @@ function Description() {
     formInstanceDescription,
     setFormInstanceName,
     setFormInstanceDescription,
+    formInstanceUseId,
     pdfFile,
   } = useCreateFormInstance();
 
   return (
     <FormLayout
-      type={FormInteractionType.CreateFormInstance}
+      type={
+        formInstanceUseId
+          ? FormInteractionType.EditFormInstance
+          : FormInteractionType.CreateFormInstance
+      }
       pageNumber={2}
-      heading={'Create form instance'}
+      heading={
+        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
+      }
       subheading={'Edit your form instance name and description'}
       boxContent={
         <NameAndDescriptionBox

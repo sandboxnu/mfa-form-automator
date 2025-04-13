@@ -7,8 +7,12 @@ import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useState, useEffect } from 'react';
 
 function AssignGroups() {
-  const { formInstanceName, formInstanceDescription, formTemplate } =
-    useCreateFormInstance();
+  const {
+    formInstanceName,
+    formInstanceDescription,
+    formTemplate,
+    formInstanceUseId,
+  } = useCreateFormInstance();
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
@@ -18,10 +22,18 @@ function AssignGroups() {
 
   return (
     <FormLayout
-      type={FormInteractionType.CreateFormInstance}
+      type={
+        formInstanceUseId
+          ? FormInteractionType.EditFormInstance
+          : FormInteractionType.CreateFormInstance
+      }
       pageNumber={3}
-      heading={'Create form instance'}
-      subheading="Assign your input field groups to a person, role, or department"
+      heading={
+        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
+      }
+      subheading={
+        'Assign your input field groups to a person, role, or department'
+      }
       boxContent={
         <AssignGroupsBox
           pdfFile={pdfFile}

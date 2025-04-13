@@ -33,11 +33,18 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
     width: number;
     height: number;
   }>();
+  const [formTemplateUseId, setFormTemplateUseId] = useState<string | null>(
+    null,
+  );
 
   const router = useRouter();
 
   useEffect(() => {
-    if (!pdfFile && router.pathname !== '/create-template/upload') {
+    if (
+      !pdfFile &&
+      router.pathname !== '/create-template/upload' &&
+      router.pathname !== '/template-directory'
+    ) {
       router.push('/create-template/upload');
     }
   }, [pdfFile, router]);
@@ -57,6 +64,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFieldGroups,
         formDimensions,
         setFormDimensions,
+        formTemplateUseId,
+        setFormTemplateUseId,
       }}
     >
       {children}

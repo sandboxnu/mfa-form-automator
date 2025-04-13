@@ -9,7 +9,7 @@ import {
   GrayPencilIcon,
   DropdownDownArrow,
   DropdownUpArrow,
-  UserProfileAvatar,
+  TemplateFolder,
   EmployeeDirectory,
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link';
@@ -56,6 +56,8 @@ const icons = {
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
   test: <GrayPencilIcon boxSize="24px" mr="2" />,
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
+  template: <TemplateFolder boxSize="24px" mr="2" fill="#5E5E5E" />,
+  templateActive: <TemplateFolder boxSize="24px" mr="2" fill="black" />,
   employeeDirectory: <EmployeeDirectory boxSize="24px" mr="2" />,
   employeeDirectoryActive: <EmployeeDirectory boxSize="24px" mr="2" />,
 };
@@ -112,7 +114,7 @@ export const NavBar = ({
 }) => {
   const router = useRouter();
   const { user } = useAuth();
-  const isAdmin = user?.scope === Scope.ADMIN;
+  const isAdmin = user?.scope == Scope.ADMIN;
   const [isCreateDropdownOpen, setIsCreateDropdownOpen] = useState(false);
 
   return (
@@ -207,9 +209,19 @@ export const NavBar = ({
         <NavItem icon="completed" link="/completed">
           Completed
         </NavItem>
-        <NavItem icon="employeeDirectory" link="/employee-directory">
-          Employee Directory
-        </NavItem>
+        <Flex paddingTop="20px" paddingBottom="20px" paddingLeft="50px">
+          <Flex height="1px" width="140px" background={'#E0E0E0'} />
+        </Flex>
+        {isAdmin && (
+          <>
+            <NavItem icon="template" link="/template-directory">
+              Templates
+            </NavItem>
+            <NavItem icon="employeeDirectory" link="/employee-directory">
+              Employee Directory
+            </NavItem>
+          </>
+        )}
       </Flex>
     </Box>
   );

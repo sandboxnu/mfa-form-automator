@@ -51,6 +51,7 @@ export type FormTemplateData = {
   description?: string;
   pageWidth: number;
   pageHeight: number;
+  disabled: boolean;
 };
 
 export type AssignedGroupData = {

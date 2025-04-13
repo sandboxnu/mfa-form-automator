@@ -95,8 +95,8 @@ export const FormList = ({
               <SearchAndSort
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                formInstances={formInstances}
-                setSortedFormInstances={setSortedFormInstances}
+                sortedForms={formInstances}
+                setSortedForms={setSortedFormInstances}
               />
             )}
           </>

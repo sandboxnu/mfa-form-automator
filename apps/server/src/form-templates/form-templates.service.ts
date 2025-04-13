@@ -100,48 +100,50 @@ export class FormTemplatesService {
    * @returns all form templates, hydrated
    */
   async findAll(limit?: number) {
-    const formTemplates = await this.prisma.formTemplate.findMany({
-      include: {
-        fieldGroups: {
-          include: {
-            templateBoxes: true,
+    const formTemplates = await this.prisma.formTemplate
+      .findMany({
+        include: {
+          fieldGroups: {
+            include: {
+              templateBoxes: true,
+            },
           },
-        },
-        formInstances: {
-          include: {
-            formTemplate: true,
-            originator: {
-              include: {
-                position: {
-                  include: {
-                    department: true,
+          formInstances: {
+            include: {
+              formTemplate: true,
+              originator: {
+                include: {
+                  position: {
+                    include: {
+                      department: true,
+                    },
+                  },
+                },
+              },
+              assignedGroups: {
+                include: {
+                  signerPosition: {
+                    include: {
+                      department: true,
+                    },
+                  },
+                  signerDepartment: true,
+                  signerEmployee: true,
+                  signerEmployeeList: true,
+                  signingEmployee: true,
+                  fieldGroup: {
+                    include: {
+                      templateBoxes: true,
+                    },
                   },
                 },
               },
             },
-            assignedGroups: {
-              include: {
-                signerPosition: {
-                  include: {
-                    department: true,
-                  },
-                },
-                signerDepartment: true,
-                signerEmployee: true,
-                signerEmployeeList: true,
-                signingEmployee: true,
-                fieldGroup: {
-                  include: {
-                    templateBoxes: true,
-                  },
-                },
-              },
-            },
           },
         },
-      },
-      ...(limit && { take: limit }),
-    });
+        ...(limit && { take: limit }),
+      })
+      .then((templates) => templates.filter((item) => !item.disabled));
     return formTemplates;
   }
 
@@ -214,6 +216,7 @@ export class FormTemplatesService {
       data: {
         name: updateFormTemplateDto.name,
         description: updateFormTemplateDto.description,
+        disabled: updateFormTemplateDto.disabled,
       },
       include: {
         fieldGroups: {

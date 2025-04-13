@@ -15,13 +15,25 @@ function Description() {
     formTemplateDescription,
     setFormTemplateDescription,
     pdfFile,
+    formTemplateUseId,
   } = useCreateFormTemplate();
+
+  function nullify() {
+    setFormTemplateName(null);
+    setFormTemplateDescription(null);
+  }
 
   return (
     <FormLayout
-      type={FormInteractionType.CreateFormTemplate}
+      type={
+        formTemplateUseId
+          ? FormInteractionType.EditFormTemplate
+          : FormInteractionType.CreateFormTemplate
+      }
       pageNumber={2}
-      heading={'Create form template'}
+      heading={
+        formTemplateUseId ? 'Edit form template' : 'Create form template'
+      }
       subheading={'Give your form template a name and short description'}
       boxContent={
         <NameAndDescriptionBox
@@ -33,12 +45,15 @@ function Description() {
           setDescription={setFormTemplateDescription}
         />
       }
-      deleteFunction={() => {
-        setFormTemplateName(null);
-        setFormTemplateDescription(null);
-      }}
-      submitLink={'/create-template/input-fields'}
-      backLink={'/create-template/upload'}
+      deleteFunction={nullify}
+      submitLink={
+        formTemplateUseId
+          ? '/create-template/review'
+          : '/create-template/input-fields'
+      }
+      backLink={
+        formTemplateUseId ? '/template-directory' : '/create-template/upload'
+      }
       disabled={!formTemplateName}
     />
   );
