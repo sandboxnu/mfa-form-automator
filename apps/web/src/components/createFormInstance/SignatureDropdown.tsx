@@ -230,11 +230,10 @@ export const SignatureDropdown = ({
                   const newAssignedGroupData = [...assignedGroupData];
                   newAssignedGroupData[existingIndex] = assignedGroup;
                   setAssignedGroupData(newAssignedGroupData);
-                  return;
+                } else {
+                  // otherwise, add it to the list
+                  setAssignedGroupData([...assignedGroupData, assignedGroup]);
                 }
-
-                // otherwise, add it to the list
-                setAssignedGroupData([...assignedGroupData, assignedGroup]);
               }}
               value={selectedOption}
               chakraStyles={selectStyles}
