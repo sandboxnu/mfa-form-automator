@@ -81,9 +81,6 @@ function TemplateDirectory() {
     onSuccess: (data) => {
       setFormTemplate(data);
     },
-    onError: (error) => {
-      console.error('Failed to find form template:', error);
-    },
   });
 
   useEffect(() => {
