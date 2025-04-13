@@ -56,12 +56,8 @@ const icons = {
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
   test: <GrayPencilIcon boxSize="24px" mr="2" />,
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
-  employeeDirectory: (
-    <EmployeeDirectory boxSize="24px" mr="2" />
-  ),
-  employeeDirectoryActive: (
-    <EmployeeDirectory boxSize="24px" mr="2" />
-  ),
+  employeeDirectory: <EmployeeDirectory boxSize="24px" mr="2" />,
+  employeeDirectoryActive: <EmployeeDirectory boxSize="24px" mr="2" />,
 };
 
 type IconKeys = keyof typeof icons;
