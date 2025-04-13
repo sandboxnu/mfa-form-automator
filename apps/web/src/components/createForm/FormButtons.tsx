@@ -1,13 +1,6 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import {
-  CreateFieldGroupDto,
-  CreateTemplateBoxDto,
-  FormInstanceEntity,
-  formInstancesControllerFindAll,
-  formInstancesControllerFindAllCreatedByCurrentEmployee,
-  formInstancesControllerFindOne,
-} from '@web/client';
+import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
   formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
@@ -27,7 +20,6 @@ import { FormInteractionType } from './types';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 import { useState } from 'react';
-import { useForm } from '@web/hooks/useForm';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -55,7 +47,6 @@ export const FormButtons = ({
   heading: string;
 }) => {
   const router = useRouter();
-  const { pendingForms, todoForms } = useForm();
 
   const {
     formTemplateUseId,
@@ -66,13 +57,15 @@ export const FormButtons = ({
     formFields: formFieldsContext,
     formDimensions,
   } = useCreateFormTemplate();
-  const { assignedGroupData, formInstanceName, formTemplate } =
-    useCreateFormInstance();
+  const {
+    assignedGroupData,
+    formInstanceName,
+    formTemplate,
+    formInstanceDescription,
+  } = useCreateFormInstance();
   const [createFormLoading, setCreateFormLoading] = useState(false);
   const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
 
-  const { setFormInstanceUseId, formInstanceUseId, formInstanceDescription } =
-    useCreateFormInstance();
   const { user } = useAuth();
 
   const createFormTemplateMutation = useMutation({

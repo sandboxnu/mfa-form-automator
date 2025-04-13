@@ -1,4 +1,4 @@
-import { Text, Flex } from '@chakra-ui/react';
+import { Text, Flex, Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { FieldGroupBaseEntity } from '../../client/types.gen';
 import {
@@ -6,9 +6,9 @@ import {
   employeesControllerFindAllOptions,
   positionsControllerFindAllOptions,
 } from '@web/client/@tanstack/react-query.gen';
-import { FormView } from './FormView';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { SignatureDropdown } from './SignatureDropdown';
+import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
 
 /**
  * The contents of the white box for assigning groups.
@@ -19,12 +19,12 @@ import { SignatureDropdown } from './SignatureDropdown';
  * @param fieldGroups list of signature fields in the form template
  */
 export const AssignGroupsBox = ({
-  formLink,
+  pdfFile,
   name,
   description,
   fieldGroups,
 }: {
-  formLink: string;
+  pdfFile: File | null;
   name: string;
   description: string;
   fieldGroups: FieldGroupBaseEntity[];
@@ -115,7 +115,22 @@ export const AssignGroupsBox = ({
         >
           Preview Only
         </Text>
-        <FormView pdfUrl={formLink} />
+        <Box width="580px">
+          <FormEditor
+            formTemplateName={name ?? ''}
+            pdfFile={pdfFile}
+            disableEdit={true}
+            // TODO: to be updated with field groups
+            fieldGroups={new Map()}
+            // TODO: to be updated with form fields
+            formFields={[]}
+            setFormFields={() => {}}
+            setFieldGroups={() => {}}
+            scale={0.6875}
+            documentWidth={550}
+            showNav={false}
+          />
+        </Box>
       </Flex>
     </Flex>
   );

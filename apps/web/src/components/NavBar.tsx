@@ -10,6 +10,7 @@ import {
   DropdownDownArrow,
   DropdownUpArrow,
   TemplateFolder,
+  EmployeeDirectory,
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link';
 import {
@@ -57,6 +58,8 @@ const icons = {
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
   template: <TemplateFolder boxSize="24px" mr="2" fill="#5E5E5E" />,
   templateActive: <TemplateFolder boxSize="24px" mr="2" fill="black" />,
+  employeeDirectory: <EmployeeDirectory boxSize="24px" mr="2" />,
+  employeeDirectoryActive: <EmployeeDirectory boxSize="24px" mr="2" />,
 };
 
 type IconKeys = keyof typeof icons;
@@ -209,12 +212,15 @@ export const NavBar = ({
         <Flex paddingTop="20px" paddingBottom="20px" paddingLeft="50px">
           <Flex height="1px" width="140px" background={'#E0E0E0'} />
         </Flex>
-        {isAdmin ? (
-          <NavItem icon="template" link="/template-directory">
-            Templates
-          </NavItem>
-        ) : (
-          <></>
+        {isAdmin ?? (
+          <>
+            <NavItem icon="template" link="/template-directory">
+              Templates
+            </NavItem>
+            <NavItem icon="employeeDirectory" link="/employee-directory">
+              Employee Directory
+            </NavItem>
+          </>
         )}
       </Flex>
     </Box>

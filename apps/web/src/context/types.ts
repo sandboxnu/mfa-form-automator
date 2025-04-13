@@ -91,14 +91,24 @@ export interface SignFormInstanceContextType {
   isLoading: boolean;
   fields: FormField[][];
   originalPdfLink: string;
-  modifiedPdfLink: string;
-  groupNumbers: Map<string, number> | undefined;
   signFormInstanceLoading: boolean;
+  modifiedPdfLink: string;
+  groupNumber: number;
   updateField: (pageNum: number, id: string, data: boolean | string) => void;
   nextSignFormPage: (
     submitLink: string,
     isReviewPage: boolean,
   ) => Promise<void>;
+}
+
+export interface UserFormsContextType {
+  todoForms: FormInstanceEntity[];
+  pendingForms: FormInstanceEntity[];
+  completedForms: FormInstanceEntity[];
+  assignedFILoading: boolean;
+  assignedFIError: Error | null;
+  createdFILoading: boolean;
+  createdFIError: Error | null;
 }
 
 export type FormField = TemplateBoxBaseEntity & {
