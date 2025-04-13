@@ -72,6 +72,7 @@ export const FormPreview = ({
               padding="24px"
               overflow="hidden"
               maxHeight="calc(100vh - 180px)"
+              width="900px"
             >
               <FormEditor
                 formTemplateName={formInstance.name}
@@ -83,8 +84,8 @@ export const FormPreview = ({
                 )}
                 setFormFields={() => {}}
                 setFieldGroups={() => {}}
-                scale={0.6875}
-                documentWidth={662}
+                scale={1}
+                documentWidth={800}
                 showNav={false}
               />
             </Flex>

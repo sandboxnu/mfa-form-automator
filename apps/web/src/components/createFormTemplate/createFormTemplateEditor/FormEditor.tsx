@@ -76,10 +76,6 @@ export const FormEditor = ({
     if (!scrollContainer) return;
 
     const handleScroll = debounce(() => {
-      const containerTop = scrollContainer.scrollTop;
-      const containerHeight = scrollContainer.clientHeight;
-      const containerCenter = containerTop + containerHeight / 2;
-
       // Find which page is most visible in the viewport
       let bestVisiblePage = pageNum;
       let maxVisibleArea = 0;
