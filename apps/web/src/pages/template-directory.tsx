@@ -38,6 +38,7 @@ import {
 } from '@web/components/createFormTemplate/types';
 import { distance } from 'fastest-levenshtein';
 import { groupColors } from '@web/utils/formTemplateUtils';
+import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -108,22 +109,6 @@ function TemplateDirectory() {
     await findOneTemplateMutation.mutateAsync(id);
   };
 
-  /**
-   * Fetches the pdf file from the link of the selected form template
-   * and uses it to initialize the create form template context.
-   * Used to pre-fill information before navigating to form template edit mode.
-   */
-  const fetchPdfFile = async () => {
-    if (formTemplate?.formDocLink) {
-      const response = await fetch(formTemplate.formDocLink);
-      const blob = await response.blob();
-      const file = new File([blob], 'document.pdf', {
-        type: 'application/pdf',
-      });
-      setPdfFile(file);
-    }
-  };
-
   const disableFormTemplateMutation = useMutation({
     ...formTemplatesControllerUpdateMutation(),
     onSuccess: () => {
@@ -143,7 +128,7 @@ function TemplateDirectory() {
     if (!formTemplate) {
       return;
     }
-    await fetchPdfFile();
+    await fetchPdfFile(setPdfFile, formTemplate.formDocLink);
 
     await disableFormTemplateMutation
       .mutateAsync({
@@ -227,7 +212,9 @@ function TemplateDirectory() {
       width: formTemplate.pageWidth,
       height: formTemplate.pageHeight,
     });
-    fetchPdfFile().then(() => router.push('/create-template/description'));
+    fetchPdfFile(setPdfFile, formTemplate.formDocLink).then(() =>
+      router.push('/create-template/description'),
+    );
   }
 
   return (

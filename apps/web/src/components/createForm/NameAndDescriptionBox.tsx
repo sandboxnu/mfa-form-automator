@@ -56,7 +56,12 @@ export const NameAndDescriptionBox = ({
         flex={1}
       >
         <Flex gap="10px" flexDirection="column" width="100%">
-          <Text>Name</Text>
+          <Text>
+            Name{' '}
+            <Text as="span" color="#FF4D4F">
+              *
+            </Text>
+          </Text>
           <input
             type="text"
             onChange={(e) => setName(e.target.value)}

@@ -162,6 +162,11 @@ export const isSignedByUser = (
   });
 };
 
+/**
+ * Fetches a pdf file from a given link and sets it to the state
+ * @param setPdfFile the state setter for the pdf file
+ * @param formDocLink the link to the pdf file
+ */
 export const fetchPdfFile = async (
   setPdfFile: Dispatch<SetStateAction<File | null>>,
   formDocLink?: string,

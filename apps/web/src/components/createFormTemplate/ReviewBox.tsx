@@ -112,7 +112,7 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <Box width="580px">
+        <Box width="500px">
           <FormEditor
             formTemplateName={name}
             pdfFile={pdfFile}
@@ -121,8 +121,8 @@ export const ReviewBox = ({
             formFields={formFields}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
-            scale={0.6875}
-            documentWidth={550}
+            scale={0.625}
+            documentWidth={500}
             showNav={false}
           />
         </Box>

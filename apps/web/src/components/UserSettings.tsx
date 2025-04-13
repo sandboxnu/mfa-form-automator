@@ -34,6 +34,7 @@ export const UserSettings = ({
     useState<string>('draw');
   const [signatureText, setSignatureText] = useState<string>('');
   const signatureCanvas = useRef<SignatureCanvas>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { data: departmentsData } = useQuery({
     ...departmentsControllerFindAllOptions({
@@ -56,10 +57,18 @@ export const UserSettings = ({
 
   const updateEmployee = useMutation({
     ...employeesControllerUpdateMutation(),
+    onMutate: () => {
+      setLoading(true);
+    },
+    onError: (error) => {
+      setLoading(false);
+    },
     onSuccess: () => {
       setSignatureText('');
       setCreateSignatureType('draw');
       refreshUser();
+      setLoading(false);
+      setIsSettingsOpen(false);
     },
   });
 
@@ -216,22 +225,15 @@ export const UserSettings = ({
                 borderRadius="6px"
                 borderWidth="1.5px"
                 borderStyle={'solid'}
-                borderColor="#1367EA"
                 alignContent={'center'}
-                bgColor={'transparent'}
-                _hover={{
-                  bgColor: 'transparent',
-                }}
                 onClick={saveAccountSettings}
+                loading={loading}
+                disabled={loading}
+                backgroundColor="#F8F9FA"
+                color="#2A2B2D"
+                borderColor="#C0C0C0"
               >
-                <Text
-                  color="#1367EA"
-                  fontWeight="600px"
-                  fontSize="18px"
-                  lineHeight="22px"
-                >
-                  Save
-                </Text>
+                Save
               </Button>
             </Dialog.Footer>
           </Dialog.Content>
