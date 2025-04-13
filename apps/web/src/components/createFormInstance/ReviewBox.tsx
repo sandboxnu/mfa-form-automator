@@ -6,6 +6,7 @@ import {
   formEditorTranslateFieldGroups,
   formEditorTranslateFormFields,
 } from '@web/utils/formInstanceUtils';
+import { groupColors } from '@web/utils/formTemplateUtils';
 
 export const ReviewBox = ({
   pdfFile,
@@ -28,14 +29,6 @@ export const ReviewBox = ({
   };
 
   const { assignedGroupData } = useCreateFormInstance();
-
-  const groupColors = [
-    ['#1367EA', '#EEF5FF'],
-    ['#BD21CA', '#FDEAFF'],
-    ['#7645E8', '#ECE4FF'],
-    ['#567E26', '#EDFFD6'],
-    ['#A16308', '#FFFDDB'],
-  ];
 
   const GroupItem = ({ color, border }: { color: string; border: string }) => {
     return (

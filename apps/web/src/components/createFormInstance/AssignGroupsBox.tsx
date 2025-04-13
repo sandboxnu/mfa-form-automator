@@ -13,6 +13,7 @@ import {
   formEditorTranslateFieldGroups,
   formEditorTranslateFormFields,
 } from '@web/utils/formInstanceUtils';
+import { groupColors } from '@web/utils/formTemplateUtils';
 
 /**
  * The contents of the white box for assigning groups.
@@ -41,14 +42,6 @@ export const AssignGroupsBox = ({
     outlineColor: 'transparent',
     borderColor: 'transparent',
   };
-
-  const groupColors = [
-    ['#1367EA', '#EEF5FF'],
-    ['#BD21CA', '#FDEAFF'],
-    ['#7645E8', '#ECE4FF'],
-    ['#567E26', '#EDFFD6'],
-    ['#A16308', '#FFFDDB'],
-  ];
 
   const { assignedGroupData, setAssignedGroupData } = useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
