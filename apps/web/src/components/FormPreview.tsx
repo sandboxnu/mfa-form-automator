@@ -5,6 +5,7 @@ import { SidePreviewForm } from './SidePreviewForm';
 import { formEditorTranslateFormFields } from '@web/utils/formInstanceUtils';
 import { FormEditor } from './createFormTemplate/createFormTemplateEditor/FormEditor';
 import { groupColors } from '@web/utils/formTemplateUtils';
+import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 
 export const FormPreview = ({
   formInstance,
@@ -31,15 +32,7 @@ export const FormPreview = ({
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   useEffect(() => {
-    const fetchPdf = async () => {
-      if (formInstance?.formDocLink) {
-        const response = await fetch(formInstance.formDocLink);
-        const blob = await response.blob();
-        const file = new File([blob], 'form.pdf', { type: blob.type });
-        setPdfFile(file);
-      }
-    };
-    fetchPdf();
+    fetchPdfFile(setPdfFile, formInstance?.formDocLink);
   }, [formInstance?.formDocLink]);
 
   return (
