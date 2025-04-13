@@ -18,15 +18,13 @@ function PreviewForm() {
         })
     );
 
-    if (isLoading || !formInstance) return <FormLoading />;
+    if (isLoading || !formInstance ) return <FormLoading />;
 
     return (
         <>
             <FormListPageLayout>
                 <FormPreview
                     formInstance={formInstance}
-                    formInstanceName={formInstance.name}
-                    pdfLink={formInstance.formDocLink ?? ''}
                 />
             </FormListPageLayout>
         </>

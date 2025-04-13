@@ -1,26 +1,48 @@
-import { Box, Flex, Heading, HStack, Link, Text } from '@chakra-ui/react';
-import { FormInstanceEntity, SignerType } from '@web/client';
-import { useRef, useState, useEffect } from 'react';
-import { Document, Page } from 'react-pdf';
+import { Box, Flex, Heading } from '@chakra-ui/react';
+import { FormInstanceEntity } from '@web/client';
+import { useState, useEffect } from 'react';
 import { SidePreviewForm } from './SidePreviewForm';
+import { formEditorTranslateFormFields } from '@web/utils/formInstanceUtils';
+import { FormEditor } from './createFormTemplate/createFormTemplateEditor/FormEditor';
+import { groupColors } from '@web/utils/formTemplateUtils';
 
 
 export const FormPreview = ({
   formInstance,
-  formInstanceName,
-  pdfLink,
 }: {
   formInstance: FormInstanceEntity;
-  formInstanceName: string;
-  pdfLink: string;
 }) => {
-  const [totalPages, setTotalPages] = useState(0);
-  const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  
+  const fieldGroups = new Map(
+    formInstance?.assignedGroups.map((assignedGroup, i) => {
+      const [border, background] = groupColors[i % groupColors.length];
+      return [
+        assignedGroup.fieldGroup.id,
+        {
+          fieldGroup: assignedGroup.fieldGroup,
+          signerType: assignedGroup.signerType,
+          signed: assignedGroup.signed,
+          groupName: assignedGroup.fieldGroup.name,
+          border,
+          background,
+        },
+      ];
+    })
+  );
 
-  // Initialize pageRefs when totalPages changes
-  useEffect(() => {
-    pageRefs.current = Array(totalPages).fill(null);
-  }, [totalPages]);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+
+    useEffect(() => {
+      const fetchPdf = async () => {
+        if (formInstance?.formDocLink) {
+          const response = await fetch(formInstance.formDocLink);
+          const blob = await response.blob();
+          const file = new File([blob], 'form.pdf', { type: blob.type });
+          setPdfFile(file);
+        }
+      };
+      fetchPdf();
+    }, [formInstance?.formDocLink]);
 
   return (
     <>
@@ -60,65 +82,20 @@ export const FormPreview = ({
               overflow="hidden"
               maxHeight="calc(100vh - 180px)"
             >
-              <Box
-                width="100%"
-                display="flex"
-                flexDirection="column"
-                border="1px solid #E5E5E5"
-                borderRadius="12px"
-                overflow="hidden"
-                backgroundColor="white"
-              >
-                <Text
-                  fontSize="14px"
-                  fontFamily="Hanken Grotesk"
-                  fontWeight="600"
-                  paddingY="12px"
-                  textAlign="center"
-                  borderBottom="1px solid #E5E5E5"
-                  background="white"
-                >
-                  {formInstanceName}
-                </Text>
-
-                <Box
-                  flex="1"
-                  overflowY="auto"
-                  padding="12px"
-                  background="#F0F0F0"
-                  maxHeight="100vh"
-                >
-                  <Box width="100%" display="flex" justifyContent="center">
-                    <Document
-                      file={pdfLink}
-                      onLoadSuccess={(data) => {
-                        setTotalPages(data.numPages);
-                      }}
-                    >
-                      {Array.from(new Array(totalPages), (_, index) => (
-                        <div
-                          key={`page_${index + 1}`}
-                          ref={(el) => {
-                            pageRefs.current[index] = el;
-                          }}
-                          style={{
-                            marginBottom: '12px',
-                            boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.15)',
-                            background: 'white',
-                          }}
-                        >
-                          <Page
-                            renderAnnotationLayer={false}
-                            renderTextLayer={false}
-                            pageNumber={index + 1}
-                            width={680}
-                          />
-                        </div>
-                      ))}
-                    </Document>
-                  </Box>
-                </Box>
-              </Box>
+              <FormEditor
+                    formTemplateName={formInstance.name}
+                    pdfFile={pdfFile}
+                    disableEdit={true}
+                    fieldGroups={fieldGroups}
+                    formFields={formEditorTranslateFormFields(
+                        Array.from(fieldGroups.values()).map(v => v.fieldGroup)
+                      )}
+                    setFormFields={() => {}}
+                    setFieldGroups={() => {}}
+                    scale={0.6875}
+                    documentWidth={662}
+                    showNav={false}
+                />
             </Flex>
           </Box>
         </Flex>
