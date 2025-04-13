@@ -98,6 +98,7 @@ export default function App({
   ];
   // to allow template context to be populated before moving into edit mode
   const formDirectoryPath = '/template-directory';
+  const previewForm = '/preview-form';
 
   // Check if the current page is an error page
   const isErrorPage =
@@ -120,6 +121,16 @@ export default function App({
           <Component {...pageProps} />
         </WrapperComponent>
       </>
+    );
+  }
+
+  if (appProps.router.pathname.startsWith(previewForm)) {
+    return (
+      <WrapperComponent>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </WrapperComponent>
     );
   }
 
@@ -164,6 +175,7 @@ export default function App({
       </>
     );
   }
+
   if (appProps.router.pathname.includes(signFormInstancePath)) {
     const { id } = appProps.router.query;
     return (
