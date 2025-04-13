@@ -11,18 +11,13 @@ import { useEffect, useState } from 'react';
  */
 function Description() {
   const {
+    formTemplate,
     formInstanceName,
     formInstanceDescription,
     setFormInstanceName,
     setFormInstanceDescription,
-    formTemplate,
+    pdfFile,
   } = useCreateFormInstance();
-
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
-  }, [formTemplate?.formDocLink]);
 
   return (
     <FormLayout
@@ -33,6 +28,7 @@ function Description() {
       boxContent={
         <NameAndDescriptionBox
           pdfFile={pdfFile}
+          fieldGroups={formTemplate?.fieldGroups ?? []}
           name={formInstanceName}
           description={formInstanceDescription}
           setName={setFormInstanceName}

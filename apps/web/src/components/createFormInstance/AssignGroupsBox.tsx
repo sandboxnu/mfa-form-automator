@@ -9,6 +9,10 @@ import {
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { SignatureDropdown } from './SignatureDropdown';
 import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
+import {
+  formEditorTranslateFieldGroups,
+  formEditorTranslateFormFields,
+} from '@web/utils/formInstanceUtils';
 
 /**
  * The contents of the white box for assigning groups.
@@ -121,10 +125,8 @@ export const AssignGroupsBox = ({
             formTemplateName={name ?? ''}
             pdfFile={pdfFile}
             disableEdit
-            // TODO: to be updated with field groups
-            fieldGroups={new Map()}
-            // TODO: to be updated with form fields
-            formFields={[]}
+            fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
+            formFields={formEditorTranslateFormFields(fieldGroups)}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
             scale={0.6875}

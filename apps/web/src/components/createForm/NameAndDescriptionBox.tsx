@@ -1,7 +1,12 @@
 import { Text, Flex, Box } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Dispatch, SetStateAction } from 'react';
 import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
+import { FieldGroupBaseEntity } from '@web/client';
+import {
+  formEditorTranslateFieldGroups,
+  formEditorTranslateFormFields,
+} from '@web/utils/formInstanceUtils';
 
 /**
  * The contents of the white box for the page (step 2) that asks the user for the form's name and
@@ -13,12 +18,14 @@ import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormE
  */
 export const NameAndDescriptionBox = ({
   pdfFile,
+  fieldGroups,
   name,
   setName,
   description,
   setDescription,
 }: {
   pdfFile: File | null;
+  fieldGroups: FieldGroupBaseEntity[];
   name: string | null;
   setName: Dispatch<SetStateAction<string | null>>;
   description: string | null;
@@ -34,11 +41,6 @@ export const NameAndDescriptionBox = ({
     outlineColor: 'transparent',
     borderColor: 'transparent',
   };
-
-  const memoPdfLink = useMemo(
-    () => (pdfFile ? URL.createObjectURL(pdfFile) : undefined),
-    [pdfFile],
-  );
 
   return (
     <Flex
@@ -96,11 +98,9 @@ export const NameAndDescriptionBox = ({
             <FormEditor
               formTemplateName={name ?? ''}
               pdfFile={pdfFile}
-              disableEdit={true}
-              // TODO: to be updated with field groups
-              fieldGroups={new Map()}
-              // TODO: to be updated with form fields
-              formFields={[]}
+              disableEdit
+              fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
+              formFields={formEditorTranslateFormFields(fieldGroups)}
               setFormFields={() => {}}
               setFieldGroups={() => {}}
               scale={0.6875}

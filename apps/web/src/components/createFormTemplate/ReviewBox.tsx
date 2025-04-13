@@ -116,7 +116,7 @@ export const ReviewBox = ({
           <FormEditor
             formTemplateName={name}
             pdfFile={pdfFile}
-            disableEdit={true}
+            disableEdit
             fieldGroups={fieldGroups}
             formFields={formFields}
             setFormFields={() => {}}

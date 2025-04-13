@@ -1,4 +1,3 @@
-import { Scope } from '@web/client/types.gen';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { ReviewBox } from '@web/components/createFormInstance/ReviewBox';
@@ -6,7 +5,7 @@ import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
 function Review() {
-  const { formInstanceName, formInstanceDescription, formTemplate } =
+  const { formInstanceName, formInstanceDescription, formTemplate, pdfFile } =
     useCreateFormInstance();
 
   return (
@@ -17,9 +16,10 @@ function Review() {
       subheading={'Review your form instance'}
       boxContent={
         <ReviewBox
-          formLink={formTemplate?.formDocLink || ''}
+          pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}
+          fieldGroups={formTemplate?.fieldGroups ?? []}
         />
       }
       deleteFunction={() => {}}
