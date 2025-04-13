@@ -9,6 +9,8 @@ import {
   GrayPencilIcon,
   DropdownDownArrow,
   DropdownUpArrow,
+  UserProfileAvatar,
+  EmployeeDirectory,
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link';
 import {
@@ -54,6 +56,8 @@ const icons = {
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
   test: <GrayPencilIcon boxSize="24px" mr="2" />,
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
+  employeeDirectory: <EmployeeDirectory boxSize="24px" mr="2" />,
+  employeeDirectoryActive: <EmployeeDirectory boxSize="24px" mr="2" />,
 };
 
 type IconKeys = keyof typeof icons;
@@ -202,6 +206,9 @@ export const NavBar = ({
         </NavItem>
         <NavItem icon="completed" link="/completed">
           Completed
+        </NavItem>
+        <NavItem icon="employeeDirectory" link="/employee-directory">
+          Employee Directory
         </NavItem>
       </Flex>
     </Box>
