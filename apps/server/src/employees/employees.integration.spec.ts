@@ -199,6 +199,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         lastName: 'Smith',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId2,
+        signatureLink: 'new signature link',
       });
       expect(updatedEmployee).toBeDefined();
       expect(updatedEmployee.id).toBe(employeeId1);
@@ -207,6 +208,7 @@ describe('EmployeesServiceIntegrationTest', () => {
       expect(updatedEmployee.scope).toBe($Enums.EmployeeScope.ADMIN);
       expect(updatedEmployee.positionId).toBe(positionId2);
       expect(updatedEmployee.position?.departmentId).toBe(departmentId);
+      expect(updatedEmployee.signatureLink).toBe('new signature link');
     });
   });
 

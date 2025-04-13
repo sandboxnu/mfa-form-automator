@@ -4,6 +4,7 @@ import {
   SignerType,
 } from '@web/client';
 import { User } from '@web/context/types';
+import { Dispatch, SetStateAction } from 'react';
 
 /**
  * Determines if a form instance is fully signed
@@ -30,37 +31,29 @@ export const isFullySigned = (formInstance: FormInstanceEntity) => {
  */
 export const getNameFromAssignedGroup = (
   assignedGroup: AssignedGroupEntity,
-) => {
-  const signerType = assignedGroup.signerType as any;
+): string => {
+  const signerType = assignedGroup.signerType;
 
-  if (assignedGroup.signed || signerType === SignerType.USER) {
-    return (
-      assignedGroup.signerEmployee?.firstName! +
-      ' ' +
-      assignedGroup.signerEmployee?.lastName!
-    );
-  } else if (signerType === SignerType.DEPARTMENT) {
-    return assignedGroup.signerDepartment?.name!;
-  } else if (signerType === SignerType.POSITION) {
-    return assignedGroup.signerPosition?.name!;
-  } else if (signerType === SignerType.USER_LIST) {
-    if (assignedGroup.signed) {
+  switch (signerType) {
+    case SignerType.USER:
       return (
         assignedGroup.signerEmployee?.firstName! +
         ' ' +
         assignedGroup.signerEmployee?.lastName!
       );
-    }
-    return (
-      assignedGroup.signerEmployeeList
-        ?.map((employee) => {
-          return employee.firstName + ' ' + employee.lastName;
-        })
-        .join(', ')
-        .slice(0, 30) + '...'
-    );
+    case SignerType.DEPARTMENT:
+      return assignedGroup.signerDepartment?.name!;
+    case SignerType.POSITION:
+      return assignedGroup.signerPosition?.name!;
+    case SignerType.USER_LIST:
+      return (
+        assignedGroup.signerEmployeeList
+          ?.map((employee) => employee.firstName + ' ' + employee.lastName)
+          .join(', ') || ''
+      );
+    default:
+      return '';
   }
-  return '';
 };
 
 /**
@@ -120,8 +113,8 @@ export const nextSigner = (formInstance: FormInstanceEntity) => {
  * @returns true if the next signer is the current user, false otherwise
  */
 export const signerIsUser = (
-  assignedGroup?: AssignedGroupEntity,
-  user?: User,
+  assignedGroup: AssignedGroupEntity,
+  user: User,
 ) => {
   if (!assignedGroup || !user) return false;
 
@@ -138,4 +131,41 @@ export const signerIsUser = (
         (employee) => employee.id === user?.id,
       ))
   );
+};
+
+/**
+ * Determines if a form instance is signed by the current user
+ *
+ * @param formInstance the form instance to check
+ * @returns true if the form instance is signed by the current user, false otherwise
+ */
+export const isSignedByUser = (
+  formInstance: FormInstanceEntity,
+  user: User,
+) => {
+  const assignedGroups: AssignedGroupEntity[] = formInstance.assignedGroups;
+
+  if (!assignedGroups || !user) return false;
+
+  return assignedGroups.some((assignedGroup: AssignedGroupEntity) => {
+    return (
+      assignedGroup.signed &&
+      assignedGroup.signingEmployeeId &&
+      assignedGroup.signingEmployeeId === user.id
+    );
+  });
+};
+
+export const fetchPdfFile = async (
+  setPdfFile: Dispatch<SetStateAction<File | null>>,
+  formDocLink?: string,
+) => {
+  if (formDocLink) {
+    const response = await fetch(formDocLink);
+    const blob = await response.blob();
+    const file = new File([blob], 'document.pdf', {
+      type: 'application/pdf',
+    });
+    setPdfFile(file);
+  }
 };

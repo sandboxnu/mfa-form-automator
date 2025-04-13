@@ -6,6 +6,8 @@ import {
 } from '@web/components/createFormTemplate/types';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { groupColors } from '@web/utils/formTemplateUtils';
+import { v4 as uuidv4 } from 'uuid';
 
 export const CreateFormTemplateContext =
   createContext<CreateFormTemplateContextType>(
@@ -19,7 +21,18 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   >(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [formFields, setFormFields] = useState<FormFields>({});
-  const [fieldGroups, setFieldGroups] = useState<FieldGroups>(new Map());
+  const [fieldGroups, setFieldGroups] = useState<FieldGroups>(
+    new Map().set(uuidv4(), {
+      border: groupColors[0][0],
+      background: groupColors[0][1],
+      groupName: `Group ${1}`,
+    }),
+  );
+
+  const [formDimensions, setFormDimensions] = useState<{
+    width: number;
+    height: number;
+  }>();
 
   const router = useRouter();
 
@@ -42,6 +55,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFormFields,
         fieldGroups,
         setFieldGroups,
+        formDimensions,
+        setFormDimensions,
       }}
     >
       {children}

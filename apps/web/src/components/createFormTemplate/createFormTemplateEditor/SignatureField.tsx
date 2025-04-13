@@ -28,8 +28,8 @@ export default function SignatureField({
       bounds="parent"
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
-      minWidth={'150px'}
-      minHeight={'50px'}
+      minWidth={!disableEdit ? '150px' : ''}
+      minHeight={!disableEdit ? '50px' : ''}
       border={selected ? `1px solid blue` : ''}
       style={{
         zIndex: 10,

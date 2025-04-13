@@ -82,9 +82,9 @@ jobs:
       - name: Run tests
         run: yarn test
         env:
-          DATABASE_URL:  ${{ secrets.DATABASE_CI_URL }}
-          POSTMARK_SERVER_KEY: ${{ secrets.POSTMARK_SERVER_KEY }}
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
+          POSTMARK_SERVER_KEY: placeholder
+          AZURE_STORAGE_CONNECTION_STRING: placeholder
 
   build-backend-image:
     runs-on: ubuntu-latest
@@ -95,3 +95,13 @@ jobs:
       - run: yarn install --immutable
       - name: Build Docker image for backend
         run: yarn backend:docker:build
+
+  build-frontend-image:
+    runs-on: ubuntu-latest
+    name: Build frontend image
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - run: yarn install --immutable
+      - name: Build Docker image for frontend
+        run: yarn frontend:docker:build

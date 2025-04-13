@@ -95,7 +95,7 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <FormView formTemplateName={name} pdfUrl={formLink} />
+        <FormView pdfUrl={formLink} />
       </Flex>
     </Flex>
   );

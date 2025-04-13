@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, Text } from '@chakra-ui/react';
 import { SideCreateForm } from './SideCreateForm';
 import { FormButtons } from './FormButtons';
+import { FormInteractionType } from './types';
 
 /**
  * The layout for a page in the create form template onboarding flow.  Used in pages.
@@ -15,8 +16,8 @@ import { FormButtons } from './FormButtons';
  * @returns the formatted content of a form template creation page.
  */
 
-export const CreateFormLayout = ({
-  isFormTemplate,
+export const FormLayout = ({
+  type,
   pageNumber,
   heading,
   subheading,
@@ -27,7 +28,7 @@ export const CreateFormLayout = ({
   disabled,
   review,
 }: {
-  isFormTemplate: boolean;
+  type: FormInteractionType;
   pageNumber: number;
   heading: string;
   subheading: string;
@@ -41,7 +42,7 @@ export const CreateFormLayout = ({
   return (
     <Box height="100vh" marginTop="36px">
       <Flex position="absolute" margin="0px" zIndex={5000}>
-        <SideCreateForm curStep={pageNumber} isFormTemplate={isFormTemplate} />
+        <SideCreateForm curStep={pageNumber} interactionType={type} />
       </Flex>
 
       <Heading
@@ -79,8 +80,14 @@ export const CreateFormLayout = ({
         {boxContent}
       </Flex>
       <FormButtons
-        isFormTemplate={isFormTemplate}
-        heading={`Create Form ${isFormTemplate ? 'Template' : 'Instance'}`}
+        type={type}
+        heading={
+          type === FormInteractionType.CreateFormTemplate
+            ? 'Create form template'
+            : type == FormInteractionType.CreateFormInstance
+            ? 'Create form instance'
+            : 'Submit form'
+        }
         deleteFunction={deleteFunction}
         submitLink={submitLink}
         backLink={backLink}

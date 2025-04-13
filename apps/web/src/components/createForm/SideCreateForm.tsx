@@ -1,13 +1,14 @@
 import { Box, Flex, Link, Text } from '@chakra-ui/react';
 import { BlueTriangle, WhiteCheck } from '@web/static/icons';
 import { useRouter } from 'next/router';
+import { FormInteractionType } from './types';
 
 export const SideCreateForm = ({
   curStep,
-  isFormTemplate,
+  interactionType,
 }: {
   curStep: number;
-  isFormTemplate: boolean;
+  interactionType: FormInteractionType;
 }) => {
   const router = useRouter();
 
@@ -32,6 +33,13 @@ export const SideCreateForm = ({
     'Assign groups',
     'Review',
   ];
+  const signFormInstanceLabels = ['Sign', 'Review'];
+
+  const labels: Record<FormInteractionType, string[]> = {
+    [FormInteractionType.CreateFormTemplate]: formTemplateLabels,
+    [FormInteractionType.CreateFormInstance]: formInstanceLabels,
+    [FormInteractionType.SignFormInstance]: signFormInstanceLabels,
+  };
 
   const Item = ({ num }: { num: number }) => (
     <Flex gap="10px" alignItems="center">
@@ -42,9 +50,11 @@ export const SideCreateForm = ({
         fontWeight="500"
         lineHeight="21px"
       >
-        {isFormTemplate
-          ? formTemplateLabels[num - 1]
-          : formInstanceLabels[num - 1]}
+        {
+          (interactionType in labels
+            ? labels[interactionType]
+            : formTemplateLabels)[num - 1]
+        }
       </Text>
     </Flex>
   );
@@ -118,10 +128,17 @@ export const SideCreateForm = ({
         </Link>
 
         <Box>
-          {[1, 2, 3, 4].map((num) => (
-            <Flex key={num} direction="column">
-              <Item num={num} />
-              {num < 4 && <Flex {...lineStyle} />}
+          {(interactionType in labels
+            ? labels[interactionType]
+            : formTemplateLabels
+          ).map((_, num) => (
+            <Flex key={num + 1} direction="column">
+              <Item num={num + 1} />
+              {num + 1 <
+                (interactionType in labels
+                  ? labels[interactionType]
+                  : formTemplateLabels
+                ).length && <Flex {...lineStyle} />}
             </Flex>
           ))}
         </Box>

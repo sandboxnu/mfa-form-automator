@@ -1,8 +1,9 @@
-import { Scope } from '@web/client/types.gen';
-import { CreateFormLayout } from '@web/components/createForm/CreateFormLayout';
+import { FormLayout } from '@web/components/createForm/FormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
+import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useEffect, useState } from 'react';
 
 /**
@@ -20,23 +21,12 @@ function Description() {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   useEffect(() => {
-    const fetchPdfFile = async () => {
-      if (formTemplate?.formDocLink) {
-        const response = await fetch(formTemplate.formDocLink);
-        const blob = await response.blob();
-        const file = new File([blob], 'document.pdf', {
-          type: 'application/pdf',
-        });
-        setPdfFile(file);
-      }
-    };
-
-    fetchPdfFile();
+    fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
   }, [formTemplate?.formDocLink]);
 
   return (
-    <CreateFormLayout
-      isFormTemplate={false}
+    <FormLayout
+      type={FormInteractionType.CreateFormInstance}
       pageNumber={2}
       heading={'Create form instance'}
       subheading={'Edit your form instance name and description'}

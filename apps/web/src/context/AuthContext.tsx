@@ -22,7 +22,6 @@ import {
 } from '../client';
 import { client } from '@web/client/client.gen';
 import { employeesControllerOnboardEmployeeMutation } from '@web/client/@tanstack/react-query.gen';
-import { toaster } from './../components/ui/toaster';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -54,10 +53,11 @@ export const AuthProvider = ({ children }: any) => {
   }, [router]);
 
   const parseUser = useCallback(
-    (jwt?: JwtEntity) => {
+    async (jwt?: JwtEntity) => {
       if (jwt) {
         const token = jwt.accessToken;
         const decoded = jwtDecode(token) as jwtPayload;
+        const signatureLink = (await fetchCurrentUser())?.signatureLink;
 
         const user: User = {
           id: decoded.sub,
@@ -67,6 +67,7 @@ export const AuthProvider = ({ children }: any) => {
           firstName: decoded.firstName,
           lastName: decoded.lastName,
           scope: decoded.scope,
+          signatureLink: signatureLink ?? '',
         };
 
         setUser(user);
@@ -89,14 +90,17 @@ export const AuthProvider = ({ children }: any) => {
         firstName: employee.data.firstName,
         lastName: employee.data.lastName,
         scope: employee.data.scope as Scope,
+        signatureLink: employee.data.signatureLink ?? '',
       };
-      setUser(newUser);
+      return newUser;
     }
   };
 
   useEffect(() => {
     setLoadingInitial(true);
-    fetchCurrentUser().then(() => setLoadingInitial(false));
+    fetchCurrentUser()
+      .then((fetchedUser) => setUser(fetchedUser))
+      .finally(() => setLoadingInitial(false));
   }, []);
 
   useEffect(() => {
@@ -127,11 +131,11 @@ export const AuthProvider = ({ children }: any) => {
           password: password,
         },
       })
-        .then((response) => {
+        .then(async (response) => {
           if (response.data == null) {
             return false;
           }
-          parseUser(response.data);
+          await parseUser(response.data);
           router.push('/');
           return true;
         })
@@ -201,11 +205,21 @@ export const AuthProvider = ({ children }: any) => {
       await onboardEmployeeMutation.mutateAsync({
         body: onboardingEmployeeDto,
       });
-      await fetchCurrentUser();
+      const user = await fetchCurrentUser();
+      setUser(user);
       router.push('/');
     },
     [onboardEmployeeMutation, router],
   );
+
+  const refreshUser = useCallback(async () => {
+    try {
+      const userData = await fetchCurrentUser();
+      setUser(userData);
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+    }
+  }, []);
 
   // Make the provider update only when it should.
   // We only want to force re-renders if the user,
@@ -224,8 +238,17 @@ export const AuthProvider = ({ children }: any) => {
       azureLogin,
       completeRegistration,
       logout,
+      refreshUser,
     }),
-    [user, azureUser, login, azureLogin, completeRegistration, logout],
+    [
+      user,
+      azureUser,
+      login,
+      azureLogin,
+      completeRegistration,
+      logout,
+      refreshUser,
+    ],
   );
 
   return (

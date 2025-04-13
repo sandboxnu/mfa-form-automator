@@ -235,6 +235,9 @@ export const UpdateEmployeeDtoSchema = {
     accessToken: {
       type: 'string',
     },
+    signatureLink: {
+      type: 'string',
+    },
   },
 } as const;
 
@@ -420,8 +423,17 @@ export const CreateTemplateBoxDtoSchema = {
     y_coordinate: {
       type: 'number',
     },
+    width: {
+      type: 'number',
+    },
+    height: {
+      type: 'number',
+    },
+    page: {
+      type: 'number',
+    },
   },
-  required: ['type', 'x_coordinate', 'y_coordinate'],
+  required: ['type', 'x_coordinate', 'y_coordinate', 'width', 'height', 'page'],
 } as const;
 
 export const CreateFieldGroupDtoSchema = {
@@ -457,6 +469,12 @@ export const CreateFormTemplateDtoSchema = {
     description: {
       type: 'string',
     },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
+    },
     fieldGroups: {
       minItems: 1,
       type: 'array',
@@ -465,7 +483,14 @@ export const CreateFormTemplateDtoSchema = {
       },
     },
   },
-  required: ['file', 'name', 'description', 'fieldGroups'],
+  required: [
+    'file',
+    'name',
+    'description',
+    'pageWidth',
+    'pageHeight',
+    'fieldGroups',
+  ],
 } as const;
 
 export const TemplateBoxBaseEntitySchema = {
@@ -484,6 +509,18 @@ export const TemplateBoxBaseEntitySchema = {
     y_coordinate: {
       type: 'number',
     },
+    width: {
+      type: 'number',
+    },
+    height: {
+      type: 'number',
+    },
+    page: {
+      type: 'number',
+    },
+    fieldGroupId: {
+      type: 'string',
+    },
     createdAt: {
       format: 'date-time',
       type: 'string',
@@ -492,18 +529,18 @@ export const TemplateBoxBaseEntitySchema = {
       format: 'date-time',
       type: 'string',
     },
-    fieldGroupId: {
-      type: 'string',
-    },
   },
   required: [
     'id',
     'type',
     'x_coordinate',
     'y_coordinate',
+    'width',
+    'height',
+    'page',
+    'fieldGroupId',
     'createdAt',
     'updatedAt',
-    'fieldGroupId',
   ],
 } as const;
 
@@ -557,6 +594,12 @@ export const FormTemplateBaseEntitySchema = {
     name: {
       type: 'string',
     },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
+    },
     formDocLink: {
       type: 'string',
     },
@@ -576,6 +619,8 @@ export const FormTemplateBaseEntitySchema = {
   required: [
     'id',
     'name',
+    'pageWidth',
+    'pageHeight',
     'formDocLink',
     'description',
     'createdAt',
@@ -784,6 +829,12 @@ export const FormTemplateEntitySchema = {
     name: {
       type: 'string',
     },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
+    },
     formDocLink: {
       type: 'string',
     },
@@ -815,6 +866,8 @@ export const FormTemplateEntitySchema = {
   required: [
     'id',
     'name',
+    'pageWidth',
+    'pageHeight',
     'formDocLink',
     'description',
     'fieldGroups',
@@ -836,6 +889,12 @@ export const UpdateFormTemplateDtoSchema = {
     },
     description: {
       type: 'string',
+    },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
     },
   },
 } as const;
@@ -949,6 +1008,9 @@ export const SignFormInstanceDtoSchema = {
       type: 'string',
       format: 'binary',
     },
+    assignedGroupId: {
+      type: 'string',
+    },
   },
-  required: ['file'],
+  required: ['file', 'assignedGroupId'],
 } as const;

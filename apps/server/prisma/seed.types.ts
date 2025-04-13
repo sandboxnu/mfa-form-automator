@@ -31,6 +31,9 @@ export type TemplateBoxData = {
   type: SignatureBoxFieldType;
   x_coordinate: number;
   y_coordinate: number;
+  width: number;
+  height: number;
+  page: number;
 };
 
 export type FieldGroupData = {
@@ -46,6 +49,8 @@ export type FormTemplateData = {
   formDocLink: string;
   fieldGroups: FieldGroupData[];
   description?: string;
+  pageWidth: number;
+  pageHeight: number;
 };
 
 export type AssignedGroupData = {

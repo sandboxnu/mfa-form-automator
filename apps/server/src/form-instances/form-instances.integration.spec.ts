@@ -152,6 +152,8 @@ describe('FormInstancesIntegrationTest', () => {
       name: 'Form Template',
       description: 'Form Template Description',
       file: emptyFile,
+      pageWidth: 800,
+      pageHeight: 1035,
       fieldGroups: [
         {
           name: 'Field Group',
@@ -161,6 +163,9 @@ describe('FormInstancesIntegrationTest', () => {
               type: $Enums.SignatureBoxFieldType.CHECKBOX,
               x_coordinate: 0,
               y_coordinate: 0,
+              width: 100,
+              height: 100,
+              page: 0,
             },
           ],
         },
@@ -170,6 +175,8 @@ describe('FormInstancesIntegrationTest', () => {
       name: 'Form Template',
       description: 'Form Template Description',
       file: emptyFile,
+      pageWidth: 800,
+      pageHeight: 1035,
       fieldGroups: [
         {
           name: 'Field Group',
@@ -179,6 +186,9 @@ describe('FormInstancesIntegrationTest', () => {
               type: $Enums.SignatureBoxFieldType.CHECKBOX,
               x_coordinate: 0,
               y_coordinate: 0,
+              width: 100,
+              height: 100,
+              page: 0,
             },
           ],
         },
@@ -190,6 +200,9 @@ describe('FormInstancesIntegrationTest', () => {
               type: $Enums.SignatureBoxFieldType.SIGNATURE,
               x_coordinate: 0,
               y_coordinate: 0,
+              width: 100,
+              height: 100,
+              page: 0,
             },
           ],
         },
@@ -792,6 +805,9 @@ describe('FormInstancesIntegrationTest', () => {
         },
         {
           file: emptyFile,
+          assignedGroupId: formInstance2.assignedGroups.sort(
+            (a, b) => a.order - b.order,
+          )[0].id,
         },
       );
 
@@ -835,6 +851,9 @@ describe('FormInstancesIntegrationTest', () => {
           },
           {
             file: emptyFile,
+            assignedGroupId: formInstance1.assignedGroups.sort(
+              (a, b) => a.order - b.order,
+            )[0].id,
           },
         );
 
@@ -857,6 +876,9 @@ describe('FormInstancesIntegrationTest', () => {
             },
             {
               file: emptyFile,
+              assignedGroupId: formInstance2.assignedGroups.sort(
+                (a, b) => a.order - b.order,
+              )[0].id,
             },
           ),
         ).rejects.toThrow('No FormInstance found');
@@ -883,6 +905,9 @@ describe('FormInstancesIntegrationTest', () => {
             },
             {
               file: emptyFile,
+              assignedGroupId: formInstance2.assignedGroups.sort(
+                (a, b) => a.order - b.order,
+              )[0].id,
             },
           ),
         ).rejects.toThrow('Employee has not been onboarded');
@@ -899,6 +924,7 @@ describe('FormInstancesIntegrationTest', () => {
             },
             {
               file: emptyFile,
+              assignedGroupId: 'invalidAssignedGroupId',
             },
           ),
         ).rejects.toThrow('Assigned group could not be found');
@@ -918,6 +944,9 @@ describe('FormInstancesIntegrationTest', () => {
             },
             {
               file: emptyFile,
+              assignedGroupId: formInstance2.assignedGroups.sort(
+                (a, b) => a.order - b.order,
+              )[1].id,
             },
           ),
         ).rejects.toThrow('Assigned group is not the next one to be signed');
@@ -960,6 +989,9 @@ describe('FormInstancesIntegrationTest', () => {
             },
             {
               file: emptyFile,
+              assignedGroupId: formInstance2.assignedGroups.sort(
+                (a, b) => a.order - b.order,
+              )[0].id,
             },
           ),
         ).rejects.toThrow('Employee cannot sign for this Assigned group');
@@ -1001,6 +1033,9 @@ describe('FormInstancesIntegrationTest', () => {
             },
             {
               file: emptyFile,
+              assignedGroupId: formInstance2.assignedGroups.sort(
+                (a, b) => a.order - b.order,
+              )[0].id,
             },
           ),
         ).rejects.toThrow('Employee cannot sign for this Assigned group');
@@ -1041,6 +1076,9 @@ describe('FormInstancesIntegrationTest', () => {
             },
             {
               file: emptyFile,
+              assignedGroupId: formInstance2.assignedGroups.sort(
+                (a, b) => a.order - b.order,
+              )[0].id,
             },
           ),
         ).rejects.toThrow('Employee cannot sign for this Assigned group');
@@ -1075,6 +1113,9 @@ describe('FormInstancesIntegrationTest', () => {
         },
         {
           file: emptyFile,
+          assignedGroupId: formInstance1.assignedGroups.sort(
+            (a, b) => a.order - b.order,
+          )[0].id,
         },
       );
     });

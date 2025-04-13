@@ -3,6 +3,9 @@ import { useMutation } from '@tanstack/react-query';
 import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
+  formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllQueryKey,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
@@ -11,7 +14,10 @@ import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
 import { useAuth } from '@web/hooks/useAuth';
+import { FormInteractionType } from './types';
+import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
+import { useState } from 'react';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -22,15 +28,15 @@ import { Toaster, toaster } from '../ui/toaster';
  * @param review if review page, there is no delete/clear button and the Save & Continue becomes Create Form Template
  */
 export const FormButtons = ({
-  isFormTemplate,
+  type,
   deleteFunction,
   submitLink,
   backLink,
   disabled,
-  review,
+  review = false,
   heading,
 }: {
-  isFormTemplate: boolean;
+  type: FormInteractionType;
   deleteFunction: Function;
   submitLink: string;
   backLink: string;
@@ -46,9 +52,13 @@ export const FormButtons = ({
     pdfFile,
     fieldGroups: fieldGroupsContext,
     formFields: formFieldsContext,
+    formDimensions,
   } = useCreateFormTemplate();
   const { assignedGroupData, formInstanceName, formTemplate } =
     useCreateFormInstance();
+  const [createFormLoading, setCreateFormLoading] = useState(false);
+  const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
+
   const { user } = useAuth();
 
   const createFormTemplateMutation = useMutation({
@@ -57,6 +67,16 @@ export const FormButtons = ({
       queryClient.invalidateQueries({
         queryKey: formTemplatesControllerFindAllQueryKey(),
       });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+      });
     },
   });
 
@@ -64,7 +84,17 @@ export const FormButtons = ({
     ...formInstancesControllerCreateMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
+        queryKey: formInstancesControllerFindAllQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
       });
     },
   });
@@ -73,7 +103,7 @@ export const FormButtons = ({
    * Upload and create a form template
    */
   const _submitFormTemplate = async () => {
-    if (disabled == true) {
+    if (disabled || createFormLoading) {
       return;
     }
     if (!review) {
@@ -83,6 +113,8 @@ export const FormButtons = ({
     if (!pdfFile) {
       throw new Error('No PDF file uploaded');
     }
+
+    setCreateFormLoading(true);
 
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
@@ -103,7 +135,9 @@ export const FormButtons = ({
             type: field.type,
             x_coordinate: field.position.x,
             y_coordinate: field.position.y,
-            // TODO: add width and height to template boxes
+            width: field.position.width,
+            height: field.position.height,
+            page: parseInt(page),
           });
         });
       }
@@ -117,28 +151,36 @@ export const FormButtons = ({
       orderVal += 1;
     });
 
-    await createFormTemplateMutation
-      .mutateAsync({
-        body: {
-          name: formTemplateName ?? '',
-          fieldGroups: fieldGroups,
-          file: pdfFile,
-          description: formTemplateDescription ?? '',
-        },
-      })
-      .then((response) => {
-        router.push(submitLink);
-        return response;
-      })
-      .catch((e) => {
-        toaster.create({
-          title: 'Failed to create form template',
-          description: (e as Error).message,
-          type: 'error',
-          duration: 3000,
+    if (formDimensions)
+      await createFormTemplateMutation
+        .mutateAsync({
+          body: {
+            pageHeight: formDimensions.height,
+            pageWidth: formDimensions.width,
+            name: formTemplateName ?? '',
+            fieldGroups: fieldGroups,
+            file: pdfFile,
+            description: formTemplateDescription ?? '',
+          },
+        })
+        .then(async (response) => {
+          await queryClient.invalidateQueries({
+            queryKey: formTemplatesControllerFindAllQueryKey(),
+          });
+          router.push(submitLink).then(() => {
+            setCreateFormLoading(false);
+          });
+          return response;
+        })
+        .catch((e) => {
+          toaster.create({
+            title: 'Failed to create form template',
+            description: (e as Error).message,
+            type: 'error',
+            duration: 3000,
+          });
+          throw e;
         });
-        throw e;
-      });
   };
 
   /**
@@ -155,10 +197,13 @@ export const FormButtons = ({
       !assignedGroupData ||
       disabled ||
       !user ||
-      assignedGroupData.length != formTemplate.fieldGroups.length
+      assignedGroupData.length != formTemplate.fieldGroups.length ||
+      createFormLoading
     ) {
       return;
     }
+
+    setCreateFormLoading(true);
 
     await createFormInstanceMutation
       .mutateAsync({
@@ -181,8 +226,21 @@ export const FormButtons = ({
           description: formTemplate.description ?? '',
         },
       })
-      .then((response) => {
-        router.push(submitLink);
+      .then(async (response) => {
+        await queryClient.invalidateQueries({
+          queryKey: formInstancesControllerFindAllQueryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+        });
+        router.push(submitLink).then(() => {
+          setCreateFormLoading(false);
+        });
         return response;
       })
       .catch((e) => {
@@ -269,12 +327,19 @@ export const FormButtons = ({
           }}
           marginLeft="12px"
           marginRight="36px"
-          disabled={disabled}
+          disabled={disabled || signFormInstanceLoading || createFormLoading}
+          loading={signFormInstanceLoading || createFormLoading}
           onClick={() => {
-            if (isFormTemplate) {
-              _submitFormTemplate();
-            } else {
-              _submitFormInstance();
+            switch (type) {
+              case FormInteractionType.CreateFormTemplate:
+                _submitFormTemplate();
+                break;
+              case FormInteractionType.CreateFormInstance:
+                _submitFormInstance();
+                break;
+              default:
+                nextSignFormPage(submitLink, review);
+                break;
             }
           }}
         >

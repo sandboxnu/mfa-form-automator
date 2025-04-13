@@ -5,8 +5,6 @@ import PagingControl from '../createFormTemplate/createFormTemplateEditor/Paging
 import { FieldGroupBaseEntity } from '@web/client/types.gen';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
 // Colors for different field groups
 const groupColors = [
   ['#1367EA', '#EEF5FF'],
@@ -20,27 +18,26 @@ const groupColors = [
 const CONTAINER_WIDTH = 800;
 
 export const FormView = ({
-  formTemplateName,
   pdfUrl,
   fieldGroups,
   scale = 0.6875,
+  useEmbed = false,
 }: {
-  formTemplateName: string;
   pdfUrl: string;
   fieldGroups: FieldGroupBaseEntity[];
   scale?: number;
+  useEmbed?: boolean;
 }) => {
-  const [pageNum, setPageNum] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [pageNum, setPageNum] = useState(0);
   const { assignedGroupData } = useCreateFormInstance();
   const textRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   // to calculate box dimensions
   const calculateDimensions = (type: string, assignedTo: string) => {
-    
     let minWidth = 80;
     let height = 30;
-    
+
     if (type === 'CHECKBOX') {
       minWidth = height = 30;
     } else if (type === 'SIGNATURE') {
@@ -51,7 +48,7 @@ export const FormView = ({
     const key = `${assignedTo}-${type}`;
     const textElement = textRefs.current[key];
     let width = minWidth;
-    
+
     if (textElement) {
       const textWidth = textElement.scrollWidth + 20;
       width = Math.max(minWidth, textWidth);
@@ -98,13 +95,20 @@ export const FormView = ({
                   pageNumber={pageNum + 1}
                 />
                 {/* Hidden text elements for measuring */}
-                <Box position="absolute" visibility="hidden" pointerEvents="none">
+                <Box
+                  position="absolute"
+                  visibility="hidden"
+                  pointerEvents="none"
+                >
                   {fieldGroups?.map((fieldGroup, groupIndex) => {
-                    const assignedTo = assignedGroupData[groupIndex]?.name || 'Unassigned';
+                    const assignedTo =
+                      assignedGroupData[groupIndex]?.name || 'Unassigned';
                     return fieldGroup.templateBoxes.map((box, boxIndex) => (
                       <Text
                         key={`measure-${groupIndex}-${boxIndex}`}
-                        ref={el => textRefs.current[`${assignedTo}-${box.type}`] = el}
+                        ref={(el) =>
+                          (textRefs.current[`${assignedTo}-${box.type}`] = el)
+                        }
                         fontSize="12px"
                         fontWeight="500"
                       >
@@ -114,12 +118,17 @@ export const FormView = ({
                   })}
                 </Box>
                 {fieldGroups?.map((fieldGroup, groupIndex) => {
-                  const [borderColor, bgColor] = groupColors[groupIndex % groupColors.length];
-                  const assignedTo = assignedGroupData[groupIndex]?.name || 'Unassigned';
-                  
+                  const [borderColor, bgColor] =
+                    groupColors[groupIndex % groupColors.length];
+                  const assignedTo =
+                    assignedGroupData[groupIndex]?.name || 'Unassigned';
+
                   return fieldGroup.templateBoxes.map((box, boxIndex) => {
                     // Calculate dimensions
-                    const { width, height } = calculateDimensions(box.type, assignedTo);
+                    const { width, height } = calculateDimensions(
+                      box.type,
+                      assignedTo,
+                    );
 
                     // Scale the coordinates
                     const x = box.x_coordinate * scale;
@@ -142,7 +151,7 @@ export const FormView = ({
                         alignItems="center"
                         justifyContent="center"
                         _hover={{
-                          opacity: "1",
+                          opacity: '1',
                         }}
                       >
                         <Text

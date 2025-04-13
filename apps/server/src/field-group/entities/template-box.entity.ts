@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { SignatureBoxFieldType, TemplateBox } from '@prisma/client';
-import { Exclude } from 'class-transformer';
 
 export class TemplateBoxBaseEntity implements TemplateBox {
   @ApiProperty()
@@ -15,7 +14,16 @@ export class TemplateBoxBaseEntity implements TemplateBox {
   @ApiProperty()
   y_coordinate: number;
 
-  @Exclude()
+  @ApiProperty()
+  width: number;
+
+  @ApiProperty()
+  height: number;
+
+  @ApiProperty()
+  page: number;
+
+  @ApiProperty()
   fieldGroupId: string;
 
   @ApiProperty()

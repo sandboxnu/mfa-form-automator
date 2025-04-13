@@ -15,7 +15,6 @@ export const SuccessPage = ({
   const router = useRouter();
   return (
     <>
-      <TopBar />
       <Flex
         backgroundColor="#F8F9FA"
         justifyContent="center"

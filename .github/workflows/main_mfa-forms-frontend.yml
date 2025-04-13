@@ -1,0 +1,70 @@
+name: Deploy - Frontend CD - Azure App Service
+
+on:
+  # This will trigger only on pushes to main (including PR merges)
+  push:
+    branches: [ "main" ]
+  # Manual triggering option
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AZURE_CONTAINER_REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY_FRONTEND }}
+  CONTAINER_NAME: ${{ secrets.AZURE_CONTAINER_NAME_FRONTEND }}
+  RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+  APP_SERVICE_NAME: ${{ secrets.AZURE_APP_SERVICE_NAME_FRONTEND }}
+  API_URL: ${{ secrets.API_URL }}
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_REDIRECT_URI: ${{ secrets.AZURE_REDIRECT_URI }}
+
+jobs:
+  build:
+    # This ensures the job only runs on pushes to main (which includes PR merges)
+    # and not on PR open/update events
+    # if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'checkout'
+        uses: actions/checkout@main
+
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.AZURE_CONTAINER_REGISTRY }}
+          username: ${{ secrets.AZURE_REGISTRY_FRONTEND_USERNAME }}
+          password: ${{ secrets.AZURE_REGISTRY_FRONTEND_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./apps/web/Dockerfile
+          push: true
+          tags: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+          cache-from: type=registry,ref=${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:latest
+          cache-to: type=inline
+          build-args: |
+            PROXY_API_URL=${{ env.API_URL }}
+            ARG_AZURE_CLIENT_ID=${{ env.AZURE_CLIENT_ID }}
+            ARG_AZURE_TENANT_ID=${{ env.AZURE_TENANT_ID }}
+            ARG_AZURE_REDIRECT_URI=${{ env.AZURE_REDIRECT_URI }}
+
+  deploy:
+    needs: build
+    # Ensure deploy job only runs when build job runs
+    # if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.APP_SERVICE_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
+          images: ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+          slot-name: 'production'

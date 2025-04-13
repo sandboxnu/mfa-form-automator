@@ -1,5 +1,8 @@
 # MFA Form Automator
 
+[![Deploy - Frontend CD - Azure App Service](https://github.com/sandboxnu/mfa-form-automator/actions/workflows/main_mfa-forms-frontend.yml/badge.svg?branch=main)](https://github.com/sandboxnu/mfa-form-automator/actions/workflows/main_mfa-forms-frontend.yml)
+[![Deploy - Backend CD - Azure App Service](https://github.com/sandboxnu/mfa-form-automator/actions/workflows/main_mfa-forms-backend.yml/badge.svg?branch=main)](https://github.com/sandboxnu/mfa-form-automator/actions/workflows/main_mfa-forms-backend.yml)
+
 ## Tech Stack
 
 NextJS, NestJS, Prisma, PostgreSQL

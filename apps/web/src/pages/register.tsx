@@ -12,6 +12,8 @@ import {
 import isAuth from '@web/components/isAuth';
 import { useRouter } from 'next/router';
 import { Toaster, toaster } from '@web/components/ui/toaster';
+import SignatureCanvas from 'react-signature-canvas';
+import { createSignatureImage } from '@web/utils/signatureUtils';
 
 function Register() {
   const router = useRouter();
@@ -21,8 +23,8 @@ function Register() {
   const [createSignatureType, setCreateSignatureType] =
     useState<string>('draw');
   const [signatureText, setSignatureText] = useState<string>('');
-  const signatureCanvas = useRef<any>(null);
-  const { blob, setBlob } = useBlob();
+  const signatureCanvas = useRef<SignatureCanvas>(null);
+  const originalSignatureLink = user?.signatureLink;
 
   useEffect(() => {
     if (user && user.positionId) {
@@ -51,62 +53,21 @@ function Register() {
     enabled: !!currentDepartmentId,
   });
 
-  // Convert data URL to blob for file upload
-  const dataURLToBlob = (dataURL: string) => {
-    const [header, byteString] = dataURL.split(',');
-    const mimeString = header.split(':')[1].split(';')[0];
-    const arrayBuffer = new Uint8Array(
-      atob(byteString)
-        .split('')
-        .map((char) => char.charCodeAt(0)),
-    );
-    return new Blob([arrayBuffer], { type: mimeString });
-  };
-
-  // Create signature image (either text or canvas)
-  const createSignatureImage = async () => {
-    let file;
-
-    if (createSignatureType === 'type' && signatureText) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      canvas.width = 500;
-      canvas.height = 120;
-      ctx.font = '40px "TheChairman"';
-      const textWidth = ctx.measureText(signatureText).width;
-      ctx.fillText(
-        signatureText,
-        canvas.width / 2 - textWidth / 2,
-        canvas.height / 2 + 15,
-      );
-
-      const dataUrl = canvas.toDataURL();
-      file = new File([dataURLToBlob(dataUrl)], 'signature.png', {
-        type: 'image/png',
-      });
-    } else {
-      const dataUrl = signatureCanvas.current.toDataURL();
-      file = new File([dataURLToBlob(dataUrl)], 'signature.png', {
-        type: 'image/png',
-      });
-    }
-
-    return await setBlob(file);
-  };
-
   // Handle registration submission
   const handleRegistration = async () => {
     if (!currentDepartmentId || !currentPositionId) return;
 
-    await createSignatureImage();
-    const signatureUrl = blob
-      ? // TODO: Do we want to store the URL representation of their signature?
-        URL.createObjectURL(blob)
-      : 'http://localhost:3002/signature.png';
+    const newSignatureLink = await createSignatureImage(
+      createSignatureType,
+      signatureText,
+      signatureCanvas,
+    );
+    if (newSignatureLink === originalSignatureLink) {
+      return;
+    }
+
     try {
-      await completeRegistration(currentPositionId, signatureUrl);
+      await completeRegistration(currentPositionId, newSignatureLink!);
     } catch (error) {
       toaster.create({
         title: 'Failed to complete onboarding',

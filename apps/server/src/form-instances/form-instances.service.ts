@@ -531,7 +531,6 @@ export class FormInstancesService {
     signFormInstanceDto: SignFormInstanceDto,
   ): Promise<FormInstance> {
     const formInstance = await this.findOne(formInstanceId);
-
     if (!formInstance) {
       throw new NotFoundException(
         FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
@@ -594,7 +593,6 @@ export class FormInstancesService {
       signFormInstanceDto.file.buffer,
       `${formInstanceId}-${assignedGroupId}-${employee.id}`,
     );
-
     const updatedAssignedGroup = await this.prisma.assignedGroup.update({
       where: { id: assignedGroupId },
       data: {

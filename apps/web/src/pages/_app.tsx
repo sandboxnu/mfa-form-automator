@@ -17,6 +17,11 @@ import { ReactNode, useMemo, memo } from 'react';
 import { client } from '@web/client/client.gen';
 import { CreateFormInstanceProvider } from '@web/context/CreateFormInstanceContext';
 import { appControllerRefresh } from '@web/client';
+import { SignFormInstanceContextProvider } from '@web/context/SignFormInstanceContext';
+import { pdfjs } from 'react-pdf';
+import { UserFormsContextProvider } from '@web/context/UserFormsContext';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 client.instance.interceptors.response.use(
   (response) => response, // Directly return successful responses.
@@ -87,16 +92,25 @@ export default function App({
     '/register',
     '/create-template/success',
     '/create-instance/success',
+    '/sign-form/success',
   ];
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
+  const signFormInstancePath = '/sign-form';
 
-  const head = (
-    <Head>
-      <title>MFA Forms</title>
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-    </Head>
-  );
+  // Check if the current page is an error page
+  const isErrorPage =
+    Component.displayName === 'ErrorPage' ||
+    appProps.router.pathname === '/_error';
+
+  // If it's an error page, render just the component without Layout
+  if (isErrorPage) {
+    return (
+      <WrapperComponent>
+        <Component {...pageProps} />
+      </WrapperComponent>
+    );
+  }
 
   if (excludeLayoutPaths.includes(appProps.router.pathname)) {
     return (
@@ -135,12 +149,27 @@ export default function App({
       </>
     );
   }
-
+  if (appProps.router.pathname.includes(signFormInstancePath)) {
+    const { id } = appProps.router.query;
+    return (
+      <>
+        <WrapperComponent>
+          <SignFormInstanceContextProvider id={id as string}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </SignFormInstanceContextProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
   return (
     <>
       <WrapperComponent>
         <Layout>
-          <Component {...pageProps} />
+          <UserFormsContextProvider>
+            <Component {...pageProps} />
+          </UserFormsContextProvider>
         </Layout>
       </WrapperComponent>
     </>

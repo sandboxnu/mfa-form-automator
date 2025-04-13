@@ -1,6 +1,7 @@
 import { Box, Flex, Input, Link } from '@chakra-ui/react';
 import SignatureCanvas from 'react-signature-canvas';
 import { ButtonSwitch } from '@web/components/ButtonSwitch.tsx';
+import { useEffect } from 'react';
 
 interface SignaturePadProps {
   createSignatureType: string;
@@ -9,6 +10,7 @@ interface SignaturePadProps {
   setSignature: (signature: string) => void;
   signatureCanvas: React.RefObject<SignatureCanvas>;
   onClear?: () => void;
+  signatureLink?: string;
 }
 
 export const SignaturePad = ({
@@ -18,6 +20,7 @@ export const SignaturePad = ({
   setSignature,
   signatureCanvas,
   onClear,
+  signatureLink,
 }: SignaturePadProps) => {
   const clearSignature = () => {
     if (signatureCanvas.current) {
@@ -26,6 +29,13 @@ export const SignaturePad = ({
     setSignature('');
     onClear?.();
   };
+
+  useEffect(() => {
+    if (signatureCanvas.current && signatureLink) {
+      signatureCanvas.current.clear();
+      signatureCanvas.current.fromDataURL(signatureLink);
+    }
+  }, [signatureCanvas, signatureLink]);
 
   return (
     <>

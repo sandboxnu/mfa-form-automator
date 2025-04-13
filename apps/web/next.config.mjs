@@ -9,12 +9,15 @@ const nextConfig = {
     optimizePackageImports: ['@chakra-ui/react'],
   },
   reactStrictMode: true,
-  env: {
-    PORT: process.env.FRONTEND_PORT,
-    AZURE_CLIENT_ID: process.env.AZURE_CLIENT_ID,
-    AZURE_TENANT_ID: process.env.AZURE_TENANT_ID,
-    AZURE_REDIRECT_URI: process.env.AZURE_REDIRECT_URI,
-    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
+  output: 'standalone',
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        // destination: `${process.env.API_URL}/api/:path*`,
+        destination: `${process.env.API_URL}/api/:path*`,
+      },
+    ];
   },
 };
 
