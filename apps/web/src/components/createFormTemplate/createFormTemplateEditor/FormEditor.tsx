@@ -31,6 +31,8 @@ export const FormEditor = ({
   setFieldGroups,
   scale,
   setFormDimensions,
+  documentWidth = 800,
+  showNav = true,
 }: {
   formTemplateName: string;
   pdfFile: File | null;
@@ -47,11 +49,13 @@ export const FormEditor = ({
     width: number;
     height: number;
   }) => void;
+  documentWidth?: number;
+  showNav?: boolean;
 }) => {
   const [currentGroup, setCurrentGroup] = useState<string>(
     fieldGroups.keys().next().value ?? '',
   );
-  const [pageNum, setPageNum] = useState(1); // Changed from 0 to 1 to match PDF indexing
+  const [pageNum, setPageNum] = useState(1); // Keep 1-based for display purposes
   const [totalPages, setTotalPages] = useState(0);
   const documentRef = useRef(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -93,7 +97,7 @@ export const FormEditor = ({
 
         if (visibleHeight > maxVisibleArea) {
           maxVisibleArea = visibleHeight;
-          bestVisiblePage = index + 1; // +1 because PDF pages are 1-indexed
+          bestVisiblePage = index + 1; // +1 because we display pages as 1-indexed
         }
       });
 
@@ -109,14 +113,17 @@ export const FormEditor = ({
     };
   }, [pageNum, totalPages]);
 
+  // Convert 1-based pageNum to 0-based index for formFields
+  const pageIndex = pageNum - 1;
+
   const handleAddTextField = () => {
     if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
       const { centerX, centerY } = convertCoordinates(documentRef.current);
       const id = uuidv4();
       setFormFields({
         ...formFields,
-        [pageNum]: new Map([
-          ...formFields[pageNum],
+        [pageIndex]: new Map([
+          ...(formFields[pageIndex] || new Map()),
           [
             id,
             {
@@ -143,8 +150,8 @@ export const FormEditor = ({
       const id = uuidv4();
       setFormFields({
         ...formFields,
-        [pageNum]: new Map([
-          ...formFields[pageNum],
+        [pageIndex]: new Map([
+          ...(formFields[pageIndex] || new Map()),
           [
             id,
             {
@@ -171,8 +178,8 @@ export const FormEditor = ({
       const id = uuidv4();
       setFormFields({
         ...formFields,
-        [pageNum]: new Map([
-          ...formFields[pageNum],
+        [pageIndex]: new Map([
+          ...(formFields[pageIndex] || new Map()),
           [
             id,
             {
@@ -198,8 +205,8 @@ export const FormEditor = ({
 
     setFormFields({
       ...formFields,
-      [pageNum]: new Map(
-        Array.from(formFields[pageNum]).filter(
+      [pageIndex]: new Map(
+        Array.from(formFields[pageIndex] || new Map()).filter(
           ([key, value]) => key !== fieldId,
         ),
       ),
@@ -214,11 +221,12 @@ export const FormEditor = ({
     if (disableEdit) return;
     setFormFields({
       ...formFields,
-      [pageNum]: new Map([
-        ...formFields[pageNum].set(fieldId, {
+      [pageIndex]: new Map([
+        ...(formFields[pageIndex] || new Map()).set(fieldId, {
           position: pos,
           groupId: groupId,
-          type: formFields[pageNum].get(fieldId)?.type ?? FieldType.TEXT_FIELD,
+          type:
+            formFields[pageIndex]?.get(fieldId)?.type ?? FieldType.TEXT_FIELD,
         }),
       ]),
     });
@@ -413,14 +421,14 @@ export const FormEditor = ({
               padding: '12px',
               background: '#F0F0F0',
             }}
-            ref={scrollContainerRef}
           >
             <Box
               height="474px"
-              width="800px"
+              width={`${documentWidth}px`}
               overflow="scroll"
               display="flex"
               flexDirection="column"
+              ref={scrollContainerRef}
             >
               <Document
                 file={pdfFile}
@@ -428,14 +436,15 @@ export const FormEditor = ({
                   setTotalPages(data.numPages);
                   setPageNum(1); // Reset to first page when document loads
 
+                  // Initialize form fields with 0-based indexing
                   setFormFields(
                     Array.from({ length: data.numPages }).reduce<FormFields>(
                       (acc, _, i) => {
-                        if (formFields[i + 1]) {
-                          // Changed from i to i+1 to match 1-indexed pages
-                          acc[i + 1] = formFields[i + 1];
+                        if (formFields[i]) {
+                          // Use 0-based index
+                          acc[i] = formFields[i];
                         } else {
-                          acc[i + 1] = new Map();
+                          acc[i] = new Map();
                         }
                         return acc;
                       },
@@ -463,8 +472,8 @@ export const FormEditor = ({
                       pageNumber={index + 1}
                       width={1000}
                     >
-                      {formFields[index + 1] &&
-                        Array.from(formFields[index + 1].entries()).map(
+                      {formFields[index] &&
+                        Array.from(formFields[index].entries()).map(
                           (
                             [fieldId, { position, groupId, type }],
                             fieldIndex,
@@ -542,49 +551,51 @@ export const FormEditor = ({
       </Box>
 
       {/* Page indicator and navigation controls with arrows */}
-      <Box
-        mt="8px"
-        display="flex"
-        alignItems="center"
-        spaceX="16px"
-        width="100%"
-      >
-        <Spacer />
-        <Button
-          bg="white"
-          borderRadius="6px"
-          fontWeight="500"
-          p={2}
-          minW="20px"
-          height="40px"
-          _hover={{ bg: '#F3F6F8' }}
-          disabled={pageNum <= 1}
-          onClick={() => goToPage(pageNum - 1)}
-          aria-label="Previous page"
+      {showNav && (
+        <Box
+          mt="8px"
+          display="flex"
+          alignItems="center"
+          spaceX="16px"
+          width="100%"
         >
-          <LeftArrowIcon boxSize={6} fill="#1367EA" />
-        </Button>
+          <Spacer />
+          <Button
+            bg="white"
+            borderRadius="6px"
+            fontWeight="500"
+            p={2}
+            minW="20px"
+            height="40px"
+            _hover={{ bg: '#F3F6F8' }}
+            disabled={pageNum <= 1}
+            onClick={() => goToPage(pageNum - 1)}
+            aria-label="Previous page"
+          >
+            <LeftArrowIcon boxSize={6} fill="#1367EA" />
+          </Button>
 
-        <Text fontSize="14px" color="#5A6474">
-          Page {pageNum} of {totalPages}
-        </Text>
+          <Text fontSize="14px" color="#5A6474">
+            Page {pageNum} of {totalPages}
+          </Text>
 
-        <Button
-          bg="white"
-          borderRadius="6px"
-          fontWeight="500"
-          p={2}
-          minW="20px"
-          height="40px"
-          _hover={{ bg: '#F3F6F8' }}
-          disabled={pageNum >= totalPages}
-          onClick={() => goToPage(pageNum + 1)}
-          aria-label="Next page"
-        >
-          <RightArrowIcon boxSize={6} />
-        </Button>
-        <Spacer />
-      </Box>
+          <Button
+            bg="white"
+            borderRadius="6px"
+            fontWeight="500"
+            p={2}
+            minW="20px"
+            height="40px"
+            _hover={{ bg: '#F3F6F8' }}
+            disabled={pageNum >= totalPages}
+            onClick={() => goToPage(pageNum + 1)}
+            aria-label="Next page"
+          >
+            <RightArrowIcon boxSize={6} />
+          </Button>
+          <Spacer />
+        </Box>
+      )}
     </Box>
   );
 };
