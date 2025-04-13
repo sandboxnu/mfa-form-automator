@@ -255,6 +255,11 @@ const db = {
   fieldGroup: {
     findMany: jest.fn().mockResolvedValue(formTemplate.fieldGroups),
   },
+  assignedGroup: {
+    create: jest.fn().mockResolvedValue({}),
+    deleteMany: jest.fn().mockResolvedValue({}),
+  },
+  $transaction: jest.fn(<T>(callback: (db: any) => T): T => callback(db)),
 };
 
 const mockPostmarkService = {
@@ -571,17 +576,121 @@ describe('FormInstancesService', () => {
   });
 
   describe('update', () => {
-    it('should call the update method', async () => {
+    beforeEach(() => {
+      // Reset mocks before each test
+      jest.clearAllMocks();
+    });
+
+    it('should update basic form instance properties', async () => {
       const newFormInstanceName = 'New-Form-Instance-Name';
       const updateFormInstanceDto = {
         name: newFormInstanceName,
+        description: 'Updated description',
+        formDocLink: 'new-form-doc-link',
       };
 
       const updatedFormInstance = await service.update(
         formInstance1Id,
         updateFormInstanceDto,
       );
+
+      expect(db.$transaction).toHaveBeenCalledTimes(1);
+      expect(db.formInstance.update).toHaveBeenCalledWith({
+        where: { id: formInstance1Id },
+        data: {
+          name: newFormInstanceName,
+          description: 'Updated description',
+          formDocLink: 'new-form-doc-link',
+        },
+      });
       expect(updatedFormInstance).toEqual(oneFormInstance);
+    });
+
+    it('should update form instance with assigned groups', async () => {
+      const updateFormInstanceDto = {
+        name: 'Updated Form Instance',
+        assignedGroups: [
+          {
+            order: 0,
+            fieldGroupId: 'fieldGroupId',
+            signerType: SignerType.POSITION,
+            signerPositionId: positionId2,
+            signerEmployeeList: [],
+          },
+        ],
+      };
+
+      await service.update(formInstance1Id, updateFormInstanceDto);
+
+      expect(db.$transaction).toHaveBeenCalledTimes(1);
+      expect(db.formInstance.update).toHaveBeenCalled();
+      expect(db.assignedGroup.deleteMany).toHaveBeenCalledWith({
+        where: { formInstanceId: formInstance1Id },
+      });
+      expect(db.fieldGroup.findMany).toHaveBeenCalled();
+      expect(db.assignedGroup.create).toHaveBeenCalled();
+      expect(db.formInstance.findFirstOrThrow).toHaveBeenCalled();
+    });
+
+    it('should handle empty assignedGroups properly', async () => {
+      const updateFormInstanceDto = {
+        name: 'Updated Form Name Only',
+        assignedGroups: [], // Empty array should not trigger assigned groups update
+      };
+
+      await service.update(formInstance1Id, updateFormInstanceDto);
+
+      expect(db.$transaction).toHaveBeenCalledTimes(1);
+      expect(db.formInstance.update).toHaveBeenCalledWith({
+        where: { id: formInstance1Id },
+        data: {
+          name: 'Updated Form Name Only',
+          description: undefined,
+          formDocLink: undefined,
+        },
+      });
+      expect(db.assignedGroup.deleteMany).not.toHaveBeenCalled();
+    });
+
+    it('should throw error when field group is not found', async () => {
+      // Mock implementation for this specific test case
+      const originalTransaction = db.$transaction;
+      db.$transaction.mockImplementationOnce(async (callback) => {
+        // Override the findMany method for this test
+        const mockTx = {
+          ...db,
+          fieldGroup: {
+            ...db.fieldGroup,
+            findMany: jest.fn().mockResolvedValue([]), // Return empty array to simulate fieldGroup not found
+          },
+        };
+
+        try {
+          return await callback(mockTx);
+        } catch (error) {
+          throw error;
+        } finally {
+          // Restore the original implementation
+          db.$transaction = originalTransaction;
+        }
+      });
+
+      const updateFormInstanceDto = {
+        name: 'Updated Form Instance',
+        assignedGroups: [
+          {
+            order: 0,
+            fieldGroupId: 'non-existent-field-group',
+            signerType: SignerType.POSITION,
+            signerPositionId: positionId2,
+            signerEmployeeList: [],
+          },
+        ],
+      };
+
+      await expect(
+        service.update(formInstance1Id, updateFormInstanceDto),
+      ).rejects.toThrow(/Field group with ID/);
     });
   });
 
