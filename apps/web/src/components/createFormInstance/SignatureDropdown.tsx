@@ -223,16 +223,17 @@ export const SignatureDropdown = ({
                 ] = selected?.value;
 
                 // if the group id already exists, update it
-                for (let i = 0; i < assignedGroupData.length; i++) {
-                  if (assignedGroupData[i].fieldGroupId === field.id) {
-                    assignedGroupData[i] = assignedGroup;
-                    setAssignedGroupData(assignedGroupData);
-                    return;
-                  }
+                const existingIndex = assignedGroupData.findIndex(
+                  (group) => group.fieldGroupId === field.id,
+                );
+                if (existingIndex !== -1) {
+                  const newAssignedGroupData = [...assignedGroupData];
+                  newAssignedGroupData[existingIndex] = assignedGroup;
+                  setAssignedGroupData(newAssignedGroupData);
+                } else {
+                  // otherwise, add it to the list
+                  setAssignedGroupData([...assignedGroupData, assignedGroup]);
                 }
-
-                // otherwise, add it to the list
-                setAssignedGroupData([...assignedGroupData, assignedGroup]);
               }}
               value={selectedOption}
               chakraStyles={selectStyles}

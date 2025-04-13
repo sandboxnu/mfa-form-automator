@@ -1,10 +1,16 @@
 import {
   AssignedGroupEntity,
+  FieldGroupBaseEntity,
   FormInstanceEntity,
   SignerType,
 } from '@web/client';
 import { User } from '@web/context/types';
 import { Dispatch, SetStateAction } from 'react';
+import { groupColors } from './formTemplateUtils';
+import {
+  FieldType,
+  FormFields,
+} from '@web/components/createFormTemplate/types';
 
 /**
  * Determines if a form instance is fully signed
@@ -168,4 +174,49 @@ export const fetchPdfFile = async (
     });
     setPdfFile(file);
   }
+};
+
+export const formEditorTranslateFieldGroups = (
+  fieldGroups: FieldGroupBaseEntity[],
+) => {
+  return new Map(
+    fieldGroups.map((field, i) => [
+      field.id,
+      {
+        border: groupColors[i % groupColors.length][0],
+        background: groupColors[i % groupColors.length][1],
+        groupName: `Group ${i + 1}`,
+      },
+    ]),
+  );
+};
+
+export const formEditorTranslateFormFields: (
+  fieldGroups: FieldGroupBaseEntity[],
+) => FormFields = (fieldGroups: FieldGroupBaseEntity[]) => {
+  return Object.fromEntries(
+    fieldGroups.flatMap((fieldGroup) =>
+      fieldGroup.templateBoxes.map((templateBox) => [
+        templateBox.page,
+        new Map([
+          [
+            templateBox.id,
+            {
+              position: {
+                x: templateBox.x_coordinate,
+                y: templateBox.y_coordinate,
+                width: templateBox.width,
+                height: templateBox.height,
+              },
+              groupId: fieldGroup.id,
+              type:
+                (templateBox.type as string) in FieldType
+                  ? (templateBox.type as FieldType)
+                  : FieldType.TEXT_FIELD,
+            },
+          ],
+        ]),
+      ]),
+    ),
+  );
 };
