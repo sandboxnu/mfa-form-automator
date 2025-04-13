@@ -126,9 +126,9 @@ export class FormTemplatesController {
   })
   async findAll(@Query('limit') limit?: number) {
     const formTemplates = await this.formTemplatesService.findAll(limit);
-    return formTemplates
-      .map((formTemplate) => new FormTemplateEntity(formTemplate))
-      .filter((template) => !template.disabled);
+    return formTemplates.map(
+      (formTemplate) => new FormTemplateEntity(formTemplate),
+    );
   }
 
   @Get(':id')

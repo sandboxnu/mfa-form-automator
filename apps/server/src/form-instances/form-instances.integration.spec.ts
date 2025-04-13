@@ -703,13 +703,33 @@ describe('FormInstancesIntegrationTest', () => {
     it('should update a form instance', async () => {
       const formInstance = await service.update(formInstance1.id, {
         name: 'Updated Form Instance',
+        description: 'Updated description',
         formDocLink: 'link',
+        assignedGroups: [
+          {
+            order: 0,
+            fieldGroupId: formTemplate1.fieldGroups[0].id,
+            signerType: $Enums.SignerType.POSITION,
+            signerEmployeeId: employeeId2,
+            signerEmployeeList: [],
+          },
+        ],
       });
 
       expect(formInstance).toBeDefined();
       expect(formInstance.id).toBe(formInstance1.id);
       expect(formInstance.name).toBe('Updated Form Instance');
+      expect(formInstance.description).toBe('Updated description');
       expect(formInstance.formDocLink).toBe('link');
+      expect(formInstance.assignedGroups).toBe([
+        {
+          order: 0,
+          fieldGroupId: formTemplate1.fieldGroups[0].id,
+          signerType: $Enums.SignerType.POSITION,
+          signerEmployeeId: employeeId2,
+          signerEmployeeList: [],
+        },
+      ]);
     });
     it('should fail if the form instance does not exist', async () => {
       await expect(

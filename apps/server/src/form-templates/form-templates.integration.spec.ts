@@ -217,10 +217,45 @@ describe('FormTemplatesIntegrationTest', () => {
       expect(formTemplates[1].name).toBe('Form Template 2');
       expect(formTemplates[1].id).toBe(formTemplate2!.id);
     });
+
     it('successfully retrieves all form templates with limit', async () => {
       const formTemplates = await service.findAll(1);
 
       expect(formTemplates).toHaveLength(1);
+    });
+
+    it('does not include disabled templates', async () => {
+      const formTemplate3 = await service.create({
+        name: 'Form Template 2',
+        description: 'Form Template Description 2',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 2',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+      const formTemplates: FormTemplateEntity[] = await service.findAll();
+      expect(formTemplates).toContainEqual(formTemplate3);
+      await service.update(formTemplate3.id, {
+        disabled: true,
+      });
+      const formTemplatesAfter: FormTemplateEntity[] = await service.findAll();
+      expect(formTemplatesAfter.includes(formTemplate3)).toBe(false);
     });
   });
 
@@ -318,47 +353,11 @@ describe('FormTemplatesIntegrationTest', () => {
         }),
       ).rejects.toThrowError();
     });
-  });
 
-  describe('remove', () => {
-    it('successfully removes a form template', async () => {
-      formTemplate1 = await service.create({
-        name: 'Form Template 1',
-        description: 'Form Template Description 1',
-        file: emptyFile,
-        pageWidth: 800,
-        pageHeight: 1035,
-        fieldGroups: [
-          {
-            name: 'Field Group 1',
-            order: 0,
-            templateBoxes: [
-              {
-                type: $Enums.SignatureBoxFieldType.CHECKBOX,
-                x_coordinate: 0,
-                y_coordinate: 0,
-                width: 100,
-                height: 100,
-                page: 0,
-              },
-            ],
-          },
-        ],
-        disabled: false,
-      });
-
-      await service.remove(formTemplate1.id);
-
-      const formTemplates = await service.findAll();
-      expect(formTemplates).toHaveLength(0);
-    });
-  });
-
-  describe('disable', () => {
     it('successfully disables a form template', async () => {
-      formTemplate1 = await service.create({
-        name: 'Form Template 1',
-        description: 'Form Template Description 1',
+      const templateToDisable = await service.create({
+        name: 'Form Template To Disable',
+        description: 'Form Template Description To Disable',
         file: emptyFile,
         pageWidth: 800,
         pageHeight: 1035,
@@ -381,13 +380,47 @@ describe('FormTemplatesIntegrationTest', () => {
         disabled: false,
       });
 
-      const updatedFormTemplate = await service.update(formTemplate1!.id, {
+      const updatedFormTemplate = await service.update(templateToDisable!.id, {
         disabled: true,
       });
 
       const formTemplates = await service.findAll();
       expect(formTemplates).toHaveLength(1);
       expect(updatedFormTemplate.disabled).toEqual(true);
+    });
+  });
+
+  describe('remove', () => {
+    it('successfully removes a form template', async () => {
+      const templateToRemove = await service.create({
+        name: 'Form Template To Remove',
+        description: 'Form Template Description To Remove',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+
+      await service.remove(templateToRemove.id);
+
+      const formTemplates = await service.findAll();
+      expect(formTemplates).toHaveLength(0);
     });
   });
 });
