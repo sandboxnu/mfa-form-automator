@@ -3,27 +3,20 @@ import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescrip
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-import { fetchPdfFile } from '@web/utils/formInstanceUtils';
-import { useEffect, useState } from 'react';
 
 /**
  * The description page in the form instance creation flow, where users describe their form.
  */
 function Description() {
   const {
+    formTemplate,
     formInstanceName,
     formInstanceDescription,
     setFormInstanceName,
     setFormInstanceDescription,
-    formTemplate,
     formInstanceUseId,
+    pdfFile,
   } = useCreateFormInstance();
-
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
-  }, [formTemplate?.formDocLink]);
 
   return (
     <FormLayout
@@ -40,6 +33,7 @@ function Description() {
       boxContent={
         <NameAndDescriptionBox
           pdfFile={pdfFile}
+          fieldGroups={formTemplate?.fieldGroups ?? []}
           name={formInstanceName}
           description={formInstanceDescription}
           setName={setFormInstanceName}

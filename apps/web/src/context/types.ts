@@ -83,6 +83,7 @@ export interface CreateFormInstanceContextType {
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
   formInstanceUseId: string | null;
   setFormInstanceUseId: Dispatch<SetStateAction<string | null>>;
+  pdfFile: File | null;
 }
 
 export interface SignFormInstanceContextType {

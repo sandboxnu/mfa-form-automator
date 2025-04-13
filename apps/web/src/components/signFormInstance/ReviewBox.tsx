@@ -1,14 +1,21 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { FormView } from '../createFormInstance/FormView';
+import {
+  formEditorTranslateFieldGroups,
+  formEditorTranslateFormFields,
+} from '@web/utils/formInstanceUtils';
+import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
+import { FieldGroupBaseEntity } from '@web/client';
 
 export const ReviewBox = ({
-  formLink,
+  pdfFile,
   name,
   description,
+  fieldGroups,
 }: {
-  formLink: string;
+  pdfFile: File | null;
   name: string;
   description: string;
+  fieldGroups: FieldGroupBaseEntity[];
 }) => {
   const textInputStyle = {
     alignSelf: 'stretch',
@@ -56,7 +63,20 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <FormView useEmbed={true} pdfUrl={formLink} />
+        <Box width="580px">
+          <FormEditor
+            formTemplateName={name ?? ''}
+            pdfFile={pdfFile}
+            disableEdit
+            fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
+            formFields={formEditorTranslateFormFields(fieldGroups)}
+            setFormFields={() => {}}
+            setFieldGroups={() => {}}
+            scale={0.6875}
+            documentWidth={550}
+            showNav={false}
+          />
+        </Box>
       </Flex>
     </Flex>
   );

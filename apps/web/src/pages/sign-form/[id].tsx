@@ -9,15 +9,9 @@ import { PDFDisplayed } from '@web/components/signFormInstance/PDFDisplayed';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { useRouter } from 'next/router';
 import ErrorComponent from '../../components/Error';
+import { groupColors } from '@web/utils/formTemplateUtils';
 
 export function SignFormPage() {
-  const groupColors = [
-    ['#1367EA', '#EEF5FF'],
-    ['#BD21CA', '#FDEAFF'],
-    ['#7645E8', '#ECE4FF'],
-    ['#567E26', '#EDFFD6'],
-    ['#A16308', '#FFFDDB'],
-  ];
   const router = useRouter();
   const { id } = router.query;
 

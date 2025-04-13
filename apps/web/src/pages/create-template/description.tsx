@@ -38,6 +38,7 @@ function Description() {
       boxContent={
         <NameAndDescriptionBox
           pdfFile={pdfFile}
+          fieldGroups={[]}
           name={formTemplateName}
           description={formTemplateDescription}
           setName={setFormTemplateName}

@@ -18,12 +18,14 @@ import {
 import { Scope } from '@web/client/types.gen.ts';
 import { useState } from 'react';
 import { UserSettings } from './UserSettings.tsx';
+import { useRouter } from 'next/router';
 
 /**
  * @returns the top bar of the application
  */
 export const TopBar: React.FC = () => {
   const { user } = useAuth();
+  const router = useRouter();
   const { data: positions } = useQuery({
     ...positionsControllerFindAllOptions(),
   });
@@ -57,7 +59,14 @@ export const TopBar: React.FC = () => {
         zIndex="sticky"
       >
         <Box minWidth={302}>
-          <Flex px="8" py="5" align="left">
+          <Flex
+            px="8"
+            py="5"
+            align="left"
+            onClick={() => {
+              router.push('/');
+            }}
+          >
             <Box
               width="0"
               height="0"
