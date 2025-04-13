@@ -4,31 +4,34 @@ import { useRouter } from 'next/router';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { AssignedGroupEntity, FormInstanceEntity } from '@web/client';
 import { AssignedAvatarGroup } from '@web/components/AssignedAvatarGroup.tsx';
-import { SignFormInstancePreview } from '@web/components/SignFormInstancePreview.tsx';
+import { formInstancesControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
 import { useEffect, useState } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { PreviewIcon } from '@web/static/icons';
+import { useQuery } from '@tanstack/react-query';
+import { isFullySigned } from '@web/utils/formInstanceUtils';
 
-export const ActiveFormList = ({
-  title,
-  pendingForms,
-  completedForms,
-}: {
-  title: string;
-  pendingForms: FormInstanceEntity[];
-  completedForms: FormInstanceEntity[];
-}) => {
-  const allActiveForms = [...pendingForms, ...completedForms];
-
+export const ActiveFormList = ({ title }: { title: string }) => {
   const router = useRouter();
 
+  const {
+    data: allActiveForms,
+    error,
+    isLoading,
+  } = useQuery({
+    ...formInstancesControllerFindAllOptions(),
+  });
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortedFormInstances, setSortedFormInstances] =
-    useState(allActiveForms);
+  const [sortedFormInstances, setSortedFormInstances] = useState<
+    FormInstanceEntity[]
+  >(allActiveForms || []);
 
   const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null);
 
   useEffect(() => {
+    if (!allActiveForms) return;
+
     const filteredAndSortedForms = allActiveForms
       .filter((formInstance) => {
         return formInstance.name
@@ -44,6 +47,10 @@ export const ActiveFormList = ({
 
     setSortedFormInstances(filteredAndSortedForms);
   }, [searchQuery, allActiveForms]);
+
+  if (isLoading || !allActiveForms || error) {
+    return <></>;
+  }
 
   return (
     <>
@@ -70,9 +77,9 @@ export const ActiveFormList = ({
               fontWeight="400"
               lineHeight="21px"
             >
-              {pendingForms.length === 1
+              {allActiveForms.length === 1
                 ? 'There is 1 active form instance'
-                : `There are ${pendingForms.length} active form instances`}
+                : `There are ${allActiveForms.length} active form instances`}
             </Text>
 
             <Box ml="auto">
@@ -161,14 +168,15 @@ export const ActiveFormList = ({
                       }
                     >
                       <Table.Cell py="12px" px="24px">
-                        {pendingForms.includes(formInstance) ? (
+                        {isFullySigned(formInstance) &&
+                        formInstance.markedCompleted ? (
                           <Status.Root
                             size="lg"
                             width="100px"
                             colorPalette="yellow"
                           >
                             <Status.Indicator />
-                            Pending
+                            Complete
                           </Status.Root>
                         ) : (
                           <Status.Root
@@ -177,7 +185,7 @@ export const ActiveFormList = ({
                             colorPalette="green"
                           >
                             <Status.Indicator />
-                            Complete
+                            Pending
                           </Status.Root>
                         )}
                       </Table.Cell>
