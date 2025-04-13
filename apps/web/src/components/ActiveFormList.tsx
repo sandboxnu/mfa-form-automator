@@ -25,8 +25,6 @@ export const ActiveFormList = ({ title }: { title: string }) => {
     enabled: !!user,
   });
 
-  console.log('hi');
-
   const [searchQuery, setSearchQuery] = useState('');
   const [sortedFormInstances, setSortedFormInstances] = useState<
     FormInstanceEntity[]
