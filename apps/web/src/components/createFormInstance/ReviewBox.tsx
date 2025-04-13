@@ -95,7 +95,7 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <FormView pdfUrl={formLink} />
+        <FormView pdfUrl={formLink} fieldGroups={[]} />
       </Flex>
     </Flex>
   );

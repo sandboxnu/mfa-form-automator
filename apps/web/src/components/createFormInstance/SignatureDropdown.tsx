@@ -224,7 +224,7 @@ export const SignatureDropdown = ({
 
                 // if the group id already exists, update it
                 const existingIndex = assignedGroupData.findIndex(
-                  (group) => group.fieldGroupId === field.id
+                  (group) => group.fieldGroupId === field.id,
                 );
                 if (existingIndex !== -1) {
                   const newAssignedGroupData = [...assignedGroupData];
