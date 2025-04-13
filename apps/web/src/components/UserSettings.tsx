@@ -57,10 +57,18 @@ export const UserSettings = ({
 
   const updateEmployee = useMutation({
     ...employeesControllerUpdateMutation(),
+    onMutate: () => {
+      setLoading(true);
+    },
+    onError: (error) => {
+      setLoading(false);
+    },
     onSuccess: () => {
       setSignatureText('');
       setCreateSignatureType('draw');
       refreshUser();
+      setLoading(false);
+      setIsSettingsOpen(false);
     },
   });
 
@@ -73,7 +81,7 @@ export const UserSettings = ({
       signatureText,
       signatureCanvas,
     );
-    setLoading(true);
+
     await updateEmployee.mutateAsync({
       path: {
         id: user?.id,
@@ -83,8 +91,6 @@ export const UserSettings = ({
         positionId: currentPositionId,
       },
     });
-    setLoading(false);
-    setIsSettingsOpen(false);
   };
 
   return (
