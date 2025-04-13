@@ -44,10 +44,10 @@ export const SignFormInstanceContextProvider = ({
   });
   const [signFormInstanceLoading, setSignFormInstanceLoading] = useState(false);
   const [fields, setFields] = useState<FormField[][]>([]);
-  const [groupNumbers, setGroupNumbers] = useState<Map<string, number>>();
+  const [groupNumber, setGroupNumber] = useState<number>(0);
   const [modifiedPdfLink, setModifiedPdfLink] = useState('');
   const [originalPdfLink, setOriginalPdfLink] = useState('');
-  const [assignedGroupIds, setAssignedGroupIds] = useState<string[]>();
+  const [assignedGroupId, setAssignedGroupId] = useState<string>();
   const router = useRouter();
   const signFormInstanceMutation = useMutation({
     ...formInstancesControllerSignFormInstanceMutation(),
@@ -70,36 +70,33 @@ export const SignFormInstanceContextProvider = ({
 
     const assignedGroups = formInstance?.assignedGroups.filter(
       (assignedGroup) =>
-        assignedGroup.signerDepartmentId === user?.departmentId ||
-        assignedGroup.signerEmployeeId === user?.id ||
-        assignedGroup.signerPositionId === user?.positionId ||
-        assignedGroup.signerEmployeeList
-          ?.map((employee) => employee.id)
-          .find((id) => id === user?.id),
+        (assignedGroup.signerDepartmentId === user?.departmentId ||
+          assignedGroup.signerEmployeeId === user?.id ||
+          assignedGroup.signerPositionId === user?.positionId ||
+          assignedGroup.signerEmployeeList
+            ?.map((employee) => employee.id)
+            .find((id) => id === user?.id)) &&
+        assignedGroup.signed == false,
     );
-    if (assignedGroups) {
-      assignedGroups.map((group) => {
-        [group.fieldGroupId, group.order];
-      });
-      setGroupNumbers(
-        new Map(
-          assignedGroups.map((group) => [group.fieldGroupId, group.order]),
-        ),
-      );
-      setAssignedGroupIds(assignedGroups.map((group) => group.id));
+    if (assignedGroups && assignedGroups.length > 0) {
+      setGroupNumber(assignedGroups[0]?.order);
+      setAssignedGroupId(assignedGroups[0].id);
     }
 
     const getFields = () => {
-      const numPages =
-        Math.max(
-          ...assignedGroups.flatMap((group) =>
-            group.fieldGroup.templateBoxes.map((box) => box.page),
-          ),
-        ) + 1;
-      const fields: FormField[][] = Array.from({ length: numPages }, () => []);
+      if (assignedGroups.length > 0) {
+        const numPages =
+          Math.max(
+            ...assignedGroups.flatMap((group) =>
+              group.fieldGroup.templateBoxes.map((box) => box.page),
+            ),
+          ) + 1;
+        const fields: FormField[][] = Array.from(
+          { length: numPages },
+          () => [],
+        );
 
-      assignedGroups.forEach((assignedGroup) =>
-        assignedGroup.fieldGroup.templateBoxes.forEach((templateBox) => {
+        assignedGroups[0].fieldGroup.templateBoxes.forEach((templateBox) => {
           if (templateBox.type === 'TEXT_FIELD') {
             fields[templateBox.page].push({
               ...templateBox,
@@ -115,11 +112,12 @@ export const SignFormInstanceContextProvider = ({
               },
             });
           }
-        }),
-      );
-      return fields;
+        });
+
+        return fields;
+      }
     };
-    const fields = getFields();
+    const fields = getFields() ?? [];
 
     setFields(fields);
     let i = 0;
@@ -243,27 +241,18 @@ export const SignFormInstanceContextProvider = ({
     });
     const pdfBytes = await pdfDoc.save();
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    if (blob && formInstance && assignedGroupIds) {
-      let error = false;
-      setSignFormInstanceLoading(true);
-      for (const [i, assignedGroupId] of assignedGroupIds.entries()) {
-        const res = await signFormInstanceMutation.mutateAsync({
-          body: {
-            file: blob,
-            assignedGroupId,
-          },
-          path: {
-            formInstanceId: formInstance?.id,
-          },
-        });
-        if (!res.assignedGroups[i].signed) {
-          error = true;
-        }
-      }
-      if (!error) {
-        router.push(submitLink).then(() => {
-          setSignFormInstanceLoading(false);
-        });
+    if (assignedGroupId && blob && formInstance) {
+      const res = await signFormInstanceMutation.mutateAsync({
+        body: {
+          file: blob,
+          assignedGroupId,
+        },
+        path: {
+          formInstanceId: formInstance?.id,
+        },
+      });
+      if (res) {
+        router.push(submitLink);
       }
     }
   };
@@ -295,10 +284,10 @@ export const SignFormInstanceContextProvider = ({
         modifiedPdfLink,
         fields,
         formInstance,
-        groupNumbers,
-        signFormInstanceLoading,
+        groupNumber,
         nextSignFormPage,
         updateField,
+        signFormInstanceLoading,
       }}
     >
       {children}
