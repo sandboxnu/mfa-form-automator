@@ -35,6 +35,6 @@ export const createSignatureImage: (
 
     // Use trimmed data URL to avoid excessive whitespace
     // This preserves the exact signature as drawn by the user with proper size
-    return signPad.getTrimmedCanvas().toDataURL('image/png');
+    return signPad.toDataURL('image/png');
   }
 };
