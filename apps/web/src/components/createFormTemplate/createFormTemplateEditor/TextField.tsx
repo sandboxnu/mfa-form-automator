@@ -45,6 +45,7 @@ export default function TextField({
       onDragStop={onStop}
       onResizeStop={onResizeStop}
       disableDragging={disableEdit}
+      disableResizing={disableEdit}
     >
       <Box display="flex" alignItems="center" justifyContent="center">
         {!disableEdit && selected && (
