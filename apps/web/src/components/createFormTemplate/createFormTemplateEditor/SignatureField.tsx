@@ -45,7 +45,18 @@ export default function SignatureField({
       onDragStop={onStop}
       onResizeStop={onResizeStop}
       disableDragging={disableEdit}
-      disableResizing={disableEdit}
+      enableResizing={
+        !disableEdit && {
+          top: false,
+          right: false,
+          bottom: false,
+          left: false,
+          topRight: false,
+          bottomRight: false,
+          bottomLeft: false,
+          topLeft: false,
+        }
+      }
     >
       <Box
         display="flex"

@@ -54,7 +54,6 @@ export default function Checkbox({
       onDragStop={onStop}
       onResizeStop={onResizeStop}
       disableDragging={disableEdit}
-      disableResizing={disableEdit}
     >
       {!disableEdit && selected && (
         <Box
