@@ -33,7 +33,10 @@ export const SignaturePad = ({
   useEffect(() => {
     if (signatureCanvas.current && signatureLink) {
       signatureCanvas.current.clear();
-      signatureCanvas.current.fromDataURL(signatureLink);
+      signatureCanvas.current.fromDataURL(signatureLink, {
+        width: 500,
+        height: 120,
+      });
     }
   }, [signatureCanvas, signatureLink]);
 
