@@ -79,6 +79,7 @@ jobs:
         run: yarn --cwd apps/server prisma migrate deploy
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
       - name: Run tests
         run: yarn test
         env:
