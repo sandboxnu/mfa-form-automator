@@ -83,6 +83,7 @@ jobs:
         run: yarn test
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/db?schema=public
           POSTMARK_SERVER_KEY: placeholder
           AZURE_STORAGE_CONNECTION_STRING: placeholder
 
