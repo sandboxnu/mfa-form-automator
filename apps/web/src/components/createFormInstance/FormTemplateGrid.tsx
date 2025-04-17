@@ -11,7 +11,7 @@ export const TemplateSelectGrid = ({
 }: {
   formTemplates: FormTemplateEntity[];
   allowCreate: boolean;
-  handleSelectTemplate: any;
+  handleSelectTemplate: (template: FormTemplateEntity) => void;
   selectedFormTemplate: FormTemplateEntity | null;
 }) => {
   return (
@@ -28,7 +28,7 @@ export const TemplateSelectGrid = ({
             key={template.id}
             flexDirection="column"
             onClick={() => {
-              handleSelectTemplate(template.id);
+              handleSelectTemplate(template);
             }}
             cursor="pointer"
             width="200px"

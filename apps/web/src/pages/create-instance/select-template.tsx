@@ -6,33 +6,20 @@ import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@web/hooks/useAuth';
+import { formTemplatesControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
 
 function SelectTemplate() {
   const { user } = useAuth();
-  const { formTemplate, formInstanceUseId } = useCreateFormInstance();
-  const { setFormTemplate, setFormInstanceName } = useCreateFormInstance();
+  const {
+    formTemplate,
+    formInstanceUseId,
+    setFormTemplate,
+    setFormInstanceName,
+  } = useCreateFormInstance();
 
-  const handleSelectTemplate = async (id: string) => {
-    try {
-      const response = await fetch(`/api/form-templates/${id}`);
-      if (!response.ok) throw new Error('Failed to find form template');
-
-      const template: FormTemplateEntity = await response.json();
-      setFormTemplate(template);
-      setFormInstanceName(template.name);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const { data: formTemplates } = useQuery<FormTemplateEntity[]>({
-    queryKey: ['api', 'form-templates'],
-    queryFn: async () => {
-      const response = await fetch('/api/form-templates');
-      if (!response.ok) throw new Error('Failed to get form templates');
-      return response.json();
-    },
-  });
+  const { data: formTemplates } = useQuery(
+    formTemplatesControllerFindAllOptions(),
+  );
 
   return (
     <FormLayout
@@ -52,7 +39,10 @@ function SelectTemplate() {
           allowCreate={
             user?.scope === Scope.ADMIN || user?.scope === Scope.CONTRIBUTOR
           }
-          handleSelectTemplate={handleSelectTemplate}
+          handleSelectTemplate={(template: FormTemplateEntity) => {
+            setFormTemplate(template);
+            setFormInstanceName(template.name);
+          }}
           selectedFormTemplate={formTemplate}
         />
       }
