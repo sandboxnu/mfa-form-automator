@@ -63,6 +63,7 @@ export const FormEditor = ({
   const [groupNum, setGroupNum] = useState(fieldGroups.size);
   const [selectedField, setSelectedField] = useState<string | null>();
   const [highlightedField, setHighlightedField] = useState<string>();
+  const [lastClickTime, setLastClickTime] = useState(0);
 
   // Initialize pageRefs when totalPages changes
   useEffect(() => {
@@ -266,7 +267,14 @@ export const FormEditor = ({
       setPageNum(pageNumber);
       const pageRef = pageRefs.current[pageNumber - 1];
       if (pageRef && scrollContainerRef.current) {
-        pageRef.scrollIntoView({ behavior: 'smooth' });
+        const now = Date.now();
+        const isRapidClick = now - lastClickTime < 300; // Consider clicks within 300ms as rapid
+        setLastClickTime(now);
+        
+        // Use immediate scrolling for rapid clicks, smooth scrolling otherwise
+        pageRef.scrollIntoView({ 
+          behavior: isRapidClick ? 'auto' : 'smooth' 
+        });
       }
     }
   };
