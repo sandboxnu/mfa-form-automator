@@ -270,10 +270,10 @@ export const FormEditor = ({
         const now = Date.now();
         const isRapidClick = now - lastClickTime < 300; // Consider clicks within 300ms as rapid
         setLastClickTime(now);
-        
+
         // Use immediate scrolling for rapid clicks, smooth scrolling otherwise
-        pageRef.scrollIntoView({ 
-          behavior: isRapidClick ? 'auto' : 'smooth' 
+        pageRef.scrollIntoView({
+          behavior: isRapidClick ? 'auto' : 'smooth',
         });
       }
     }
