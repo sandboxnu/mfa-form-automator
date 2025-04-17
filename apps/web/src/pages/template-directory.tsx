@@ -12,7 +12,6 @@ import {
   formTemplatesControllerFindAllOptions,
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
-  formTemplatesControllerFindOneOptions,
 } from '@web/client/@tanstack/react-query.gen';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
@@ -60,8 +59,6 @@ function TemplateDirectory() {
   );
   // isOpen for the 'are you sure you want to delete' modal
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  // refresh form select template on change
-  const [refresh, setRefresh] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortedFormTemplates, setSortedFormTemplates] = useState<
     FormTemplateEntity[]
@@ -69,20 +66,6 @@ function TemplateDirectory() {
   const { data: formTemplates } = useQuery(
     formTemplatesControllerFindAllOptions(),
   );
-
-  const findOneTemplateMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const response = await queryClient.fetchQuery(
-        formTemplatesControllerFindOneOptions({
-          path: { id },
-        }),
-      );
-      return response;
-    },
-    onSuccess: (data) => {
-      setFormTemplate(data);
-    },
-  });
 
   useEffect(() => {
     if (!formTemplates) return;
@@ -98,16 +81,6 @@ function TemplateDirectory() {
         .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance),
     );
   }, [searchQuery, formTemplates]);
-
-  /**
-   * Sets the clicked form template to be chosen, allowing the user to select other
-   * features like editing and deleting for this form.  Note this does NOT prefill
-   * the useCreateFormTemplate data.
-   * @param id the id of the form template selected on screen
-   */
-  const handleSelectTemplate = async (id: string) => {
-    await findOneTemplateMutation.mutateAsync(id);
-  };
 
   const disableFormTemplateMutation = useMutation({
     ...formTemplatesControllerUpdateMutation(),
@@ -143,7 +116,6 @@ function TemplateDirectory() {
         throw e;
       });
 
-    setRefresh(!refresh);
     setIsOpen(false);
     setFormTemplate(null);
   };
@@ -314,10 +286,10 @@ function TemplateDirectory() {
         <TemplateSelectGrid
           formTemplates={sortedFormTemplates!!}
           allowCreate={false}
-          handleSelectTemplate={handleSelectTemplate}
+          handleSelectTemplate={(template: FormTemplateEntity) =>
+            setFormTemplate(template)
+          }
           selectedFormTemplate={formTemplate}
-          refresh={refresh}
-          setRefresh={setRefresh}
         />
 
         <Flex
