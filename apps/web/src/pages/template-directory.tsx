@@ -60,8 +60,6 @@ function TemplateDirectory() {
   );
   // isOpen for the 'are you sure you want to delete' modal
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  // refresh form select template on change
-  const [refresh, setRefresh] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortedFormTemplates, setSortedFormTemplates] = useState<
     FormTemplateEntity[]
@@ -143,7 +141,6 @@ function TemplateDirectory() {
         throw e;
       });
 
-    setRefresh(!refresh);
     setIsOpen(false);
     setFormTemplate(null);
   };
@@ -316,8 +313,6 @@ function TemplateDirectory() {
           allowCreate={false}
           handleSelectTemplate={handleSelectTemplate}
           selectedFormTemplate={formTemplate}
-          refresh={refresh}
-          setRefresh={setRefresh}
         />
 
         <Flex

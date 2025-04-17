@@ -1,14 +1,14 @@
-import { Scope } from '@web/client/types.gen';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
-import { FormTemplateEntity } from '@web/client/types.gen';
+import { FormTemplateEntity, Scope } from '@web/client/types.gen';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@web/hooks/useAuth';
 
 function SelectTemplate() {
+  const { user } = useAuth();
   const { formTemplate, formInstanceUseId } = useCreateFormInstance();
   const { setFormTemplate, setFormInstanceName } = useCreateFormInstance();
 
@@ -49,7 +49,9 @@ function SelectTemplate() {
       boxContent={
         <TemplateSelectGrid
           formTemplates={formTemplates!!}
-          allowCreate={true}
+          allowCreate={
+            user?.scope === Scope.ADMIN || user?.scope === Scope.CONTRIBUTOR
+          }
           handleSelectTemplate={handleSelectTemplate}
           selectedFormTemplate={formTemplate}
         />
