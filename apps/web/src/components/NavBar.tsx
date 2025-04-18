@@ -10,7 +10,7 @@ import {
   DropdownDownArrow,
   DropdownUpArrow,
   TemplateFolder,
-  EmployeeDirectory,
+  EmployeeDirectoryIcon,
   InstancesIcon,
   InstancesIconActive,
 } from 'apps/web/src/static/icons.tsx';
@@ -60,8 +60,12 @@ const icons = {
   testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
   template: <TemplateFolder boxSize="24px" mr="2" fill="#5E5E5E" />,
   templateActive: <TemplateFolder boxSize="24px" mr="2" fill="black" />,
-  employeeDirectory: <EmployeeDirectory boxSize="24px" mr="2" />,
-  employeeDirectoryActive: <EmployeeDirectory boxSize="24px" mr="2" />,
+  employeeDirectory: (
+    <EmployeeDirectoryIcon boxSize="24px" mr="2" stroke="#5E5E5E" />
+  ),
+  employeeDirectoryActive: (
+    <EmployeeDirectoryIcon boxSize="24px" mr="2" stroke="black" />
+  ),
   instances: <InstancesIcon boxSize="24px" mr="2" />,
   instancesActive: <InstancesIconActive boxSize="24px" mr="2" />,
 };
