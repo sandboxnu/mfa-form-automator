@@ -262,7 +262,7 @@ export const FormButtons = ({
 
     setCreateFormLoading(true);
 
-    if (FormInteractionType.CreateFormInstance) {
+    if (type == FormInteractionType.CreateFormInstance) {
       await createFormInstanceMutation
         .mutateAsync({
           body: {
@@ -310,8 +310,7 @@ export const FormButtons = ({
           });
           throw e;
         });
-    } else {
-      // form instance edit mode -> submit changes
+    } else if(FormInteractionType.EditFormInstance == type){
     }
   };
 

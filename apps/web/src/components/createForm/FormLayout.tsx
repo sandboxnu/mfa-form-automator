@@ -68,21 +68,21 @@ export const FormLayout = ({
         flexDirection="column"
         justifyContent={'center'}
         alignItems={
-          FormInteractionType.CreateFormInstance && pageNumber == 1
+          type == FormInteractionType.CreateFormInstance && pageNumber == 1
             ? 'auto'
             : 'center'
         }
         gap="20px"
         borderRadius="12px"
         border={
-          FormInteractionType.CreateFormInstance && pageNumber == 1
+          type == FormInteractionType.CreateFormInstance && pageNumber == 1
             ? 'transparent'
             : '1px solid #E5E5E5'
         }
         height="auto"
         margin="16px 36px 16px 36px"
         backgroundColor={
-          FormInteractionType.CreateFormInstance && pageNumber == 1
+          type == FormInteractionType.CreateFormInstance && pageNumber == 1
             ? 'transparent'
             : '#FFF'
         }

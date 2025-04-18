@@ -12,6 +12,7 @@ import {
   TemplateFolder,
   EmployeeDirectory,
   InstancesIcon,
+  InstancesIconActive,
 } from 'apps/web/src/static/icons.tsx';
 import Link from 'next/link';
 import {
@@ -62,9 +63,7 @@ const icons = {
   employeeDirectory: <EmployeeDirectory boxSize="24px" mr="2" />,
   employeeDirectoryActive: <EmployeeDirectory boxSize="24px" mr="2" />,
   instances: <InstancesIcon boxSize="24px" mr="2" />,
-  instancesActive: (
-    <InstancesIcon boxSize="24px" mr="2" stroke="#5E5E5E" fill="#5E5E5E" />
-  ),
+  instancesActive: <InstancesIconActive boxSize="24px" mr="2" />,
 };
 
 type IconKeys = keyof typeof icons;

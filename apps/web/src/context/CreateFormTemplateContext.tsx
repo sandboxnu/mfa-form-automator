@@ -43,7 +43,8 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
     if (
       !pdfFile &&
       router.pathname !== '/create-template/upload' &&
-      router.pathname !== '/template-directory'
+      router.pathname !== '/template-directory' &&
+      router.pathname !== '/create-template/success'
     ) {
       router.push('/create-template/upload');
     }

@@ -1,6 +1,7 @@
 import { Scope } from '@web/client';
 import { SuccessPage } from '@web/components/createForm/SuccessPage';
 import isAuth from '@web/components/isAuth';
+import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { useRouter } from 'next/router';
 
