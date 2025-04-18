@@ -56,7 +56,7 @@ function InputFields() {
       backLink={'/create-template/description'}
       disabled={
         Object.values(formFields)
-          .map((page) => page.values().toArray())
+          .map((page) => Array.from(page.values()))
           .reduce((prev, curr) => prev + curr.length, 0) === 0
       }
     />
