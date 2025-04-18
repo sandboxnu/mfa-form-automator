@@ -12,6 +12,7 @@ function AssignGroups() {
     formInstanceDescription,
     formTemplate,
     formInstanceUseId,
+    setAssignedGroupData,
   } = useCreateFormInstance();
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
