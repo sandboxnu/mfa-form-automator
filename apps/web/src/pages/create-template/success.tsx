@@ -12,7 +12,7 @@ function Success() {
   return (
     <SuccessPage
       message={
-        formTemplateUseId
+        formTemplateUseId?.substring(0, 6)
           ? 'Your form template has been updated!'
           : 'Your form template has been created!'
       }

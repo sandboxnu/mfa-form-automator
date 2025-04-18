@@ -1,6 +1,10 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
+import {
+  CreateFieldGroupDto,
+  CreateTemplateBoxDto,
+  FormInstanceEntity,
+} from '@web/client';
 import {
   formInstancesControllerCreateMutation,
   formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
@@ -20,6 +24,7 @@ import { FormInteractionType } from './types';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 import { useState } from 'react';
+import { useUserFormsContext } from '@web/context/UserFormsContext';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -62,6 +67,8 @@ export const FormButtons = ({
     formInstanceName,
     formTemplate,
     formInstanceDescription,
+    formInstanceUseId,
+    setFormInstanceUseId,
   } = useCreateFormInstance();
   const [createFormLoading, setCreateFormLoading] = useState(false);
   const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
@@ -263,6 +270,7 @@ export const FormButtons = ({
     setCreateFormLoading(true);
 
     if (type == FormInteractionType.CreateFormInstance) {
+      let createdForm: FormInstanceEntity;
       await createFormInstanceMutation
         .mutateAsync({
           body: {
@@ -299,6 +307,8 @@ export const FormButtons = ({
           router.push(submitLink).then(() => {
             setCreateFormLoading(false);
           });
+          // set use id for potential edit mode on the success screen
+          setFormInstanceUseId('create' + response.id);
           return response;
         })
         .catch((e) => {
@@ -310,7 +320,55 @@ export const FormButtons = ({
           });
           throw e;
         });
-    } else if(FormInteractionType.EditFormInstance == type){
+      // populate the instance use id in case edited on the next page
+    } else if (FormInteractionType.EditFormInstance == type) {
+      await updateFormInstanceMutation
+        .mutateAsync({
+          body: {
+            name: formInstanceName ?? formTemplate.name,
+            assignedGroups: assignedGroupData.map((data, _) => {
+              return {
+                order: data.order,
+                fieldGroupId: data.fieldGroupId,
+                signerType: data.signerType,
+                signerEmployeeList: data.signerEmployeeList,
+                signerDepartmentId: data.signerDepartmentId,
+                signerPositionId: data.signerPositionId,
+                signerEmployeeId: data.signerEmployeeId,
+              };
+            }),
+            description: formInstanceDescription ?? formTemplate.description!!,
+          },
+          path: {
+            id: formInstanceUseId!!,
+          },
+        })
+        .then(async (response) => {
+          await queryClient.invalidateQueries({
+            queryKey: formInstancesControllerFindAllQueryKey(),
+          });
+          await queryClient.invalidateQueries({
+            queryKey:
+              formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+          });
+          await queryClient.invalidateQueries({
+            queryKey:
+              formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+          });
+          router.push(submitLink).then(() => {
+            setCreateFormLoading(false);
+          });
+          return response;
+        })
+        .catch((e) => {
+          toaster.create({
+            title: 'Failed to create form instance',
+            description: (e as Error).message,
+            type: 'error',
+            duration: 3000,
+          });
+          throw e;
+        });
     }
   };
 
