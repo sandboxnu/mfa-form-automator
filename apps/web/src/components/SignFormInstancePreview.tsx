@@ -34,6 +34,7 @@ export const SignFormInstancePreview = ({
   formInstance?: FormInstanceEntity;
 }) => {
   const router = useRouter();
+  const [reviewedForm, setReviewedForm] = useState(false);
   const [markedCompletedLoading, setMarkedCompletedLoading] = useState(false);
   const { user } = useAuth();
 
@@ -76,6 +77,16 @@ export const SignFormInstancePreview = ({
         formInstanceId: formInstance?.id,
       },
     });
+  };
+
+  const openForm = async () => {
+    const url =
+      formInstance.assignedGroups[formInstance.assignedGroups.length - 1]
+        .signedDocLink;
+    if (url) {
+      window.open(url, '_blank');
+      setReviewedForm(true);
+    }
   };
 
   const nextAssignedGroup = nextSigner(formInstance);
@@ -212,28 +223,49 @@ export const SignFormInstancePreview = ({
                   </Flex>
                 </Button>
               )}
+              {
+                <Button
+                  height="32px"
+                  padding="4px 16px"
+                  borderRadius="6px"
+                  background="#1367EA"
+                  onClick={openForm}
+                  _hover={{
+                    background: '#1367EA',
+                  }}
+                >
+                  <Flex gap="8px" alignItems="center" justifyContent="center">
+                    <Text color="#FFF">Open Form </Text>
+                  </Flex>
+                </Button>
+              }
+
               {!nextAssignedGroup &&
                 !formInstance.markedCompleted &&
                 user.id === formInstance.originator.id && (
-                  <Button
-                    width="158px"
-                    height="32px"
-                    padding="4px 16px"
-                    borderRadius="6px"
-                    background="#1367EA"
-                    onClick={handleApproveFormInstance}
-                    _hover={{
-                      background: '#1367EA',
-                    }}
-                    loading={markedCompletedLoading}
-                    disabled={markedCompletedLoading}
-                  >
-                    <Flex gap="8px" alignItems="center" justifyContent="center">
-                      <PenSigningIcon color="#FFF" />
-
-                      <Text color="#FFF">Mark Completed</Text>
-                    </Flex>
-                  </Button>
+                  <>
+                    <Button
+                      height="32px"
+                      padding="4px 16px"
+                      borderRadius="6px"
+                      background="#1367EA"
+                      onClick={handleApproveFormInstance}
+                      _hover={{
+                        background: '#1367EA',
+                      }}
+                      loading={markedCompletedLoading}
+                      disabled={markedCompletedLoading || !reviewedForm}
+                    >
+                      <Flex
+                        gap="8px"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <PenSigningIcon color="#FFF" />
+                        <Text color="#FFF">Mark Completed</Text>
+                      </Flex>
+                    </Button>
+                  </>
                 )}
             </Dialog.Footer>
           </Dialog.Content>
