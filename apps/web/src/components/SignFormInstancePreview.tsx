@@ -79,7 +79,7 @@ export const SignFormInstancePreview = ({
     });
   };
 
-  const openForm = async () => {
+  const openForm = () => {
     const url =
       formInstance.assignedGroups[formInstance.assignedGroups.length - 1]
         .signedDocLink;
