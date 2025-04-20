@@ -96,6 +96,8 @@ export const SignatureDropdown = ({
     }
   }, [assignedGroupData, field.id]);
 
+  // this is not ideal, we should just use on onClick handler fucntion
+  // instead of useEffect
   useEffect(() => {
     switch (activeTab) {
       case 'Employee':
@@ -182,6 +184,9 @@ export const SignatureDropdown = ({
                 onClick={() => {
                   setActiveTab(tab);
                   setSelectedOption(null);
+                  setAssignedGroupData((prev) =>
+                    prev.filter((group) => group.fieldGroupId !== field.id),
+                  );
                 }}
                 flex="1"
                 borderRadius="0"
