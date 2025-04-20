@@ -1,26 +1,18 @@
 import { Grid, Box, Flex, Text, Button } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
 import { PDFDocument } from '../PDFDocument';
 import router from 'next/router';
 import { FormTemplateEntity } from '@web/client';
-import { useEffect, useState } from 'react';
-import { queryClient } from '@web/pages/_app';
-import { formTemplatesControllerFindAllQueryKey } from '@web/client/@tanstack/react-query.gen';
 
 export const TemplateSelectGrid = ({
   formTemplates,
   allowCreate,
   handleSelectTemplate,
   selectedFormTemplate,
-  refresh,
-  setRefresh,
 }: {
   formTemplates: FormTemplateEntity[];
   allowCreate: boolean;
-  handleSelectTemplate: any;
+  handleSelectTemplate: (template: FormTemplateEntity) => void;
   selectedFormTemplate: FormTemplateEntity | null;
-  refresh?: boolean;
-  setRefresh?: any;
 }) => {
   return (
     <Grid
@@ -36,7 +28,7 @@ export const TemplateSelectGrid = ({
             key={template.id}
             flexDirection="column"
             onClick={() => {
-              handleSelectTemplate(template.id);
+              handleSelectTemplate(template);
             }}
             cursor="pointer"
             width="200px"
