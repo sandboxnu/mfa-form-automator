@@ -237,7 +237,7 @@ export const FormButtons = ({
         })
         .catch((e) => {
           toaster.create({
-            title: 'Failed to create form template',
+            title: 'Failed to update form template',
             description: (e as Error).message,
             type: 'error',
             duration: 3000,
@@ -293,22 +293,9 @@ export const FormButtons = ({
           },
         })
         .then(async (response) => {
-          await queryClient.invalidateQueries({
-            queryKey: formInstancesControllerFindAllQueryKey(),
-          });
-          await queryClient.invalidateQueries({
-            queryKey:
-              formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
-          });
-          await queryClient.invalidateQueries({
-            queryKey:
-              formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
-          });
           router.push(submitLink).then(() => {
             setCreateFormLoading(false);
           });
-          // set use id for potential edit mode on the success screen
-          setFormInstanceUseId('create' + response.id);
           return response;
         })
         .catch((e) => {
@@ -344,17 +331,6 @@ export const FormButtons = ({
           },
         })
         .then(async (response) => {
-          await queryClient.invalidateQueries({
-            queryKey: formInstancesControllerFindAllQueryKey(),
-          });
-          await queryClient.invalidateQueries({
-            queryKey:
-              formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
-          });
-          await queryClient.invalidateQueries({
-            queryKey:
-              formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
-          });
           router.push(submitLink).then(() => {
             setCreateFormLoading(false);
           });
@@ -362,7 +338,7 @@ export const FormButtons = ({
         })
         .catch((e) => {
           toaster.create({
-            title: 'Failed to create form instance',
+            title: 'Failed to update form instance',
             description: (e as Error).message,
             type: 'error',
             duration: 3000,
