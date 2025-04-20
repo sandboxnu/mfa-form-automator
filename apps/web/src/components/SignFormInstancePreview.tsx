@@ -82,7 +82,7 @@ export const SignFormInstancePreview = ({
   const openForm = () => {
     const url =
       formInstance.assignedGroups[formInstance.assignedGroups.length - 1]
-        .signedDocLink;
+        .signedDocLink ?? formInstance.formDocLink;
     if (url) {
       window.open(url, '_blank');
       setReviewedForm(true);
