@@ -151,7 +151,6 @@ describe('FormTemplatesIntegrationTest', () => {
       expect(formTemplate.fieldGroups[0].templateBoxes[0].y_coordinate).toBe(0);
       expect(formTemplate.fieldGroups[0].order).toBe(0);
       expect(formTemplate.fieldGroups[0].name).toBe('Field Group');
-      expect(formTemplate.formInstances).toHaveLength(0);
       expect(formTemplate.formDocLink).toBe('pdfLink');
     });
   });
@@ -278,12 +277,16 @@ describe('FormTemplatesIntegrationTest', () => {
         disabled: false,
       });
       const formTemplates: FormTemplateEntity[] = await service.findAll();
-      expect(formTemplates).toContainEqual(formTemplate3);
+      expect(
+        formTemplates.some((template) => template.id === formTemplate3.id),
+      ).toBe(true);
       await service.update(formTemplate3.id, {
         disabled: true,
       });
       const formTemplatesAfter: FormTemplateEntity[] = await service.findAll();
-      expect(formTemplatesAfter.includes(formTemplate3)).toBe(false);
+      expect(
+        formTemplatesAfter.some((template) => template.id === formTemplate3.id),
+      ).toBe(false);
     });
   });
 

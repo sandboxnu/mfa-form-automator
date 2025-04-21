@@ -57,38 +57,6 @@ export class FormTemplatesService {
             templateBoxes: true,
           },
         },
-        formInstances: {
-          include: {
-            formTemplate: true,
-            originator: {
-              include: {
-                position: {
-                  include: {
-                    department: true,
-                  },
-                },
-              },
-            },
-            assignedGroups: {
-              include: {
-                signerPosition: {
-                  include: {
-                    department: true,
-                  },
-                },
-                signerDepartment: true,
-                signerEmployee: true,
-                signerEmployeeList: true,
-                signingEmployee: true,
-                fieldGroup: {
-                  include: {
-                    templateBoxes: true,
-                  },
-                },
-              },
-            },
-          },
-        },
       },
     });
     return newFormTemplate;
