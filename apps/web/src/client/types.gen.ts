@@ -183,6 +183,55 @@ export type FieldGroupBaseEntity = {
   templateBoxes: Array<TemplateBoxBaseEntity>;
 };
 
+export type FormTemplateEntity = {
+  id: string;
+  name: string;
+  pageWidth: number;
+  pageHeight: number;
+  formDocLink: string;
+  description: string | null;
+  disabled: boolean;
+  fieldGroups: Array<FieldGroupBaseEntity>;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type UpdateFormTemplateDto = {
+  name?: string;
+  description?: string;
+  pageWidth?: number;
+  pageHeight?: number;
+  fieldGroups?: Array<CreateFieldGroupDto>;
+  disabled?: boolean;
+};
+
+export type CreateDepartmentDto = {
+  name: string;
+};
+
+export type UpdateDepartmentDto = {
+  name?: string;
+};
+
+export type CreateAssignedGroupDto = {
+  order: number;
+  fieldGroupId: string;
+  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
+  signerEmployeeId?: string;
+  signerPositionId?: string;
+  signerDepartmentId?: string;
+  signerEmployeeList: Array<ConnectEmployeeDto>;
+};
+
+export type CreateFormInstanceDto = {
+  name: string;
+  description: string;
+  assignedGroups: Array<CreateAssignedGroupDto>;
+  originatorId: string;
+  formTemplateId: string;
+  formDocLink: string;
+};
+
 export type FormTemplateBaseEntity = {
   id: string;
   name: string;
@@ -233,56 +282,6 @@ export type FormInstanceEntity = {
   assignedGroups: Array<AssignedGroupEntity>;
   originatorId: string;
   formTemplateId: string;
-};
-
-export type FormTemplateEntity = {
-  id: string;
-  name: string;
-  pageWidth: number;
-  pageHeight: number;
-  formDocLink: string;
-  description: string | null;
-  disabled: boolean;
-  fieldGroups: Array<FieldGroupBaseEntity>;
-  formInstances: Array<FormInstanceEntity>;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type UpdateFormTemplateDto = {
-  name?: string;
-  description?: string;
-  pageWidth?: number;
-  pageHeight?: number;
-  fieldGroups?: Array<CreateFieldGroupDto>;
-  disabled?: boolean;
-};
-
-export type CreateDepartmentDto = {
-  name: string;
-};
-
-export type UpdateDepartmentDto = {
-  name?: string;
-};
-
-export type CreateAssignedGroupDto = {
-  order: number;
-  fieldGroupId: string;
-  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
-  signerEmployeeId?: string;
-  signerPositionId?: string;
-  signerDepartmentId?: string;
-  signerEmployeeList: Array<ConnectEmployeeDto>;
-};
-
-export type CreateFormInstanceDto = {
-  name: string;
-  description: string;
-  assignedGroups: Array<CreateAssignedGroupDto>;
-  originatorId: string;
-  formTemplateId: string;
-  formDocLink: string;
 };
 
 export type UpdateFormInstanceDto = {

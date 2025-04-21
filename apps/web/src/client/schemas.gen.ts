@@ -589,6 +589,175 @@ export const FieldGroupBaseEntitySchema = {
   ],
 } as const;
 
+export const FormTemplateEntitySchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
+    },
+    formDocLink: {
+      type: 'string',
+    },
+    description: {
+      type: 'string',
+      nullable: true,
+    },
+    disabled: {
+      type: 'boolean',
+    },
+    fieldGroups: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/FieldGroupBaseEntity',
+      },
+    },
+    createdAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    updatedAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+  },
+  required: [
+    'id',
+    'name',
+    'pageWidth',
+    'pageHeight',
+    'formDocLink',
+    'description',
+    'disabled',
+    'fieldGroups',
+    'createdAt',
+    'updatedAt',
+  ],
+} as const;
+
+export const UpdateFormTemplateDtoSchema = {
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+    },
+    description: {
+      type: 'string',
+    },
+    pageWidth: {
+      type: 'number',
+    },
+    pageHeight: {
+      type: 'number',
+    },
+    fieldGroups: {
+      minItems: 1,
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/CreateFieldGroupDto',
+      },
+    },
+    disabled: {
+      type: 'boolean',
+    },
+  },
+} as const;
+
+export const CreateDepartmentDtoSchema = {
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+    },
+  },
+  required: ['name'],
+} as const;
+
+export const UpdateDepartmentDtoSchema = {
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+    },
+  },
+} as const;
+
+export const CreateAssignedGroupDtoSchema = {
+  type: 'object',
+  properties: {
+    order: {
+      type: 'number',
+    },
+    fieldGroupId: {
+      type: 'string',
+    },
+    signerType: {
+      type: 'string',
+      enum: ['POSITION', 'DEPARTMENT', 'USER', 'USER_LIST'],
+    },
+    signerEmployeeId: {
+      type: 'string',
+    },
+    signerPositionId: {
+      type: 'string',
+    },
+    signerDepartmentId: {
+      type: 'string',
+    },
+    signerEmployeeList: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/ConnectEmployeeDto',
+      },
+    },
+  },
+  required: ['order', 'fieldGroupId', 'signerType', 'signerEmployeeList'],
+} as const;
+
+export const CreateFormInstanceDtoSchema = {
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+    },
+    description: {
+      type: 'string',
+    },
+    assignedGroups: {
+      minItems: 1,
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/CreateAssignedGroupDto',
+      },
+    },
+    originatorId: {
+      type: 'string',
+    },
+    formTemplateId: {
+      type: 'string',
+    },
+    formDocLink: {
+      type: 'string',
+    },
+  },
+  required: [
+    'name',
+    'description',
+    'assignedGroups',
+    'originatorId',
+    'formTemplateId',
+    'formDocLink',
+  ],
+} as const;
+
 export const FormTemplateBaseEntitySchema = {
   type: 'object',
   properties: {
@@ -825,182 +994,6 @@ export const FormInstanceEntitySchema = {
     'assignedGroups',
     'originatorId',
     'formTemplateId',
-  ],
-} as const;
-
-export const FormTemplateEntitySchema = {
-  type: 'object',
-  properties: {
-    id: {
-      type: 'string',
-    },
-    name: {
-      type: 'string',
-    },
-    pageWidth: {
-      type: 'number',
-    },
-    pageHeight: {
-      type: 'number',
-    },
-    formDocLink: {
-      type: 'string',
-    },
-    description: {
-      type: 'string',
-      nullable: true,
-    },
-    disabled: {
-      type: 'boolean',
-    },
-    fieldGroups: {
-      type: 'array',
-      items: {
-        $ref: '#/components/schemas/FieldGroupBaseEntity',
-      },
-    },
-    formInstances: {
-      type: 'array',
-      items: {
-        $ref: '#/components/schemas/FormInstanceEntity',
-      },
-    },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-  },
-  required: [
-    'id',
-    'name',
-    'pageWidth',
-    'pageHeight',
-    'formDocLink',
-    'description',
-    'disabled',
-    'fieldGroups',
-    'formInstances',
-    'createdAt',
-    'updatedAt',
-  ],
-} as const;
-
-export const UpdateFormTemplateDtoSchema = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-    },
-    description: {
-      type: 'string',
-    },
-    pageWidth: {
-      type: 'number',
-    },
-    pageHeight: {
-      type: 'number',
-    },
-    fieldGroups: {
-      minItems: 1,
-      type: 'array',
-      items: {
-        $ref: '#/components/schemas/CreateFieldGroupDto',
-      },
-    },
-    disabled: {
-      type: 'boolean',
-    },
-  },
-} as const;
-
-export const CreateDepartmentDtoSchema = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-    },
-  },
-  required: ['name'],
-} as const;
-
-export const UpdateDepartmentDtoSchema = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-    },
-  },
-} as const;
-
-export const CreateAssignedGroupDtoSchema = {
-  type: 'object',
-  properties: {
-    order: {
-      type: 'number',
-    },
-    fieldGroupId: {
-      type: 'string',
-    },
-    signerType: {
-      type: 'string',
-      enum: ['POSITION', 'DEPARTMENT', 'USER', 'USER_LIST'],
-    },
-    signerEmployeeId: {
-      type: 'string',
-    },
-    signerPositionId: {
-      type: 'string',
-    },
-    signerDepartmentId: {
-      type: 'string',
-    },
-    signerEmployeeList: {
-      type: 'array',
-      items: {
-        $ref: '#/components/schemas/ConnectEmployeeDto',
-      },
-    },
-  },
-  required: ['order', 'fieldGroupId', 'signerType', 'signerEmployeeList'],
-} as const;
-
-export const CreateFormInstanceDtoSchema = {
-  type: 'object',
-  properties: {
-    name: {
-      type: 'string',
-    },
-    description: {
-      type: 'string',
-    },
-    assignedGroups: {
-      minItems: 1,
-      type: 'array',
-      items: {
-        $ref: '#/components/schemas/CreateAssignedGroupDto',
-      },
-    },
-    originatorId: {
-      type: 'string',
-    },
-    formTemplateId: {
-      type: 'string',
-    },
-    formDocLink: {
-      type: 'string',
-    },
-  },
-  required: [
-    'name',
-    'description',
-    'assignedGroups',
-    'originatorId',
-    'formTemplateId',
-    'formDocLink',
   ],
 } as const;
 
