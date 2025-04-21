@@ -119,14 +119,14 @@ export class FormTemplatesController {
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
-    name: 'limit',
+    name: 'cursor',
     type: Number,
-    description: 'Limit on number of form templates to return',
+    description: 'Pagination cursor for form templates to return (pages of 8)',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
-    const formTemplates = await this.formTemplatesService.findAll(limit);
-    return formTemplates.map(
+  async findAll(@Query('cursor') cursor?: number) {
+    const formTemplates = await this.formTemplatesService.findAll(cursor);
+    return formTemplates?.map(
       (formTemplate) => new FormTemplateEntity(formTemplate),
     );
   }

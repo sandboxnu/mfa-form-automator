@@ -75,13 +75,13 @@ export class FormInstancesController {
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
-    name: 'limit',
+    name: 'cursor',
     type: Number,
-    description: 'Limit on number of form instances to return',
+    description: 'Pagination cursor for form instances to return (pages of 8)',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
-    const formInstances = await this.formInstancesService.findAll(limit);
+  async findAll(@Query('cursor') cursor?: number) {
+    const formInstances = await this.formInstancesService.findAll(cursor);
     return formInstances.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );

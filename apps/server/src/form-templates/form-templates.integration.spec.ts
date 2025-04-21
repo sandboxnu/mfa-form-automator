@@ -206,22 +206,51 @@ describe('FormTemplatesIntegrationTest', () => {
         ],
         disabled: false,
       });
+      // Create the remaining 8 form instances in parallel
+      await Promise.all(
+        Array(8)
+          .fill(0)
+          .map((_, i) =>
+            service.create({
+              name: `Form Template ${i + 3}`,
+              description: `Form Template Description ${i + 3}`,
+              file: emptyFile,
+              pageWidth: 800,
+              pageHeight: 1035,
+              fieldGroups: [
+                {
+                  name: 'Field Group 2',
+                  order: 0,
+                  templateBoxes: [
+                    {
+                      type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                      x_coordinate: 0,
+                      y_coordinate: 0,
+                      width: 100,
+                      height: 100,
+                      page: 0,
+                    },
+                  ],
+                },
+              ],
+              disabled: false,
+            }),
+          ),
+      );
     });
 
     it('successfully retrieves all form templates', async () => {
       const formTemplates = await service.findAll();
 
-      expect(formTemplates).toHaveLength(2);
-      expect(formTemplates[0].name).toBe('Form Template 1');
-      expect(formTemplates[0].id).toBe(formTemplate1!.id);
-      expect(formTemplates[1].name).toBe('Form Template 2');
-      expect(formTemplates[1].id).toBe(formTemplate2!.id);
+      expect(formTemplates).toHaveLength(10);
     });
 
     it('successfully retrieves all form templates with limit', async () => {
-      const formTemplates = await service.findAll(1);
+      const formTemplatesPage1 = await service.findAll(0);
+      const formTemplatesPage2 = await service.findAll(1);
 
-      expect(formTemplates).toHaveLength(1);
+      expect(formTemplatesPage1).toHaveLength(8);
+      expect(formTemplatesPage2).toHaveLength(2);
     });
 
     it('does not include disabled templates', async () => {

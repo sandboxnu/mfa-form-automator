@@ -96,12 +96,13 @@ export class FormTemplatesService {
 
   /**
    * Retrieve all form templates.
-   * @param limit the number of form templates we want to retrieve (optional)
+   * @param cursor the form instances to retrieve, paginated
    * @returns all form templates, hydrated
    */
-  async findAll(limit?: number) {
+  async findAll(cursor?: number) {
     const formTemplates = await this.prisma.formTemplate
       .findMany({
+        ...(cursor !== undefined ? { take: 8, skip: cursor * 8 } : {}),
         include: {
           fieldGroups: {
             include: {
@@ -141,7 +142,6 @@ export class FormTemplatesService {
             },
           },
         },
-        ...(limit && { take: limit }),
       })
       .then((templates) => templates.filter((item) => !item.disabled));
     return formTemplates;

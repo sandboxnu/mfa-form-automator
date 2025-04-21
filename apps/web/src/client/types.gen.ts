@@ -899,9 +899,9 @@ export type FormTemplatesControllerFindAllData = {
   path?: never;
   query?: {
     /**
-     * Limit on number of form templates to return
+     * Pagination cursor for form templates to return (pages of 8)
      */
-    limit?: number;
+    cursor?: number;
   };
   url: '/api/form-templates';
 };
@@ -1229,9 +1229,9 @@ export type FormInstancesControllerFindAllData = {
   path?: never;
   query?: {
     /**
-     * Limit on number of form instances to return
+     * Pagination cursor for form instances to return (pages of 8)
      */
-    limit?: number;
+    cursor?: number;
   };
   url: '/api/form-instances';
 };
