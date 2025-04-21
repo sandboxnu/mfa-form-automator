@@ -51,7 +51,6 @@ function InputFields() {
           />
         </Box>
       }
-      deleteFunction={() => {}}
       submitLink={'/create-template/review'}
       backLink={'/create-template/description'}
       disabled={

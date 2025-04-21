@@ -40,10 +40,6 @@ function Description() {
           setDescription={setFormInstanceDescription}
         />
       }
-      deleteFunction={() => {
-        setFormInstanceName(null);
-        setFormInstanceDescription(null);
-      }}
       submitLink={'/create-instance/assign-groups'}
       backLink={'/create-instance/select-template'}
       disabled={!formInstanceName}
