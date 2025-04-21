@@ -5,16 +5,14 @@ import { SearchAndSort } from '@web/components/SearchAndSort';
 import { AssignedGroupEntity, FormInstanceEntity } from '@web/client';
 import { AssignedAvatarGroup } from '@web/components/AssignedAvatarGroup.tsx';
 import { formInstancesControllerFindAllInfiniteOptions } from '@web/client/@tanstack/react-query.gen';
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { PreviewIcon } from '@web/static/icons';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { isFullySigned } from '@web/utils/formInstanceUtils';
-import { useAuth } from '@web/hooks/useAuth';
 
 export const ActiveFormList = ({ title }: { title: string }) => {
   const router = useRouter();
-  const { user } = useAuth();
 
   const {
     data: infiniteFormInstances,
@@ -35,7 +33,6 @@ export const ActiveFormList = ({ title }: { title: string }) => {
       }
       return lastPageParam + 1;
     },
-    enabled: !!user,
   });
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,8 +59,10 @@ export const ActiveFormList = ({ title }: { title: string }) => {
   );
 
   // Flatten the pages data
-  const allActiveForms =
-    infiniteFormInstances?.pages.flatMap((page) => page) || [];
+  const allActiveForms = useMemo(
+    () => infiniteFormInstances?.pages.flatMap((page) => page) || [],
+    [infiniteFormInstances],
+  );
 
   useEffect(() => {
     if (!allActiveForms.length) return;
