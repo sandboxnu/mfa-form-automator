@@ -31,6 +31,7 @@ export default function SignatureField({
       minWidth={!disableEdit ? '150px' : ''}
       minHeight={!disableEdit ? '50px' : ''}
       border={selected ? `1px solid blue` : ''}
+      className="field-box"
       style={{
         zIndex: 10,
         background: `${color}`,

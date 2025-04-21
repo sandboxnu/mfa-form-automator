@@ -31,6 +31,7 @@ export default function TextField({
       minWidth={!disableEdit ? '50px' : ''}
       minHeight={!disableEdit ? '10px' : ''}
       border={selected ? `1px solid blue` : ''}
+      className="field-box"
       style={{
         zIndex: 10,
         background: `${color}`,

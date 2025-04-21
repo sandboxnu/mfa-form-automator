@@ -30,6 +30,7 @@ export default function Checkbox({
       position={{ x: currentPosition.x, y: currentPosition.y }}
       size={{ height: currentPosition.height, width: currentPosition.width }}
       border={selected ? `1px solid blue` : ''}
+      className="field-box"
       enableResizing={{
         bottom: false,
         bottomLeft: false,
