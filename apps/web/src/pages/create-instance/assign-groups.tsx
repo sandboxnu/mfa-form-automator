@@ -43,7 +43,6 @@ function AssignGroups() {
           fieldGroups={formTemplate?.fieldGroups ?? []}
         />
       }
-      deleteFunction={() => {}}
       submitLink={'/create-instance/review'}
       backLink={'/create-instance/description'}
       disabled={formTemplate?.fieldGroups.length !== assignedGroupData.length}

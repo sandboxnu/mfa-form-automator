@@ -2,7 +2,7 @@ import { Box, Flex, Heading } from '@chakra-ui/react';
 import { FormInstanceEntity } from '@web/client';
 import { useState, useEffect } from 'react';
 import { SidePreviewForm } from './SidePreviewForm';
-import { formEditorTranslateFormFields } from '@web/utils/formInstanceUtils';
+import { getLatestSignedFormLink } from '@web/utils/formInstanceUtils';
 import { FormEditor } from './createFormTemplate/createFormTemplateEditor/FormEditor';
 import { groupColors } from '@web/utils/formTemplateUtils';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
@@ -32,8 +32,8 @@ export const FormPreview = ({
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   useEffect(() => {
-    fetchPdfFile(setPdfFile, formInstance?.formDocLink);
-  }, [formInstance?.formDocLink]);
+    fetchPdfFile(setPdfFile, getLatestSignedFormLink(formInstance));
+  }, [formInstance]);
 
   return (
     <>
@@ -79,9 +79,7 @@ export const FormPreview = ({
                 pdfFile={pdfFile}
                 disableEdit={true}
                 fieldGroups={fieldGroups}
-                formFields={formEditorTranslateFormFields(
-                  Array.from(fieldGroups.values()).map((v) => v.fieldGroup),
-                )}
+                formFields={[]}
                 setFormFields={() => {}}
                 setFieldGroups={() => {}}
                 scale={1}

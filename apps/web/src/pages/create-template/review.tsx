@@ -37,7 +37,6 @@ function Review() {
           fieldGroups={fieldGroups}
         />
       }
-      deleteFunction={() => {}}
       submitLink={'/create-template/success'}
       backLink={
         formTemplateUseId

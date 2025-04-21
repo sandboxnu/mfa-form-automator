@@ -40,14 +40,14 @@ export const SignFormInstancePreview = ({
   const completeFormInstanceMutation = useMutation({
     ...formInstancesControllerCompleteFormInstanceMutation(),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: formInstancesControllerFindAllQueryKey(),
       });
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey:
           formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
       });
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey:
           formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
       });
