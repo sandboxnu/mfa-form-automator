@@ -2564,36 +2564,26 @@
   resolved "https://registry.yarnpkg.com/@fontsource/hanken-grotesk/-/hanken-grotesk-4.5.2.tgz#6e3a6d7abaf9267205d0a5338daf2242fd8e7643"
   integrity sha512-1pe6B4LByvRd5jG+C95zEVo0MdOT8tsz/Vn8NsCtCXaw615AV2Y3J+EmNc/l80CESOc+m0apPhM4/gVyCBGMLg==
 
-"@hey-api/client-axios@0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@hey-api/client-axios/-/client-axios-0.6.1.tgz#d67e08c00cde66816668d35edfe0c634f5608c81"
-  integrity sha512-1rvO7L5l4fHCqJJlvr1bOFWR1XcjGgdPnqzTODRuOHdrighyCjt9lP2MR7wVQbGO+EjYM0qNIs5E1qxt12rwqA==
-
-"@hey-api/client-fetch@0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@hey-api/client-fetch/-/client-fetch-0.8.1.tgz#4c52b96e44f96e31c620e2a05b772cea84e775a0"
-  integrity sha512-AaVNVLBl7N9Fun7QDnb00YDubAFjB9ICi5U6kmzcJSnnQTQGRMsuBBRupQV5ERdMMFt71zjSDym7Z+gLVe8m3A==
-
 "@hey-api/client-next@0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@hey-api/client-next/-/client-next-0.2.1.tgz#d407518f518df67ce68cdf95ccc8a636b1f1ae08"
   integrity sha512-/FJceHUYqvkbbLbloUhUbNwqrpaJXNfivYtlUFQVz58yqLH/BX1WW7IE+kIiPxWN8oPYaTPvbb2yIKagK3HmAg==
 
-"@hey-api/json-schema-ref-parser@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/@hey-api/json-schema-ref-parser/-/json-schema-ref-parser-1.0.2.tgz"
-  integrity sha512-F6LSkttZcT/XiX3ydeDqTY3uRN3BLJMwyMTk4kg/ichZlKUp3+3Odv0WokSmXGSoZGTW/N66FROMYAm5NPdJlA==
+"@hey-api/json-schema-ref-parser@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@hey-api/json-schema-ref-parser/-/json-schema-ref-parser-1.0.4.tgz#818010c11f5790c406704f8743cf3538af10dbbb"
+  integrity sha512-IaJ4yFgU5r63KZyeySHRKSM1bavFIda8KdwCFi5BxQCIklltzEByBksNOPms+yHXpWWfR+OopIusVZV8roycYg==
   dependencies:
     "@jsdevtools/ono" "^7.1.3"
     "@types/json-schema" "^7.0.15"
     js-yaml "^4.1.0"
 
-"@hey-api/openapi-ts@0.64.1":
-  version "0.64.1"
-  resolved "https://registry.yarnpkg.com/@hey-api/openapi-ts/-/openapi-ts-0.64.1.tgz#32df1fb221cd7d00003fb6be811ec62cca9ebf97"
-  integrity sha512-d9FWyJKjyH4KeCjOoR5x8+zKER7h7EIRzk3Xo5a2ShAxNoq9HlAArLbWgJFnH7QypQ+f3q29mTp/z2Zw0XkP9g==
+"@hey-api/openapi-ts@0.66.5":
+  version "0.66.5"
+  resolved "https://registry.yarnpkg.com/@hey-api/openapi-ts/-/openapi-ts-0.66.5.tgz#9018584c02d7e409f87667e417d38bc142cdb941"
+  integrity sha512-3bk0UMrIYdF7IC+SoJ941jni0rmc0cTk10MzcKarW5ybR2z631UrIU1sHNzadftaYL/WK+dbaDRwJ5Juhmf9/A==
   dependencies:
-    "@hey-api/json-schema-ref-parser" "1.0.2"
+    "@hey-api/json-schema-ref-parser" "1.0.4"
     c12 "2.0.1"
     commander "13.0.0"
     handlebars "4.7.8"
