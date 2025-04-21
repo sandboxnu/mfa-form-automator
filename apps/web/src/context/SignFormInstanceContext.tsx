@@ -9,6 +9,7 @@ import {
 import { FormField, SignFormInstanceContextType } from '@web/context/types';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
+import { getLatestSignedFormLink } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
 import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
@@ -118,18 +119,9 @@ export const SignFormInstanceContextProvider = ({
       }
     };
     const fields = getFields() ?? [];
-
     setFields(fields);
-    let i = 0;
-    let currentFormDocLink = null;
-    while (
-      i < formInstance.assignedGroups.length &&
-      formInstance.assignedGroups[i].signedDocLink != null
-    ) {
-      currentFormDocLink = formInstance.assignedGroups[i].signedDocLink;
-      i++;
-    }
-    const pdfLink = currentFormDocLink ?? formInstance.formDocLink;
+
+    const pdfLink = getLatestSignedFormLink(formInstance);
     setOriginalPdfLink(pdfLink);
     setModifiedPdfLink(pdfLink);
   }, [
