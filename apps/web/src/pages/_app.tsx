@@ -99,7 +99,8 @@ export default function App({
   // to allow template context to be populated before moving into edit mode
   const formDirectoryPath = '/template-directory';
   const previewForm = '/preview-form';
-  const formInstancesPath = '/instance-directory';
+  const instancesDirectoryPath = '/instance-directory';
+  const employeeDirectoryPath = '/employee-directory';
 
   // Check if the current page is an error page
   const isErrorPage =
@@ -192,7 +193,10 @@ export default function App({
     );
   }
 
-  if (appProps.router.pathname.includes(formInstancesPath)) {
+  if (
+    appProps.router.pathname.includes(instancesDirectoryPath) ||
+    appProps.router.pathname.includes(employeeDirectoryPath)
+  ) {
     return (
       <>
         <WrapperComponent>

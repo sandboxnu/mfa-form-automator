@@ -46,19 +46,11 @@ export class FormTemplateEntity extends FormTemplateBaseEntity {
   })
   fieldGroups: FieldGroupBaseEntity[];
 
-  @ApiProperty()
-  formInstances: FormInstanceEntity[];
-
   constructor(partial: Partial<FormTemplateEntity>) {
     super(partial);
     if (partial.fieldGroups) {
       partial.fieldGroups = partial.fieldGroups.map(
         (fieldGroup) => new FieldGroupBaseEntity(fieldGroup),
-      );
-    }
-    if (partial.formInstances) {
-      partial.formInstances = partial.formInstances.map(
-        (formInstance) => new FormInstanceEntity(formInstance),
       );
     }
     Object.assign(this, partial);
