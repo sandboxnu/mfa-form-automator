@@ -55,6 +55,7 @@ const TemplateItem = memo(
     );
   },
 );
+TemplateItem.displayName = 'TemplateItem';
 
 const CreateTemplateButton = memo(() => (
   <Flex key="create-template" flexDirection="column" cursor="pointer">
@@ -86,6 +87,7 @@ const CreateTemplateButton = memo(() => (
     </Text>
   </Flex>
 ));
+CreateTemplateButton.displayName = 'CreateTemplateButton';
 
 // Memoized LoadMoreButton component
 const LoadMoreButton = memo(
@@ -122,6 +124,7 @@ const LoadMoreButton = memo(
     </Flex>
   ),
 );
+LoadMoreButton.displayName = 'LoadMoreButton';
 
 type TemplateSelectGridProps = {
   allowCreate: boolean;
@@ -211,3 +214,4 @@ export const TemplateSelectGrid = memo(
     );
   },
 );
+TemplateSelectGrid.displayName = 'TemplateSelectGrid';
