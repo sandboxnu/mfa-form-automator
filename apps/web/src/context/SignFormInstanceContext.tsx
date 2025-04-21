@@ -43,29 +43,51 @@ export const SignFormInstanceContextProvider = ({
       return failureCount < 3; // Retry up to 3 times for other errors
     },
   });
-  const [signFormInstanceLoading, setSignFormInstanceLoading] = useState(false);
   const [fields, setFields] = useState<FormField[][]>([]);
   const [groupNumber, setGroupNumber] = useState<number>(0);
   const [modifiedPdfLink, setModifiedPdfLink] = useState('');
   const [originalPdfLink, setOriginalPdfLink] = useState('');
+  const [originalPdf, setOriginalPdf] = useState<ArrayBuffer | null>(null);
+  const [modifiedPdf, setModifiedPdf] = useState<ArrayBuffer | null>(null);
   const [assignedGroupId, setAssignedGroupId] = useState<string>();
   const router = useRouter();
   const signFormInstanceMutation = useMutation({
     ...formInstancesControllerSignFormInstanceMutation(),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: formInstancesControllerFindAllQueryKey(),
       });
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey:
           formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
       });
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey:
           formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
       });
     },
   });
+
+  // Fetch PDF data when links change
+  useEffect(() => {
+    const fetchPdfs = async () => {
+      if (originalPdfLink) {
+        const origPdf = await fetch(originalPdfLink).then((res) =>
+          res.arrayBuffer(),
+        );
+        setOriginalPdf(origPdf);
+      }
+      if (modifiedPdfLink) {
+        const modPdf = await fetch(modifiedPdfLink).then((res) =>
+          res.arrayBuffer(),
+        );
+        setModifiedPdf(modPdf);
+      }
+    };
+
+    fetchPdfs();
+  }, [originalPdfLink, modifiedPdfLink]);
+
   useEffect(() => {
     if (!formInstance || formInstanceError) return;
 
@@ -123,7 +145,6 @@ export const SignFormInstanceContextProvider = ({
 
     const pdfLink = getLatestSignedFormLink(formInstance);
     setOriginalPdfLink(pdfLink);
-    setModifiedPdfLink(pdfLink);
   }, [
     formInstance,
     formInstanceError,
@@ -253,9 +274,7 @@ export const SignFormInstanceContextProvider = ({
     submitLink: string,
     isReviewPage: boolean,
   ) => {
-    const existingPdfBytes = !isReviewPage
-      ? await fetch(originalPdfLink).then((res) => res.arrayBuffer())
-      : await fetch(modifiedPdfLink).then((res) => res.arrayBuffer());
+    const existingPdfBytes = !isReviewPage ? originalPdf : modifiedPdf;
 
     if (existingPdfBytes) {
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -279,7 +298,7 @@ export const SignFormInstanceContextProvider = ({
         groupNumber,
         nextSignFormPage,
         updateField,
-        signFormInstanceLoading,
+        signFormInstanceLoading: isLoading,
       }}
     >
       {children}
