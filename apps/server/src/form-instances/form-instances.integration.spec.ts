@@ -14,7 +14,6 @@ import { FormTemplateEntity } from '../form-templates/entities/form-template.ent
 import MockEmailHandler from '../postmark/MockEmailHandler';
 import { FormInstanceEntity } from './entities/form-instance.entity';
 import { MockValidateEmployeeHandler } from '../employees/validate-employee/MockValidateEmployeeHandler';
-import e from 'express';
 
 const emptyFile: Express.Multer.File = {
   fieldname: 'file',

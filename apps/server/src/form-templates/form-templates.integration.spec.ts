@@ -35,7 +35,6 @@ describe('FormTemplatesIntegrationTest', () => {
   let positionId1: string | undefined;
   let employeeId1: string | undefined;
   let formTemplate1: FormTemplateEntity | undefined;
-  let formTemplate2: FormTemplateEntity | undefined;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -182,7 +181,7 @@ describe('FormTemplatesIntegrationTest', () => {
         ],
         disabled: false,
       });
-      formTemplate2 = await service.create({
+      await service.create({
         name: 'Form Template 2',
         description: 'Form Template Description 2',
         file: emptyFile,
