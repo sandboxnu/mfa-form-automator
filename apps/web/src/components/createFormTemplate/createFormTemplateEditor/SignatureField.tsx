@@ -61,13 +61,24 @@ export default function SignatureField({
       <Box
         display="flex"
         alignItems="center"
-        justifyContent="center"
+        justifyContent="left"
         width="100%"
         height="100%"
         border="1px #808080"
         borderRadius="4px"
       >
-        <Text color="#808080" fontSize="14px"></Text>
+        <Text color="#808080" fontSize="14px">
+          X
+        </Text>
+        <Box
+          position="absolute"
+          bottom="16px"
+          width="80%"
+          height="1px"
+          bg="#7C7F86"
+          left="50%"
+          transform="translateX(-50%)"
+        />
       </Box>
       {!disableEdit && selected && (
         <Box
