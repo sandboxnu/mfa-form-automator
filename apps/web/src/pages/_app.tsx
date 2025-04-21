@@ -99,6 +99,7 @@ export default function App({
   // to allow template context to be populated before moving into edit mode
   const formDirectoryPath = '/template-directory';
   const previewForm = '/preview-form';
+  const formInstancesPath = '/instance-directory';
 
   // Check if the current page is an error page
   const isErrorPage =
@@ -186,6 +187,18 @@ export default function App({
               <Component {...pageProps} />
             </Layout>
           </SignFormInstanceContextProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(formInstancesPath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </WrapperComponent>
       </>
     );
