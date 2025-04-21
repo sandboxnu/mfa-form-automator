@@ -46,9 +46,6 @@ function SelectTemplate() {
           selectedFormTemplate={formTemplate}
         />
       }
-      deleteFunction={() => {
-        setFormTemplate(null);
-      }}
       submitLink={'/create-instance/description'}
       backLink={'/'}
       review={false}

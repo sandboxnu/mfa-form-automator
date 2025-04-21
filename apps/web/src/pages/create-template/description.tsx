@@ -18,11 +18,6 @@ function Description() {
     formTemplateUseId,
   } = useCreateFormTemplate();
 
-  function nullify() {
-    setFormTemplateName(null);
-    setFormTemplateDescription(null);
-  }
-
   return (
     <FormLayout
       type={
@@ -45,7 +40,6 @@ function Description() {
           setDescription={setFormTemplateDescription}
         />
       }
-      deleteFunction={nullify}
       submitLink={
         formTemplateUseId
           ? '/create-template/review'

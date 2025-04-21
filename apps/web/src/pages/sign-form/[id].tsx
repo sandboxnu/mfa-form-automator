@@ -68,7 +68,6 @@ export function SignFormPage() {
           }
           submitLink={`/sign-form/review/${id}`}
           backLink={'/'}
-          deleteFunction={() => {}}
           disabled={false}
         />
       ) : formInstanceError?.message ===
