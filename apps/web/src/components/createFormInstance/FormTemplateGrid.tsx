@@ -1,11 +1,11 @@
-import { Grid, Box, Flex, Text, Button } from '@chakra-ui/react';
+import { Grid, Box, Flex, Text, Button, HStack } from '@chakra-ui/react';
 import { PDFDocument } from '../PDFDocument';
 import router from 'next/router';
 import { FormTemplateEntity } from '@web/client';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { formTemplatesControllerFindAllInfiniteOptions } from '@web/client/@tanstack/react-query.gen';
+import { useQuery } from '@tanstack/react-query';
+import { formTemplatesControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
 import FormLoading from '../FormLoading';
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState } from 'react';
 
 // Memoized template item component
 const TemplateItem = memo(
@@ -89,42 +89,130 @@ const CreateTemplateButton = memo(() => (
 ));
 CreateTemplateButton.displayName = 'CreateTemplateButton';
 
-// Memoized LoadMoreButton component
-const LoadMoreButton = memo(
+// Pagination component
+const Pagination = memo(
   ({
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
+    currentPage,
+    totalPages,
+    onPageChange,
   }: {
-    fetchNextPage: () => void;
-    hasNextPage: boolean | undefined;
-    isFetchingNextPage: boolean;
-  }) => (
-    <Flex justifyContent="center" marginTop="16px">
-      <Button
-        w={'164px'}
-        h="36px"
-        borderRadius="6px"
-        alignContent={'center'}
-        background={'#1367EA'}
-        _hover={{
-          background: 'auto',
-        }}
-        marginLeft="12px"
-        marginRight="36px"
-        onClick={() => fetchNextPage()}
-        disabled={!hasNextPage || isFetchingNextPage}
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
+  }) => {
+    // Calculate the range of page numbers to display (show up to 5 pages)
+    const getPageNumbers = () => {
+      const pageNumbers = [];
+      let startPage = Math.max(0, currentPage - 2);
+      const endPage = Math.min(startPage + 4, totalPages - 1);
+
+      // Adjust startPage if we're near the end
+      if (endPage - startPage < 4) {
+        startPage = Math.max(0, endPage - 4);
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pageNumbers.push(i);
+      }
+
+      return pageNumbers;
+    };
+
+    return (
+      <Flex
+        direction="column"
+        w="100%"
+        alignItems="center"
+        mt={6}
+        mb={4}
+        flexDir={'row-reverse'}
       >
-        {isFetchingNextPage
-          ? 'Loading more...'
-          : hasNextPage
-          ? 'Load More'
-          : 'Nothing more to load'}
-      </Button>
-    </Flex>
-  ),
+        {/* Pagination controls */}
+        <HStack gap={1} background="white" borderRadius="8px" p="8px">
+          <Button
+            size="md"
+            width="36px"
+            height="36px"
+            onClick={() => onPageChange(0)}
+            disabled={currentPage === 0}
+            bg={currentPage === 0 ? '#9E9E9E' : '#9E9E9E'}
+            background="white"
+            _hover={{ bg: currentPage === 0 ? '#1058C7' : '#DCDCDC' }}
+            borderRadius="6px"
+            color="black"
+          >
+            &lt;&lt;
+          </Button>
+          <Button
+            size="md"
+            width="36px"
+            height="36px"
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 0}
+            bg={currentPage === 0 ? '#9E9E9E' : '#9E9E9E'}
+            background="white"
+            _hover={{ bg: currentPage === 0 ? '#1058C7' : '#DCDCDC' }}
+            borderRadius="6px"
+            color="black"
+          >
+            &lt;
+          </Button>
+
+          {getPageNumbers().map((pageNum) => (
+            <Button
+              key={pageNum}
+              size="md"
+              width="36px"
+              height="36px"
+              onClick={() => onPageChange(pageNum)}
+              bg={currentPage === pageNum ? '#5770FF' : '#212121'}
+              background={currentPage === pageNum ? '#1367EA' : 'white'}
+              _hover={{ bg: currentPage === pageNum ? '#1058C7' : '#DCDCDC' }}
+              borderRadius="6px"
+              color={currentPage === pageNum ? 'white' : 'black'}
+            >
+              {pageNum + 1}
+            </Button>
+          ))}
+
+          <Button
+            size="md"
+            width="36px"
+            height="36px"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages - 1}
+            bg={currentPage === totalPages - 1 ? '#9E9E9E' : '#212121'}
+            background="white"
+            _hover={{
+              bg: currentPage === totalPages - 1 ? '#1058C7' : '#DCDCDC',
+            }}
+            borderRadius="6px"
+            color="black"
+          >
+            &gt;
+          </Button>
+          <Button
+            size="md"
+            width="36px"
+            height="36px"
+            onClick={() => onPageChange(totalPages - 1)}
+            disabled={currentPage === totalPages - 1}
+            bg={currentPage === totalPages - 1 ? '#9E9E9E' : '#212121'}
+            background="white"
+            _hover={{
+              bg: currentPage === totalPages - 1 ? '#1058C7' : '#DCDCDC',
+            }}
+            borderRadius="6px"
+            color="black"
+          >
+            &gt;&gt;
+          </Button>
+        </HStack>
+      </Flex>
+    );
+  },
 );
-LoadMoreButton.displayName = 'LoadMoreButton';
+Pagination.displayName = 'Pagination';
 
 type TemplateSelectGridProps = {
   allowCreate: boolean;
@@ -140,44 +228,45 @@ export const TemplateSelectGrid = memo(
     selectedFormTemplate,
     formTemplates: passedFormTemplates,
   }: TemplateSelectGridProps) => {
-    // Only use the infinite query if no formTemplates are passed
-    const {
-      data: infiniteFormTemplates,
-      error,
-      fetchNextPage,
-      hasNextPage,
-      isFetching,
-      isFetchingNextPage,
-      status,
-    } = useInfiniteQuery({
-      ...formTemplatesControllerFindAllInfiniteOptions(),
-      initialPageParam: 0,
-      getNextPageParam: (lastPage, allPages, lastPageParam) => {
-        if (typeof lastPageParam !== 'number') {
-          return undefined;
-        }
-        if (lastPage.length === 0) {
-          return undefined;
-        }
-        return lastPageParam + 1;
-      },
-      enabled: !passedFormTemplates, // Only enable if no formTemplates are passed
+    // State for pagination
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 8; // Server returns 8 items per page
+
+    // Query for templates when no templates are passed in
+    const { data: queryData, isLoading } = useQuery({
+      ...formTemplatesControllerFindAllOptions({
+        query: { cursor: currentPage },
+      }),
+      enabled: !passedFormTemplates,
     });
 
-    // If we have passed form templates, use those instead of the infinite query results
+    // Calculate total number of pages
+    const totalItems =
+      passedFormTemplates?.length ??
+      (queryData?.length === itemsPerPage
+        ? (currentPage + 2) * itemsPerPage
+        : (currentPage + 1) * itemsPerPage);
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Handle page change
+    const handlePageChange = (newPage: number) => {
+      setCurrentPage(newPage);
+    };
+
+    // If we have passed form templates, use those instead of the queried results
     const displayTemplates = useMemo(() => {
       if (passedFormTemplates) {
-        return passedFormTemplates;
+        // If we have passed templates, we'll paginate them client-side
+        const start = currentPage * itemsPerPage;
+        const end = start + itemsPerPage;
+        return passedFormTemplates.slice(start, end);
       }
 
-      if (!infiniteFormTemplates) return [];
+      return queryData || [];
+    }, [passedFormTemplates, queryData, currentPage, itemsPerPage]);
 
-      // Flatten the pages array from infinite query
-      return infiniteFormTemplates.pages.flatMap((page) => page);
-    }, [passedFormTemplates, infiniteFormTemplates]);
-
-    // Only show loading state if we're using infinite query AND we're fetching the initial data
-    if (isFetching && !passedFormTemplates && !infiniteFormTemplates) {
+    // Only show loading state if we're loading the initial data and no templates are passed
+    if (isLoading && !passedFormTemplates) {
       return <FormLoading />;
     }
 
@@ -202,12 +291,12 @@ export const TemplateSelectGrid = memo(
           {allowCreate && <CreateTemplateButton />}
         </Grid>
 
-        {/* Only show load more button when using infinite query */}
-        {!passedFormTemplates && hasNextPage && (
-          <LoadMoreButton
-            fetchNextPage={fetchNextPage}
-            hasNextPage={hasNextPage}
-            isFetchingNextPage={isFetchingNextPage}
+        {/* Only show pagination when there are multiple pages */}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
           />
         )}
       </>
