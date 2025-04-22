@@ -279,6 +279,7 @@ export const TemplateSelectGrid = memo(
           justifyContent="space-between"
           justifyItems={'stretch'}
         >
+          {allowCreate && <CreateTemplateButton />}
           {displayTemplates.map((template) => (
             <TemplateItem
               key={template.id}
@@ -287,8 +288,6 @@ export const TemplateSelectGrid = memo(
               handleSelectTemplate={handleSelectTemplate}
             />
           ))}
-
-          {allowCreate && <CreateTemplateButton />}
         </Grid>
 
         {/* Only show pagination when there are multiple pages */}
