@@ -35,7 +35,7 @@ export enum Scope {
   ADMIN = 'ADMIN',
 }
 
-export type EmployeeEntity = {
+export type EmployeeSecureEntityHydrated = {
   id: string;
   firstName: string;
   lastName: string;
@@ -65,6 +65,22 @@ export type OnboardEmployeeDto = {
   positionId: string;
 };
 
+export type EmployeeBaseEntity = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  positionId: string | null;
+  signatureLink: string | null;
+  scope: {
+    [key: string]: unknown;
+  };
+  pswdHash: string | null;
+  createdAt: string;
+  updatedAt: string;
+  refreshToken: string | null;
+};
+
 export type UpdateEmployeeDto = {
   firstName?: string;
   lastName?: string;
@@ -77,20 +93,6 @@ export type UpdateEmployeeDto = {
 export type CreatePositionDto = {
   name: string;
   departmentId: string;
-};
-
-export type EmployeeBaseEntity = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  signatureLink: string | null;
-  scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
-  positionId: string | null;
-  pswdHash: string | null;
-  createdAt: string;
-  updatedAt: string;
-  refreshToken: string | null;
 };
 
 export type PositionEntity = {
@@ -282,7 +284,7 @@ export type FormInstanceEntity = {
   updatedAt: string;
   completedAt?: string | null;
   markedCompletedAt?: string | null;
-  originator: EmployeeEntity;
+  originator: EmployeeBaseEntity;
   formTemplate: FormTemplateBaseEntity;
   assignedGroups: Array<AssignedGroupEntity>;
   originatorId: string;
@@ -404,8 +406,8 @@ export type AppControllerRegisterErrors = {
 };
 
 export type AppControllerRegisterResponses = {
-  200: EmployeeEntity;
-  201: EmployeeEntity;
+  200: EmployeeSecureEntityHydrated;
+  201: EmployeeSecureEntityHydrated;
 };
 
 export type AppControllerRegisterResponse =
@@ -446,7 +448,7 @@ export type EmployeesControllerFindAllErrors = {
 };
 
 export type EmployeesControllerFindAllResponses = {
-  200: Array<EmployeeEntity>;
+  200: Array<EmployeeBaseEntity>;
 };
 
 export type EmployeesControllerFindAllResponse =
@@ -475,7 +477,7 @@ export type EmployeesControllerCreateErrors = {
 };
 
 export type EmployeesControllerCreateResponses = {
-  201: EmployeeEntity;
+  201: EmployeeSecureEntityHydrated;
 };
 
 export type EmployeesControllerCreateResponse =
@@ -504,8 +506,8 @@ export type EmployeesControllerOnboardEmployeeErrors = {
 };
 
 export type EmployeesControllerOnboardEmployeeResponses = {
-  200: EmployeeEntity;
-  201: EmployeeEntity;
+  200: EmployeeSecureEntityHydrated;
+  201: EmployeeSecureEntityHydrated;
 };
 
 export type EmployeesControllerOnboardEmployeeResponse =
@@ -530,7 +532,7 @@ export type EmployeesControllerFindMeErrors = {
 };
 
 export type EmployeesControllerFindMeResponses = {
-  200: EmployeeEntity;
+  200: EmployeeSecureEntityHydrated;
 };
 
 export type EmployeesControllerFindMeResponse =
@@ -589,7 +591,7 @@ export type EmployeesControllerFindOneErrors = {
 };
 
 export type EmployeesControllerFindOneResponses = {
-  200: EmployeeEntity;
+  200: EmployeeBaseEntity;
 };
 
 export type EmployeesControllerFindOneResponse =
@@ -624,7 +626,7 @@ export type EmployeesControllerUpdateErrors = {
 };
 
 export type EmployeesControllerUpdateResponses = {
-  200: EmployeeEntity;
+  200: EmployeeSecureEntityHydrated;
 };
 
 export type EmployeesControllerUpdateResponse =
@@ -903,6 +905,18 @@ export type AssignedGroupControllerUpdateAssignedGroupSignerResponses = {
 export type AssignedGroupControllerUpdateAssignedGroupSignerResponse =
   AssignedGroupControllerUpdateAssignedGroupSignerResponses[keyof AssignedGroupControllerUpdateAssignedGroupSignerResponses];
 
+/**
+ * Sort option for form templates
+ */
+export enum SortBy {
+  CREATED_AT_ASC = 'createdAtAsc',
+  CREATED_AT_DESC = 'createdAtDesc',
+  UPDATED_AT_ASC = 'updatedAtAsc',
+  UPDATED_AT_DESC = 'updatedAtDesc',
+  NAME_ASC = 'nameAsc',
+  NAME_DESC = 'nameDesc',
+}
+
 export type FormTemplatesControllerFindAllData = {
   body?: never;
   path?: never;
@@ -911,6 +925,16 @@ export type FormTemplatesControllerFindAllData = {
      * Pagination cursor for form templates to return (pages of 8)
      */
     cursor?: number;
+    /**
+     * Sort option for form templates
+     */
+    sortBy?:
+      | 'createdAtAsc'
+      | 'createdAtDesc'
+      | 'updatedAtAsc'
+      | 'updatedAtDesc'
+      | 'nameAsc'
+      | 'nameDesc';
   };
   url: '/api/form-templates';
 };
@@ -1241,6 +1265,16 @@ export type FormInstancesControllerFindAllData = {
      * Pagination cursor for form instances to return (pages of 8)
      */
     cursor?: number;
+    /**
+     * Form instance sorting option
+     */
+    sortBy?:
+      | 'createdAtAsc'
+      | 'createdAtDesc'
+      | 'updatedAtAsc'
+      | 'updatedAtDesc'
+      | 'nameAsc'
+      | 'nameDesc';
   };
   url: '/api/form-instances';
 };

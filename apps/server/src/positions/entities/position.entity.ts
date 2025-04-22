@@ -15,7 +15,7 @@ export class PositionBaseEntity implements Position {
   @ApiProperty()
   single: boolean;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   @IsOptional()
   departmentId: string;
 
@@ -23,10 +23,10 @@ export class PositionBaseEntity implements Position {
   @ApiProperty()
   department: DepartmentEntity;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   createdAt: Date;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   updatedAt: Date;
 
   constructor(partial: Partial<PositionBaseEntity>) {

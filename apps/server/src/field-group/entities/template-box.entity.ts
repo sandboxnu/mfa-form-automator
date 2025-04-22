@@ -24,7 +24,7 @@ export class TemplateBoxBaseEntity implements TemplateBox {
   @ApiProperty()
   page: number;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   fieldGroupId: string;
 
   @ApiProperty()

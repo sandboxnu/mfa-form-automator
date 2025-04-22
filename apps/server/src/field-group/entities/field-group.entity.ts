@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { FieldGroup } from '@prisma/client';
 import { TemplateBoxBaseEntity } from './template-box.entity';
+import { Exclude } from 'class-transformer';
 
 export class FieldGroupBaseEntity implements FieldGroup {
   @ApiProperty()
@@ -12,13 +13,13 @@ export class FieldGroupBaseEntity implements FieldGroup {
   @ApiProperty()
   order: number;
 
-  @ApiProperty()
+  @Exclude({ toPlainOnly: true })
   createdAt: Date;
 
-  @ApiProperty()
+  @Exclude({ toPlainOnly: true })
   updatedAt: Date;
 
-  @ApiProperty()
+  @Exclude({ toPlainOnly: true })
   formTemplateId: string;
 
   @ApiProperty({

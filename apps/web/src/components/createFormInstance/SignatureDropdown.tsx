@@ -10,7 +10,7 @@ import {
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   DepartmentEntity,
-  EmployeeEntity,
+  EmployeeBaseEntity,
   FieldGroupBaseEntity,
   PositionEntity,
   SignerType,
@@ -33,7 +33,7 @@ export const SignatureDropdown = ({
   border: string;
   background: string;
   positions?: PositionEntity[];
-  employees?: EmployeeEntity[];
+  employees?: EmployeeBaseEntity[];
   departments?: DepartmentEntity[];
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;

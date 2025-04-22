@@ -2,9 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { FormInstance } from '@prisma/client';
 import { FormTemplateBaseEntity } from '../../form-templates/entities/form-template.entity';
 import { Exclude } from 'class-transformer';
-import { EmployeeEntity } from '../../employees/entities/employee.entity';
 import { AssignedGroupEntity } from '../../assigned-group/entities/assigned-group.entity';
 import { IsOptional } from 'class-validator';
+import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 
 export class FormInstanceBaseEntity implements FormInstance {
   @ApiProperty()
@@ -17,40 +17,40 @@ export class FormInstanceBaseEntity implements FormInstance {
   @ApiProperty()
   description: string | null;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   formDocLink: string;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   completed: boolean;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   markedCompleted: boolean;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   createdAt: Date;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   updatedAt: Date;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   completedAt: Date | null;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   markedCompletedAt: Date | null;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   originatorId: string;
 
-  @Exclude()
-  originator: EmployeeEntity;
+  @Exclude({ toPlainOnly: true })
+  originator: EmployeeBaseEntity;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   formTemplateId: string;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   formTemplate: FormTemplateBaseEntity;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   assignedGroups: AssignedGroupEntity[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
@@ -93,13 +93,13 @@ export class FormInstanceEntity implements FormInstance {
   })
   markedCompletedAt: Date | null;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   originatorId: string;
 
   @ApiProperty()
-  originator: EmployeeEntity;
+  originator: EmployeeBaseEntity;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   formTemplateId: string;
 
   @ApiProperty()
@@ -113,13 +113,13 @@ export class FormInstanceEntity implements FormInstance {
 
   constructor(partial: Partial<FormInstanceEntity>) {
     if (partial.originator) {
-      partial.originator = new EmployeeEntity(partial.originator);
+      partial.originator = new EmployeeBaseEntity(partial.originator);
     }
     if (partial.formTemplate) {
       partial.formTemplate = new FormTemplateBaseEntity(partial.formTemplate);
     }
     if (partial.originator) {
-      partial.originator = new EmployeeEntity(partial.originator);
+      partial.originator = new EmployeeBaseEntity(partial.originator);
     }
     if (partial.assignedGroups) {
       partial.assignedGroups = partial.assignedGroups.map(

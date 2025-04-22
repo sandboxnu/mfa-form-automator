@@ -27,10 +27,10 @@ export class FormTemplateBaseEntity implements FormTemplate {
   @ApiProperty()
   disabled: boolean;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   createdAt: Date;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   updatedAt: Date;
 
   constructor(partial: Partial<FormTemplateEntity>) {

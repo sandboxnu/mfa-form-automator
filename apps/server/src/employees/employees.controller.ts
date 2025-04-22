@@ -25,7 +25,6 @@ import {
   ApiQuery,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { EmployeeEntity } from './entities/employee.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { EmployeeErrorMessage } from './employees.errors';
@@ -35,6 +34,10 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { OnboardEmployeeDto } from './dto/onboard-employee.dto';
+import {
+  EmployeeBaseEntity,
+  EmployeeSecureEntityHydrated,
+} from './entities/employee.entity';
 
 @ApiTags('employees')
 @Controller('employees')
@@ -47,7 +50,7 @@ export class EmployeesController {
   @Post()
   @UseGuards(AdminAuthGuard)
   @ApiBearerAuth()
-  @ApiCreatedResponse({ type: EmployeeEntity })
+  @ApiCreatedResponse({ type: EmployeeSecureEntityHydrated })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
@@ -58,12 +61,12 @@ export class EmployeesController {
     createEmployeeDto: CreateEmployeeDto,
   ) {
     const newEmployee = await this.employeesService.create(createEmployeeDto);
-    return new EmployeeEntity(newEmployee);
+    return new EmployeeSecureEntityHydrated(newEmployee);
   }
 
   @Patch('/onboarding')
   @UseGuards(JwtAuthGuard)
-  @ApiCreatedResponse({ type: EmployeeEntity })
+  @ApiCreatedResponse({ type: EmployeeSecureEntityHydrated })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
@@ -78,12 +81,12 @@ export class EmployeesController {
       currentUser.id,
       onboardEmployeeDto,
     );
-    return new EmployeeEntity(onboardedEmployee);
+    return new EmployeeSecureEntityHydrated(onboardedEmployee);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [EmployeeEntity] })
+  @ApiOkResponse({ type: [EmployeeBaseEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
@@ -95,23 +98,23 @@ export class EmployeesController {
   async findAll(@Query('limit') limit?: number) {
     // TODO: Auth
     const employees = await this.employeesService.findAll(limit);
-    return employees.map((employee) => new EmployeeEntity(employee));
+    return employees.map((employee) => new EmployeeBaseEntity(employee));
   }
 
   @Get('me')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: EmployeeEntity })
+  @ApiOkResponse({ type: EmployeeSecureEntityHydrated })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findMe(@AuthUser() currentUser: UserEntity) {
     const employee = await this.employeesService.findOne(currentUser.id);
-    return new EmployeeEntity(employee);
+    return new EmployeeSecureEntityHydrated(employee);
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: EmployeeEntity })
+  @ApiOkResponse({ type: EmployeeBaseEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -123,12 +126,12 @@ export class EmployeesController {
         EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_CLIENT,
       );
     }
-    return new EmployeeEntity(employee);
+    return new EmployeeBaseEntity(employee);
   }
 
   @Patch(':id')
   @UseGuards(AdminAuthGuard)
-  @ApiOkResponse({ type: EmployeeEntity })
+  @ApiOkResponse({ type: EmployeeSecureEntityHydrated })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiUnprocessableEntityResponse({
@@ -145,7 +148,7 @@ export class EmployeesController {
         id,
         updateEmployeeDto,
       );
-      return new EmployeeEntity(updatedEmployee);
+      return new EmployeeSecureEntityHydrated(updatedEmployee);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {

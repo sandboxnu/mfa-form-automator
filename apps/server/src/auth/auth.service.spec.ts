@@ -4,7 +4,7 @@ import { EmployeesService } from '../employees/employees.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
-import { EmployeeEntity } from '../employees/entities/employee.entity';
+import { EmployeeSecureEntityHydrated } from '../employees/entities/employee.entity';
 import { PositionBaseEntity } from '../positions/entities/position.entity';
 import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
@@ -74,7 +74,7 @@ describe('AuthService', () => {
     };
 
     it('should sucessfully validate credentials', async () => {
-      const expected = new EmployeeEntity({
+      const expected = new EmployeeSecureEntityHydrated({
         id: employeeId,
         firstName: 'First',
         lastName: 'Last',

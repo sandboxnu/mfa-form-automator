@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { EmployeeEntity } from '../employees/entities/employee.entity';
+import { EmployeeSecureEntityHydrated } from '../employees/entities/employee.entity';
 import { EmployeeScope } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
@@ -22,7 +22,7 @@ export class AuthService {
   async validateEmployee(
     email: string,
     pass: string,
-  ): Promise<EmployeeEntity | null> {
+  ): Promise<EmployeeSecureEntityHydrated | null> {
     try {
       const user = await this.employeesService.findOneByEmail(email);
 
@@ -31,7 +31,7 @@ export class AuthService {
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { pswdHash, ...result } = user;
-      return new EmployeeEntity(result);
+      return new EmployeeSecureEntityHydrated(result);
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
         return null;
@@ -48,7 +48,7 @@ export class AuthService {
   async validateEmployeeScope(
     email: string,
     scope: EmployeeScope,
-  ): Promise<EmployeeEntity | null> {
+  ): Promise<EmployeeSecureEntityHydrated | null> {
     const user = await this.employeesService.findOneByEmail(email);
     if (user.scope == scope) {
       return user;
@@ -61,7 +61,7 @@ export class AuthService {
    * @param request the incoming request
    * @returns a valid JWT auth and refresh token
    */
-  async login(user: EmployeeEntity) {
+  async login(user: EmployeeSecureEntityHydrated) {
     const payload = {
       email: user.email,
       firstName: user.firstName,

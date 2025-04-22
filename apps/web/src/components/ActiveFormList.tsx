@@ -2,7 +2,7 @@ import { Box, Flex, Stack, Table, Text } from '@chakra-ui/react';
 import { Status } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { SearchAndSort } from '@web/components/SearchAndSort';
-import { AssignedGroupEntity, FormInstanceEntity } from '@web/client';
+import { AssignedGroupEntity, FormInstanceEntity, SortBy } from '@web/client';
 import { AssignedAvatarGroup } from '@web/components/AssignedAvatarGroup.tsx';
 import { formInstancesControllerFindAllInfiniteOptions } from '@web/client/@tanstack/react-query.gen';
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
@@ -13,6 +13,7 @@ import { isFullySigned } from '@web/utils/formInstanceUtils';
 
 export const ActiveFormList = ({ title }: { title: string }) => {
   const router = useRouter();
+  const [sortOption, setSortOption] = useState<SortBy>(SortBy.CREATED_AT_DESC);
 
   const {
     data: infiniteFormInstances,
@@ -22,7 +23,11 @@ export const ActiveFormList = ({ title }: { title: string }) => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    ...formInstancesControllerFindAllInfiniteOptions(),
+    ...formInstancesControllerFindAllInfiniteOptions({
+      query: {
+        sortBy: sortOption,
+      },
+    }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       if (typeof lastPageParam !== 'number') {
@@ -122,8 +127,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
               <SearchAndSort
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                sortedForms={allActiveForms}
-                setSortedForms={setSortedFormInstances}
+                setSortOption={setSortOption}
               />
             </Box>
           </Flex>

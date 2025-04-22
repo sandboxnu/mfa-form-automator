@@ -93,7 +93,7 @@ export const PositionBaseEntitySchema = {
   ],
 } as const;
 
-export const EmployeeEntitySchema = {
+export const EmployeeSecureEntityHydratedSchema = {
   type: 'object',
   properties: {
     id: {
@@ -214,6 +214,64 @@ export const OnboardEmployeeDtoSchema = {
   required: ['signatureLink', 'positionId'],
 } as const;
 
+export const EmployeeBaseEntitySchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    firstName: {
+      type: 'string',
+    },
+    lastName: {
+      type: 'string',
+    },
+    email: {
+      type: 'string',
+    },
+    positionId: {
+      type: 'string',
+      nullable: true,
+    },
+    signatureLink: {
+      type: 'string',
+      nullable: true,
+    },
+    scope: {
+      type: 'object',
+    },
+    pswdHash: {
+      type: 'string',
+      nullable: true,
+    },
+    createdAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    updatedAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    refreshToken: {
+      type: 'string',
+      nullable: true,
+    },
+  },
+  required: [
+    'id',
+    'firstName',
+    'lastName',
+    'email',
+    'positionId',
+    'signatureLink',
+    'scope',
+    'pswdHash',
+    'createdAt',
+    'updatedAt',
+    'refreshToken',
+  ],
+} as const;
+
 export const UpdateEmployeeDtoSchema = {
   type: 'object',
   properties: {
@@ -253,65 +311,6 @@ export const CreatePositionDtoSchema = {
     },
   },
   required: ['name', 'departmentId'],
-} as const;
-
-export const EmployeeBaseEntitySchema = {
-  type: 'object',
-  properties: {
-    id: {
-      type: 'string',
-    },
-    firstName: {
-      type: 'string',
-    },
-    lastName: {
-      type: 'string',
-    },
-    email: {
-      type: 'string',
-    },
-    signatureLink: {
-      type: 'string',
-      nullable: true,
-    },
-    scope: {
-      type: 'string',
-      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
-    },
-    positionId: {
-      type: 'string',
-      nullable: true,
-    },
-    pswdHash: {
-      type: 'string',
-      nullable: true,
-    },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    refreshToken: {
-      type: 'string',
-      nullable: true,
-    },
-  },
-  required: [
-    'id',
-    'firstName',
-    'lastName',
-    'email',
-    'signatureLink',
-    'scope',
-    'positionId',
-    'pswdHash',
-    'createdAt',
-    'updatedAt',
-    'refreshToken',
-  ],
 } as const;
 
 export const PositionEntitySchema = {
@@ -978,7 +977,7 @@ export const FormInstanceEntitySchema = {
       nullable: true,
     },
     originator: {
-      $ref: '#/components/schemas/EmployeeEntity',
+      $ref: '#/components/schemas/EmployeeBaseEntity',
     },
     formTemplate: {
       $ref: '#/components/schemas/FormTemplateBaseEntity',

@@ -43,6 +43,7 @@ import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
 import { ParseFormDataJsonPipe } from '../form-templates/form-templates.controller';
 import { EmployeesService } from '../employees/employees.service';
 import { FormInstanceFindAllResponse } from './response/form-instance-find-all.response';
+import { SortOption } from '../utils';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
@@ -81,8 +82,20 @@ export class FormInstancesController {
     description: 'Pagination cursor for form instances to return (pages of 8)',
     required: false,
   })
-  async findAll(@Query('cursor') cursor?: number) {
-    const formInstances = await this.formInstancesService.findAll(cursor);
+  @ApiQuery({
+    name: 'sortBy',
+    enum: SortOption,
+    description: 'Form instance sorting option',
+    required: false,
+  })
+  async findAll(
+    @Query('cursor') cursor?: number,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    const formInstances = await this.formInstancesService.findAll({
+      cursor,
+      sortBy,
+    });
     const totalCount = await this.formInstancesService.findAllCount();
     return new FormInstanceFindAllResponse(
       totalCount,

@@ -9,10 +9,10 @@ export class DepartmentEntity implements Department {
   @ApiProperty()
   name: string;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   createdAt: Date;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   updatedAt: Date;
 
   constructor(partial: Partial<DepartmentEntity>) {
