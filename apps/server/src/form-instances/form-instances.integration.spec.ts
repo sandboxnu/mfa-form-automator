@@ -601,6 +601,7 @@ describe('FormInstancesIntegrationTest', () => {
 
   describe('findAll', () => {
     beforeEach(async () => {
+      // Create the first two form instances separately for direct reference
       formInstance1 = await service.create({
         name: 'Form Instance',
         assignedGroups: [
@@ -617,6 +618,82 @@ describe('FormInstancesIntegrationTest', () => {
         formDocLink: 'formDocLink',
         description: 'description',
       });
+
+      formInstance2 = await service.create({
+        name: 'Form Instance 2',
+        assignedGroups: [
+          {
+            order: 0,
+            signerType: $Enums.SignerType.USER,
+            fieldGroupId: formTemplate1.fieldGroups[0].id,
+            signerEmployeeList: [],
+            signerEmployeeId: employeeId1,
+          },
+        ],
+        originatorId: employeeId1,
+        formTemplateId: formTemplate1.id,
+        formDocLink: 'formDocLink',
+        description: 'description',
+      });
+
+      // Create the remaining 8 form instances in parallel
+      await Promise.all(
+        Array(8)
+          .fill(0)
+          .map((_, i) =>
+            service.create({
+              name: `Form Instance ${i + 3}`,
+              assignedGroups: [
+                {
+                  order: 0,
+                  signerType: $Enums.SignerType.USER,
+                  fieldGroupId: formTemplate1.fieldGroups[0].id,
+                  signerEmployeeList: [],
+                  signerEmployeeId: employeeId1,
+                },
+              ],
+              originatorId: employeeId1,
+              formTemplateId: formTemplate1.id,
+              formDocLink: 'formDocLink',
+              description: 'description',
+            }),
+          ),
+      );
+    });
+
+    it('should find all form instances', async () => {
+      const formInstances = await service.findAll();
+
+      expect(formInstances).toHaveLength(10);
+    });
+    it('should paginate the form instances returned', async () => {
+      const formInstancesPage0 = await service.findAll(0);
+      const formInstancesPage1 = await service.findAll(1);
+
+      expect(formInstancesPage0).toHaveLength(8);
+      expect(formInstancesPage1).toHaveLength(2);
+    });
+  });
+  describe('findAllCount', () => {
+    beforeEach(async () => {
+      // Create the first two form instances separately for direct reference
+      formInstance1 = await service.create({
+        name: 'Form Instance',
+        assignedGroups: [
+          {
+            order: 0,
+            fieldGroupId: formTemplate1.fieldGroups[0].id,
+            signerType: $Enums.SignerType.USER,
+            signerEmployeeId: employeeId1,
+            signerEmployeeList: [],
+          },
+        ],
+        originatorId: employeeId1,
+        formTemplateId: formTemplate1.id,
+        formDocLink: 'formDocLink',
+        description: 'description',
+      });
+
       formInstance2 = await service.create({
         name: 'Form Instance 2',
         assignedGroups: [
@@ -635,17 +712,10 @@ describe('FormInstancesIntegrationTest', () => {
       });
     });
 
-    it('should find all form instances', async () => {
-      const formInstances = await service.findAll();
+    it('should return the count of all form instances', async () => {
+      const count = await service.findAllCount();
 
-      expect(formInstances).toHaveLength(2);
-      expect(formInstances[0].id).toBe(formInstance1.id);
-      expect(formInstances[1].id).toBe(formInstance2.id);
-    });
-    it('should limit the number of form instances returned', async () => {
-      const formInstances = await service.findAll(1);
-
-      expect(formInstances).toHaveLength(1);
+      expect(count).toBe(2);
     });
   });
   describe('findOne', () => {

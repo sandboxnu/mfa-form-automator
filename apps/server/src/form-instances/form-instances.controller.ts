@@ -42,6 +42,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
 import { ParseFormDataJsonPipe } from '../form-templates/form-templates.controller';
 import { EmployeesService } from '../employees/employees.service';
+import { FormInstanceFindAllResponse } from './response/form-instance-find-all.response';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
@@ -71,19 +72,21 @@ export class FormInstancesController {
 
   @Get()
   @UseGuards(AdminAuthGuard)
-  @ApiOkResponse({ type: [FormInstanceEntity] })
+  @ApiOkResponse({ type: FormInstanceFindAllResponse })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
-    name: 'limit',
+    name: 'cursor',
     type: Number,
-    description: 'Limit on number of form instances to return',
+    description: 'Pagination cursor for form instances to return (pages of 8)',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
-    const formInstances = await this.formInstancesService.findAll(limit);
-    return formInstances.map(
-      (formInstance) => new FormInstanceEntity(formInstance),
+  async findAll(@Query('cursor') cursor?: number) {
+    const formInstances = await this.formInstancesService.findAll(cursor);
+    const totalCount = await this.formInstancesService.findAllCount();
+    return new FormInstanceFindAllResponse(
+      totalCount,
+      formInstances.map((formInstance) => new FormInstanceEntity(formInstance)),
     );
   }
 

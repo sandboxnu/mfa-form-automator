@@ -183,6 +183,60 @@ export type FieldGroupBaseEntity = {
   templateBoxes: Array<TemplateBoxBaseEntity>;
 };
 
+export type FormTemplateEntity = {
+  id: string;
+  name: string;
+  pageWidth: number;
+  pageHeight: number;
+  formDocLink: string;
+  description: string | null;
+  disabled: boolean;
+  fieldGroups: Array<FieldGroupBaseEntity>;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FormTemplateFindAllResponse = {
+  count: number;
+  formTemplates: Array<FormTemplateEntity>;
+};
+
+export type UpdateFormTemplateDto = {
+  name?: string;
+  description?: string;
+  pageWidth?: number;
+  pageHeight?: number;
+  fieldGroups?: Array<CreateFieldGroupDto>;
+  disabled?: boolean;
+};
+
+export type CreateDepartmentDto = {
+  name: string;
+};
+
+export type UpdateDepartmentDto = {
+  name?: string;
+};
+
+export type CreateAssignedGroupDto = {
+  order: number;
+  fieldGroupId: string;
+  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
+  signerEmployeeId?: string;
+  signerPositionId?: string;
+  signerDepartmentId?: string;
+  signerEmployeeList: Array<ConnectEmployeeDto>;
+};
+
+export type CreateFormInstanceDto = {
+  name: string;
+  description: string;
+  assignedGroups: Array<CreateAssignedGroupDto>;
+  originatorId: string;
+  formTemplateId: string;
+  formDocLink: string;
+};
+
 export type FormTemplateBaseEntity = {
   id: string;
   name: string;
@@ -235,54 +289,9 @@ export type FormInstanceEntity = {
   formTemplateId: string;
 };
 
-export type FormTemplateEntity = {
-  id: string;
-  name: string;
-  pageWidth: number;
-  pageHeight: number;
-  formDocLink: string;
-  description: string | null;
-  disabled: boolean;
-  fieldGroups: Array<FieldGroupBaseEntity>;
+export type FormInstanceFindAllResponse = {
+  count: number;
   formInstances: Array<FormInstanceEntity>;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type UpdateFormTemplateDto = {
-  name?: string;
-  description?: string;
-  pageWidth?: number;
-  pageHeight?: number;
-  fieldGroups?: Array<CreateFieldGroupDto>;
-  disabled?: boolean;
-};
-
-export type CreateDepartmentDto = {
-  name: string;
-};
-
-export type UpdateDepartmentDto = {
-  name?: string;
-};
-
-export type CreateAssignedGroupDto = {
-  order: number;
-  fieldGroupId: string;
-  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
-  signerEmployeeId?: string;
-  signerPositionId?: string;
-  signerDepartmentId?: string;
-  signerEmployeeList: Array<ConnectEmployeeDto>;
-};
-
-export type CreateFormInstanceDto = {
-  name: string;
-  description: string;
-  assignedGroups: Array<CreateAssignedGroupDto>;
-  originatorId: string;
-  formTemplateId: string;
-  formDocLink: string;
 };
 
 export type UpdateFormInstanceDto = {
@@ -899,9 +908,9 @@ export type FormTemplatesControllerFindAllData = {
   path?: never;
   query?: {
     /**
-     * Limit on number of form templates to return
+     * Pagination cursor for form templates to return (pages of 8)
      */
-    limit?: number;
+    cursor?: number;
   };
   url: '/api/form-templates';
 };
@@ -918,7 +927,7 @@ export type FormTemplatesControllerFindAllErrors = {
 };
 
 export type FormTemplatesControllerFindAllResponses = {
-  200: Array<FormTemplateEntity>;
+  200: FormTemplateFindAllResponse;
 };
 
 export type FormTemplatesControllerFindAllResponse =
@@ -1229,9 +1238,9 @@ export type FormInstancesControllerFindAllData = {
   path?: never;
   query?: {
     /**
-     * Limit on number of form instances to return
+     * Pagination cursor for form instances to return (pages of 8)
      */
-    limit?: number;
+    cursor?: number;
   };
   url: '/api/form-instances';
 };
@@ -1248,7 +1257,7 @@ export type FormInstancesControllerFindAllErrors = {
 };
 
 export type FormInstancesControllerFindAllResponses = {
-  200: Array<FormInstanceEntity>;
+  200: FormInstanceFindAllResponse;
 };
 
 export type FormInstancesControllerFindAllResponse =

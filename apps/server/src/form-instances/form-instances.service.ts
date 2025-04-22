@@ -342,12 +342,12 @@ export class FormInstancesService {
 
   /**
    * Find all form instances.
-   * @param limit the number of form instances to retrieve
+   * @param cursor the form instances to retrieve, paginated
    * @returns all form instances, hydrated
    */
-  async findAll(limit?: number) {
+  async findAll(cursor?: number) {
     const formInstances = await this.prisma.formInstance.findMany({
-      take: limit,
+      ...(cursor !== undefined ? { take: 8, skip: cursor * 8 } : {}),
       include: {
         originator: {
           include: {
@@ -381,6 +381,13 @@ export class FormInstancesService {
       },
     });
     return formInstances;
+  }
+
+  /**
+   * Find the count of all form instances.
+   */
+  async findAllCount() {
+    return await this.prisma.formInstance.count();
   }
 
   /**
