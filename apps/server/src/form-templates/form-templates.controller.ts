@@ -39,6 +39,7 @@ import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ContributorAuthGuard } from '../auth/guards/contributor-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { FormTemplateFindAllResponse } from './responses/form-template-find-all.response';
 
 export class ParseFormDataJsonPipe implements PipeTransform {
   constructor() {}
@@ -115,7 +116,7 @@ export class FormTemplatesController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [FormTemplateEntity] })
+  @ApiOkResponse({ type: FormTemplateFindAllResponse })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
@@ -126,8 +127,12 @@ export class FormTemplatesController {
   })
   async findAll(@Query('cursor') cursor?: number) {
     const formTemplates = await this.formTemplatesService.findAll(cursor);
-    return formTemplates?.map(
-      (formTemplate) => new FormTemplateEntity(formTemplate),
+    const formTemplatesCount = await this.formTemplatesService.findAllCount();
+    return new FormTemplateFindAllResponse(
+      formTemplatesCount,
+      formTemplates?.map(
+        (formTemplate) => new FormTemplateEntity(formTemplate),
+      ),
     );
   }
 

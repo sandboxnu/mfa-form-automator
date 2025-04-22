@@ -115,7 +115,7 @@ import type {
 import type { AxiosError } from 'axios';
 import { client as _heyApiClient } from '../client.gen';
 
-export type QueryKey<TOptions extends Options> = [
+type QueryKey<TOptions extends Options> = [
   Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
     _id: string;
     _infinite?: boolean;
@@ -126,7 +126,7 @@ const createQueryKey = <TOptions extends Options>(
   id: string,
   options?: TOptions,
   infinite?: boolean,
-): [QueryKey<TOptions>[0]] => {
+): QueryKey<TOptions>[0] => {
   const params: QueryKey<TOptions>[0] = {
     _id: id,
     baseURL: (options?.client ?? _heyApiClient).getConfig().baseURL,
@@ -146,12 +146,12 @@ const createQueryKey = <TOptions extends Options>(
   if (options?.query) {
     params.query = options.query;
   }
-  return [params];
+  return params;
 };
 
 export const appControllerGetHelloQueryKey = (
   options?: Options<AppControllerGetHelloData>,
-) => createQueryKey('appControllerGetHello', options);
+) => [createQueryKey('appControllerGetHello', options)];
 
 export const appControllerGetHelloOptions = (
   options?: Options<AppControllerGetHelloData>,
@@ -172,7 +172,7 @@ export const appControllerGetHelloOptions = (
 
 export const appControllerLoginQueryKey = (
   options: Options<AppControllerLoginData>,
-) => createQueryKey('appControllerLogin', options);
+) => [createQueryKey('appControllerLogin', options)];
 
 export const appControllerLoginOptions = (
   options: Options<AppControllerLoginData>,
@@ -193,11 +193,7 @@ export const appControllerLoginOptions = (
 
 export const appControllerLoginMutation = (
   options?: Partial<Options<AppControllerLoginData>>,
-): UseMutationOptions<
-  AppControllerLoginResponse,
-  AxiosError<DefaultError>,
-  Options<AppControllerLoginData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     AppControllerLoginResponse,
     AxiosError<DefaultError>,
@@ -217,7 +213,7 @@ export const appControllerLoginMutation = (
 
 export const appControllerRefreshQueryKey = (
   options?: Options<AppControllerRefreshData>,
-) => createQueryKey('appControllerRefresh', options);
+) => [createQueryKey('appControllerRefresh', options)];
 
 export const appControllerRefreshOptions = (
   options?: Options<AppControllerRefreshData>,
@@ -238,7 +234,7 @@ export const appControllerRefreshOptions = (
 
 export const appControllerRegisterQueryKey = (
   options: Options<AppControllerRegisterData>,
-) => createQueryKey('appControllerRegister', options);
+) => [createQueryKey('appControllerRegister', options)];
 
 export const appControllerRegisterOptions = (
   options: Options<AppControllerRegisterData>,
@@ -259,11 +255,7 @@ export const appControllerRegisterOptions = (
 
 export const appControllerRegisterMutation = (
   options?: Partial<Options<AppControllerRegisterData>>,
-): UseMutationOptions<
-  AppControllerRegisterResponse,
-  AxiosError<DefaultError>,
-  Options<AppControllerRegisterData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     AppControllerRegisterResponse,
     AxiosError<DefaultError>,
@@ -283,7 +275,7 @@ export const appControllerRegisterMutation = (
 
 export const appControllerLogoutQueryKey = (
   options?: Options<AppControllerLogoutData>,
-) => createQueryKey('appControllerLogout', options);
+) => [createQueryKey('appControllerLogout', options)];
 
 export const appControllerLogoutOptions = (
   options?: Options<AppControllerLogoutData>,
@@ -304,7 +296,7 @@ export const appControllerLogoutOptions = (
 
 export const employeesControllerFindAllQueryKey = (
   options?: Options<EmployeesControllerFindAllData>,
-) => createQueryKey('employeesControllerFindAll', options);
+) => [createQueryKey('employeesControllerFindAll', options)];
 
 export const employeesControllerFindAllOptions = (
   options?: Options<EmployeesControllerFindAllData>,
@@ -325,7 +317,7 @@ export const employeesControllerFindAllOptions = (
 
 export const employeesControllerCreateQueryKey = (
   options: Options<EmployeesControllerCreateData>,
-) => createQueryKey('employeesControllerCreate', options);
+) => [createQueryKey('employeesControllerCreate', options)];
 
 export const employeesControllerCreateOptions = (
   options: Options<EmployeesControllerCreateData>,
@@ -346,11 +338,7 @@ export const employeesControllerCreateOptions = (
 
 export const employeesControllerCreateMutation = (
   options?: Partial<Options<EmployeesControllerCreateData>>,
-): UseMutationOptions<
-  EmployeesControllerCreateResponse,
-  AxiosError<DefaultError>,
-  Options<EmployeesControllerCreateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     EmployeesControllerCreateResponse,
     AxiosError<DefaultError>,
@@ -370,11 +358,7 @@ export const employeesControllerCreateMutation = (
 
 export const employeesControllerOnboardEmployeeMutation = (
   options?: Partial<Options<EmployeesControllerOnboardEmployeeData>>,
-): UseMutationOptions<
-  EmployeesControllerOnboardEmployeeResponse,
-  AxiosError<DefaultError>,
-  Options<EmployeesControllerOnboardEmployeeData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     EmployeesControllerOnboardEmployeeResponse,
     AxiosError<DefaultError>,
@@ -394,7 +378,7 @@ export const employeesControllerOnboardEmployeeMutation = (
 
 export const employeesControllerFindMeQueryKey = (
   options?: Options<EmployeesControllerFindMeData>,
-) => createQueryKey('employeesControllerFindMe', options);
+) => [createQueryKey('employeesControllerFindMe', options)];
 
 export const employeesControllerFindMeOptions = (
   options?: Options<EmployeesControllerFindMeData>,
@@ -415,11 +399,7 @@ export const employeesControllerFindMeOptions = (
 
 export const employeesControllerRemoveMutation = (
   options?: Partial<Options<EmployeesControllerRemoveData>>,
-): UseMutationOptions<
-  unknown,
-  AxiosError<DefaultError>,
-  Options<EmployeesControllerRemoveData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     unknown,
     AxiosError<DefaultError>,
@@ -439,7 +419,7 @@ export const employeesControllerRemoveMutation = (
 
 export const employeesControllerFindOneQueryKey = (
   options: Options<EmployeesControllerFindOneData>,
-) => createQueryKey('employeesControllerFindOne', options);
+) => [createQueryKey('employeesControllerFindOne', options)];
 
 export const employeesControllerFindOneOptions = (
   options: Options<EmployeesControllerFindOneData>,
@@ -460,11 +440,7 @@ export const employeesControllerFindOneOptions = (
 
 export const employeesControllerUpdateMutation = (
   options?: Partial<Options<EmployeesControllerUpdateData>>,
-): UseMutationOptions<
-  EmployeesControllerUpdateResponse,
-  AxiosError<DefaultError>,
-  Options<EmployeesControllerUpdateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     EmployeesControllerUpdateResponse,
     AxiosError<DefaultError>,
@@ -484,7 +460,7 @@ export const employeesControllerUpdateMutation = (
 
 export const positionsControllerFindAllQueryKey = (
   options?: Options<PositionsControllerFindAllData>,
-) => createQueryKey('positionsControllerFindAll', options);
+) => [createQueryKey('positionsControllerFindAll', options)];
 
 export const positionsControllerFindAllOptions = (
   options?: Options<PositionsControllerFindAllData>,
@@ -505,7 +481,7 @@ export const positionsControllerFindAllOptions = (
 
 export const positionsControllerCreateQueryKey = (
   options: Options<PositionsControllerCreateData>,
-) => createQueryKey('positionsControllerCreate', options);
+) => [createQueryKey('positionsControllerCreate', options)];
 
 export const positionsControllerCreateOptions = (
   options: Options<PositionsControllerCreateData>,
@@ -526,11 +502,7 @@ export const positionsControllerCreateOptions = (
 
 export const positionsControllerCreateMutation = (
   options?: Partial<Options<PositionsControllerCreateData>>,
-): UseMutationOptions<
-  PositionsControllerCreateResponse,
-  AxiosError<DefaultError>,
-  Options<PositionsControllerCreateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     PositionsControllerCreateResponse,
     AxiosError<DefaultError>,
@@ -550,7 +522,7 @@ export const positionsControllerCreateMutation = (
 
 export const positionsControllerFindAllInDepartmentQueryKey = (
   options: Options<PositionsControllerFindAllInDepartmentData>,
-) => createQueryKey('positionsControllerFindAllInDepartment', options);
+) => [createQueryKey('positionsControllerFindAllInDepartment', options)];
 
 export const positionsControllerFindAllInDepartmentOptions = (
   options: Options<PositionsControllerFindAllInDepartmentData>,
@@ -571,7 +543,7 @@ export const positionsControllerFindAllInDepartmentOptions = (
 
 export const positionsControllerFindAllInDepartmentNameQueryKey = (
   options: Options<PositionsControllerFindAllInDepartmentNameData>,
-) => createQueryKey('positionsControllerFindAllInDepartmentName', options);
+) => [createQueryKey('positionsControllerFindAllInDepartmentName', options)];
 
 export const positionsControllerFindAllInDepartmentNameOptions = (
   options: Options<PositionsControllerFindAllInDepartmentNameData>,
@@ -592,11 +564,7 @@ export const positionsControllerFindAllInDepartmentNameOptions = (
 
 export const positionsControllerRemoveMutation = (
   options?: Partial<Options<PositionsControllerRemoveData>>,
-): UseMutationOptions<
-  unknown,
-  AxiosError<DefaultError>,
-  Options<PositionsControllerRemoveData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     unknown,
     AxiosError<DefaultError>,
@@ -616,7 +584,7 @@ export const positionsControllerRemoveMutation = (
 
 export const positionsControllerFindOneQueryKey = (
   options: Options<PositionsControllerFindOneData>,
-) => createQueryKey('positionsControllerFindOne', options);
+) => [createQueryKey('positionsControllerFindOne', options)];
 
 export const positionsControllerFindOneOptions = (
   options: Options<PositionsControllerFindOneData>,
@@ -637,11 +605,7 @@ export const positionsControllerFindOneOptions = (
 
 export const positionsControllerUpdateMutation = (
   options?: Partial<Options<PositionsControllerUpdateData>>,
-): UseMutationOptions<
-  PositionsControllerUpdateResponse,
-  AxiosError<DefaultError>,
-  Options<PositionsControllerUpdateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     PositionsControllerUpdateResponse,
     AxiosError<DefaultError>,
@@ -661,7 +625,7 @@ export const positionsControllerUpdateMutation = (
 
 export const positionsControllerFindOneByNameInDepartmentQueryKey = (
   options: Options<PositionsControllerFindOneByNameInDepartmentData>,
-) => createQueryKey('positionsControllerFindOneByNameInDepartment', options);
+) => [createQueryKey('positionsControllerFindOneByNameInDepartment', options)];
 
 export const positionsControllerFindOneByNameInDepartmentOptions = (
   options: Options<PositionsControllerFindOneByNameInDepartmentData>,
@@ -684,11 +648,7 @@ export const assignedGroupControllerUpdateAssignedGroupSignerMutation = (
   options?: Partial<
     Options<AssignedGroupControllerUpdateAssignedGroupSignerData>
   >,
-): UseMutationOptions<
-  AssignedGroupControllerUpdateAssignedGroupSignerResponse,
-  AxiosError<DefaultError>,
-  Options<AssignedGroupControllerUpdateAssignedGroupSignerData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     AssignedGroupControllerUpdateAssignedGroupSignerResponse,
     AxiosError<DefaultError>,
@@ -708,7 +668,7 @@ export const assignedGroupControllerUpdateAssignedGroupSignerMutation = (
 
 export const formTemplatesControllerFindAllQueryKey = (
   options?: Options<FormTemplatesControllerFindAllData>,
-) => createQueryKey('formTemplatesControllerFindAll', options);
+) => [createQueryKey('formTemplatesControllerFindAll', options)];
 
 export const formTemplatesControllerFindAllOptions = (
   options?: Options<FormTemplatesControllerFindAllData>,
@@ -763,8 +723,9 @@ const createInfiniteParams = <
 
 export const formTemplatesControllerFindAllInfiniteQueryKey = (
   options?: Options<FormTemplatesControllerFindAllData>,
-): QueryKey<Options<FormTemplatesControllerFindAllData>> =>
-  createQueryKey('formTemplatesControllerFindAll', options, true);
+): QueryKey<Options<FormTemplatesControllerFindAllData>> => [
+  createQueryKey('formTemplatesControllerFindAll', options, true),
+];
 
 export const formTemplatesControllerFindAllInfiniteOptions = (
   options?: Options<FormTemplatesControllerFindAllData>,
@@ -811,7 +772,7 @@ export const formTemplatesControllerFindAllInfiniteOptions = (
 
 export const formTemplatesControllerCreateQueryKey = (
   options: Options<FormTemplatesControllerCreateData>,
-) => createQueryKey('formTemplatesControllerCreate', options);
+) => [createQueryKey('formTemplatesControllerCreate', options)];
 
 export const formTemplatesControllerCreateOptions = (
   options: Options<FormTemplatesControllerCreateData>,
@@ -832,11 +793,7 @@ export const formTemplatesControllerCreateOptions = (
 
 export const formTemplatesControllerCreateMutation = (
   options?: Partial<Options<FormTemplatesControllerCreateData>>,
-): UseMutationOptions<
-  FormTemplatesControllerCreateResponse,
-  AxiosError<DefaultError>,
-  Options<FormTemplatesControllerCreateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     FormTemplatesControllerCreateResponse,
     AxiosError<DefaultError>,
@@ -856,11 +813,7 @@ export const formTemplatesControllerCreateMutation = (
 
 export const formTemplatesControllerRemoveMutation = (
   options?: Partial<Options<FormTemplatesControllerRemoveData>>,
-): UseMutationOptions<
-  unknown,
-  AxiosError<DefaultError>,
-  Options<FormTemplatesControllerRemoveData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     unknown,
     AxiosError<DefaultError>,
@@ -880,7 +833,7 @@ export const formTemplatesControllerRemoveMutation = (
 
 export const formTemplatesControllerFindOneQueryKey = (
   options: Options<FormTemplatesControllerFindOneData>,
-) => createQueryKey('formTemplatesControllerFindOne', options);
+) => [createQueryKey('formTemplatesControllerFindOne', options)];
 
 export const formTemplatesControllerFindOneOptions = (
   options: Options<FormTemplatesControllerFindOneData>,
@@ -901,11 +854,7 @@ export const formTemplatesControllerFindOneOptions = (
 
 export const formTemplatesControllerUpdateMutation = (
   options?: Partial<Options<FormTemplatesControllerUpdateData>>,
-): UseMutationOptions<
-  FormTemplatesControllerUpdateResponse,
-  AxiosError<DefaultError>,
-  Options<FormTemplatesControllerUpdateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     FormTemplatesControllerUpdateResponse,
     AxiosError<DefaultError>,
@@ -925,7 +874,7 @@ export const formTemplatesControllerUpdateMutation = (
 
 export const departmentsControllerFindAllQueryKey = (
   options: Options<DepartmentsControllerFindAllData>,
-) => createQueryKey('departmentsControllerFindAll', options);
+) => [createQueryKey('departmentsControllerFindAll', options)];
 
 export const departmentsControllerFindAllOptions = (
   options: Options<DepartmentsControllerFindAllData>,
@@ -946,7 +895,7 @@ export const departmentsControllerFindAllOptions = (
 
 export const departmentsControllerCreateQueryKey = (
   options: Options<DepartmentsControllerCreateData>,
-) => createQueryKey('departmentsControllerCreate', options);
+) => [createQueryKey('departmentsControllerCreate', options)];
 
 export const departmentsControllerCreateOptions = (
   options: Options<DepartmentsControllerCreateData>,
@@ -967,11 +916,7 @@ export const departmentsControllerCreateOptions = (
 
 export const departmentsControllerCreateMutation = (
   options?: Partial<Options<DepartmentsControllerCreateData>>,
-): UseMutationOptions<
-  DepartmentsControllerCreateResponse,
-  AxiosError<DefaultError>,
-  Options<DepartmentsControllerCreateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     DepartmentsControllerCreateResponse,
     AxiosError<DefaultError>,
@@ -991,11 +936,7 @@ export const departmentsControllerCreateMutation = (
 
 export const departmentsControllerRemoveMutation = (
   options?: Partial<Options<DepartmentsControllerRemoveData>>,
-): UseMutationOptions<
-  unknown,
-  AxiosError<DefaultError>,
-  Options<DepartmentsControllerRemoveData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     unknown,
     AxiosError<DefaultError>,
@@ -1015,7 +956,7 @@ export const departmentsControllerRemoveMutation = (
 
 export const departmentsControllerFindOneQueryKey = (
   options: Options<DepartmentsControllerFindOneData>,
-) => createQueryKey('departmentsControllerFindOne', options);
+) => [createQueryKey('departmentsControllerFindOne', options)];
 
 export const departmentsControllerFindOneOptions = (
   options: Options<DepartmentsControllerFindOneData>,
@@ -1036,11 +977,7 @@ export const departmentsControllerFindOneOptions = (
 
 export const departmentsControllerUpdateMutation = (
   options?: Partial<Options<DepartmentsControllerUpdateData>>,
-): UseMutationOptions<
-  DepartmentsControllerUpdateResponse,
-  AxiosError<DefaultError>,
-  Options<DepartmentsControllerUpdateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     DepartmentsControllerUpdateResponse,
     AxiosError<DefaultError>,
@@ -1060,7 +997,7 @@ export const departmentsControllerUpdateMutation = (
 
 export const departmentsControllerFindOneByNameQueryKey = (
   options: Options<DepartmentsControllerFindOneByNameData>,
-) => createQueryKey('departmentsControllerFindOneByName', options);
+) => [createQueryKey('departmentsControllerFindOneByName', options)];
 
 export const departmentsControllerFindOneByNameOptions = (
   options: Options<DepartmentsControllerFindOneByNameData>,
@@ -1081,7 +1018,7 @@ export const departmentsControllerFindOneByNameOptions = (
 
 export const formInstancesControllerFindAllQueryKey = (
   options?: Options<FormInstancesControllerFindAllData>,
-) => createQueryKey('formInstancesControllerFindAll', options);
+) => [createQueryKey('formInstancesControllerFindAll', options)];
 
 export const formInstancesControllerFindAllOptions = (
   options?: Options<FormInstancesControllerFindAllData>,
@@ -1102,8 +1039,9 @@ export const formInstancesControllerFindAllOptions = (
 
 export const formInstancesControllerFindAllInfiniteQueryKey = (
   options?: Options<FormInstancesControllerFindAllData>,
-): QueryKey<Options<FormInstancesControllerFindAllData>> =>
-  createQueryKey('formInstancesControllerFindAll', options, true);
+): QueryKey<Options<FormInstancesControllerFindAllData>> => [
+  createQueryKey('formInstancesControllerFindAll', options, true),
+];
 
 export const formInstancesControllerFindAllInfiniteOptions = (
   options?: Options<FormInstancesControllerFindAllData>,
@@ -1150,7 +1088,7 @@ export const formInstancesControllerFindAllInfiniteOptions = (
 
 export const formInstancesControllerCreateQueryKey = (
   options: Options<FormInstancesControllerCreateData>,
-) => createQueryKey('formInstancesControllerCreate', options);
+) => [createQueryKey('formInstancesControllerCreate', options)];
 
 export const formInstancesControllerCreateOptions = (
   options: Options<FormInstancesControllerCreateData>,
@@ -1171,11 +1109,7 @@ export const formInstancesControllerCreateOptions = (
 
 export const formInstancesControllerCreateMutation = (
   options?: Partial<Options<FormInstancesControllerCreateData>>,
-): UseMutationOptions<
-  FormInstancesControllerCreateResponse,
-  AxiosError<DefaultError>,
-  Options<FormInstancesControllerCreateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     FormInstancesControllerCreateResponse,
     AxiosError<DefaultError>,
@@ -1195,11 +1129,12 @@ export const formInstancesControllerCreateMutation = (
 
 export const formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey = (
   options?: Options<FormInstancesControllerFindAllAssignedToCurrentEmployeeData>,
-) =>
+) => [
   createQueryKey(
     'formInstancesControllerFindAllAssignedToCurrentEmployee',
     options,
-  );
+  ),
+];
 
 export const formInstancesControllerFindAllAssignedToCurrentEmployeeOptions = (
   options?: Options<FormInstancesControllerFindAllAssignedToCurrentEmployeeData>,
@@ -1222,11 +1157,12 @@ export const formInstancesControllerFindAllAssignedToCurrentEmployeeOptions = (
 
 export const formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey = (
   options?: Options<FormInstancesControllerFindAllCreatedByCurrentEmployeeData>,
-) =>
+) => [
   createQueryKey(
     'formInstancesControllerFindAllCreatedByCurrentEmployee',
     options,
-  );
+  ),
+];
 
 export const formInstancesControllerFindAllCreatedByCurrentEmployeeOptions = (
   options?: Options<FormInstancesControllerFindAllCreatedByCurrentEmployeeData>,
@@ -1249,11 +1185,7 @@ export const formInstancesControllerFindAllCreatedByCurrentEmployeeOptions = (
 
 export const formInstancesControllerRemoveMutation = (
   options?: Partial<Options<FormInstancesControllerRemoveData>>,
-): UseMutationOptions<
-  unknown,
-  AxiosError<DefaultError>,
-  Options<FormInstancesControllerRemoveData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     unknown,
     AxiosError<DefaultError>,
@@ -1273,7 +1205,7 @@ export const formInstancesControllerRemoveMutation = (
 
 export const formInstancesControllerFindOneQueryKey = (
   options: Options<FormInstancesControllerFindOneData>,
-) => createQueryKey('formInstancesControllerFindOne', options);
+) => [createQueryKey('formInstancesControllerFindOne', options)];
 
 export const formInstancesControllerFindOneOptions = (
   options: Options<FormInstancesControllerFindOneData>,
@@ -1294,11 +1226,7 @@ export const formInstancesControllerFindOneOptions = (
 
 export const formInstancesControllerUpdateMutation = (
   options?: Partial<Options<FormInstancesControllerUpdateData>>,
-): UseMutationOptions<
-  FormInstancesControllerUpdateResponse,
-  AxiosError<DefaultError>,
-  Options<FormInstancesControllerUpdateData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     FormInstancesControllerUpdateResponse,
     AxiosError<DefaultError>,
@@ -1318,11 +1246,7 @@ export const formInstancesControllerUpdateMutation = (
 
 export const formInstancesControllerSignFormInstanceMutation = (
   options?: Partial<Options<FormInstancesControllerSignFormInstanceData>>,
-): UseMutationOptions<
-  FormInstancesControllerSignFormInstanceResponse,
-  AxiosError<DefaultError>,
-  Options<FormInstancesControllerSignFormInstanceData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     FormInstancesControllerSignFormInstanceResponse,
     AxiosError<DefaultError>,
@@ -1342,11 +1266,7 @@ export const formInstancesControllerSignFormInstanceMutation = (
 
 export const formInstancesControllerCompleteFormInstanceMutation = (
   options?: Partial<Options<FormInstancesControllerCompleteFormInstanceData>>,
-): UseMutationOptions<
-  FormInstancesControllerCompleteFormInstanceResponse,
-  AxiosError<DefaultError>,
-  Options<FormInstancesControllerCompleteFormInstanceData>
-> => {
+) => {
   const mutationOptions: UseMutationOptions<
     FormInstancesControllerCompleteFormInstanceResponse,
     AxiosError<DefaultError>,

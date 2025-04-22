@@ -79,7 +79,7 @@ function TemplateDirectory() {
       if (typeof lastPageParam !== 'number') {
         return undefined;
       }
-      if (lastPage.length === 0) {
+      if (lastPage.formTemplates.length === 0) {
         return undefined;
       }
       return lastPageParam + 1;
@@ -88,7 +88,7 @@ function TemplateDirectory() {
 
   const formTemplates = useMemo(() => {
     if (!infiniteFormTemplates) return [];
-    return infiniteFormTemplates.pages.flatMap((page) => page);
+    return infiniteFormTemplates.pages.flatMap((page) => page.formTemplates);
   }, [infiniteFormTemplates]);
 
   useEffect(() => {

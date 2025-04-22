@@ -196,6 +196,11 @@ export type FormTemplateEntity = {
   updatedAt: string;
 };
 
+export type FormTemplateFindAllResponse = {
+  count: number;
+  formTemplates: Array<FormTemplateEntity>;
+};
+
 export type UpdateFormTemplateDto = {
   name?: string;
   description?: string;
@@ -922,7 +927,7 @@ export type FormTemplatesControllerFindAllErrors = {
 };
 
 export type FormTemplatesControllerFindAllResponses = {
-  200: Array<FormTemplateEntity>;
+  200: FormTemplateFindAllResponse;
 };
 
 export type FormTemplatesControllerFindAllResponse =

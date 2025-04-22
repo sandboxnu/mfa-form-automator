@@ -643,6 +643,22 @@ export const FormTemplateEntitySchema = {
   ],
 } as const;
 
+export const FormTemplateFindAllResponseSchema = {
+  type: 'object',
+  properties: {
+    count: {
+      type: 'number',
+    },
+    formTemplates: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/FormTemplateEntity',
+      },
+    },
+  },
+  required: ['count', 'formTemplates'],
+} as const;
+
 export const UpdateFormTemplateDtoSchema = {
   type: 'object',
   properties: {

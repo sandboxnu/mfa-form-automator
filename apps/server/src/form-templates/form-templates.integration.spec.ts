@@ -290,6 +290,64 @@ describe('FormTemplatesIntegrationTest', () => {
     });
   });
 
+  describe('findAllCount', () => {
+    beforeEach(async () => {
+      formTemplate1 = await service.create({
+        name: 'Form Template 1',
+        description: 'Form Template Description 1',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+      await service.create({
+        name: 'Form Template 2',
+        description: 'Form Template Description 2',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 2',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: true,
+      });
+    });
+
+    it('successfully retrieves the count of all non-disabled form templates', async () => {
+      const count = await service.findAllCount();
+      expect(count).toBe(1);
+    });
+  });
+
   describe('findOne', () => {
     beforeEach(async () => {
       formTemplate1 = await service.create({

@@ -29,7 +29,7 @@ export class FormTemplatesService {
         description: createFormTemplateDto.description,
         pageHeight: createFormTemplateDto.pageHeight,
         pageWidth: createFormTemplateDto.pageWidth,
-
+        disabled: createFormTemplateDto.disabled,
         fieldGroups: {
           create: createFormTemplateDto.fieldGroups.map((fieldGroup) => {
             return {
@@ -81,6 +81,19 @@ export class FormTemplatesService {
       })
       .then((templates) => templates.filter((item) => !item.disabled));
     return formTemplates;
+  }
+
+  /**
+   * Find the count of all form templates.
+   * @returns the count of all form templates that are not disabled.
+   */
+  async findAllCount() {
+    const formTemplatesCount = await this.prisma.formTemplate.count({
+      where: {
+        disabled: false,
+      },
+    });
+    return formTemplatesCount;
   }
 
   /**

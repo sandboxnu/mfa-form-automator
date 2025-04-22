@@ -247,11 +247,7 @@ export const TemplateSelectGrid = memo(
     });
 
     // Calculate total number of pages
-    const totalItems =
-      queryData?.length === itemsPerPage
-        ? (currentPage + 2) * itemsPerPage
-        : (currentPage + 1) * itemsPerPage;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const totalPages = Math.ceil((queryData?.count || 0) / itemsPerPage);
 
     // Handle page change
     const handlePageChange = (newPage: number) => {
@@ -264,7 +260,7 @@ export const TemplateSelectGrid = memo(
         return passedFormTemplates;
       }
 
-      return queryData || [];
+      return queryData?.formTemplates || [];
     }, [passedFormTemplates, queryData, currentPage, itemsPerPage]);
 
     // Only show loading state if we're loading the initial data and no templates are passed
@@ -298,6 +294,7 @@ export const TemplateSelectGrid = memo(
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
+            endButtons
           />
         )}
       </>
