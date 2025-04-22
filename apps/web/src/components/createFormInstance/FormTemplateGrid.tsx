@@ -95,10 +95,12 @@ const Pagination = memo(
     currentPage,
     totalPages,
     onPageChange,
+    endButtons = false,
   }: {
     currentPage: number;
     totalPages: number;
     onPageChange: (page: number) => void;
+    endButtons?: boolean;
   }) => {
     // Calculate the range of page numbers to display (show up to 5 pages)
     const getPageNumbers = () => {
@@ -129,20 +131,22 @@ const Pagination = memo(
       >
         {/* Pagination controls */}
         <HStack gap={1} background="white" borderRadius="8px" p="8px">
-          <Button
-            size="md"
-            width="36px"
-            height="36px"
-            onClick={() => onPageChange(0)}
-            disabled={currentPage === 0}
-            bg={currentPage === 0 ? '#9E9E9E' : '#9E9E9E'}
-            background="white"
-            _hover={{ bg: currentPage === 0 ? '#1058C7' : '#DCDCDC' }}
-            borderRadius="6px"
-            color="black"
-          >
-            &lt;&lt;
-          </Button>
+          {endButtons && (
+            <Button
+              size="md"
+              width="36px"
+              height="36px"
+              onClick={() => onPageChange(0)}
+              disabled={currentPage === 0}
+              bg={currentPage === 0 ? '#9E9E9E' : '#9E9E9E'}
+              background="white"
+              _hover={{ bg: currentPage === 0 ? '#1058C7' : '#DCDCDC' }}
+              borderRadius="6px"
+              color="black"
+            >
+              &lt;&lt;
+            </Button>
+          )}
           <Button
             size="md"
             width="36px"
@@ -191,22 +195,24 @@ const Pagination = memo(
           >
             &gt;
           </Button>
-          <Button
-            size="md"
-            width="36px"
-            height="36px"
-            onClick={() => onPageChange(totalPages - 1)}
-            disabled={currentPage === totalPages - 1}
-            bg={currentPage === totalPages - 1 ? '#9E9E9E' : '#212121'}
-            background="white"
-            _hover={{
-              bg: currentPage === totalPages - 1 ? '#1058C7' : '#DCDCDC',
-            }}
-            borderRadius="6px"
-            color="black"
-          >
-            &gt;&gt;
-          </Button>
+          {endButtons && (
+            <Button
+              size="md"
+              width="36px"
+              height="36px"
+              onClick={() => onPageChange(totalPages - 1)}
+              disabled={currentPage === totalPages - 1}
+              bg={currentPage === totalPages - 1 ? '#9E9E9E' : '#212121'}
+              background="white"
+              _hover={{
+                bg: currentPage === totalPages - 1 ? '#1058C7' : '#DCDCDC',
+              }}
+              borderRadius="6px"
+              color="black"
+            >
+              &gt;&gt;
+            </Button>
+          )}
         </HStack>
       </Flex>
     );
@@ -242,10 +248,9 @@ export const TemplateSelectGrid = memo(
 
     // Calculate total number of pages
     const totalItems =
-      passedFormTemplates?.length ??
-      (queryData?.length === itemsPerPage
+      queryData?.length === itemsPerPage
         ? (currentPage + 2) * itemsPerPage
-        : (currentPage + 1) * itemsPerPage);
+        : (currentPage + 1) * itemsPerPage;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     // Handle page change
@@ -256,10 +261,7 @@ export const TemplateSelectGrid = memo(
     // If we have passed form templates, use those instead of the queried results
     const displayTemplates = useMemo(() => {
       if (passedFormTemplates) {
-        // If we have passed templates, we'll paginate them client-side
-        const start = currentPage * itemsPerPage;
-        const end = start + itemsPerPage;
-        return passedFormTemplates.slice(start, end);
+        return passedFormTemplates;
       }
 
       return queryData || [];
@@ -291,7 +293,7 @@ export const TemplateSelectGrid = memo(
         </Grid>
 
         {/* Only show pagination when there are multiple pages */}
-        {totalPages > 1 && (
+        {!passedFormTemplates && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
