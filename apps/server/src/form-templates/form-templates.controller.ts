@@ -13,6 +13,7 @@ import {
   UploadedFile,
   PipeTransform,
   ValidationPipe,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { FormTemplatesService } from './form-templates.service';
 import {
@@ -108,10 +109,23 @@ export class FormTemplatesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     createFormTemplateDto.file = file;
-    const newFormTemplate = await this.formTemplatesService.create(
-      createFormTemplateDto,
-    );
-    return new FormTemplateEntity(newFormTemplate);
+    try {
+      const newFormTemplate = await this.formTemplatesService.create(
+        createFormTemplateDto,
+      );
+      return new FormTemplateEntity(newFormTemplate);
+    } catch (e) {
+      if (e instanceof Error) {
+        if (e.message === FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS) {
+          this.loggerService.error(
+            FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS,
+          );
+          throw new UnprocessableEntityException(
+            FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS,
+          );
+        }
+      }
+    }
   }
 
   @Get()
@@ -186,6 +200,15 @@ export class FormTemplatesController {
           );
           throw new NotFoundException(
             FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND_CLIENT,
+          );
+        }
+      } else if (e instanceof Error) {
+        if (e.message === FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS) {
+          this.loggerService.error(
+            FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS,
+          );
+          throw new UnprocessableEntityException(
+            FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS,
           );
         }
       }

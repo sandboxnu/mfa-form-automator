@@ -153,6 +153,61 @@ describe('FormTemplatesIntegrationTest', () => {
       expect(formTemplate.fieldGroups[0].name).toBe('Field Group');
       expect(formTemplate.formDocLink).toBe('pdfLink');
     });
+    it('throws an error when creating a form template with an existing name', async () => {
+      formTemplate1 = await service.create({
+        name: 'Form Template 1',
+        description: 'Form Template Description 1',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+
+      await expect(
+        service.create({
+          name: 'Form Template 1',
+          description: 'Form Template Description 1',
+          file: emptyFile,
+          pageWidth: 800,
+          pageHeight: 1035,
+          fieldGroups: [
+            {
+              name: 'Field Group 1',
+              order: 0,
+              templateBoxes: [
+                {
+                  type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                  x_coordinate: 0,
+                  y_coordinate: 0,
+                  width: 100,
+                  height: 100,
+                  page: 0,
+                },
+              ],
+            },
+          ],
+          disabled: false,
+        }),
+      ).rejects.toThrowError(
+        'Form template with name "Form Template 1" already exists.',
+      );
+    });
   });
   describe('findAll', () => {
     beforeEach(async () => {
@@ -441,6 +496,41 @@ describe('FormTemplatesIntegrationTest', () => {
           description: 'Updated Form Template Description',
         }),
       ).rejects.toThrowError();
+    });
+
+    it('throws an error when updating a form template with an existing name', async () => {
+      await service.create({
+        name: 'Form Template 2',
+        description: 'Form Template Description 2',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 2',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+      await expect(
+        service.update(formTemplate1!.id, {
+          name: 'Form Template 2',
+          description: 'Updated Form Template Description',
+        }),
+      ).rejects.toThrowError(
+        'Form template with name "Form Template 2" already exists.',
+      );
     });
 
     it('successfully disables a form template', async () => {
