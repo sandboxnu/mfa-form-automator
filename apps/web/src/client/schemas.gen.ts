@@ -997,6 +997,22 @@ export const FormInstanceEntitySchema = {
   ],
 } as const;
 
+export const FormInstanceFindAllResponseSchema = {
+  type: 'object',
+  properties: {
+    count: {
+      type: 'number',
+    },
+    formInstances: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/FormInstanceEntity',
+      },
+    },
+  },
+  required: ['count', 'formInstances'],
+} as const;
+
 export const UpdateFormInstanceDtoSchema = {
   type: 'object',
   properties: {

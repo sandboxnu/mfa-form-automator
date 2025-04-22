@@ -384,6 +384,13 @@ export class FormInstancesService {
   }
 
   /**
+   * Find the count of all form instances.
+   */
+  async findAllCount() {
+    return await this.prisma.formInstance.count();
+  }
+
+  /**
    * Find a form instance by id.
    * @param id the form instance id
    * @returns the selected form instance, hydrated

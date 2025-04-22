@@ -28,7 +28,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
       if (typeof lastPageParam !== 'number') {
         return undefined;
       }
-      if (lastPage.length === 0) {
+      if (lastPage.formInstances.length === 0) {
         return undefined;
       }
       return lastPageParam + 1;
@@ -60,7 +60,8 @@ export const ActiveFormList = ({ title }: { title: string }) => {
 
   // Flatten the pages data
   const allActiveForms = useMemo(
-    () => infiniteFormInstances?.pages.flatMap((page) => page) || [],
+    () =>
+      infiniteFormInstances?.pages.flatMap((page) => page.formInstances) || [],
     [infiniteFormInstances],
   );
 
@@ -114,7 +115,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
             >
               {allActiveForms.length === 1
                 ? 'There is 1 active form instance'
-                : `There are ${allActiveForms.length} active form instances`}
+                : `There are ${infiniteFormInstances?.pages[0].count} active form instances`}
             </Text>
 
             <Box ml="auto">

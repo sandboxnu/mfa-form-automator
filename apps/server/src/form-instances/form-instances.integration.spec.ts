@@ -674,6 +674,50 @@ describe('FormInstancesIntegrationTest', () => {
       expect(formInstancesPage1).toHaveLength(2);
     });
   });
+  describe('findAllCount', () => {
+    beforeEach(async () => {
+      // Create the first two form instances separately for direct reference
+      formInstance1 = await service.create({
+        name: 'Form Instance',
+        assignedGroups: [
+          {
+            order: 0,
+            fieldGroupId: formTemplate1.fieldGroups[0].id,
+            signerType: $Enums.SignerType.USER,
+            signerEmployeeId: employeeId1,
+            signerEmployeeList: [],
+          },
+        ],
+        originatorId: employeeId1,
+        formTemplateId: formTemplate1.id,
+        formDocLink: 'formDocLink',
+        description: 'description',
+      });
+
+      formInstance2 = await service.create({
+        name: 'Form Instance 2',
+        assignedGroups: [
+          {
+            order: 0,
+            signerType: $Enums.SignerType.USER,
+            fieldGroupId: formTemplate1.fieldGroups[0].id,
+            signerEmployeeList: [],
+            signerEmployeeId: employeeId1,
+          },
+        ],
+        originatorId: employeeId1,
+        formTemplateId: formTemplate1.id,
+        formDocLink: 'formDocLink',
+        description: 'description',
+      });
+    });
+
+    it('should return the count of all form instances', async () => {
+      const count = await service.findAllCount();
+
+      expect(count).toBe(2);
+    });
+  });
   describe('findOne', () => {
     beforeEach(async () => {
       formInstance1 = await service.create({

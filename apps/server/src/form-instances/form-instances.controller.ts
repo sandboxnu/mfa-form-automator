@@ -42,6 +42,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
 import { ParseFormDataJsonPipe } from '../form-templates/form-templates.controller';
 import { EmployeesService } from '../employees/employees.service';
+import { FormInstanceFindAllResponse } from './response/form-instance-find-all.response';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
@@ -71,7 +72,7 @@ export class FormInstancesController {
 
   @Get()
   @UseGuards(AdminAuthGuard)
-  @ApiOkResponse({ type: [FormInstanceEntity] })
+  @ApiOkResponse({ type: FormInstanceFindAllResponse })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
@@ -82,8 +83,10 @@ export class FormInstancesController {
   })
   async findAll(@Query('cursor') cursor?: number) {
     const formInstances = await this.formInstancesService.findAll(cursor);
-    return formInstances.map(
-      (formInstance) => new FormInstanceEntity(formInstance),
+    const totalCount = await this.formInstancesService.findAllCount();
+    return new FormInstanceFindAllResponse(
+      totalCount,
+      formInstances.map((formInstance) => new FormInstanceEntity(formInstance)),
     );
   }
 

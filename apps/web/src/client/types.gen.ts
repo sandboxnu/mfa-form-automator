@@ -284,6 +284,11 @@ export type FormInstanceEntity = {
   formTemplateId: string;
 };
 
+export type FormInstanceFindAllResponse = {
+  count: number;
+  formInstances: Array<FormInstanceEntity>;
+};
+
 export type UpdateFormInstanceDto = {
   name?: string;
   description?: string;
@@ -1247,7 +1252,7 @@ export type FormInstancesControllerFindAllErrors = {
 };
 
 export type FormInstancesControllerFindAllResponses = {
-  200: Array<FormInstanceEntity>;
+  200: FormInstanceFindAllResponse;
 };
 
 export type FormInstancesControllerFindAllResponse =
