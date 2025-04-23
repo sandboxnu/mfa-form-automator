@@ -1,4 +1,3 @@
-import { Employee } from '@prisma/client';
 import { EmployeeBaseEntity } from '../employees/entities/employee.entity';
 
 export interface EmailHandler {

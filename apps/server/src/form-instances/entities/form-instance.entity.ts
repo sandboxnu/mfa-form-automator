@@ -2,10 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { FormInstance } from '@prisma/client';
 import { FormTemplateBaseEntity } from '../../form-templates/entities/form-template.entity';
 import { Exclude } from 'class-transformer';
-import {
-  AssignedGroupEntity,
-  AssignedGroupEntityHydrated,
-} from '../../assigned-group/entities/assigned-group.entity';
+import { AssignedGroupEntityHydrated } from '../../assigned-group/entities/assigned-group.entity';
 import { IsOptional } from 'class-validator';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 
