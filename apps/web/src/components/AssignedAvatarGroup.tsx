@@ -29,7 +29,7 @@ export const AssignedAvatarGroup = ({
             <HoverableAvatar
               key={assignedGroup.id}
               name={getNameFromAssignedGroup(assignedGroup)}
-              signed={assignedGroup.signed}
+              signedAt={assignedGroup.signed}
             />
           ))
         : displayedAssignedGroups.map((assignedGroup, i) => (

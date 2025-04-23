@@ -99,7 +99,7 @@ export const SignFormInstanceContextProvider = ({
           assignedGroup.signerEmployeeList
             ?.map((employee) => employee.id)
             .find((id) => id === user?.id)) &&
-        assignedGroup.signed == false,
+        !assignedGroup.signed,
     );
     if (assignedGroups && assignedGroups.length > 0) {
       setGroupNumber(assignedGroups[0]?.order);

@@ -17,7 +17,7 @@ export class AssignedGroupEntityHydrated {
   order: number;
 
   @ApiProperty()
-  signed: boolean;
+  signed: Date | null;
 
   @IsString()
   @IsOptional()

@@ -108,7 +108,7 @@ export const nextSigner = (formInstance: FormInstanceEntity) => {
   // Find the first assigned group that is not signed
   const firstUnsignedAssignedGroup: AssignedGroupEntityHydrated | undefined =
     assignedGroups.find((assignedGroup: AssignedGroupEntityHydrated) => {
-      return assignedGroup.signed === false;
+      return !assignedGroup.signed;
     });
 
   return firstUnsignedAssignedGroup;

@@ -230,7 +230,7 @@ export type AssignedGroupEntityHydrated = {
   id: string;
   fieldGroup: FieldGroupBaseEntity;
   order: number;
-  signed: boolean;
+  signed: string | null;
   signedDocLink: string | null;
   signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
   signingEmployee: EmployeeBaseEntity | null;

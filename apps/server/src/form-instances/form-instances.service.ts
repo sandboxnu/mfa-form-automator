@@ -977,7 +977,7 @@ export class FormInstancesService {
               signerEmployeeId: assignedGroup.signerEmployeeId,
               signerPositionId: assignedGroup.signerPositionId,
               signerDepartmentId: assignedGroup.signerDepartmentId,
-              signed: false,
+              signed: null,
               signedDocLink: null,
               signingEmployeeId: null,
               signerEmployeeList: {
@@ -1336,7 +1336,7 @@ export class FormInstancesService {
     const updatedAssignedGroup = await this.prisma.assignedGroup.update({
       where: { id: assignedGroupId },
       data: {
-        signed: true,
+        signed: new Date(),
         signingEmployeeId: employee.id,
         signedDocLink: pdfLink,
       },

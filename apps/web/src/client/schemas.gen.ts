@@ -707,7 +707,9 @@ export const AssignedGroupEntityHydratedSchema = {
       type: 'number',
     },
     signed: {
-      type: 'boolean',
+      format: 'date-time',
+      type: 'string',
+      nullable: true,
     },
     signedDocLink: {
       type: 'string',
