@@ -204,9 +204,7 @@ describe('FormTemplatesIntegrationTest', () => {
           ],
           disabled: false,
         }),
-      ).rejects.toThrowError(
-        'Form template with name "Form Template 1" already exists.',
-      );
+      ).rejects.toThrowError('Form template with this name already exists');
     });
   });
   describe('findAll', () => {
@@ -308,8 +306,8 @@ describe('FormTemplatesIntegrationTest', () => {
 
     it('does not include disabled templates', async () => {
       const formTemplate3 = await service.create({
-        name: 'Form Template 2',
-        description: 'Form Template Description 2',
+        name: 'Form Template 3',
+        description: 'Form Template Description 3',
         file: emptyFile,
         pageWidth: 800,
         pageHeight: 1035,
@@ -528,7 +526,7 @@ describe('FormTemplatesIntegrationTest', () => {
           name: 'Form Template 2',
           description: 'Updated Form Template Description',
         }),
-      ).rejects.toThrowError('Form template with this name already exists.');
+      ).rejects.toThrowError('Form template with this name already exists');
     });
 
     it('successfully disables a form template', async () => {
