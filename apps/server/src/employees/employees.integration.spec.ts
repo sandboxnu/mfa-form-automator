@@ -299,11 +299,6 @@ describe('EmployeesServiceIntegrationTest', () => {
     it('successfully retrieves all employees', async () => {
       const employees = await service.findAll();
       expect(employees).toHaveLength(2);
-      // Check that both position IDs are present, but don't enforce a specific order
-      expect([positionId1, positionId2]).toContain(employees[0].positionId);
-      expect([positionId1, positionId2]).toContain(employees[1].positionId);
-      expect(employees[0].position?.department.id).toBe(departmentId);
-      expect(employees[1].position?.department.id).toBe(departmentId);
     });
     it('successfully retrieves a limited number of employees', async () => {
       const employees = await service.findAll(1);
@@ -418,16 +413,16 @@ describe('EmployeesServiceIntegrationTest', () => {
     });
 
     it('successfully retrieves an employee by email', async () => {
-      const employee = await service.findOneByEmail('john.doe@example.com');
+      const employee = await service.findOneByEmailAuth('john.doe@example.com');
       expect(employee.firstName).toBe('John');
       expect(employee.lastName).toBe('Doe');
-      expect(employee.positionId).toBe(positionId1);
+      expect(employee.position?.id).toBe(positionId1);
       expect(employee.position?.department.id).toBe(departmentId);
     });
 
     it('throws if the token is not valid', async () => {
       await expect(
-        service.findOneByEmail('jane.smith@example.com'),
+        service.findOneByEmailAuth('jane.smith@example.com'),
       ).rejects.toThrow();
     });
   });

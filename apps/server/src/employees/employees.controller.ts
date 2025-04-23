@@ -86,7 +86,7 @@ export class EmployeesController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [EmployeeBaseEntity] })
+  @ApiOkResponse({ type: [EmployeeSecureEntityHydrated] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
@@ -98,7 +98,9 @@ export class EmployeesController {
   async findAll(@Query('limit') limit?: number) {
     // TODO: Auth
     const employees = await this.employeesService.findAll(limit);
-    return employees.map((employee) => new EmployeeBaseEntity(employee));
+    return employees.map(
+      (employee) => new EmployeeSecureEntityHydrated(employee),
+    );
   }
 
   @Get('me')

@@ -34,27 +34,15 @@ export class PositionsService {
     const positions = limit
       ? await this.prisma.position.findMany({
           take: limit,
-          include: {
-            employees: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-              },
-            },
+          select: {
+            id: true,
+            name: true,
           },
         })
       : await this.prisma.position.findMany({
-          include: {
-            employees: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
-              },
-            },
+          select: {
+            id: true,
+            name: true,
           },
         });
     return positions;

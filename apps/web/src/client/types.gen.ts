@@ -415,7 +415,7 @@ export type EmployeesControllerFindAllErrors = {
 };
 
 export type EmployeesControllerFindAllResponses = {
-  200: Array<EmployeeBaseEntity>;
+  200: Array<EmployeeSecureEntityHydrated>;
 };
 
 export type EmployeesControllerFindAllResponse =

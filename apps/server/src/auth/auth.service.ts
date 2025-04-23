@@ -24,7 +24,7 @@ export class AuthService {
     pass: string,
   ): Promise<EmployeeSecureEntityHydrated | null> {
     try {
-      const user = await this.employeesService.findOneByEmail(email);
+      const user = await this.employeesService.findOneByEmailAuth(email);
 
       if (user?.pswdHash && !(await bcrypt.compare(pass, user.pswdHash!))) {
         return null;
@@ -36,22 +36,6 @@ export class AuthService {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
         return null;
       }
-    }
-    return null;
-  }
-
-  /**
-   * Validate if employee has specified scope.
-   * @param email employee email
-   * @returns validated employee or null
-   */
-  async validateEmployeeScope(
-    email: string,
-    scope: EmployeeScope,
-  ): Promise<EmployeeSecureEntityHydrated | null> {
-    const user = await this.employeesService.findOneByEmail(email);
-    if (user.scope == scope) {
-      return user;
     }
     return null;
   }
