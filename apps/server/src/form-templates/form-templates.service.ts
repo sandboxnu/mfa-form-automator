@@ -136,13 +136,15 @@ export class FormTemplatesService {
    */
   async update(id: string, updateFormTemplateDto: UpdateFormTemplateDto) {
     // TODO: Support updating signature fields (updating name/order/position, adding, deleting, etc)
-    const existingFormTemplate = await this.prisma.formTemplate.findFirst({
-      where: {
-        name: updateFormTemplateDto.name,
-      },
-    });
-    if (existingFormTemplate && existingFormTemplate.id !== id) {
-      throw new Error(FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS);
+    if (!updateFormTemplateDto.name) {
+      const existingFormTemplate = await this.prisma.formTemplate.findFirst({
+        where: {
+          name: updateFormTemplateDto.name,
+        },
+      });
+      if (existingFormTemplate && existingFormTemplate.id !== id) {
+        throw new Error(FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS);
+      }
     }
 
     const updatedFormTemplate = await this.prisma.formTemplate.update({
