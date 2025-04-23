@@ -306,8 +306,8 @@ describe('FormTemplatesIntegrationTest', () => {
 
     it('does not include disabled templates', async () => {
       const formTemplate3 = await service.create({
-        name: 'Form Template 3',
-        description: 'Form Template Description 3',
+        name: 'Form Template Disabled',
+        description: 'Form Template Description Disabled',
         file: emptyFile,
         pageWidth: 800,
         pageHeight: 1035,
