@@ -14,9 +14,15 @@ export type SignatureDropdownSelectProps<OptionType> = {
   isMulti?: boolean;
 };
 
-export const SignatureDropdownSelect = <T extends object>(
-  props: SignatureDropdownSelectProps<T>,
-) => {
+export const SignatureDropdownSelect = <T extends object>({
+  assignedGroupData,
+  setAssignedGroupData,
+  fieldGroup,
+  options,
+  activeTab,
+  setActiveTab,
+  isMulti = false,
+}: SignatureDropdownSelectProps<T>) => {
   const [selectedOptions, setSelectedOptions] = useState<OptionType[]>([]);
   const selectStyles: ChakraStylesConfig = {
     control: (provided) => ({
@@ -57,8 +63,8 @@ export const SignatureDropdownSelect = <T extends object>(
 
   // prefill dropdown if assigned group exists
   useEffect(() => {
-    const assignedGroup = props.assignedGroupData.find(
-      (group) => group.fieldGroupId === props.fieldGroup.id,
+    const assignedGroup = assignedGroupData.find(
+      (group) => group.fieldGroupId === fieldGroup.id,
     );
 
     if (!assignedGroup) return;
@@ -67,7 +73,7 @@ export const SignatureDropdownSelect = <T extends object>(
 
     switch (signerType) {
       case SignerType.USER:
-        props.setActiveTab('Employee');
+        setActiveTab('Employee');
         setSelectedOptions([
           {
             value: assignedGroup.signerEmployeeId!,
@@ -76,7 +82,7 @@ export const SignatureDropdownSelect = <T extends object>(
         ]);
         break;
       case SignerType.POSITION:
-        props.setActiveTab('Role');
+        setActiveTab('Role');
         setSelectedOptions([
           {
             value: assignedGroup.signerPositionId!,
@@ -85,7 +91,7 @@ export const SignatureDropdownSelect = <T extends object>(
         ]);
         break;
       case SignerType.DEPARTMENT:
-        props.setActiveTab('Department');
+        setActiveTab('Department');
         setSelectedOptions([
           {
             value: assignedGroup.signerDepartmentId!,
@@ -94,7 +100,7 @@ export const SignatureDropdownSelect = <T extends object>(
         ]);
         break;
       case SignerType.USER_LIST:
-        props.setActiveTab('Employee');
+        setActiveTab('Employee');
         setSelectedOptions(
           assignedGroup.signerEmployeeList.map((employee) => ({
             value: employee.id,
@@ -103,40 +109,40 @@ export const SignatureDropdownSelect = <T extends object>(
         );
         break;
     }
-  }, [props.fieldGroup.id]);
+  }, [fieldGroup.id]);
 
   useEffect(() => {
     setSelectedOptions([]);
-  }, [props.activeTab]);
+  }, [activeTab]);
 
   return (
     <Select
-      isMulti={props.isMulti}
+      isMulti={isMulti}
       useBasicStyles
       selectedOptionStyle="check"
-      options={props.options}
+      options={options}
       onChange={(selected: OptionType[]) => {
         setSelectedOptions(selected);
 
         // create assigned group object
         const assignedGroup: ContextAssignedGroupData = {
           name: selected.map((o) => o.label).join(', '),
-          order: props.fieldGroup.order,
-          fieldGroupId: props.fieldGroup.id,
-          signerType: getSignerType(props.activeTab, selected),
+          order: fieldGroup.order,
+          fieldGroupId: fieldGroup.id,
+          signerType: getSignerType(activeTab, selected),
           signerEmployeeList: [],
         };
 
         if (selected.length === 1) {
           assignedGroup[
-            props.activeTab === 'Employee'
+            activeTab === 'Employee'
               ? 'signerEmployeeId'
-              : props.activeTab === 'Role'
+              : activeTab === 'Role'
               ? 'signerPositionId'
               : 'signerDepartmentId'
           ] = selected[0].value;
         } else {
-          if (props.activeTab === 'Employee') {
+          if (activeTab === 'Employee') {
             assignedGroup.signerEmployeeList = selected.map((o) => ({
               id: o.value,
               name: o.label,
@@ -145,19 +151,16 @@ export const SignatureDropdownSelect = <T extends object>(
         }
 
         // if the group id already exists, update it
-        const existingIndex = props.assignedGroupData.findIndex(
-          (group) => group.fieldGroupId === props.fieldGroup.id,
+        const existingIndex = assignedGroupData.findIndex(
+          (group) => group.fieldGroupId === fieldGroup.id,
         );
         if (existingIndex !== -1) {
-          const newAssignedGroupData = [...props.assignedGroupData];
+          const newAssignedGroupData = [...assignedGroupData];
           newAssignedGroupData[existingIndex] = assignedGroup;
-          props.setAssignedGroupData(newAssignedGroupData);
+          setAssignedGroupData(newAssignedGroupData);
         } else {
           // otherwise, add it to the list
-          props.setAssignedGroupData([
-            ...props.assignedGroupData,
-            assignedGroup,
-          ]);
+          setAssignedGroupData([...assignedGroupData, assignedGroup]);
         }
       }}
       value={selectedOptions}
