@@ -207,7 +207,7 @@ describe('EmployeesServiceIntegrationTest', () => {
       expect(updatedEmployee.lastName).toBe('Smith');
       expect(updatedEmployee.scope).toBe($Enums.EmployeeScope.ADMIN);
       expect(updatedEmployee.positionId).toBe(positionId2);
-      expect(updatedEmployee.position?.departmentId).toBe(departmentId);
+      expect(updatedEmployee.position?.department.id).toBe(departmentId);
       expect(updatedEmployee.signatureLink).toBe('new signature link');
     });
   });
@@ -302,8 +302,8 @@ describe('EmployeesServiceIntegrationTest', () => {
       // Check that both position IDs are present, but don't enforce a specific order
       expect([positionId1, positionId2]).toContain(employees[0].positionId);
       expect([positionId1, positionId2]).toContain(employees[1].positionId);
-      expect(employees[0].position?.departmentId).toBe(departmentId);
-      expect(employees[1].position?.departmentId).toBe(departmentId);
+      expect(employees[0].position?.department.id).toBe(departmentId);
+      expect(employees[1].position?.department.id).toBe(departmentId);
     });
     it('successfully retrieves a limited number of employees', async () => {
       const employees = await service.findAll(1);
@@ -342,7 +342,7 @@ describe('EmployeesServiceIntegrationTest', () => {
       expect(employee.firstName).toBe('John');
       expect(employee.lastName).toBe('Doe');
       expect(employee.positionId).toBe(positionId1);
-      expect(employee.position?.departmentId).toBe(departmentId);
+      expect(employee.position?.department.id).toBe(departmentId);
     });
 
     it('throws if the employee does not exist', async () => {
@@ -381,7 +381,7 @@ describe('EmployeesServiceIntegrationTest', () => {
       const employee = await service.findOneWithRefresh(employeeId1, 'token');
       expect(employee.firstName).toBe('John');
       expect(employee.lastName).toBe('Doe');
-      expect(employee.position?.departmentId).toBe(departmentId);
+      expect(employee.position?.department.id).toBe(departmentId);
     });
 
     it('throws if the token is not valid', async () => {
@@ -422,7 +422,7 @@ describe('EmployeesServiceIntegrationTest', () => {
       expect(employee.firstName).toBe('John');
       expect(employee.lastName).toBe('Doe');
       expect(employee.positionId).toBe(positionId1);
-      expect(employee.position?.departmentId).toBe(departmentId);
+      expect(employee.position?.department.id).toBe(departmentId);
     });
 
     it('throws if the token is not valid', async () => {

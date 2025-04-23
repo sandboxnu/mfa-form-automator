@@ -978,7 +978,7 @@ describe('FormInstancesIntegrationTest', () => {
       expect(
         formInstance!.assignedGroups.sort((a, b) => a.order - b.order)[0]
           .signed,
-      ).toBe(true);
+      ).toBeTruthy();
       expect(
         formInstance!.assignedGroups.sort((a, b) => a.order - b.order)[0]
           .signerEmployee?.id,
