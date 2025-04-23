@@ -3,60 +3,7 @@ import { FormInstance } from '@prisma/client';
 import { FormTemplateBaseEntity } from '../../form-templates/entities/form-template.entity';
 import { Exclude } from 'class-transformer';
 import { AssignedGroupEntityHydrated } from '../../assigned-group/entities/assigned-group.entity';
-import { IsOptional } from 'class-validator';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
-
-export class FormInstanceBaseEntity implements FormInstance {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty()
-  name: string;
-
-  @IsOptional()
-  @ApiProperty()
-  description: string | null;
-
-  @Exclude({ toPlainOnly: true })
-  formDocLink: string;
-
-  @Exclude({ toPlainOnly: true })
-  completed: boolean;
-
-  @Exclude({ toPlainOnly: true })
-  markedCompleted: boolean;
-
-  @Exclude({ toPlainOnly: true })
-  createdAt: Date;
-
-  @Exclude({ toPlainOnly: true })
-  updatedAt: Date;
-
-  @Exclude({ toPlainOnly: true })
-  completedAt: Date | null;
-
-  @Exclude({ toPlainOnly: true })
-  markedCompletedAt: Date | null;
-
-  @Exclude({ toPlainOnly: true })
-  originatorId: string;
-
-  @Exclude({ toPlainOnly: true })
-  originator: EmployeeBaseEntity;
-
-  @Exclude({ toPlainOnly: true })
-  formTemplateId: string;
-
-  @Exclude({ toPlainOnly: true })
-  formTemplate: FormTemplateBaseEntity;
-
-  @Exclude({ toPlainOnly: true })
-  assignedGroups: AssignedGroupEntityHydrated[];
-
-  constructor(partial: Partial<FormInstanceEntity>) {
-    Object.assign(this, partial);
-  }
-}
 
 export class FormInstanceEntity implements FormInstance {
   @ApiProperty()

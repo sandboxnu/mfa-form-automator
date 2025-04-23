@@ -80,16 +80,6 @@ export type CreatePositionDto = {
   departmentId: string;
 };
 
-export type PositionEntity = {
-  id: string;
-  name: string;
-  single: boolean;
-  department: DepartmentBaseEntity;
-  departmentId: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type UpdatePositionDto = {
   name?: string;
   departmentId?: string;
@@ -245,7 +235,7 @@ export type AssignedGroupEntityHydrated = {
   signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
   signingEmployee: EmployeeBaseEntity | null;
   signerPosition: PositionBaseEntity | null;
-  signerDepartment: DepartmentEntity | null;
+  signerDepartment: DepartmentBaseEntity | null;
   signerEmployee: EmployeeBaseEntity | null;
   signerEmployeeList: Array<EmployeeBaseEntity> | null;
 };
@@ -633,7 +623,7 @@ export type PositionsControllerFindAllErrors = {
 };
 
 export type PositionsControllerFindAllResponses = {
-  200: Array<PositionEntity>;
+  200: Array<PositionBaseEntity>;
 };
 
 export type PositionsControllerFindAllResponse =
@@ -662,7 +652,7 @@ export type PositionsControllerCreateErrors = {
 };
 
 export type PositionsControllerCreateResponses = {
-  201: PositionEntity;
+  201: PositionBaseEntity;
 };
 
 export type PositionsControllerCreateResponse =
@@ -698,7 +688,7 @@ export type PositionsControllerFindAllInDepartmentErrors = {
 };
 
 export type PositionsControllerFindAllInDepartmentResponses = {
-  200: Array<PositionEntity>;
+  200: Array<PositionBaseEntity>;
 };
 
 export type PositionsControllerFindAllInDepartmentResponse =
@@ -731,7 +721,7 @@ export type PositionsControllerFindAllInDepartmentNameErrors = {
 };
 
 export type PositionsControllerFindAllInDepartmentNameResponses = {
-  200: Array<PositionEntity>;
+  200: Array<PositionBaseEntity>;
 };
 
 export type PositionsControllerFindAllInDepartmentNameResponse =
@@ -790,7 +780,7 @@ export type PositionsControllerFindOneErrors = {
 };
 
 export type PositionsControllerFindOneResponses = {
-  200: PositionEntity;
+  200: PositionBaseEntity;
 };
 
 export type PositionsControllerFindOneResponse =
@@ -825,7 +815,7 @@ export type PositionsControllerUpdateErrors = {
 };
 
 export type PositionsControllerUpdateResponses = {
-  200: PositionEntity;
+  200: PositionBaseEntity;
 };
 
 export type PositionsControllerUpdateResponse =
@@ -858,7 +848,7 @@ export type PositionsControllerFindOneByNameInDepartmentErrors = {
 };
 
 export type PositionsControllerFindOneByNameInDepartmentResponses = {
-  200: PositionEntity;
+  200: PositionBaseEntity;
 };
 
 export type PositionsControllerFindOneByNameInDepartmentResponse =

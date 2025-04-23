@@ -244,44 +244,6 @@ export const CreatePositionDtoSchema = {
   required: ['name', 'departmentId'],
 } as const;
 
-export const PositionEntitySchema = {
-  type: 'object',
-  properties: {
-    id: {
-      type: 'string',
-    },
-    name: {
-      type: 'string',
-    },
-    single: {
-      type: 'boolean',
-    },
-    department: {
-      $ref: '#/components/schemas/DepartmentBaseEntity',
-    },
-    departmentId: {
-      type: 'string',
-    },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-  },
-  required: [
-    'id',
-    'name',
-    'single',
-    'department',
-    'departmentId',
-    'createdAt',
-    'updatedAt',
-  ],
-} as const;
-
 export const UpdatePositionDtoSchema = {
   type: 'object',
   properties: {
@@ -775,7 +737,7 @@ export const AssignedGroupEntityHydratedSchema = {
       nullable: true,
       allOf: [
         {
-          $ref: '#/components/schemas/DepartmentEntity',
+          $ref: '#/components/schemas/DepartmentBaseEntity',
         },
       ],
     },

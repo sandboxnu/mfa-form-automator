@@ -2,9 +2,8 @@ import { Flex, Box, Text, Button } from '@chakra-ui/react';
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@web/hooks/useAuth';
 import { useQuery } from '@tanstack/react-query';
-import { useBlob } from '@web/hooks/useBlob';
 import { SignaturePad } from './../components/SignaturePad';
-import { DepartmentEntity, PositionEntity } from '@web/client';
+import { DepartmentEntity, PositionBaseEntity } from '@web/client';
 import {
   departmentsControllerFindAllOptions,
   positionsControllerFindAllInDepartmentOptions,
@@ -152,7 +151,7 @@ function Register() {
               padding: '10px',
             }}
           >
-            {positionsData?.map((position: PositionEntity) => (
+            {positionsData?.map((position: PositionBaseEntity) => (
               <option
                 key={position.name}
                 value={position.id}

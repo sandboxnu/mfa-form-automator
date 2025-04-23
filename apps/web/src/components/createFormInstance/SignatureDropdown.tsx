@@ -12,7 +12,7 @@ import {
   DepartmentEntity,
   EmployeeBaseEntity,
   FieldGroupBaseEntity,
-  PositionEntity,
+  PositionBaseEntity,
   SignerType,
 } from '@web/client';
 import { ContextAssignedGroupData } from '@web/context/types';
@@ -32,7 +32,7 @@ export const SignatureDropdown = ({
   field: FieldGroupBaseEntity;
   border: string;
   background: string;
-  positions?: PositionEntity[];
+  positions?: PositionBaseEntity[];
   employees?: EmployeeBaseEntity[];
   departments?: DepartmentEntity[];
   assignedGroupData: ContextAssignedGroupData[];
