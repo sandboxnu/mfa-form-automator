@@ -173,7 +173,7 @@ describe('FormInstancesIntegrationTest', () => {
       disabled: false,
     });
     formTemplate2 = await formTemplatesService.create({
-      name: 'Form Template',
+      name: 'Form Template 2',
       description: 'Form Template Description',
       file: emptyFile,
       pageWidth: 800,

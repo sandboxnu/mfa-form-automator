@@ -528,9 +528,7 @@ describe('FormTemplatesIntegrationTest', () => {
           name: 'Form Template 2',
           description: 'Updated Form Template Description',
         }),
-      ).rejects.toThrowError(
-        'Form template with name "Form Template 2" already exists.',
-      );
+      ).rejects.toThrowError('Form template with this name already exists.');
     });
 
     it('successfully disables a form template', async () => {
