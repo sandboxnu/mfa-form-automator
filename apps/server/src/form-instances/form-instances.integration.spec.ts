@@ -866,7 +866,9 @@ describe('FormInstancesIntegrationTest', () => {
       expect(formInstance.assignedGroups[0].signerType).toBe(
         $Enums.SignerType.POSITION,
       );
-      expect(formInstance.assignedGroups[0].signerEmployeeId).toBe(employeeId2);
+      expect(formInstance.assignedGroups[0].signerEmployee?.id).toBe(
+        employeeId2,
+      );
     });
     it('should fail if the form instance does not exist', async () => {
       await expect(
@@ -979,7 +981,7 @@ describe('FormInstancesIntegrationTest', () => {
       ).toBe(true);
       expect(
         formInstance!.assignedGroups.sort((a, b) => a.order - b.order)[0]
-          .signerEmployeeId,
+          .signerEmployee?.id,
       ).toBe(employeeId1);
 
       expect(

@@ -2,7 +2,11 @@ import { Box, Flex, Stack, Table, Text } from '@chakra-ui/react';
 import { Status } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { SearchAndSort } from '@web/components/SearchAndSort';
-import { AssignedGroupEntity, FormInstanceEntity, SortBy } from '@web/client';
+import {
+  AssignedGroupEntityHydrated,
+  FormInstanceEntity,
+  SortBy,
+} from '@web/client';
 import { AssignedAvatarGroup } from '@web/components/AssignedAvatarGroup.tsx';
 import { formInstancesControllerFindAllInfiniteOptions } from '@web/client/@tanstack/react-query.gen';
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
@@ -246,7 +250,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
                           <Text mt="5px">
                             {`${
                               formInstance.assignedGroups.filter(
-                                (assignedGroup: AssignedGroupEntity) =>
+                                (assignedGroup: AssignedGroupEntityHydrated) =>
                                   assignedGroup.signed,
                               ).length
                             }/${formInstance.assignedGroups.length}`}{' '}

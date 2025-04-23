@@ -12,21 +12,15 @@ export type RegisterEmployeeDto = {
   accessToken: string;
 };
 
-export type DepartmentEntity = {
+export type DepartmentBaseEntity = {
   id: string;
   name: string;
-  createdAt: string;
-  updatedAt: string;
 };
 
 export type PositionBaseEntity = {
   id: string;
   name: string;
-  single: boolean;
-  department: DepartmentEntity;
-  departmentId: string;
-  createdAt: string;
-  updatedAt: string;
+  department: DepartmentBaseEntity;
 };
 
 export enum Scope {
@@ -70,15 +64,6 @@ export type EmployeeBaseEntity = {
   firstName: string;
   lastName: string;
   email: string;
-  positionId: string | null;
-  signatureLink: string | null;
-  scope: {
-    [key: string]: unknown;
-  };
-  pswdHash: string | null;
-  createdAt: string;
-  updatedAt: string;
-  refreshToken: string | null;
 };
 
 export type UpdateEmployeeDto = {
@@ -99,8 +84,7 @@ export type PositionEntity = {
   id: string;
   name: string;
   single: boolean;
-  department: DepartmentEntity;
-  employees: Array<EmployeeBaseEntity>;
+  department: DepartmentBaseEntity;
   departmentId: string;
   createdAt: string;
   updatedAt: string;
@@ -170,18 +154,12 @@ export type TemplateBoxBaseEntity = {
   width: number;
   height: number;
   page: number;
-  createdAt: string;
-  updatedAt: string;
-  fieldGroupId: string;
 };
 
 export type FieldGroupBaseEntity = {
   id: string;
   name: string;
   order: number;
-  createdAt: string;
-  updatedAt: string;
-  formTemplateId: string;
   templateBoxes: Array<TemplateBoxBaseEntity>;
 };
 
@@ -214,6 +192,13 @@ export type UpdateFormTemplateDto = {
 
 export type CreateDepartmentDto = {
   name: string;
+};
+
+export type DepartmentEntity = {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type UpdateDepartmentDto = {
@@ -251,21 +236,13 @@ export type FormTemplateBaseEntity = {
   updatedAt: string;
 };
 
-export type AssignedGroupEntity = {
+export type AssignedGroupEntityHydrated = {
   id: string;
-  fieldGroupId: string;
+  fieldGroup: FieldGroupBaseEntity;
   order: number;
   signed: boolean;
   signedDocLink: string | null;
-  createdAt: string;
-  updatedAt: string;
-  signerPositionId: string | null;
-  signerDepartmentId: string | null;
-  signerEmployeeId: string | null;
-  signingEmployeeId: string | null;
   signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
-  formInstanceId: string;
-  fieldGroup: FieldGroupBaseEntity;
   signingEmployee: EmployeeBaseEntity | null;
   signerPosition: PositionBaseEntity | null;
   signerDepartment: DepartmentEntity | null;
@@ -286,7 +263,7 @@ export type FormInstanceEntity = {
   markedCompletedAt?: string | null;
   originator: EmployeeBaseEntity;
   formTemplate: FormTemplateBaseEntity;
-  assignedGroups: Array<AssignedGroupEntity>;
+  assignedGroups: Array<AssignedGroupEntityHydrated>;
   originatorId: string;
   formTemplateId: string;
 };

@@ -177,8 +177,15 @@ export class FormTemplatesService {
             assignedGroups: {
               include: {
                 signerPosition: {
-                  include: {
-                    department: true,
+                  select: {
+                    id: true,
+                    name: true,
+                    department: {
+                      select: {
+                        id: true,
+                        name: true,
+                      },
+                    },
                   },
                 },
                 signerDepartment: true,

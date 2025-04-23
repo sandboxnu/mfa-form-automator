@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Box, Flex, Stack, Table, Text, Avatar } from '@chakra-ui/react';
 import {
-  AssignedGroupEntity,
+  AssignedGroupEntityHydrated,
   FormInstanceEntity,
 } from '@web/client/types.gen.ts';
 import { useState } from 'react';
@@ -205,8 +205,9 @@ export const FormList = ({
                             <Text pl="15px" mt="5px">
                               {`${
                                 formInstance.assignedGroups.filter(
-                                  (assignedGroup: AssignedGroupEntity) =>
-                                    assignedGroup.signed,
+                                  (
+                                    assignedGroup: AssignedGroupEntityHydrated,
+                                  ) => assignedGroup.signed,
                                 ).length
                               }/${formInstance.assignedGroups.length}`}{' '}
                               signed

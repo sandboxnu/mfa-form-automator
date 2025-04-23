@@ -2,7 +2,34 @@ import { ApiProperty } from '@nestjs/swagger';
 import { SignatureBoxFieldType, TemplateBox } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
-export class TemplateBoxBaseEntity implements TemplateBox {
+export class TemplateBoxBaseEntity {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty({ enum: SignatureBoxFieldType })
+  type: SignatureBoxFieldType;
+
+  @ApiProperty()
+  x_coordinate: number;
+
+  @ApiProperty()
+  y_coordinate: number;
+
+  @ApiProperty()
+  width: number;
+
+  @ApiProperty()
+  height: number;
+
+  @ApiProperty()
+  page: number;
+
+  constructor(partial: Partial<TemplateBoxBaseEntity>) {
+    Object.assign(this, partial);
+  }
+}
+
+export class TemplateBoxEntity implements TemplateBox {
   @ApiProperty()
   id: string;
 

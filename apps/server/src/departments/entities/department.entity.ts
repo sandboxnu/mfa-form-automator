@@ -2,6 +2,18 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Department } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
+export class DepartmentBaseEntity {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  constructor(partial: Partial<DepartmentBaseEntity>) {
+    Object.assign(this, partial);
+  }
+}
+
 export class DepartmentEntity implements Department {
   @ApiProperty()
   id: string;

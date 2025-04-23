@@ -2,7 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { FormInstance } from '@prisma/client';
 import { FormTemplateBaseEntity } from '../../form-templates/entities/form-template.entity';
 import { Exclude } from 'class-transformer';
-import { AssignedGroupEntity } from '../../assigned-group/entities/assigned-group.entity';
+import {
+  AssignedGroupEntity,
+  AssignedGroupEntityHydrated,
+} from '../../assigned-group/entities/assigned-group.entity';
 import { IsOptional } from 'class-validator';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 
@@ -51,7 +54,7 @@ export class FormInstanceBaseEntity implements FormInstance {
   formTemplate: FormTemplateBaseEntity;
 
   @Exclude({ toPlainOnly: true })
-  assignedGroups: AssignedGroupEntity[];
+  assignedGroups: AssignedGroupEntityHydrated[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
     Object.assign(this, partial);
@@ -107,9 +110,9 @@ export class FormInstanceEntity implements FormInstance {
 
   @ApiProperty({
     isArray: true,
-    type: AssignedGroupEntity,
+    type: AssignedGroupEntityHydrated,
   })
-  assignedGroups: AssignedGroupEntity[];
+  assignedGroups: AssignedGroupEntityHydrated[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
     if (partial.originator) {
@@ -123,7 +126,7 @@ export class FormInstanceEntity implements FormInstance {
     }
     if (partial.assignedGroups) {
       partial.assignedGroups = partial.assignedGroups.map(
-        (assignedGroup) => new AssignedGroupEntity(assignedGroup),
+        (assignedGroup) => new AssignedGroupEntityHydrated(assignedGroup),
       );
     }
 

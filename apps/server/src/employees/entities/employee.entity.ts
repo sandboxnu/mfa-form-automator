@@ -3,7 +3,7 @@ import { Employee, EmployeeScope } from '@prisma/client';
 import { PositionBaseEntity } from './../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 
-export class EmployeeBaseEntity implements Employee {
+export class EmployeeBaseEntity {
   @ApiProperty()
   id: string;
 
@@ -13,29 +13,8 @@ export class EmployeeBaseEntity implements Employee {
   @ApiProperty()
   lastName: string;
 
-  @Exclude({ toPlainOnly: true })
-  positionId: string | null;
-
   @ApiProperty()
   email: string;
-
-  @Exclude({ toPlainOnly: true })
-  signatureLink: string | null;
-
-  @Exclude({ toPlainOnly: true })
-  scope: EmployeeScope;
-
-  @Exclude({ toPlainOnly: true })
-  pswdHash: string | null;
-
-  @Exclude({ toPlainOnly: true })
-  createdAt: Date;
-
-  @Exclude({ toPlainOnly: true })
-  updatedAt: Date;
-
-  @Exclude({ toPlainOnly: true })
-  refreshToken: string | null;
 
   constructor(partial: Partial<EmployeeBaseEntity>) {
     Object.assign(this, partial);

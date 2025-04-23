@@ -102,15 +102,9 @@ describe('EmployeesController', () => {
           position: {
             id: 'position-id',
             name: 'position-name',
-            single: false,
-            createdAt: new Date(1672531200),
-            updatedAt: new Date(1672531200),
-            departmentId: 'department-id',
             department: {
               id: 'department-id',
               name: 'department-name',
-              createdAt: new Date(1672531200),
-              updatedAt: new Date(1672531200),
             },
           },
           email: 'john.doe@example.com',
@@ -129,15 +123,9 @@ describe('EmployeesController', () => {
           position: {
             id: 'position-id',
             name: 'position-name',
-            single: false,
-            createdAt: new Date(1672531200),
-            updatedAt: new Date(1672531200),
-            departmentId: 'department-id',
             department: {
               id: 'department-id',
               name: 'department-name',
-              createdAt: new Date(1672531200),
-              updatedAt: new Date(1672531200),
             },
           },
           email: 'bilbo.baggins@example.com',

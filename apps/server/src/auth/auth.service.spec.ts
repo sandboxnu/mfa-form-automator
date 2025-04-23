@@ -83,16 +83,10 @@ describe('AuthService', () => {
         position: {
           id: 'positionId',
           name: 'Manager',
-          single: true,
-          departmentId: 'departmentId',
           department: {
             id: 'departmentId',
             name: 'Archives',
-            createdAt: new Date(1672531200),
-            updatedAt: new Date(1672531200),
           },
-          createdAt: new Date(1672531200),
-          updatedAt: new Date(1672531200),
         },
         email: 'info@mfa.org',
         scope: EmployeeScope.BASE_USER,

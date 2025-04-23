@@ -93,9 +93,9 @@ export const SignFormInstanceContextProvider = ({
 
     const assignedGroups = formInstance?.assignedGroups.filter(
       (assignedGroup) =>
-        (assignedGroup.signerDepartmentId === user?.departmentId ||
-          assignedGroup.signerEmployeeId === user?.id ||
-          assignedGroup.signerPositionId === user?.positionId ||
+        (assignedGroup.signerDepartment?.id === user?.departmentId ||
+          assignedGroup.signerEmployee?.id === user?.id ||
+          assignedGroup.signerPosition?.id === user?.positionId ||
           assignedGroup.signerEmployeeList
             ?.map((employee) => employee.id)
             .find((id) => id === user?.id)) &&

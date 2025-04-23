@@ -53,8 +53,15 @@ export class EmployeesService {
       },
       include: {
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -73,8 +80,15 @@ export class EmployeesService {
           take: limit,
           include: {
             position: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
           },
@@ -82,8 +96,15 @@ export class EmployeesService {
       : await this.prisma.employee.findMany({
           include: {
             position: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
           },
@@ -104,8 +125,15 @@ export class EmployeesService {
       },
       include: {
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -126,8 +154,15 @@ export class EmployeesService {
       },
       include: {
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -147,8 +182,15 @@ export class EmployeesService {
       },
       include: {
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -170,9 +212,15 @@ export class EmployeesService {
       data: updateEmployeeDto,
       include: {
         position: {
-          include: {
-            department: true,
-            assignedGroups: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -207,8 +255,15 @@ export class EmployeesService {
       },
       include: {
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },

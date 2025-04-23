@@ -158,9 +158,9 @@ export class FormInstancesController {
       formInstance.originatorId !== currentUser.id &&
       !formInstance.assignedGroups.some((group) => {
         return (
-          group.signerEmployeeId === currentUser.id ||
-          group.signerDepartmentId === employee.position?.departmentId ||
-          group.signerPositionId === employee.position?.id
+          group.signerEmployee?.id === currentUser.id ||
+          group.signerDepartment?.id === employee.position?.department?.id ||
+          group.signerPosition?.id === employee.position?.id
         );
       })
     ) {

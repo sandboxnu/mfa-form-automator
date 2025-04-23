@@ -68,7 +68,7 @@ export class AuthService {
       lastName: user.lastName,
       sub: user.id,
       positionId: user.positionId,
-      departmentId: user.position?.departmentId,
+      departmentId: user.position?.department.id,
       scope: user.scope,
     };
 
