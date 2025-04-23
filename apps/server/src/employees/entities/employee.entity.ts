@@ -38,6 +38,7 @@ export class EmployeeSecureEntity implements Employee {
   email: string;
 
   @ApiProperty()
+  @Exclude({ toPlainOnly: true })
   signatureLink: string | null;
 
   @ApiProperty({ enum: EmployeeScope })
