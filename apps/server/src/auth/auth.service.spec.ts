@@ -5,7 +5,6 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmployeeSecureEntityHydrated } from '../employees/entities/employee.entity';
-import { PositionBaseEntity } from '../positions/entities/position.entity';
 import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
 import { EmployeeScope } from '@prisma/client';

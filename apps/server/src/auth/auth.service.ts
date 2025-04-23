@@ -3,7 +3,6 @@ import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EmployeeSecureEntityHydrated } from '../employees/entities/employee.entity';
-import { EmployeeScope } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
