@@ -74,7 +74,7 @@ export const TemplateSelectGrid = ({
             backgroundColor="white"
             _hover={{ boxShadow: '0px 0px 4px 0px #1367EA' }}
             onClick={() => {
-              router.push('/create-template/upload');
+              router.push('/form-template/create/upload');
             }}
           >
             <Text fontSize="60px" fontWeight="50" color="black">

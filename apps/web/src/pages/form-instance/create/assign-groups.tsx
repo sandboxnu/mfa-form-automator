@@ -22,15 +22,9 @@ function AssignGroups() {
 
   return (
     <FormLayout
-      type={
-        formInstanceUseId
-          ? FormInteractionType.EditFormInstance
-          : FormInteractionType.CreateFormInstance
-      }
+      type={FormInteractionType.CreateFormInstance}
       pageNumber={3}
-      heading={
-        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
-      }
+      heading={'Create form instance'}
       subheading={
         'Assign your input field groups to a person, role, or department'
       }
@@ -43,8 +37,8 @@ function AssignGroups() {
         />
       }
       deleteFunction={() => {}}
-      submitLink={'/create-instance/review'}
-      backLink={'/create-instance/description'}
+      submitLink={'/form-instance/create/review'}
+      backLink={'/form-instance/create/description'}
       disabled={false}
     />
   );

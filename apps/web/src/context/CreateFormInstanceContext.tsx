@@ -43,10 +43,10 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
   useEffect(() => {
     if (
       !formTemplate &&
-      router.pathname !== '/create-instance/select-template' &&
-      router.pathname !== '/create-instance/success'
+      router.pathname !== '/form-instance/create/select-template' &&
+      router.pathname !== '/form-instance/create/success'
     ) {
-      router.push('/create-instance/select-template');
+      router.push('/form-instance/create/select-template');
     }
   }, [formTemplate, router]);
 

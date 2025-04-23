@@ -25,15 +25,9 @@ function Description() {
 
   return (
     <FormLayout
-      type={
-        formTemplateUseId
-          ? FormInteractionType.EditFormTemplate
-          : FormInteractionType.CreateFormTemplate
-      }
+      type={FormInteractionType.EditFormTemplate}
       pageNumber={2}
-      heading={
-        formTemplateUseId ? 'Edit form template' : 'Create form template'
-      }
+      heading={'Edit form template'}
       subheading={'Give your form template a name and short description'}
       boxContent={
         <NameAndDescriptionBox
@@ -48,12 +42,10 @@ function Description() {
       deleteFunction={nullify}
       submitLink={
         formTemplateUseId
-          ? '/create-template/review'
-          : '/create-template/input-fields'
+          ? '/form-template/create/review'
+          : '/form-template/create/input-fields'
       }
-      backLink={
-        formTemplateUseId ? '/template-directory' : '/create-template/upload'
-      }
+      backLink={'/template-directory'}
       disabled={!formTemplateName}
     />
   );

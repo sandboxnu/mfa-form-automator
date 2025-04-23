@@ -20,15 +20,9 @@ function Description() {
 
   return (
     <FormLayout
-      type={
-        formInstanceUseId
-          ? FormInteractionType.EditFormInstance
-          : FormInteractionType.CreateFormInstance
-      }
+      type={FormInteractionType.CreateFormInstance}
       pageNumber={2}
-      heading={
-        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
-      }
+      heading={'Create form instance'}
       subheading={'Edit your form instance name and description'}
       boxContent={
         <NameAndDescriptionBox
@@ -44,8 +38,8 @@ function Description() {
         setFormInstanceName(null);
         setFormInstanceDescription(null);
       }}
-      submitLink={'/create-instance/assign-groups'}
-      backLink={'/create-instance/select-template'}
+      submitLink={'/form-instance/create/assign-groups'}
+      backLink={'/form-instance/create/select-template'}
       disabled={!formInstanceName}
     />
   );

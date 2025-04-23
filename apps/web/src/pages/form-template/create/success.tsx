@@ -10,13 +10,9 @@ function Success() {
 
   return (
     <SuccessPage
-      message={
-        formTemplateUseId
-          ? 'Your form template has been updated!'
-          : 'Your form template has been created!'
-      }
+      message={'Your form template has been created!'}
       linkText={'Create form instance'}
-      linkAction={() => router.push('/create-instance/select-template')}
+      linkAction={() => router.push('/form-instance/create/select-template')}
     />
   );
 }

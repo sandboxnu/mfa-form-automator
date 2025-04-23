@@ -8,9 +8,9 @@ function Success() {
 
   return (
     <SuccessPage
-      message={'Your form instance has been created!'}
+      message={'Your form instance has been updated!'}
       linkText={'Edit Form'}
-      linkAction={() => router.push('/create-instance/description')}
+      linkAction={() => router.push('/form-instance/[id]/edit/description')}
     />
   );
 }

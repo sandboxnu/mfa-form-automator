@@ -25,7 +25,7 @@ function Upload() {
         />
       }
       deleteFunction={() => setPdfFile(null)}
-      submitLink={'/create-template/description'}
+      submitLink={'/form-template/create/description'}
       backLink={'/'}
       review={false}
       disabled={!pdfFile}

@@ -24,15 +24,9 @@ function InputFields() {
 
   return (
     <FormLayout
-      type={
-        formTemplateUseId
-          ? FormInteractionType.EditFormTemplate
-          : FormInteractionType.CreateFormTemplate
-      }
+      type={FormInteractionType.EditFormTemplate}
       pageNumber={3}
-      heading={
-        formTemplateUseId ? 'Edit form template' : 'Create form template'
-      }
+      heading={'Edit form template'}
       subheading={
         'Select an assignee group and drag to add input fields for each'
       }
@@ -52,8 +46,8 @@ function InputFields() {
         </Box>
       }
       deleteFunction={() => {}}
-      submitLink={'/create-template/review'}
-      backLink={'/create-template/description'}
+      submitLink={'/form-template/[id]/edit/review'}
+      backLink={'/form-template/[id]/edit/description'}
       // TODO set disabled based on some state in the pdf editor component
       disabled={false}
     />

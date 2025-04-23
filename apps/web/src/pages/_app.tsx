@@ -87,14 +87,14 @@ export default function App({
     withCredentials: true,
   });
 
-  const createFormTemplatePath = '/create-template';
-  const createFormInstancePath = '/create-instance';
+  const createFormTemplatePath = '/form-template/create';
+  const createFormInstancePath = '/form-instance/create';
   const signFormInstancePath = '/sign-form';
   const excludeLayoutPaths = [
     '/signin',
     '/register',
-    '/create-template/success',
-    '/create-instance/success',
+    '/form-template/create/success',
+    '/form-instance/create/success',
   ];
   // to allow template context to be populated before moving into edit mode
   const formDirectoryPath = '/template-directory';

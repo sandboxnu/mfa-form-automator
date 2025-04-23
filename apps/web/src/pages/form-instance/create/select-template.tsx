@@ -23,15 +23,9 @@ function SelectTemplate() {
 
   return (
     <FormLayout
-      type={
-        formInstanceUseId
-          ? FormInteractionType.EditFormInstance
-          : FormInteractionType.CreateFormInstance
-      }
+      type={FormInteractionType.CreateFormInstance}
       pageNumber={1}
-      heading={
-        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
-      }
+      heading={'Create form instance'}
       subheading={'Select a form template'}
       boxContent={
         <TemplateSelectGrid
@@ -49,7 +43,7 @@ function SelectTemplate() {
       deleteFunction={() => {
         setFormTemplate(null);
       }}
-      submitLink={'/create-instance/description'}
+      submitLink={'/form-instance/create/description'}
       backLink={'/'}
       review={false}
       disabled={!formTemplate}

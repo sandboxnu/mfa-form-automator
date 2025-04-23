@@ -25,9 +25,7 @@ function Review() {
           : FormInteractionType.CreateFormTemplate
       }
       pageNumber={4}
-      heading={
-        formTemplateUseId ? 'Edit form template' : 'Create form template'
-      }
+      heading={'Edit form template'}
       subheading={'Review your form template'}
       boxContent={
         <ReviewBox
@@ -38,12 +36,8 @@ function Review() {
         />
       }
       deleteFunction={() => {}}
-      submitLink={'/create-template/success'}
-      backLink={
-        formTemplateUseId
-          ? '/create-template/description'
-          : '/create-template/input-fields'
-      }
+      submitLink={'/form-template/create/success'}
+      backLink={'/form-template/[id]/edit/description'}
       disabled={false}
       review={true}
     />

@@ -185,7 +185,7 @@ function TemplateDirectory() {
       height: formTemplate.pageHeight,
     });
     fetchPdfFile(setPdfFile, formTemplate.formDocLink).then(() =>
-      router.push('/create-template/description'),
+      router.push('/form-template/create/description'),
     );
   }
 

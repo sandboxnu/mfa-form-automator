@@ -42,10 +42,10 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
   useEffect(() => {
     if (
       !pdfFile &&
-      router.pathname !== '/create-template/upload' &&
+      router.pathname !== '/form-template/create/upload' &&
       router.pathname !== '/template-directory'
     ) {
-      router.push('/create-template/upload');
+      router.push('/form-template/create/upload');
     }
   }, [pdfFile, router]);
 

@@ -15,15 +15,9 @@ function Review() {
 
   return (
     <FormLayout
-      type={
-        formInstanceUseId
-          ? FormInteractionType.EditFormInstance
-          : FormInteractionType.CreateFormInstance
-      }
+      type={FormInteractionType.EditFormInstance}
       pageNumber={4}
-      heading={
-        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
-      }
+      heading={'Edit form instance'}
       subheading={'Review your form instance'}
       boxContent={
         <ReviewBox
@@ -34,8 +28,8 @@ function Review() {
         />
       }
       deleteFunction={() => {}}
-      submitLink={'/create-instance/success'}
-      backLink={'/create-instance/assign-groups'}
+      submitLink={'/form-instance/[id]/edit/success'}
+      backLink={'/form-instance/[id]/edit/assign-groups'}
       review={true}
       disabled={false}
     />
