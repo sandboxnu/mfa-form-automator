@@ -700,8 +700,8 @@ describe('FormInstancesIntegrationTest', () => {
         });
 
         expect(
-          formInstances[0].createdAt.getUTCMilliseconds(),
-        ).toBeLessThanOrEqual(formInstances[1].createdAt.getUTCMilliseconds());
+          formInstances[0].createdAt.getTime(),
+        ).toBeLessThanOrEqual(formInstances[1].createdAt.getTime());
       });
 
       it('should sort form instances by creation date in descending order', async () => {
