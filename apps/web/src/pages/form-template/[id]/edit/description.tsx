@@ -3,7 +3,8 @@ import { FormLayout } from '@web/components/createForm/FormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
+import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
+import { useRouter } from 'next/router';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -16,7 +17,8 @@ function Description() {
     setFormTemplateDescription,
     pdfFile,
     formTemplateUseId,
-  } = useCreateFormTemplate();
+  } = useEditFormTemplate();
+  const router = useRouter();
 
   function nullify() {
     setFormTemplateName(null);
@@ -39,12 +41,9 @@ function Description() {
           setDescription={setFormTemplateDescription}
         />
       }
-      deleteFunction={nullify}
-      submitLink={
-        formTemplateUseId
-          ? '/form-template/create/review'
-          : '/form-template/create/input-fields'
-      }
+      submitFunction={() => {
+        router.push('/form-template/' + formTemplateUseId + '/edit/review');
+      }}
       backLink={'/template-directory'}
       disabled={!formTemplateName}
     />

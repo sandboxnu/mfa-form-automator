@@ -20,6 +20,8 @@ import { appControllerRefresh } from '@web/client';
 import { SignFormInstanceContextProvider } from '@web/context/SignFormInstanceContext';
 import { pdfjs } from 'react-pdf';
 import { UserFormsContextProvider } from '@web/context/UserFormsContext';
+import { EditFormTemplateProvider } from '@web/context/EditFormTemplateContext';
+import { EditFormInstanceProvider } from '@web/context/EditFormInstanceContext';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -89,6 +91,9 @@ export default function App({
 
   const createFormTemplatePath = '/form-template/create';
   const createFormInstancePath = '/form-instance/create';
+  const editFormTemplatePath = '/form-template/[id]/edit';
+  const editFormInstancePath = '/form-instance/[id]/edit';
+
   const signFormInstancePath = '/sign-form';
   const excludeLayoutPaths = [
     '/signin',
@@ -148,15 +153,29 @@ export default function App({
     );
   }
 
+  if (appProps.router.pathname.includes(editFormTemplatePath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <EditFormTemplateProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </EditFormTemplateProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
   if (appProps.router.pathname.includes(formDirectoryPath)) {
     return (
       <>
         <WrapperComponent>
-          <CreateFormTemplateProvider>
+          <EditFormTemplateProvider>
             <Layout>
               <Component {...pageProps} />
             </Layout>
-          </CreateFormTemplateProvider>
+          </EditFormTemplateProvider>
         </WrapperComponent>
       </>
     );
@@ -171,6 +190,20 @@ export default function App({
               <Component {...pageProps} />
             </Layout>
           </CreateFormInstanceProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(editFormInstancePath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <EditFormInstanceProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </EditFormInstanceProvider>
         </WrapperComponent>
       </>
     );

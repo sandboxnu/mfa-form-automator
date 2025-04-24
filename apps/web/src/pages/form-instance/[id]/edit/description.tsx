@@ -3,6 +3,8 @@ import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescrip
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
+import { useRouter } from 'next/router';
 
 /**
  * The description page in the form instance creation flow, where users describe their form.
@@ -16,7 +18,8 @@ function Description() {
     setFormInstanceDescription,
     formInstanceUseId,
     pdfFile,
-  } = useCreateFormInstance();
+  } = useEditFormInstance();
+  const router = useRouter();
 
   return (
     <FormLayout
@@ -34,12 +37,12 @@ function Description() {
           setDescription={setFormInstanceDescription}
         />
       }
-      deleteFunction={() => {
-        setFormInstanceName(null);
-        setFormInstanceDescription(null);
+      submitFunction={() => {
+        router.push(
+          '/form-instance/' + formInstanceUseId + '/edit/assign-groups',
+        );
       }}
-      submitLink={'/form-instance/[id]/edit/assign-groups'}
-      backLink={'/form-instance/create/success'}
+      backLink={'/form-instance/' + formInstanceUseId + '/edit/success'}
       disabled={!formInstanceName}
     />
   );

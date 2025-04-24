@@ -3,7 +3,9 @@ import { FormInteractionType } from '@web/components/createForm/types';
 import { AssignGroupsBox } from '@web/components/createFormInstance/AssignGroupsBox';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
 function AssignGroups() {
@@ -12,13 +14,15 @@ function AssignGroups() {
     formInstanceDescription,
     formTemplate,
     formInstanceUseId,
-  } = useCreateFormInstance();
+  } = useEditFormInstance();
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   useEffect(() => {
     fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
   }, [formTemplate?.formDocLink]);
+
+  const router = useRouter();
 
   return (
     <FormLayout
@@ -36,9 +40,10 @@ function AssignGroups() {
           fieldGroups={formTemplate?.fieldGroups ?? []}
         />
       }
-      deleteFunction={() => {}}
-      submitLink={'/form-instance/[id]/edit/review'}
-      backLink={'/form-instance/[id]/edit/description'}
+      submitFunction={() => {
+        router.push('/form-instance/' + formInstanceUseId + '/edit/review');
+      }}
+      backLink={'/form-instance/' + formInstanceUseId + '/edit/description'}
       disabled={false}
     />
   );

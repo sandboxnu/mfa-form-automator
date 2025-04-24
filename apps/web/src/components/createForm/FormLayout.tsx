@@ -22,10 +22,10 @@ export const FormLayout = ({
   heading,
   subheading,
   boxContent,
-  deleteFunction,
-  submitLink,
+  submitFunction,
   backLink,
   disabled,
+  loading,
   review,
 }: {
   type: FormInteractionType;
@@ -33,10 +33,10 @@ export const FormLayout = ({
   heading: string;
   subheading: string;
   boxContent: React.ReactNode;
-  deleteFunction: Function;
-  submitLink: string;
+  submitFunction: Function;
   backLink: string;
   disabled: boolean;
+  loading?: boolean;
   review?: boolean;
 }) => {
   return (
@@ -103,11 +103,11 @@ export const FormLayout = ({
             ? 'Edit form instance'
             : 'Submit form'
         }
-        deleteFunction={deleteFunction}
-        submitLink={submitLink}
+        submitFunction={submitFunction}
         backLink={backLink}
         disabled={disabled}
         review={review}
+        loading={loading ?? false}
       />
     </Box>
   );

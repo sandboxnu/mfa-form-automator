@@ -1,10 +1,11 @@
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormEditor } from '@web/components/createFormTemplate/createFormTemplateEditor/FormEditor';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { Box } from '@chakra-ui/react';
 import isAuth from '@web/components/isAuth';
 import { Scope } from '@web/client';
 import { FormInteractionType } from '@web/components/createForm/types';
+import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
+import { useRouter } from 'next/router';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -20,7 +21,8 @@ function InputFields() {
     pdfFile,
     setFormDimensions,
     formTemplateUseId,
-  } = useCreateFormTemplate();
+  } = useEditFormTemplate();
+  const router = useRouter();
 
   return (
     <FormLayout
@@ -45,9 +47,10 @@ function InputFields() {
           />
         </Box>
       }
-      deleteFunction={() => {}}
-      submitLink={'/form-template/[id]/edit/review'}
-      backLink={'/form-template/[id]/edit/description'}
+      submitFunction={() => {
+        router.push('/form-template/' + formTemplateUseId + '/edit/review');
+      }}
+      backLink={'/form-template/' + formTemplateUseId + '/edit/description'}
       // TODO set disabled based on some state in the pdf editor component
       disabled={false}
     />

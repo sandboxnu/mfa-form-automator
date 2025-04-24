@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
-import { CreateFormTemplateContextType } from './types';
+import {
+  CreateFormTemplateContextType,
+  EditFormTemplateContextType,
+} from './types';
 import {
   FormFields,
   FieldGroups,
@@ -9,12 +12,10 @@ import { useRouter } from 'next/router';
 import { groupColors } from '@web/utils/formTemplateUtils';
 import { v4 as uuidv4 } from 'uuid';
 
-export const CreateFormTemplateContext =
-  createContext<CreateFormTemplateContextType>(
-    {} as CreateFormTemplateContextType,
-  );
+export const EditFormTemplateContext =
+  createContext<EditFormTemplateContextType>({} as EditFormTemplateContextType);
 
-export const CreateFormTemplateProvider = ({ children }: any) => {
+export const EditFormTemplateProvider = ({ children }: any) => {
   const [formTemplateName, setFormTemplateName] = useState<string | null>(null);
   const [formTemplateDescription, setFormTemplateDescription] = useState<
     string | null
@@ -33,17 +34,20 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
     width: number;
     height: number;
   }>();
+  const [formTemplateUseId, setFormTemplateUseId] = useState<string | null>(
+    null,
+  );
 
   const router = useRouter();
 
   useEffect(() => {
-    if (!pdfFile && router.pathname !== '/form-template/create/upload') {
+    if (!pdfFile && router.pathname !== '/template-directory') {
       router.push('/form-template/create/upload');
     }
   }, [pdfFile, router]);
 
   return (
-    <CreateFormTemplateContext.Provider
+    <EditFormTemplateContext.Provider
       value={{
         formTemplateName,
         formTemplateDescription,
@@ -57,12 +61,13 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
         setFieldGroups,
         formDimensions,
         setFormDimensions,
+        formTemplateUseId,
+        setFormTemplateUseId,
       }}
     >
       {children}
-    </CreateFormTemplateContext.Provider>
+    </EditFormTemplateContext.Provider>
   );
 };
 
-export const useCreateFormTemplate = () =>
-  useContext(CreateFormTemplateContext);
+export const useEditFormTemplate = () => useContext(EditFormTemplateContext);

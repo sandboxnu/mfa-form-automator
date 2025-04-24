@@ -175,7 +175,7 @@ export const NavBar = ({
           <MenuContent zIndex="1100" py="6px">
             {isAdminOrContributor && (
               <MenuItem
-                onClick={() => router.push('create-template/upload')}
+                onClick={() => router.push('form-template/create/upload')}
                 value="template"
                 padding="10px"
                 w="140px"
@@ -188,7 +188,7 @@ export const NavBar = ({
               </MenuItem>
             )}
             <MenuItem
-              onClick={() => router.push('create-instance/select-template')}
+              onClick={() => router.push('form-instance/create/select-template')}
               value="form"
               padding="10px"
               w="140px"

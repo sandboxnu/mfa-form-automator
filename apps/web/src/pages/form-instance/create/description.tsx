@@ -3,6 +3,7 @@ import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescrip
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { useRouter } from 'next/router';
 
 /**
  * The description page in the form instance creation flow, where users describe their form.
@@ -14,9 +15,9 @@ function Description() {
     formInstanceDescription,
     setFormInstanceName,
     setFormInstanceDescription,
-    formInstanceUseId,
     pdfFile,
   } = useCreateFormInstance();
+  const router = useRouter();
 
   return (
     <FormLayout
@@ -38,7 +39,9 @@ function Description() {
         setFormInstanceName(null);
         setFormInstanceDescription(null);
       }}
-      submitLink={'/form-instance/create/assign-groups'}
+      submitFunction={() => {
+        router.push('/form-instance/create/assign-groups');
+      }}
       backLink={'/form-instance/create/select-template'}
       disabled={!formInstanceName}
     />

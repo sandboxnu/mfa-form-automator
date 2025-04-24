@@ -1,12 +1,10 @@
 import { Scope } from '@web/client';
 import { SuccessPage } from '@web/components/createForm/SuccessPage';
 import isAuth from '@web/components/isAuth';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { useRouter } from 'next/router';
 
 function Success() {
   const router = useRouter();
-  const { formTemplateUseId } = useCreateFormTemplate();
 
   return (
     <SuccessPage

@@ -60,9 +60,10 @@ export function SignFormPage() {
               />
             </Box>
           }
-          submitLink={`/sign-form/review/${id}`}
+          submitFunction={() => {
+            router.push(`/sign-form/review/${id}`);
+          }}
           backLink={'/'}
-          deleteFunction={() => {}}
           disabled={false}
         />
       ) : formInstanceError?.message ===

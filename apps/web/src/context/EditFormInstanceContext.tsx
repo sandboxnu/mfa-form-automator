@@ -1,17 +1,18 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { CreateFormInstanceContextType } from './types';
+import {
+  CreateFormInstanceContextType,
+  EditFormInstanceContextType,
+} from './types';
 import { FormTemplateEntity } from '@web/client';
 import { ContextAssignedGroupData } from './types';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 
-export const CreateFormInstanceContext =
-  createContext<CreateFormInstanceContextType>(
-    {} as CreateFormInstanceContextType,
-  );
+export const EditFormInstanceContext =
+  createContext<EditFormInstanceContextType>({} as EditFormInstanceContextType);
 
-export const CreateFormInstanceProvider = ({ children }: any) => {
+export const EditFormInstanceProvider = ({ children }: any) => {
   const [formInstanceName, setFormInstanceName] = useState<string | null>(null);
   const [formInstanceDescription, setFormInstanceDescription] = useState<
     string | null
@@ -22,6 +23,9 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
   const [assignedGroupData, setAssignedGroupData] = useState<
     ContextAssignedGroupData[]
   >([]);
+  const [formInstanceUseId, setFormInstanceUseId] = useState<string | null>(
+    null,
+  );
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -40,15 +44,15 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
   useEffect(() => {
     if (
       !formTemplate &&
-      router.pathname !== '/form-instance/create/select-template' &&
-      router.pathname !== '/form-instance/create/success'
+      router.pathname !== '/form-instance/create/success' &&
+      router.pathname !== '/form-instance/[id]/edit/success'
     ) {
       router.push('/form-instance/create/select-template');
     }
   }, [formTemplate, router]);
 
   return (
-    <CreateFormInstanceContext.Provider
+    <EditFormInstanceContext.Provider
       value={{
         formInstanceName,
         formInstanceDescription,
@@ -58,13 +62,14 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
         setFormTemplate,
         assignedGroupData: assignedGroupData,
         setAssignedGroupData: setAssignedGroupData,
+        formInstanceUseId,
+        setFormInstanceUseId,
         pdfFile,
       }}
     >
       {children}
-    </CreateFormInstanceContext.Provider>
+    </EditFormInstanceContext.Provider>
   );
 };
 
-export const useCreateFormInstance = () =>
-  useContext(CreateFormInstanceContext);
+export const useEditFormInstance = () => useContext(EditFormInstanceContext);

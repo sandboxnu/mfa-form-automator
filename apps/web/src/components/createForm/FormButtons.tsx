@@ -31,289 +31,24 @@ import { useState } from 'react';
  */
 export const FormButtons = ({
   type,
-  deleteFunction,
-  submitLink,
+  submitFunction,
   backLink,
   disabled,
+  loading,
   review = false,
   heading,
 }: {
   type: FormInteractionType;
-  deleteFunction: Function;
-  submitLink: string;
+  submitFunction: any;
   backLink: string;
   disabled: boolean;
+  loading: boolean;
   review?: boolean;
   heading: string;
 }) => {
   const router = useRouter();
 
-  const {
-    formTemplateUseId,
-    formTemplateName,
-    formTemplateDescription,
-    pdfFile,
-    fieldGroups: fieldGroupsContext,
-    formFields: formFieldsContext,
-    formDimensions,
-  } = useCreateFormTemplate();
-  const {
-    assignedGroupData,
-    formInstanceName,
-    formTemplate,
-    formInstanceDescription,
-  } = useCreateFormInstance();
-  const [createFormLoading, setCreateFormLoading] = useState(false);
-  const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
-
   const { user } = useAuth();
-
-  const createFormTemplateMutation = useMutation({
-    ...formTemplatesControllerCreateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey:
-          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey:
-          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
-      });
-    },
-  });
-
-  const createFormInstanceMutation = useMutation({
-    ...formInstancesControllerCreateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formInstancesControllerFindAllQueryKey(),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey:
-          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey:
-          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
-      });
-    },
-  });
-
-  const updateFormTemplateMutation = useMutation({
-    ...formTemplatesControllerUpdateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-    },
-  });
-
-  const updateFormInstanceMutation = useMutation({
-    ...formInstancesControllerUpdateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-    },
-  });
-
-  /**
-   * Upload and create a form template
-   */
-  const _submitFormTemplate = async () => {
-    if (disabled || createFormLoading) {
-      return;
-    }
-    if (!review) {
-      router.push(submitLink);
-      return;
-    }
-    if (!pdfFile) {
-      throw new Error('No PDF file uploaded');
-    }
-
-    setCreateFormLoading(true);
-
-    console.log('submitting template');
-    let fieldGroups: CreateFieldGroupDto[] = [];
-    let orderVal = 0;
-    console.log(fieldGroupsContext);
-
-    // populate fieldGroups with fieldGroupsContext
-    fieldGroupsContext.forEach((value, groupId) => {
-      let templateBoxes: CreateTemplateBoxDto[] = [];
-
-      // populate templateBoxes with formFieldsContext
-      for (const page in formFieldsContext) {
-        const fieldGroupsOnPage = formFieldsContext[page];
-        fieldGroupsOnPage.forEach((field, _) => {
-          if (field.groupId !== groupId) {
-            return;
-          }
-
-          templateBoxes.push({
-            type: field.type,
-            x_coordinate: field.position.x,
-            y_coordinate: field.position.y,
-            width: field.position.width,
-            height: field.position.height,
-            page: parseInt(page),
-          });
-        });
-      }
-      fieldGroups.push({
-        name: value.groupName,
-        order: orderVal,
-        templateBoxes: templateBoxes,
-      });
-
-      orderVal += 1;
-    });
-    if (formDimensions && type == FormInteractionType.CreateFormTemplate)
-      await createFormTemplateMutation
-        .mutateAsync({
-          body: {
-            pageHeight: formDimensions.height,
-            pageWidth: formDimensions.width,
-            name: formTemplateName ?? '',
-            fieldGroups: fieldGroups,
-            file: pdfFile,
-            description: formTemplateDescription ?? '',
-            disabled: false,
-          },
-        })
-        .then(async (response) => {
-          await queryClient.invalidateQueries({
-            queryKey: formTemplatesControllerFindAllQueryKey(),
-          });
-          router.push(submitLink).then(() => {
-            setCreateFormLoading(false);
-          });
-          return response;
-        })
-        .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form template',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
-        });
-    else if (type == FormInteractionType.EditFormTemplate) {
-      await updateFormTemplateMutation
-        .mutateAsync({
-          body: {
-            name: formTemplateName ?? '',
-            description: formTemplateDescription ?? '',
-            disabled: false,
-          },
-          path: {
-            id: formTemplateUseId!!,
-          },
-        })
-        .then(async (response) => {
-          await queryClient.invalidateQueries({
-            queryKey: formTemplatesControllerFindAllQueryKey(),
-          });
-          router.push(submitLink).then(() => {
-            setCreateFormLoading(false);
-          });
-          return response;
-        })
-        .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form template',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
-        });
-    }
-  };
-
-  /**
-   * Updates form instance with the selected form template, form name, and signature positions
-   */
-  const _submitFormInstance = async () => {
-    if (!review) {
-      router.push(submitLink);
-      return;
-    }
-
-    if (
-      !formTemplate ||
-      !assignedGroupData ||
-      disabled ||
-      !user ||
-      assignedGroupData.length != formTemplate.fieldGroups.length ||
-      createFormLoading
-    ) {
-      return;
-    }
-
-    setCreateFormLoading(true);
-
-    if (FormInteractionType.CreateFormInstance) {
-      await createFormInstanceMutation
-        .mutateAsync({
-          body: {
-            name: formInstanceName ?? formTemplate.name,
-            assignedGroups: assignedGroupData.map((data, _) => {
-              return {
-                order: data.order,
-                fieldGroupId: data.fieldGroupId,
-                signerType: data.signerType,
-                signerEmployeeList: data.signerEmployeeList,
-                signerDepartmentId: data.signerDepartmentId,
-                signerPositionId: data.signerPositionId,
-                signerEmployeeId: data.signerEmployeeId,
-              };
-            }),
-            originatorId: user.id,
-            formTemplateId: formTemplate.id,
-            formDocLink: formTemplate.formDocLink,
-            description: formInstanceDescription ?? formTemplate.description!!,
-          },
-        })
-        .then(async (response) => {
-          await queryClient.invalidateQueries({
-            queryKey: formInstancesControllerFindAllQueryKey(),
-          });
-          await queryClient.invalidateQueries({
-            queryKey:
-              formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
-          });
-          await queryClient.invalidateQueries({
-            queryKey:
-              formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
-          });
-          router.push(submitLink).then(() => {
-            setCreateFormLoading(false);
-          });
-          return response;
-        })
-        .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form instance',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
-        });
-    } else {
-      // form instance edit mode -> submit changes
-    }
-  };
 
   return (
     <>
@@ -337,7 +72,7 @@ export const FormButtons = ({
             fontWeight="600px"
             fontSize="18px"
             lineHeight="22px"
-            onClick={(e) => deleteFunction(e)}
+            onClick={() => {}}
           >
             Delete
           </Text>
@@ -388,26 +123,9 @@ export const FormButtons = ({
           }}
           marginLeft="12px"
           marginRight="36px"
-          disabled={disabled || signFormInstanceLoading || createFormLoading}
-          loading={signFormInstanceLoading || createFormLoading}
-          onClick={() => {
-            switch (type) {
-              case FormInteractionType.CreateFormTemplate:
-                _submitFormTemplate();
-                break;
-              case FormInteractionType.CreateFormInstance:
-                _submitFormInstance();
-                break;
-              case FormInteractionType.EditFormInstance:
-                _submitFormInstance();
-                break;
-              case FormInteractionType.EditFormTemplate:
-                _submitFormTemplate();
-                break;
-              default:
-                nextSignFormPage(submitLink, review);
-            }
-          }}
+          disabled={disabled}
+          loading={loading}
+          onClick={submitFunction}
         >
           <Text
             color="#FCFCFC"

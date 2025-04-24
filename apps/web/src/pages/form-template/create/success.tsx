@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 
 function Success() {
   const router = useRouter();
-  const { formTemplateUseId } = useCreateFormTemplate();
 
   return (
     <SuccessPage

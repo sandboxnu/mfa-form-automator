@@ -19,7 +19,6 @@ function InputFields() {
     setFieldGroups,
     pdfFile,
     setFormDimensions,
-    formTemplateUseId,
   } = useCreateFormTemplate();
 
   return (
@@ -45,8 +44,9 @@ function InputFields() {
           />
         </Box>
       }
-      deleteFunction={() => {}}
-      submitLink={'/form-template/create/review'}
+      submitFunction={() => {
+        '/form-template/create/review';
+      }}
       backLink={'/form-template/create/description'}
       // TODO set disabled based on some state in the pdf editor component
       disabled={false}

@@ -24,7 +24,6 @@ import {
 } from '@web/static/icons';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from './_app';
 import {
   Field,
@@ -38,6 +37,7 @@ import {
 import { distance } from 'fastest-levenshtein';
 import { groupColors } from '@web/utils/formTemplateUtils';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
+import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -51,7 +51,7 @@ function TemplateDirectory() {
     setFieldGroups,
     setFormFields,
     setFormDimensions,
-  } = useCreateFormTemplate();
+  } = useEditFormTemplate();
   const router = useRouter();
 
   const [formTemplate, setFormTemplate] = useState<FormTemplateEntity | null>(
@@ -185,7 +185,7 @@ function TemplateDirectory() {
       height: formTemplate.pageHeight,
     });
     fetchPdfFile(setPdfFile, formTemplate.formDocLink).then(() =>
-      router.push('/form-template/create/description'),
+      router.push('/form-template/' + formTemplate.id + '/edit/description'),
     );
   }
 
@@ -319,7 +319,7 @@ function TemplateDirectory() {
               fontWeight={'500px'}
               lineHeight={'20px'}
               onClick={() => {
-                router.push('create-template/upload');
+                router.push('form-template/create/upload');
               }}
             >
               Create Form Template

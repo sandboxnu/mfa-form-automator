@@ -1,9 +1,18 @@
-import { Scope } from '@web/client';
+import { useMutation } from '@tanstack/react-query';
+import { CreateFieldGroupDto, CreateTemplateBoxDto, Scope } from '@web/client';
+import {
+  formTemplatesControllerFindAllQueryKey,
+  formTemplatesControllerUpdateMutation,
+} from '@web/client/@tanstack/react-query.gen';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { ReviewBox } from '@web/components/createFormTemplate/ReviewBox';
 import isAuth from '@web/components/isAuth';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
+import { toaster } from '@web/components/ui/toaster';
+import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
+import { queryClient } from '@web/pages/_app';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -13,17 +22,105 @@ function Review() {
     formTemplateName,
     formTemplateDescription,
     pdfFile,
-    fieldGroups,
+    fieldGroups: fieldGroupsContext,
+    formFields: formFieldsContext,
     formTemplateUseId,
-  } = useCreateFormTemplate();
+    formDimensions,
+  } = useEditFormTemplate();
+  const [createFormLoading, setCreateFormLoading] = useState(false);
+
+  const router = useRouter();
+
+  const updateFormTemplateMutation = useMutation({
+    ...formTemplatesControllerUpdateMutation(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+    },
+  });
+  const _submitFormTemplate = async () => {
+    if (createFormLoading) {
+      return;
+    }
+    if (!pdfFile) {
+      throw new Error('No PDF file uploaded');
+    }
+
+    setCreateFormLoading(true);
+
+    console.log('submitting template');
+    let fieldGroups: CreateFieldGroupDto[] = [];
+    let orderVal = 0;
+    console.log(fieldGroupsContext);
+
+    // populate fieldGroups with fieldGroupsContext
+    fieldGroupsContext.forEach((value, groupId) => {
+      let templateBoxes: CreateTemplateBoxDto[] = [];
+
+      // populate templateBoxes with formFieldsContext
+      for (const page in formFieldsContext) {
+        const fieldGroupsOnPage = formFieldsContext[page];
+        fieldGroupsOnPage.forEach((field, _) => {
+          if (field.groupId !== groupId) {
+            return;
+          }
+
+          templateBoxes.push({
+            type: field.type,
+            x_coordinate: field.position.x,
+            y_coordinate: field.position.y,
+            width: field.position.width,
+            height: field.position.height,
+            page: parseInt(page),
+          });
+        });
+      }
+      fieldGroups.push({
+        name: value.groupName,
+        order: orderVal,
+        templateBoxes: templateBoxes,
+      });
+
+      orderVal += 1;
+    });
+    if (formDimensions)
+      await updateFormTemplateMutation
+        .mutateAsync({
+          body: {
+            name: formTemplateName ?? '',
+            description: formTemplateDescription ?? '',
+            disabled: false,
+          },
+          path: {
+            id: formTemplateUseId!!,
+          },
+        })
+        .then(async (response) => {
+          await queryClient.invalidateQueries({
+            queryKey: formTemplatesControllerFindAllQueryKey(),
+          });
+          router
+            .push('/form-template/' + formTemplateUseId + '/edit/success')
+            .then(() => {
+              setCreateFormLoading(false);
+            });
+          return response;
+        })
+        .catch((e) => {
+          toaster.create({
+            title: 'Failed to create form template',
+            description: (e as Error).message,
+            type: 'error',
+            duration: 3000,
+          });
+          throw e;
+        });
+  };
 
   return (
     <FormLayout
-      type={
-        formTemplateUseId
-          ? FormInteractionType.EditFormTemplate
-          : FormInteractionType.CreateFormTemplate
-      }
+      type={FormInteractionType.EditFormTemplate}
       pageNumber={4}
       heading={'Edit form template'}
       subheading={'Review your form template'}
@@ -32,13 +129,12 @@ function Review() {
           pdfFile={pdfFile}
           name={formTemplateName ?? ''}
           description={formTemplateDescription ?? ''}
-          fieldGroups={fieldGroups}
+          fieldGroups={fieldGroupsContext}
         />
       }
-      deleteFunction={() => {}}
-      submitLink={'/form-template/create/success'}
-      backLink={'/form-template/[id]/edit/description'}
-      disabled={false}
+      submitFunction={_submitFormTemplate}
+      backLink={'/form-template/' + formTemplateUseId + '/edit/description'}
+      disabled={createFormLoading}
       review={true}
     />
   );

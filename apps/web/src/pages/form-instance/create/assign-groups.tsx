@@ -4,17 +4,15 @@ import { AssignGroupsBox } from '@web/components/createFormInstance/AssignGroups
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 
 function AssignGroups() {
-  const {
-    formInstanceName,
-    formInstanceDescription,
-    formTemplate,
-    formInstanceUseId,
-  } = useCreateFormInstance();
+  const { formInstanceName, formInstanceDescription, formTemplate } =
+    useCreateFormInstance();
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
@@ -37,7 +35,9 @@ function AssignGroups() {
         />
       }
       deleteFunction={() => {}}
-      submitLink={'/form-instance/create/review'}
+      submitFunction={() => {
+        router.push('/form-instance/create/review');
+      }}
       backLink={'/form-instance/create/description'}
       disabled={false}
     />

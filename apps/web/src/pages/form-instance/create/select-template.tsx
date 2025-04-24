@@ -7,15 +7,13 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@web/hooks/useAuth';
 import { formTemplatesControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
+import { useRouter } from 'next/router';
 
 function SelectTemplate() {
   const { user } = useAuth();
-  const {
-    formTemplate,
-    formInstanceUseId,
-    setFormTemplate,
-    setFormInstanceName,
-  } = useCreateFormInstance();
+  const { formTemplate, setFormTemplate, setFormInstanceName } =
+    useCreateFormInstance();
+  const router = useRouter();
 
   const { data: formTemplates } = useQuery(
     formTemplatesControllerFindAllOptions(),
@@ -40,10 +38,7 @@ function SelectTemplate() {
           selectedFormTemplate={formTemplate}
         />
       }
-      deleteFunction={() => {
-        setFormTemplate(null);
-      }}
-      submitLink={'/form-instance/create/description'}
+      submitFunction={() => router.push('/form-instance/create/description')}
       backLink={'/'}
       review={false}
       disabled={!formTemplate}
