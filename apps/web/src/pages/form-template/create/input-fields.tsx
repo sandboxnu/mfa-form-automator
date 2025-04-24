@@ -50,6 +50,13 @@ function InputFields() {
       backLink={'/form-template/create/description'}
       // TODO set disabled based on some state in the pdf editor component
       disabled={false}
+      submitLink={'/create-template/review'}
+      backLink={'/create-template/description'}
+      disabled={
+        Object.values(formFields)
+          .map((page) => Array.from(page.values()))
+          .reduce((prev, curr) => prev + curr.length, 0) === 0
+      }
     />
   );
 }

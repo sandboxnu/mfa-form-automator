@@ -4,10 +4,10 @@ import { FormTemplateEntity, Scope } from '@web/client/types.gen';
 import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTemplateGrid';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@web/hooks/useAuth';
 import { formTemplatesControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
 import { useRouter } from 'next/router';
+import { useCallback } from 'react';
 
 function SelectTemplate() {
   const { user } = useAuth();
@@ -15,9 +15,22 @@ function SelectTemplate() {
     useCreateFormInstance();
   const router = useRouter();
 
-  const { data: formTemplates } = useQuery(
-    formTemplatesControllerFindAllOptions(),
+  // Memoize the handleSelectTemplate function to prevent re-renders
+  const handleSelectTemplate = useCallback(
+    (template: FormTemplateEntity) => {
+      setFormTemplate(template);
+      setFormInstanceName(template.name);
+    },
+    [setFormTemplate, setFormInstanceName],
   );
+
+  // Memoize the delete function to prevent re-renders
+  const handleDelete = useCallback(() => {
+    setFormTemplate(null);
+  }, [setFormTemplate]);
+
+  const allowCreate =
+    user?.scope === Scope.ADMIN || user?.scope === Scope.CONTRIBUTOR;
 
   return (
     <FormLayout
@@ -27,14 +40,8 @@ function SelectTemplate() {
       subheading={'Select a form template'}
       boxContent={
         <TemplateSelectGrid
-          formTemplates={formTemplates!!}
-          allowCreate={
-            user?.scope === Scope.ADMIN || user?.scope === Scope.CONTRIBUTOR
-          }
-          handleSelectTemplate={(template: FormTemplateEntity) => {
-            setFormTemplate(template);
-            setFormInstanceName(template.name);
-          }}
+          allowCreate={allowCreate}
+          handleSelectTemplate={handleSelectTemplate}
           selectedFormTemplate={formTemplate}
         />
       }

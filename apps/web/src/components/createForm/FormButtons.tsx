@@ -23,7 +23,6 @@ import { useState } from 'react';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
- * @param deleteFunction the function to call when delete button is pressed
  * @param submitLink page router will push on click of 'save & continue'
  * @param backLink page router will push on click of 'back'
  * @param disabled whether the 'save & continue' button should be activated
@@ -72,7 +71,7 @@ export const FormButtons = ({
             fontWeight="600px"
             fontSize="18px"
             lineHeight="22px"
-            onClick={() => {}}
+            onClick={(e) => deleteFunction(e)}
           >
             Delete
           </Text>

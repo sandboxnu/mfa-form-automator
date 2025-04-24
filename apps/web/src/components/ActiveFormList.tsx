@@ -4,36 +4,69 @@ import { useRouter } from 'next/router';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { AssignedGroupEntity, FormInstanceEntity } from '@web/client';
 import { AssignedAvatarGroup } from '@web/components/AssignedAvatarGroup.tsx';
-import { formInstancesControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
-import { useEffect, useState } from 'react';
+import { formInstancesControllerFindAllInfiniteOptions } from '@web/client/@tanstack/react-query.gen';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { distance } from 'fastest-levenshtein';
 import { PreviewIcon } from '@web/static/icons';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { isFullySigned } from '@web/utils/formInstanceUtils';
-import { useAuth } from '@web/hooks/useAuth';
 
 export const ActiveFormList = ({ title }: { title: string }) => {
   const router = useRouter();
-  const { user } = useAuth();
 
   const {
-    data: allActiveForms,
+    data: infiniteFormInstances,
     error,
     isLoading,
-  } = useQuery({
-    ...formInstancesControllerFindAllOptions(),
-    enabled: !!user,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    ...formInstancesControllerFindAllInfiniteOptions(),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      if (typeof lastPageParam !== 'number') {
+        return undefined;
+      }
+      if (lastPage.formInstances.length === 0) {
+        return undefined;
+      }
+      return lastPageParam + 1;
+    },
   });
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortedFormInstances, setSortedFormInstances] = useState<
     FormInstanceEntity[]
-  >(allActiveForms || []);
+  >([]);
 
   const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null);
 
+  // Setup intersection observer for infinite scroll
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastElementRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (isFetchingNextPage) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [isFetchingNextPage, fetchNextPage, hasNextPage],
+  );
+
+  // Flatten the pages data
+  const allActiveForms = useMemo(
+    () =>
+      infiniteFormInstances?.pages.flatMap((page) => page.formInstances) || [],
+    [infiniteFormInstances],
+  );
+
   useEffect(() => {
-    if (!allActiveForms) return;
+    if (!allActiveForms.length) return;
 
     const filteredAndSortedForms = allActiveForms
       .filter((formInstance) => {
@@ -51,7 +84,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
     setSortedFormInstances(filteredAndSortedForms);
   }, [searchQuery, allActiveForms]);
 
-  if (isLoading || !allActiveForms || error) {
+  if (isLoading || !allActiveForms.length || error) {
     return <></>;
   }
 
@@ -82,7 +115,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
             >
               {allActiveForms.length === 1
                 ? 'There is 1 active form instance'
-                : `There are ${allActiveForms.length} active form instances`}
+                : `There are ${infiniteFormInstances?.pages[0].count} active form instances`}
             </Text>
 
             <Box ml="auto">
@@ -235,6 +268,16 @@ export const ActiveFormList = ({ title }: { title: string }) => {
                 )}
               </Table.Body>
             </Table.Root>
+
+            {/* Infinite scroll loading indicator */}
+            {isFetchingNextPage && (
+              <Flex justify="center" py="20px">
+                <Text>Loading...</Text>
+              </Flex>
+            )}
+
+            {/* Element that will be observed for intersection */}
+            <div ref={lastElementRef} style={{ height: '20px' }}></div>
           </Stack>
         </Box>
       </Box>

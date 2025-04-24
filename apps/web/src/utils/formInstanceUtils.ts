@@ -225,3 +225,16 @@ export const formEditorTranslateFormFields: (
     ),
   );
 };
+
+export const getLatestSignedFormLink = (formInstance: FormInstanceEntity) => {
+  let currentFormDocLink = null;
+
+  for (const assignedGroup of formInstance.assignedGroups.sort(
+    (a, b) => a.order - b.order,
+  )) {
+    if (assignedGroup.signedDocLink != null) {
+      currentFormDocLink = assignedGroup.signedDocLink;
+    }
+  }
+  return currentFormDocLink || formInstance.formDocLink;
+};

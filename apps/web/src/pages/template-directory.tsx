@@ -5,11 +5,12 @@ import {
   Flex,
   Portal,
   Text,
+  Box,
 } from '@chakra-ui/react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 import { FieldGroupBaseEntity, FormTemplateEntity, Scope } from '@web/client';
 import {
-  formTemplatesControllerFindAllOptions,
+  formTemplatesControllerFindAllInfiniteOptions,
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
 } from '@web/client/@tanstack/react-query.gen';
@@ -24,6 +25,8 @@ import {
 } from '@web/static/icons';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from './_app';
 import {
   Field,
@@ -53,6 +56,7 @@ function TemplateDirectory() {
     setFormDimensions,
   } = useEditFormTemplate();
   const router = useRouter();
+  const loadMoreTriggerRef = useRef(null);
 
   const [formTemplate, setFormTemplate] = useState<FormTemplateEntity | null>(
     null,
@@ -63,15 +67,37 @@ function TemplateDirectory() {
   const [sortedFormTemplates, setSortedFormTemplates] = useState<
     FormTemplateEntity[]
   >([]);
-  const { data: formTemplates } = useQuery(
-    formTemplatesControllerFindAllOptions(),
-  );
+
+  const {
+    data: infiniteFormTemplates,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery({
+    ...formTemplatesControllerFindAllInfiniteOptions(),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      if (typeof lastPageParam !== 'number') {
+        return undefined;
+      }
+      if (lastPage.formTemplates.length === 0) {
+        return undefined;
+      }
+      return lastPageParam + 1;
+    },
+  });
+
+  const formTemplates = useMemo(() => {
+    if (!infiniteFormTemplates) return [];
+    return infiniteFormTemplates.pages.flatMap((page) => page.formTemplates);
+  }, [infiniteFormTemplates]);
 
   useEffect(() => {
     if (!formTemplates) return;
     setSortedFormTemplates(
       formTemplates
-        ?.map((template) => ({
+        .map((template) => ({
           ...template,
           levenshteinDistance: distance(
             searchQuery.toLowerCase().slice(0, 10),
@@ -81,6 +107,29 @@ function TemplateDirectory() {
         .sort((a, b) => a.levenshteinDistance - b.levenshteinDistance),
     );
   }, [searchQuery, formTemplates]);
+
+  // Intersection observer for infinite scrolling
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    const currentTrigger = loadMoreTriggerRef.current;
+    if (currentTrigger) {
+      observer.observe(currentTrigger);
+    }
+
+    return () => {
+      if (currentTrigger) {
+        observer.unobserve(currentTrigger);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const disableFormTemplateMutation = useMutation({
     ...formTemplatesControllerUpdateMutation(),
@@ -275,7 +324,7 @@ function TemplateDirectory() {
               <SearchAndSort
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                sortedForms={formTemplates!!}
+                sortedForms={formTemplates}
                 setSortedForms={setSortedFormTemplates}
               />
             ) : (
@@ -284,13 +333,20 @@ function TemplateDirectory() {
           </Flex>
         )}
         <TemplateSelectGrid
-          formTemplates={sortedFormTemplates!!}
+          formTemplates={sortedFormTemplates}
           allowCreate={false}
           handleSelectTemplate={(template: FormTemplateEntity) =>
             setFormTemplate(template)
           }
           selectedFormTemplate={formTemplate}
         />
+
+        {/* Infinite scroll loading trigger */}
+        {hasNextPage && (
+          <Box ref={loadMoreTriggerRef} height="20px" textAlign="center" my={4}>
+            {isFetchingNextPage ? 'Loading...' : ''}
+          </Box>
+        )}
 
         <Flex
           padding="20px"

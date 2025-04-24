@@ -9,3 +9,8 @@ export interface AssignedGroupData {
   order: number;
   positionId?: string;
 }
+
+export type OptionType = {
+  value: string;
+  label: string;
+};

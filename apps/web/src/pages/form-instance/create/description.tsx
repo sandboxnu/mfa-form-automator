@@ -35,10 +35,6 @@ function Description() {
           setDescription={setFormInstanceDescription}
         />
       }
-      deleteFunction={() => {
-        setFormInstanceName(null);
-        setFormInstanceDescription(null);
-      }}
       submitFunction={() => {
         router.push('/form-instance/create/assign-groups');
       }}

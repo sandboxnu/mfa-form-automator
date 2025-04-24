@@ -27,6 +27,7 @@ export const TopBar: React.FC = () => {
   const router = useRouter();
   const { data: positions } = useQuery({
     ...positionsControllerFindAllOptions(),
+    enabled: !!user,
   });
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
