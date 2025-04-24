@@ -699,9 +699,9 @@ describe('FormInstancesIntegrationTest', () => {
           sortBy: SortOption.CREATED_AT_ASC,
         });
 
-        expect(
-          formInstances[0].createdAt.getTime(),
-        ).toBeLessThanOrEqual(formInstances[1].createdAt.getTime());
+        expect(formInstances[0].createdAt.getTime()).toBeLessThanOrEqual(
+          formInstances[1].createdAt.getTime(),
+        );
       });
 
       it('should sort form instances by creation date in descending order', async () => {
@@ -709,10 +709,9 @@ describe('FormInstancesIntegrationTest', () => {
           sortBy: SortOption.CREATED_AT_DESC,
         });
 
-        expect(
-          formInstances[0].createdAt.getTime(),
-        ).toBeGreaterThanOrEqual(
+        expect(formInstances[0].createdAt.getTime()).toBeGreaterThanOrEqual(
           formInstances[1].createdAt.getTime(),
+        );
       });
 
       it('should sort form instances by update date in ascending order', async () => {
@@ -720,9 +719,9 @@ describe('FormInstancesIntegrationTest', () => {
           sortBy: SortOption.UPDATED_AT_ASC,
         });
 
-        expect(
-          formInstances[0].updatedAt.getTime(),
-        ).toBeLessThanOrEqual(formInstances[1].updatedAt.getTime());
+        expect(formInstances[0].updatedAt.getTime()).toBeLessThanOrEqual(
+          formInstances[1].updatedAt.getTime(),
+        );
       });
 
       it('should sort form instances by update date in descending order', async () => {
@@ -730,10 +729,8 @@ describe('FormInstancesIntegrationTest', () => {
           sortBy: SortOption.UPDATED_AT_DESC,
         });
 
-        expect(
-          formInstances[0].updatedAt.getUTCMilliseconds(),
-        ).toBeGreaterThanOrEqual(
-          formInstances[1].updatedAt.getUTCMilliseconds(),
+        expect(formInstances[0].updatedAt.getTime()).toBeGreaterThanOrEqual(
+          formInstances[1].updatedAt.getTime(),
         );
       });
     });
