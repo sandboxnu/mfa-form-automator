@@ -721,8 +721,8 @@ describe('FormInstancesIntegrationTest', () => {
         });
 
         expect(
-          formInstances[0].updatedAt.getUTCMilliseconds(),
-        ).toBeLessThanOrEqual(formInstances[1].updatedAt.getUTCMilliseconds());
+          formInstances[0].updatedAt.getTime(),
+        ).toBeLessThanOrEqual(formInstances[1].updatedAt.getTime());
       });
 
       it('should sort form instances by update date in descending order', async () => {
