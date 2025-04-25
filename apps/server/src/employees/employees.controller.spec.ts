@@ -152,9 +152,10 @@ describe('EmployeesController', () => {
         .spyOn(employeeService, 'findAll')
         .mockImplementation(async () => result);
 
-      expect(await controller.findAll({ id: '', email: '' }, 10)).toEqual(
-        expected,
-      );
+      expect(await controller.findAll({ id: '', email: '' }, 10)).toEqual({
+        count: 2,
+        employees: expected,
+      });
     });
   });
 });
