@@ -188,7 +188,9 @@ export const NavBar = ({
               </MenuItem>
             )}
             <MenuItem
-              onClick={() => router.push('form-instance/create/select-template')}
+              onClick={() =>
+                router.push('form-instance/create/select-template')
+              }
               value="form"
               padding="10px"
               w="140px"

@@ -16,6 +16,7 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
   const [formInstanceDescription, setFormInstanceDescription] = useState<
     string | null
   >(null);
+  const [id, setId] = useState<string | null>(null);
   const [formTemplate, setFormTemplate] = useState<FormTemplateEntity | null>(
     null,
   );
@@ -59,6 +60,8 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
         assignedGroupData: assignedGroupData,
         setAssignedGroupData: setAssignedGroupData,
         pdfFile,
+        id,
+        setId,
       }}
     >
       {children}

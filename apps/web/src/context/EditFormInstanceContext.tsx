@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState } from 'react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import {
-  CreateFormInstanceContextType,
   EditFormInstanceContextType,
 } from './types';
 import { FormTemplateEntity } from '@web/client';
@@ -30,26 +29,11 @@ export const EditFormInstanceProvider = ({ children }: any) => {
 
   useEffect(() => {
     fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
-  }, [formTemplate?.formDocLink]);
-
-  useEffect(() => {
-    if (formTemplate) {
-      setFormInstanceDescription(formTemplate.description ?? null);
-      setFormInstanceName(formTemplate.name ?? null);
-    }
   }, [formTemplate]);
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (
-      !formTemplate &&
-      router.pathname !== '/form-instance/create/success' &&
-      router.pathname !== '/form-instance/[id]/edit/success'
-    ) {
-      router.push('/form-instance/create/select-template');
-    }
-  }, [formTemplate, router]);
+
 
   return (
     <EditFormInstanceContext.Provider
@@ -58,13 +42,12 @@ export const EditFormInstanceProvider = ({ children }: any) => {
         formInstanceDescription,
         setFormInstanceName,
         setFormInstanceDescription,
-        formTemplate,
-        setFormTemplate,
         assignedGroupData: assignedGroupData,
         setAssignedGroupData: setAssignedGroupData,
         formInstanceUseId,
         setFormInstanceUseId,
         pdfFile,
+        setPdfFile
       }}
     >
       {children}

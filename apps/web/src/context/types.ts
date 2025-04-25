@@ -1,6 +1,7 @@
 import {
   CreateAssignedGroupDto,
   FormInstanceEntity,
+  FormTemplateBaseEntity,
   FormTemplateEntity,
   Scope,
   TemplateBoxBaseEntity,
@@ -81,6 +82,8 @@ export interface CreateFormInstanceContextType {
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
   pdfFile: File | null;
+  id: string | null;
+  setId: Dispatch<SetStateAction<string | null>>;
 }
 
 export interface EditFormTemplateContextType {
@@ -113,13 +116,12 @@ export interface EditFormInstanceContextType {
   formInstanceDescription: string | null;
   setFormInstanceName: Dispatch<SetStateAction<string | null>>;
   setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
-  formTemplate: FormTemplateEntity | null;
-  setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
   formInstanceUseId: string | null;
   setFormInstanceUseId: Dispatch<SetStateAction<string | null>>;
   pdfFile: File | null;
+  setPdfFile: Dispatch<SetStateAction<File | null>>;
 }
 
 export interface SignFormInstanceContextType {

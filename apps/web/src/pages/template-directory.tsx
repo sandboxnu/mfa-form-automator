@@ -24,9 +24,7 @@ import {
   SeparatorIcon,
 } from '@web/static/icons';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from './_app';
 import {
   Field,
@@ -189,7 +187,8 @@ function TemplateDirectory() {
 
     let groupNum: number = 0;
     for (let oldGroup of oldGroups) {
-      newGroups.set(oldGroup.id, {
+      newGroups.set(oldGroup.id, 
+        {
         background: groupColors[groupNum][1],
         border: groupColors[groupNum][0],
         groupName: oldGroup.name,
@@ -221,7 +220,6 @@ function TemplateDirectory() {
         newFields[count] = newFieldMap;
       }
     }
-
     setFormTemplateName(formTemplate.name);
     setFormTemplateDescription(formTemplate.description);
     setFormTemplateUseId(formTemplate.id);
@@ -233,6 +231,7 @@ function TemplateDirectory() {
       width: formTemplate.pageWidth,
       height: formTemplate.pageHeight,
     });
+    console.log(castNewFields);
     fetchPdfFile(setPdfFile, formTemplate.formDocLink).then(() =>
       router.push('/form-template/' + formTemplate.id + '/edit/description'),
     );

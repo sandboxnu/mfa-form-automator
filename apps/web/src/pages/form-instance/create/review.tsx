@@ -24,6 +24,7 @@ function Review() {
     formTemplate,
     formInstanceDescription,
     pdfFile,
+    setId,
   } = useCreateFormInstance();
   const router = useRouter();
   const createFormInstanceMutation = useMutation({
@@ -81,6 +82,7 @@ function Review() {
         },
       })
       .then(async (response) => {
+        setId(response.id);
         router.push('/form-instance/create/success').then(() => {
           setCreateFormLoading(false);
         });

@@ -64,7 +64,7 @@ function Review() {
     console.log('submitting template');
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
-    console.log(fieldGroupsContext);
+    console.log(formFieldsContext);
 
     // populate fieldGroups with fieldGroupsContext
     fieldGroupsContext.forEach((value, groupId) => {

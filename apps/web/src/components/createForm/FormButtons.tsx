@@ -1,25 +1,7 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
-import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
-import {
-  formInstancesControllerCreateMutation,
-  formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
-  formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
-  formInstancesControllerFindAllQueryKey,
-  formTemplatesControllerCreateMutation,
-  formTemplatesControllerUpdateMutation,
-  formInstancesControllerUpdateMutation,
-  formTemplatesControllerFindAllQueryKey,
-} from '@web/client/@tanstack/react-query.gen';
-import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
-import { queryClient } from '@web/pages/_app';
 import { useRouter } from 'next/router';
-import { useAuth } from '@web/hooks/useAuth';
 import { FormInteractionType } from './types';
-import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
-import { Toaster, toaster } from '../ui/toaster';
-import { useState } from 'react';
+import { Toaster } from '../ui/toaster';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -29,7 +11,6 @@ import { useState } from 'react';
  * @param review if review page, there is no delete/clear button and the Save & Continue becomes Create Form Template
  */
 export const FormButtons = ({
-  type,
   submitFunction,
   backLink,
   disabled,
@@ -37,7 +18,6 @@ export const FormButtons = ({
   review = false,
   heading,
 }: {
-  type: FormInteractionType;
   submitFunction: any;
   backLink: string;
   disabled: boolean;
@@ -47,38 +27,9 @@ export const FormButtons = ({
 }) => {
   const router = useRouter();
 
-  const { user } = useAuth();
 
   return (
     <>
-      {!review ? (
-        <Button
-          w="86px"
-          h="36px"
-          borderRadius="6px"
-          borderWidth="1.5px"
-          borderStyle={'solid'}
-          borderColor="#E23F40"
-          alignContent={'center'}
-          bgColor={'transparent'}
-          _hover={{
-            bgColor: 'transparent',
-          }}
-          marginLeft="36px"
-        >
-          <Text
-            color="#E23F40"
-            fontWeight="600px"
-            fontSize="18px"
-            lineHeight="22px"
-            onClick={(e) => deleteFunction(e)}
-          >
-            Delete
-          </Text>
-        </Button>
-      ) : (
-        <></>
-      )}
 
       <Flex float="right" justifyContent={'space-between'}>
         <Toaster />

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import {
-  CreateFormTemplateContextType,
+  
   EditFormTemplateContextType,
 } from './types';
 import {
@@ -42,7 +42,7 @@ export const EditFormTemplateProvider = ({ children }: any) => {
 
   useEffect(() => {
     if (!pdfFile && router.pathname !== '/template-directory') {
-      router.push('/form-template/create/upload');
+      router.push('/template-directory');
     }
   }, [pdfFile, router]);
 

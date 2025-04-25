@@ -15,13 +15,9 @@ function AssignGroups() {
     formTemplate,
     formInstanceUseId,
     assignedGroupData,
-  } = useCreateFormInstance();
+    pdfFile
+  } = useEditFormInstance();
 
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
-  }, [formTemplate?.formDocLink]);
 
   const router = useRouter();
 
@@ -45,9 +41,6 @@ function AssignGroups() {
         router.push('/form-instance/' + formInstanceUseId + '/edit/review');
       }}
       backLink={'/form-instance/' + formInstanceUseId + '/edit/description'}
-      disabled={false}
-      submitLink={'/create-instance/review'}
-      backLink={'/create-instance/description'}
       disabled={formTemplate?.fieldGroups.length !== assignedGroupData.length}
     />
   );

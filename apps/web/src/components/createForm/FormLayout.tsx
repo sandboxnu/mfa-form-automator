@@ -90,7 +90,6 @@ export const FormLayout = ({
         {boxContent}
       </Flex>
       <FormButtons
-        type={type}
         heading={
           type === FormInteractionType.CreateFormTemplate
             ? 'Create form template'

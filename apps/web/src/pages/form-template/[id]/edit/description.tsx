@@ -17,14 +17,9 @@ function Description() {
     setFormTemplateDescription,
     pdfFile,
     formTemplateUseId,
+    fieldGroups
   } = useEditFormTemplate();
   const router = useRouter();
-
-  function nullify() {
-    setFormTemplateName(null);
-    setFormTemplateDescription(null);
-  }
-
   return (
     <FormLayout
       type={FormInteractionType.EditFormTemplate}

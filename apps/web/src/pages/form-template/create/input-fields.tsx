@@ -5,6 +5,7 @@ import { Box } from '@chakra-ui/react';
 import isAuth from '@web/components/isAuth';
 import { Scope } from '@web/client';
 import { FormInteractionType } from '@web/components/createForm/types';
+import { useRouter } from 'next/router';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -20,7 +21,7 @@ function InputFields() {
     pdfFile,
     setFormDimensions,
   } = useCreateFormTemplate();
-
+  const router = useRouter();
   return (
     <FormLayout
       type={FormInteractionType.CreateFormTemplate}
@@ -45,13 +46,10 @@ function InputFields() {
         </Box>
       }
       submitFunction={() => {
-        '/form-template/create/review';
+        router.push('/form-template/create/review');
       }}
       backLink={'/form-template/create/description'}
       // TODO set disabled based on some state in the pdf editor component
-      disabled={false}
-      submitLink={'/create-template/review'}
-      backLink={'/create-template/description'}
       disabled={
         Object.values(formFields)
           .map((page) => Array.from(page.values()))

@@ -34,7 +34,6 @@ function AssignGroups() {
           fieldGroups={formTemplate?.fieldGroups ?? []}
         />
       }
-      deleteFunction={() => {}}
       submitFunction={() => {
         router.push('/form-instance/create/review');
       }}
