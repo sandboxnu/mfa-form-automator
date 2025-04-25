@@ -65,9 +65,6 @@ export class FormInstanceEntity implements FormInstance {
     if (partial.formTemplate) {
       partial.formTemplate = new FormTemplateBaseEntity(partial.formTemplate);
     }
-    if (partial.originator) {
-      partial.originator = new EmployeeBaseEntity(partial.originator);
-    }
     if (partial.assignedGroups) {
       partial.assignedGroups = partial.assignedGroups.map(
         (assignedGroup) => new AssignedGroupEntityHydrated(assignedGroup),
