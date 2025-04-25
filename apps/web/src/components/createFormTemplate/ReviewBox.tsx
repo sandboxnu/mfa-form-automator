@@ -2,6 +2,8 @@ import { Box, Text, Flex } from '@chakra-ui/react';
 import { FormEditor } from './createFormTemplateEditor/FormEditor';
 import { FieldGroups } from './types';
 import { useCreateFormTemplate } from '../../context/CreateFormTemplateContext';
+import { FormInteractionType } from '../createForm/types';
+import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 
 /**
  * The contents of the white box for the page (step 2) that asks the user for the form's name and
@@ -12,11 +14,13 @@ import { useCreateFormTemplate } from '../../context/CreateFormTemplateContext';
  * @param formLink link to form to preview
  */
 export const ReviewBox = ({
+  type,
   pdfFile,
   name,
   description,
   fieldGroups,
 }: {
+  type: FormInteractionType.CreateFormTemplate | FormInteractionType.EditFormTemplate;
   pdfFile: File | null;
   name: string;
   description: string;
@@ -31,7 +35,7 @@ export const ReviewBox = ({
     borderColor: 'transparent',
   };
 
-  const { formFields } = useCreateFormTemplate();
+  const { formFields } = type == FormInteractionType.CreateFormTemplate ? useCreateFormTemplate() : useEditFormTemplate();
 
   const GroupItem = ({
     num,

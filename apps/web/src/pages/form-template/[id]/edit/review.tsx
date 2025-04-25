@@ -90,7 +90,7 @@ function Review() {
           body: {
             name: formTemplateName ?? '',
             description: formTemplateDescription ?? '',
-            disabled: false,
+            fieldGroups:fieldGroups
           },
           path: {
             id: formTemplateUseId!!,
@@ -129,11 +129,10 @@ function Review() {
           pdfFile={pdfFile}
           name={formTemplateName ?? ''}
           description={formTemplateDescription ?? ''}
-          fieldGroups={fieldGroupsContext}
-        />
+          fieldGroups={fieldGroupsContext} type={FormInteractionType.EditFormTemplate}        />
       }
       submitFunction={_submitFormTemplate}
-      backLink={'/form-template/' + formTemplateUseId + '/edit/description'}
+      backLink={'/form-template/' + formTemplateUseId + '/edit/input-fields'}
       disabled={createFormLoading}
       review={true}
     />

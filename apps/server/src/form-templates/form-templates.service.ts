@@ -134,6 +134,26 @@ export class FormTemplatesService {
         name: updateFormTemplateDto.name,
         description: updateFormTemplateDto.description,
         disabled: updateFormTemplateDto.disabled,
+        fieldGroups: {
+          create: updateFormTemplateDto.fieldGroups?.map((fieldGroup) => {
+            return {
+              name: fieldGroup.name,
+              order: fieldGroup.order,
+              templateBoxes: {
+                create: fieldGroup.templateBoxes.map((templateBox) => {
+                  return {
+                    type: templateBox.type,
+                    x_coordinate: templateBox.x_coordinate,
+                    y_coordinate: templateBox.y_coordinate,
+                    width: templateBox.width,
+                    height: templateBox.height,
+                    page: templateBox.page,
+                  };
+                }),
+              },
+            };
+          }),
+        }
       },
       include: {
         fieldGroups: {

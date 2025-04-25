@@ -37,7 +37,7 @@ function Description() {
         />
       }
       submitFunction={() => {
-        router.push('/form-template/' + formTemplateUseId + '/edit/review');
+        router.push('/form-template/' + formTemplateUseId + '/edit/input-fields');
       }}
       backLink={'/template-directory'}
       disabled={!formTemplateName}
