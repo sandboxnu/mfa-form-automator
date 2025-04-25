@@ -91,9 +91,8 @@ export default function App({
 
   const createFormTemplatePath = '/form-template/create';
   const createFormInstancePath = '/form-instance/create';
-  const editInstanceRegExPath = /^\/form-instance\/[^\/]+\/edit/;
-  const editTemplateRegExPath = /^\/form-template\/[^\/]+\/edit/;
-
+  const editInstanceRegExPath = /^\/form-instance\/[^\/]+\/edit\/[^\/]+\/?$/;
+  const editTemplateRegExPath = /^\/form-template\/[^\/]+\/edit\/[^\/]+\/?$/;
 
   const signFormInstancePath = '/sign-form';
   const excludeLayoutPaths = [
@@ -104,14 +103,11 @@ export default function App({
   // to allow form template context to be populated before moving into edit mode
   const templateDirectoryPath = '/template-directory';
   // to allow form instance context for accessing id of just created to move into edit mode
-  const instanceCreateSuccessPath =
-    '/form-instance/create/success';
-
+  const instanceCreateSuccessPath = '/form-instance/create/success';
 
   const previewForm = '/preview-form';
   const instancesDirectoryPath = '/instance-directory';
   const employeeDirectoryPath = '/employee-directory';
-
 
   // Check if the current page is an error page
   const isErrorPage =
@@ -137,19 +133,35 @@ export default function App({
     );
   }
 
-  if(appProps.router.pathname.includes(instanceCreateSuccessPath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <CreateFormInstanceProvider>
-                <Component {...pageProps} />
-          </CreateFormInstanceProvider>
-        </WrapperComponent>
-      
-      </>
-    )
-  }
+  if (
+    appProps.router.pathname.includes(createFormInstancePath) ||
+    editInstanceRegExPath.test(appProps.router.pathname)
+  ) {
+    const isCreatePath = appProps.router.pathname.includes(
+      createFormInstancePath,
+    );
+    const component = !appProps.router.pathname.includes(
+      instanceCreateSuccessPath,
+    ) ? (
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    ) : (
+      <Component {...pageProps} />
+    );
 
+    const wrappedComponent = (
+      <EditFormInstanceProvider>
+        {isCreatePath ? (
+          <CreateFormInstanceProvider>{component}</CreateFormInstanceProvider>
+        ) : (
+          component
+        )}
+      </EditFormInstanceProvider>
+    );
+
+    return <WrapperComponent>{wrappedComponent}</WrapperComponent>;
+  }
 
   if (appProps.router.pathname.startsWith(previewForm)) {
     return (
@@ -175,7 +187,10 @@ export default function App({
     );
   }
 
-  if (appProps.router.pathname.includes(templateDirectoryPath) || editTemplateRegExPath.test(appProps.router.pathname)) {
+  if (
+    appProps.router.pathname.includes(templateDirectoryPath) ||
+    editTemplateRegExPath.test(appProps.router.pathname)
+  ) {
     return (
       <>
         <WrapperComponent>
@@ -184,37 +199,6 @@ export default function App({
               <Component {...pageProps} />
             </Layout>
           </EditFormTemplateProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
-
-  if (appProps.router.pathname.includes(createFormInstancePath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <CreateFormInstanceProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </CreateFormInstanceProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
-
-  if (editInstanceRegExPath.test(appProps.router.pathname)) {
-    return (
-      <>
-        <WrapperComponent>
-        <UserFormsContextProvider>
-              <EditFormInstanceProvider>
-            
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              </EditFormInstanceProvider>
-        </UserFormsContextProvider>
         </WrapperComponent>
       </>
     );

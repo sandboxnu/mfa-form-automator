@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import {
-  
-  EditFormTemplateContextType,
-} from './types';
+import { EditFormTemplateContextType } from './types';
 import {
   FormFields,
   FieldGroups,

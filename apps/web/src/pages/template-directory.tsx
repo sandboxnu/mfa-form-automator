@@ -187,8 +187,7 @@ function TemplateDirectory() {
 
     let groupNum: number = 0;
     for (let oldGroup of oldGroups) {
-      newGroups.set(oldGroup.id, 
-        {
+      newGroups.set(oldGroup.id, {
         background: groupColors[groupNum][1],
         border: groupColors[groupNum][0],
         groupName: oldGroup.name,

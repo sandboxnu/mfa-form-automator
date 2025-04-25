@@ -17,7 +17,7 @@ function Description() {
     setFormTemplateDescription,
     pdfFile,
     formTemplateUseId,
-    fieldGroups
+    fieldGroups,
   } = useEditFormTemplate();
   const router = useRouter();
   return (

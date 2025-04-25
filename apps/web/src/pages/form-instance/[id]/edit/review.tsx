@@ -87,6 +87,7 @@ function Review() {
       subheading={'Review your form instance'}
       boxContent={
         <ReviewBox
+        type={FormInteractionType.EditFormInstance}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}

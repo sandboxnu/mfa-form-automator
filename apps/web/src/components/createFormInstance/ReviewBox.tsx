@@ -7,13 +7,17 @@ import {
   formEditorTranslateFormFields,
 } from '@web/utils/formInstanceUtils';
 import { groupColors } from '@web/utils/formTemplateUtils';
+import { FormInteractionType } from '../createForm/types';
+import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
 
 export const ReviewBox = ({
+  type,
   pdfFile,
   name,
   description,
   fieldGroups,
 }: {
+  type: FormInteractionType.CreateFormInstance | FormInteractionType.EditFormInstance;
   pdfFile: File | null;
   name: string;
   description: string;
@@ -28,7 +32,7 @@ export const ReviewBox = ({
     borderColor: 'transparent',
   };
 
-  const { assignedGroupData } = useCreateFormInstance();
+  const { assignedGroupData } = type == FormInteractionType.CreateFormInstance ? useCreateFormInstance() : useEditFormInstance();
 
   const GroupItem = ({ color, border }: { color: string; border: string }) => {
     return (

@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import {
-  EditFormInstanceContextType,
-} from './types';
+import { EditFormInstanceContextType } from './types';
 import { FormTemplateEntity } from '@web/client';
 import { ContextAssignedGroupData } from './types';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
@@ -29,11 +27,9 @@ export const EditFormInstanceProvider = ({ children }: any) => {
 
   useEffect(() => {
     fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
-  }, [formTemplate]);
+  }, [formTemplate?.formDocLink]);
 
   const router = useRouter();
-
-
 
   return (
     <EditFormInstanceContext.Provider
@@ -42,12 +38,13 @@ export const EditFormInstanceProvider = ({ children }: any) => {
         formInstanceDescription,
         setFormInstanceName,
         setFormInstanceDescription,
+        formTemplate,
+        setFormTemplate,
         assignedGroupData: assignedGroupData,
         setAssignedGroupData: setAssignedGroupData,
         formInstanceUseId,
         setFormInstanceUseId,
         pdfFile,
-        setPdfFile
       }}
     >
       {children}

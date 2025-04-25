@@ -4,6 +4,7 @@ import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescrip
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
 import { useUserFormsContext } from '@web/context/UserFormsContext';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
@@ -22,9 +23,15 @@ function Description() {
     setFormInstanceDescription,
     formInstanceUseId,
     setFormInstanceUseId,
-    setPdfFile,
     pdfFile,
   } = useEditFormInstance();
+  const {
+    formInstanceName: createdFormInstanceName,
+    formInstanceDescription: createdFormInstanceDescription,
+    formTemplate: createdFormTemplate,
+    assignedGroupData: createdAssignedGroupData,
+  } = useCreateFormInstance();
+
   const router = useRouter();
   const { id } = router.query;
   const { todoForms, pendingForms, completedForms } = useUserFormsContext();
@@ -32,31 +39,19 @@ function Description() {
 
   useEffect(() => {
     // Only run when router.query is available and populated
-    if (router.isReady && typeof id === 'string' && todoForms && pendingForms && completedForms) {
+    if (
+      router.isReady &&
+      typeof id === 'string' &&
+      todoForms &&
+      pendingForms &&
+      completedForms
+    ) {
       setFormInstanceUseId(id);
-      const formToEdit = todoForms.concat(pendingForms).concat(completedForms).find((form) => form.id == id);
-      
-      if (formToEdit) {
-        console.log("form to edit:", formToEdit);
-        setFormInstanceName(formToEdit.name);
-        setFormInstanceDescription(formToEdit.description);
-        
-        // Set form template if available in the found form
-        if (formToEdit.formTemplate) {
-          setTemplate(formToEdit.formTemplate);
-        }
-      } else {
-        console.error("Form not found with id:", id);
-      }
+      setFormInstanceName(createdFormInstanceName);
+      setFormInstanceDescription(createdFormInstanceDescription);
+      setTemplate(createdFormTemplate);
     }
   }, [router.isReady, id, todoForms, pendingForms, completedForms]);
-
-  // Handle PDF fetching when formTemplate changes
-  useEffect(() => {
-    if (template?.formDocLink) {
-      fetchPdfFile(setPdfFile, template.formDocLink);
-    }
-  }, [template]);
 
   return (
     <FormLayout

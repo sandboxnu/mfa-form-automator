@@ -15,9 +15,8 @@ function AssignGroups() {
     formTemplate,
     formInstanceUseId,
     assignedGroupData,
-    pdfFile
+    pdfFile,
   } = useEditFormInstance();
-
 
   const router = useRouter();
 
@@ -31,6 +30,7 @@ function AssignGroups() {
       }
       boxContent={
         <AssignGroupsBox
+        type={FormInteractionType.EditFormInstance}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}

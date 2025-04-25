@@ -24,7 +24,6 @@ function Review() {
     formTemplate,
     formInstanceDescription,
     pdfFile,
-    setId,
   } = useCreateFormInstance();
   const router = useRouter();
   const createFormInstanceMutation = useMutation({
@@ -82,10 +81,16 @@ function Review() {
         },
       })
       .then(async (response) => {
-        setId(response.id);
-        router.push('/form-instance/create/success').then(() => {
-          setCreateFormLoading(false);
-        });
+        router
+          .push({
+            pathname: '/form-instance/create/success',
+            query: {
+              id: response.id,
+            },
+          })
+          .then(() => {
+            setCreateFormLoading(false);
+          });
         return response;
       })
       .catch((e) => {
@@ -107,6 +112,7 @@ function Review() {
       subheading={'Review your form instance'}
       boxContent={
         <ReviewBox
+        type={FormInteractionType.CreateFormInstance}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}

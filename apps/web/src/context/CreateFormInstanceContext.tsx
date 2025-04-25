@@ -60,8 +60,6 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
         assignedGroupData: assignedGroupData,
         setAssignedGroupData: setAssignedGroupData,
         pdfFile,
-        id,
-        setId,
       }}
     >
       {children}

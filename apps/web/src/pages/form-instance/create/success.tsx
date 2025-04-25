@@ -12,28 +12,32 @@ function Success() {
   const {
     setFormInstanceName,
     setFormInstanceDescription,
-    formInstanceDescription: desc,
     setAssignedGroupData,
-    formInstanceUseId,
     setFormInstanceUseId,
-    setPdfFile,
-    pdfFile: uploaded,
+    setFormTemplate,
+    formInstanceUseId,
   } = useEditFormInstance();
-
   const {
-    id,
-    pdfFile,
     formInstanceName,
     formInstanceDescription,
+    assignedGroupData,
     formTemplate,
-    assignedGroupData
   } = useCreateFormInstance();
   const router = useRouter();
-const populateAndReroute = () => {
-  
-  console.log(id);
-  router.push(`/form-instance/${id}/edit/description`);
-};
+
+  useEffect(() => {
+    if (router.query.id && typeof router.query.id == 'string') {
+      setFormInstanceUseId(router.query.id);
+    }
+  }, [router.query]);
+
+  const populateAndReroute = () => {
+    setFormInstanceName(formInstanceName);
+    setFormInstanceDescription(formInstanceDescription);
+    setAssignedGroupData(assignedGroupData);
+    setFormTemplate(formTemplate);
+    router.push(`/form-instance/${formInstanceUseId}/edit/description`);
+  };
 
   return (
     <SuccessPage

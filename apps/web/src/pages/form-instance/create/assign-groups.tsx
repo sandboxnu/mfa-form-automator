@@ -28,6 +28,7 @@ function AssignGroups() {
       }
       boxContent={
         <AssignGroupsBox
+          type={FormInteractionType.CreateFormInstance}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}
