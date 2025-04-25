@@ -53,6 +53,7 @@ export class AuthService {
       positionId: user.positionId,
       departmentId: user.position?.department.id,
       scope: user.scope,
+      position: user.position,
     };
 
     const [accessToken, refreshToken] = await Promise.all([
