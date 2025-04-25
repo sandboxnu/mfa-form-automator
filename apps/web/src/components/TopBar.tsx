@@ -110,10 +110,6 @@ export const TopBar: React.FC = () => {
                     pt="8px"
                   >
                     {user?.position ? user?.position.name : 'Position'}
-
-                    {/* {userPosition && userPosition.name
-                      ? userPosition.name
-                      : 'Position'} */}
                   </Text>
                   <Text
                     color="#888888"

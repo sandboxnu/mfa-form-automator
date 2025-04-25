@@ -124,11 +124,37 @@ describe('EmployeesController', () => {
           refreshToken: null,
         }),
       ];
+      jest.spyOn(employeeService, 'findOne').mockImplementation(
+        async () =>
+          new EmployeeSecureEntityHydrated({
+            id: 'd6c3c7c4-5f82-4c63-9086-ad6b3f067cdc',
+            firstName: 'Bilbo',
+            lastName: 'Baggins',
+            positionId: 'position-id',
+            signatureLink: 'signature-link',
+            position: {
+              id: 'position-id',
+              name: 'position-name',
+              department: {
+                id: 'department-id',
+                name: 'department-name',
+              },
+            },
+            email: 'bilbo.baggins@example.com',
+            scope: EmployeeScope.ADMIN,
+            pswdHash: 'thisIsASecureHash',
+            createdAt: new Date(1672531200),
+            updatedAt: new Date(1672531200),
+            refreshToken: null,
+          }),
+      );
       jest
         .spyOn(employeeService, 'findAll')
         .mockImplementation(async () => result);
 
-      expect(await controller.findAll(10)).toEqual(expected);
+      expect(await controller.findAll({ id: '', email: '' }, 10)).toEqual(
+        expected,
+      );
     });
   });
 });

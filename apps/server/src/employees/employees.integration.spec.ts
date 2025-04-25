@@ -306,6 +306,66 @@ describe('EmployeesServiceIntegrationTest', () => {
     });
   });
 
+  describe('findAllSecure', () => {
+    beforeEach(async () => {
+      const employeeDto1: CreateEmployeeDto = {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        password: 'password',
+        scope: $Enums.EmployeeScope.ADMIN,
+        positionId: positionId1,
+        accessToken: '123456',
+      };
+      const employeeDto2: CreateEmployeeDto = {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@example.com',
+        password: 'password123',
+        scope: $Enums.EmployeeScope.ADMIN,
+        positionId: positionId2,
+        accessToken: '123456',
+      };
+      employeeId1 = (await service.create(employeeDto1)).id;
+      employeeId2 = (await service.create(employeeDto2)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId2,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId2,
+            },
+          },
+        },
+      });
+    });
+
+    it('successfully retrieves all employees with secure data', async () => {
+      const employees = await service.findAllSecure();
+      expect(employees).toHaveLength(2);
+      expect(employees[0].id).toBe(employeeId1);
+      expect(employees[1].id).toBe(employeeId2);
+      expect(employees[0].position?.department.id).toBe(departmentId);
+      expect(employees[1].position?.department.id).toBe(departmentId);
+      expect(employees[0].scope).toBe($Enums.EmployeeScope.ADMIN);
+      expect(employees[1].scope).toBe($Enums.EmployeeScope.ADMIN);
+    });
+  });
+
   describe('findOne', () => {
     beforeEach(async () => {
       const employeeDto1: CreateEmployeeDto = {

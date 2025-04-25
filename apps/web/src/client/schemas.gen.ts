@@ -184,6 +184,57 @@ export const OnboardEmployeeDtoSchema = {
   required: ['signatureLink', 'positionId'],
 } as const;
 
+export const EmployeeBaseEntityResponseSchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    firstName: {
+      type: 'string',
+    },
+    lastName: {
+      type: 'string',
+    },
+    email: {
+      type: 'string',
+    },
+    signatureLink: {
+      type: 'string',
+    },
+    scope: {
+      type: 'string',
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
+    },
+    position: {
+      nullable: true,
+      description: 'Position of the employee, null if not assigned',
+      allOf: [
+        {
+          $ref: '#/components/schemas/PositionBaseEntity',
+        },
+      ],
+    },
+  },
+  required: ['id', 'firstName', 'lastName', 'email'],
+} as const;
+
+export const EmployeesFindAllResponseSchema = {
+  type: 'object',
+  properties: {
+    count: {
+      type: 'number',
+    },
+    employees: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/EmployeeBaseEntityResponse',
+      },
+    },
+  },
+  required: ['count', 'employees'],
+} as const;
+
 export const EmployeeBaseEntitySchema = {
   type: 'object',
   properties: {

@@ -59,6 +59,24 @@ export type OnboardEmployeeDto = {
   positionId: string;
 };
 
+export type EmployeeBaseEntityResponse = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  signatureLink?: string;
+  scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
+  /**
+   * Position of the employee, null if not assigned
+   */
+  position?: PositionBaseEntity | null;
+};
+
+export type EmployeesFindAllResponse = {
+  count: number;
+  employees: Array<EmployeeBaseEntityResponse>;
+};
+
 export type EmployeeBaseEntity = {
   id: string;
   firstName: string;
@@ -396,9 +414,13 @@ export type EmployeesControllerFindAllData = {
   path?: never;
   query?: {
     /**
-     * Limit on number of positions to return
+     * Limit on number of employees to return
      */
     limit?: number;
+    /**
+     * If true, returns secure employee data
+     */
+    secure?: boolean;
   };
   url: '/api/employees';
 };
@@ -415,7 +437,7 @@ export type EmployeesControllerFindAllErrors = {
 };
 
 export type EmployeesControllerFindAllResponses = {
-  200: Array<EmployeeSecureEntityHydrated>;
+  200: EmployeesFindAllResponse;
 };
 
 export type EmployeesControllerFindAllResponse =

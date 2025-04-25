@@ -25,7 +25,7 @@ import {
   ApiQuery,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
+import { EmployeeScope, Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { EmployeeErrorMessage } from './employees.errors';
 import { AuthUser } from '../auth/auth.decorators';
@@ -38,6 +38,10 @@ import {
   EmployeeBaseEntity,
   EmployeeSecureEntityHydrated,
 } from './entities/employee.entity';
+import {
+  EmployeeBaseEntityResponse,
+  EmployeesFindAllResponse,
+} from './responses/employees-find-all.response';
 
 @ApiTags('employees')
 @Controller('employees')
@@ -86,20 +90,43 @@ export class EmployeesController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [EmployeeSecureEntityHydrated] })
+  @ApiOkResponse({ type: EmployeesFindAllResponse })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
     name: 'limit',
     type: Number,
-    description: 'Limit on number of positions to return',
+    description: 'Limit on number of employees to return',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
-    // TODO: Auth
+  @ApiQuery({
+    name: 'secure',
+    type: Boolean,
+    description: 'If true, returns secure employee data',
+    required: false,
+  })
+  async findAll(
+    @AuthUser() currentUser: UserEntity,
+    @Query('limit') limit?: number,
+    @Query('secure') secure?: string,
+  ) {
+    if (secure === 'true') {
+      const currentEmployee = await this.employeesService.findOne(
+        currentUser.id,
+      );
+      if (currentEmployee.scope !== EmployeeScope.ADMIN) {
+        throw new NotFoundException(AppErrorMessage.FORBIDDEN);
+      }
+      const employees = await this.employeesService.findAllSecure(limit);
+      return new EmployeesFindAllResponse(
+        employees.length,
+        employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
+      );
+    }
     const employees = await this.employeesService.findAll(limit);
-    return employees.map(
-      (employee) => new EmployeeSecureEntityHydrated(employee),
+    return new EmployeesFindAllResponse(
+      employees.length,
+      employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
     );
   }
 
@@ -115,7 +142,7 @@ export class EmployeesController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiOkResponse({ type: EmployeeBaseEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })

@@ -86,23 +86,40 @@ export class EmployeesService {
           },
         })
       : await this.prisma.employee.findMany({
-          include: {
-            position: {
-              select: {
-                id: true,
-                name: true,
-                department: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                },
-              },
-            },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
           },
         });
 
     return employees;
+  }
+
+  async findAllSecure(limit?: number) {
+    return await this.prisma.employee.findMany({
+      ...(limit ? { take: limit } : {}),
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        position: {
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        scope: true,
+      },
+    });
   }
 
   /**
