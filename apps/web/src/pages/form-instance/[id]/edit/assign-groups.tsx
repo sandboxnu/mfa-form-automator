@@ -30,7 +30,7 @@ function AssignGroups() {
       }
       boxContent={
         <AssignGroupsBox
-        type={FormInteractionType.EditFormInstance}
+          type={FormInteractionType.EditFormInstance}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}

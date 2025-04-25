@@ -230,6 +230,7 @@ function TemplateDirectory() {
       width: formTemplate.pageWidth,
       height: formTemplate.pageHeight,
     });
+    console.log(castNewGroups);
     console.log(castNewFields);
     fetchPdfFile(setPdfFile, formTemplate.formDocLink).then(() =>
       router.push('/form-template/' + formTemplate.id + '/edit/description'),

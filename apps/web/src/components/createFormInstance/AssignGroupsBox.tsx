@@ -33,7 +33,9 @@ export const AssignGroupsBox = ({
   description,
   fieldGroups,
 }: {
-  type: FormInteractionType.CreateFormInstance | FormInteractionType.EditFormInstance;
+  type:
+    | FormInteractionType.CreateFormInstance
+    | FormInteractionType.EditFormInstance;
   pdfFile: File | null;
   name: string;
   description: string;
@@ -47,7 +49,10 @@ export const AssignGroupsBox = ({
     outlineColor: 'transparent',
     borderColor: 'transparent',
   };
-  const { assignedGroupData, setAssignedGroupData } = type == FormInteractionType.CreateFormInstance ? useCreateFormInstance() : useEditFormInstance();
+  const { assignedGroupData, setAssignedGroupData } =
+    type == FormInteractionType.CreateFormInstance
+      ? useCreateFormInstance()
+      : useEditFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
   const { data: employees } = useQuery(employeesControllerFindAllOptions());
   const { data: departments } = useQuery(

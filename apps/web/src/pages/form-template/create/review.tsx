@@ -140,7 +140,9 @@ function Review() {
           pdfFile={pdfFile}
           name={formTemplateName ?? ''}
           description={formTemplateDescription ?? ''}
-          fieldGroups={fieldGroupsContext} type={FormInteractionType.CreateFormTemplate}        />
+          fieldGroups={fieldGroupsContext}
+          type={FormInteractionType.CreateFormTemplate}
+        />
       }
       submitFunction={_submitFormTemplate}
       backLink={'/form-template/create/input-fields'}

@@ -125,7 +125,25 @@ export class FormTemplatesService {
    * @returns the updated form template, hydrated
    */
   async update(id: string, updateFormTemplateDto: UpdateFormTemplateDto) {
-    // TODO: Support updating signature fields (updating name/order/position, adding, deleting, etc)
+    // Execute the deletion transaction first and await its completion
+    await this.prisma.$transaction([
+      // Delete TemplateBox records first
+      this.prisma.templateBox.deleteMany({
+        where: {
+          fieldGroup: {
+            formTemplateId: id,
+          },
+        },
+      }),
+      // Then delete FieldGroup records
+      this.prisma.fieldGroup.deleteMany({
+        where: {
+          formTemplateId: id,
+        },
+      }),
+    ]);
+    
+    // After deletions are complete, update the form template
     const updatedFormTemplate = await this.prisma.formTemplate.update({
       where: {
         id: id,
@@ -134,6 +152,7 @@ export class FormTemplatesService {
         name: updateFormTemplateDto.name,
         description: updateFormTemplateDto.description,
         disabled: updateFormTemplateDto.disabled,
+        // Create new field groups as part of the update
         fieldGroups: {
           create: updateFormTemplateDto.fieldGroups?.map((fieldGroup) => {
             return {
@@ -153,7 +172,7 @@ export class FormTemplatesService {
               },
             };
           }),
-        }
+        },
       },
       include: {
         fieldGroups: {
@@ -195,9 +214,9 @@ export class FormTemplatesService {
         },
       },
     });
+    
     return updatedFormTemplate;
   }
-
   /**
    * Remove a form template.
    * @param id the form template id

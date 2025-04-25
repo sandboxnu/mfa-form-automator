@@ -84,13 +84,17 @@ function Review() {
 
       orderVal += 1;
     });
+    console.log(fieldGroupsContext);
+    console.log(formFieldsContext);
+    console.log(fieldGroups);
     if (formDimensions)
       await updateFormTemplateMutation
         .mutateAsync({
           body: {
             name: formTemplateName ?? '',
             description: formTemplateDescription ?? '',
-            fieldGroups:fieldGroups
+            disabled: false,
+            fieldGroups: fieldGroups,
           },
           path: {
             id: formTemplateUseId!!,
@@ -118,6 +122,11 @@ function Review() {
         });
   };
 
+  function printDetails() {
+    console.log(fieldGroupsContext);
+    console.log(formFieldsContext);
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.EditFormTemplate}
@@ -129,7 +138,9 @@ function Review() {
           pdfFile={pdfFile}
           name={formTemplateName ?? ''}
           description={formTemplateDescription ?? ''}
-          fieldGroups={fieldGroupsContext} type={FormInteractionType.EditFormTemplate}        />
+          fieldGroups={fieldGroupsContext}
+          type={FormInteractionType.EditFormTemplate}
+        />
       }
       submitFunction={_submitFormTemplate}
       backLink={'/form-template/' + formTemplateUseId + '/edit/input-fields'}

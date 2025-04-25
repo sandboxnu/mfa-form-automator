@@ -17,7 +17,9 @@ export const ReviewBox = ({
   description,
   fieldGroups,
 }: {
-  type: FormInteractionType.CreateFormInstance | FormInteractionType.EditFormInstance;
+  type:
+    | FormInteractionType.CreateFormInstance
+    | FormInteractionType.EditFormInstance;
   pdfFile: File | null;
   name: string;
   description: string;
@@ -32,7 +34,10 @@ export const ReviewBox = ({
     borderColor: 'transparent',
   };
 
-  const { assignedGroupData } = type == FormInteractionType.CreateFormInstance ? useCreateFormInstance() : useEditFormInstance();
+  const { assignedGroupData } =
+    type == FormInteractionType.CreateFormInstance
+      ? useCreateFormInstance()
+      : useEditFormInstance();
 
   const GroupItem = ({ color, border }: { color: string; border: string }) => {
     return (
