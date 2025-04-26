@@ -20,6 +20,7 @@ import { FormInteractionType } from './types';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 import { useState } from 'react';
+import { AxiosError } from 'axios';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -196,13 +197,22 @@ export const FormButtons = ({
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form template',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
+          setCreateFormLoading(false);
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to create form template',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to create form template',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+          }
         });
     else if (type == FormInteractionType.EditFormTemplate) {
       await updateFormTemplateMutation
@@ -226,13 +236,22 @@ export const FormButtons = ({
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form template',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
+          setCreateFormLoading(false);
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to edit form template',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to edit form template',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+          }
         });
     }
   };
@@ -299,13 +318,22 @@ export const FormButtons = ({
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form instance',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
+          setCreateFormLoading(false);
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to create form instance',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to create form instance',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+          }
         });
     } else {
       // form instance edit mode -> submit changes
