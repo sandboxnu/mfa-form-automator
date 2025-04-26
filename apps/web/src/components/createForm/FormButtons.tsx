@@ -1,10 +1,6 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
-import {
-  CreateFieldGroupDto,
-  CreateTemplateBoxDto,
-  FormInstanceEntity,
-} from '@web/client';
+import { CreateFieldGroupDto, CreateTemplateBoxDto } from '@web/client';
 import {
   formInstancesControllerCreateMutation,
   formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
@@ -24,7 +20,6 @@ import { FormInteractionType } from './types';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 import { useState } from 'react';
-import { useUserFormsContext } from '@web/context/UserFormsContext';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -65,7 +60,6 @@ export const FormButtons = ({
     formTemplate,
     formInstanceDescription,
     formInstanceUseId,
-    setFormInstanceUseId,
   } = useCreateFormInstance();
   const [createFormLoading, setCreateFormLoading] = useState(false);
   const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
@@ -209,6 +203,8 @@ export const FormButtons = ({
             type: 'error',
             duration: 3000,
           });
+
+          setCreateFormLoading(false);
           throw e;
         });
     else if (type == FormInteractionType.EditFormTemplate) {
@@ -239,9 +235,14 @@ export const FormButtons = ({
             type: 'error',
             duration: 3000,
           });
+
+          setCreateFormLoading(false);
           throw e;
         });
     }
+
+    // always set loading to false
+    setCreateFormLoading(false);
   };
 
   /**
@@ -267,7 +268,6 @@ export const FormButtons = ({
     setCreateFormLoading(true);
 
     if (type == FormInteractionType.CreateFormInstance) {
-      let createdForm: FormInstanceEntity;
       await createFormInstanceMutation
         .mutateAsync({
           body: {
@@ -405,8 +405,11 @@ export const FormButtons = ({
               case FormInteractionType.EditFormTemplate:
                 _submitFormTemplate();
                 break;
-              default:
+              case FormInteractionType.SignFormInstance:
                 nextSignFormPage(submitLink, review);
+                break;
+              default:
+                throw new Error('Invalid form interaction type');
             }
           }}
         >
