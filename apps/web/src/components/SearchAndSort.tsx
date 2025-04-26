@@ -1,29 +1,40 @@
 import { Button, Flex, Input, Menu, Portal, Text } from '@chakra-ui/react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import { RightSearchIcon } from '@web/static/icons.tsx';
 import { motion } from 'framer-motion';
 import { InputGroup } from './ui/input-group';
-import { FormInstanceEntity, FormTemplateEntity } from '@web/client';
+import { SortBy } from '@web/client';
+
+export type SearchAndSortProps<
+  T extends { createdAt: string | Date; name: string },
+> = {
+  searchQuery: string;
+  setSearchQuery: (searchQuery: string) => void;
+  setSortOption: React.Dispatch<SortBy>;
+  sortedForms?: T[];
+  setSortedForms?: React.Dispatch<SetStateAction<T[]>>;
+};
 
 /**
  * @returns a search bar and sort by dropdown
  */
-export const SearchAndSort = ({
+export const SearchAndSort = <
+  T extends { createdAt: string | Date; name: string },
+>({
   searchQuery,
   setSearchQuery,
+  setSortOption,
   sortedForms,
   setSortedForms,
-}: {
-  searchQuery: string;
-  setSearchQuery: (searchQuery: string) => void;
-  sortedForms: (FormTemplateEntity | FormInstanceEntity)[]; // This is used to sort the form instances
-  setSortedForms: any;
-}) => {
+}: SearchAndSortProps<T>) => {
   const [showSearchField, setShowSearchField] = useState(false);
   const [showButton, setShowButton] = useState(true);
   const [sortValue, setSortValue] = useState('Recent'); // Default sort value
 
   useEffect(() => {
+    if (!sortedForms || sortedForms.length === 0) return;
+    if (!setSortedForms) return;
+
     switch (sortValue.toLowerCase()) {
       case 'recent':
         setSortedForms(
@@ -138,19 +149,27 @@ export const SearchAndSort = ({
             <Menu.Content>
               <Menu.RadioItemGroup
                 value={sortValue}
-                onValueChange={(e) => setSortValue(e.value)}
+                onValueChange={(e) => {
+                  const option = [
+                    { value: SortBy.CREATED_AT_DESC, label: 'Recent' },
+                    { value: SortBy.CREATED_AT_ASC, label: 'Oldest' },
+                    { value: SortBy.NAME_ASC, label: 'A to Z' },
+                  ].find((item) => item.value === e.value);
+                  setSortValue(option?.label || 'Recent');
+                  setSortOption(e.value as SortBy);
+                }}
               >
                 {[
                   {
-                    value: 'Recent',
+                    value: SortBy.CREATED_AT_DESC,
                     label: 'Recent',
                   },
                   {
-                    value: 'Oldest',
+                    value: SortBy.CREATED_AT_ASC,
                     label: 'Oldest',
                   },
                   {
-                    value: 'A to Z',
+                    value: SortBy.NAME_ASC,
                     label: 'A to Z',
                   },
                 ].map((item) => (

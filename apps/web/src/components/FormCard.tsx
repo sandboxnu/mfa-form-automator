@@ -1,5 +1,5 @@
 import { Box, Text } from '@chakra-ui/react';
-import { AssignedGroupEntity } from '@web/client';
+import { AssignedGroupEntityHydrated } from '@web/client';
 import { MouseEventHandler } from 'react';
 import { AssignedAvatarGroup } from './AssignedAvatarGroup';
 
@@ -16,7 +16,7 @@ export const FormCard = ({
   onClick,
 }: {
   formName: String;
-  assignedGroups: AssignedGroupEntity[];
+  assignedGroups: AssignedGroupEntityHydrated[];
   link: string;
   onClick: MouseEventHandler<HTMLDivElement>;
 }) => {

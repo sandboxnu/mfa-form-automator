@@ -14,6 +14,7 @@ import { FormTemplateEntity } from '../form-templates/entities/form-template.ent
 import MockEmailHandler from '../postmark/MockEmailHandler';
 import { FormInstanceEntity } from './entities/form-instance.entity';
 import { MockValidateEmployeeHandler } from '../employees/validate-employee/MockValidateEmployeeHandler';
+import { SortOption } from '../utils';
 
 const emptyFile: Express.Multer.File = {
   fieldname: 'file',
@@ -662,16 +663,76 @@ describe('FormInstancesIntegrationTest', () => {
     });
 
     it('should find all form instances', async () => {
-      const formInstances = await service.findAll();
+      const formInstances = await service.findAll({});
 
       expect(formInstances).toHaveLength(10);
     });
     it('should paginate the form instances returned', async () => {
-      const formInstancesPage0 = await service.findAll(0);
-      const formInstancesPage1 = await service.findAll(1);
+      const formInstancesPage0 = await service.findAll({ cursor: 0 });
+      const formInstancesPage1 = await service.findAll({ cursor: 1 });
 
       expect(formInstancesPage0).toHaveLength(8);
       expect(formInstancesPage1).toHaveLength(2);
+    });
+
+    describe('sorting', () => {
+      it('should sort form instances by name in ascending order', async () => {
+        const formInstances = await service.findAll({
+          sortBy: SortOption.NAME_ASC,
+        });
+
+        expect(formInstances[0].name).toBe('Form Instance');
+        expect(formInstances[1].name).toBe('Form Instance 10');
+      });
+
+      it('should sort form instances by name in descending order', async () => {
+        const formInstances = await service.findAll({
+          sortBy: SortOption.NAME_DESC,
+        });
+
+        expect(formInstances[0].name).toBe('Form Instance 9');
+        expect(formInstances[1].name).toBe('Form Instance 8');
+      });
+
+      it('should sort form instances by creation date in ascending order', async () => {
+        const formInstances = await service.findAll({
+          sortBy: SortOption.CREATED_AT_ASC,
+        });
+
+        expect(formInstances[0].createdAt.getTime()).toBeLessThanOrEqual(
+          formInstances[1].createdAt.getTime(),
+        );
+      });
+
+      it('should sort form instances by creation date in descending order', async () => {
+        const formInstances = await service.findAll({
+          sortBy: SortOption.CREATED_AT_DESC,
+        });
+
+        expect(formInstances[0].createdAt.getTime()).toBeGreaterThanOrEqual(
+          formInstances[1].createdAt.getTime(),
+        );
+      });
+
+      it('should sort form instances by update date in ascending order', async () => {
+        const formInstances = await service.findAll({
+          sortBy: SortOption.UPDATED_AT_ASC,
+        });
+
+        expect(formInstances[0].updatedAt.getTime()).toBeLessThanOrEqual(
+          formInstances[1].updatedAt.getTime(),
+        );
+      });
+
+      it('should sort form instances by update date in descending order', async () => {
+        const formInstances = await service.findAll({
+          sortBy: SortOption.UPDATED_AT_DESC,
+        });
+
+        expect(formInstances[0].updatedAt.getTime()).toBeGreaterThanOrEqual(
+          formInstances[1].updatedAt.getTime(),
+        );
+      });
     });
   });
   describe('findAllCount', () => {
@@ -801,7 +862,9 @@ describe('FormInstancesIntegrationTest', () => {
       expect(formInstance.assignedGroups[0].signerType).toBe(
         $Enums.SignerType.POSITION,
       );
-      expect(formInstance.assignedGroups[0].signerEmployeeId).toBe(employeeId2);
+      expect(formInstance.assignedGroups[0].signerEmployee?.id).toBe(
+        employeeId2,
+      );
     });
     it('should fail if the form instance does not exist', async () => {
       await expect(
@@ -911,10 +974,10 @@ describe('FormInstancesIntegrationTest', () => {
       expect(
         formInstance!.assignedGroups.sort((a, b) => a.order - b.order)[0]
           .signed,
-      ).toBe(true);
+      ).toBeTruthy();
       expect(
         formInstance!.assignedGroups.sort((a, b) => a.order - b.order)[0]
-          .signerEmployeeId,
+          .signerEmployee?.id,
       ).toBe(employeeId1);
 
       expect(

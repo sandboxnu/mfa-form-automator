@@ -1,5 +1,5 @@
 import {
-  AssignedGroupEntity,
+  AssignedGroupEntityHydrated,
   FieldGroupBaseEntity,
   FormInstanceEntity,
   SignerType,
@@ -19,13 +19,13 @@ import {
  * @returns true if the form instance is fully signed, false otherwise
  */
 export const isFullySigned = (formInstance: FormInstanceEntity) => {
-  const assignedGroups: AssignedGroupEntity[] = formInstance.assignedGroups;
+  const assignedGroups: AssignedGroupEntityHydrated[] =
+    formInstance.assignedGroups;
 
-  const unsignedAssignedGroups: AssignedGroupEntity[] = assignedGroups.filter(
-    (assignedGroup: AssignedGroupEntity) => {
+  const unsignedAssignedGroups: AssignedGroupEntityHydrated[] =
+    assignedGroups.filter((assignedGroup: AssignedGroupEntityHydrated) => {
       return !assignedGroup.signed;
-    },
-  );
+    });
 
   return unsignedAssignedGroups.length === 0;
 };
@@ -36,7 +36,7 @@ export const isFullySigned = (formInstance: FormInstanceEntity) => {
  * @returns the name of the signer
  */
 export const getNameFromAssignedGroup = (
-  assignedGroup: AssignedGroupEntity,
+  assignedGroup: AssignedGroupEntityHydrated,
 ): string => {
   const signerType = assignedGroup.signerType;
 
@@ -68,7 +68,7 @@ export const getNameFromAssignedGroup = (
  * @returns the initials of the signer
  */
 export const getInitialsFromAssignedGroup = (
-  assignedGroup: AssignedGroupEntity,
+  assignedGroup: AssignedGroupEntityHydrated,
 ) => {
   const signerType = assignedGroup.signerType;
 
@@ -95,17 +95,20 @@ export const getInitialsFromAssignedGroup = (
  * @returns the next signer in the assignedGroup chain
  */
 export const nextSigner = (formInstance: FormInstanceEntity) => {
-  const assignedGroups: AssignedGroupEntity[] = formInstance.assignedGroups;
+  const assignedGroups: AssignedGroupEntityHydrated[] =
+    formInstance.assignedGroups;
 
   // Sort signatures by order
-  assignedGroups.sort((a: AssignedGroupEntity, b: AssignedGroupEntity) => {
-    return a.order - b.order;
-  });
+  assignedGroups.sort(
+    (a: AssignedGroupEntityHydrated, b: AssignedGroupEntityHydrated) => {
+      return a.order - b.order;
+    },
+  );
 
   // Find the first assigned group that is not signed
-  const firstUnsignedAssignedGroup: AssignedGroupEntity | undefined =
-    assignedGroups.find((assignedGroup: AssignedGroupEntity) => {
-      return assignedGroup.signed === false;
+  const firstUnsignedAssignedGroup: AssignedGroupEntityHydrated | undefined =
+    assignedGroups.find((assignedGroup: AssignedGroupEntityHydrated) => {
+      return !assignedGroup.signed;
     });
 
   return firstUnsignedAssignedGroup;
@@ -119,7 +122,7 @@ export const nextSigner = (formInstance: FormInstanceEntity) => {
  * @returns true if the next signer is the current user, false otherwise
  */
 export const signerIsUser = (
-  assignedGroup: AssignedGroupEntity,
+  assignedGroup: AssignedGroupEntityHydrated,
   user: User,
 ) => {
   if (!assignedGroup || !user) return false;
@@ -127,11 +130,11 @@ export const signerIsUser = (
   const signerType = assignedGroup.signerType;
   return (
     (signerType === SignerType.USER &&
-      assignedGroup.signerEmployeeId === user?.id) ||
+      assignedGroup.signerEmployee?.id === user?.id) ||
     (signerType === SignerType.POSITION &&
-      assignedGroup.signerPositionId === user?.positionId) ||
+      assignedGroup.signerPosition?.id === user?.positionId) ||
     (signerType === SignerType.DEPARTMENT &&
-      user?.departmentId === assignedGroup.signerDepartmentId) ||
+      user?.departmentId === assignedGroup.signerDepartment?.id) ||
     (signerType === SignerType.USER_LIST &&
       assignedGroup.signerEmployeeList?.some(
         (employee) => employee.id === user?.id,
@@ -149,15 +152,16 @@ export const isSignedByUser = (
   formInstance: FormInstanceEntity,
   user: User,
 ) => {
-  const assignedGroups: AssignedGroupEntity[] = formInstance.assignedGroups;
+  const assignedGroups: AssignedGroupEntityHydrated[] =
+    formInstance.assignedGroups;
 
   if (!assignedGroups || !user) return false;
 
-  return assignedGroups.some((assignedGroup: AssignedGroupEntity) => {
+  return assignedGroups.some((assignedGroup: AssignedGroupEntityHydrated) => {
     return (
       assignedGroup.signed &&
-      assignedGroup.signingEmployeeId &&
-      assignedGroup.signingEmployeeId === user.id
+      assignedGroup.signingEmployee?.id &&
+      assignedGroup.signingEmployee.id === user.id
     );
   });
 };

@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { EmployeeEntity } from '../employees/entities/employee.entity';
-import { EmployeeScope } from '@prisma/client';
+import { EmployeeSecureEntityHydrated } from '../employees/entities/employee.entity';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
@@ -22,16 +21,16 @@ export class AuthService {
   async validateEmployee(
     email: string,
     pass: string,
-  ): Promise<EmployeeEntity | null> {
+  ): Promise<EmployeeSecureEntityHydrated | null> {
     try {
-      const user = await this.employeesService.findOneByEmail(email);
+      const user = await this.employeesService.findOneByEmailAuth(email);
 
       if (user?.pswdHash && !(await bcrypt.compare(pass, user.pswdHash!))) {
         return null;
       }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { pswdHash, ...result } = user;
-      return new EmployeeEntity(result);
+      return new EmployeeSecureEntityHydrated(result);
     } catch (e) {
       if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
         return null;
@@ -41,35 +40,20 @@ export class AuthService {
   }
 
   /**
-   * Validate if employee has specified scope.
-   * @param email employee email
-   * @returns validated employee or null
-   */
-  async validateEmployeeScope(
-    email: string,
-    scope: EmployeeScope,
-  ): Promise<EmployeeEntity | null> {
-    const user = await this.employeesService.findOneByEmail(email);
-    if (user.scope == scope) {
-      return user;
-    }
-    return null;
-  }
-
-  /**
    * Authenticate a user.
    * @param request the incoming request
    * @returns a valid JWT auth and refresh token
    */
-  async login(user: EmployeeEntity) {
+  async login(user: EmployeeSecureEntityHydrated) {
     const payload = {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
       sub: user.id,
       positionId: user.positionId,
-      departmentId: user.position?.departmentId,
+      departmentId: user.position?.department.id,
       scope: user.scope,
+      position: user.position,
     };
 
     const [accessToken, refreshToken] = await Promise.all([

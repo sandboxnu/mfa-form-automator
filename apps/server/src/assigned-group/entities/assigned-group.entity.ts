@@ -1,72 +1,31 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AssignedGroup, SignerType } from '@prisma/client';
-import { IsDate, IsOptional, IsString } from 'class-validator';
+import { SignerType } from '@prisma/client';
+import { IsOptional, IsString } from 'class-validator';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 import { PositionBaseEntity } from '../../positions/entities/position.entity';
-import { DepartmentEntity } from '../../departments/entities/department.entity';
+import { DepartmentBaseEntity } from '../../departments/entities/department.entity';
 import { FieldGroupBaseEntity } from '../../field-group/entities/field-group.entity';
 
-export class AssignedGroupBaseEntity implements AssignedGroup {
+export class AssignedGroupEntityHydrated {
   @ApiProperty()
   id: string;
 
   @ApiProperty()
-  fieldGroupId: string;
+  fieldGroup: FieldGroupBaseEntity;
 
   @ApiProperty()
   order: number;
 
   @ApiProperty()
-  signed: boolean;
+  signed: Date | null;
 
   @IsString()
   @IsOptional()
   @ApiProperty()
   signedDocLink: string | null;
 
-  @IsDate()
-  @ApiProperty()
-  createdAt: Date;
-
-  @IsDate()
-  @ApiProperty()
-  updatedAt: Date;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty()
-  signerPositionId: string | null;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty()
-  signerDepartmentId: string | null;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty()
-  signerEmployeeId: string | null;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty()
-  signingEmployeeId: string | null;
-
   @ApiProperty({ enum: SignerType })
   signerType: SignerType;
-
-  @IsString()
-  @ApiProperty()
-  formInstanceId: string;
-
-  constructor(partial: Partial<AssignedGroupBaseEntity>) {
-    Object.assign(this, partial);
-  }
-}
-
-export class AssignedGroupEntity extends AssignedGroupBaseEntity {
-  @ApiProperty()
-  fieldGroup: FieldGroupBaseEntity;
 
   @IsOptional()
   @ApiProperty()
@@ -78,7 +37,7 @@ export class AssignedGroupEntity extends AssignedGroupBaseEntity {
 
   @IsOptional()
   @ApiProperty()
-  signerDepartment: DepartmentEntity | null;
+  signerDepartment: DepartmentBaseEntity | null;
 
   @IsOptional()
   @ApiProperty()
@@ -91,16 +50,23 @@ export class AssignedGroupEntity extends AssignedGroupBaseEntity {
   })
   signerEmployeeList: EmployeeBaseEntity[] | null;
 
-  constructor(partial: Partial<AssignedGroupEntity>) {
-    super(partial);
-    if (partial.fieldGroup) {
-      partial.fieldGroup = new FieldGroupBaseEntity(partial.fieldGroup);
-    }
+  constructor(partial: Partial<AssignedGroupEntityHydrated>) {
     if (partial.signingEmployee) {
-      partial.signingEmployee = new EmployeeBaseEntity(partial.signingEmployee);
+      this.signingEmployee = new EmployeeBaseEntity(partial.signingEmployee);
+    }
+    if (partial.signerPosition) {
+      this.signerPosition = new PositionBaseEntity(partial.signerPosition);
+    }
+    if (partial.signerDepartment) {
+      this.signerDepartment = new DepartmentBaseEntity(
+        partial.signerDepartment,
+      );
+    }
+    if (partial.signerEmployee) {
+      this.signerEmployee = new EmployeeBaseEntity(partial.signerEmployee);
     }
     if (partial.signerEmployeeList) {
-      partial.signerEmployeeList = partial.signerEmployeeList.map(
+      this.signerEmployeeList = partial.signerEmployeeList.map(
         (employee) => new EmployeeBaseEntity(employee),
       );
     }

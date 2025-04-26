@@ -1,6 +1,6 @@
 import { Dialog, Portal, Flex, Input, Text, Button } from '@chakra-ui/react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { DepartmentEntity, PositionEntity } from '@web/client';
+import { DepartmentEntity, PositionBaseEntity } from '@web/client';
 import {
   departmentsControllerFindAllOptions,
   employeesControllerUpdateMutation,
@@ -196,7 +196,7 @@ export const UserSettings = ({
                         padding: '10px',
                       }}
                     >
-                      {positionsData?.map((position: PositionEntity) => (
+                      {positionsData?.map((position: PositionBaseEntity) => (
                         <option
                           key={position.name}
                           value={position.id}

@@ -3,10 +3,10 @@ import { SignedCheck, UnsignedX } from '@web/static/icons.tsx';
 
 export const ProfileHover = ({
   name,
-  signed,
+  signedAt,
 }: {
-  name: String;
-  signed: boolean;
+  name: string;
+  signedAt: string | null;
 }) => {
   return (
     <Box
@@ -30,7 +30,7 @@ export const ProfileHover = ({
         </Text>
       </Box>
 
-      {signed ? (
+      {signedAt ? (
         <Flex alignItems={'center'}>
           <SignedCheck width="14px" height="14px" />
           <Text

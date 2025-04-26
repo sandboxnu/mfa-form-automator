@@ -4,8 +4,7 @@ import { EmployeesService } from '../employees/employees.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
-import { EmployeeEntity } from '../employees/entities/employee.entity';
-import { PositionBaseEntity } from '../positions/entities/position.entity';
+import { EmployeeSecureEntityHydrated } from '../employees/entities/employee.entity';
 import { DepartmentsService } from '../departments/departments.service';
 import { PositionsService } from '../positions/positions.service';
 import { EmployeeScope } from '@prisma/client';
@@ -54,16 +53,10 @@ describe('AuthService', () => {
       position: {
         id: 'positionId',
         name: 'Manager',
-        single: true,
-        departmentId: 'departmentId',
         department: {
           id: 'departmentId',
           name: 'Archives',
-          createdAt: new Date(1672531200),
-          updatedAt: new Date(1672531200),
         },
-        createdAt: new Date(1672531200),
-        updatedAt: new Date(1672531200),
       },
       email: 'info@mfa.org',
       scope: EmployeeScope.BASE_USER,
@@ -74,7 +67,7 @@ describe('AuthService', () => {
     };
 
     it('should sucessfully validate credentials', async () => {
-      const expected = new EmployeeEntity({
+      const expected = new EmployeeSecureEntityHydrated({
         id: employeeId,
         firstName: 'First',
         lastName: 'Last',
@@ -83,16 +76,10 @@ describe('AuthService', () => {
         position: {
           id: 'positionId',
           name: 'Manager',
-          single: true,
-          departmentId: 'departmentId',
           department: {
             id: 'departmentId',
             name: 'Archives',
-            createdAt: new Date(1672531200),
-            updatedAt: new Date(1672531200),
           },
-          createdAt: new Date(1672531200),
-          updatedAt: new Date(1672531200),
         },
         email: 'info@mfa.org',
         scope: EmployeeScope.BASE_USER,
@@ -104,7 +91,9 @@ describe('AuthService', () => {
       jest.spyOn(bcrypt, 'compare').mockImplementation(async () => {
         return true;
       });
-      jest.spyOn(employeeService, 'findOneByEmail').mockResolvedValue(employee);
+      jest
+        .spyOn(employeeService, 'findOneByEmailAuth')
+        .mockResolvedValue(employee);
 
       const result = await service.validateEmployee(email, password);
       expect(result).toEqual(expected);
@@ -114,19 +103,11 @@ describe('AuthService', () => {
       jest.spyOn(bcrypt, 'compare').mockImplementation(async () => {
         return false;
       });
-      jest.spyOn(employeeService, 'findOneByEmail').mockResolvedValue(employee);
+      jest
+        .spyOn(employeeService, 'findOneByEmailAuth')
+        .mockResolvedValue(employee);
 
       const result = await service.validateEmployee(email, password);
-      expect(result).toBeNull();
-    });
-
-    it('should return null on an invalid admin credential', async () => {
-      jest.spyOn(employeeService, 'findOneByEmail').mockResolvedValue(employee);
-
-      const result = await service.validateEmployeeScope(
-        email,
-        EmployeeScope.ADMIN,
-      );
       expect(result).toBeNull();
     });
   });
@@ -156,13 +137,20 @@ describe('AuthService', () => {
     });
 
     it('successfully creates a JWT token', async () => {
-      const user = {
+      const user: EmployeeSecureEntityHydrated = {
         email: 'email@gmail.com',
         id: 'userId',
-        position: new PositionBaseEntity({}),
         firstName: 'First',
         lastName: 'Last',
         positionId: 'position-id',
+        position: {
+          id: 'position-id',
+          name: 'Position Name',
+          department: {
+            id: 'department-id',
+            name: 'Department Name',
+          },
+        },
         scope: EmployeeScope.BASE_USER,
         pswdHash: null,
         createdAt: new Date(0),
@@ -185,6 +173,12 @@ describe('AuthService', () => {
       };
 
       expect(decodedAccessObj.email).toEqual(user.email);
+      expect(decodedAccessObj.firstName).toEqual(user.firstName);
+      expect(decodedAccessObj.lastName).toEqual(user.lastName);
+      expect(decodedAccessObj.departmentId).toEqual(
+        user.position?.department.id,
+      );
+      expect(decodedAccessObj.scope).toEqual(user.scope);
       expect(decodedAccessObj.sub).toEqual(user.id);
       expect((decodedAccessObj.exp - decodedAccessObj.iat).toString()).toEqual(
         process.env.JWT_VALID_DURATION,
