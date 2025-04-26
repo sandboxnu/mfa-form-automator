@@ -62,7 +62,16 @@ export const FormEditor = ({
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [groupNum, setGroupNum] = useState(fieldGroups.size);
   const [selectedField, setSelectedField] = useState<string | null>();
-  const [highlightedField, setHighlightedField] = useState<string>();
+  const [lastClickTime, setLastClickTime] = useState(0);
+
+  // Handle clicks on the document to clear selected field when clicking outside
+  const handleDocumentClick = (event: React.MouseEvent) => {
+    // If the click originated from a field component, it will be handled by that component
+    // Otherwise, clear the selected field
+    if ((event.target as HTMLElement).closest('.field-box') === null) {
+      setSelectedField(null);
+    }
+  };
 
   // Initialize pageRefs when totalPages changes
   useEffect(() => {
@@ -135,7 +144,6 @@ export const FormEditor = ({
           ],
         ]),
       });
-      setHighlightedField(id);
       setSelectedField(null);
     }
   };
@@ -163,7 +171,6 @@ export const FormEditor = ({
           ],
         ]),
       });
-      setHighlightedField(id);
       setSelectedField(null);
     }
   };
@@ -191,7 +198,6 @@ export const FormEditor = ({
           ],
         ]),
       });
-      setHighlightedField(id);
       setSelectedField(null);
     }
   };
@@ -266,7 +272,14 @@ export const FormEditor = ({
       setPageNum(pageNumber);
       const pageRef = pageRefs.current[pageNumber - 1];
       if (pageRef && scrollContainerRef.current) {
-        pageRef.scrollIntoView({ behavior: 'smooth' });
+        const now = Date.now();
+        const isRapidClick = now - lastClickTime < 300; // Consider clicks within 300ms as rapid
+        setLastClickTime(now);
+
+        // Use immediate scrolling for rapid clicks, smooth scrolling otherwise
+        pageRef.scrollIntoView({
+          behavior: isRapidClick ? 'auto' : 'smooth',
+        });
       }
     }
   };
@@ -279,6 +292,7 @@ export const FormEditor = ({
       flexDir="column"
       gap="20px"
       width="100%"
+      onClick={handleDocumentClick}
     >
       {!disableEdit && (
         <Box display="flex" gap="12px" justifyContent={'flex-start'}>
@@ -494,7 +508,6 @@ export const FormEditor = ({
                                 data: DraggableData,
                               ) => {
                                 setSelectedField(fieldId);
-                                setHighlightedField(fieldId);
 
                                 handleFieldUpdate(groupId, fieldId, {
                                   width: position.width,
@@ -511,7 +524,6 @@ export const FormEditor = ({
                                 pos,
                               ) => {
                                 setSelectedField(fieldId);
-                                setHighlightedField(fieldId);
 
                                 let newWidth = parseFloat(
                                   elementRef.style.width,
@@ -533,7 +545,7 @@ export const FormEditor = ({
                               }}
                               disableEdit={disableEdit}
                               selected={selectedField === fieldId}
-                              highlighted={highlightedField === fieldId}
+                              highlighted={selectedField === fieldId}
                             />
                           ),
                         )}

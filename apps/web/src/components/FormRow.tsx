@@ -1,5 +1,5 @@
 import {
-  AssignedGroupEntity,
+  AssignedGroupEntityHydrated,
   FormInstanceEntity,
 } from '@web/client/types.gen.tsx';
 import { useRouter } from 'next/router.js';
@@ -101,7 +101,7 @@ export const FormRow = ({
             <Text pl="15px" mt="5px" truncate>
               {`${
                 formInstance.assignedGroups.filter(
-                  (assignedGroup: AssignedGroupEntity) => {
+                  (assignedGroup: AssignedGroupEntityHydrated) => {
                     return assignedGroup.signed;
                   },
                 ).length

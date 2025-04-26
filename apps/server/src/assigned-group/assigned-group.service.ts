@@ -61,10 +61,40 @@ export class AssignedGroupService {
             },
           },
           include: {
-            signerEmployee: true,
-            signerPosition: true,
-            signerDepartment: true,
-            signerEmployeeList: true,
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerPosition: {
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
           },
         });
       case 'DEPARTMENT':
@@ -97,10 +127,40 @@ export class AssignedGroupService {
             },
           },
           include: {
-            signerEmployee: true,
-            signerPosition: true,
-            signerDepartment: true,
-            signerEmployeeList: true,
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerPosition: {
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
           },
         });
       case 'USER':
@@ -133,10 +193,40 @@ export class AssignedGroupService {
             },
           },
           include: {
-            signerEmployee: true,
-            signerPosition: true,
-            signerDepartment: true,
-            signerEmployeeList: true,
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerPosition: {
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
           },
         });
       case 'USER_LIST':
@@ -170,10 +260,40 @@ export class AssignedGroupService {
             },
           },
           include: {
-            signerEmployee: true,
-            signerPosition: true,
-            signerDepartment: true,
-            signerEmployeeList: true,
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerPosition: {
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
           },
         });
       default:
@@ -189,10 +309,40 @@ export class AssignedGroupService {
           id: id,
         },
         include: {
-          signerPosition: true,
-          signerDepartment: true,
-          signerEmployee: true,
-          signerEmployeeList: true,
+          signerPosition: {
+            select: {
+              id: true,
+              name: true,
+              department: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+          signerDepartment: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          signerEmployee: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+          signerEmployeeList: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
           instanceBoxes: true,
         },
       });

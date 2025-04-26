@@ -9,6 +9,7 @@ import { FormTemplateEntity } from './entities/form-template.entity';
 import { FormTemplatesService } from './form-templates.service';
 import { MockFileStorageHandler } from '../pdf-store/file-storage/MockFileStorageHandler';
 import { Readable } from 'stream';
+import { SortOption } from '../utils';
 
 const emptyFile: Express.Multer.File = {
   fieldname: 'file',
@@ -35,7 +36,6 @@ describe('FormTemplatesIntegrationTest', () => {
   let positionId1: string | undefined;
   let employeeId1: string | undefined;
   let formTemplate1: FormTemplateEntity | undefined;
-  let formTemplate2: FormTemplateEntity | undefined;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -152,7 +152,6 @@ describe('FormTemplatesIntegrationTest', () => {
       expect(formTemplate.fieldGroups[0].templateBoxes[0].y_coordinate).toBe(0);
       expect(formTemplate.fieldGroups[0].order).toBe(0);
       expect(formTemplate.fieldGroups[0].name).toBe('Field Group');
-      expect(formTemplate.formInstances).toHaveLength(0);
       expect(formTemplate.formDocLink).toBe('pdfLink');
     });
   });
@@ -182,7 +181,7 @@ describe('FormTemplatesIntegrationTest', () => {
         ],
         disabled: false,
       });
-      formTemplate2 = await service.create({
+      await service.create({
         name: 'Form Template 2',
         description: 'Form Template Description 2',
         file: emptyFile,
@@ -206,22 +205,51 @@ describe('FormTemplatesIntegrationTest', () => {
         ],
         disabled: false,
       });
+      // Create the remaining 8 form instances in parallel
+      await Promise.all(
+        Array(8)
+          .fill(0)
+          .map((_, i) =>
+            service.create({
+              name: `Form Template ${i + 3}`,
+              description: `Form Template Description ${i + 3}`,
+              file: emptyFile,
+              pageWidth: 800,
+              pageHeight: 1035,
+              fieldGroups: [
+                {
+                  name: 'Field Group 2',
+                  order: 0,
+                  templateBoxes: [
+                    {
+                      type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                      x_coordinate: 0,
+                      y_coordinate: 0,
+                      width: 100,
+                      height: 100,
+                      page: 0,
+                    },
+                  ],
+                },
+              ],
+              disabled: false,
+            }),
+          ),
+      );
     });
 
     it('successfully retrieves all form templates', async () => {
-      const formTemplates = await service.findAll();
+      const formTemplates = await service.findAll({});
 
-      expect(formTemplates).toHaveLength(2);
-      expect(formTemplates[0].name).toBe('Form Template 1');
-      expect(formTemplates[0].id).toBe(formTemplate1!.id);
-      expect(formTemplates[1].name).toBe('Form Template 2');
-      expect(formTemplates[1].id).toBe(formTemplate2!.id);
+      expect(formTemplates).toHaveLength(10);
     });
 
     it('successfully retrieves all form templates with limit', async () => {
-      const formTemplates = await service.findAll(1);
+      const formTemplatesPage1 = await service.findAll({ cursor: 0 });
+      const formTemplatesPage2 = await service.findAll({ cursor: 1 });
 
-      expect(formTemplates).toHaveLength(1);
+      expect(formTemplatesPage1).toHaveLength(8);
+      expect(formTemplatesPage2).toHaveLength(2);
     });
 
     it('does not include disabled templates', async () => {
@@ -249,13 +277,155 @@ describe('FormTemplatesIntegrationTest', () => {
         ],
         disabled: false,
       });
-      const formTemplates: FormTemplateEntity[] = await service.findAll();
-      expect(formTemplates).toContainEqual(formTemplate3);
+      const formTemplates: FormTemplateEntity[] = await service.findAll({});
+      expect(
+        formTemplates.some((template) => template.id === formTemplate3.id),
+      ).toBe(true);
       await service.update(formTemplate3.id, {
         disabled: true,
       });
-      const formTemplatesAfter: FormTemplateEntity[] = await service.findAll();
-      expect(formTemplatesAfter.includes(formTemplate3)).toBe(false);
+      const formTemplatesAfter: FormTemplateEntity[] = await service.findAll(
+        {},
+      );
+      expect(
+        formTemplatesAfter.some((template) => template.id === formTemplate3.id),
+      ).toBe(false);
+    });
+
+    describe('sorting', () => {
+      it('sorts by name in ascending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.NAME_ASC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(formTemplates[0].name).toBe('Form Template 1');
+        expect(formTemplates[1].name).toBe('Form Template 10');
+      });
+
+      it('sorts by name in descending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.NAME_DESC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(formTemplates[0].name).toBe('Form Template 9');
+        expect(formTemplates[1].name).toBe('Form Template 8');
+      });
+
+      it('sorts by creation date in ascending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.CREATED_AT_ASC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(formTemplates[0].createdAt.getUTCSeconds()).toBeLessThanOrEqual(
+          formTemplates[1].createdAt.getUTCSeconds(),
+        );
+        expect(formTemplates[1].createdAt.getUTCSeconds()).toBeLessThanOrEqual(
+          formTemplates[2].createdAt.getUTCSeconds(),
+        );
+      });
+
+      it('sorts by creation date in descending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.CREATED_AT_DESC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(
+          formTemplates[0].createdAt.getUTCSeconds(),
+        ).toBeGreaterThanOrEqual(formTemplates[1].createdAt.getUTCSeconds());
+        expect(
+          formTemplates[1].createdAt.getUTCSeconds(),
+        ).toBeGreaterThanOrEqual(formTemplates[2].createdAt.getUTCSeconds());
+      });
+
+      it('sorts by updated date in ascending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.UPDATED_AT_ASC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(formTemplates[0].updatedAt.getUTCSeconds()).toBeLessThanOrEqual(
+          formTemplates[1].updatedAt.getUTCSeconds(),
+        );
+        expect(formTemplates[1].updatedAt.getUTCSeconds()).toBeLessThanOrEqual(
+          formTemplates[2].updatedAt.getUTCSeconds(),
+        );
+      });
+
+      it('sorts by updated date in descending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.UPDATED_AT_DESC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(
+          formTemplates[0].updatedAt.getUTCSeconds(),
+        ).toBeGreaterThanOrEqual(formTemplates[1].updatedAt.getUTCSeconds());
+        expect(
+          formTemplates[1].updatedAt.getUTCSeconds(),
+        ).toBeGreaterThanOrEqual(formTemplates[2].updatedAt.getUTCSeconds());
+      });
+    });
+  });
+
+  describe('findAllCount', () => {
+    beforeEach(async () => {
+      formTemplate1 = await service.create({
+        name: 'Form Template 1',
+        description: 'Form Template Description 1',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+      await service.create({
+        name: 'Form Template 2',
+        description: 'Form Template Description 2',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 2',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: true,
+      });
+    });
+
+    it('successfully retrieves the count of all non-disabled form templates', async () => {
+      const count = await service.findAllCount();
+      expect(count).toBe(1);
     });
   });
 
@@ -384,7 +554,7 @@ describe('FormTemplatesIntegrationTest', () => {
         disabled: true,
       });
 
-      const formTemplates = await service.findAll();
+      const formTemplates = await service.findAll({});
       expect(formTemplates).toHaveLength(1);
       expect(updatedFormTemplate.disabled).toEqual(true);
     });
@@ -419,7 +589,7 @@ describe('FormTemplatesIntegrationTest', () => {
 
       await service.remove(templateToRemove.id);
 
-      const formTemplates = await service.findAll();
+      const formTemplates = await service.findAll({});
       expect(formTemplates).toHaveLength(0);
     });
   });

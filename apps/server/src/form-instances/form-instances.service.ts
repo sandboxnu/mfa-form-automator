@@ -23,6 +23,7 @@ import { AssignedGroupErrorMessage } from '../assigned-group/assigned-group.erro
 import { CreateAssignedGroupDto } from '../assigned-group/dto/create-assigned-group.dto';
 import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
 import { PdfStoreService } from '../pdf-store/pdf-store.service';
+import { SortOption } from '../utils';
 
 @Injectable()
 export class FormInstancesService {
@@ -35,6 +36,26 @@ export class FormInstancesService {
     private postmarkService: PostmarkService,
     private pdfStoreService: PdfStoreService,
   ) {}
+
+  // Define sorting options based on the provided SortOption
+  private orderBy = (sortBy?: SortOption) => {
+    switch (sortBy) {
+      case SortOption.CREATED_AT_ASC:
+        return { createdAt: 'asc' as const };
+      case SortOption.CREATED_AT_DESC:
+        return { createdAt: 'desc' as const };
+      case SortOption.UPDATED_AT_ASC:
+        return { updatedAt: 'asc' as const };
+      case SortOption.UPDATED_AT_DESC:
+        return { updatedAt: 'desc' as const };
+      case SortOption.NAME_ASC:
+        return { name: 'asc' as const };
+      case SortOption.NAME_DESC:
+        return { name: 'desc' as const };
+      default:
+        return { createdAt: 'desc' as const }; // Default sorting
+    }
+  };
 
   async checkValidAssignedGroupsSigner(
     assignedGroups: CreateAssignedGroupDto[],
@@ -122,7 +143,17 @@ export class FormInstancesService {
         },
       },
       include: {
-        templateBoxes: true,
+        templateBoxes: {
+          select: {
+            id: true,
+            type: true,
+            page: true,
+            x_coordinate: true,
+            y_coordinate: true,
+            width: true,
+            height: true,
+          },
+        },
       },
     });
     // check that the assigned signer exists for each signature
@@ -167,30 +198,114 @@ export class FormInstancesService {
       },
       include: {
         originator: {
-          include: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
             position: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
           },
         },
-        formTemplate: true,
+        formTemplate: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            formDocLink: true,
+            pageWidth: true,
+            pageHeight: true,
+            disabled: true,
+            createdAt: true,
+            updatedAt: true,
+            fieldGroups: {
+              select: {
+                id: true,
+                name: true,
+                order: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         assignedGroups: {
           include: {
             signerPosition: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
-            signerDepartment: true,
-            signerEmployee: true,
-            signerEmployeeList: true,
-            signingEmployee: true,
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signingEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
             instanceBoxes: true,
             fieldGroup: {
               include: {
-                templateBoxes: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
               },
             },
           },
@@ -239,7 +354,7 @@ export class FormInstancesService {
               },
               {
                 signerType: SignerType.DEPARTMENT,
-                signerDepartmentId: employee.position.departmentId,
+                signerDepartmentId: employee.position.department.id,
               },
               {
                 signerType: SignerType.USER,
@@ -259,30 +374,114 @@ export class FormInstancesService {
       },
       include: {
         originator: {
-          include: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
             position: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
           },
         },
-        formTemplate: true,
+        formTemplate: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            formDocLink: true,
+            pageWidth: true,
+            pageHeight: true,
+            disabled: true,
+            createdAt: true,
+            updatedAt: true,
+            fieldGroups: {
+              select: {
+                id: true,
+                name: true,
+                order: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         assignedGroups: {
           include: {
             signerPosition: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
-            signerDepartment: true,
-            signerEmployee: true,
-            signerEmployeeList: true,
-            signingEmployee: true,
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signingEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
             instanceBoxes: true,
             fieldGroup: {
               include: {
-                templateBoxes: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
               },
             },
           },
@@ -307,30 +506,114 @@ export class FormInstancesService {
       },
       include: {
         originator: {
-          include: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
             position: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
           },
         },
-        formTemplate: true,
+        formTemplate: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            formDocLink: true,
+            pageWidth: true,
+            pageHeight: true,
+            disabled: true,
+            createdAt: true,
+            updatedAt: true,
+            fieldGroups: {
+              select: {
+                id: true,
+                name: true,
+                order: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         assignedGroups: {
           include: {
             signerPosition: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
-            signerDepartment: true,
-            signerEmployee: true,
-            signerEmployeeList: true,
-            signingEmployee: true,
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signingEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
             instanceBoxes: true,
             fieldGroup: {
               include: {
-                templateBoxes: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
               },
             },
           },
@@ -342,38 +625,130 @@ export class FormInstancesService {
 
   /**
    * Find all form instances.
-   * @param limit the number of form instances to retrieve
+   * @param cursor the form instances to retrieve, paginated
+   * @param sortBy optional sorting parameter
    * @returns all form instances, hydrated
    */
-  async findAll(limit?: number) {
+  async findAll({ cursor, sortBy }: { cursor?: number; sortBy?: SortOption }) {
     const formInstances = await this.prisma.formInstance.findMany({
-      take: limit,
+      ...(cursor !== undefined ? { take: 8, skip: cursor * 8 } : {}),
+      orderBy: this.orderBy(sortBy),
       include: {
         originator: {
-          include: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
             position: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
           },
         },
-        formTemplate: true,
-        assignedGroups: {
-          include: {
-            signerPosition: {
-              include: {
-                department: true,
+        formTemplate: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            formDocLink: true,
+            pageWidth: true,
+            pageHeight: true,
+            disabled: true,
+            createdAt: true,
+            updatedAt: true,
+            fieldGroups: {
+              select: {
+                id: true,
+                name: true,
+                order: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
               },
             },
-            signerDepartment: true,
-            signerEmployee: true,
-            signerEmployeeList: true,
-            signingEmployee: true,
+          },
+        },
+        assignedGroups: {
+          select: {
+            id: true,
+            fieldGroupId: true,
+            order: true,
+            signed: true,
+            signedDocLink: true,
+            signerType: true,
+            signerPosition: {
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signingEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
             instanceBoxes: true,
             fieldGroup: {
               include: {
-                templateBoxes: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
               },
             },
           },
@@ -381,6 +756,13 @@ export class FormInstancesService {
       },
     });
     return formInstances;
+  }
+
+  /**
+   * Find the count of all form instances.
+   */
+  async findAllCount() {
+    return await this.prisma.formInstance.count();
   }
 
   /**
@@ -395,35 +777,125 @@ export class FormInstancesService {
       },
       include: {
         originator: {
-          include: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
             position: {
-              include: {
-                department: true,
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
           },
         },
-        formTemplate: true,
-        assignedGroups: {
-          include: {
-            signerPosition: {
-              include: {
-                department: true,
-              },
-            },
-            signerDepartment: true,
-            signerEmployee: true,
-            signerEmployeeList: true,
-            signingEmployee: true,
-            instanceBoxes: true,
-            fieldGroup: {
-              include: {
-                templateBoxes: true,
+        formTemplate: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            formDocLink: true,
+            pageWidth: true,
+            pageHeight: true,
+            disabled: true,
+            createdAt: true,
+            updatedAt: true,
+            fieldGroups: {
+              select: {
+                id: true,
+                name: true,
+                order: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
               },
             },
           },
-          orderBy: {
-            order: 'asc',
+        },
+        assignedGroups: {
+          select: {
+            id: true,
+            fieldGroupId: true,
+            order: true,
+            signed: true,
+            signedDocLink: true,
+            signerType: true,
+            signerPosition: {
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signingEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            instanceBoxes: true,
+            fieldGroup: {
+              select: {
+                id: true,
+                name: true,
+                order: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -469,7 +941,17 @@ export class FormInstancesService {
             },
           },
           include: {
-            templateBoxes: true,
+            templateBoxes: {
+              select: {
+                id: true,
+                type: true,
+                page: true,
+                x_coordinate: true,
+                y_coordinate: true,
+                width: true,
+                height: true,
+              },
+            },
           },
         });
 
@@ -495,7 +977,7 @@ export class FormInstancesService {
               signerEmployeeId: assignedGroup.signerEmployeeId,
               signerPositionId: assignedGroup.signerPositionId,
               signerDepartmentId: assignedGroup.signerDepartmentId,
-              signed: false,
+              signed: null,
               signedDocLink: null,
               signingEmployeeId: null,
               signerEmployeeList: {
@@ -518,30 +1000,120 @@ export class FormInstancesService {
         where: { id },
         include: {
           originator: {
-            include: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
               position: {
-                include: {
-                  department: true,
+                select: {
+                  id: true,
+                  name: true,
+                  department: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
                 },
               },
             },
           },
-          formTemplate: true,
-          assignedGroups: {
-            include: {
-              signerPosition: {
-                include: {
-                  department: true,
+          formTemplate: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              formDocLink: true,
+              pageWidth: true,
+              pageHeight: true,
+              disabled: true,
+              createdAt: true,
+              updatedAt: true,
+              fieldGroups: {
+                select: {
+                  id: true,
+                  name: true,
+                  order: true,
+                  templateBoxes: {
+                    select: {
+                      id: true,
+                      type: true,
+                      page: true,
+                      x_coordinate: true,
+                      y_coordinate: true,
+                      width: true,
+                      height: true,
+                    },
+                  },
                 },
               },
-              signerDepartment: true,
-              signerEmployee: true,
-              signerEmployeeList: true,
-              signingEmployee: true,
+            },
+          },
+          assignedGroups: {
+            select: {
+              id: true,
+              fieldGroupId: true,
+              order: true,
+              signed: true,
+              signedDocLink: true,
+              signerType: true,
+              signerPosition: {
+                select: {
+                  id: true,
+                  name: true,
+                  department: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+              signerDepartment: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              signerEmployee: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                },
+              },
+              signerEmployeeList: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                },
+              },
+              signingEmployee: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                },
+              },
               instanceBoxes: true,
               fieldGroup: {
                 include: {
-                  templateBoxes: true,
+                  templateBoxes: {
+                    select: {
+                      id: true,
+                      type: true,
+                      page: true,
+                      x_coordinate: true,
+                      y_coordinate: true,
+                      width: true,
+                      height: true,
+                    },
+                  },
                 },
               },
             },
@@ -561,23 +1133,121 @@ export class FormInstancesService {
         id: id,
       },
       include: {
-        originator: true,
-        formTemplate: true,
-        assignedGroups: {
-          include: {
-            signerPosition: {
-              include: {
-                department: true,
+        originator: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            position: {
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
               },
             },
-            signingEmployee: true,
-            signerDepartment: true,
-            signerEmployee: true,
-            signerEmployeeList: true,
+          },
+        },
+        formTemplate: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            formDocLink: true,
+            pageWidth: true,
+            pageHeight: true,
+            disabled: true,
+            createdAt: true,
+            updatedAt: true,
+            fieldGroups: {
+              select: {
+                id: true,
+                name: true,
+                order: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        assignedGroups: {
+          select: {
+            id: true,
+            fieldGroupId: true,
+            order: true,
+            signed: true,
+            signedDocLink: true,
+            signerType: true,
+            signerPosition: {
+              select: {
+                id: true,
+                name: true,
+                department: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+            signerDepartment: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            signerEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signerEmployeeList: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            signingEmployee: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
             instanceBoxes: true,
             fieldGroup: {
               include: {
-                templateBoxes: true,
+                templateBoxes: {
+                  select: {
+                    id: true,
+                    type: true,
+                    page: true,
+                    x_coordinate: true,
+                    y_coordinate: true,
+                    width: true,
+                    height: true,
+                  },
+                },
               },
             },
           },
@@ -642,11 +1312,11 @@ export class FormInstancesService {
 
     if (
       (assignedGroup.signerType === SignerType.USER &&
-        assignedGroup.signerEmployeeId !== employee.id) ||
+        assignedGroup.signerEmployee?.id !== employee.id) ||
       (assignedGroup.signerType === SignerType.POSITION &&
-        assignedGroup.signerPositionId !== employee.positionId) ||
+        assignedGroup.signerPosition?.id !== employee.positionId) ||
       (assignedGroup.signerType === SignerType.DEPARTMENT &&
-        assignedGroup.signerDepartmentId !== position.departmentId) ||
+        assignedGroup.signerDepartment?.id !== position.departmentId) ||
       (assignedGroup.signerType === SignerType.USER_LIST &&
         assignedGroup.signerEmployeeList &&
         !assignedGroup.signerEmployeeList.some(
@@ -666,7 +1336,7 @@ export class FormInstancesService {
     const updatedAssignedGroup = await this.prisma.assignedGroup.update({
       where: { id: assignedGroupId },
       data: {
-        signed: true,
+        signed: new Date(),
         signingEmployeeId: employee.id,
         signedDocLink: pdfLink,
       },
@@ -691,7 +1361,72 @@ export class FormInstancesService {
         data: { completed: true, completedAt: new Date() },
         include: {
           assignedGroups: {
-            include: { signerPosition: true, signingEmployee: true },
+            select: {
+              id: true,
+              fieldGroupId: true,
+              order: true,
+              signed: true,
+              signedDocLink: true,
+              signerType: true,
+              signerPosition: {
+                select: {
+                  id: true,
+                  name: true,
+                  department: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+              signerDepartment: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+              signerEmployee: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                },
+              },
+              signerEmployeeList: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                },
+              },
+              signingEmployee: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                },
+              },
+              instanceBoxes: true,
+              fieldGroup: {
+                include: {
+                  templateBoxes: {
+                    select: {
+                      id: true,
+                      type: true,
+                      page: true,
+                      x_coordinate: true,
+                      y_coordinate: true,
+                      width: true,
+                      height: true,
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       });
@@ -718,18 +1453,18 @@ export class FormInstancesService {
         );
       } else if (
         nextUserToSignId.signerType === SignerType.POSITION &&
-        nextUserToSignId.signerPositionId
+        nextUserToSignId.signerPosition?.id
       ) {
         this.postmarkService.sendReadyForSignatureToPositionEmail(
-          nextUserToSignId.signerPositionId,
+          nextUserToSignId.signerPosition?.id,
           formInstance.name,
         );
       } else if (
         nextUserToSignId.signerType === SignerType.DEPARTMENT &&
-        nextUserToSignId.signerDepartmentId
+        nextUserToSignId.signerDepartment?.id
       ) {
         this.postmarkService.sendReadyForSignatureToDepartmentEmail(
-          nextUserToSignId.signerDepartmentId,
+          nextUserToSignId.signerDepartment?.id,
           formInstance.name,
         );
       } else if (

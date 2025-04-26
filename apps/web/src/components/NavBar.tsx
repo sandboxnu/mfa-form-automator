@@ -123,6 +123,8 @@ export const NavBar = ({
   const router = useRouter();
   const { user } = useAuth();
   const isAdmin = user?.scope == Scope.ADMIN;
+  const isAdminOrContributor =
+    user?.scope == Scope.ADMIN || user?.scope == Scope.CONTRIBUTOR;
   const [isCreateDropdownOpen, setIsCreateDropdownOpen] = useState(false);
 
   return (
@@ -174,7 +176,7 @@ export const NavBar = ({
             </Button>
           </MenuTrigger>
           <MenuContent zIndex="1100" py="6px">
-            {isAdmin && (
+            {isAdminOrContributor && (
               <MenuItem
                 onClick={() => router.push('create-template/upload')}
                 value="template"

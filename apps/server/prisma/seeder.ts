@@ -260,6 +260,7 @@ export class Seeder {
             return {
               id: assignedGroup.id,
               order: assignedGroup.order,
+              signed: null,
               signerType: assignedGroup.signerType,
               signerEmployee: assignedGroup.signerEmployeeId
                 ? {

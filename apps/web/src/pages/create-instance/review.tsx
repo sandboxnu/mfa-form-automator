@@ -33,7 +33,6 @@ function Review() {
           fieldGroups={formTemplate?.fieldGroups ?? []}
         />
       }
-      deleteFunction={() => {}}
       submitLink={'/create-instance/success'}
       backLink={'/create-instance/assign-groups'}
       review={true}

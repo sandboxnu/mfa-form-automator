@@ -5,10 +5,7 @@ import {
   UserProfileAvatar,
 } from 'apps/web/src/static/icons.tsx';
 import { useAuth } from '@web/hooks/useAuth.ts';
-import { useQuery } from '@tanstack/react-query';
-import { AzureSignout } from './AzureSignout.tsx';
 import { SignOut } from './SignOut.tsx';
-import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen.ts';
 import {
   PopoverBody,
   PopoverContent,
@@ -26,16 +23,8 @@ import { useRouter } from 'next/router';
 export const TopBar: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
-  const { data: positions } = useQuery({
-    ...positionsControllerFindAllOptions(),
-  });
-
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
-
-  const userPosition = positions?.find(
-    (position) => position.id === user?.positionId,
-  );
 
   return (
     <>
@@ -120,25 +109,23 @@ export const TopBar: React.FC = () => {
                     cursor="default"
                     pt="8px"
                   >
+                    {user?.position ? user?.position.name : 'Position'}
+                  </Text>
+                  <Text
+                    color="#888888"
+                    fontSize="16px"
+                    cursor="default"
+                    pt="8px"
+                  >
                     {user?.scope === Scope.ADMIN
                       ? 'Administrator'
                       : user?.scope === Scope.CONTRIBUTOR
                       ? 'Contributor'
                       : 'Viewer'}
                   </Text>
-                  <Text
-                    color="#888888"
-                    fontSize="18px"
-                    cursor="default"
-                    pt="8px"
-                  >
-                    {userPosition && userPosition.name
-                      ? userPosition.name
-                      : 'Position'}
-                  </Text>
                 </Box>
 
-                <Box w="100%">
+                <Flex w="100%" flexDir="column" alignItems="flex-start">
                   <Button
                     background="white"
                     onClick={() => {
@@ -161,9 +148,8 @@ export const TopBar: React.FC = () => {
                     </Text>
                     <SettingsIcon boxSize="24px" color="#4C658A" />
                   </Button>
-                  <AzureSignout />
                   <SignOut />
-                </Box>
+                </Flex>
               </PopoverBody>
             </PopoverContent>
           </PopoverRoot>

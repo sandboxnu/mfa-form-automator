@@ -51,11 +51,13 @@ function InputFields() {
           />
         </Box>
       }
-      deleteFunction={() => {}}
       submitLink={'/create-template/review'}
       backLink={'/create-template/description'}
-      // TODO set disabled based on some state in the pdf editor component
-      disabled={false}
+      disabled={
+        Object.values(formFields)
+          .map((page) => Array.from(page.values()))
+          .reduce((prev, curr) => prev + curr.length, 0) === 0
+      }
     />
   );
 }

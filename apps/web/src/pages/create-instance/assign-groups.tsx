@@ -12,7 +12,7 @@ function AssignGroups() {
     formInstanceDescription,
     formTemplate,
     formInstanceUseId,
-    setAssignedGroupData,
+    assignedGroupData,
   } = useCreateFormInstance();
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -43,10 +43,9 @@ function AssignGroups() {
           fieldGroups={formTemplate?.fieldGroups ?? []}
         />
       }
-      deleteFunction={() => {}}
       submitLink={'/create-instance/review'}
       backLink={'/create-instance/description'}
-      disabled={false}
+      disabled={formTemplate?.fieldGroups.length !== assignedGroupData.length}
     />
   );
 }
