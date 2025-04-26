@@ -24,7 +24,6 @@ import {
 import { AppErrorMessage } from './app.errors';
 import { JwtEntity } from './auth/entities/jwt.entity';
 import { LocalAuthGuard } from './auth/guards/local-auth.guard';
-import { EmployeeEntity } from './employees/entities/employee.entity';
 import { AuthService } from './auth/auth.service';
 import { Response as ResponseType } from 'express';
 import { JwtRefreshAuthGuard } from './auth/guards/jwt-refresh.guard';
@@ -34,6 +33,7 @@ import { jwtDecode } from 'jwt-decode';
 import { RegisterEmployeeDto } from './auth/dto/register-employee.dto';
 import { CreateEmployeeDto } from './employees/dto/create-employee.dto';
 import { EmployeeScope } from '@prisma/client';
+import { EmployeeSecureEntityHydrated } from './employees/entities/employee.entity';
 
 @Controller()
 export class AppController {
@@ -107,7 +107,9 @@ export class AppController {
     if (employee == null) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
-    const tokens = await this.authService.login(new EmployeeEntity(employee));
+    const tokens = await this.authService.login(
+      new EmployeeSecureEntityHydrated(employee),
+    );
 
     // set the employee's new refresh token
     this.employeeService.setRefreshToken(employee.id, tokens.refreshToken);
@@ -121,7 +123,7 @@ export class AppController {
   }
 
   @Post('/auth/register')
-  @ApiOkResponse({ type: EmployeeEntity })
+  @ApiOkResponse({ type: EmployeeSecureEntityHydrated })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
@@ -144,7 +146,7 @@ export class AppController {
       createEmployeeDtoInstance,
     );
 
-    return new EmployeeEntity(newEmployee);
+    return new EmployeeSecureEntityHydrated(newEmployee);
   }
 
   @Get('/auth/logout')

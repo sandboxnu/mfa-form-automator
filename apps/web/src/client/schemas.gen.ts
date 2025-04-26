@@ -34,7 +34,7 @@ export const RegisterEmployeeDtoSchema = {
   required: ['firstName', 'lastName', 'email', 'password', 'accessToken'],
 } as const;
 
-export const DepartmentEntitySchema = {
+export const DepartmentBaseEntitySchema = {
   type: 'object',
   properties: {
     id: {
@@ -43,16 +43,8 @@ export const DepartmentEntitySchema = {
     name: {
       type: 'string',
     },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
   },
-  required: ['id', 'name', 'createdAt', 'updatedAt'],
+  required: ['id', 'name'],
 } as const;
 
 export const PositionBaseEntitySchema = {
@@ -64,36 +56,14 @@ export const PositionBaseEntitySchema = {
     name: {
       type: 'string',
     },
-    single: {
-      type: 'boolean',
-    },
     department: {
-      $ref: '#/components/schemas/DepartmentEntity',
-    },
-    departmentId: {
-      type: 'string',
-    },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
+      $ref: '#/components/schemas/DepartmentBaseEntity',
     },
   },
-  required: [
-    'id',
-    'name',
-    'single',
-    'department',
-    'departmentId',
-    'createdAt',
-    'updatedAt',
-  ],
+  required: ['id', 'name', 'department'],
 } as const;
 
-export const EmployeeEntitySchema = {
+export const EmployeeSecureEntityHydratedSchema = {
   type: 'object',
   properties: {
     id: {
@@ -214,6 +184,76 @@ export const OnboardEmployeeDtoSchema = {
   required: ['signatureLink', 'positionId'],
 } as const;
 
+export const EmployeeBaseEntityResponseSchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    firstName: {
+      type: 'string',
+    },
+    lastName: {
+      type: 'string',
+    },
+    email: {
+      type: 'string',
+    },
+    signatureLink: {
+      type: 'string',
+    },
+    scope: {
+      type: 'string',
+      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
+    },
+    position: {
+      nullable: true,
+      description: 'Position of the employee, null if not assigned',
+      allOf: [
+        {
+          $ref: '#/components/schemas/PositionBaseEntity',
+        },
+      ],
+    },
+  },
+  required: ['id', 'firstName', 'lastName', 'email'],
+} as const;
+
+export const EmployeesFindAllResponseSchema = {
+  type: 'object',
+  properties: {
+    count: {
+      type: 'number',
+    },
+    employees: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/EmployeeBaseEntityResponse',
+      },
+    },
+  },
+  required: ['count', 'employees'],
+} as const;
+
+export const EmployeeBaseEntitySchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    firstName: {
+      type: 'string',
+    },
+    lastName: {
+      type: 'string',
+    },
+    email: {
+      type: 'string',
+    },
+  },
+  required: ['id', 'firstName', 'lastName', 'email'],
+} as const;
+
 export const UpdateEmployeeDtoSchema = {
   type: 'object',
   properties: {
@@ -253,110 +293,6 @@ export const CreatePositionDtoSchema = {
     },
   },
   required: ['name', 'departmentId'],
-} as const;
-
-export const EmployeeBaseEntitySchema = {
-  type: 'object',
-  properties: {
-    id: {
-      type: 'string',
-    },
-    firstName: {
-      type: 'string',
-    },
-    lastName: {
-      type: 'string',
-    },
-    email: {
-      type: 'string',
-    },
-    signatureLink: {
-      type: 'string',
-      nullable: true,
-    },
-    scope: {
-      type: 'string',
-      enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
-    },
-    positionId: {
-      type: 'string',
-      nullable: true,
-    },
-    pswdHash: {
-      type: 'string',
-      nullable: true,
-    },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    refreshToken: {
-      type: 'string',
-      nullable: true,
-    },
-  },
-  required: [
-    'id',
-    'firstName',
-    'lastName',
-    'email',
-    'signatureLink',
-    'scope',
-    'positionId',
-    'pswdHash',
-    'createdAt',
-    'updatedAt',
-    'refreshToken',
-  ],
-} as const;
-
-export const PositionEntitySchema = {
-  type: 'object',
-  properties: {
-    id: {
-      type: 'string',
-    },
-    name: {
-      type: 'string',
-    },
-    single: {
-      type: 'boolean',
-    },
-    department: {
-      $ref: '#/components/schemas/DepartmentEntity',
-    },
-    employees: {
-      type: 'array',
-      items: {
-        $ref: '#/components/schemas/EmployeeBaseEntity',
-      },
-    },
-    departmentId: {
-      type: 'string',
-    },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-  },
-  required: [
-    'id',
-    'name',
-    'single',
-    'department',
-    'employees',
-    'departmentId',
-    'createdAt',
-    'updatedAt',
-  ],
 } as const;
 
 export const UpdatePositionDtoSchema = {
@@ -522,17 +458,6 @@ export const TemplateBoxBaseEntitySchema = {
     page: {
       type: 'number',
     },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    fieldGroupId: {
-      type: 'string',
-    },
   },
   required: [
     'id',
@@ -542,9 +467,6 @@ export const TemplateBoxBaseEntitySchema = {
     'width',
     'height',
     'page',
-    'createdAt',
-    'updatedAt',
-    'fieldGroupId',
   ],
 } as const;
 
@@ -560,17 +482,6 @@ export const FieldGroupBaseEntitySchema = {
     order: {
       type: 'number',
     },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    formTemplateId: {
-      type: 'string',
-    },
     templateBoxes: {
       type: 'array',
       items: {
@@ -578,15 +489,7 @@ export const FieldGroupBaseEntitySchema = {
       },
     },
   },
-  required: [
-    'id',
-    'name',
-    'order',
-    'createdAt',
-    'updatedAt',
-    'formTemplateId',
-    'templateBoxes',
-  ],
+  required: ['id', 'name', 'order', 'templateBoxes'],
 } as const;
 
 export const FormTemplateEntitySchema = {
@@ -695,6 +598,27 @@ export const CreateDepartmentDtoSchema = {
     },
   },
   required: ['name'],
+} as const;
+
+export const DepartmentEntitySchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    createdAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    updatedAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+  },
+  required: ['id', 'name', 'createdAt', 'updatedAt'],
 } as const;
 
 export const UpdateDepartmentDtoSchema = {
@@ -821,58 +745,30 @@ export const FormTemplateBaseEntitySchema = {
   ],
 } as const;
 
-export const AssignedGroupEntitySchema = {
+export const AssignedGroupEntityHydratedSchema = {
   type: 'object',
   properties: {
     id: {
       type: 'string',
     },
-    fieldGroupId: {
-      type: 'string',
+    fieldGroup: {
+      $ref: '#/components/schemas/FieldGroupBaseEntity',
     },
     order: {
       type: 'number',
     },
     signed: {
-      type: 'boolean',
+      format: 'date-time',
+      type: 'string',
+      nullable: true,
     },
     signedDocLink: {
-      type: 'string',
-      nullable: true,
-    },
-    createdAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    updatedAt: {
-      format: 'date-time',
-      type: 'string',
-    },
-    signerPositionId: {
-      type: 'string',
-      nullable: true,
-    },
-    signerDepartmentId: {
-      type: 'string',
-      nullable: true,
-    },
-    signerEmployeeId: {
-      type: 'string',
-      nullable: true,
-    },
-    signingEmployeeId: {
       type: 'string',
       nullable: true,
     },
     signerType: {
       type: 'string',
       enum: ['POSITION', 'DEPARTMENT', 'USER', 'USER_LIST'],
-    },
-    formInstanceId: {
-      type: 'string',
-    },
-    fieldGroup: {
-      $ref: '#/components/schemas/FieldGroupBaseEntity',
     },
     signingEmployee: {
       nullable: true,
@@ -894,7 +790,7 @@ export const AssignedGroupEntitySchema = {
       nullable: true,
       allOf: [
         {
-          $ref: '#/components/schemas/DepartmentEntity',
+          $ref: '#/components/schemas/DepartmentBaseEntity',
         },
       ],
     },
@@ -916,19 +812,11 @@ export const AssignedGroupEntitySchema = {
   },
   required: [
     'id',
-    'fieldGroupId',
+    'fieldGroup',
     'order',
     'signed',
     'signedDocLink',
-    'createdAt',
-    'updatedAt',
-    'signerPositionId',
-    'signerDepartmentId',
-    'signerEmployeeId',
-    'signingEmployeeId',
     'signerType',
-    'formInstanceId',
-    'fieldGroup',
     'signingEmployee',
     'signerPosition',
     'signerDepartment',
@@ -978,7 +866,7 @@ export const FormInstanceEntitySchema = {
       nullable: true,
     },
     originator: {
-      $ref: '#/components/schemas/EmployeeEntity',
+      $ref: '#/components/schemas/EmployeeBaseEntity',
     },
     formTemplate: {
       $ref: '#/components/schemas/FormTemplateBaseEntity',
@@ -986,7 +874,7 @@ export const FormInstanceEntitySchema = {
     assignedGroups: {
       type: 'array',
       items: {
-        $ref: '#/components/schemas/AssignedGroupEntity',
+        $ref: '#/components/schemas/AssignedGroupEntityHydrated',
       },
     },
     originatorId: {

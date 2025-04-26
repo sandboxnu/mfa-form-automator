@@ -182,10 +182,9 @@ export const SignFormInstancePreview = ({
                   <AssigneeMap
                     assignees={formInstance.assignedGroups.map(
                       (assignedGroup) => ({
-                        signed: assignedGroup.signed,
                         title: getNameFromAssignedGroup(assignedGroup),
                         signerType: assignedGroup.signerType as SignerType,
-                        updatedAt: assignedGroup.updatedAt,
+                        signedAt: assignedGroup.signed,
                       }),
                     )}
                   />

@@ -1,5 +1,5 @@
-import { Employee } from '@prisma/client';
 import { EmailHandler } from './EmailHandlerInterface';
+import { EmployeeBaseEntity } from '../employees/entities/employee.entity';
 
 export default class MockEmailHandler implements EmailHandler {
   sendEmail(to: string, subject: string, textBody: string): Promise<void> {
@@ -47,7 +47,7 @@ export default class MockEmailHandler implements EmailHandler {
     return Promise.resolve();
   }
   sendReadyForSignatureToUserListEmail(
-    userList: Employee[],
+    userList: EmployeeBaseEntity[],
     formName: string,
   ): Promise<void> {
     console.log(

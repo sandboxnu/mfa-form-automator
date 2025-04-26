@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { FieldGroup } from '@prisma/client';
 import { TemplateBoxBaseEntity } from './template-box.entity';
 
-export class FieldGroupBaseEntity implements FieldGroup {
+export class FieldGroupBaseEntity {
   @ApiProperty()
   id: string;
 
@@ -11,15 +10,6 @@ export class FieldGroupBaseEntity implements FieldGroup {
 
   @ApiProperty()
   order: number;
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  updatedAt: Date;
-
-  @ApiProperty()
-  formTemplateId: string;
 
   @ApiProperty({
     isArray: true,

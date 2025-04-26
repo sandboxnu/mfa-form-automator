@@ -564,7 +564,7 @@ describe('FormInstancesService', () => {
 
   describe('findAll', () => {
     it('should successfully find all form instances', () => {
-      expect(service.findAll()).resolves.toEqual(formInstancesArray);
+      expect(service.findAll({})).resolves.toEqual(formInstancesArray);
     });
   });
 

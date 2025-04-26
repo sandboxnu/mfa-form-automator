@@ -10,9 +10,9 @@ import {
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   DepartmentEntity,
-  EmployeeEntity,
+  EmployeeBaseEntity,
   FieldGroupBaseEntity,
-  PositionEntity,
+  PositionBaseEntity,
   SignerType,
 } from '@web/client';
 import { ContextAssignedGroupData } from '@web/context/types';
@@ -32,8 +32,8 @@ export const SignatureDropdown = ({
   field: FieldGroupBaseEntity;
   border: string;
   background: string;
-  positions?: PositionEntity[];
-  employees?: EmployeeEntity[];
+  positions?: PositionBaseEntity[];
+  employees?: EmployeeBaseEntity[];
   departments?: DepartmentEntity[];
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;

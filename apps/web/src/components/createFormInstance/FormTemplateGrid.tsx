@@ -261,7 +261,7 @@ export const TemplateSelectGrid = memo(
       }
 
       return queryData?.formTemplates || [];
-    }, [passedFormTemplates, queryData, currentPage, itemsPerPage]);
+    }, [passedFormTemplates, queryData]);
 
     // Only show loading state if we're loading the initial data and no templates are passed
     if (isLoading && !passedFormTemplates) {

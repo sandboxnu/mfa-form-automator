@@ -68,6 +68,7 @@ export const AuthProvider = ({ children }: any) => {
           lastName: decoded.lastName,
           scope: decoded.scope,
           signatureLink: signatureLink ?? '',
+          position: decoded.position,
         };
 
         setUser(user);
@@ -81,6 +82,7 @@ export const AuthProvider = ({ children }: any) => {
   const fetchCurrentUser = async () => {
     let newUser: User | undefined = undefined;
     let employee = await employeesControllerFindMe({ client: client });
+    console.log('employee', employee);
     if (employee.data) {
       newUser = {
         id: employee.data.id,
@@ -91,6 +93,7 @@ export const AuthProvider = ({ children }: any) => {
         lastName: employee.data.lastName,
         scope: employee.data.scope as Scope,
         signatureLink: employee.data.signatureLink ?? '',
+        position: employee.data.position,
       };
       return newUser;
     }
@@ -108,7 +111,7 @@ export const AuthProvider = ({ children }: any) => {
       !router.pathname.includes('register') &&
       !loadingInitial &&
       user &&
-      user.positionId == null
+      user.position?.id === null
     ) {
       router.push('/register');
     }

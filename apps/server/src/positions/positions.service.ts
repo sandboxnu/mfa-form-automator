@@ -34,13 +34,15 @@ export class PositionsService {
     const positions = limit
       ? await this.prisma.position.findMany({
           take: limit,
-          include: {
-            employees: true,
+          select: {
+            id: true,
+            name: true,
           },
         })
       : await this.prisma.position.findMany({
-          include: {
-            employees: true,
+          select: {
+            id: true,
+            name: true,
           },
         });
     return positions;
@@ -58,7 +60,14 @@ export class PositionsService {
         departmentId: departmentId,
       },
       include: {
-        employees: true,
+        employees: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
       },
     });
     return positions;
@@ -97,7 +106,14 @@ export class PositionsService {
         id: { in: ids },
       },
       include: {
-        employees: true,
+        employees: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
       },
     });
     return positions;
@@ -114,7 +130,14 @@ export class PositionsService {
         id: id,
       },
       include: {
-        employees: true,
+        employees: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
       },
     });
     return position;
@@ -133,7 +156,14 @@ export class PositionsService {
         departmentId: departmentId,
       },
       include: {
-        employees: true,
+        employees: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
       },
     });
     return position;
@@ -157,7 +187,14 @@ export class PositionsService {
         departmentId: departmentId,
       },
       include: {
-        employees: true,
+        employees: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
       },
     });
 
@@ -218,7 +255,14 @@ export class PositionsService {
       },
       data: updatePositionDto,
       include: {
-        employees: true,
+        employees: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
       },
     });
     return updatedPosition;

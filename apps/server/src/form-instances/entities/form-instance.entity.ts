@@ -2,61 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { FormInstance } from '@prisma/client';
 import { FormTemplateBaseEntity } from '../../form-templates/entities/form-template.entity';
 import { Exclude } from 'class-transformer';
-import { EmployeeEntity } from '../../employees/entities/employee.entity';
-import { AssignedGroupEntity } from '../../assigned-group/entities/assigned-group.entity';
-import { IsOptional } from 'class-validator';
-
-export class FormInstanceBaseEntity implements FormInstance {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty()
-  name: string;
-
-  @IsOptional()
-  @ApiProperty()
-  description: string | null;
-
-  @Exclude()
-  formDocLink: string;
-
-  @Exclude()
-  completed: boolean;
-
-  @Exclude()
-  markedCompleted: boolean;
-
-  @Exclude()
-  createdAt: Date;
-
-  @Exclude()
-  updatedAt: Date;
-
-  @Exclude()
-  completedAt: Date | null;
-
-  @Exclude()
-  markedCompletedAt: Date | null;
-
-  @Exclude()
-  originatorId: string;
-
-  @Exclude()
-  originator: EmployeeEntity;
-
-  @Exclude()
-  formTemplateId: string;
-
-  @Exclude()
-  formTemplate: FormTemplateBaseEntity;
-
-  @Exclude()
-  assignedGroups: AssignedGroupEntity[];
-
-  constructor(partial: Partial<FormInstanceEntity>) {
-    Object.assign(this, partial);
-  }
-}
+import { AssignedGroupEntityHydrated } from '../../assigned-group/entities/assigned-group.entity';
+import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 
 export class FormInstanceEntity implements FormInstance {
   @ApiProperty()
@@ -93,13 +40,13 @@ export class FormInstanceEntity implements FormInstance {
   })
   markedCompletedAt: Date | null;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   originatorId: string;
 
   @ApiProperty()
-  originator: EmployeeEntity;
+  originator: EmployeeBaseEntity;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   formTemplateId: string;
 
   @ApiProperty()
@@ -107,23 +54,20 @@ export class FormInstanceEntity implements FormInstance {
 
   @ApiProperty({
     isArray: true,
-    type: AssignedGroupEntity,
+    type: AssignedGroupEntityHydrated,
   })
-  assignedGroups: AssignedGroupEntity[];
+  assignedGroups: AssignedGroupEntityHydrated[];
 
   constructor(partial: Partial<FormInstanceEntity>) {
     if (partial.originator) {
-      partial.originator = new EmployeeEntity(partial.originator);
+      partial.originator = new EmployeeBaseEntity(partial.originator);
     }
     if (partial.formTemplate) {
       partial.formTemplate = new FormTemplateBaseEntity(partial.formTemplate);
     }
-    if (partial.originator) {
-      partial.originator = new EmployeeEntity(partial.originator);
-    }
     if (partial.assignedGroups) {
       partial.assignedGroups = partial.assignedGroups.map(
-        (assignedGroup) => new AssignedGroupEntity(assignedGroup),
+        (assignedGroup) => new AssignedGroupEntityHydrated(assignedGroup),
       );
     }
 
