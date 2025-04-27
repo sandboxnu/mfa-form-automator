@@ -65,21 +65,21 @@ export const FormLayout = ({
         flexDirection="column"
         justifyContent={'center'}
         alignItems={
-          type == FormInteractionType.CreateFormInstance && pageNumber == 1
+          type === FormInteractionType.CreateFormInstance && pageNumber === 1
             ? 'auto'
             : 'center'
         }
         gap="20px"
         borderRadius="12px"
         border={
-          type == FormInteractionType.CreateFormInstance && pageNumber == 1
+          type === FormInteractionType.CreateFormInstance && pageNumber === 1
             ? 'transparent'
             : '1px solid #E5E5E5'
         }
         height="auto"
         margin="16px 36px 16px 36px"
         backgroundColor={
-          type == FormInteractionType.CreateFormInstance && pageNumber == 1
+          type === FormInteractionType.CreateFormInstance && pageNumber === 1
             ? 'transparent'
             : '#FFF'
         }
@@ -92,11 +92,11 @@ export const FormLayout = ({
         heading={
           type === FormInteractionType.CreateFormTemplate
             ? 'Create form template'
-            : type == FormInteractionType.CreateFormInstance
+            : type === FormInteractionType.CreateFormInstance
             ? 'Create form instance'
-            : type == FormInteractionType.EditFormTemplate
+            : type === FormInteractionType.EditFormTemplate
             ? 'Edit form template'
-            : type == FormInteractionType.EditFormInstance
+            : type === FormInteractionType.EditFormInstance
             ? 'Edit form instance'
             : 'Submit form'
         }
