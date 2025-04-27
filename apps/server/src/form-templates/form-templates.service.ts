@@ -107,6 +107,9 @@ export class FormTemplatesService {
             include: {
               templateBoxes: true,
             },
+            orderBy: {
+              order: 'asc',
+            },
           },
         },
       })
@@ -141,6 +144,9 @@ export class FormTemplatesService {
         fieldGroups: {
           include: {
             templateBoxes: true,
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
       },
@@ -181,6 +187,9 @@ export class FormTemplatesService {
         fieldGroups: {
           include: {
             templateBoxes: true,
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
         formInstances: {

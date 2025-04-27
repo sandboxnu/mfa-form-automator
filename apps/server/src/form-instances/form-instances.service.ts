@@ -309,6 +309,9 @@ export class FormInstancesService {
               },
             },
           },
+          orderBy: {
+            order: 'asc',
+          },
         },
       },
     });
@@ -485,6 +488,9 @@ export class FormInstancesService {
               },
             },
           },
+          orderBy: {
+            order: 'asc',
+          },
         },
       },
     });
@@ -616,6 +622,9 @@ export class FormInstancesService {
                 },
               },
             },
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
       },
@@ -751,6 +760,9 @@ export class FormInstancesService {
                 },
               },
             },
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
       },
@@ -896,6 +908,9 @@ export class FormInstancesService {
                 },
               },
             },
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
       },
@@ -1116,6 +1131,9 @@ export class FormInstancesService {
                   },
                 },
               },
+            },
+            orderBy: {
+              order: 'asc',
             },
           },
         },
