@@ -679,4 +679,176 @@ describe('FormTemplatesIntegrationTest', () => {
       expect(formTemplates).toHaveLength(0);
     });
   });
+
+  // Add these tests to the existing form-templates.service.spec.ts file
+
+  describe('FieldGroups Sorting Tests', () => {
+    let formTemplateWithUnsortedGroups: FormTemplateEntity;
+
+    beforeEach(async () => {
+      // Create a form template with field groups in deliberately unsorted order
+      formTemplateWithUnsortedGroups = await service.create({
+        name: 'Form Template With Unsorted Groups',
+        description: 'Form Template with field groups in unsorted order',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 2',
+            order: 1,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.SIGNATURE,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+          {
+            name: 'Field Group 3',
+            order: 2,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.TEXT_FIELD,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+    });
+
+    describe('findAll returns fieldGroups sorted by order', () => {
+      it('should return field groups sorted by order in findAll results', async () => {
+        const formTemplates = await service.findAll({});
+
+        // Find the form template we created with unsorted groups
+        const foundTemplate = formTemplates.find(
+          (template) => template.id === formTemplateWithUnsortedGroups.id,
+        );
+
+        expect(foundTemplate).toBeDefined();
+
+        // Check that field groups are sorted
+        const fieldGroups = foundTemplate!.fieldGroups;
+        expect(fieldGroups.length).toBe(3);
+
+        // Check that they're in the right order
+        expect(fieldGroups[0].order).toBe(0);
+        expect(fieldGroups[1].order).toBe(1);
+        expect(fieldGroups[2].order).toBe(2);
+
+        // Verify the field group names match the expected order
+        expect(fieldGroups[0].name).toBe('Field Group 1');
+        expect(fieldGroups[1].name).toBe('Field Group 2');
+        expect(fieldGroups[2].name).toBe('Field Group 3');
+      });
+    });
+
+    describe('findOne returns fieldGroups sorted by order', () => {
+      it('should return field groups sorted by order in findOne results', async () => {
+        const foundTemplate = await service.findOne(
+          formTemplateWithUnsortedGroups.id,
+        );
+
+        expect(foundTemplate).toBeDefined();
+
+        // Check that field groups are sorted
+        const fieldGroups = foundTemplate.fieldGroups;
+        expect(fieldGroups.length).toBe(3);
+
+        expect(fieldGroups[0].order).toBe(0);
+        expect(fieldGroups[1].order).toBe(1);
+        expect(fieldGroups[2].order).toBe(2);
+
+        // Verify the field group names match the expected order
+        expect(fieldGroups[0].name).toBe('Field Group 1');
+        expect(fieldGroups[1].name).toBe('Field Group 2');
+        expect(fieldGroups[2].name).toBe('Field Group 3');
+      });
+    });
+
+    describe('create method preserves field group order when updating template', () => {
+      it('should maintain field group order when updating a template with new data', async () => {
+        // First verify our original template has field groups in the right order
+        const originalTemplate = await service.findOne(
+          formTemplateWithUnsortedGroups.id,
+        );
+        expect(originalTemplate.fieldGroups[0].order).toBe(0);
+        expect(originalTemplate.fieldGroups[1].order).toBe(1);
+        expect(originalTemplate.fieldGroups[2].order).toBe(2);
+
+        // Now update the template with non-fieldGroup related data
+        const updatedTemplate = await service.update(
+          formTemplateWithUnsortedGroups.id,
+          {
+            name: 'Updated Template Name',
+            description: 'Updated description',
+          },
+        );
+
+        // Verify the field groups are still in the right order
+        expect(updatedTemplate.fieldGroups.length).toBe(3);
+        expect(updatedTemplate.fieldGroups[0].order).toBe(0);
+        expect(updatedTemplate.fieldGroups[1].order).toBe(1);
+        expect(updatedTemplate.fieldGroups[2].order).toBe(2);
+
+        expect(updatedTemplate.fieldGroups[0].name).toBe('Field Group 1');
+        expect(updatedTemplate.fieldGroups[1].name).toBe('Field Group 2');
+        expect(updatedTemplate.fieldGroups[2].name).toBe('Field Group 3');
+      });
+    });
+
+    describe('database persistence maintains field group order', () => {
+      it('should maintain field group order across multiple find operations', async () => {
+        // Find the template first time and check order
+        const firstFind = await service.findOne(
+          formTemplateWithUnsortedGroups.id,
+        );
+        expect(firstFind.fieldGroups[0].order).toBe(0);
+        expect(firstFind.fieldGroups[1].order).toBe(1);
+        expect(firstFind.fieldGroups[2].order).toBe(2);
+
+        // Find through findAll
+        const allTemplates = await service.findAll({});
+        const templateFromAll = allTemplates.find(
+          (t) => t.id === formTemplateWithUnsortedGroups.id,
+        );
+        expect(templateFromAll?.fieldGroups[0].order).toBe(0);
+        expect(templateFromAll?.fieldGroups[1].order).toBe(1);
+        expect(templateFromAll?.fieldGroups[2].order).toBe(2);
+
+        // Find again through findOne to ensure consistency
+        const secondFind = await service.findOne(
+          formTemplateWithUnsortedGroups.id,
+        );
+        expect(secondFind.fieldGroups[0].order).toBe(0);
+        expect(secondFind.fieldGroups[1].order).toBe(1);
+        expect(secondFind.fieldGroups[2].order).toBe(2);
+      });
+    });
+  });
 });
