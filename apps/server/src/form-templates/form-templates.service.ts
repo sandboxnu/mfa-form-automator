@@ -3,6 +3,8 @@ import { CreateFormTemplateDto } from './dto/create-form-template.dto';
 import { UpdateFormTemplateDto } from './dto/update-form-template.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { PdfStoreService } from '../pdf-store/pdf-store.service';
+import { FormTemplateErrorMessage } from './form-templates.errors';
+import { SortOption } from '../utils';
 
 @Injectable()
 export class FormTemplatesService {
@@ -11,12 +13,40 @@ export class FormTemplatesService {
     private pdfStoreService: PdfStoreService,
   ) {}
 
+  private orderBy = (sortBy?: SortOption) => {
+    switch (sortBy) {
+      case SortOption.CREATED_AT_ASC:
+        return { createdAt: 'asc' as const };
+      case SortOption.CREATED_AT_DESC:
+        return { createdAt: 'desc' as const };
+      case SortOption.UPDATED_AT_ASC:
+        return { updatedAt: 'asc' as const };
+      case SortOption.UPDATED_AT_DESC:
+        return { updatedAt: 'desc' as const };
+      case SortOption.NAME_ASC:
+        return { name: 'asc' as const };
+      case SortOption.NAME_DESC:
+        return { name: 'desc' as const };
+      default:
+        return { createdAt: 'desc' as const }; // Default sorting
+    }
+  };
+
   /**
    * Create a new form template.
    * @param createFormTemplateDto create form template dto
    * @returns the created employee, hydrated
    */
   async create(createFormTemplateDto: CreateFormTemplateDto) {
+    const existingFormTemplate = await this.prisma.formTemplate.findFirst({
+      where: {
+        name: createFormTemplateDto.name,
+      },
+    });
+    if (existingFormTemplate) {
+      throw new Error(FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS);
+    }
+
     const formTemplatePdfFormDockLink = await this.pdfStoreService.uploadPdf(
       createFormTemplateDto.file.buffer,
       createFormTemplateDto.name,
@@ -29,7 +59,7 @@ export class FormTemplatesService {
         description: createFormTemplateDto.description,
         pageHeight: createFormTemplateDto.pageHeight,
         pageWidth: createFormTemplateDto.pageWidth,
-
+        disabled: createFormTemplateDto.disabled,
         fieldGroups: {
           create: createFormTemplateDto.fieldGroups.map((fieldGroup) => {
             return {
@@ -57,38 +87,6 @@ export class FormTemplatesService {
             templateBoxes: true,
           },
         },
-        formInstances: {
-          include: {
-            formTemplate: true,
-            originator: {
-              include: {
-                position: {
-                  include: {
-                    department: true,
-                  },
-                },
-              },
-            },
-            assignedGroups: {
-              include: {
-                signerPosition: {
-                  include: {
-                    department: true,
-                  },
-                },
-                signerDepartment: true,
-                signerEmployee: true,
-                signerEmployeeList: true,
-                signingEmployee: true,
-                fieldGroup: {
-                  include: {
-                    templateBoxes: true,
-                  },
-                },
-              },
-            },
-          },
-        },
       },
     });
     return newFormTemplate;
@@ -96,55 +94,40 @@ export class FormTemplatesService {
 
   /**
    * Retrieve all form templates.
-   * @param limit the number of form templates we want to retrieve (optional)
+   * @param cursor the form instances to retrieve, paginated
    * @returns all form templates, hydrated
    */
-  async findAll(limit?: number) {
+  async findAll({ cursor, sortBy }: { cursor?: number; sortBy?: SortOption }) {
     const formTemplates = await this.prisma.formTemplate
       .findMany({
+        ...(cursor !== undefined ? { take: 8, skip: cursor * 8 } : {}),
+        orderBy: this.orderBy(sortBy),
         include: {
           fieldGroups: {
             include: {
               templateBoxes: true,
             },
-          },
-          formInstances: {
-            include: {
-              formTemplate: true,
-              originator: {
-                include: {
-                  position: {
-                    include: {
-                      department: true,
-                    },
-                  },
-                },
-              },
-              assignedGroups: {
-                include: {
-                  signerPosition: {
-                    include: {
-                      department: true,
-                    },
-                  },
-                  signerDepartment: true,
-                  signerEmployee: true,
-                  signerEmployeeList: true,
-                  signingEmployee: true,
-                  fieldGroup: {
-                    include: {
-                      templateBoxes: true,
-                    },
-                  },
-                },
-              },
+            orderBy: {
+              order: 'asc',
             },
           },
         },
-        ...(limit && { take: limit }),
       })
       .then((templates) => templates.filter((item) => !item.disabled));
     return formTemplates;
+  }
+
+  /**
+   * Find the count of all form templates.
+   * @returns the count of all form templates that are not disabled.
+   */
+  async findAllCount() {
+    const formTemplatesCount = await this.prisma.formTemplate.count({
+      where: {
+        disabled: false,
+      },
+    });
+    return formTemplatesCount;
   }
 
   /**
@@ -162,37 +145,8 @@ export class FormTemplatesService {
           include: {
             templateBoxes: true,
           },
-        },
-        formInstances: {
-          include: {
-            formTemplate: true,
-            originator: {
-              include: {
-                position: {
-                  include: {
-                    department: true,
-                  },
-                },
-              },
-            },
-            assignedGroups: {
-              include: {
-                signerPosition: {
-                  include: {
-                    department: true,
-                  },
-                },
-                signerDepartment: true,
-                signerEmployee: true,
-                signerEmployeeList: true,
-                signingEmployee: true,
-                fieldGroup: {
-                  include: {
-                    templateBoxes: true,
-                  },
-                },
-              },
-            },
+          orderBy: {
+            order: 'asc',
           },
         },
       },
@@ -209,6 +163,17 @@ export class FormTemplatesService {
    */
   async update(id: string, updateFormTemplateDto: UpdateFormTemplateDto) {
     // TODO: Support updating signature fields (updating name/order/position, adding, deleting, etc)
+    if (updateFormTemplateDto.name) {
+      const existingFormTemplate = await this.prisma.formTemplate.findFirst({
+        where: {
+          name: updateFormTemplateDto.name,
+        },
+      });
+      if (existingFormTemplate && existingFormTemplate.id !== id) {
+        throw new Error(FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS);
+      }
+    }
+
     const updatedFormTemplate = await this.prisma.formTemplate.update({
       where: {
         id: id,
@@ -222,6 +187,9 @@ export class FormTemplatesService {
         fieldGroups: {
           include: {
             templateBoxes: true,
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
         formInstances: {
@@ -239,8 +207,15 @@ export class FormTemplatesService {
             assignedGroups: {
               include: {
                 signerPosition: {
-                  include: {
-                    department: true,
+                  select: {
+                    id: true,
+                    name: true,
+                    department: {
+                      select: {
+                        id: true,
+                        name: true,
+                      },
+                    },
                   },
                 },
                 signerDepartment: true,

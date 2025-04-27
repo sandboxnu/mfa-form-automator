@@ -2,7 +2,7 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
-import { EmployeeEntity } from '../../employees/entities/employee.entity';
+import { EmployeeSecureEntity } from '../../employees/entities/employee.entity';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -16,7 +16,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
    * @param pass password
    * @returns the associated employee
    */
-  async validate(email: string, pass: string): Promise<EmployeeEntity> {
+  async validate(email: string, pass: string): Promise<EmployeeSecureEntity> {
     const user = await this.authService.validateEmployee(email, pass);
     if (!user) {
       throw new UnauthorizedException();

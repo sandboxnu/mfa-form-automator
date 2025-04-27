@@ -1,4 +1,4 @@
-import { Employee } from '@prisma/client';
+import { EmployeeBaseEntity } from '../employees/entities/employee.entity';
 
 export interface EmailHandler {
   sendEmail(to: string, subject: string, textBody: string): Promise<void>;
@@ -21,7 +21,7 @@ export interface EmailHandler {
     formName: string,
   ): Promise<void>;
   sendReadyForSignatureToUserListEmail(
-    userList: Employee[],
+    userList: EmployeeBaseEntity[],
     formName: string,
   ): Promise<void>;
   sendSignedEmail(

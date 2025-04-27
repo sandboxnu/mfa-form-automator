@@ -15,8 +15,14 @@ export function SignFormPage() {
   const router = useRouter();
   const { id } = router.query;
 
-  const { formInstance, isLoading, formInstanceError, fields, groupNumber } =
-    useSignFormInstance();
+  const {
+    formInstance,
+    isLoading,
+    formInstanceError,
+    fields,
+    groupNumber,
+    originalPdfLink,
+  } = useSignFormInstance();
 
   const FieldBoxes = fields.map((page) => {
     return page.map((templateBox) => {
@@ -55,14 +61,13 @@ export function SignFormPage() {
             <Box width="100%">
               <PDFDisplayed
                 formFields={FieldBoxes ?? []}
-                pdfLink={formInstance.formDocLink}
+                pdfLink={originalPdfLink}
                 formTemplateName={formInstance.formTemplate.name}
               />
             </Box>
           }
           submitLink={`/sign-form/review/${id}`}
           backLink={'/'}
-          deleteFunction={() => {}}
           disabled={false}
         />
       ) : formInstanceError?.message ===

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Employee } from '@prisma/client';
 import { EmailHandler } from './EmailHandlerInterface';
+import { EmployeeBaseEntity } from '../employees/entities/employee.entity';
 
 @Injectable()
 export class PostmarkService {
@@ -88,7 +88,7 @@ export class PostmarkService {
    * @param formName
    */
   async sendReadyForSignatureToUserListEmail(
-    userList: Employee[],
+    userList: EmployeeBaseEntity[],
     formName: string,
   ) {
     await this.emailHandler.sendReadyForSignatureToUserListEmail(

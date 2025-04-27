@@ -2,6 +2,7 @@ import {
   CreateAssignedGroupDto,
   FormInstanceEntity,
   FormTemplateEntity,
+  PositionBaseEntity,
   Scope,
   TemplateBoxBaseEntity,
 } from '@web/client';
@@ -17,12 +18,14 @@ export type User = {
   id: string;
   positionId: string | null;
   departmentId: string | null;
+  position: PositionBaseEntity | null;
   email: string;
   firstName: string;
   lastName: string;
   scope: Scope;
   signatureLink: string;
 };
+
 // jwt payload returned from server
 export type jwtPayload = {
   sub: string;
@@ -33,6 +36,7 @@ export type jwtPayload = {
   lastName: string;
   scope: Scope;
   signatureLink: string;
+  position: PositionBaseEntity;
 };
 
 export interface AuthContextType {

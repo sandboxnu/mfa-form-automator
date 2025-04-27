@@ -248,6 +248,7 @@ const db = {
     save: jest.fn(),
     update: jest.fn().mockResolvedValue(oneFormInstance),
     delete: jest.fn().mockResolvedValue(oneFormInstance),
+    count: jest.fn().mockResolvedValue(formInstancesArray.length),
   },
   formTemplate: {
     findFirstOrThrow: jest.fn().mockResolvedValue(formTemplate),
@@ -563,7 +564,15 @@ describe('FormInstancesService', () => {
 
   describe('findAll', () => {
     it('should successfully find all form instances', () => {
-      expect(service.findAll()).resolves.toEqual(formInstancesArray);
+      expect(service.findAll({})).resolves.toEqual(formInstancesArray);
+    });
+  });
+
+  describe('findAllCount', () => {
+    it('should return the count of all form instances', () => {
+      expect(service.findAllCount()).resolves.toEqual(
+        formInstancesArray.length,
+      );
     });
   });
 

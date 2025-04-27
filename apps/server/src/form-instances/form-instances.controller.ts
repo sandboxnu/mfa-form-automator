@@ -42,6 +42,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
 import { ParseFormDataJsonPipe } from '../form-templates/form-templates.controller';
 import { EmployeesService } from '../employees/employees.service';
+import { FormInstanceFindAllResponse } from './response/form-instance-find-all.response';
+import { SortOption } from '../utils';
 
 @ApiTags('form-instances')
 @Controller('form-instances')
@@ -71,19 +73,33 @@ export class FormInstancesController {
 
   @Get()
   @UseGuards(AdminAuthGuard)
-  @ApiOkResponse({ type: [FormInstanceEntity] })
+  @ApiOkResponse({ type: FormInstanceFindAllResponse })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
-    name: 'limit',
+    name: 'cursor',
     type: Number,
-    description: 'Limit on number of form instances to return',
+    description: 'Pagination cursor for form instances to return (pages of 8)',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
-    const formInstances = await this.formInstancesService.findAll(limit);
-    return formInstances.map(
-      (formInstance) => new FormInstanceEntity(formInstance),
+  @ApiQuery({
+    name: 'sortBy',
+    enum: SortOption,
+    description: 'Form instance sorting option',
+    required: false,
+  })
+  async findAll(
+    @Query('cursor') cursor?: number,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    const formInstances = await this.formInstancesService.findAll({
+      cursor,
+      sortBy,
+    });
+    const totalCount = await this.formInstancesService.findAllCount();
+    return new FormInstanceFindAllResponse(
+      totalCount,
+      formInstances.map((formInstance) => new FormInstanceEntity(formInstance)),
     );
   }
 
@@ -142,9 +158,9 @@ export class FormInstancesController {
       formInstance.originatorId !== currentUser.id &&
       !formInstance.assignedGroups.some((group) => {
         return (
-          group.signerEmployeeId === currentUser.id ||
-          group.signerDepartmentId === employee.position?.departmentId ||
-          group.signerPositionId === employee.position?.id
+          group.signerEmployee?.id === currentUser.id ||
+          group.signerDepartment?.id === employee.position?.department?.id ||
+          group.signerPosition?.id === employee.position?.id
         );
       })
     ) {

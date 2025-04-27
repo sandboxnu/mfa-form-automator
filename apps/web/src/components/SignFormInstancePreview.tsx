@@ -41,14 +41,14 @@ export const SignFormInstancePreview = ({
   const completeFormInstanceMutation = useMutation({
     ...formInstancesControllerCompleteFormInstanceMutation(),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: formInstancesControllerFindAllQueryKey(),
       });
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey:
           formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
       });
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey:
           formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
       });
@@ -193,10 +193,9 @@ export const SignFormInstancePreview = ({
                   <AssigneeMap
                     assignees={formInstance.assignedGroups.map(
                       (assignedGroup) => ({
-                        signed: assignedGroup.signed,
                         title: getNameFromAssignedGroup(assignedGroup),
                         signerType: assignedGroup.signerType as SignerType,
-                        updatedAt: assignedGroup.updatedAt,
+                        signedAt: assignedGroup.signed,
                       }),
                     )}
                   />

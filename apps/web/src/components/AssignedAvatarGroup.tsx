@@ -1,12 +1,5 @@
-import {
-  Avatar,
-  AvatarGroup,
-  Box,
-  Group,
-  Portal,
-  Tooltip,
-} from '@chakra-ui/react';
-import { AssignedGroupEntity } from '@web/client/types.gen';
+import { Avatar, AvatarGroup, Box, Portal, Tooltip } from '@chakra-ui/react';
+import { AssignedGroupEntityHydrated } from '@web/client/types.gen';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 import { HoverableAvatar } from './HoverableAvatar';
 
@@ -14,10 +7,10 @@ export const AssignedAvatarGroup = ({
   assignedGroups,
   detailed,
 }: {
-  assignedGroups: AssignedGroupEntity[];
+  assignedGroups: AssignedGroupEntityHydrated[];
   detailed?: boolean;
 }) => {
-  const partition = (arr: AssignedGroupEntity[], max: number) => {
+  const partition = (arr: AssignedGroupEntityHydrated[], max: number) => {
     const items = [];
     const overflow = [];
     for (const item of arr.sort((a, b) => a.order - b.order)) {
@@ -36,7 +29,7 @@ export const AssignedAvatarGroup = ({
             <HoverableAvatar
               key={assignedGroup.id}
               name={getNameFromAssignedGroup(assignedGroup)}
-              signed={assignedGroup.signed}
+              signedAt={assignedGroup.signed}
             />
           ))
         : displayedAssignedGroups.map((assignedGroup, i) => (

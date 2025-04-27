@@ -20,10 +20,10 @@ import { FormInteractionType } from './types';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 import { useState } from 'react';
+import { AxiosError } from 'axios';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
- * @param deleteFunction the function to call when delete button is pressed
  * @param submitLink page router will push on click of 'save & continue'
  * @param backLink page router will push on click of 'back'
  * @param disabled whether the 'save & continue' button should be activated
@@ -31,7 +31,6 @@ import { useState } from 'react';
  */
 export const FormButtons = ({
   type,
-  deleteFunction,
   submitLink,
   backLink,
   disabled,
@@ -39,7 +38,6 @@ export const FormButtons = ({
   heading,
 }: {
   type: FormInteractionType;
-  deleteFunction: Function;
   submitLink: string;
   backLink: string;
   disabled: boolean;
@@ -199,13 +197,22 @@ export const FormButtons = ({
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form template',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
+          setCreateFormLoading(false);
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to create form template',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to create form template',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+          }
         });
     else if (type == FormInteractionType.EditFormTemplate) {
       await updateFormTemplateMutation
@@ -229,13 +236,22 @@ export const FormButtons = ({
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form template',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
+          setCreateFormLoading(false);
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to edit form template',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to edit form template',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+          }
         });
     }
   };
@@ -302,13 +318,22 @@ export const FormButtons = ({
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form instance',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
+          setCreateFormLoading(false);
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to create form instance',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to create form instance',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+          }
         });
     } else {
       // form instance edit mode -> submit changes
@@ -317,35 +342,6 @@ export const FormButtons = ({
 
   return (
     <>
-      {!review ? (
-        <Button
-          w="86px"
-          h="36px"
-          borderRadius="6px"
-          borderWidth="1.5px"
-          borderStyle={'solid'}
-          borderColor="#E23F40"
-          alignContent={'center'}
-          bgColor={'transparent'}
-          _hover={{
-            bgColor: 'transparent',
-          }}
-          marginLeft="36px"
-        >
-          <Text
-            color="#E23F40"
-            fontWeight="600px"
-            fontSize="18px"
-            lineHeight="22px"
-            onClick={(e) => deleteFunction(e)}
-          >
-            Delete
-          </Text>
-        </Button>
-      ) : (
-        <></>
-      )}
-
       <Flex float="right" justifyContent={'space-between'}>
         <Toaster />
         <Button

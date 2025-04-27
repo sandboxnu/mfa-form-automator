@@ -48,6 +48,8 @@ import {
   queryOptions,
   type UseMutationOptions,
   type DefaultError,
+  infiniteQueryOptions,
+  type InfiniteData,
 } from '@tanstack/react-query';
 import type {
   AppControllerGetHelloData,
@@ -80,6 +82,7 @@ import type {
   AssignedGroupControllerUpdateAssignedGroupSignerData,
   AssignedGroupControllerUpdateAssignedGroupSignerResponse,
   FormTemplatesControllerFindAllData,
+  FormTemplatesControllerFindAllResponse,
   FormTemplatesControllerCreateData,
   FormTemplatesControllerCreateResponse,
   FormTemplatesControllerRemoveData,
@@ -95,6 +98,7 @@ import type {
   DepartmentsControllerUpdateResponse,
   DepartmentsControllerFindOneByNameData,
   FormInstancesControllerFindAllData,
+  FormInstancesControllerFindAllResponse,
   FormInstancesControllerCreateData,
   FormInstancesControllerCreateResponse,
   FormInstancesControllerFindAllAssignedToCurrentEmployeeData,
@@ -683,6 +687,89 @@ export const formTemplatesControllerFindAllOptions = (
   });
 };
 
+const createInfiniteParams = <
+  K extends Pick<QueryKey<Options>[0], 'body' | 'headers' | 'path' | 'query'>,
+>(
+  queryKey: QueryKey<Options>,
+  page: K,
+) => {
+  const params = queryKey[0];
+  if (page.body) {
+    params.body = {
+      ...(queryKey[0].body as any),
+      ...(page.body as any),
+    };
+  }
+  if (page.headers) {
+    params.headers = {
+      ...queryKey[0].headers,
+      ...page.headers,
+    };
+  }
+  if (page.path) {
+    params.path = {
+      ...(queryKey[0].path as any),
+      ...(page.path as any),
+    };
+  }
+  if (page.query) {
+    params.query = {
+      ...(queryKey[0].query as any),
+      ...(page.query as any),
+    };
+  }
+  return params as unknown as typeof page;
+};
+
+export const formTemplatesControllerFindAllInfiniteQueryKey = (
+  options?: Options<FormTemplatesControllerFindAllData>,
+): QueryKey<Options<FormTemplatesControllerFindAllData>> => [
+  createQueryKey('formTemplatesControllerFindAll', options, true),
+];
+
+export const formTemplatesControllerFindAllInfiniteOptions = (
+  options?: Options<FormTemplatesControllerFindAllData>,
+) => {
+  return infiniteQueryOptions<
+    FormTemplatesControllerFindAllResponse,
+    AxiosError<DefaultError>,
+    InfiniteData<FormTemplatesControllerFindAllResponse>,
+    QueryKey<Options<FormTemplatesControllerFindAllData>>,
+    | number
+    | Pick<
+        QueryKey<Options<FormTemplatesControllerFindAllData>>[0],
+        'body' | 'headers' | 'path' | 'query'
+      >
+  >(
+    // @ts-ignore
+    {
+      queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<
+          QueryKey<Options<FormTemplatesControllerFindAllData>>[0],
+          'body' | 'headers' | 'path' | 'query'
+        > =
+          typeof pageParam === 'object'
+            ? pageParam
+            : {
+                query: {
+                  cursor: pageParam,
+                },
+              };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await formTemplatesControllerFindAll({
+          ...options,
+          ...params,
+          signal,
+          throwOnError: true,
+        });
+        return data;
+      },
+      queryKey: formTemplatesControllerFindAllInfiniteQueryKey(options),
+    },
+  );
+};
+
 export const formTemplatesControllerCreateQueryKey = (
   options: Options<FormTemplatesControllerCreateData>,
 ) => [createQueryKey('formTemplatesControllerCreate', options)];
@@ -948,6 +1035,55 @@ export const formInstancesControllerFindAllOptions = (
     },
     queryKey: formInstancesControllerFindAllQueryKey(options),
   });
+};
+
+export const formInstancesControllerFindAllInfiniteQueryKey = (
+  options?: Options<FormInstancesControllerFindAllData>,
+): QueryKey<Options<FormInstancesControllerFindAllData>> => [
+  createQueryKey('formInstancesControllerFindAll', options, true),
+];
+
+export const formInstancesControllerFindAllInfiniteOptions = (
+  options?: Options<FormInstancesControllerFindAllData>,
+) => {
+  return infiniteQueryOptions<
+    FormInstancesControllerFindAllResponse,
+    AxiosError<DefaultError>,
+    InfiniteData<FormInstancesControllerFindAllResponse>,
+    QueryKey<Options<FormInstancesControllerFindAllData>>,
+    | number
+    | Pick<
+        QueryKey<Options<FormInstancesControllerFindAllData>>[0],
+        'body' | 'headers' | 'path' | 'query'
+      >
+  >(
+    // @ts-ignore
+    {
+      queryFn: async ({ pageParam, queryKey, signal }) => {
+        // @ts-ignore
+        const page: Pick<
+          QueryKey<Options<FormInstancesControllerFindAllData>>[0],
+          'body' | 'headers' | 'path' | 'query'
+        > =
+          typeof pageParam === 'object'
+            ? pageParam
+            : {
+                query: {
+                  cursor: pageParam,
+                },
+              };
+        const params = createInfiniteParams(queryKey, page);
+        const { data } = await formInstancesControllerFindAll({
+          ...options,
+          ...params,
+          signal,
+          throwOnError: true,
+        });
+        return data;
+      },
+      queryKey: formInstancesControllerFindAllInfiniteQueryKey(options),
+    },
+  );
 };
 
 export const formInstancesControllerCreateQueryKey = (

@@ -10,13 +10,14 @@ import {
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   DepartmentEntity,
-  EmployeeEntity,
+  EmployeeBaseEntity,
   FieldGroupBaseEntity,
-  PositionEntity,
+  PositionBaseEntity,
   SignerType,
 } from '@web/client';
-import { ChakraStylesConfig, Select } from 'chakra-react-select';
 import { ContextAssignedGroupData } from '@web/context/types';
+import { SignatureDropdownSelect } from './SignatureDropdownSelect';
+import { OptionType } from './types';
 
 export const SignatureDropdown = ({
   field,
@@ -31,70 +32,19 @@ export const SignatureDropdown = ({
   field: FieldGroupBaseEntity;
   border: string;
   background: string;
-  positions?: PositionEntity[];
-  employees?: EmployeeEntity[];
+  positions?: PositionBaseEntity[];
+  employees?: EmployeeBaseEntity[];
   departments?: DepartmentEntity[];
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
 }) => {
   const [activeTab, setActiveTab] = useState('Employee');
-  const [options, setOptions] = useState<any[]>(employees || []);
-  const [selectedOption, setSelectedOption] = useState<any | null>(null);
-
-  const selectStyles: ChakraStylesConfig = {
-    control: (provided) => ({
-      ...provided,
-      border: '1px solid #E5E5E5',
-      boxShadow: 'none',
-      minHeight: '40px',
-      padding: '0px 8px',
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      padding: '10px 12px',
-      cursor: 'pointer',
-    }),
-    container: (provided) => ({
-      ...provided,
-      width: '100%',
-      cursor: 'pointer',
-    }),
-  };
-
-  // prefill dropdown if assigned group exists
-  useEffect(() => {
-    const assignedGroup = assignedGroupData.find(
-      (group) => group.fieldGroupId === field.id,
-    );
-
-    if (!assignedGroup) return;
-
-    const signerType = assignedGroup.signerType;
-
-    switch (signerType) {
-      case SignerType.USER:
-        setActiveTab('Employee');
-        setSelectedOption({
-          value: assignedGroup.signerEmployeeId,
-          label: assignedGroup.name,
-        });
-        break;
-      case SignerType.POSITION:
-        setActiveTab('Role');
-        setSelectedOption({
-          value: assignedGroup.signerPositionId,
-          label: assignedGroup.name,
-        });
-        break;
-      case SignerType.DEPARTMENT:
-        setActiveTab('Department');
-        setSelectedOption({
-          value: assignedGroup.signerDepartmentId,
-          label: assignedGroup.name,
-        });
-        break;
-    }
-  }, [assignedGroupData, field.id]);
+  const [options, setOptions] = useState<OptionType[]>(
+    employees?.map((emp) => ({
+      value: emp.id,
+      label: `${emp.firstName} ${emp.lastName}`,
+    })) || [],
+  );
 
   // this is not ideal, we should just use on onClick handler fucntion
   // instead of useEffect
@@ -183,7 +133,6 @@ export const SignatureDropdown = ({
                 key={tab}
                 onClick={() => {
                   setActiveTab(tab);
-                  setSelectedOption(null);
                   setAssignedGroupData((prev) =>
                     prev.filter((group) => group.fieldGroupId !== field.id),
                   );
@@ -201,47 +150,14 @@ export const SignatureDropdown = ({
             ))}
           </HStack>
           <Box w="100%">
-            <Select
-              useBasicStyles
-              selectedOptionStyle="check"
+            <SignatureDropdownSelect
+              assignedGroupData={assignedGroupData}
+              setAssignedGroupData={setAssignedGroupData}
+              isMulti={activeTab === 'Employee'}
+              fieldGroup={field}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
               options={options}
-              onChange={(selected: {
-                label: any;
-                value: string | undefined;
-              }) => {
-                setSelectedOption(selected);
-
-                // create assigned group object
-                const assignedGroup: ContextAssignedGroupData = {
-                  name: selected.label,
-                  order: field.order,
-                  fieldGroupId: field.id,
-                  signerType: getSignerType(activeTab),
-                  signerEmployeeList: [],
-                };
-                assignedGroup[
-                  activeTab === 'Employee'
-                    ? 'signerEmployeeId'
-                    : activeTab === 'Role'
-                    ? 'signerPositionId'
-                    : 'signerDepartmentId'
-                ] = selected?.value;
-
-                // if the group id already exists, update it
-                const existingIndex = assignedGroupData.findIndex(
-                  (group) => group.fieldGroupId === field.id,
-                );
-                if (existingIndex !== -1) {
-                  const newAssignedGroupData = [...assignedGroupData];
-                  newAssignedGroupData[existingIndex] = assignedGroup;
-                  setAssignedGroupData(newAssignedGroupData);
-                } else {
-                  // otherwise, add it to the list
-                  setAssignedGroupData([...assignedGroupData, assignedGroup]);
-                }
-              }}
-              value={selectedOption}
-              chakraStyles={selectStyles}
             />
           </Box>
         </VStack>

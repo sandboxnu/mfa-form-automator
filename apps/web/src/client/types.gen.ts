@@ -12,21 +12,15 @@ export type RegisterEmployeeDto = {
   accessToken: string;
 };
 
-export type DepartmentEntity = {
+export type DepartmentBaseEntity = {
   id: string;
   name: string;
-  createdAt: string;
-  updatedAt: string;
 };
 
 export type PositionBaseEntity = {
   id: string;
   name: string;
-  single: boolean;
-  department: DepartmentEntity;
-  departmentId: string;
-  createdAt: string;
-  updatedAt: string;
+  department: DepartmentBaseEntity;
 };
 
 export enum Scope {
@@ -35,7 +29,7 @@ export enum Scope {
   ADMIN = 'ADMIN',
 }
 
-export type EmployeeEntity = {
+export type EmployeeSecureEntityHydrated = {
   id: string;
   firstName: string;
   lastName: string;
@@ -65,6 +59,31 @@ export type OnboardEmployeeDto = {
   positionId: string;
 };
 
+export type EmployeeBaseEntityResponse = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  signatureLink?: string;
+  scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
+  /**
+   * Position of the employee, null if not assigned
+   */
+  position?: PositionBaseEntity | null;
+};
+
+export type EmployeesFindAllResponse = {
+  count: number;
+  employees: Array<EmployeeBaseEntityResponse>;
+};
+
+export type EmployeeBaseEntity = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
 export type UpdateEmployeeDto = {
   firstName?: string;
   lastName?: string;
@@ -77,31 +96,6 @@ export type UpdateEmployeeDto = {
 export type CreatePositionDto = {
   name: string;
   departmentId: string;
-};
-
-export type EmployeeBaseEntity = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  signatureLink: string | null;
-  scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
-  positionId: string | null;
-  pswdHash: string | null;
-  createdAt: string;
-  updatedAt: string;
-  refreshToken: string | null;
-};
-
-export type PositionEntity = {
-  id: string;
-  name: string;
-  single: boolean;
-  department: DepartmentEntity;
-  employees: Array<EmployeeBaseEntity>;
-  departmentId: string;
-  createdAt: string;
-  updatedAt: string;
 };
 
 export type UpdatePositionDto = {
@@ -168,71 +162,13 @@ export type TemplateBoxBaseEntity = {
   width: number;
   height: number;
   page: number;
-  createdAt: string;
-  updatedAt: string;
-  fieldGroupId: string;
 };
 
 export type FieldGroupBaseEntity = {
   id: string;
   name: string;
   order: number;
-  createdAt: string;
-  updatedAt: string;
-  formTemplateId: string;
   templateBoxes: Array<TemplateBoxBaseEntity>;
-};
-
-export type FormTemplateBaseEntity = {
-  id: string;
-  name: string;
-  pageWidth: number;
-  pageHeight: number;
-  formDocLink: string;
-  description: string | null;
-  disabled: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type AssignedGroupEntity = {
-  id: string;
-  fieldGroupId: string;
-  order: number;
-  signed: boolean;
-  signedDocLink: string | null;
-  createdAt: string;
-  updatedAt: string;
-  signerPositionId: string | null;
-  signerDepartmentId: string | null;
-  signerEmployeeId: string | null;
-  signingEmployeeId: string | null;
-  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
-  formInstanceId: string;
-  fieldGroup: FieldGroupBaseEntity;
-  signingEmployee: EmployeeBaseEntity | null;
-  signerPosition: PositionBaseEntity | null;
-  signerDepartment: DepartmentEntity | null;
-  signerEmployee: EmployeeBaseEntity | null;
-  signerEmployeeList: Array<EmployeeBaseEntity> | null;
-};
-
-export type FormInstanceEntity = {
-  id: string;
-  name: string;
-  description: string | null;
-  formDocLink: string;
-  completed: boolean;
-  markedCompleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-  completedAt?: string | null;
-  markedCompletedAt?: string | null;
-  originator: EmployeeEntity;
-  formTemplate: FormTemplateBaseEntity;
-  assignedGroups: Array<AssignedGroupEntity>;
-  originatorId: string;
-  formTemplateId: string;
 };
 
 export type FormTemplateEntity = {
@@ -244,9 +180,13 @@ export type FormTemplateEntity = {
   description: string | null;
   disabled: boolean;
   fieldGroups: Array<FieldGroupBaseEntity>;
-  formInstances: Array<FormInstanceEntity>;
   createdAt: string;
   updatedAt: string;
+};
+
+export type FormTemplateFindAllResponse = {
+  count: number;
+  formTemplates: Array<FormTemplateEntity>;
 };
 
 export type UpdateFormTemplateDto = {
@@ -260,6 +200,13 @@ export type UpdateFormTemplateDto = {
 
 export type CreateDepartmentDto = {
   name: string;
+};
+
+export type DepartmentEntity = {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type UpdateDepartmentDto = {
@@ -283,6 +230,55 @@ export type CreateFormInstanceDto = {
   originatorId: string;
   formTemplateId: string;
   formDocLink: string;
+};
+
+export type FormTemplateBaseEntity = {
+  id: string;
+  name: string;
+  pageWidth: number;
+  pageHeight: number;
+  formDocLink: string;
+  description: string | null;
+  disabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AssignedGroupEntityHydrated = {
+  id: string;
+  fieldGroup: FieldGroupBaseEntity;
+  order: number;
+  signed: string | null;
+  signedDocLink: string | null;
+  signerType: 'POSITION' | 'DEPARTMENT' | 'USER' | 'USER_LIST';
+  signingEmployee: EmployeeBaseEntity | null;
+  signerPosition: PositionBaseEntity | null;
+  signerDepartment: DepartmentBaseEntity | null;
+  signerEmployee: EmployeeBaseEntity | null;
+  signerEmployeeList: Array<EmployeeBaseEntity> | null;
+};
+
+export type FormInstanceEntity = {
+  id: string;
+  name: string;
+  description: string | null;
+  formDocLink: string;
+  completed: boolean;
+  markedCompleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string | null;
+  markedCompletedAt?: string | null;
+  originator: EmployeeBaseEntity;
+  formTemplate: FormTemplateBaseEntity;
+  assignedGroups: Array<AssignedGroupEntityHydrated>;
+  originatorId: string;
+  formTemplateId: string;
+};
+
+export type FormInstanceFindAllResponse = {
+  count: number;
+  formInstances: Array<FormInstanceEntity>;
 };
 
 export type UpdateFormInstanceDto = {
@@ -395,8 +391,8 @@ export type AppControllerRegisterErrors = {
 };
 
 export type AppControllerRegisterResponses = {
-  200: EmployeeEntity;
-  201: EmployeeEntity;
+  200: EmployeeSecureEntityHydrated;
+  201: EmployeeSecureEntityHydrated;
 };
 
 export type AppControllerRegisterResponse =
@@ -418,9 +414,13 @@ export type EmployeesControllerFindAllData = {
   path?: never;
   query?: {
     /**
-     * Limit on number of positions to return
+     * Limit on number of employees to return
      */
     limit?: number;
+    /**
+     * If true, returns secure employee data
+     */
+    secure?: boolean;
   };
   url: '/api/employees';
 };
@@ -437,7 +437,7 @@ export type EmployeesControllerFindAllErrors = {
 };
 
 export type EmployeesControllerFindAllResponses = {
-  200: Array<EmployeeEntity>;
+  200: EmployeesFindAllResponse;
 };
 
 export type EmployeesControllerFindAllResponse =
@@ -466,7 +466,7 @@ export type EmployeesControllerCreateErrors = {
 };
 
 export type EmployeesControllerCreateResponses = {
-  201: EmployeeEntity;
+  201: EmployeeSecureEntityHydrated;
 };
 
 export type EmployeesControllerCreateResponse =
@@ -495,8 +495,8 @@ export type EmployeesControllerOnboardEmployeeErrors = {
 };
 
 export type EmployeesControllerOnboardEmployeeResponses = {
-  200: EmployeeEntity;
-  201: EmployeeEntity;
+  200: EmployeeSecureEntityHydrated;
+  201: EmployeeSecureEntityHydrated;
 };
 
 export type EmployeesControllerOnboardEmployeeResponse =
@@ -521,7 +521,7 @@ export type EmployeesControllerFindMeErrors = {
 };
 
 export type EmployeesControllerFindMeResponses = {
-  200: EmployeeEntity;
+  200: EmployeeSecureEntityHydrated;
 };
 
 export type EmployeesControllerFindMeResponse =
@@ -580,7 +580,7 @@ export type EmployeesControllerFindOneErrors = {
 };
 
 export type EmployeesControllerFindOneResponses = {
-  200: EmployeeEntity;
+  200: EmployeeBaseEntity;
 };
 
 export type EmployeesControllerFindOneResponse =
@@ -615,7 +615,7 @@ export type EmployeesControllerUpdateErrors = {
 };
 
 export type EmployeesControllerUpdateResponses = {
-  200: EmployeeEntity;
+  200: EmployeeSecureEntityHydrated;
 };
 
 export type EmployeesControllerUpdateResponse =
@@ -645,7 +645,7 @@ export type PositionsControllerFindAllErrors = {
 };
 
 export type PositionsControllerFindAllResponses = {
-  200: Array<PositionEntity>;
+  200: Array<PositionBaseEntity>;
 };
 
 export type PositionsControllerFindAllResponse =
@@ -674,7 +674,7 @@ export type PositionsControllerCreateErrors = {
 };
 
 export type PositionsControllerCreateResponses = {
-  201: PositionEntity;
+  201: PositionBaseEntity;
 };
 
 export type PositionsControllerCreateResponse =
@@ -710,7 +710,7 @@ export type PositionsControllerFindAllInDepartmentErrors = {
 };
 
 export type PositionsControllerFindAllInDepartmentResponses = {
-  200: Array<PositionEntity>;
+  200: Array<PositionBaseEntity>;
 };
 
 export type PositionsControllerFindAllInDepartmentResponse =
@@ -743,7 +743,7 @@ export type PositionsControllerFindAllInDepartmentNameErrors = {
 };
 
 export type PositionsControllerFindAllInDepartmentNameResponses = {
-  200: Array<PositionEntity>;
+  200: Array<PositionBaseEntity>;
 };
 
 export type PositionsControllerFindAllInDepartmentNameResponse =
@@ -802,7 +802,7 @@ export type PositionsControllerFindOneErrors = {
 };
 
 export type PositionsControllerFindOneResponses = {
-  200: PositionEntity;
+  200: PositionBaseEntity;
 };
 
 export type PositionsControllerFindOneResponse =
@@ -837,7 +837,7 @@ export type PositionsControllerUpdateErrors = {
 };
 
 export type PositionsControllerUpdateResponses = {
-  200: PositionEntity;
+  200: PositionBaseEntity;
 };
 
 export type PositionsControllerUpdateResponse =
@@ -870,7 +870,7 @@ export type PositionsControllerFindOneByNameInDepartmentErrors = {
 };
 
 export type PositionsControllerFindOneByNameInDepartmentResponses = {
-  200: PositionEntity;
+  200: PositionBaseEntity;
 };
 
 export type PositionsControllerFindOneByNameInDepartmentResponse =
@@ -894,14 +894,36 @@ export type AssignedGroupControllerUpdateAssignedGroupSignerResponses = {
 export type AssignedGroupControllerUpdateAssignedGroupSignerResponse =
   AssignedGroupControllerUpdateAssignedGroupSignerResponses[keyof AssignedGroupControllerUpdateAssignedGroupSignerResponses];
 
+/**
+ * Sort option for form templates
+ */
+export enum SortBy {
+  CREATED_AT_ASC = 'createdAtAsc',
+  CREATED_AT_DESC = 'createdAtDesc',
+  UPDATED_AT_ASC = 'updatedAtAsc',
+  UPDATED_AT_DESC = 'updatedAtDesc',
+  NAME_ASC = 'nameAsc',
+  NAME_DESC = 'nameDesc',
+}
+
 export type FormTemplatesControllerFindAllData = {
   body?: never;
   path?: never;
   query?: {
     /**
-     * Limit on number of form templates to return
+     * Pagination cursor for form templates to return (pages of 8)
      */
-    limit?: number;
+    cursor?: number;
+    /**
+     * Sort option for form templates
+     */
+    sortBy?:
+      | 'createdAtAsc'
+      | 'createdAtDesc'
+      | 'updatedAtAsc'
+      | 'updatedAtDesc'
+      | 'nameAsc'
+      | 'nameDesc';
   };
   url: '/api/form-templates';
 };
@@ -918,7 +940,7 @@ export type FormTemplatesControllerFindAllErrors = {
 };
 
 export type FormTemplatesControllerFindAllResponses = {
-  200: Array<FormTemplateEntity>;
+  200: FormTemplateFindAllResponse;
 };
 
 export type FormTemplatesControllerFindAllResponse =
@@ -1229,9 +1251,19 @@ export type FormInstancesControllerFindAllData = {
   path?: never;
   query?: {
     /**
-     * Limit on number of form instances to return
+     * Pagination cursor for form instances to return (pages of 8)
      */
-    limit?: number;
+    cursor?: number;
+    /**
+     * Form instance sorting option
+     */
+    sortBy?:
+      | 'createdAtAsc'
+      | 'createdAtDesc'
+      | 'updatedAtAsc'
+      | 'updatedAtDesc'
+      | 'nameAsc'
+      | 'nameDesc';
   };
   url: '/api/form-instances';
 };
@@ -1248,7 +1280,7 @@ export type FormInstancesControllerFindAllErrors = {
 };
 
 export type FormInstancesControllerFindAllResponses = {
-  200: Array<FormInstanceEntity>;
+  200: FormInstanceFindAllResponse;
 };
 
 export type FormInstancesControllerFindAllResponse =

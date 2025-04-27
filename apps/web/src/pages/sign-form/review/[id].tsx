@@ -36,7 +36,6 @@ function Review() {
           description={formInstance?.description ?? ''}
         />
       }
-      deleteFunction={() => {}}
       submitLink={'/sign-form/success'}
       backLink={`/sign-form/${id}`}
       disabled={false}

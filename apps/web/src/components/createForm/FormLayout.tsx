@@ -8,7 +8,6 @@ import { FormInteractionType } from './types';
  * @param pageNumber the step in the process (e.g. upload is 1).  Used in side nav bar
  * @param subheading the instruction under the heading
  * @param boxContent the JSX elements inside of the flexbile white box
- * @param deleteFunction the function to be called when the delete button is pressed on this page
  * @param submitLink the link to be pushed when the submit button is active and pressed
  * @param backLink the link to be pushed when the back button is active and pressed
  * @param disabled the boolean to determine whether the submit functionality is disabled (may be toggled by other pages)
@@ -22,7 +21,6 @@ export const FormLayout = ({
   heading,
   subheading,
   boxContent,
-  deleteFunction,
   submitLink,
   backLink,
   disabled,
@@ -33,7 +31,6 @@ export const FormLayout = ({
   heading: string;
   subheading: string;
   boxContent: React.ReactNode;
-  deleteFunction: Function;
   submitLink: string;
   backLink: string;
   disabled: boolean;
@@ -103,7 +100,6 @@ export const FormLayout = ({
             ? 'Edit form instance'
             : 'Submit form'
         }
-        deleteFunction={deleteFunction}
         submitLink={submitLink}
         backLink={backLink}
         disabled={disabled}
