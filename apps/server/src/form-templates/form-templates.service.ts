@@ -3,6 +3,7 @@ import { CreateFormTemplateDto } from './dto/create-form-template.dto';
 import { UpdateFormTemplateDto } from './dto/update-form-template.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { PdfStoreService } from '../pdf-store/pdf-store.service';
+import { FormTemplateErrorMessage } from './form-templates.errors';
 import { SortOption } from '../utils';
 
 @Injectable()
@@ -37,6 +38,15 @@ export class FormTemplatesService {
    * @returns the created employee, hydrated
    */
   async create(createFormTemplateDto: CreateFormTemplateDto) {
+    const existingFormTemplate = await this.prisma.formTemplate.findFirst({
+      where: {
+        name: createFormTemplateDto.name,
+      },
+    });
+    if (existingFormTemplate) {
+      throw new Error(FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS);
+    }
+
     const formTemplatePdfFormDockLink = await this.pdfStoreService.uploadPdf(
       createFormTemplateDto.file.buffer,
       createFormTemplateDto.name,
@@ -97,6 +107,9 @@ export class FormTemplatesService {
             include: {
               templateBoxes: true,
             },
+            orderBy: {
+              order: 'asc',
+            },
           },
         },
       })
@@ -132,6 +145,9 @@ export class FormTemplatesService {
           include: {
             templateBoxes: true,
           },
+          orderBy: {
+            order: 'asc',
+          },
         },
       },
     });
@@ -147,6 +163,17 @@ export class FormTemplatesService {
    */
   async update(id: string, updateFormTemplateDto: UpdateFormTemplateDto) {
     // TODO: Support updating signature fields (updating name/order/position, adding, deleting, etc)
+    if (updateFormTemplateDto.name) {
+      const existingFormTemplate = await this.prisma.formTemplate.findFirst({
+        where: {
+          name: updateFormTemplateDto.name,
+        },
+      });
+      if (existingFormTemplate && existingFormTemplate.id !== id) {
+        throw new Error(FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS);
+      }
+    }
+
     const updatedFormTemplate = await this.prisma.formTemplate.update({
       where: {
         id: id,
@@ -160,6 +187,9 @@ export class FormTemplatesService {
         fieldGroups: {
           include: {
             templateBoxes: true,
+          },
+          orderBy: {
+            order: 'asc',
           },
         },
         formInstances: {

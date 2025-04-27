@@ -1,17 +1,14 @@
 import { Flex, Text } from '@chakra-ui/react';
 import { AwaitingIcon } from 'apps/web/src/static/icons.tsx';
-import { AvatarMapProps } from './types.ts';
+import { Assignee, AvatarMapProps } from './types.ts';
 import { SignerType } from '@web/client/types.gen.ts';
 import { Avatar } from './ui/avatar.tsx';
-import { useAuth } from '@web/hooks/useAuth.ts';
 
 /**
  * @param assignees - an array of assignees
  * @returns a map of assignees with their avatars
  */
 const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
-  let previousSigned: string | null = null;
-
   const getInitialsFromTitle = (
     title: string,
     signerType: SignerType,
@@ -28,11 +25,13 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
     }
   };
 
+  let prevAwaiting = false;
+
   return (
     <Flex flexDirection="column" gap="24px" position="relative">
       {assignees.map((assignee, index) => {
-        const awaiting = previousSigned && !assignee.signedAt;
-        previousSigned = assignee.signedAt;
+        const awaiting = !assignee.signedAt && !prevAwaiting;
+        prevAwaiting = awaiting;
         return (
           <Flex key={index} flexDirection="column" alignSelf="stretch">
             <Flex columnGap="8px" alignItems="center">

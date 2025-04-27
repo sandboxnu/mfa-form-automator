@@ -174,7 +174,7 @@ describe('FormInstancesIntegrationTest', () => {
       disabled: false,
     });
     formTemplate2 = await formTemplatesService.create({
-      name: 'Form Template',
+      name: 'Form Template 2',
       description: 'Form Template Description',
       file: emptyFile,
       pageWidth: 800,
@@ -1298,6 +1298,276 @@ describe('FormInstancesIntegrationTest', () => {
       await expect(
         service.markFormInstanceAsCompleted(employeeId2, formInstance1.id),
       ).rejects.toThrow();
+    });
+  });
+
+  describe('AssignedGroups Sorting Tests', () => {
+    let formInstanceWithUnsortedGroups: FormInstanceEntity;
+
+    beforeEach(async () => {
+      // Create a form template with multiple field groups
+      formTemplate2 = await formTemplatesService.create({
+        name: 'Form Template Multiple Groups',
+        description: 'Form Template with multiple groups for sorting tests',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+          {
+            name: 'Field Group 2',
+            order: 1,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.SIGNATURE,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+          {
+            name: 'Field Group 3',
+            order: 2,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.TEXT_FIELD,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+
+      // Create a form instance with assigned groups in unsorted order
+      formInstanceWithUnsortedGroups = await service.create({
+        name: 'Form Instance With Unsorted Groups',
+        assignedGroups: [
+          {
+            order: 2,
+            fieldGroupId: formTemplate2.fieldGroups[2].id, // Field Group 3
+            signerType: $Enums.SignerType.USER,
+            signerEmployeeId: employeeId1,
+            signerEmployeeList: [],
+          },
+          {
+            order: 0,
+            fieldGroupId: formTemplate2.fieldGroups[0].id, // Field Group 1
+            signerType: $Enums.SignerType.USER,
+            signerEmployeeId: employeeId1,
+            signerEmployeeList: [],
+          },
+          {
+            order: 1,
+            fieldGroupId: formTemplate2.fieldGroups[1].id, // Field Group 2
+            signerType: $Enums.SignerType.USER,
+            signerEmployeeId: employeeId1,
+            signerEmployeeList: [],
+          },
+        ],
+        originatorId: employeeId1,
+        formTemplateId: formTemplate2.id,
+        formDocLink: 'formDocLink',
+        description: 'Form instance with unsorted assigned groups',
+      });
+    });
+
+    describe('findAssignedTo returns assignedGroups sorted by order', () => {
+      it('should return assigned groups sorted by order', async () => {
+        const formInstances = await service.findAssignedTo(employeeId1);
+
+        // Find the form instance we created with unsorted groups
+        const foundInstance = formInstances.find(
+          (instance) => instance.id === formInstanceWithUnsortedGroups.id,
+        );
+
+        expect(foundInstance).toBeDefined();
+
+        // Check that assigned groups are sorted
+        const assignedGroups = foundInstance!.assignedGroups;
+        expect(assignedGroups.length).toBe(3);
+
+        // Check that they're in the right order
+        expect(assignedGroups[0].order).toBe(0);
+        expect(assignedGroups[1].order).toBe(1);
+        expect(assignedGroups[2].order).toBe(2);
+
+        // Additional check: verify the field group names match the expected order
+        expect(assignedGroups[0].fieldGroup.name).toBe('Field Group 1');
+        expect(assignedGroups[1].fieldGroup.name).toBe('Field Group 2');
+        expect(assignedGroups[2].fieldGroup.name).toBe('Field Group 3');
+      });
+    });
+
+    describe('findCreatedBy returns assignedGroups sorted by order', () => {
+      it('should return assigned groups sorted by order in findCreatedBy results', async () => {
+        const formInstances = await service.findCreatedBy(employeeId1);
+
+        // Find the form instance we created with unsorted groups
+        const foundInstance = formInstances.find(
+          (instance) => instance.id === formInstanceWithUnsortedGroups.id,
+        );
+
+        expect(foundInstance).toBeDefined();
+
+        // Check that assigned groups are sorted
+        const assignedGroups = foundInstance!.assignedGroups;
+        expect(assignedGroups.length).toBe(3);
+
+        expect(assignedGroups[0].order).toBe(0);
+        expect(assignedGroups[1].order).toBe(1);
+        expect(assignedGroups[2].order).toBe(2);
+      });
+    });
+
+    describe('findAll returns assignedGroups sorted by order', () => {
+      it('should return assigned groups sorted by order in findAll results', async () => {
+        const formInstances = await service.findAll({});
+
+        // Find the form instance we created with unsorted groups
+        const foundInstance = formInstances.find(
+          (instance) => instance.id === formInstanceWithUnsortedGroups.id,
+        );
+
+        expect(foundInstance).toBeDefined();
+
+        // Check that assigned groups are sorted
+        const assignedGroups = foundInstance!.assignedGroups;
+        expect(assignedGroups.length).toBe(3);
+
+        expect(assignedGroups[0].order).toBe(0);
+        expect(assignedGroups[1].order).toBe(1);
+        expect(assignedGroups[2].order).toBe(2);
+      });
+    });
+
+    describe('findOne returns assignedGroups sorted by order', () => {
+      it('should return assigned groups sorted by order in findOne results', async () => {
+        const foundInstance = await service.findOne(
+          formInstanceWithUnsortedGroups.id,
+        );
+
+        expect(foundInstance).toBeDefined();
+
+        // Check that assigned groups are sorted
+        const assignedGroups = foundInstance!.assignedGroups;
+        expect(assignedGroups.length).toBe(3);
+
+        expect(assignedGroups[0].order).toBe(0);
+        expect(assignedGroups[1].order).toBe(1);
+        expect(assignedGroups[2].order).toBe(2);
+      });
+    });
+
+    describe('ensure service methods that use assignedGroups maintain the sort order', () => {
+      it('signFormInstance should identify the correct next group based on sort order', async () => {
+        // Attempt to sign the first group (order 0)
+        await service.signFormInstance(
+          formInstanceWithUnsortedGroups.id,
+          formInstanceWithUnsortedGroups.assignedGroups.find(
+            (ag) => ag.order === 0,
+          )!.id,
+          {
+            id: employeeId1,
+            email: 'john.doe@example.com',
+          },
+          {
+            file: emptyFile,
+            assignedGroupId: formInstanceWithUnsortedGroups.assignedGroups.find(
+              (ag) => ag.order === 0,
+            )!.id,
+          },
+        );
+
+        // Now check that the form instance has the correct group marked as signed
+        const updated = await service.findOne(
+          formInstanceWithUnsortedGroups.id,
+        );
+
+        // The groups should still be sorted
+        expect(updated!.assignedGroups[0].order).toBe(0);
+        expect(updated!.assignedGroups[1].order).toBe(1);
+        expect(updated!.assignedGroups[2].order).toBe(2);
+
+        // The first group should be signed, the others not
+        expect(updated!.assignedGroups[0].signed).toBeTruthy();
+        expect(updated!.assignedGroups[1].signed).toBeFalsy();
+        expect(updated!.assignedGroups[2].signed).toBeFalsy();
+
+        // Now try to sign the second group
+        await service.signFormInstance(
+          formInstanceWithUnsortedGroups.id,
+          formInstanceWithUnsortedGroups.assignedGroups.find(
+            (ag) => ag.order === 1,
+          )!.id,
+          {
+            id: employeeId1,
+            email: 'john.doe@example.com',
+          },
+          {
+            file: emptyFile,
+            assignedGroupId: formInstanceWithUnsortedGroups.assignedGroups.find(
+              (ag) => ag.order === 1,
+            )!.id,
+          },
+        );
+
+        // Check again that the groups are still sorted and the right ones are signed
+        const updatedAgain = await service.findOne(
+          formInstanceWithUnsortedGroups.id,
+        );
+
+        expect(updatedAgain!.assignedGroups[0].order).toBe(0);
+        expect(updatedAgain!.assignedGroups[1].order).toBe(1);
+        expect(updatedAgain!.assignedGroups[2].order).toBe(2);
+
+        expect(updatedAgain!.assignedGroups[0].signed).toBeTruthy();
+        expect(updatedAgain!.assignedGroups[1].signed).toBeTruthy();
+        expect(updatedAgain!.assignedGroups[2].signed).toBeFalsy();
+      });
+
+      it('should fail when trying to sign groups out of order', async () => {
+        // Try to sign the third group first, should fail because it's not the next in order
+        await expect(
+          service.signFormInstance(
+            formInstanceWithUnsortedGroups.id,
+            formInstanceWithUnsortedGroups.assignedGroups.find(
+              (ag) => ag.order === 2,
+            )!.id,
+            {
+              id: employeeId1,
+              email: 'john.doe@example.com',
+            },
+            {
+              file: emptyFile,
+              assignedGroupId:
+                formInstanceWithUnsortedGroups.assignedGroups.find(
+                  (ag) => ag.order === 2,
+                )!.id,
+            },
+          ),
+        ).rejects.toThrow('Assigned group is not the next one to be signed');
+      });
     });
   });
 });

@@ -20,6 +20,7 @@ import { FormInteractionType } from './types';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 import { useState } from 'react';
+import { AxiosError } from 'axios';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -197,15 +198,24 @@ export const FormButtons = ({
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form template',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-
           setCreateFormLoading(false);
-          throw e;
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to create form template',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to create form template',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+
+            setCreateFormLoading(false);
+          }
         });
     else if (type == FormInteractionType.EditFormTemplate) {
       await updateFormTemplateMutation
@@ -229,15 +239,22 @@ export const FormButtons = ({
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to update form template',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-
           setCreateFormLoading(false);
-          throw e;
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to edit form template',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to edit form template',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+          }
         });
     }
 
@@ -290,58 +307,42 @@ export const FormButtons = ({
           },
         })
         .then(async (response) => {
+          await queryClient.invalidateQueries({
+            queryKey: formInstancesControllerFindAllQueryKey(),
+          });
+          await queryClient.invalidateQueries({
+            queryKey:
+              formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+          });
+          await queryClient.invalidateQueries({
+            queryKey:
+              formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+          });
           router.push(submitLink).then(() => {
             setCreateFormLoading(false);
           });
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form instance',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
+          setCreateFormLoading(false);
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to create form instance',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to create form instance',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+          }
         });
-      // populate the instance use id in case edited on the next page
-    } else if (FormInteractionType.EditFormInstance == type) {
-      await updateFormInstanceMutation
-        .mutateAsync({
-          body: {
-            name: formInstanceName ?? formTemplate.name,
-            assignedGroups: assignedGroupData.map((data, _) => {
-              return {
-                order: data.order,
-                fieldGroupId: data.fieldGroupId,
-                signerType: data.signerType,
-                signerEmployeeList: data.signerEmployeeList,
-                signerDepartmentId: data.signerDepartmentId,
-                signerPositionId: data.signerPositionId,
-                signerEmployeeId: data.signerEmployeeId,
-              };
-            }),
-            description: formInstanceDescription ?? formTemplate.description!!,
-          },
-          path: {
-            id: formInstanceUseId!!,
-          },
-        })
-        .then(async (response) => {
-          router.push(submitLink).then(() => {
-            setCreateFormLoading(false);
-          });
-          return response;
-        })
-        .catch((e) => {
-          toaster.create({
-            title: 'Failed to update form instance',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
-        });
+    } else {
+      // form instance edit mode -> submit changes
     }
   };
 
