@@ -252,6 +252,7 @@ export const SignFormInstanceContextProvider = ({
                 y: yCoordOnPdf,
                 borderWidth: 0,
                 borderColor: undefined,
+                backgroundColor: undefined, // This makes the background transparent
                 textColor: rgb(0, 0, 0),
                 font: helvetica,
               });
