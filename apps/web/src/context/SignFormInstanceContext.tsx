@@ -232,19 +232,8 @@ export const SignFormInstanceContextProvider = ({
             case 'TEXT_FIELD':
               fieldToBeAdded = form.createTextField(field.id);
               const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-              // The order of operations is critical for proper text wrapping
-
-              // 1. First enable multiline
               fieldToBeAdded.enableMultiline();
-
-              // 2. Set max length to ensure text can be as long as needed
-              fieldToBeAdded.setMaxLength(1000);
-
-              // 3. Set text content
               fieldToBeAdded.setText(field.data.text);
-
-              // 4. Add field to page with critical appearance properties
               fieldToBeAdded.addToPage(page, {
                 width: widthOnPdf,
                 height: heightOnPdf,
@@ -256,9 +245,6 @@ export const SignFormInstanceContextProvider = ({
                 textColor: rgb(0, 0, 0),
                 font: helvetica,
               });
-
-              // 5. Update appearance with custom drawing function that handles text wrapping
-              fieldToBeAdded.updateAppearances(helvetica);
               break;
           }
         }
