@@ -90,17 +90,7 @@ export const FormLayout = ({
         {boxContent}
       </Flex>
       <FormButtons
-        heading={
-          type === FormInteractionType.CreateFormTemplate
-            ? 'Create form template'
-            : type == FormInteractionType.CreateFormInstance
-            ? 'Create form instance'
-            : type == FormInteractionType.EditFormTemplate
-            ? 'Edit form template'
-            : type == FormInteractionType.EditFormInstance
-            ? 'Edit form instance'
-            : 'Submit form'
-        }
+        heading={heading}
         submitFunction={submitFunction}
         backLink={backLink}
         disabled={disabled}

@@ -25,34 +25,8 @@ function Description() {
     setFormInstanceUseId,
     pdfFile,
   } = useEditFormInstance();
-  const {
-    formInstanceName: createdFormInstanceName,
-    formInstanceDescription: createdFormInstanceDescription,
-    formTemplate: createdFormTemplate,
-    assignedGroupData: createdAssignedGroupData,
-  } = useCreateFormInstance();
 
   const router = useRouter();
-  const { id } = router.query;
-  const { todoForms, pendingForms, completedForms } = useUserFormsContext();
-  const [template, setTemplate] = useState<FormTemplateBaseEntity | null>();
-
-  useEffect(() => {
-    // Only run when router.query is available and populated
-    if (
-      router.isReady &&
-      typeof id === 'string' &&
-      todoForms &&
-      pendingForms &&
-      completedForms
-    ) {
-      setFormInstanceUseId(id);
-      setFormInstanceName(createdFormInstanceName);
-      setFormInstanceDescription(createdFormInstanceDescription);
-      setTemplate(createdFormTemplate);
-    }
-  }, [router.isReady, id, todoForms, pendingForms, completedForms]);
-
   return (
     <FormLayout
       type={FormInteractionType.EditFormInstance}

@@ -84,9 +84,6 @@ function Review() {
 
       orderVal += 1;
     });
-    console.log(fieldGroupsContext);
-    console.log(formFieldsContext);
-    console.log(fieldGroups);
     if (formDimensions)
       await updateFormTemplateMutation
         .mutateAsync({
@@ -135,11 +132,11 @@ function Review() {
       subheading={'Review your form template'}
       boxContent={
         <ReviewBox
+        formFields={formFieldsContext}
           pdfFile={pdfFile}
           name={formTemplateName ?? ''}
           description={formTemplateDescription ?? ''}
           fieldGroups={fieldGroupsContext}
-          type={FormInteractionType.EditFormTemplate}
         />
       }
       submitFunction={_submitFormTemplate}

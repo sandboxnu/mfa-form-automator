@@ -24,12 +24,11 @@ export const EditFormInstanceProvider = ({ children }: any) => {
     null,
   );
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
   }, [formTemplate?.formDocLink]);
-
-  const router = useRouter();
 
   return (
     <EditFormInstanceContext.Provider

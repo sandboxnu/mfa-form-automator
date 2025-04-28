@@ -84,7 +84,7 @@ export const NameAndDescriptionBox = ({
           />
         </Flex>
       </Flex>
-      <Flex flex={1}>
+      <Flex>
         <Flex
           flexDirection={'column'}
           gap="8px"
@@ -99,7 +99,7 @@ export const NameAndDescriptionBox = ({
           >
             Preview Only
           </Text>
-          <Box width="580px">
+          <Flex width="580px">
             <FormEditor
               formTemplateName={name ?? ''}
               pdfFile={pdfFile}
@@ -112,7 +112,7 @@ export const NameAndDescriptionBox = ({
               documentWidth={550}
               showNav={false}
             />
-          </Box>
+          </Flex>
         </Flex>
       </Flex>
     </Flex>

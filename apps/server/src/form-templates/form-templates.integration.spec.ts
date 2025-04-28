@@ -421,6 +421,36 @@ describe('FormTemplatesIntegrationTest', () => {
       const updatedFormTemplate = await service.update(formTemplate1!.id, {
         name: 'Updated Form Template',
         description: 'Updated Form Template Description',
+        fieldGroups: [
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 10,
+                y_coordinate: 10,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+          {
+          name: 'Field Group 2',
+          order: 1,
+          templateBoxes: [
+            {
+              type: $Enums.SignatureBoxFieldType.TEXT_FIELD,
+              x_coordinate: 47,
+              y_coordinate: 28,
+              width: 50,
+              height: 100,
+              page: 0,
+            },
+          ],
+        },
+        ],
       });
 
       expect(updatedFormTemplate).toBeDefined();
@@ -428,10 +458,39 @@ describe('FormTemplatesIntegrationTest', () => {
       expect(updatedFormTemplate.description).toBe(
         'Updated Form Template Description',
       );
-      // field groups are not updated
+      // field groups are updated
       expect(updatedFormTemplate.fieldGroups).toEqual(
-        formTemplate1?.fieldGroups,
-      );
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              expect.objectContaining({
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 10,
+                y_coordinate: 10,
+                width: 100,
+                height: 100,
+                page: 0,
+              }),
+            ],
+          }),
+          expect.objectContaining({
+            name: 'Field Group 2',
+            order: 1,
+            templateBoxes: [
+              expect.objectContaining({
+                type: $Enums.SignatureBoxFieldType.TEXT_FIELD,
+                x_coordinate: 47,
+                y_coordinate: 28,
+                width: 50,
+                height: 100,
+                page: 0,
+              }),
+            ],
+          }),
+        ])
+      );      
     });
 
     it('throws an error when form template is not found', async () => {

@@ -9,17 +9,16 @@ import {
 import { groupColors } from '@web/utils/formTemplateUtils';
 import { FormInteractionType } from '../createForm/types';
 import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
+import { ContextAssignedGroupData } from '@web/context/types';
 
 export const ReviewBox = ({
-  type,
+  assignedGroupData,
   pdfFile,
   name,
   description,
   fieldGroups,
 }: {
-  type:
-    | FormInteractionType.CreateFormInstance
-    | FormInteractionType.EditFormInstance;
+  assignedGroupData:ContextAssignedGroupData[]  ,
   pdfFile: File | null;
   name: string;
   description: string;
@@ -34,10 +33,6 @@ export const ReviewBox = ({
     borderColor: 'transparent',
   };
 
-  const { assignedGroupData } =
-    type == FormInteractionType.CreateFormInstance
-      ? useCreateFormInstance()
-      : useEditFormInstance();
 
   const GroupItem = ({ color, border }: { color: string; border: string }) => {
     return (

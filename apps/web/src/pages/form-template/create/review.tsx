@@ -141,8 +141,8 @@ function Review() {
           name={formTemplateName ?? ''}
           description={formTemplateDescription ?? ''}
           fieldGroups={fieldGroupsContext}
-          type={FormInteractionType.CreateFormTemplate}
-        />
+          formFields={formFieldsContext}
+          />
       }
       submitFunction={_submitFormTemplate}
       backLink={'/form-template/create/input-fields'}

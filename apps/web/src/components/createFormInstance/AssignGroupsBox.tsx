@@ -17,6 +17,8 @@ import { groupColors } from '@web/utils/formTemplateUtils';
 import { FormInteractionType } from '../createForm/types';
 import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
+import { ContextAssignedGroupData } from '@web/context/types';
+import { Dispatch, SetStateAction } from 'react';
 
 /**
  * The contents of the white box for assigning groups.
@@ -27,15 +29,15 @@ import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
  * @param fieldGroups list of signature fields in the form template
  */
 export const AssignGroupsBox = ({
-  type,
+  assignedGroupData,
+  setAssignedGroupData,
   pdfFile,
   name,
   description,
   fieldGroups,
 }: {
-  type:
-    | FormInteractionType.CreateFormInstance
-    | FormInteractionType.EditFormInstance;
+  assignedGroupData: ContextAssignedGroupData[];
+  setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
   pdfFile: File | null;
   name: string;
   description: string;
@@ -49,10 +51,6 @@ export const AssignGroupsBox = ({
     outlineColor: 'transparent',
     borderColor: 'transparent',
   };
-  const { assignedGroupData, setAssignedGroupData } =
-    type == FormInteractionType.CreateFormInstance
-      ? useCreateFormInstance()
-      : useEditFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
   const { data: employees } = useQuery(employeesControllerFindAllOptions());
   const { data: departments } = useQuery(

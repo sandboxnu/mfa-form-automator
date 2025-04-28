@@ -185,7 +185,7 @@ function TemplateDirectory() {
     let newFields: Record<number, Map<fieldId, Field>> = {};
 
     let groupNum: number = 0;
-    // for each old group, we are going to convert it into a group in field groups, and its fields 
+    // for each old group, we are going to convert it into a group in field groups, and its fields
     // into form fields
     for (let oldGroup of oldGroups) {
       // create a new group for this group
@@ -197,11 +197,11 @@ function TemplateDirectory() {
       groupNum += 1;
 
       // next, save its field groups.
-      // newFields is a dictionary from page number to fields on that page 
+      // newFields is a dictionary from page number to fields on that page
       for (let oldField of oldGroup.templateBoxes) {
         console.log(oldField);
 
-        // determine the type of the field 
+        // determine the type of the field
         let newType;
         if (oldGroup.id == 'SIGNATURE') {
           newType = FieldType.SIGNATURE;
@@ -210,8 +210,8 @@ function TemplateDirectory() {
         } else {
           newType = FieldType.TEXT_FIELD;
         }
-        let pageNum:number = oldField.page;
-        let newField:Field = {
+        let pageNum: number = oldField.page;
+        let newField: Field = {
           position: {
             x: oldField.x_coordinate,
             y: oldField.y_coordinate,
@@ -221,13 +221,13 @@ function TemplateDirectory() {
           groupId: oldGroup.id,
           type: newType,
         };
-        const existingFieldsOnPage:Map<fieldId, Field> = newFields[pageNum]?? new Map<fieldId, Field>();
+        const existingFieldsOnPage: Map<fieldId, Field> =
+          newFields[pageNum] ?? new Map<fieldId, Field>();
         existingFieldsOnPage.set(oldField.id, newField);
         newFields[pageNum] = existingFieldsOnPage;
       }
     }
 
-    
     setFormTemplateName(formTemplate.name);
     setFormTemplateDescription(formTemplate.description);
     setFormTemplateUseId(formTemplate.id);

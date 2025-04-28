@@ -112,7 +112,7 @@ function Review() {
       subheading={'Review your form instance'}
       boxContent={
         <ReviewBox
-          type={FormInteractionType.CreateFormInstance}
+        assignedGroupData={assignedGroupData}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}

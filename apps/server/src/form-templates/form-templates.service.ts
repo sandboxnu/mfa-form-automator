@@ -125,6 +125,13 @@ export class FormTemplatesService {
    * @returns the updated form template, hydrated
    */
   async update(id: string, updateFormTemplateDto: UpdateFormTemplateDto) {
+    const templateFound = await this.prisma.formTemplate.findUnique({
+      where: { id },
+    });
+    if (!templateFound) {
+      throw new Error(`Form template with ID ${id} does not exist.`);
+    }
+
     // Execute the deletion transaction first and await its completion
     await this.prisma.$transaction([
       // Delete TemplateBox records first
@@ -142,7 +149,7 @@ export class FormTemplatesService {
         },
       }),
     ]);
-    
+
     // After deletions are complete, update the form template
     const updatedFormTemplate = await this.prisma.formTemplate.update({
       where: {
@@ -214,7 +221,7 @@ export class FormTemplatesService {
         },
       },
     });
-    
+
     return updatedFormTemplate;
   }
   /**

@@ -2,11 +2,8 @@ import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { AssignGroupsBox } from '@web/components/createFormInstance/AssignGroupsBox';
 import isAuth from '@web/components/isAuth';
-import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
-import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
 
 function AssignGroups() {
   const {
@@ -15,6 +12,7 @@ function AssignGroups() {
     formTemplate,
     formInstanceUseId,
     assignedGroupData,
+    setAssignedGroupData,
     pdfFile,
   } = useEditFormInstance();
 
@@ -30,7 +28,8 @@ function AssignGroups() {
       }
       boxContent={
         <AssignGroupsBox
-          type={FormInteractionType.EditFormInstance}
+          assignedGroupData={assignedGroupData}
+          setAssignedGroupData={setAssignedGroupData}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}

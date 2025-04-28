@@ -5,11 +5,16 @@ import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, SetStateAction } from 'react';
 
 function AssignGroups() {
-  const { formInstanceName, formInstanceDescription, formTemplate } =
-    useCreateFormInstance();
+  const {
+    formInstanceName,
+    formInstanceDescription,
+    formTemplate,
+    assignedGroupData,
+    setAssignedGroupData,
+  } = useCreateFormInstance();
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const router = useRouter();
@@ -28,11 +33,12 @@ function AssignGroups() {
       }
       boxContent={
         <AssignGroupsBox
-          type={FormInteractionType.CreateFormInstance}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}
           fieldGroups={formTemplate?.fieldGroups ?? []}
+          assignedGroupData={assignedGroupData}
+          setAssignedGroupData={setAssignedGroupData}
         />
       }
       submitFunction={() => {
