@@ -11,7 +11,13 @@ import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { getLatestSignedFormLink } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
-import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
+import {
+  PDFCheckBox,
+  PDFDocument,
+  PDFTextField,
+  rgb,
+  StandardFonts,
+} from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
 
 export const SignFormInstanceContext =
@@ -225,13 +231,33 @@ export const SignFormInstanceContextProvider = ({
               break;
             case 'TEXT_FIELD':
               fieldToBeAdded = form.createTextField(field.id);
+              const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+              // The order of operations is critical for proper text wrapping
+
+              // 1. First enable multiline
+              fieldToBeAdded.enableMultiline();
+
+              // 2. Set max length to ensure text can be as long as needed
+              fieldToBeAdded.setMaxLength(1000);
+
+              // 3. Set text content
               fieldToBeAdded.setText(field.data.text);
+
+              // 4. Add field to page with critical appearance properties
               fieldToBeAdded.addToPage(page, {
                 width: widthOnPdf,
                 height: heightOnPdf,
                 x: xCoordOnPdf,
                 y: yCoordOnPdf,
+                borderWidth: 0,
+                borderColor: undefined,
+                textColor: rgb(0, 0, 0),
+                font: helvetica,
               });
+
+              // 5. Update appearance with custom drawing function that handles text wrapping
+              fieldToBeAdded.updateAppearances(helvetica);
               break;
           }
         }
