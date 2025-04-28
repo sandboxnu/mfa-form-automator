@@ -50,7 +50,9 @@ export const SignFormInstanceContextProvider = ({
   const [originalPdf, setOriginalPdf] = useState<ArrayBuffer | null>(null);
   const [modifiedPdf, setModifiedPdf] = useState<ArrayBuffer | null>(null);
   const [assignedGroupId, setAssignedGroupId] = useState<string>();
+  const [signFormInstanceLoading, setSignFormInstanceLoading] = useState(false);
   const router = useRouter();
+
   const signFormInstanceMutation = useMutation({
     ...formInstancesControllerSignFormInstanceMutation(),
     onSuccess: async () => {
@@ -248,6 +250,8 @@ export const SignFormInstanceContextProvider = ({
   };
 
   const submitPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
+    setSignFormInstanceLoading(true);
+
     const form = pdfDoc.getForm();
     form.getFields().forEach((fieldOnForm) => {
       fieldOnForm.disableReadOnly();
@@ -265,9 +269,14 @@ export const SignFormInstanceContextProvider = ({
         },
       });
       if (res) {
-        router.push(submitLink);
+        router.push(submitLink).then(() => {
+          setSignFormInstanceLoading(false);
+        });
       }
     }
+
+    // in case of error, set loading to false
+    setSignFormInstanceLoading(false);
   };
 
   const nextSignFormPage = async (
@@ -298,7 +307,7 @@ export const SignFormInstanceContextProvider = ({
         groupNumber,
         nextSignFormPage,
         updateField,
-        signFormInstanceLoading: isLoading,
+        signFormInstanceLoading,
       }}
     >
       {children}

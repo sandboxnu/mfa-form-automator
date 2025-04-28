@@ -60,6 +60,7 @@ export const FormButtons = ({
     formInstanceName,
     formTemplate,
     formInstanceDescription,
+    formInstanceUseId,
   } = useCreateFormInstance();
   const [createFormLoading, setCreateFormLoading] = useState(false);
   const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
@@ -212,6 +213,8 @@ export const FormButtons = ({
               type: 'error',
               duration: 3000,
             });
+
+            setCreateFormLoading(false);
           }
         });
     else if (type == FormInteractionType.EditFormTemplate) {
@@ -254,6 +257,9 @@ export const FormButtons = ({
           }
         });
     }
+
+    // always set loading to false
+    setCreateFormLoading(false);
   };
 
   /**
@@ -278,7 +284,7 @@ export const FormButtons = ({
 
     setCreateFormLoading(true);
 
-    if (FormInteractionType.CreateFormInstance) {
+    if (type == FormInteractionType.CreateFormInstance) {
       await createFormInstanceMutation
         .mutateAsync({
           body: {
@@ -400,8 +406,11 @@ export const FormButtons = ({
               case FormInteractionType.EditFormTemplate:
                 _submitFormTemplate();
                 break;
-              default:
+              case FormInteractionType.SignFormInstance:
                 nextSignFormPage(submitLink, review);
+                break;
+              default:
+                throw new Error('Invalid form interaction type');
             }
           }}
         >

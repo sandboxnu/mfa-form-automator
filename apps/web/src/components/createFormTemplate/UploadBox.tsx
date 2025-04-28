@@ -39,7 +39,12 @@ export const UploadBox = ({
   });
 
   return (
-    <Flex flexDirection="column" gap="20px">
+    <Flex
+      flexDirection="column"
+      gap="20px"
+      alignItems={'center'}
+      justifyContent={'center'}
+    >
       <Flex
         /* dashed bordered box */
         borderRadius="8px"
@@ -52,6 +57,7 @@ export const UploadBox = ({
         alignItems={'center'}
         backgroundColor={pdfFile ? '#F1F7FF' : '#FFF'}
         {...getRootProps()}
+        width={'420px'}
       >
         <input {...getInputProps()} />
         <UploadIcon
@@ -84,7 +90,7 @@ export const UploadBox = ({
               textDecoration="underline"
               color="#1367EA"
             >
-              Browse
+              browse
             </Text>
           </Flex>
           <Text
