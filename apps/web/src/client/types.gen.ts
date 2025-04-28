@@ -621,6 +621,18 @@ export type EmployeesControllerUpdateResponses = {
 export type EmployeesControllerUpdateResponse =
   EmployeesControllerUpdateResponses[keyof EmployeesControllerUpdateResponses];
 
+/**
+ * Positions sorting option
+ */
+export enum SortBy {
+  CREATED_AT_ASC = 'createdAtAsc',
+  CREATED_AT_DESC = 'createdAtDesc',
+  UPDATED_AT_ASC = 'updatedAtAsc',
+  UPDATED_AT_DESC = 'updatedAtDesc',
+  NAME_ASC = 'nameAsc',
+  NAME_DESC = 'nameDesc',
+}
+
 export type PositionsControllerFindAllData = {
   body?: never;
   path?: never;
@@ -629,6 +641,16 @@ export type PositionsControllerFindAllData = {
      * Limit on number of positions to return
      */
     limit?: number;
+    /**
+     * Positions sorting option
+     */
+    sortBy?:
+      | 'createdAtAsc'
+      | 'createdAtDesc'
+      | 'updatedAtAsc'
+      | 'updatedAtDesc'
+      | 'nameAsc'
+      | 'nameDesc';
   };
   url: '/api/positions';
 };
@@ -894,18 +916,6 @@ export type AssignedGroupControllerUpdateAssignedGroupSignerResponses = {
 export type AssignedGroupControllerUpdateAssignedGroupSignerResponse =
   AssignedGroupControllerUpdateAssignedGroupSignerResponses[keyof AssignedGroupControllerUpdateAssignedGroupSignerResponses];
 
-/**
- * Sort option for form templates
- */
-export enum SortBy {
-  CREATED_AT_ASC = 'createdAtAsc',
-  CREATED_AT_DESC = 'createdAtDesc',
-  UPDATED_AT_ASC = 'updatedAtAsc',
-  UPDATED_AT_DESC = 'updatedAtDesc',
-  NAME_ASC = 'nameAsc',
-  NAME_DESC = 'nameDesc',
-}
-
 export type FormTemplatesControllerFindAllData = {
   body?: never;
   path?: never;
@@ -1068,8 +1078,21 @@ export type FormTemplatesControllerUpdateResponse =
 export type DepartmentsControllerFindAllData = {
   body?: never;
   path?: never;
-  query: {
-    limit: number;
+  query?: {
+    /**
+     * Limit on number of positions to return
+     */
+    limit?: number;
+    /**
+     * Departments sorting option
+     */
+    sortBy?:
+      | 'createdAtAsc'
+      | 'createdAtDesc'
+      | 'updatedAtAsc'
+      | 'updatedAtDesc'
+      | 'nameAsc'
+      | 'nameDesc';
   };
   url: '/api/departments';
 };

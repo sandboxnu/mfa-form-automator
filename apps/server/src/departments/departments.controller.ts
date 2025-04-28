@@ -10,7 +10,6 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
@@ -21,6 +20,7 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
@@ -31,6 +31,8 @@ import { DepartmentsErrorMessage } from './departments.errors';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { OptionalParseIntPipe } from '../pipes/OptionalParseInt.pipe';
+import { SortOption } from '../utils';
 
 @ApiTags('departments')
 @Controller('departments')
@@ -63,8 +65,23 @@ export class DepartmentsController {
   @ApiOkResponse({ type: [DepartmentEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async findAll(@Query('limit', ParseIntPipe) limit?: number) {
-    const departments = await this.departmentsService.findAll(limit);
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Limit on number of positions to return',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    enum: SortOption,
+    description: 'Departments sorting option',
+    required: false,
+  })
+  async findAll(
+    @Query('limit', OptionalParseIntPipe) limit?: number,
+    @Query('sortBy') sortyBy?: SortOption,
+  ) {
+    const departments = await this.departmentsService.findAll(limit, sortyBy);
     return departments.map((department) => new DepartmentEntity(department));
   }
 

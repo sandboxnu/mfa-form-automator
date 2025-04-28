@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { SortOption, orderBy } from '../utils';
 
 @Injectable()
 export class DepartmentsService {
@@ -24,11 +25,13 @@ export class DepartmentsService {
   /**
    * Retrieve all departments.
    * @param limit the number of departments we want to retrieve (optional)
+   * @param sortBy optional sorting parameter
    * @returns all departments, hydrated
    */
-  async findAll(limit?: number) {
+  async findAll(limit?: number, sortBy?: SortOption) {
     const departments = await this.prisma.department.findMany({
       take: limit,
+      orderBy: orderBy(sortBy),
     });
     return departments;
   }

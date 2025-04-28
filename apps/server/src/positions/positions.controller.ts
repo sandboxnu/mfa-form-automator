@@ -10,7 +10,6 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dto/create-position.dto';
@@ -32,6 +31,8 @@ import { LoggerServiceImpl } from '../logger/logger.service';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PositionBaseEntity } from './entities/position.entity';
+import { OptionalParseIntPipe } from '../pipes/OptionalParseInt.pipe';
+import { SortOption } from '../utils';
 
 @ApiTags('positions')
 @Controller('positions')
@@ -69,8 +70,17 @@ export class PositionsController {
     description: 'Limit on number of positions to return',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
-    const positions = await this.positionsService.findAll(limit);
+  @ApiQuery({
+    name: 'sortBy',
+    enum: SortOption,
+    description: 'Positions sorting option',
+    required: false,
+  })
+  async findAll(
+    @Query('limit', OptionalParseIntPipe) limit?: number,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    const positions = await this.positionsService.findAll(limit, sortBy);
     return positions.map((position) => new PositionBaseEntity(position));
   }
 
@@ -88,7 +98,7 @@ export class PositionsController {
   })
   async findAllInDepartment(
     @Param('departmentId') departmentId: string,
-    @Query('limit', ParseIntPipe) limit?: number,
+    @Query('limit', OptionalParseIntPipe) limit?: number,
   ) {
     const positions = await this.positionsService.findAllInDepartment(
       departmentId,

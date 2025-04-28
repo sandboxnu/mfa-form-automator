@@ -4,7 +4,7 @@ import { UpdateFormTemplateDto } from './dto/update-form-template.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { PdfStoreService } from '../pdf-store/pdf-store.service';
 import { FormTemplateErrorMessage } from './form-templates.errors';
-import { SortOption } from '../utils';
+import { SortOption, orderBy } from '../utils';
 
 @Injectable()
 export class FormTemplatesService {
@@ -12,25 +12,6 @@ export class FormTemplatesService {
     private prisma: PrismaService,
     private pdfStoreService: PdfStoreService,
   ) {}
-
-  private orderBy = (sortBy?: SortOption) => {
-    switch (sortBy) {
-      case SortOption.CREATED_AT_ASC:
-        return { createdAt: 'asc' as const };
-      case SortOption.CREATED_AT_DESC:
-        return { createdAt: 'desc' as const };
-      case SortOption.UPDATED_AT_ASC:
-        return { updatedAt: 'asc' as const };
-      case SortOption.UPDATED_AT_DESC:
-        return { updatedAt: 'desc' as const };
-      case SortOption.NAME_ASC:
-        return { name: 'asc' as const };
-      case SortOption.NAME_DESC:
-        return { name: 'desc' as const };
-      default:
-        return { createdAt: 'desc' as const }; // Default sorting
-    }
-  };
 
   /**
    * Create a new form template.
@@ -101,7 +82,7 @@ export class FormTemplatesService {
     const formTemplates = await this.prisma.formTemplate
       .findMany({
         ...(cursor !== undefined ? { take: 8, skip: cursor * 8 } : {}),
-        orderBy: this.orderBy(sortBy),
+        orderBy: orderBy(sortBy),
         include: {
           fieldGroups: {
             include: {
