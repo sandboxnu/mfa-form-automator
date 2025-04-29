@@ -269,6 +269,7 @@ export class PositionsService {
    * @returns the updated position, hydrated
    */
   async update(id: string, updatePositionDto: UpdatePositionDto) {
+    console.log(updatePositionDto);
     const updatedPosition = this.prisma.position.update({
       where: {
         id: id,

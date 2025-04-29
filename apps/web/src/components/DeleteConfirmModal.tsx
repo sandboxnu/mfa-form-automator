@@ -51,7 +51,7 @@ export const DeleteConfirmModal = ({
                 <em>
                   <strong>{deleteObjectName} </strong>
                 </em>
-                from the template directory permanently?
+                from the directory permanently?
               </Text>
               <Flex
                 justifyContent={'center'}

@@ -20,7 +20,6 @@ export const ModifyPositionCard = ({
 }: {
   position: PositionEntityEmployeeHydrated;
 }) => {
-  console.log(position);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [positionName, setPositionName] = useState(position.name);

@@ -294,10 +294,11 @@ export const CreatePositionDtoSchema = {
     },
     departmentId: {
       type: 'string',
+      nullable: true,
       format: 'uuid',
     },
   },
-  required: ['name', 'departmentId'],
+  required: ['name'],
 } as const;
 
 export const PositionEntityEmployeeHydratedSchema = {
@@ -331,6 +332,7 @@ export const UpdatePositionDtoSchema = {
     },
     departmentId: {
       type: 'string',
+      nullable: true,
       format: 'uuid',
     },
   },

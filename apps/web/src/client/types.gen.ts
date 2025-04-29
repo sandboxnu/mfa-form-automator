@@ -95,7 +95,7 @@ export type UpdateEmployeeDto = {
 
 export type CreatePositionDto = {
   name: string;
-  departmentId: string;
+  departmentId?: string | null;
 };
 
 export type PositionEntityEmployeeHydrated = {
@@ -107,7 +107,7 @@ export type PositionEntityEmployeeHydrated = {
 
 export type UpdatePositionDto = {
   name?: string;
-  departmentId?: string;
+  departmentId?: string | null;
 };
 
 export type ConnectEmployeeDto = {

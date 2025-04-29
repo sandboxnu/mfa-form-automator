@@ -49,6 +49,7 @@ export const ModifyDepartmentCard = ({
       queryClient.invalidateQueries({
         queryKey: departmentsControllerFindAllQueryKey(),
       });
+      refreshUser();
     },
   });
 
@@ -94,7 +95,7 @@ export const ModifyDepartmentCard = ({
             id: position.id,
           },
           body: {
-            departmentId: undefined,
+            departmentId: null,
           },
         });
       }),
