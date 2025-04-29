@@ -82,9 +82,12 @@ export class DepartmentsController {
   })
   async findAll(
     @Query('limit', OptionalParseIntPipe) limit?: number,
-    @Query('sortBy') sortyBy?: SortOption,
+    @Query('sortBy') sortBy?: SortOption,
   ) {
-    const departments = await this.departmentsService.findAll(limit, sortyBy);
+    const departments = await this.departmentsService.findAll({
+      limit,
+      sortBy,
+    });
     return departments.map(
       (department) => new DepartmentEntityHydrated(department),
     );

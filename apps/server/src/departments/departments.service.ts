@@ -28,7 +28,7 @@ export class DepartmentsService {
    * @param sortBy optional sorting parameter
    * @returns all departments, hydrated
    */
-  async findAll(limit?: number, sortBy?: SortOption) {
+  async findAll({ limit, sortBy }: { limit?: number; sortBy?: SortOption }) {
     const departments = await this.prisma.department.findMany({
       take: limit,
       orderBy: orderBy(sortBy),

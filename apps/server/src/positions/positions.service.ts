@@ -32,7 +32,7 @@ export class PositionsService {
    * @param sortBy optional sorting parameter
    * @returns all positions, hydrated
    */
-  async findAll(limit?: number, sortBy?: SortOption) {
+  async findAll({ limit, sortBy }: { limit?: number; sortBy?: SortOption }) {
     const positions = limit
       ? await this.prisma.position.findMany({
           take: limit,

@@ -1,6 +1,7 @@
 import { TestingModule, Test } from '@nestjs/testing';
 import { PrismaService } from '../prisma/prisma.service';
 import { DepartmentsService } from './departments.service';
+import { SortOption } from '../utils';
 
 describe('DepartmentServiceIntegrationTest', () => {
   let module: TestingModule;
@@ -49,7 +50,7 @@ describe('DepartmentServiceIntegrationTest', () => {
     });
 
     it('should retrieve all departments', async () => {
-      const departments = await departmentsService.findAll();
+      const departments = await departmentsService.findAll({});
       expect(departments.length).toEqual(2);
       expect(departments[0].name).toEqual('Engineering'); // default sorting by createdAt
       expect(departments[1].name).toEqual('HR');
@@ -153,6 +154,96 @@ describe('DepartmentServiceIntegrationTest', () => {
       await expect(
         departmentsService.remove('non-existent-id'),
       ).rejects.toThrow();
+    });
+  });
+
+  describe('sorting', () => {
+    beforeEach(async () => {
+      // Create departments with different names and timestamps to test sorting
+      for (let i = 1; i <= 10; i++) {
+        await departmentsService.create({
+          name: `Department ${i}`,
+        });
+
+        // Add small delay to ensure different createdAt timestamps
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    });
+
+    it('sorts by name in ascending order', async () => {
+      const departments = await departmentsService.findAll({
+        sortBy: SortOption.NAME_ASC,
+      });
+
+      expect(departments).toHaveLength(10);
+      expect(departments[0].name).toBe('Department 1');
+      expect(departments[1].name).toBe('Department 10');
+    });
+
+    it('sorts by name in descending order', async () => {
+      const departments = await departmentsService.findAll({
+        sortBy: SortOption.NAME_DESC,
+      });
+
+      expect(departments).toHaveLength(10);
+      expect(departments[0].name).toBe('Department 9');
+      expect(departments[1].name).toBe('Department 8');
+    });
+
+    it('sorts by creation date in ascending order', async () => {
+      const departments = await departmentsService.findAll({
+        sortBy: SortOption.CREATED_AT_ASC,
+      });
+
+      expect(departments).toHaveLength(10);
+      expect(departments[0].createdAt.getUTCSeconds()).toBeLessThanOrEqual(
+        departments[1].createdAt.getUTCSeconds(),
+      );
+      expect(departments[1].createdAt.getUTCSeconds()).toBeLessThanOrEqual(
+        departments[2].createdAt.getUTCSeconds(),
+      );
+    });
+
+    it('sorts by creation date in descending order', async () => {
+      const departments = await departmentsService.findAll({
+        sortBy: SortOption.CREATED_AT_DESC,
+      });
+
+      expect(departments).toHaveLength(10);
+      expect(departments[0].createdAt.getUTCSeconds()).toBeGreaterThanOrEqual(
+        departments[1].createdAt.getUTCSeconds(),
+      );
+      expect(departments[1].createdAt.getUTCSeconds()).toBeGreaterThanOrEqual(
+        departments[2].createdAt.getUTCSeconds(),
+      );
+    });
+
+    it('sorts by updated date in ascending order', async () => {
+      const departments = await departmentsService.findAll({
+        sortBy: SortOption.UPDATED_AT_ASC,
+      });
+
+      expect(departments).toHaveLength(10);
+      expect(departments[0].updatedAt.getUTCSeconds()).toBeLessThanOrEqual(
+        departments[1].updatedAt.getUTCSeconds(),
+      );
+      expect(departments[1].updatedAt.getUTCSeconds()).toBeLessThanOrEqual(
+        departments[2].updatedAt.getUTCSeconds(),
+      );
+    });
+
+    it('sorts by updated date in descending order', async () => {
+      const departments = await departmentsService.findAll({
+        sortBy: SortOption.UPDATED_AT_DESC,
+      });
+
+      expect(departments).toHaveLength(10);
+      expect(departments[0].updatedAt.getUTCSeconds()).toBeGreaterThanOrEqual(
+        departments[1].updatedAt.getUTCSeconds(),
+      );
+      expect(departments[1].updatedAt.getUTCSeconds()).toBeGreaterThanOrEqual(
+        departments[2].updatedAt.getUTCSeconds(),
+      );
     });
   });
 });

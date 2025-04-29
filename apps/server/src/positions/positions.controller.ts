@@ -83,7 +83,7 @@ export class PositionsController {
     @Query('limit', OptionalParseIntPipe) limit?: number,
     @Query('sortBy') sortBy?: SortOption,
   ) {
-    const positions = await this.positionsService.findAll(limit, sortBy);
+    const positions = await this.positionsService.findAll({ limit, sortBy });
     return positions.map(
       (position) => new PositionEntityEmployeeHydrated(position),
     );
