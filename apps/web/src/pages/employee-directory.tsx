@@ -12,9 +12,9 @@ import { Scope } from '@web/client';
 import isAuth from '@web/components/isAuth';
 import { InputGroup } from '@web/components/ui/input-group';
 import { RightSearchIcon, UserProfileAvatar } from '@web/static/icons';
-import { EditDepartmentsModal } from '@web/components/editEmployeeDetails/EditDepartmentsModal';
+import { EditDepartmentsModal } from '@web/components/editDepartment/EditDepartmentsModal';
+import { EditPositionsModal } from '@web/components/editPosition/EditPositionsModal';
 import { useState } from 'react';
-import { EditPositionsModal } from '@web/components/editEmployeeDetails/EditPositionsModal';
 
 // TODO woo hard coded
 const mockEmployees = [
