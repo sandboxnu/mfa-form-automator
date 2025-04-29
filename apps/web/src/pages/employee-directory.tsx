@@ -14,7 +14,10 @@ import { useEmployeesContext } from '@web/context/EmployeesContext';
 import { UserProfileAvatar } from '@web/static/icons';
 import { useState, useEffect } from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
-import { departmentsControllerFindAll, positionsControllerFindAllInDepartment } from '@web/client';
+import {
+  departmentsControllerFindAll,
+  positionsControllerFindAllInDepartment,
+} from '@web/client';
 
 function EmployeeDirectory() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,7 +32,8 @@ function EmployeeDirectory() {
   const [selectedPosition, setSelectedPosition] = useState<string>('');
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isConfirmChangesModalOpen, setIsConfirmChangesModalOpen] = useState(false);
+  const [isConfirmChangesModalOpen, setIsConfirmChangesModalOpen] =
+    useState(false);
   const [employeeToDelete, setEmployeeToDelete] =
     useState<EmployeeBaseEntity | null>(null);
   const openModal = (employee: EmployeeBaseEntity) => {
