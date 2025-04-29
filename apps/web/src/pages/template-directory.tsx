@@ -333,7 +333,7 @@ function TemplateDirectory() {
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 setSortOption={setSortOption}
-                placeholder="Search for forms"
+                placeholder="Search forms"
               />
             ) : (
               <></>

@@ -1,13 +1,7 @@
 import { createContext, useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { employeesControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
-import { EmployeeBaseEntityResponse } from '@web/client';
-
-interface EmployeesContextType {
-  employees: EmployeeBaseEntityResponse[];
-  isLoading: boolean;
-  error: Error | null;
-}
+import { EmployeesContextType } from './types';
 
 export const EmployeesContext = createContext<EmployeesContextType>(
   {} as EmployeesContextType,
@@ -18,19 +12,18 @@ export const EmployeesContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const {
-    isLoading,
-    error,
-    data: employees = [],
-  } = useQuery({
-    ...employeesControllerFindAllOptions(),
+  const { isLoading, error, data } = useQuery({
+    ...employeesControllerFindAllOptions({
+      query: {
+        secure: true,
+      },
+    }),
   });
 
   return (
     <EmployeesContext.Provider
       value={{
-        // TODO
-        employees,
+        employees: data?.employees ?? [],
         isLoading,
         error,
       }}

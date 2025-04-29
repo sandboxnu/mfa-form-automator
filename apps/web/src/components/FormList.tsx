@@ -98,7 +98,7 @@ export const FormList = ({
                 setSortOption={() => {}} // No sorting on form instances
                 sortedForms={formInstances}
                 setSortedForms={setSortedFormInstances}
-                placeholder="Search for forms"
+                placeholder="Search forms"
               />
             )}
           </>

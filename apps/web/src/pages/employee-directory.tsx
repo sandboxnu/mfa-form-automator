@@ -12,7 +12,7 @@ import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 function EmployeeDirectory() {
   const [searchQuery, setSearchQuery] = useState('');
-  // TODO sorting 
+  // TODO sorting
   const [sortOption, setSortOption] = useState<SortBy>(SortBy.NAME_DESC);
   const { employees, isLoading, error } = useEmployeesContext();
   const [editingEmployee, setEditingEmployee] = useState<string | null>(null);
@@ -85,6 +85,7 @@ function EmployeeDirectory() {
             <Box flex={1} />
           </Flex>
           {employees.map((employee, index) => {
+            console.log(employee);
             return (
               // TODO height of row changes on edit click
               <Flex
