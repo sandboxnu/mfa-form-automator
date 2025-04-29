@@ -61,6 +61,7 @@ export const ModifyDepartmentCard = ({
       },
     });
   };
+
   return (
     <Flex
       borderRadius="5px"

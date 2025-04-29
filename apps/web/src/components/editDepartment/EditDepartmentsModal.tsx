@@ -1,18 +1,19 @@
-import {
-  Button,
-  Dialog,
-  Flex,
-  Portal,
-  Text,
-  Input,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Dialog, Flex, Portal, Input, VStack } from '@chakra-ui/react';
 import { CloseIcon, PlusIcon } from '@web/static/icons';
-import { departmentsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
-import { useQuery } from '@tanstack/react-query';
+import {
+  departmentsControllerFindAllOptions,
+  departmentsControllerCreateMutation,
+  departmentsControllerFindAllQueryKey,
+} from '@web/client/@tanstack/react-query.gen';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { RightSearchIcon } from '@web/static/icons';
 import { InputGroup } from '../ui/input-group';
 import { ModifyDepartmentCard } from './ModifyDepartmentCard';
+import { useState, useEffect } from 'react';
+import { queryClient } from '@web/pages/_app';
+import { useAuth } from '@web/hooks/useAuth';
+import { NewDepartmentCard } from './NewDepartmentCard';
+import { DepartmentEntity } from '@web/client';
 
 export const EditDepartmentsModal = ({
   isOpen,
@@ -21,7 +22,70 @@ export const EditDepartmentsModal = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const { data: departments } = useQuery(departmentsControllerFindAllOptions());
+  const { data: departments = [] } = useQuery(
+    departmentsControllerFindAllOptions(),
+  );
+  const [filteredDepartments, setFilteredDepartments] = useState<
+    DepartmentEntity[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
+  const [newDepartmentName, setNewDepartmentName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { refreshUser } = useAuth();
+
+  useEffect(() => {
+    if (!departments) return;
+
+    if (searchQuery.trim() === '') {
+      setFilteredDepartments(departments);
+    } else {
+      const filtered = departments.filter((dept) =>
+        dept.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+      setFilteredDepartments(filtered);
+    }
+  }, [departments, searchQuery]);
+
+  const createDepartment = useMutation({
+    ...departmentsControllerCreateMutation(),
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onError: () => {
+      setIsLoading(false);
+    },
+    onSuccess: () => {
+      setIsLoading(false);
+      setIsCreatingNew(false);
+      setNewDepartmentName('');
+      queryClient.invalidateQueries({
+        queryKey: departmentsControllerFindAllQueryKey(),
+      });
+      refreshUser();
+    },
+  });
+
+  const handleAddDepartment = () => {
+    setIsCreatingNew(true);
+  };
+
+  const handleCancelCreate = () => {
+    setIsCreatingNew(false);
+    setNewDepartmentName('');
+  };
+
+  const handleSaveNewDepartment = () => {
+    if (newDepartmentName.trim() === '') {
+      return;
+    }
+
+    createDepartment.mutate({
+      body: {
+        name: newDepartmentName,
+      },
+    });
+  };
 
   return (
     <Dialog.Root
@@ -80,7 +144,12 @@ export const EditDepartmentsModal = ({
                   border="1px solid #929292"
                   borderRadius="6px"
                 >
-                  <Input placeholder="Search departments" padding="4px 12px" />
+                  <Input
+                    placeholder="Search departments"
+                    padding="4px 12px"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
                 </InputGroup>
                 <Button
                   variant="outline"
@@ -89,12 +158,14 @@ export const EditDepartmentsModal = ({
                   bg="#1367EA"
                   color="white"
                   borderRadius="6px"
+                  onClick={handleAddDepartment}
+                  disabled={isCreatingNew}
                 >
                   <PlusIcon
                     boxSize="14px"
                     fill="white"
                     stroke="white"
-                    stroke-width="0.38"
+                    strokeWidth="0.38"
                   />
                   add department
                 </Button>
@@ -103,12 +174,22 @@ export const EditDepartmentsModal = ({
                 spaceY="10px"
                 mt="26px"
                 alignItems="flex-start"
+                width="100%"
                 height="500px"
                 maxHeight="calc(75vh - 180px)"
                 overflowY="auto"
                 scrollbar="hidden"
               >
-                {departments?.map((department) => (
+                {isCreatingNew && (
+                  <NewDepartmentCard
+                    departmentName={newDepartmentName}
+                    setDepartmentName={setNewDepartmentName}
+                    onCancel={handleCancelCreate}
+                    onSave={handleSaveNewDepartment}
+                    isLoading={isLoading}
+                  />
+                )}
+                {filteredDepartments.map((department) => (
                   <ModifyDepartmentCard
                     key={department.id}
                     department={department}
