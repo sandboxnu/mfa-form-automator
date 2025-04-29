@@ -179,7 +179,7 @@ export type FieldGroupBaseEntity = {
   order: number;
   createdAt: string;
   updatedAt: string;
-  formTemplateId: string;
+  formTemplateId: string | null;
   templateBoxes: Array<TemplateBoxBaseEntity>;
 };
 

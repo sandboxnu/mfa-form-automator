@@ -570,6 +570,7 @@ export const FieldGroupBaseEntitySchema = {
     },
     formTemplateId: {
       type: 'string',
+      nullable: true,
     },
     templateBoxes: {
       type: 'array',
