@@ -116,8 +116,8 @@ model FieldGroup {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  formTemplate   FormTemplate    @relation(fields: [formTemplateId], references: [id], onDelete: Cascade)
-  formTemplateId String          @db.Uuid
+  formTemplate   FormTemplate?    @relation(fields: [formTemplateId], references: [id], onDelete: Cascade)
+  formTemplateId String?          @db.Uuid
   templateBoxes  TemplateBox[]
   assignedGroups AssignedGroup[]
 }
