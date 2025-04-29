@@ -31,8 +31,15 @@ export const NewDepartmentCard = ({
         fontSize="16px"
         width="100%"
         autoFocus
-        padding="0px 8px"
-        placeholder="Enter department name"
+        padding="10px"
+        borderRadius="6px"
+        border="1px solid #C0C0C0"
+        height="40px"
+        _focus={{
+          outline: 'none',
+          boxShadow: 'none',
+          borderColor: '#929292',
+        }}
       />
       <Flex alignItems="center" gap="12px">
         <Button onClick={onCancel} variant="outline" border="1px solid #1367EA">
@@ -48,6 +55,7 @@ export const NewDepartmentCard = ({
           color="#FFF"
           fontWeight="700"
           lineHeight="20px"
+          maxWidth="72px"
         >
           Create
         </Button>

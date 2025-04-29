@@ -37,8 +37,15 @@ export const NewPositionCard = ({
           fontSize="16px"
           width="100%"
           autoFocus
-          padding="0px 8px"
-          placeholder="Enter position name"
+          padding="10px"
+          borderRadius="6px"
+          border="1px solid #C0C0C0"
+          height="40px"
+          _focus={{
+            outline: 'none',
+            boxShadow: 'none',
+            borderColor: '#929292',
+          }}
         />
         <select
           id="departmentDropdown"
@@ -51,6 +58,9 @@ export const NewPositionCard = ({
             border: '1px solid #C0C0C0',
             borderRadius: '6px',
             padding: '10px',
+            fontSize: '16px',
+            width: '100%',
+            height: '40px',
           }}
         >
           <option value="" disabled selected>
@@ -77,6 +87,7 @@ export const NewPositionCard = ({
           color="#FFF"
           fontWeight="700"
           lineHeight="20px"
+          maxWidth="72px"
         >
           Create
         </Button>

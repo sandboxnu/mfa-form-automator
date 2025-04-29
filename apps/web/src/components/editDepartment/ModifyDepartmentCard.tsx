@@ -14,6 +14,7 @@ import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import { RxCross2 } from 'react-icons/rx';
 import { DeleteConfirmModal } from '../DeleteConfirmModal';
+import { RiSubtractFill } from 'react-icons/ri';
 
 export const ModifyDepartmentCard = ({
   department,
@@ -139,12 +140,31 @@ export const ModifyDepartmentCard = ({
             fontSize="16px"
             width="100%"
             autoFocus
-            padding="0px 8px"
+            padding="10px"
+            borderRadius="6px"
+            border="1px solid #C0C0C0"
+            height="40px"
+            _focus={{
+              outline: 'none',
+              boxShadow: 'none',
+              borderColor: '#929292',
+            }}
           />
         ) : (
-          <Text fontSize="16px" fontWeight="400" lineHeight="21px">
-            {department.name} ({department.positions.length})
-          </Text>
+          <Flex flexDir="column" width="100%">
+            <Text fontSize="16px" fontWeight="400" lineHeight="21px">
+              {department.name}
+            </Text>
+            <Text
+              fontSize="14px"
+              fontWeight="400"
+              lineHeight="20px"
+              color="#6C757D"
+            >
+              {department.positions.length} position
+              {department.positions.length !== 1 ? 's' : ''}
+            </Text>
+          </Flex>
         )}
         <Flex alignItems="center" gap="12px">
           {isEditing ? (
@@ -166,6 +186,7 @@ export const ModifyDepartmentCard = ({
                 color="#FFF"
                 fontWeight="700"
                 lineHeight="20px"
+                maxWidth="72px"
               >
                 Save
               </Button>
@@ -181,11 +202,10 @@ export const ModifyDepartmentCard = ({
               <Button
                 color="#515151"
                 background="#EEE"
-                padding="0px 0px"
                 size="xs"
                 onClick={() => setIsDeleteConfirmOpen(true)}
               >
-                &#x2014;
+                <RiSubtractFill color="#515151" size="20px" />
               </Button>
             </>
           )}

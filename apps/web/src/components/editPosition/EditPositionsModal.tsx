@@ -8,7 +8,6 @@ import {
   positionsControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { RightSearchIcon } from '@web/static/icons';
 import { InputGroup } from '../ui/input-group';
 import { ModifyPositionCard } from './ModifyPositionCard';
 import { useEffect, useState } from 'react';
@@ -16,6 +15,7 @@ import { PositionEntityEmployeeHydrated } from '@web/client';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { NewPositionCard } from './NewPositionCard';
+import { MdOutlineSearch } from 'react-icons/md';
 
 export const EditPositionsModal = ({
   isOpen,
@@ -157,19 +157,31 @@ export const EditPositionsModal = ({
             <Dialog.Body>
               <Flex height="38px">
                 <InputGroup
-                  startElement={
-                    <RightSearchIcon color="#929292" w="30px" h="30px" />
-                  }
                   fontSize="16px"
                   flex="1"
-                  border="1px solid #929292"
-                  borderRadius="6px"
+                  startElement={
+                    <MdOutlineSearch
+                      color="#929292"
+                      size="20px"
+                      style={{
+                        marginLeft: '8px',
+                        marginRight: '8px',
+                      }}
+                    />
+                  }
                 >
                   <Input
-                    placeholder="Search departments"
+                    placeholder="Search positions"
                     padding="4px 12px"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    _focus={{
+                      outline: 'none',
+                      boxShadow: 'none',
+                      borderColor: '#929292',
+                    }}
+                    borderRadius="6px"
+                    border="1px solid #929292"
                   />
                 </InputGroup>
                 <Button
@@ -188,7 +200,7 @@ export const EditPositionsModal = ({
                     stroke="white"
                     stroke-width="0.38"
                   />
-                  add position
+                  Add position
                 </Button>
               </Flex>
               <VStack

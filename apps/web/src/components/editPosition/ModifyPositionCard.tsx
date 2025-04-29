@@ -17,6 +17,32 @@ import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import { RxCross2 } from 'react-icons/rx';
 import { DeleteConfirmModal } from '../DeleteConfirmModal';
+import { RiSubtractFill } from 'react-icons/ri';
+import { ChakraStylesConfig, Select } from 'chakra-react-select';
+
+const selectStyles: ChakraStylesConfig = {
+  control: (provided) => ({
+    ...provided,
+    border: '1px solid #E5E5E5',
+    boxShadow: 'none',
+    minHeight: '40px',
+    padding: '0px 8px',
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    padding: '10px 12px',
+    cursor: 'pointer',
+  }),
+  container: (provided) => ({
+    ...provided,
+    width: '100%',
+    cursor: 'pointer',
+  }),
+  multiValue: (provided) => ({
+    ...provided,
+    padding: '6px',
+  }),
+};
 
 export const ModifyPositionCard = ({
   position,
@@ -148,7 +174,15 @@ export const ModifyPositionCard = ({
               fontSize="16px"
               width="100%"
               autoFocus
-              padding="0px 8px"
+              padding="10px"
+              borderRadius="6px"
+              border="1px solid #C0C0C0"
+              height="40px"
+              _focus={{
+                outline: 'none',
+                boxShadow: 'none',
+                borderColor: '#929292',
+              }}
             />
             <select
               id="departmentDropdown"
@@ -161,6 +195,9 @@ export const ModifyPositionCard = ({
                 border: '1px solid #C0C0C0',
                 borderRadius: '6px',
                 padding: '10px',
+                fontSize: '16px',
+                width: '100%',
+                height: '40px',
               }}
             >
               <option value="" disabled selected>
@@ -180,7 +217,16 @@ export const ModifyPositionCard = ({
         ) : (
           <Flex flexDir="column" width="100%">
             <Text fontSize="16px" fontWeight="400" lineHeight="21px">
-              {position.name} ({position.employees.length})
+              {position.name}
+            </Text>
+            <Text
+              fontSize="14px"
+              fontWeight="400"
+              lineHeight="20px"
+              color="#6C757D"
+            >
+              {position.employees.length} Employee
+              {position.employees.length !== 1 ? 's' : ''}
             </Text>
             <Text
               fontSize="14px"
@@ -214,6 +260,7 @@ export const ModifyPositionCard = ({
                 color="#FFF"
                 fontWeight="700"
                 lineHeight="20px"
+                maxWidth="72px"
               >
                 Save
               </Button>
@@ -229,11 +276,10 @@ export const ModifyPositionCard = ({
               <Button
                 color="#515151"
                 background="#EEE"
-                padding="0px 0px"
                 size="xs"
                 onClick={() => setIsDeleteConfirmOpen(true)}
               >
-                &#x2014;
+                <RiSubtractFill color="#515151" size="20px" />
               </Button>
             </>
           )}

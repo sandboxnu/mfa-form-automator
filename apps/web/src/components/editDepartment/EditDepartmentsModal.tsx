@@ -7,7 +7,6 @@ import {
   positionsControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { RightSearchIcon } from '@web/static/icons';
 import { InputGroup } from '../ui/input-group';
 import { ModifyDepartmentCard } from './ModifyDepartmentCard';
 import { useState, useEffect } from 'react';
@@ -15,6 +14,7 @@ import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import { NewDepartmentCard } from './NewDepartmentCard';
 import { DepartmentEntityHydrated } from '@web/client';
+import { MdOutlineSearch } from 'react-icons/md';
 
 export const EditDepartmentsModal = ({
   isOpen,
@@ -148,19 +148,31 @@ export const EditDepartmentsModal = ({
             <Dialog.Body>
               <Flex height="38px">
                 <InputGroup
-                  startElement={
-                    <RightSearchIcon color="#929292" w="30px" h="30px" />
-                  }
                   fontSize="16px"
                   flex="1"
-                  border="1px solid #929292"
-                  borderRadius="6px"
+                  startElement={
+                    <MdOutlineSearch
+                      color="#929292"
+                      size="20px"
+                      style={{
+                        marginLeft: '8px',
+                        marginRight: '8px',
+                      }}
+                    />
+                  }
                 >
                   <Input
                     placeholder="Search departments"
                     padding="4px 12px"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    _focus={{
+                      outline: 'none',
+                      boxShadow: 'none',
+                      borderColor: '#929292',
+                    }}
+                    borderRadius="6px"
+                    border="1px solid #929292"
                   />
                 </InputGroup>
                 <Button
@@ -179,7 +191,7 @@ export const EditDepartmentsModal = ({
                     stroke="white"
                     strokeWidth="0.38"
                   />
-                  add department
+                  Add department
                 </Button>
               </Flex>
               <VStack
