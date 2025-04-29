@@ -1,14 +1,7 @@
-import {
-  Button,
-  Dialog,
-  Flex,
-  Portal,
-  Text,
-  Input,
-  VStack,
-} from '@chakra-ui/react';
+import { Button, Dialog, Flex, Portal, Input, VStack } from '@chakra-ui/react';
 import { CloseIcon, PlusIcon } from '@web/static/icons';
 import {
+  departmentsControllerFindAllOptions,
   positionsControllerCreateMutation,
   positionsControllerFindAllOptions,
   positionsControllerFindAllQueryKey,
@@ -33,6 +26,9 @@ export const EditPositionsModal = ({
   const { data: positions = [] } = useQuery(
     positionsControllerFindAllOptions(),
   );
+  const { data: departments = [] } = useQuery(
+    departmentsControllerFindAllOptions(),
+  );
   const [filteredPositions, setFilteredPositions] = useState<
     PositionEntityEmployeeHydrated[]
   >([]);
@@ -48,6 +44,9 @@ export const EditPositionsModal = ({
   useEffect(() => {
     if (!isOpen) {
       setSearchQuery('');
+      setIsCreatingNew(false);
+      setNewPositionName('');
+      setNewPositionDepartmentId(null);
     }
   }, [isOpen]);
 
@@ -204,10 +203,16 @@ export const EditPositionsModal = ({
                     onCancel={handleCancelCreate}
                     onSave={handleSaveNewPosition}
                     isLoading={isLoading}
+                    departments={departments}
+                    setNewPositionDepartmentId={setNewPositionDepartmentId}
                   />
                 )}
                 {filteredPositions.map((position) => (
-                  <ModifyPositionCard key={position.id} position={position} />
+                  <ModifyPositionCard
+                    key={position.id}
+                    position={position}
+                    departments={departments}
+                  />
                 ))}
               </VStack>
             </Dialog.Body>

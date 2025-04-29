@@ -37,6 +37,8 @@ export const EditDepartmentsModal = ({
   useEffect(() => {
     if (!isOpen) {
       setSearchQuery('');
+      setIsCreatingNew(false);
+      setNewDepartmentName('');
     }
   }, [isOpen]);
 

@@ -1,4 +1,5 @@
-import { Button, Flex, Input } from '@chakra-ui/react';
+import { Button, Flex, Input, Text, Select } from '@chakra-ui/react';
+import { DepartmentEntityHydrated } from '@web/client';
 import { RxCross2 } from 'react-icons/rx';
 
 export const NewPositionCard = ({
@@ -7,12 +8,16 @@ export const NewPositionCard = ({
   onCancel,
   onSave,
   isLoading,
+  departments,
+  setNewPositionDepartmentId,
 }: {
   positionName: string;
   setPositionName: (name: string) => void;
   onCancel: () => void;
   onSave: () => void;
   isLoading: boolean;
+  departments: DepartmentEntityHydrated[];
+  setNewPositionDepartmentId: (id: string | null) => void;
 }) => {
   return (
     <Flex
@@ -25,15 +30,39 @@ export const NewPositionCard = ({
       alignItems="center"
       gapX="30px"
     >
-      <Input
-        value={positionName}
-        onChange={(e) => setPositionName(e.target.value)}
-        fontSize="16px"
-        width="100%"
-        autoFocus
-        padding="0px 8px"
-        placeholder="Enter position name"
-      />
+      <Flex flexDirection="column" width="100%" gap="10px">
+        <Input
+          value={positionName}
+          onChange={(e) => setPositionName(e.target.value)}
+          fontSize="16px"
+          width="100%"
+          autoFocus
+          padding="0px 8px"
+          placeholder="Enter position name"
+        />
+        <select
+          id="departmentDropdown"
+          placeholder="Select your department"
+          onChange={(e) => {
+            setNewPositionDepartmentId(e.target.value);
+          }}
+          style={{
+            marginTop: '8px',
+            border: '1px solid #C0C0C0',
+            borderRadius: '6px',
+            padding: '10px',
+          }}
+        >
+          <option value="" disabled selected>
+            Select your department
+          </option>
+          {departments?.map((department: DepartmentEntityHydrated) => (
+            <option key={department.name} value={department.id}>
+              {department.name}
+            </option>
+          ))}
+        </select>
+      </Flex>
       <Flex alignItems="center" gap="12px">
         <Button onClick={onCancel} variant="outline" border="1px solid #1367EA">
           <RxCross2 color="#1367EA" />

@@ -108,7 +108,9 @@ export const TopBar: React.FC = () => {
                     cursor="default"
                     pt="8px"
                   >
-                    {user?.position ? user?.position.name : 'Position'}
+                    {user?.position
+                      ? user?.position.name
+                      : 'No Position Assigned'}
                   </Text>
                   <Text
                     color="#888888"
