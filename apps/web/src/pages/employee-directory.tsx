@@ -1,31 +1,18 @@
-import {
-  Button,
-  Flex,
-  Input,
-  TableBody,
-  TableHeader,
-  TableRow,
-} from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react/box';
 import { Heading, Text } from '@chakra-ui/react/typography';
-import {
-  EmployeeBaseEntity,
-  employeesControllerFindAll,
-  Scope,
-  SortBy,
-} from '@web/client';
+import { EmployeeBaseEntity, Scope, SortBy } from '@web/client';
 import { DeleteEmployeeModal } from '@web/components/DeleteEmployeeModal';
 import isAuth from '@web/components/isAuth';
 import { SearchAndSort } from '@web/components/SearchAndSort';
-import { InputGroup } from '@web/components/ui/input-group';
 import { useEmployeesContext } from '@web/context/EmployeesContext';
-import { RightSearchIcon, UserProfileAvatar } from '@web/static/icons';
-import { distance } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { UserProfileAvatar } from '@web/static/icons';
+import { useState } from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 
 function EmployeeDirectory() {
   const [searchQuery, setSearchQuery] = useState('');
+  // TODO sorting 
   const [sortOption, setSortOption] = useState<SortBy>(SortBy.NAME_DESC);
   const { employees, isLoading, error } = useEmployeesContext();
   const [editingEmployee, setEditingEmployee] = useState<string | null>(null);

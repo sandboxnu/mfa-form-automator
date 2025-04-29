@@ -9,24 +9,30 @@ interface EmployeesContextType {
   error: Error | null;
 }
 
-export const EmployeesContext = createContext<EmployeesContextType>({} as EmployeesContextType);
+export const EmployeesContext = createContext<EmployeesContextType>(
+  {} as EmployeesContextType,
+);
 
-export const EmployeesContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const EmployeesContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const {
     isLoading,
     error,
-    data: employees = []
+    data: employees = [],
   } = useQuery({
-    ...employeesControllerFindAllOptions()
+    ...employeesControllerFindAllOptions(),
   });
 
   return (
     <EmployeesContext.Provider
       value={{
-        // TODO 
+        // TODO
         employees,
         isLoading,
-        error
+        error,
       }}
     >
       {children}

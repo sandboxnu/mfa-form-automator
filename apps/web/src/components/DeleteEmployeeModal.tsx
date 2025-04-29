@@ -49,69 +49,69 @@ export const DeleteEmployeeModal = ({
   };
 
   return null;
-//   (
-//     <Dialog.Root
-//       open={isOpen}
-//       onOpenChange={onClose}
-//       closeOnInteractOutside={true}
-//     >
-//       <Portal>
-//         <Dialog.Backdrop bg="rgba(0, 0, 0, 0.5)" />
-//         <Dialog.Positioner alignItems="center" justifyContent={'center'}>
-//           <Dialog.Content
-//             padding={'24px 32px'}
-//             gap="24px"
-//             backgroundColor="#F8F9FA"
-//             flexDir={'column'}
-//             width="559px"
-//             minHeight="554px"
-//             maxHeight="75vh"
-//             borderRadius="12px"
-//             boxShadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
-//           >
-//             <Dialog.Header>
-//               <Flex
-//                 width="100%"
-//                 flexDirection="row"
-//                 justifyContent={'space-between'}
-//                 alignItems={'center'}
-//               >
-//                 <Dialog.Title
-//                   fontFamily={'Hanken Grotesk'}
-//                   fontSize="19px"
-//                   fontWeight="19px"
-//                   lineHeight="26px"
-//                 >
-//                   Delete User?
-//                 </Dialog.Title>
-//                 <CloseIcon
-//                   onClick={onClose}
-//                   cursor="pointer"
-//                   style={{
-//                     width: '19px',
-//                     height: '19px',
-//                   }}
-//                 />
-//               </Flex>
-//             </Dialog.Header>
-//             <Dialog.Body>
-//               <Flex flexDirection="column" alignItems="flex-start" gap="24px">
-//                 <Flex
-//                   flexDirection="column"
-//                   alignItems="flex-start"
-//                   gap="8px"
-//                   alignSelf="stretch"
-//                 >
-//                   <Text style={subheadingStyle}>Description</Text>
-//                   <Text color="#222324" fontSize="16px" fontWeight="400">
-//                     {`Are you sure you want to remove ${employee.firstName} ${employee.lastName} from the employee directory?`}
-//                   </Text>
-//                 </Flex>
-//               </Flex>
-//             </Dialog.Body>
-//           </Dialog.Content>
-//         </Dialog.Positioner>
-//       </Portal>
-//     </Dialog.Root>
-//   );
+  //   (
+  //     <Dialog.Root
+  //       open={isOpen}
+  //       onOpenChange={onClose}
+  //       closeOnInteractOutside={true}
+  //     >
+  //       <Portal>
+  //         <Dialog.Backdrop bg="rgba(0, 0, 0, 0.5)" />
+  //         <Dialog.Positioner alignItems="center" justifyContent={'center'}>
+  //           <Dialog.Content
+  //             padding={'24px 32px'}
+  //             gap="24px"
+  //             backgroundColor="#F8F9FA"
+  //             flexDir={'column'}
+  //             width="559px"
+  //             minHeight="554px"
+  //             maxHeight="75vh"
+  //             borderRadius="12px"
+  //             boxShadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
+  //           >
+  //             <Dialog.Header>
+  //               <Flex
+  //                 width="100%"
+  //                 flexDirection="row"
+  //                 justifyContent={'space-between'}
+  //                 alignItems={'center'}
+  //               >
+  //                 <Dialog.Title
+  //                   fontFamily={'Hanken Grotesk'}
+  //                   fontSize="19px"
+  //                   fontWeight="19px"
+  //                   lineHeight="26px"
+  //                 >
+  //                   Delete User?
+  //                 </Dialog.Title>
+  //                 <CloseIcon
+  //                   onClick={onClose}
+  //                   cursor="pointer"
+  //                   style={{
+  //                     width: '19px',
+  //                     height: '19px',
+  //                   }}
+  //                 />
+  //               </Flex>
+  //             </Dialog.Header>
+  //             <Dialog.Body>
+  //               <Flex flexDirection="column" alignItems="flex-start" gap="24px">
+  //                 <Flex
+  //                   flexDirection="column"
+  //                   alignItems="flex-start"
+  //                   gap="8px"
+  //                   alignSelf="stretch"
+  //                 >
+  //                   <Text style={subheadingStyle}>Description</Text>
+  //                   <Text color="#222324" fontSize="16px" fontWeight="400">
+  //                     {`Are you sure you want to remove ${employee.firstName} ${employee.lastName} from the employee directory?`}
+  //                   </Text>
+  //                 </Flex>
+  //               </Flex>
+  //             </Dialog.Body>
+  //           </Dialog.Content>
+  //         </Dialog.Positioner>
+  //       </Portal>
+  //     </Dialog.Root>
+  //   );
 };
