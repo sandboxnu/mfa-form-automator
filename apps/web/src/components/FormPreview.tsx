@@ -72,18 +72,20 @@ export const FormPreview = ({
               padding="24px"
               overflow="hidden"
               maxHeight="calc(100vh - 180px)"
-              width="900px"
+              minW="800px"
             >
               <FormEditor
                 formTemplateName={formInstance.name}
+                formTemplateDimensions={{
+                  width: formInstance.formTemplate.pageWidth,
+                  height: formInstance.formTemplate.pageHeight,
+                }}
                 pdfFile={pdfFile}
                 disableEdit={true}
                 fieldGroups={fieldGroups}
                 formFields={[]}
                 setFormFields={() => {}}
                 setFieldGroups={() => {}}
-                scale={1}
-                documentWidth={800}
                 showNav={false}
               />
             </Flex>
