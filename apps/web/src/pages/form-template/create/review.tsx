@@ -142,7 +142,7 @@ function Review() {
           description={formTemplateDescription ?? ''}
           fieldGroups={fieldGroupsContext}
           formFields={formFieldsContext}
-          />
+        />
       }
       submitFunction={_submitFormTemplate}
       backLink={'/form-template/create/input-fields'}

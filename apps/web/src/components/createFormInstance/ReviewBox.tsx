@@ -18,7 +18,7 @@ export const ReviewBox = ({
   description,
   fieldGroups,
 }: {
-  assignedGroupData:ContextAssignedGroupData[]  ,
+  assignedGroupData: ContextAssignedGroupData[];
   pdfFile: File | null;
   name: string;
   description: string;
@@ -32,7 +32,6 @@ export const ReviewBox = ({
     outlineColor: 'transparent',
     borderColor: 'transparent',
   };
-
 
   const GroupItem = ({ color, border }: { color: string; border: string }) => {
     return (

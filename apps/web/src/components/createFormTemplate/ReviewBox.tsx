@@ -20,7 +20,7 @@ export const ReviewBox = ({
   description,
   fieldGroups,
 }: {
-  formFields:FormFields,
+  formFields: FormFields;
   pdfFile: File | null;
   name: string;
   description: string;

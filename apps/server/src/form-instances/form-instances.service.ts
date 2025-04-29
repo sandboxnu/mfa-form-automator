@@ -125,6 +125,7 @@ export class FormInstancesService {
         templateBoxes: true,
       },
     });
+
     // check that the assigned signer exists for each signature
     await this.checkValidAssignedGroupsSigner(
       createFormInstanceDto.assignedGroups,

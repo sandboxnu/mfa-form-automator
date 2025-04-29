@@ -112,7 +112,7 @@ function Review() {
       subheading={'Review your form instance'}
       boxContent={
         <ReviewBox
-        assignedGroupData={assignedGroupData}
+          assignedGroupData={assignedGroupData}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}

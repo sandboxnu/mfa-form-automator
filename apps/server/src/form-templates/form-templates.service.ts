@@ -128,98 +128,84 @@ export class FormTemplatesService {
     const templateFound = await this.prisma.formTemplate.findUnique({
       where: { id },
     });
+
     if (!templateFound) {
       throw new Error(`Form template with ID ${id} does not exist.`);
     }
-
-    // Execute the deletion transaction first and await its completion
-    await this.prisma.$transaction([
-      // Delete TemplateBox records first
-      this.prisma.templateBox.deleteMany({
-        where: {
-          fieldGroup: {
-            formTemplateId: id,
-          },
-        },
-      }),
-      // Then delete FieldGroup records
-      this.prisma.fieldGroup.deleteMany({
-        where: {
-          formTemplateId: id,
-        },
-      }),
-    ]);
-
-    // After deletions are complete, update the form template
-    const updatedFormTemplate = await this.prisma.formTemplate.update({
+    const existingFieldGroups = await this.prisma.fieldGroup.findMany({
       where: {
-        id: id,
+        formTemplateId: id,
       },
-      data: {
-        name: updateFormTemplateDto.name,
-        description: updateFormTemplateDto.description,
-        disabled: updateFormTemplateDto.disabled,
-        // Create new field groups as part of the update
-        fieldGroups: {
-          create: updateFormTemplateDto.fieldGroups?.map((fieldGroup) => {
-            return {
+      select: {
+        id: true,
+      },
+    });
+
+    const updatedFormTemplate = await this.prisma.$transaction(async (tx) => {
+      return tx.formTemplate.update({
+        where: { id },
+        data: {
+          name: updateFormTemplateDto.name,
+          description: updateFormTemplateDto.description,
+          disabled: updateFormTemplateDto.disabled,
+          fieldGroups: {
+            disconnect: existingFieldGroups.map((fg) => ({ id: fg.id })),
+            create: updateFormTemplateDto.fieldGroups?.map((fieldGroup) => ({
               name: fieldGroup.name,
               order: fieldGroup.order,
               templateBoxes: {
-                create: fieldGroup.templateBoxes.map((templateBox) => {
-                  return {
-                    type: templateBox.type,
-                    x_coordinate: templateBox.x_coordinate,
-                    y_coordinate: templateBox.y_coordinate,
-                    width: templateBox.width,
-                    height: templateBox.height,
-                    page: templateBox.page,
-                  };
-                }),
+                create: fieldGroup.templateBoxes.map((templateBox) => ({
+                  type: templateBox.type,
+                  x_coordinate: templateBox.x_coordinate,
+                  y_coordinate: templateBox.y_coordinate,
+                  width: templateBox.width,
+                  height: templateBox.height,
+                  page: templateBox.page,
+                })),
               },
-            };
-          }),
-        },
-      },
-      include: {
-        fieldGroups: {
-          include: {
-            templateBoxes: true,
+            })),
           },
         },
-        formInstances: {
-          include: {
-            formTemplate: true,
-            originator: {
-              include: {
-                position: {
-                  include: {
-                    department: true,
+        include: {
+          fieldGroups: {
+            include: {
+              templateBoxes: true,
+            },
+          },
+          formInstances: {
+            include: {
+              formTemplate: true,
+              originator: {
+                include: {
+                  position: {
+                    include: {
+                      department: true,
+                    },
                   },
                 },
               },
-            },
-            assignedGroups: {
-              include: {
-                signerPosition: {
-                  include: {
-                    department: true,
+              assignedGroups: {
+                include: {
+                  signerPosition: {
+                    include: {
+                      department: true,
+                    },
                   },
-                },
-                signerDepartment: true,
-                signerEmployee: true,
-                signerEmployeeList: true,
-                signingEmployee: true,
-                fieldGroup: {
-                  include: {
-                    templateBoxes: true,
+                  signerDepartment: true,
+                  signerEmployee: true,
+                  signerEmployeeList: true,
+                  signingEmployee: true,
+                  fieldGroup: {
+                    include: {
+                      templateBoxes: true,
+                    },
                   },
                 },
               },
             },
           },
         },
-      },
+      });
     });
 
     return updatedFormTemplate;

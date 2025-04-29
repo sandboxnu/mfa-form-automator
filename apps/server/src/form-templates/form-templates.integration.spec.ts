@@ -9,6 +9,11 @@ import { FormTemplateEntity } from './entities/form-template.entity';
 import { FormTemplatesService } from './form-templates.service';
 import { MockFileStorageHandler } from '../pdf-store/file-storage/MockFileStorageHandler';
 import { Readable } from 'stream';
+import { FormInstanceEntity } from '../form-instances/entities/form-instance.entity';
+import { FormInstancesService } from '../form-instances/form-instances.service';
+import { PostmarkService } from '../postmark/postmark.service';
+import MockEmailHandler from '../postmark/MockEmailHandler';
+import { MockValidateEmployeeHandler } from '../employees/validate-employee/MockValidateEmployeeHandler';
 
 const emptyFile: Express.Multer.File = {
   fieldname: 'file',
@@ -26,22 +31,27 @@ const emptyFile: Express.Multer.File = {
 describe('FormTemplatesIntegrationTest', () => {
   let module: TestingModule;
   let service: FormTemplatesService;
+  let instanceService: FormInstancesService;
   let departmentsService: DepartmentsService;
   let positionsService: PositionsService;
   let employeesService: EmployeesService;
+  let postmarkService: PostmarkService;
   let pdfStoreService: PdfStoreService;
 
   let departmentId: string | undefined;
   let positionId1: string | undefined;
   let employeeId1: string | undefined;
   let formTemplate1: FormTemplateEntity | undefined;
+  let formInstance1: FormInstanceEntity | undefined;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
       providers: [
         FormTemplatesService,
+        FormInstancesService,
         EmployeesService,
         PositionsService,
+        PostmarkService,
         DepartmentsService,
         PdfStoreService,
         PrismaService,
@@ -53,14 +63,34 @@ describe('FormTemplatesIntegrationTest', () => {
           provide: 'ValidateEmployeeHandler',
           useClass: MockFileStorageHandler,
         },
+
+        {
+          provide: 'EmailHandler',
+          useClass: MockEmailHandler,
+        },
+        {
+          provide: 'ValidateEmployeeHandler',
+          useClass: MockValidateEmployeeHandler,
+        },
       ],
     }).compile();
 
     service = module.get<FormTemplatesService>(FormTemplatesService);
+    instanceService = module.get<FormInstancesService>(FormInstancesService);
     departmentsService = module.get<DepartmentsService>(DepartmentsService);
     positionsService = module.get<PositionsService>(PositionsService);
     employeesService = module.get<EmployeesService>(EmployeesService);
     pdfStoreService = module.get<PdfStoreService>(PdfStoreService);
+    jest.spyOn(pdfStoreService, 'uploadPdf').mockResolvedValue('pdfLink');
+    postmarkService = module.get<PostmarkService>(PostmarkService);
+    jest
+      .spyOn(postmarkService, 'sendFormCreatedEmail')
+      .mockResolvedValue(undefined);
+
+    jest
+      .spyOn(postmarkService, 'sendReadyForSignatureToPositionEmail')
+      .mockResolvedValue(undefined);
+    jest.spyOn(postmarkService, 'sendSignedEmail').mockResolvedValue(undefined);
     jest.spyOn(pdfStoreService, 'uploadPdf').mockResolvedValue('pdfLink');
   });
 
@@ -415,6 +445,22 @@ describe('FormTemplatesIntegrationTest', () => {
         ],
         disabled: false,
       });
+      formInstance1 = await instanceService.create({
+        name: 'Form Instance',
+        assignedGroups: [
+          {
+            order: 0,
+            fieldGroupId: formTemplate1.fieldGroups[0].id,
+            signerType: $Enums.SignerType.USER,
+            signerEmployeeId: employeeId1,
+            signerEmployeeList: [],
+          },
+        ],
+        originatorId: 'urn:uuid:' + employeeId1,
+        formTemplateId: formTemplate1.id,
+        formDocLink: 'formDocLink',
+        description: 'description',
+      });
     });
 
     it('successfully updates a form template', async () => {
@@ -437,19 +483,19 @@ describe('FormTemplatesIntegrationTest', () => {
             ],
           },
           {
-          name: 'Field Group 2',
-          order: 1,
-          templateBoxes: [
-            {
-              type: $Enums.SignatureBoxFieldType.TEXT_FIELD,
-              x_coordinate: 47,
-              y_coordinate: 28,
-              width: 50,
-              height: 100,
-              page: 0,
-            },
-          ],
-        },
+            name: 'Field Group 2',
+            order: 1,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.TEXT_FIELD,
+                x_coordinate: 47,
+                y_coordinate: 28,
+                width: 50,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
         ],
       });
 
@@ -489,8 +535,8 @@ describe('FormTemplatesIntegrationTest', () => {
               }),
             ],
           }),
-        ])
-      );      
+        ]),
+      );
     });
 
     it('throws an error when form template is not found', async () => {
@@ -527,7 +573,6 @@ describe('FormTemplatesIntegrationTest', () => {
         ],
         disabled: false,
       });
-
       const updatedFormTemplate = await service.update(templateToDisable!.id, {
         disabled: true,
       });
@@ -535,6 +580,61 @@ describe('FormTemplatesIntegrationTest', () => {
       const formTemplates = await service.findAll();
       expect(formTemplates).toHaveLength(1);
       expect(updatedFormTemplate.disabled).toEqual(true);
+    });
+
+    it('does not modify existing form instances', async () => {
+      await service.update(formTemplate1!.id, {
+        name: 'Updated Form Template',
+        description: 'Updated Form Template Description',
+        fieldGroups: [
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 10,
+                y_coordinate: 10,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+          {
+            name: 'Field Group 2',
+            order: 1,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.TEXT_FIELD,
+                x_coordinate: 47,
+                y_coordinate: 28,
+                width: 50,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+      });
+      expect(formInstance1?.assignedGroups).toHaveLength(1);
+      expect(formInstance1?.formTemplateId).toBe(formTemplate1?.id);
+      expect(formInstance1?.assignedGroups[0].fieldGroup).toEqual(
+        expect.objectContaining({
+          name: 'Field Group 1',
+          order: 0,
+          templateBoxes: [
+            expect.objectContaining({
+              type: $Enums.SignatureBoxFieldType.CHECKBOX,
+              x_coordinate: 0,
+              y_coordinate: 0,
+              width: 100,
+              height: 100,
+              page: 0,
+            }),
+          ],
+        }),
+      );
     });
   });
 

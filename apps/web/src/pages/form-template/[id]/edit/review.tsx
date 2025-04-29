@@ -132,7 +132,7 @@ function Review() {
       subheading={'Review your form template'}
       boxContent={
         <ReviewBox
-        formFields={formFieldsContext}
+          formFields={formFieldsContext}
           pdfFile={pdfFile}
           name={formTemplateName ?? ''}
           description={formTemplateDescription ?? ''}

@@ -19,7 +19,7 @@ export class FieldGroupBaseEntity implements FieldGroup {
   updatedAt: Date;
 
   @ApiProperty()
-  formTemplateId: string;
+  formTemplateId: string | null;
 
   @ApiProperty({
     isArray: true,
