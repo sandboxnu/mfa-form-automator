@@ -33,7 +33,18 @@ export class DepartmentsService {
       take: limit,
       orderBy: orderBy(sortBy),
       include: {
-        positions: true,
+        positions: {
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
     });
     return departments;

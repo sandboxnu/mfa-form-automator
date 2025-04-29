@@ -2,22 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { DepartmentBaseEntity } from './../../departments/entities/department.entity';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 
-// naming kind of off here, PositionEntity should be PositionBaseEntity, since we don't hydrate departments here
-export class PositionEntity {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty()
-  name: string;
-
-  @ApiProperty()
-  departmentId: string | null;
-
-  constructor(partial: Partial<PositionEntity>) {
-    Object.assign(this, partial);
-  }
-}
-
 export class PositionBaseEntity {
   @ApiProperty()
   id: string;
@@ -36,7 +20,7 @@ export class PositionBaseEntity {
   }
 }
 
-export class PositionEntityEmployeeHydrated extends PositionEntity {
+export class PositionEntityEmployeeHydrated extends PositionBaseEntity {
   @ApiProperty()
   employees: EmployeeBaseEntity[];
 

@@ -101,7 +101,7 @@ export type CreatePositionDto = {
 export type PositionEntityEmployeeHydrated = {
   id: string;
   name: string;
-  departmentId: string | null;
+  department: DepartmentBaseEntity | null;
   employees: Array<EmployeeBaseEntity>;
 };
 
@@ -216,16 +216,10 @@ export type DepartmentEntity = {
   updatedAt: string;
 };
 
-export type PositionEntity = {
-  id: string;
-  name: string;
-  departmentId: string | null;
-};
-
 export type DepartmentEntityHydrated = {
   id: string;
   name: string;
-  positions: Array<PositionEntity>;
+  positions: Array<PositionBaseEntity>;
   createdAt: string;
   updatedAt: string;
 };

@@ -40,6 +40,12 @@ export class PositionsService {
           select: {
             id: true,
             name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
             employees: {
               select: {
                 id: true,
@@ -55,6 +61,12 @@ export class PositionsService {
           select: {
             id: true,
             name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
             employees: {
               select: {
                 id: true,
@@ -269,7 +281,6 @@ export class PositionsService {
    * @returns the updated position, hydrated
    */
   async update(id: string, updatePositionDto: UpdatePositionDto) {
-    console.log(updatePositionDto);
     const updatedPosition = this.prisma.position.update({
       where: {
         id: id,

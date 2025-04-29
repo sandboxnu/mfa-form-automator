@@ -35,6 +35,12 @@ export const EditDepartmentsModal = ({
   const { refreshUser } = useAuth();
 
   useEffect(() => {
+    if (!isOpen) {
+      setSearchQuery('');
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     if (!departments) return;
 
     if (searchQuery.trim() === '') {
