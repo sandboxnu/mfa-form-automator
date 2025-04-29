@@ -1,8 +1,6 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { FormInteractionType } from './types';
 import { Toaster } from '../ui/toaster';
-
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
  * @param submitLink page router will push on click of 'save & continue'

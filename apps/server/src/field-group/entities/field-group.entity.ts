@@ -11,15 +11,6 @@ export class FieldGroupBaseEntity {
   @ApiProperty()
   order: number;
 
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  updatedAt: Date;
-
-  @ApiProperty()
-  formTemplateId: string | null;
-
   @ApiProperty({
     isArray: true,
     type: TemplateBoxBaseEntity,

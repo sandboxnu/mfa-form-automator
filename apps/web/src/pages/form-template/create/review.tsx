@@ -13,6 +13,7 @@ import isAuth from '@web/components/isAuth';
 import { toaster } from '@web/components/ui/toaster';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from '@web/pages/_app';
+import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -119,13 +120,24 @@ function Review() {
           return response;
         })
         .catch((e) => {
-          toaster.create({
-            title: 'Failed to create form template',
-            description: (e as Error).message,
-            type: 'error',
-            duration: 3000,
-          });
-          throw e;
+          setCreateFormLoading(false);
+          if (e instanceof AxiosError) {
+            toaster.create({
+              title: 'Failed to create form template',
+              description: e.response?.data.message ?? e.message,
+              type: 'error',
+              duration: 3000,
+            });
+          } else {
+            toaster.create({
+              title: 'Failed to create form template',
+              description: (e as Error).message,
+              type: 'error',
+              duration: 3000,
+            });
+
+            setCreateFormLoading(false);
+          }
         });
   };
 

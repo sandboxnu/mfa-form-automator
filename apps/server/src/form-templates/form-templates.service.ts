@@ -169,14 +169,6 @@ export class FormTemplatesService {
     if (!templateFound) {
       throw new Error(`Form template with ID ${id} does not exist.`);
     }
-    const existingFieldGroups = await this.prisma.fieldGroup.findMany({
-      where: {
-        formTemplateId: id,
-      },
-      select: {
-        id: true,
-      },
-    });
 
     const updatedFormTemplate = await this.prisma.$transaction(async (tx) => {
       return tx.formTemplate.update({
@@ -186,7 +178,7 @@ export class FormTemplatesService {
           description: updateFormTemplateDto.description,
           disabled: updateFormTemplateDto.disabled,
           fieldGroups: {
-            disconnect: existingFieldGroups.map((fg) => ({ id: fg.id })),
+            set: [],
             create: updateFormTemplateDto.fieldGroups?.map((fieldGroup) => ({
               name: fieldGroup.name,
               order: fieldGroup.order,
