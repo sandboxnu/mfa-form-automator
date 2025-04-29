@@ -127,9 +127,8 @@ function Review() {
             });
           }
         });
-        // always set loading to false
-        setCreateFormLoading(false);
-
+    // always set loading to false
+    setCreateFormLoading(false);
   };
 
   function printDetails() {

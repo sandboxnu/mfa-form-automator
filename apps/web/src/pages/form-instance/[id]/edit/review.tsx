@@ -71,22 +71,22 @@ function Review() {
       })
       .catch((e) => {
         setCreateFormLoading(false);
-          if (e instanceof AxiosError) {
-            toaster.create({
-              title: 'Failed to edit form instance',
-              description: e.response?.data.message ?? e.message,
-              type: 'error',
-              duration: 3000,
-            });
-          } else {
-            toaster.create({
-              title: 'Failed to edit form instance',
-              description: (e as Error).message,
-              type: 'error',
-              duration: 3000,
-            });
-          }
-        });
+        if (e instanceof AxiosError) {
+          toaster.create({
+            title: 'Failed to edit form instance',
+            description: e.response?.data.message ?? e.message,
+            type: 'error',
+            duration: 3000,
+          });
+        } else {
+          toaster.create({
+            title: 'Failed to edit form instance',
+            description: (e as Error).message,
+            type: 'error',
+            duration: 3000,
+          });
+        }
+      });
   };
 
   return (
