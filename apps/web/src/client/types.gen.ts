@@ -20,7 +20,7 @@ export type DepartmentBaseEntity = {
 export type PositionBaseEntity = {
   id: string;
   name: string;
-  department: DepartmentBaseEntity;
+  department: DepartmentBaseEntity | null;
 };
 
 export enum Scope {
@@ -96,6 +96,13 @@ export type UpdateEmployeeDto = {
 export type CreatePositionDto = {
   name: string;
   departmentId: string;
+};
+
+export type PositionEntityEmployeeHydrated = {
+  id: string;
+  name: string;
+  departmentId: string | null;
+  employees: Array<EmployeeBaseEntity>;
 };
 
 export type UpdatePositionDto = {
@@ -205,6 +212,20 @@ export type CreateDepartmentDto = {
 export type DepartmentEntity = {
   id: string;
   name: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PositionEntity = {
+  id: string;
+  name: string;
+  departmentId: string | null;
+};
+
+export type DepartmentEntityHydrated = {
+  id: string;
+  name: string;
+  positions: Array<PositionEntity>;
   createdAt: string;
   updatedAt: string;
 };
@@ -667,7 +688,7 @@ export type PositionsControllerFindAllErrors = {
 };
 
 export type PositionsControllerFindAllResponses = {
-  200: Array<PositionBaseEntity>;
+  200: Array<PositionEntityEmployeeHydrated>;
 };
 
 export type PositionsControllerFindAllResponse =
@@ -1109,7 +1130,7 @@ export type DepartmentsControllerFindAllErrors = {
 };
 
 export type DepartmentsControllerFindAllResponses = {
-  200: Array<DepartmentEntity>;
+  200: Array<DepartmentEntityHydrated>;
 };
 
 export type DepartmentsControllerFindAllResponse =

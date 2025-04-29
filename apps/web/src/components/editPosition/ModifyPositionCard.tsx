@@ -1,5 +1,9 @@
 import { Button, Flex, Input, Text } from '@chakra-ui/react';
-import { PositionBaseEntity } from '@web/client';
+import {
+  PositionBaseEntity,
+  PositionEntity,
+  PositionEntityEmployeeHydrated,
+} from '@web/client';
 import { GrayPencilIcon } from '@web/static/icons';
 import {
   positionsControllerUpdateMutation,
@@ -14,8 +18,9 @@ import { RxCross2 } from 'react-icons/rx';
 export const ModifyPositionCard = ({
   position,
 }: {
-  position: PositionBaseEntity;
+  position: PositionEntityEmployeeHydrated;
 }) => {
+  console.log(position);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [positionName, setPositionName] = useState(position.name);
@@ -83,7 +88,7 @@ export const ModifyPositionCard = ({
         />
       ) : (
         <Text fontSize="16px" fontWeight="400" lineHeight="21px">
-          {position.name}
+          {position.name} ({position.employees.length})
         </Text>
       )}
       <Flex alignItems="center" gap="12px">

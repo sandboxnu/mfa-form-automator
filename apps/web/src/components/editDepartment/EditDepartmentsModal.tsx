@@ -13,7 +13,7 @@ import { useState, useEffect } from 'react';
 import { queryClient } from '@web/pages/_app';
 import { useAuth } from '@web/hooks/useAuth';
 import { NewDepartmentCard } from './NewDepartmentCard';
-import { DepartmentEntity } from '@web/client';
+import { DepartmentEntityHydrated } from '@web/client';
 
 export const EditDepartmentsModal = ({
   isOpen,
@@ -26,7 +26,7 @@ export const EditDepartmentsModal = ({
     departmentsControllerFindAllOptions(),
   );
   const [filteredDepartments, setFilteredDepartments] = useState<
-    DepartmentEntity[]
+    DepartmentEntityHydrated[]
   >([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreatingNew, setIsCreatingNew] = useState(false);

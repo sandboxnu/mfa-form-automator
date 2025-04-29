@@ -57,7 +57,12 @@ export const PositionBaseEntitySchema = {
       type: 'string',
     },
     department: {
-      $ref: '#/components/schemas/DepartmentBaseEntity',
+      nullable: true,
+      allOf: [
+        {
+          $ref: '#/components/schemas/DepartmentBaseEntity',
+        },
+      ],
     },
   },
   required: ['id', 'name', 'department'],
@@ -293,6 +298,29 @@ export const CreatePositionDtoSchema = {
     },
   },
   required: ['name', 'departmentId'],
+} as const;
+
+export const PositionEntityEmployeeHydratedSchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    departmentId: {
+      type: 'string',
+      nullable: true,
+    },
+    employees: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/EmployeeBaseEntity',
+      },
+    },
+  },
+  required: ['id', 'name', 'departmentId', 'employees'],
 } as const;
 
 export const UpdatePositionDtoSchema = {
@@ -619,6 +647,50 @@ export const DepartmentEntitySchema = {
     },
   },
   required: ['id', 'name', 'createdAt', 'updatedAt'],
+} as const;
+
+export const PositionEntitySchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    departmentId: {
+      type: 'string',
+      nullable: true,
+    },
+  },
+  required: ['id', 'name', 'departmentId'],
+} as const;
+
+export const DepartmentEntityHydratedSchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    positions: {
+      type: 'array',
+      items: {
+        $ref: '#/components/schemas/PositionEntity',
+      },
+    },
+    createdAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+    updatedAt: {
+      format: 'date-time',
+      type: 'string',
+    },
+  },
+  required: ['id', 'name', 'positions', 'createdAt', 'updatedAt'],
 } as const;
 
 export const UpdateDepartmentDtoSchema = {

@@ -40,6 +40,14 @@ export class PositionsService {
           select: {
             id: true,
             name: true,
+            employees: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
           },
         })
       : await this.prisma.position.findMany({
@@ -47,6 +55,14 @@ export class PositionsService {
           select: {
             id: true,
             name: true,
+            employees: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
           },
         });
     return positions;

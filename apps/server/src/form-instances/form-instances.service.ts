@@ -336,7 +336,7 @@ export class FormInstancesService {
               },
               {
                 signerType: SignerType.DEPARTMENT,
-                signerDepartmentId: employee.position.department.id,
+                signerDepartmentId: employee.position.department?.id,
               },
               {
                 signerType: SignerType.USER,

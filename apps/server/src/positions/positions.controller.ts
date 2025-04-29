@@ -30,7 +30,10 @@ import { PositionsErrorMessage } from './positions.errors';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { PositionBaseEntity } from './entities/position.entity';
+import {
+  PositionBaseEntity,
+  PositionEntityEmployeeHydrated,
+} from './entities/position.entity';
 import { OptionalParseIntPipe } from '../pipes/OptionalParseInt.pipe';
 import { SortOption } from '../utils';
 
@@ -61,7 +64,7 @@ export class PositionsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [PositionBaseEntity] })
+  @ApiOkResponse({ type: [PositionEntityEmployeeHydrated] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
@@ -81,7 +84,9 @@ export class PositionsController {
     @Query('sortBy') sortBy?: SortOption,
   ) {
     const positions = await this.positionsService.findAll(limit, sortBy);
-    return positions.map((position) => new PositionBaseEntity(position));
+    return positions.map(
+      (position) => new PositionEntityEmployeeHydrated(position),
+    );
   }
 
   @Get('department/:departmentId')

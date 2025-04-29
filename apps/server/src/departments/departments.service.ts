@@ -32,6 +32,9 @@ export class DepartmentsService {
     const departments = await this.prisma.department.findMany({
       take: limit,
       orderBy: orderBy(sortBy),
+      include: {
+        positions: true,
+      },
     });
     return departments;
   }

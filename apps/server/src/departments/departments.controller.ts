@@ -24,7 +24,10 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { DepartmentEntity } from './entities/department.entity';
+import {
+  DepartmentEntity,
+  DepartmentEntityHydrated,
+} from './entities/department.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { DepartmentsErrorMessage } from './departments.errors';
@@ -62,7 +65,7 @@ export class DepartmentsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [DepartmentEntity] })
+  @ApiOkResponse({ type: [DepartmentEntityHydrated] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
@@ -82,7 +85,9 @@ export class DepartmentsController {
     @Query('sortBy') sortyBy?: SortOption,
   ) {
     const departments = await this.departmentsService.findAll(limit, sortyBy);
-    return departments.map((department) => new DepartmentEntity(department));
+    return departments.map(
+      (department) => new DepartmentEntityHydrated(department),
+    );
   }
 
   @Get(':id')

@@ -22,7 +22,7 @@ export const EditPositionsModal = ({
   onClose: () => void;
 }) => {
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
-
+  console.log(positions);
   return (
     <Dialog.Root
       open={isOpen}
