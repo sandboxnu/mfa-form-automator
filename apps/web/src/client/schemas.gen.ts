@@ -655,6 +655,23 @@ export const DepartmentEntitySchema = {
   required: ['id', 'name', 'createdAt', 'updatedAt'],
 } as const;
 
+export const PositionEntitySchema = {
+  type: 'object',
+  properties: {
+    id: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    departmentId: {
+      type: 'string',
+      nullable: true,
+    },
+  },
+  required: ['id', 'name', 'departmentId'],
+} as const;
+
 export const DepartmentEntityHydratedSchema = {
   type: 'object',
   properties: {
@@ -667,7 +684,7 @@ export const DepartmentEntityHydratedSchema = {
     positions: {
       type: 'array',
       items: {
-        $ref: '#/components/schemas/PositionBaseEntity',
+        $ref: '#/components/schemas/PositionEntity',
       },
     },
     createdAt: {

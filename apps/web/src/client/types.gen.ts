@@ -216,10 +216,16 @@ export type DepartmentEntity = {
   updatedAt: string;
 };
 
+export type PositionEntity = {
+  id: string;
+  name: string;
+  departmentId: string | null;
+};
+
 export type DepartmentEntityHydrated = {
   id: string;
   name: string;
-  positions: Array<PositionBaseEntity>;
+  positions: Array<PositionEntity>;
   createdAt: string;
   updatedAt: string;
 };

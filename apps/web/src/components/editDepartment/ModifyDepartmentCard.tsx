@@ -6,6 +6,7 @@ import {
   departmentsControllerUpdateMutation,
   positionsControllerUpdateMutation,
   departmentsControllerRemoveMutation,
+  positionsControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
@@ -39,6 +40,9 @@ export const ModifyDepartmentCard = ({
       queryClient.invalidateQueries({
         queryKey: departmentsControllerFindAllQueryKey(),
       });
+      queryClient.invalidateQueries({
+        queryKey: positionsControllerFindAllQueryKey(),
+      });
       refreshUser();
     },
   });
@@ -49,6 +53,9 @@ export const ModifyDepartmentCard = ({
       queryClient.invalidateQueries({
         queryKey: departmentsControllerFindAllQueryKey(),
       });
+      queryClient.invalidateQueries({
+        queryKey: positionsControllerFindAllQueryKey(),
+      });
       refreshUser();
     },
   });
@@ -58,6 +65,9 @@ export const ModifyDepartmentCard = ({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: departmentsControllerFindAllQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: positionsControllerFindAllQueryKey(),
       });
       refreshUser();
     },

@@ -2,6 +2,7 @@ import { Button, Dialog, Flex, Portal, Input, VStack } from '@chakra-ui/react';
 import { CloseIcon, PlusIcon } from '@web/static/icons';
 import {
   departmentsControllerFindAllOptions,
+  departmentsControllerFindAllQueryKey,
   positionsControllerCreateMutation,
   positionsControllerFindAllOptions,
   positionsControllerFindAllQueryKey,
@@ -77,6 +78,9 @@ export const EditPositionsModal = ({
       setNewPositionName('');
       queryClient.invalidateQueries({
         queryKey: positionsControllerFindAllQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: departmentsControllerFindAllQueryKey(),
       });
       refreshUser();
     },

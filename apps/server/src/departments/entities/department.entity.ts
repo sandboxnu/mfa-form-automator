@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Department } from '@prisma/client';
 import { Exclude } from 'class-transformer';
-import { PositionBaseEntity } from '../../positions/entities/position.entity';
+import { PositionEntity } from '../../positions/entities/position.entity';
 
 export class DepartmentBaseEntity {
   @ApiProperty()
@@ -35,13 +35,13 @@ export class DepartmentEntity implements Department {
 
 export class DepartmentEntityHydrated extends DepartmentEntity {
   @ApiProperty()
-  positions: PositionBaseEntity[];
+  positions: PositionEntity[];
 
   constructor(partial: Partial<DepartmentEntityHydrated>) {
     super(partial);
     if (partial.positions) {
       partial.positions = partial.positions.map(
-        (position) => new PositionBaseEntity(position),
+        (position) => new PositionEntity(position),
       );
     }
     Object.assign(this, partial);

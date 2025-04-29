@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DepartmentsController } from './departments.controller';
 import { DepartmentsService } from './departments.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { DepartmentEntity } from './entities/department.entity';
+import {
+  DepartmentEntity,
+  DepartmentEntityHydrated,
+} from './entities/department.entity';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -34,27 +37,55 @@ describe('DepartmentsController', () => {
           name: 'department-name',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          positions: [
+            {
+              id: 'position-id',
+              name: 'position-name',
+              departmentId: 'department-id',
+            },
+          ],
         },
         {
           id: 'department-id-one',
           name: 'department-name-one',
           createdAt: new Date(1672531201),
           updatedAt: new Date(1672531201),
+          positions: [
+            {
+              id: 'position-id-one',
+              name: 'position-name-one',
+              departmentId: 'department-id-one',
+            },
+          ],
         },
       ];
 
       const expected = [
-        new DepartmentEntity({
+        new DepartmentEntityHydrated({
           id: 'department-id',
           name: 'department-name',
           createdAt: new Date(1672531200),
           updatedAt: new Date(1672531200),
+          positions: [
+            {
+              id: 'position-id',
+              name: 'position-name',
+              departmentId: 'department-id',
+            },
+          ],
         }),
-        new DepartmentEntity({
+        new DepartmentEntityHydrated({
           id: 'department-id-one',
           name: 'department-name-one',
           createdAt: new Date(1672531201),
           updatedAt: new Date(1672531201),
+          positions: [
+            {
+              id: 'position-id-one',
+              name: 'position-name-one',
+              departmentId: 'department-id-one',
+            },
+          ],
         }),
       ];
 

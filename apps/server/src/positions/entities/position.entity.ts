@@ -2,6 +2,21 @@ import { ApiProperty } from '@nestjs/swagger';
 import { DepartmentBaseEntity } from './../../departments/entities/department.entity';
 import { EmployeeBaseEntity } from '../../employees/entities/employee.entity';
 
+export class PositionEntity {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  departmentId: string | null;
+
+  constructor(partial: Partial<PositionEntity>) {
+    Object.assign(this, partial);
+  }
+}
+
 export class PositionBaseEntity {
   @ApiProperty()
   id: string;

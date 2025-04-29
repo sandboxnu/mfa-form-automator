@@ -37,12 +37,7 @@ export class DepartmentsService {
           select: {
             id: true,
             name: true,
-            department: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
+            departmentId: true,
           },
         },
       },

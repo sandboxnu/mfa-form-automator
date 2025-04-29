@@ -4,6 +4,7 @@ import {
   departmentsControllerFindAllOptions,
   departmentsControllerCreateMutation,
   departmentsControllerFindAllQueryKey,
+  positionsControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { RightSearchIcon } from '@web/static/icons';
@@ -69,6 +70,9 @@ export const EditDepartmentsModal = ({
       setNewDepartmentName('');
       queryClient.invalidateQueries({
         queryKey: departmentsControllerFindAllQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: positionsControllerFindAllQueryKey(),
       });
       refreshUser();
     },
