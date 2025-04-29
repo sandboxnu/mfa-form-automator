@@ -20,6 +20,7 @@ import { appControllerRefresh } from '@web/client';
 import { SignFormInstanceContextProvider } from '@web/context/SignFormInstanceContext';
 import { pdfjs } from 'react-pdf';
 import { UserFormsContextProvider } from '@web/context/UserFormsContext';
+import { EmployeesContextProvider } from '@web/context/EmployeesContext';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -217,10 +218,21 @@ export default function App({
     );
   }
 
-  if (
-    appProps.router.pathname.includes(instancesDirectoryPath) ||
-    appProps.router.pathname.includes(employeeDirectoryPath)
-  ) {
+  if (appProps.router.pathname.includes(employeeDirectoryPath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <EmployeesContextProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </EmployeesContextProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(instancesDirectoryPath)) {
     return (
       <>
         <WrapperComponent>
