@@ -6,16 +6,16 @@ import { ProfileHover } from './ProfileHover.tsx';
  * (may be user name, position name, dept name etc) and whether they have signed.
  * Used in FormRow.
  * @param name the name of the user
- * @param signed true if they have signed the form this hover is attached to
+ * @param signedAt date of signing, or null
  * @param index the index of the avatar in the list for a particular form
  * @returns an hoverable avatar component
  */
 export const HoverableAvatar = ({
   name,
-  signed,
+  signedAt,
 }: {
   name: string;
-  signed: boolean;
+  signedAt: string | null;
 }) => {
   return (
     <Tooltip.Root>
@@ -23,7 +23,7 @@ export const HoverableAvatar = ({
         <Box>
           <Avatar.Root
             boxSize="32px"
-            backgroundColor={signed ? '#D0F0DC' : '#DCDCDC'}
+            backgroundColor={signedAt ? '#D0F0DC' : '#DCDCDC'}
             border="1px solid #FFFFFF"
             color="black"
             fontWeight={400}
@@ -45,7 +45,7 @@ export const HoverableAvatar = ({
             background="white"
             boxSize={'fit-content'}
           >
-            <ProfileHover name={name} signed={signed} />
+            <ProfileHover name={name} signedAt={signedAt} />
           </Tooltip.Content>
         </Tooltip.Positioner>
       </Portal>

@@ -50,7 +50,9 @@ export const SignFormInstanceContextProvider = ({
   const [originalPdf, setOriginalPdf] = useState<ArrayBuffer | null>(null);
   const [modifiedPdf, setModifiedPdf] = useState<ArrayBuffer | null>(null);
   const [assignedGroupId, setAssignedGroupId] = useState<string>();
+  const [signFormInstanceLoading, setSignFormInstanceLoading] = useState(false);
   const router = useRouter();
+
   const signFormInstanceMutation = useMutation({
     ...formInstancesControllerSignFormInstanceMutation(),
     onSuccess: async () => {
@@ -93,13 +95,13 @@ export const SignFormInstanceContextProvider = ({
 
     const assignedGroups = formInstance?.assignedGroups.filter(
       (assignedGroup) =>
-        (assignedGroup.signerDepartmentId === user?.departmentId ||
-          assignedGroup.signerEmployeeId === user?.id ||
-          assignedGroup.signerPositionId === user?.positionId ||
+        (assignedGroup.signerDepartment?.id === user?.departmentId ||
+          assignedGroup.signerEmployee?.id === user?.id ||
+          assignedGroup.signerPosition?.id === user?.positionId ||
           assignedGroup.signerEmployeeList
             ?.map((employee) => employee.id)
             .find((id) => id === user?.id)) &&
-        assignedGroup.signed == false,
+        !assignedGroup.signed,
     );
     if (assignedGroups && assignedGroups.length > 0) {
       setGroupNumber(assignedGroups[0]?.order);
@@ -248,6 +250,8 @@ export const SignFormInstanceContextProvider = ({
   };
 
   const submitPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
+    setSignFormInstanceLoading(true);
+
     const form = pdfDoc.getForm();
     form.getFields().forEach((fieldOnForm) => {
       fieldOnForm.disableReadOnly();
@@ -265,9 +269,14 @@ export const SignFormInstanceContextProvider = ({
         },
       });
       if (res) {
-        router.push(submitLink);
+        router.push(submitLink).then(() => {
+          setSignFormInstanceLoading(false);
+        });
       }
     }
+
+    // in case of error, set loading to false
+    setSignFormInstanceLoading(false);
   };
 
   const nextSignFormPage = async (
@@ -298,7 +307,7 @@ export const SignFormInstanceContextProvider = ({
         groupNumber,
         nextSignFormPage,
         updateField,
-        signFormInstanceLoading: isLoading,
+        signFormInstanceLoading,
       }}
     >
       {children}

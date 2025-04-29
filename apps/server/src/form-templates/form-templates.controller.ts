@@ -13,6 +13,7 @@ import {
   UploadedFile,
   PipeTransform,
   ValidationPipe,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { FormTemplatesService } from './form-templates.service';
 import {
@@ -40,6 +41,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ContributorAuthGuard } from '../auth/guards/contributor-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { FormTemplateFindAllResponse } from './responses/form-template-find-all.response';
+import { SortOption } from '../utils';
 
 export class ParseFormDataJsonPipe implements PipeTransform {
   constructor() {}
@@ -108,10 +110,23 @@ export class FormTemplatesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     createFormTemplateDto.file = file;
-    const newFormTemplate = await this.formTemplatesService.create(
-      createFormTemplateDto,
-    );
-    return new FormTemplateEntity(newFormTemplate);
+    try {
+      const newFormTemplate = await this.formTemplatesService.create(
+        createFormTemplateDto,
+      );
+      return new FormTemplateEntity(newFormTemplate);
+    } catch (e) {
+      if (e instanceof Error) {
+        if (e.message === FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS) {
+          this.loggerService.error(
+            FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS,
+          );
+          throw new UnprocessableEntityException(
+            FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS,
+          );
+        }
+      }
+    }
   }
 
   @Get()
@@ -125,8 +140,20 @@ export class FormTemplatesController {
     description: 'Pagination cursor for form templates to return (pages of 8)',
     required: false,
   })
-  async findAll(@Query('cursor') cursor?: number) {
-    const formTemplates = await this.formTemplatesService.findAll(cursor);
+  @ApiQuery({
+    name: 'sortBy',
+    enum: SortOption,
+    description: 'Sort option for form templates',
+    required: false,
+  })
+  async findAll(
+    @Query('cursor') cursor?: number,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    const formTemplates = await this.formTemplatesService.findAll({
+      cursor,
+      sortBy,
+    });
     const formTemplatesCount = await this.formTemplatesService.findAllCount();
     return new FormTemplateFindAllResponse(
       formTemplatesCount,
@@ -187,6 +214,15 @@ export class FormTemplatesController {
           );
           throw new NotFoundException(
             FormTemplateErrorMessage.FORM_TEMPLATE_NOT_FOUND_CLIENT,
+          );
+        }
+      } else if (e instanceof Error) {
+        if (e.message === FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS) {
+          this.loggerService.error(
+            FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS,
+          );
+          throw new UnprocessableEntityException(
+            FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS,
           );
         }
       }

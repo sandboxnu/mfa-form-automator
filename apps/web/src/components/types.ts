@@ -2,9 +2,8 @@ import { SignerType } from '@web/client';
 
 export type Assignee = {
   name?: string;
-  signed: boolean;
+  signedAt: string | null;
   title: string;
-  updatedAt: string;
   signerType: SignerType;
 };
 

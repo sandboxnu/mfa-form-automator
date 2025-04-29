@@ -14,6 +14,7 @@ import { FormInstancesService } from '../form-instances/form-instances.service';
 import { PostmarkService } from '../postmark/postmark.service';
 import MockEmailHandler from '../postmark/MockEmailHandler';
 import { MockValidateEmployeeHandler } from '../employees/validate-employee/MockValidateEmployeeHandler';
+import { SortOption } from '../utils';
 
 const emptyFile: Express.Multer.File = {
   fieldname: 'file',
@@ -183,6 +184,59 @@ describe('FormTemplatesIntegrationTest', () => {
       expect(formTemplate.fieldGroups[0].name).toBe('Field Group');
       expect(formTemplate.formDocLink).toBe('pdfLink');
     });
+    it('throws an error when creating a form template with an existing name', async () => {
+      formTemplate1 = await service.create({
+        name: 'Form Template 1',
+        description: 'Form Template Description 1',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+
+      await expect(
+        service.create({
+          name: 'Form Template 1',
+          description: 'Form Template Description 1',
+          file: emptyFile,
+          pageWidth: 800,
+          pageHeight: 1035,
+          fieldGroups: [
+            {
+              name: 'Field Group 1',
+              order: 0,
+              templateBoxes: [
+                {
+                  type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                  x_coordinate: 0,
+                  y_coordinate: 0,
+                  width: 100,
+                  height: 100,
+                  page: 0,
+                },
+              ],
+            },
+          ],
+          disabled: false,
+        }),
+      ).rejects.toThrowError('Form template with this name already exists');
+    });
   });
   describe('findAll', () => {
     beforeEach(async () => {
@@ -268,14 +322,14 @@ describe('FormTemplatesIntegrationTest', () => {
     });
 
     it('successfully retrieves all form templates', async () => {
-      const formTemplates = await service.findAll();
+      const formTemplates = await service.findAll({});
 
       expect(formTemplates).toHaveLength(10);
     });
 
     it('successfully retrieves all form templates with limit', async () => {
-      const formTemplatesPage1 = await service.findAll(0);
-      const formTemplatesPage2 = await service.findAll(1);
+      const formTemplatesPage1 = await service.findAll({ cursor: 0 });
+      const formTemplatesPage2 = await service.findAll({ cursor: 1 });
 
       expect(formTemplatesPage1).toHaveLength(8);
       expect(formTemplatesPage2).toHaveLength(2);
@@ -283,8 +337,8 @@ describe('FormTemplatesIntegrationTest', () => {
 
     it('does not include disabled templates', async () => {
       const formTemplate3 = await service.create({
-        name: 'Form Template 2',
-        description: 'Form Template Description 2',
+        name: 'Form Template Disabled',
+        description: 'Form Template Description Disabled',
         file: emptyFile,
         pageWidth: 800,
         pageHeight: 1035,
@@ -306,17 +360,97 @@ describe('FormTemplatesIntegrationTest', () => {
         ],
         disabled: false,
       });
-      const formTemplates: FormTemplateEntity[] = await service.findAll();
+      const formTemplates: FormTemplateEntity[] = await service.findAll({});
       expect(
         formTemplates.some((template) => template.id === formTemplate3.id),
       ).toBe(true);
       await service.update(formTemplate3.id, {
         disabled: true,
       });
-      const formTemplatesAfter: FormTemplateEntity[] = await service.findAll();
+      const formTemplatesAfter: FormTemplateEntity[] = await service.findAll(
+        {},
+      );
       expect(
         formTemplatesAfter.some((template) => template.id === formTemplate3.id),
       ).toBe(false);
+    });
+
+    describe('sorting', () => {
+      it('sorts by name in ascending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.NAME_ASC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(formTemplates[0].name).toBe('Form Template 1');
+        expect(formTemplates[1].name).toBe('Form Template 10');
+      });
+
+      it('sorts by name in descending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.NAME_DESC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(formTemplates[0].name).toBe('Form Template 9');
+        expect(formTemplates[1].name).toBe('Form Template 8');
+      });
+
+      it('sorts by creation date in ascending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.CREATED_AT_ASC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(formTemplates[0].createdAt.getUTCSeconds()).toBeLessThanOrEqual(
+          formTemplates[1].createdAt.getUTCSeconds(),
+        );
+        expect(formTemplates[1].createdAt.getUTCSeconds()).toBeLessThanOrEqual(
+          formTemplates[2].createdAt.getUTCSeconds(),
+        );
+      });
+
+      it('sorts by creation date in descending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.CREATED_AT_DESC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(
+          formTemplates[0].createdAt.getUTCSeconds(),
+        ).toBeGreaterThanOrEqual(formTemplates[1].createdAt.getUTCSeconds());
+        expect(
+          formTemplates[1].createdAt.getUTCSeconds(),
+        ).toBeGreaterThanOrEqual(formTemplates[2].createdAt.getUTCSeconds());
+      });
+
+      it('sorts by updated date in ascending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.UPDATED_AT_ASC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(formTemplates[0].updatedAt.getUTCSeconds()).toBeLessThanOrEqual(
+          formTemplates[1].updatedAt.getUTCSeconds(),
+        );
+        expect(formTemplates[1].updatedAt.getUTCSeconds()).toBeLessThanOrEqual(
+          formTemplates[2].updatedAt.getUTCSeconds(),
+        );
+      });
+
+      it('sorts by updated date in descending order', async () => {
+        const formTemplates = await service.findAll({
+          sortBy: SortOption.UPDATED_AT_DESC,
+        });
+
+        expect(formTemplates).toHaveLength(10);
+        expect(
+          formTemplates[0].updatedAt.getUTCSeconds(),
+        ).toBeGreaterThanOrEqual(formTemplates[1].updatedAt.getUTCSeconds());
+        expect(
+          formTemplates[1].updatedAt.getUTCSeconds(),
+        ).toBeGreaterThanOrEqual(formTemplates[2].updatedAt.getUTCSeconds());
+      });
     });
   });
 
@@ -548,6 +682,39 @@ describe('FormTemplatesIntegrationTest', () => {
       ).rejects.toThrowError();
     });
 
+    it('throws an error when updating a form template with an existing name', async () => {
+      await service.create({
+        name: 'Form Template 2',
+        description: 'Form Template Description 2',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 2',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+      await expect(
+        service.update(formTemplate1!.id, {
+          name: 'Form Template 2',
+          description: 'Updated Form Template Description',
+        }),
+      ).rejects.toThrowError('Form template with this name already exists');
+    });
+
     it('successfully disables a form template', async () => {
       const templateToDisable = await service.create({
         name: 'Form Template To Disable',
@@ -577,7 +744,7 @@ describe('FormTemplatesIntegrationTest', () => {
         disabled: true,
       });
 
-      const formTemplates = await service.findAll();
+      const formTemplates = await service.findAll({});
       expect(formTemplates).toHaveLength(1);
       expect(updatedFormTemplate.disabled).toEqual(true);
     });
@@ -667,8 +834,180 @@ describe('FormTemplatesIntegrationTest', () => {
 
       await service.remove(templateToRemove.id);
 
-      const formTemplates = await service.findAll();
+      const formTemplates = await service.findAll({});
       expect(formTemplates).toHaveLength(0);
+    });
+  });
+
+  // Add these tests to the existing form-templates.service.spec.ts file
+
+  describe('FieldGroups Sorting Tests', () => {
+    let formTemplateWithUnsortedGroups: FormTemplateEntity;
+
+    beforeEach(async () => {
+      // Create a form template with field groups in deliberately unsorted order
+      formTemplateWithUnsortedGroups = await service.create({
+        name: 'Form Template With Unsorted Groups',
+        description: 'Form Template with field groups in unsorted order',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 2',
+            order: 1,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.SIGNATURE,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+          {
+            name: 'Field Group 3',
+            order: 2,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.TEXT_FIELD,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+          {
+            name: 'Field Group 1',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
+    });
+
+    describe('findAll returns fieldGroups sorted by order', () => {
+      it('should return field groups sorted by order in findAll results', async () => {
+        const formTemplates = await service.findAll({});
+
+        // Find the form template we created with unsorted groups
+        const foundTemplate = formTemplates.find(
+          (template) => template.id === formTemplateWithUnsortedGroups.id,
+        );
+
+        expect(foundTemplate).toBeDefined();
+
+        // Check that field groups are sorted
+        const fieldGroups = foundTemplate!.fieldGroups;
+        expect(fieldGroups.length).toBe(3);
+
+        // Check that they're in the right order
+        expect(fieldGroups[0].order).toBe(0);
+        expect(fieldGroups[1].order).toBe(1);
+        expect(fieldGroups[2].order).toBe(2);
+
+        // Verify the field group names match the expected order
+        expect(fieldGroups[0].name).toBe('Field Group 1');
+        expect(fieldGroups[1].name).toBe('Field Group 2');
+        expect(fieldGroups[2].name).toBe('Field Group 3');
+      });
+    });
+
+    describe('findOne returns fieldGroups sorted by order', () => {
+      it('should return field groups sorted by order in findOne results', async () => {
+        const foundTemplate = await service.findOne(
+          formTemplateWithUnsortedGroups.id,
+        );
+
+        expect(foundTemplate).toBeDefined();
+
+        // Check that field groups are sorted
+        const fieldGroups = foundTemplate.fieldGroups;
+        expect(fieldGroups.length).toBe(3);
+
+        expect(fieldGroups[0].order).toBe(0);
+        expect(fieldGroups[1].order).toBe(1);
+        expect(fieldGroups[2].order).toBe(2);
+
+        // Verify the field group names match the expected order
+        expect(fieldGroups[0].name).toBe('Field Group 1');
+        expect(fieldGroups[1].name).toBe('Field Group 2');
+        expect(fieldGroups[2].name).toBe('Field Group 3');
+      });
+    });
+
+    describe('create method preserves field group order when updating template', () => {
+      it('should maintain field group order when updating a template with new data', async () => {
+        // First verify our original template has field groups in the right order
+        const originalTemplate = await service.findOne(
+          formTemplateWithUnsortedGroups.id,
+        );
+        expect(originalTemplate.fieldGroups[0].order).toBe(0);
+        expect(originalTemplate.fieldGroups[1].order).toBe(1);
+        expect(originalTemplate.fieldGroups[2].order).toBe(2);
+
+        // Now update the template with non-fieldGroup related data
+        const updatedTemplate = await service.update(
+          formTemplateWithUnsortedGroups.id,
+          {
+            name: 'Updated Template Name',
+            description: 'Updated description',
+          },
+        );
+
+        // Verify the field groups are still in the right order
+        expect(updatedTemplate.fieldGroups.length).toBe(3);
+        expect(updatedTemplate.fieldGroups[0].order).toBe(0);
+        expect(updatedTemplate.fieldGroups[1].order).toBe(1);
+        expect(updatedTemplate.fieldGroups[2].order).toBe(2);
+
+        expect(updatedTemplate.fieldGroups[0].name).toBe('Field Group 1');
+        expect(updatedTemplate.fieldGroups[1].name).toBe('Field Group 2');
+        expect(updatedTemplate.fieldGroups[2].name).toBe('Field Group 3');
+      });
+    });
+
+    describe('database persistence maintains field group order', () => {
+      it('should maintain field group order across multiple find operations', async () => {
+        // Find the template first time and check order
+        const firstFind = await service.findOne(
+          formTemplateWithUnsortedGroups.id,
+        );
+        expect(firstFind.fieldGroups[0].order).toBe(0);
+        expect(firstFind.fieldGroups[1].order).toBe(1);
+        expect(firstFind.fieldGroups[2].order).toBe(2);
+
+        // Find through findAll
+        const allTemplates = await service.findAll({});
+        const templateFromAll = allTemplates.find(
+          (t) => t.id === formTemplateWithUnsortedGroups.id,
+        );
+        expect(templateFromAll?.fieldGroups[0].order).toBe(0);
+        expect(templateFromAll?.fieldGroups[1].order).toBe(1);
+        expect(templateFromAll?.fieldGroups[2].order).toBe(2);
+
+        // Find again through findOne to ensure consistency
+        const secondFind = await service.findOne(
+          formTemplateWithUnsortedGroups.id,
+        );
+        expect(secondFind.fieldGroups[0].order).toBe(0);
+        expect(secondFind.fieldGroups[1].order).toBe(1);
+        expect(secondFind.fieldGroups[2].order).toBe(2);
+      });
     });
   });
 });

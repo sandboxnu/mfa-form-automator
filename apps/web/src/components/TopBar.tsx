@@ -5,9 +5,7 @@ import {
   UserProfileAvatar,
 } from 'apps/web/src/static/icons.tsx';
 import { useAuth } from '@web/hooks/useAuth.ts';
-import { useQuery } from '@tanstack/react-query';
 import { SignOut } from './SignOut.tsx';
-import { positionsControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen.ts';
 import {
   PopoverBody,
   PopoverContent,
@@ -25,17 +23,8 @@ import { useRouter } from 'next/router';
 export const TopBar: React.FC = () => {
   const { user } = useAuth();
   const router = useRouter();
-  const { data: positions } = useQuery({
-    ...positionsControllerFindAllOptions(),
-    enabled: !!user,
-  });
-
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
-
-  const userPosition = positions?.find(
-    (position) => position.id === user?.positionId,
-  );
 
   return (
     <>
@@ -120,9 +109,7 @@ export const TopBar: React.FC = () => {
                     cursor="default"
                     pt="8px"
                   >
-                    {userPosition && userPosition.name
-                      ? userPosition.name
-                      : 'Position'}
+                    {user?.position ? user?.position.name : 'Position'}
                   </Text>
                   <Text
                     color="#888888"

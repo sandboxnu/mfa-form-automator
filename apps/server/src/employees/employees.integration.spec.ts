@@ -207,7 +207,7 @@ describe('EmployeesServiceIntegrationTest', () => {
       expect(updatedEmployee.lastName).toBe('Smith');
       expect(updatedEmployee.scope).toBe($Enums.EmployeeScope.ADMIN);
       expect(updatedEmployee.positionId).toBe(positionId2);
-      expect(updatedEmployee.position?.departmentId).toBe(departmentId);
+      expect(updatedEmployee.position?.department.id).toBe(departmentId);
       expect(updatedEmployee.signatureLink).toBe('new signature link');
     });
   });
@@ -299,15 +299,70 @@ describe('EmployeesServiceIntegrationTest', () => {
     it('successfully retrieves all employees', async () => {
       const employees = await service.findAll();
       expect(employees).toHaveLength(2);
-      // Check that both position IDs are present, but don't enforce a specific order
-      expect([positionId1, positionId2]).toContain(employees[0].positionId);
-      expect([positionId1, positionId2]).toContain(employees[1].positionId);
-      expect(employees[0].position?.departmentId).toBe(departmentId);
-      expect(employees[1].position?.departmentId).toBe(departmentId);
     });
     it('successfully retrieves a limited number of employees', async () => {
       const employees = await service.findAll(1);
       expect(employees).toHaveLength(1);
+    });
+  });
+
+  describe('findAllSecure', () => {
+    beforeEach(async () => {
+      const employeeDto1: CreateEmployeeDto = {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        password: 'password',
+        scope: $Enums.EmployeeScope.ADMIN,
+        positionId: positionId1,
+        accessToken: '123456',
+      };
+      const employeeDto2: CreateEmployeeDto = {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@example.com',
+        password: 'password123',
+        scope: $Enums.EmployeeScope.ADMIN,
+        positionId: positionId2,
+        accessToken: '123456',
+      };
+      employeeId1 = (await service.create(employeeDto1)).id;
+      employeeId2 = (await service.create(employeeDto2)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId2,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId2,
+            },
+          },
+        },
+      });
+    });
+
+    it('successfully retrieves all employees with secure data', async () => {
+      const employees = await service.findAllSecure();
+      expect(employees).toHaveLength(2);
+      expect(employees[0].id).toBe(employeeId1);
+      expect(employees[1].id).toBe(employeeId2);
+      expect(employees[0].position?.department.id).toBe(departmentId);
+      expect(employees[1].position?.department.id).toBe(departmentId);
+      expect(employees[0].scope).toBe($Enums.EmployeeScope.ADMIN);
+      expect(employees[1].scope).toBe($Enums.EmployeeScope.ADMIN);
     });
   });
 
@@ -342,7 +397,7 @@ describe('EmployeesServiceIntegrationTest', () => {
       expect(employee.firstName).toBe('John');
       expect(employee.lastName).toBe('Doe');
       expect(employee.positionId).toBe(positionId1);
-      expect(employee.position?.departmentId).toBe(departmentId);
+      expect(employee.position?.department.id).toBe(departmentId);
     });
 
     it('throws if the employee does not exist', async () => {
@@ -381,7 +436,7 @@ describe('EmployeesServiceIntegrationTest', () => {
       const employee = await service.findOneWithRefresh(employeeId1, 'token');
       expect(employee.firstName).toBe('John');
       expect(employee.lastName).toBe('Doe');
-      expect(employee.position?.departmentId).toBe(departmentId);
+      expect(employee.position?.department.id).toBe(departmentId);
     });
 
     it('throws if the token is not valid', async () => {
@@ -418,16 +473,16 @@ describe('EmployeesServiceIntegrationTest', () => {
     });
 
     it('successfully retrieves an employee by email', async () => {
-      const employee = await service.findOneByEmail('john.doe@example.com');
+      const employee = await service.findOneByEmailAuth('john.doe@example.com');
       expect(employee.firstName).toBe('John');
       expect(employee.lastName).toBe('Doe');
-      expect(employee.positionId).toBe(positionId1);
-      expect(employee.position?.departmentId).toBe(departmentId);
+      expect(employee.position?.id).toBe(positionId1);
+      expect(employee.position?.department.id).toBe(departmentId);
     });
 
     it('throws if the token is not valid', async () => {
       await expect(
-        service.findOneByEmail('jane.smith@example.com'),
+        service.findOneByEmailAuth('jane.smith@example.com'),
       ).rejects.toThrow();
     });
   });

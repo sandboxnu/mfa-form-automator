@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PositionsController } from './positions.controller';
 import { PositionsService } from './positions.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { PositionBaseEntity, PositionEntity } from './entities/position.entity';
+import { PositionBaseEntity } from './entities/position.entity';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -32,41 +32,21 @@ describe('PositionsController', () => {
         {
           id: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
           name: 'position-name',
-          single: false,
-          departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
-          employees: [],
-          createdAt: new Date(1672531200),
-          updatedAt: new Date(1672531200),
         },
         {
           id: 'position-id-2',
           name: 'position-name',
-          single: false,
-          departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
-          employees: [],
-          createdAt: new Date(1672531200),
-          updatedAt: new Date(1672531200),
         },
       ];
 
       const expected = [
-        new PositionEntity({
+        new PositionBaseEntity({
           id: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
           name: 'position-name',
-          single: false,
-          departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
-          employees: [],
-          createdAt: new Date(1672531200),
-          updatedAt: new Date(1672531200),
         }),
-        new PositionEntity({
+        new PositionBaseEntity({
           id: 'position-id-2',
           name: 'position-name',
-          single: false,
-          departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
-          employees: [],
-          createdAt: new Date(1672531200),
-          updatedAt: new Date(1672531200),
         }),
       ];
 
@@ -100,7 +80,7 @@ describe('PositionsController', () => {
         .mockImplementation(async () => createdPosition);
 
       const result = await controller.create(createPositionDto);
-      const expected = new PositionEntity(createdPosition);
+      const expected = new PositionBaseEntity(createdPosition);
       expect(result).toEqual(expected);
     });
   });

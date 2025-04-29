@@ -178,6 +178,30 @@ export default function App({
       <>
         <WrapperComponent>
           <CreateFormTemplateProvider>
+            <Component {...pageProps} />
+          </CreateFormTemplateProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(createFormInstancePath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <CreateFormInstanceProvider>
+            <Component {...pageProps} />
+          </CreateFormInstanceProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(createFormTemplatePath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <CreateFormTemplateProvider>
             <Layout>
               <Component {...pageProps} />
             </Layout>

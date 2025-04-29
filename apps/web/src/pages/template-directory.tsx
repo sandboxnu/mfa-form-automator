@@ -8,7 +8,12 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
-import { FieldGroupBaseEntity, FormTemplateEntity, Scope } from '@web/client';
+import {
+  FieldGroupBaseEntity,
+  FormTemplateEntity,
+  Scope,
+  SortBy,
+} from '@web/client';
 import {
   formTemplatesControllerFindAllInfiniteOptions,
   formTemplatesControllerFindAllQueryKey,
@@ -62,6 +67,7 @@ function TemplateDirectory() {
   // isOpen for the 'are you sure you want to delete' modal
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [sortOption, setSortOption] = useState<SortBy>(SortBy.CREATED_AT_DESC);
   const [sortedFormTemplates, setSortedFormTemplates] = useState<
     FormTemplateEntity[]
   >([]);
@@ -73,7 +79,11 @@ function TemplateDirectory() {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    ...formTemplatesControllerFindAllInfiniteOptions(),
+    ...formTemplatesControllerFindAllInfiniteOptions({
+      query: {
+        sortBy: sortOption,
+      },
+    }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       if (typeof lastPageParam !== 'number') {
@@ -332,8 +342,7 @@ function TemplateDirectory() {
               <SearchAndSort
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                sortedForms={formTemplates}
-                setSortedForms={setSortedFormTemplates}
+                setSortOption={setSortOption}
               />
             ) : (
               <></>

@@ -53,8 +53,15 @@ export class EmployeesService {
       },
       include: {
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -71,25 +78,48 @@ export class EmployeesService {
     const employees = limit
       ? await this.prisma.employee.findMany({
           take: limit,
-          include: {
-            position: {
-              include: {
-                department: true,
-              },
-            },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
           },
         })
       : await this.prisma.employee.findMany({
-          include: {
-            position: {
-              include: {
-                department: true,
-              },
-            },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
           },
         });
 
     return employees;
+  }
+
+  async findAllSecure(limit?: number) {
+    return await this.prisma.employee.findMany({
+      ...(limit ? { take: limit } : {}),
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        position: {
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        scope: true,
+      },
+    });
   }
 
   /**
@@ -104,8 +134,15 @@ export class EmployeesService {
       },
       include: {
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -126,8 +163,15 @@ export class EmployeesService {
       },
       include: {
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -136,21 +180,34 @@ export class EmployeesService {
   }
 
   /**
-   * Retrieve an employee by email.
+   * Retrieve an employee by email, for authentication purposes.
    * @param email the employee email
    * @returns the selected employee, hydrated
    */
-  async findOneByEmail(email: string) {
+  async findOneByEmailAuth(email: string) {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         email: email,
       },
-      include: {
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
+        pswdHash: true,
+        scope: true,
       },
     });
     return employee;
@@ -170,9 +227,15 @@ export class EmployeesService {
       data: updateEmployeeDto,
       include: {
         position: {
-          include: {
-            department: true,
-            assignedGroups: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -207,8 +270,15 @@ export class EmployeesService {
       },
       include: {
         position: {
-          include: {
-            department: true,
+          select: {
+            id: true,
+            name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
           },
         },
       },

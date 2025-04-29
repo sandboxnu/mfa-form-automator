@@ -1,24 +1,20 @@
 import { Flex, Text } from '@chakra-ui/react';
 import { AwaitingIcon } from 'apps/web/src/static/icons.tsx';
-import { AvatarMapProps } from './types.ts';
+import { Assignee, AvatarMapProps } from './types.ts';
 import { SignerType } from '@web/client/types.gen.ts';
 import { Avatar } from './ui/avatar.tsx';
-import { useAuth } from '@web/hooks/useAuth.ts';
 
 /**
  * @param assignees - an array of assignees
  * @returns a map of assignees with their avatars
  */
 const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
-  let previousSigned = true;
-  const { user } = useAuth();
-
   const getInitialsFromTitle = (
     title: string,
     signerType: SignerType,
-    isSigned: boolean,
+    signedAt: string | null,
   ) => {
-    if (isSigned || signerType === SignerType.USER) {
+    if (signedAt || signerType === SignerType.USER) {
       return title;
     } else if (signerType === SignerType.DEPARTMENT) {
       return 'D';
@@ -29,11 +25,13 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
     }
   };
 
+  let prevAwaiting = false;
+
   return (
     <Flex flexDirection="column" gap="24px" position="relative">
       {assignees.map((assignee, index) => {
-        const awaiting = previousSigned && !assignee.signed;
-        previousSigned = assignee.signed;
+        const awaiting = !assignee.signedAt && !prevAwaiting;
+        prevAwaiting = awaiting;
         return (
           <Flex key={index} flexDirection="column" alignSelf="stretch">
             <Flex columnGap="8px" alignItems="center">
@@ -41,14 +39,18 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 name={getInitialsFromTitle(
                   assignee.title,
                   assignee.signerType,
-                  assignee.signed,
+                  assignee.signedAt,
                 )}
                 boxSize="32px"
                 padding="6px 7px"
                 size="md"
                 color="#0C0C0C"
                 bg={
-                  assignee.signed ? '#D1F0D4' : awaiting ? '#FFF2D9' : '#E5E5E5'
+                  assignee.signedAt
+                    ? '#D1F0D4'
+                    : awaiting
+                    ? '#FFF2D9'
+                    : '#E5E5E5'
                 }
                 border="1px solid #FFFFFF"
               />
@@ -61,7 +63,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                   {assignee.title}
                 </Text>
                 <Flex>
-                  {assignee.signed ? (
+                  {assignee.signedAt ? (
                     <Flex align="center">
                       <Text
                         color="#008933"
@@ -105,14 +107,14 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
               >
                 {assignee.title}
               </Text>
-              {assignee.signed ? (
+              {assignee.signedAt ? (
                 <Text
                   color="#515151"
                   fontSize="13px"
                   fontWeight="400"
                   lineHeight="normal"
                 >
-                  {new Date(assignee.updatedAt).toLocaleDateString()}
+                  {new Date(assignee.signedAt).toLocaleDateString()}
                 </Text>
               ) : (
                 <></>

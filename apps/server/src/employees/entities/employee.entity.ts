@@ -3,7 +3,7 @@ import { Employee, EmployeeScope } from '@prisma/client';
 import { PositionBaseEntity } from './../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 
-export class EmployeeBaseEntity implements Employee {
+export class EmployeeBaseEntity {
   @ApiProperty()
   id: string;
 
@@ -13,7 +13,25 @@ export class EmployeeBaseEntity implements Employee {
   @ApiProperty()
   lastName: string;
 
-  @Exclude()
+  @ApiProperty()
+  email: string;
+
+  constructor(partial: Partial<EmployeeBaseEntity>) {
+    Object.assign(this, partial);
+  }
+}
+
+export class EmployeeSecureEntity implements Employee {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  firstName: string;
+
+  @ApiProperty()
+  lastName: string;
+
+  @Exclude({ toPlainOnly: true })
   positionId: string | null;
 
   @ApiProperty()
@@ -25,28 +43,28 @@ export class EmployeeBaseEntity implements Employee {
   @ApiProperty({ enum: EmployeeScope })
   scope: EmployeeScope;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   pswdHash: string | null;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   createdAt: Date;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   updatedAt: Date;
 
-  @Exclude()
+  @Exclude({ toPlainOnly: true })
   refreshToken: string | null;
 
-  constructor(partial: Partial<EmployeeBaseEntity>) {
+  constructor(partial: Partial<EmployeeSecureEntity>) {
     Object.assign(this, partial);
   }
 }
 
-export class EmployeeEntity extends EmployeeBaseEntity {
+export class EmployeeSecureEntityHydrated extends EmployeeSecureEntity {
   @ApiProperty()
   position: PositionBaseEntity | null;
 
-  constructor(partial: Partial<EmployeeEntity>) {
+  constructor(partial: Partial<EmployeeSecureEntityHydrated>) {
     super(partial);
     if (partial.position) {
       partial.position = new PositionBaseEntity(partial.position);

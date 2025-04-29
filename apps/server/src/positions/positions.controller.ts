@@ -25,13 +25,13 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { PositionEntity } from './entities/position.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { PositionsErrorMessage } from './positions.errors';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PositionBaseEntity } from './entities/position.entity';
 
 @ApiTags('positions')
 @Controller('positions')
@@ -43,7 +43,7 @@ export class PositionsController {
 
   @Post()
   @UseGuards(AdminAuthGuard)
-  @ApiCreatedResponse({ type: PositionEntity })
+  @ApiCreatedResponse({ type: PositionBaseEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiUnprocessableEntityResponse({
     description: AppErrorMessage.UNPROCESSABLE_ENTITY,
@@ -55,12 +55,12 @@ export class PositionsController {
   ) {
     // TODO: Should only admins be able to create new positions?
     const newPosition = await this.positionsService.create(createPositionDto);
-    return new PositionEntity(newPosition);
+    return new PositionBaseEntity(newPosition);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [PositionEntity] })
+  @ApiOkResponse({ type: [PositionBaseEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
@@ -71,12 +71,12 @@ export class PositionsController {
   })
   async findAll(@Query('limit') limit?: number) {
     const positions = await this.positionsService.findAll(limit);
-    return positions.map((position) => new PositionEntity(position));
+    return positions.map((position) => new PositionBaseEntity(position));
   }
 
   @Get('department/:departmentId')
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [PositionEntity] })
+  @ApiOkResponse({ type: [PositionBaseEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -94,12 +94,12 @@ export class PositionsController {
       departmentId,
       limit,
     );
-    return positions.map((position) => new PositionEntity(position));
+    return positions.map((position) => new PositionBaseEntity(position));
   }
 
   @Get('departmentName/:departmentName')
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [PositionEntity] })
+  @ApiOkResponse({ type: [PositionBaseEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -111,12 +111,12 @@ export class PositionsController {
       departmentName,
       limit,
     );
-    return positions.map((position) => new PositionEntity(position));
+    return positions.map((position) => new PositionBaseEntity(position));
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: PositionEntity })
+  @ApiOkResponse({ type: PositionBaseEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -128,12 +128,12 @@ export class PositionsController {
         PositionsErrorMessage.POSITION_NOT_FOUND_CLIENT,
       );
     }
-    return new PositionEntity(position);
+    return new PositionBaseEntity(position);
   }
 
   @Get('name/:name')
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: PositionEntity })
+  @ApiOkResponse({ type: PositionBaseEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
@@ -151,12 +151,12 @@ export class PositionsController {
         PositionsErrorMessage.POSITION_NOT_FOUND_CLIENT,
       );
     }
-    return new PositionEntity(position);
+    return new PositionBaseEntity(position);
   }
 
   @Patch(':id')
   @UseGuards(AdminAuthGuard)
-  @ApiOkResponse({ type: PositionEntity })
+  @ApiOkResponse({ type: PositionBaseEntity })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiUnprocessableEntityResponse({
@@ -173,7 +173,7 @@ export class PositionsController {
         id,
         updatePositionDto,
       );
-      return new PositionEntity(updatedPosition);
+      return new PositionBaseEntity(updatedPosition);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {

@@ -88,8 +88,10 @@ export const UserFormsContextProvider = ({
     const originatorPendingForms: FormInstanceEntity[] = createdFIData.filter(
       (formInstance: FormInstanceEntity) => {
         return (
-          !isFullySigned(formInstance) &&
-          !signerIsUser(nextSigner(formInstance)!, user)
+          (!isFullySigned(formInstance) &&
+            !signerIsUser(nextSigner(formInstance)!, user)) ||
+          // edge case where a signer is the originator as well
+          (isSignedByUser(formInstance, user) && !formInstance.markedCompleted)
         );
       },
     );
