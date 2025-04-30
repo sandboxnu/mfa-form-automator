@@ -44,6 +44,7 @@ describe('FormTemplatesIntegrationTest', () => {
   let employeeId1: string | undefined;
   let formTemplate1: FormTemplateEntity | undefined;
   let formInstance1: FormInstanceEntity | undefined;
+  let formTemplate2: FormTemplateEntity | undefined;
 
   beforeAll(async () => {
     module = await Test.createTestingModule({
@@ -595,6 +596,31 @@ describe('FormTemplatesIntegrationTest', () => {
         formDocLink: 'formDocLink',
         description: 'description',
       });
+
+      formTemplate2 = await service.create({
+        name: 'Form Template 2',
+        description: 'Form Template Description 2',
+        file: emptyFile,
+        pageWidth: 800,
+        pageHeight: 1035,
+        fieldGroups: [
+          {
+            name: 'Field Group 2',
+            order: 0,
+            templateBoxes: [
+              {
+                type: $Enums.SignatureBoxFieldType.CHECKBOX,
+                x_coordinate: 0,
+                y_coordinate: 0,
+                width: 100,
+                height: 100,
+                page: 0,
+              },
+            ],
+          },
+        ],
+        disabled: false,
+      });
     });
 
     it('successfully updates the name and description, no field group changes', async () => {
@@ -739,7 +765,7 @@ describe('FormTemplatesIntegrationTest', () => {
       const formTemplates = await module
         .get<PrismaService>(PrismaService)
         .formTemplate.findMany({});
-      expect(formTemplates).toHaveLength(1);
+      expect(formTemplates).toHaveLength(2);
     });
 
     it('throws an error when form template is not found', async () => {
@@ -753,7 +779,7 @@ describe('FormTemplatesIntegrationTest', () => {
 
     it('throws an error when updating a form template with an existing name', async () => {
       await expect(
-        service.update(formTemplate1!.id, {
+        service.update(formTemplate2!.id, {
           name: 'Form Template 1',
           description: 'Updated Form Template Description',
         }),
@@ -790,7 +816,7 @@ describe('FormTemplatesIntegrationTest', () => {
       });
 
       const formTemplates = await service.findAll({});
-      expect(formTemplates).toHaveLength(1);
+      expect(formTemplates).toHaveLength(2);
       expect(updatedFormTemplate.disabled).toEqual(true);
     });
 

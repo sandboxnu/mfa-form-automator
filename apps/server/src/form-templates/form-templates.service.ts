@@ -147,7 +147,6 @@ export class FormTemplatesService {
     if (updateFormTemplateDto.name) {
       const existingFormTemplate = await this.prisma.formTemplate.findFirst({
         where: {
-          id: id,
           name: updateFormTemplateDto.name,
         },
       });
@@ -165,7 +164,7 @@ export class FormTemplatesService {
       updateFormTemplateDto.fieldGroups?.length > 0
     ) {
       const pseudoUpdatedFormTemplate = await this.prisma.$transaction(
-        async (_) => {
+        async () => {
           const existingFormTemplate =
             await this.prisma.formTemplate.findFirstOrThrow({
               where: {
