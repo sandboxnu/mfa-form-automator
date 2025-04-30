@@ -36,20 +36,13 @@ export const UserSettings = ({
   const signatureCanvas = useRef<SignatureCanvas>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { data: departmentsData } = useQuery({
-    ...departmentsControllerFindAllOptions({
-      query: {
-        limit: 1000,
-      },
-    }),
-  });
+  const { data: departmentsData } = useQuery(
+    departmentsControllerFindAllOptions(),
+  );
   const { data: positionsData } = useQuery({
     ...positionsControllerFindAllInDepartmentOptions({
       path: {
         departmentId: currentDepartmentId || '',
-      },
-      query: {
-        limit: 1000,
       },
     }),
     enabled: !!currentDepartmentId,

@@ -23,7 +23,7 @@ import { AssignedGroupErrorMessage } from '../assigned-group/assigned-group.erro
 import { CreateAssignedGroupDto } from '../assigned-group/dto/create-assigned-group.dto';
 import { SignFormInstanceDto } from './dto/sign-form-instance.dto';
 import { PdfStoreService } from '../pdf-store/pdf-store.service';
-import { SortOption } from '../utils';
+import { SortOption, orderBy } from '../utils';
 
 @Injectable()
 export class FormInstancesService {
@@ -36,27 +36,6 @@ export class FormInstancesService {
     private postmarkService: PostmarkService,
     private pdfStoreService: PdfStoreService,
   ) {}
-
-  // Define sorting options based on the provided SortOption
-  private orderBy = (sortBy?: SortOption) => {
-    switch (sortBy) {
-      case SortOption.CREATED_AT_ASC:
-        return { createdAt: 'asc' as const };
-      case SortOption.CREATED_AT_DESC:
-        return { createdAt: 'desc' as const };
-      case SortOption.UPDATED_AT_ASC:
-        return { updatedAt: 'asc' as const };
-      case SortOption.UPDATED_AT_DESC:
-        return { updatedAt: 'desc' as const };
-      case SortOption.NAME_ASC:
-        return { name: 'asc' as const };
-      case SortOption.NAME_DESC:
-        return { name: 'desc' as const };
-      default:
-        return { createdAt: 'desc' as const }; // Default sorting
-    }
-  };
-
   async checkValidAssignedGroupsSigner(
     assignedGroups: CreateAssignedGroupDto[],
   ) {
@@ -330,9 +309,16 @@ export class FormInstancesService {
   /**
    * Find all form instances assigned to an employee.
    * @param employeeId the employee id
+   * @param sortBy optional sorting parameter
    * @returns all form instances assigned to the employee, employees are assigned to a form instance if their id, position id, or department id matches the signer
    */
-  async findAssignedTo(employeeId: string) {
+  async findAssignedTo({
+    employeeId,
+    sortBy,
+  }: {
+    employeeId: string;
+    sortBy?: SortOption;
+  }) {
     let employee;
 
     try {
@@ -348,6 +334,7 @@ export class FormInstancesService {
     }
 
     const formInstances = await this.prisma.formInstance.findMany({
+      orderBy: orderBy(sortBy),
       where: {
         assignedGroups: {
           some: {
@@ -358,7 +345,7 @@ export class FormInstancesService {
               },
               {
                 signerType: SignerType.DEPARTMENT,
-                signerDepartmentId: employee.position.department.id,
+                signerDepartmentId: employee.position.department?.id,
               },
               {
                 signerType: SignerType.USER,
@@ -502,10 +489,18 @@ export class FormInstancesService {
   /**
    * Finds all form instances created by an employee.
    * @param employeeId the employee id
+   * @param sortBy optional sorting parameter
    * @returns all form instances created by the employee
    */
-  async findCreatedBy(employeeId: string) {
+  async findCreatedBy({
+    employeeId,
+    sortBy,
+  }: {
+    employeeId: string;
+    sortBy?: SortOption;
+  }) {
     const formInstances = await this.prisma.formInstance.findMany({
+      orderBy: orderBy(sortBy),
       where: {
         originatorId: {
           equals: employeeId,
@@ -642,7 +637,7 @@ export class FormInstancesService {
   async findAll({ cursor, sortBy }: { cursor?: number; sortBy?: SortOption }) {
     const formInstances = await this.prisma.formInstance.findMany({
       ...(cursor !== undefined ? { take: 8, skip: cursor * 8 } : {}),
-      orderBy: this.orderBy(sortBy),
+      orderBy: orderBy(sortBy),
       include: {
         originator: {
           select: {

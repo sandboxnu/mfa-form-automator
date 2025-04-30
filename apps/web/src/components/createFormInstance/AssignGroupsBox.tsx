@@ -54,13 +54,7 @@ export const AssignGroupsBox = ({
   };
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
   const { data: employees } = useQuery(employeesControllerFindAllOptions());
-  const { data: departments } = useQuery(
-    departmentsControllerFindAllOptions({
-      query: {
-        limit: 1000,
-      },
-    }),
-  );
+  const { data: departments } = useQuery(departmentsControllerFindAllOptions());
 
   return (
     <Flex

@@ -45,6 +45,7 @@ import { distance } from 'fastest-levenshtein';
 import { groupColors } from '@web/utils/formTemplateUtils';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
+import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -67,6 +68,7 @@ function TemplateDirectory() {
   );
   // isOpen for the 'are you sure you want to delete' modal
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState<SortBy>(SortBy.CREATED_AT_DESC);
   const [sortedFormTemplates, setSortedFormTemplates] = useState<
@@ -78,7 +80,6 @@ function TemplateDirectory() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
   } = useInfiniteQuery({
     ...formTemplatesControllerFindAllInfiniteOptions({
       query: {
@@ -159,6 +160,7 @@ function TemplateDirectory() {
    * in the database.
    */
   const submitRemove = async () => {
+    setIsLoading(true);
     if (!formTemplate) {
       return;
     }
@@ -179,6 +181,7 @@ function TemplateDirectory() {
 
     setIsOpen(false);
     setFormTemplate(null);
+    setIsLoading(false);
   };
 
   /**
@@ -404,75 +407,14 @@ function TemplateDirectory() {
           </Button>
         </Flex>
       </Flex>
-      <Dialog.Root open={isOpen} placement={'center'} size="sm">
-        <Portal>
-          <Dialog.Backdrop bg="rgba(0, 0, 0, 0.5)" />
-          <DialogPositioner>
-            <Dialog.Content alignItems="center" justifyContent={'center'}>
-              <Flex
-                zIndex="1000"
-                padding="24px 32px"
-                flexDirection={'column'}
-                justifyContent={'center'}
-                alignItems="center"
-                gap="24px"
-                background="#FFF"
-                borderRadius={'5px'}
-              >
-                <Flex fontSize="19px" fontWeight="700">
-                  Delete Template?
-                </Flex>
-                <Text textAlign={'center'}>
-                  Are you sure you want to remove{' '}
-                  <em>
-                    <strong>{formTemplate?.name} </strong>
-                  </em>
-                  from the template directory permanently?
-                </Text>
-                <Flex
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                  gap="40px"
-                  height="29px"
-                >
-                  <Button
-                    padding="4px 10px"
-                    background="transparent"
-                    _hover={{
-                      bgColor: 'transparent',
-                    }}
-                    border="1px solid var(--Blue, #1367EA)"
-                    borderRadius="5px"
-                    color="#1367EA"
-                    width="100px"
-                    height="29px"
-                    fontWeight={'normal'}
-                    onClick={() => {
-                      setIsOpen(false);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    padding="4px 10px"
-                    background={' var(--MFA-Red, #ED2324)'}
-                    borderRadius="5px"
-                    _hover={{
-                      bgColor: ' var(--MFA-Red, #ED2324)',
-                    }}
-                    color="white"
-                    width="100px"
-                    height="29px"
-                    onClick={() => submitRemove()}
-                  >
-                    Remove
-                  </Button>
-                </Flex>
-              </Flex>
-            </Dialog.Content>
-          </DialogPositioner>
-        </Portal>
-      </Dialog.Root>
+      <DeleteConfirmModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onConfirm={submitRemove}
+        deleteObjectType="Template"
+        deleteObjectName={formTemplate?.name ?? ''}
+        isLoading={isLoading}
+      />
     </>
   );
 }

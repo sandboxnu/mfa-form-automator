@@ -109,10 +109,20 @@ export class FormInstancesController {
   @ApiOkResponse({ type: [FormInstanceEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async findAllAssignedToCurrentEmployee(@AuthUser() currentUser: UserEntity) {
-    const formInstances = await this.formInstancesService.findAssignedTo(
-      currentUser.id,
-    );
+  @ApiQuery({
+    name: 'sortBy',
+    enum: SortOption,
+    description: 'Form instance sorting option',
+    required: false,
+  })
+  async findAllAssignedToCurrentEmployee(
+    @AuthUser() currentUser: UserEntity,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    const formInstances = await this.formInstancesService.findAssignedTo({
+      employeeId: currentUser.id,
+      sortBy,
+    });
     return formInstances.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );
@@ -124,10 +134,20 @@ export class FormInstancesController {
   @ApiOkResponse({ type: [FormInstanceEntity] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async findAllCreatedByCurrentEmployee(@AuthUser() currentUser: UserEntity) {
-    const formInstances = await this.formInstancesService.findCreatedBy(
-      currentUser.id,
-    );
+  @ApiQuery({
+    name: 'sortBy',
+    enum: SortOption,
+    description: 'Form instance sorting option',
+    required: false,
+  })
+  async findAllCreatedByCurrentEmployee(
+    @AuthUser() currentUser: UserEntity,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    const formInstances = await this.formInstancesService.findCreatedBy({
+      employeeId: currentUser.id,
+      sortBy,
+    });
     return formInstances.map(
       (formInstance) => new FormInstanceEntity(formInstance),
     );

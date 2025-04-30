@@ -285,6 +285,17 @@ export const SignFormInstanceContextProvider = ({
         router.push(submitLink).then(() => {
           setSignFormInstanceLoading(false);
         });
+        queryClient.invalidateQueries({
+          queryKey: formInstancesControllerFindAllQueryKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+        });
       }
     }
 

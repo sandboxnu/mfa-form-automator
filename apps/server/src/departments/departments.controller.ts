@@ -10,7 +10,6 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
@@ -21,16 +20,22 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiQuery,
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
-import { DepartmentEntity } from './entities/department.entity';
+import {
+  DepartmentEntity,
+  DepartmentEntityHydrated,
+} from './entities/department.entity';
 import { Prisma } from '@prisma/client';
 import { AppErrorMessage } from '../app.errors';
 import { DepartmentsErrorMessage } from './departments.errors';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { OptionalParseIntPipe } from '../pipes/OptionalParseInt.pipe';
+import { SortOption } from '../utils';
 
 @ApiTags('departments')
 @Controller('departments')
@@ -60,12 +65,32 @@ export class DepartmentsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [DepartmentEntity] })
+  @ApiOkResponse({ type: [DepartmentEntityHydrated] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async findAll(@Query('limit', ParseIntPipe) limit?: number) {
-    const departments = await this.departmentsService.findAll(limit);
-    return departments.map((department) => new DepartmentEntity(department));
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Limit on number of positions to return',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    enum: SortOption,
+    description: 'Departments sorting option',
+    required: false,
+  })
+  async findAll(
+    @Query('limit', OptionalParseIntPipe) limit?: number,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    const departments = await this.departmentsService.findAll({
+      limit,
+      sortBy,
+    });
+    return departments.map(
+      (department) => new DepartmentEntityHydrated(department),
+    );
   }
 
   @Get(':id')

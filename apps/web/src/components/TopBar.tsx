@@ -25,7 +25,6 @@ export const TopBar: React.FC = () => {
   const router = useRouter();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
-
   return (
     <>
       <UserSettings
@@ -109,7 +108,9 @@ export const TopBar: React.FC = () => {
                     cursor="default"
                     pt="8px"
                   >
-                    {user?.position ? user?.position.name : 'Position'}
+                    {user?.position
+                      ? user?.position.name
+                      : 'No Position Assigned'}
                   </Text>
                   <Text
                     color="#888888"
