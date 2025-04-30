@@ -92,7 +92,7 @@ export default function App({
   const signFormInstancePath = '/sign-form';
   // paths that do not include layout or require context
   // success pages require context and no layout, so they are in a unique paths
-  const excludeLayoutPaths = ['/signin', '/register', 'sign-form/success'];
+  const excludeLayoutPaths = ['/signin', '/register', '/sign-form/success'];
   const createFormTemplateSuccessPath = '/create-template/success';
   const createFormInstanceSuccessPath = '/create-instance/success';
 

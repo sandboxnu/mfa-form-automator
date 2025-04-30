@@ -109,7 +109,7 @@ export const SignatureDropdownSelect = <T extends object>({
         );
         break;
     }
-  }, [fieldGroup.id]);
+  }, [assignedGroupData, fieldGroup.id, setActiveTab]);
 
   useEffect(() => {
     setSelectedOptions([]);

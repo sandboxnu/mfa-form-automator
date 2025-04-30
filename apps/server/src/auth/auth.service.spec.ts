@@ -176,7 +176,7 @@ describe('AuthService', () => {
       expect(decodedAccessObj.firstName).toEqual(user.firstName);
       expect(decodedAccessObj.lastName).toEqual(user.lastName);
       expect(decodedAccessObj.departmentId).toEqual(
-        user.position?.department.id,
+        user.position?.department?.id,
       );
       expect(decodedAccessObj.scope).toEqual(user.scope);
       expect(decodedAccessObj.sub).toEqual(user.id);

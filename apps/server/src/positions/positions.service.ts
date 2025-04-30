@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { SortOption, orderBy } from '../utils';
 
 @Injectable()
 export class PositionsService {
@@ -28,21 +29,52 @@ export class PositionsService {
   /**
    * Retrieve all positions.
    * @param limit the number of positions we want to retrieve (optional)
+   * @param sortBy optional sorting parameter
    * @returns all positions, hydrated
    */
-  async findAll(limit?: number) {
+  async findAll({ limit, sortBy }: { limit?: number; sortBy?: SortOption }) {
     const positions = limit
       ? await this.prisma.position.findMany({
           take: limit,
+          orderBy: orderBy(sortBy),
           select: {
             id: true,
             name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            employees: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
           },
         })
       : await this.prisma.position.findMany({
+          orderBy: orderBy(sortBy),
           select: {
             id: true,
             name: true,
+            department: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            employees: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
           },
         });
     return positions;

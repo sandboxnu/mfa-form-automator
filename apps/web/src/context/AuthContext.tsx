@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }: any) => {
   const fetchCurrentUser = async () => {
     let newUser: User | undefined = undefined;
     let employee = await employeesControllerFindMe({ client: client });
+
     if (employee.data) {
       newUser = {
         id: employee.data.id,

@@ -550,7 +550,11 @@ describe('FormInstancesService', () => {
     });
 
     it('should successfully find all form instances created by an employee', () => {
-      expect(service.findCreatedBy(originatorId2)).resolves.toEqual(
+      expect(
+        service.findCreatedBy({
+          employeeId: originatorId2,
+        }),
+      ).resolves.toEqual(
         formInstancesArray.slice(formInstancesArray.length - 1),
       );
     });

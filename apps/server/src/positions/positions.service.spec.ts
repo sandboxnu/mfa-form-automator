@@ -70,7 +70,7 @@ describe('PositionsService', () => {
       jest
         .spyOn(prismaService.position, 'findMany')
         .mockResolvedValue(positions);
-      const result = await service.findAll();
+      const result = await service.findAll({});
       expect(result).toEqual(positions);
     });
   });
