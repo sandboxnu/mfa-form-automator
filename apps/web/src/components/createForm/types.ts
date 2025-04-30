@@ -4,5 +4,5 @@ export enum FormInteractionType {
   CreateFormTemplate = 'CreateFormTemplate',
   EditFormInstance = 'EditFormInstance',
   EditFormTemplate = 'EditFormTemplate',
-  ApproveFormInstance = 'ApproveFormInstance',
+  ApproveFormInstance = 'ApproveFormInstance'
 }
