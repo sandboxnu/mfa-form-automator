@@ -1,5 +1,3 @@
-import { rgb } from 'pdf-lib';
-
 //colors for group buttons: colors[0] = border/text color, colors[1] = background color
 export const groupColors = [
   ['#1367EA', '#EEF5FF'],
