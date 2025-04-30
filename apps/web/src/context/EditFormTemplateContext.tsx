@@ -82,10 +82,17 @@ export const EditFormTemplateProvider = ({ children }: any) => {
   }, [formTemplateData]);
 
   useEffect(() => {
-    if (!pdfFile && router.pathname !== '/template-directory') {
+    // Only redirect if we're not loading and there's still no PDF file
+    if (
+      !isLoadingEditContext &&
+      !isLoadingFormTemplate &&
+      !pdfFile &&
+      router.pathname !== '/template-directory' &&
+      router.pathname.includes('/edit/')
+    ) {
       router.push('/template-directory');
     }
-  }, [pdfFile, router]);
+  }, [pdfFile, router, isLoadingEditContext, isLoadingFormTemplate]);
 
   return (
     <EditFormTemplateContext.Provider
