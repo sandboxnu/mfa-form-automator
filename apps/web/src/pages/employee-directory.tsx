@@ -1,4 +1,4 @@
-import { Flex, Box, Heading, Text, Input } from '@chakra-ui/react';
+import { Flex, Box, Heading, Text, Input, Button } from '@chakra-ui/react';
 import {
   DepartmentEntity,
   EmployeeBaseEntity,
@@ -18,8 +18,12 @@ import {
   departmentsControllerFindAll,
   positionsControllerFindAllInDepartment,
 } from '@web/client';
+import { EditDepartmentsModal } from '@web/components/editDepartment/EditDepartmentsModal';
+import { EditPositionsModal } from '@web/components/editPosition/EditPositionsModal';
 
 function EmployeeDirectory() {
+  const [isDepartmentsModalOpen, setIsDepartmentsModalOpen] = useState(false);
+  const [isPositionsModalOpen, setIsPositionsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   // TODO sorting
   const [sortOption, setSortOption] = useState<SortBy>(SortBy.NAME_DESC);
@@ -118,6 +122,28 @@ function EmployeeDirectory() {
               setSortOption={setSortOption}
               placeholder="Search employees"
             />
+            <Button
+              ml={4}
+              px={4}
+              variant="outline"
+              bg="#FFF"
+              borderRadius="4px"
+              border="1px solid #E5E5E5"
+              onClick={() => setIsPositionsModalOpen(true)}
+            >
+              Manage positions
+            </Button>
+            <Button
+              ml={4}
+              px={4}
+              variant="outline"
+              bg="#FFF"
+              borderRadius="4px"
+              border="1px solid #E5E5E5"
+              onClick={() => setIsDepartmentsModalOpen(true)}
+            >
+              Manage departments
+            </Button>
           </Flex>
         </Box>
 
@@ -316,6 +342,14 @@ function EmployeeDirectory() {
           positions={positions}
         />
       )}
+      <EditDepartmentsModal
+        isOpen={isDepartmentsModalOpen}
+        onClose={() => setIsDepartmentsModalOpen(false)}
+      />
+      <EditPositionsModal
+        isOpen={isPositionsModalOpen}
+        onClose={() => setIsPositionsModalOpen(false)}
+      />
     </>
   );
 }

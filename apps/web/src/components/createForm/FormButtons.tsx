@@ -8,7 +8,6 @@ import {
   formInstancesControllerFindAllQueryKey,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerUpdateMutation,
-  formInstancesControllerUpdateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
@@ -21,6 +20,7 @@ import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
+import { PDF_HEIGHT_PX, PDF_WIDTH_PX } from '../createFormTemplate/utils';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -114,15 +114,6 @@ export const FormButtons = ({
     },
   });
 
-  const updateFormInstanceMutation = useMutation({
-    ...formInstancesControllerUpdateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-    },
-  });
-
   /**
    * Upload and create a form template
    */
@@ -140,10 +131,8 @@ export const FormButtons = ({
 
     setCreateFormLoading(true);
 
-    console.log('submitting template');
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
-    console.log(fieldGroupsContext);
 
     // populate fieldGroups with fieldGroupsContext
     fieldGroupsContext.forEach((value, groupId) => {
@@ -179,8 +168,8 @@ export const FormButtons = ({
       await createFormTemplateMutation
         .mutateAsync({
           body: {
-            pageHeight: formDimensions.height,
-            pageWidth: formDimensions.width,
+            pageHeight: formDimensions.height ?? PDF_HEIGHT_PX,
+            pageWidth: formDimensions.width ?? PDF_WIDTH_PX,
             name: formTemplateName ?? '',
             fieldGroups: fieldGroups,
             file: pdfFile,

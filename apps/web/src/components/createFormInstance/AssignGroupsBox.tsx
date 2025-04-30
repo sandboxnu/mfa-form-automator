@@ -14,6 +14,7 @@ import {
   formEditorTranslateFormFields,
 } from '@web/utils/formInstanceUtils';
 import { groupColors } from '@web/utils/formTemplateUtils';
+import Error from '../Error';
 
 /**
  * The contents of the white box for assigning groups.
@@ -43,16 +44,15 @@ export const AssignGroupsBox = ({
     borderColor: 'transparent',
   };
 
-  const { assignedGroupData, setAssignedGroupData } = useCreateFormInstance();
+  const { assignedGroupData, setAssignedGroupData, formTemplate } =
+    useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
   const { data: employees } = useQuery(employeesControllerFindAllOptions());
-  const { data: departments } = useQuery(
-    departmentsControllerFindAllOptions({
-      query: {
-        limit: 1000,
-      },
-    }),
-  );
+  const { data: departments } = useQuery(departmentsControllerFindAllOptions());
+
+  if (!formTemplate) {
+    return <Error></Error>;
+  }
 
   return (
     <Flex
@@ -113,7 +113,7 @@ export const AssignGroupsBox = ({
         >
           Preview Only
         </Text>
-        <Box width="500px">
+        <Box minW="500px">
           <FormEditor
             formTemplateName={name ?? ''}
             pdfFile={pdfFile}
@@ -122,9 +122,11 @@ export const AssignGroupsBox = ({
             formFields={formEditorTranslateFormFields(fieldGroups)}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
-            scale={0.625}
-            documentWidth={500}
             showNav={false}
+            formTemplateDimensions={{
+              width: formTemplate?.pageWidth,
+              height: formTemplate?.pageHeight,
+            }}
           />
         </Box>
       </Flex>

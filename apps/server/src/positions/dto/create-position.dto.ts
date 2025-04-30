@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreatePositionDto {
@@ -9,6 +10,10 @@ export class CreatePositionDto {
 
   @IsUUID()
   @IsNotEmpty()
-  @ApiProperty()
-  departmentId: string;
+  @ApiProperty({ required: false, nullable: true })
+  @Transform(({ value }) => {
+    if (value === 'null') return null;
+    return value;
+  })
+  departmentId: string | null;
 }

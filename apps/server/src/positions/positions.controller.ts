@@ -10,7 +10,6 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dto/create-position.dto';
@@ -31,7 +30,12 @@ import { PositionsErrorMessage } from './positions.errors';
 import { LoggerServiceImpl } from '../logger/logger.service';
 import { AdminAuthGuard } from '../auth/guards/admin-auth.guard';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { PositionBaseEntity } from './entities/position.entity';
+import {
+  PositionBaseEntity,
+  PositionEntityEmployeeHydrated,
+} from './entities/position.entity';
+import { OptionalParseIntPipe } from '../pipes/OptionalParseInt.pipe';
+import { SortOption } from '../utils';
 
 @ApiTags('positions')
 @Controller('positions')
@@ -60,7 +64,7 @@ export class PositionsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiOkResponse({ type: [PositionBaseEntity] })
+  @ApiOkResponse({ type: [PositionEntityEmployeeHydrated] })
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   @ApiQuery({
@@ -69,9 +73,20 @@ export class PositionsController {
     description: 'Limit on number of positions to return',
     required: false,
   })
-  async findAll(@Query('limit') limit?: number) {
-    const positions = await this.positionsService.findAll(limit);
-    return positions.map((position) => new PositionBaseEntity(position));
+  @ApiQuery({
+    name: 'sortBy',
+    enum: SortOption,
+    description: 'Positions sorting option',
+    required: false,
+  })
+  async findAll(
+    @Query('limit', OptionalParseIntPipe) limit?: number,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    const positions = await this.positionsService.findAll({ limit, sortBy });
+    return positions.map(
+      (position) => new PositionEntityEmployeeHydrated(position),
+    );
   }
 
   @Get('department/:departmentId')
@@ -88,7 +103,7 @@ export class PositionsController {
   })
   async findAllInDepartment(
     @Param('departmentId') departmentId: string,
-    @Query('limit', ParseIntPipe) limit?: number,
+    @Query('limit', OptionalParseIntPipe) limit?: number,
   ) {
     const positions = await this.positionsService.findAllInDepartment(
       departmentId,

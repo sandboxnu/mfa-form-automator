@@ -55,8 +55,8 @@ model Position {
   assignedGroups AssignedGroup[]
   employees      Employee[]
 
-  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
-  departmentId String     @db.Uuid
+  department   Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  departmentId String?     @db.Uuid
 
   @@unique([name, departmentId])
 }

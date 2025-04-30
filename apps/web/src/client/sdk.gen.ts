@@ -533,9 +533,9 @@ export const formTemplatesControllerUpdate = <
 export const departmentsControllerFindAll = <
   ThrowOnError extends boolean = false,
 >(
-  options: Options<DepartmentsControllerFindAllData, ThrowOnError>,
+  options?: Options<DepartmentsControllerFindAllData, ThrowOnError>,
 ) => {
-  return (options.client ?? _heyApiClient).get<
+  return (options?.client ?? _heyApiClient).get<
     DepartmentsControllerFindAllResponse,
     unknown,
     ThrowOnError

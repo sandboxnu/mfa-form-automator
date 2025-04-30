@@ -472,7 +472,9 @@ describe('FormInstancesIntegrationTest', () => {
       });
 
       it("should find form instances assigned to a user's position", async () => {
-        const formInstances = await service.findAssignedTo(employeeId1);
+        const formInstances = await service.findAssignedTo({
+          employeeId: employeeId1,
+        });
 
         expect(formInstances).toHaveLength(1);
         expect(formInstances[0].id).toBe(formInstance1.id);
@@ -499,7 +501,9 @@ describe('FormInstancesIntegrationTest', () => {
       });
 
       it("should find form instances assigned to a user's department", async () => {
-        const formInstances = await service.findAssignedTo(employeeId1);
+        const formInstances = await service.findAssignedTo({
+          employeeId: employeeId1,
+        });
 
         expect(formInstances).toHaveLength(1);
         expect(formInstances[0].id).toBe(formInstance1.id);
@@ -526,7 +530,9 @@ describe('FormInstancesIntegrationTest', () => {
       });
 
       it("should find form instances assigned to a user's position", async () => {
-        const formInstances = await service.findAssignedTo(employeeId1);
+        const formInstances = await service.findAssignedTo({
+          employeeId: employeeId1,
+        });
 
         expect(formInstances).toHaveLength(1);
         expect(formInstances[0].id).toBe(formInstance1.id);
@@ -552,7 +558,9 @@ describe('FormInstancesIntegrationTest', () => {
       });
 
       it("should find form instances assigned to a user's position", async () => {
-        const formInstances = await service.findAssignedTo(employeeId1);
+        const formInstances = await service.findAssignedTo({
+          employeeId: employeeId1,
+        });
 
         expect(formInstances).toHaveLength(1);
         expect(formInstances[0].id).toBe(formInstance1.id);
@@ -561,13 +569,17 @@ describe('FormInstancesIntegrationTest', () => {
     describe('fails', () => {
       it('should fail if the employee does not exist', async () => {
         await expect(
-          service.findAssignedTo('invalidEmployeeId'),
+          service.findAssignedTo({
+            employeeId: 'invalidEmployeeId',
+          }),
         ).rejects.toThrow('Employee could not be found with this email');
       });
       it('should fail if the employee does not have a position', async () => {
-        await expect(service.findAssignedTo(employeeId2)).rejects.toThrow(
-          'Employee has not been onboarded',
-        );
+        await expect(
+          service.findAssignedTo({
+            employeeId: employeeId2,
+          }),
+        ).rejects.toThrow('Employee has not been onboarded');
       });
     });
   });
@@ -593,10 +605,246 @@ describe('FormInstancesIntegrationTest', () => {
     });
 
     it('should find form instances created by a user', async () => {
-      const formInstances = await service.findCreatedBy(employeeId2);
+      const formInstances = await service.findCreatedBy({
+        employeeId: employeeId2,
+      });
 
       expect(formInstances).toHaveLength(1);
       expect(formInstances[0].id).toBe(formInstance1.id);
+    });
+  });
+
+  describe('sorting for findAssignedTo', () => {
+    beforeEach(async () => {
+      // Create a department for positions and employees
+      const department = await departmentsService.create({
+        name: 'Department',
+      });
+
+      // Create a position for the employee
+      const position = await positionsService.create({
+        name: 'Position',
+        departmentId: department.id,
+      });
+
+      // Assign position to employee
+      await employeesService.update(employeeId1, {
+        positionId: position.id,
+      });
+
+      // Create 10 form instances assigned to the employee
+      for (let i = 1; i <= 10; i++) {
+        await service.create({
+          name: `Assigned Form ${i}`,
+          assignedGroups: [
+            {
+              order: 0,
+              fieldGroupId: formTemplate1.fieldGroups[0].id,
+              signerType: $Enums.SignerType.USER,
+              signerEmployeeId: employeeId1,
+              signerEmployeeList: [],
+            },
+          ],
+          originatorId: employeeId2,
+          formTemplateId: formTemplate1.id,
+          formDocLink: 'formDocLink',
+          description: 'Form assigned to employee',
+        });
+
+        // Add small delay to ensure different timestamps
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    });
+
+    it('sorts by name in ascending order', async () => {
+      const formInstances = await service.findAssignedTo({
+        employeeId: employeeId1,
+        sortBy: SortOption.NAME_ASC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].name).toBe('Assigned Form 1');
+      expect(formInstances[1].name).toBe('Assigned Form 10');
+    });
+
+    it('sorts by name in descending order', async () => {
+      const formInstances = await service.findAssignedTo({
+        employeeId: employeeId1,
+        sortBy: SortOption.NAME_DESC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].name).toBe('Assigned Form 9');
+      expect(formInstances[1].name).toBe('Assigned Form 8');
+    });
+
+    it('sorts by creation date in ascending order', async () => {
+      const formInstances = await service.findAssignedTo({
+        employeeId: employeeId1,
+        sortBy: SortOption.CREATED_AT_ASC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].createdAt.getTime()).toBeLessThanOrEqual(
+        formInstances[1].createdAt.getTime(),
+      );
+      expect(formInstances[1].createdAt.getTime()).toBeLessThanOrEqual(
+        formInstances[2].createdAt.getTime(),
+      );
+    });
+
+    it('sorts by creation date in descending order', async () => {
+      const formInstances = await service.findAssignedTo({
+        employeeId: employeeId1,
+        sortBy: SortOption.CREATED_AT_DESC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].createdAt.getTime()).toBeGreaterThanOrEqual(
+        formInstances[1].createdAt.getTime(),
+      );
+      expect(formInstances[1].createdAt.getTime()).toBeGreaterThanOrEqual(
+        formInstances[2].createdAt.getTime(),
+      );
+    });
+
+    it('sorts by update date in ascending order', async () => {
+      const formInstances = await service.findAssignedTo({
+        employeeId: employeeId1,
+        sortBy: SortOption.UPDATED_AT_ASC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].updatedAt.getTime()).toBeLessThanOrEqual(
+        formInstances[1].updatedAt.getTime(),
+      );
+      expect(formInstances[1].updatedAt.getTime()).toBeLessThanOrEqual(
+        formInstances[2].updatedAt.getTime(),
+      );
+    });
+
+    it('sorts by update date in descending order', async () => {
+      const formInstances = await service.findAssignedTo({
+        employeeId: employeeId1,
+        sortBy: SortOption.UPDATED_AT_DESC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].updatedAt.getTime()).toBeGreaterThanOrEqual(
+        formInstances[1].updatedAt.getTime(),
+      );
+      expect(formInstances[1].updatedAt.getTime()).toBeGreaterThanOrEqual(
+        formInstances[2].updatedAt.getTime(),
+      );
+    });
+  });
+
+  describe('sorting for findCreatedBy', () => {
+    beforeEach(async () => {
+      // Create 10 form instances created by the employee
+      for (let i = 1; i <= 10; i++) {
+        await service.create({
+          name: `Created Form ${i}`,
+          assignedGroups: [
+            {
+              order: 0,
+              fieldGroupId: formTemplate1.fieldGroups[0].id,
+              signerType: $Enums.SignerType.USER,
+              signerEmployeeId: employeeId2,
+              signerEmployeeList: [],
+            },
+          ],
+          originatorId: employeeId1,
+          formTemplateId: formTemplate1.id,
+          formDocLink: 'formDocLink',
+          description: 'Form created by employee',
+        });
+
+        // Add small delay to ensure different timestamps
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    });
+
+    it('sorts by name in ascending order', async () => {
+      const formInstances = await service.findCreatedBy({
+        employeeId: employeeId1,
+        sortBy: SortOption.NAME_ASC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].name).toBe('Created Form 1');
+      expect(formInstances[1].name).toBe('Created Form 10');
+    });
+
+    it('sorts by name in descending order', async () => {
+      const formInstances = await service.findCreatedBy({
+        employeeId: employeeId1,
+        sortBy: SortOption.NAME_DESC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].name).toBe('Created Form 9');
+      expect(formInstances[1].name).toBe('Created Form 8');
+    });
+
+    it('sorts by creation date in ascending order', async () => {
+      const formInstances = await service.findCreatedBy({
+        employeeId: employeeId1,
+        sortBy: SortOption.CREATED_AT_ASC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].createdAt.getTime()).toBeLessThanOrEqual(
+        formInstances[1].createdAt.getTime(),
+      );
+      expect(formInstances[1].createdAt.getTime()).toBeLessThanOrEqual(
+        formInstances[2].createdAt.getTime(),
+      );
+    });
+
+    it('sorts by creation date in descending order', async () => {
+      const formInstances = await service.findCreatedBy({
+        employeeId: employeeId1,
+        sortBy: SortOption.CREATED_AT_DESC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].createdAt.getTime()).toBeGreaterThanOrEqual(
+        formInstances[1].createdAt.getTime(),
+      );
+      expect(formInstances[1].createdAt.getTime()).toBeGreaterThanOrEqual(
+        formInstances[2].createdAt.getTime(),
+      );
+    });
+
+    it('sorts by update date in ascending order', async () => {
+      const formInstances = await service.findCreatedBy({
+        employeeId: employeeId1,
+        sortBy: SortOption.UPDATED_AT_ASC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].updatedAt.getTime()).toBeLessThanOrEqual(
+        formInstances[1].updatedAt.getTime(),
+      );
+      expect(formInstances[1].updatedAt.getTime()).toBeLessThanOrEqual(
+        formInstances[2].updatedAt.getTime(),
+      );
+    });
+
+    it('sorts by update date in descending order', async () => {
+      const formInstances = await service.findCreatedBy({
+        employeeId: employeeId1,
+        sortBy: SortOption.UPDATED_AT_DESC,
+      });
+
+      expect(formInstances).toHaveLength(10);
+      expect(formInstances[0].updatedAt.getTime()).toBeGreaterThanOrEqual(
+        formInstances[1].updatedAt.getTime(),
+      );
+      expect(formInstances[1].updatedAt.getTime()).toBeGreaterThanOrEqual(
+        formInstances[2].updatedAt.getTime(),
+      );
     });
   });
 
@@ -1394,7 +1642,9 @@ describe('FormInstancesIntegrationTest', () => {
 
     describe('findAssignedTo returns assignedGroups sorted by order', () => {
       it('should return assigned groups sorted by order', async () => {
-        const formInstances = await service.findAssignedTo(employeeId1);
+        const formInstances = await service.findAssignedTo({
+          employeeId: employeeId1,
+        });
 
         // Find the form instance we created with unsorted groups
         const foundInstance = formInstances.find(
@@ -1421,7 +1671,9 @@ describe('FormInstancesIntegrationTest', () => {
 
     describe('findCreatedBy returns assignedGroups sorted by order', () => {
       it('should return assigned groups sorted by order in findCreatedBy results', async () => {
-        const formInstances = await service.findCreatedBy(employeeId1);
+        const formInstances = await service.findCreatedBy({
+          employeeId: employeeId1,
+        });
 
         // Find the form instance we created with unsorted groups
         const foundInstance = formInstances.find(

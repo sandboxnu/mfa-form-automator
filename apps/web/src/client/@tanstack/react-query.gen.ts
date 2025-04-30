@@ -873,11 +873,11 @@ export const formTemplatesControllerUpdateMutation = (
 };
 
 export const departmentsControllerFindAllQueryKey = (
-  options: Options<DepartmentsControllerFindAllData>,
+  options?: Options<DepartmentsControllerFindAllData>,
 ) => [createQueryKey('departmentsControllerFindAll', options)];
 
 export const departmentsControllerFindAllOptions = (
-  options: Options<DepartmentsControllerFindAllData>,
+  options?: Options<DepartmentsControllerFindAllData>,
 ) => {
   return queryOptions({
     queryFn: async ({ queryKey, signal }) => {

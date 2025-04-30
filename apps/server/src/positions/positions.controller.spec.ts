@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PositionsController } from './positions.controller';
 import { PositionsService } from './positions.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { PositionBaseEntity } from './entities/position.entity';
+import {
+  PositionBaseEntity,
+  PositionEntityEmployeeHydrated,
+} from './entities/position.entity';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -30,23 +33,57 @@ describe('PositionsController', () => {
     it('should return an array of positions', async () => {
       const result = [
         {
-          id: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+          id: 'position-id-1',
           name: 'position-name',
+          department: {
+            id: 'department-id',
+            name: 'department-name',
+          },
+          employees: [
+            {
+              id: 'employee-id',
+              firstName: 'employee-first-name',
+              lastName: 'employee-last-name',
+              email: 'employee-email',
+            },
+          ],
         },
         {
           id: 'position-id-2',
           name: 'position-name',
+          department: {
+            id: 'department-id-2',
+            name: 'department-name-2',
+          },
+          employees: [],
         },
       ];
 
       const expected = [
-        new PositionBaseEntity({
-          id: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+        new PositionEntityEmployeeHydrated({
+          id: 'position-id-1',
           name: 'position-name',
+          department: {
+            id: 'department-id',
+            name: 'department-name',
+          },
+          employees: [
+            {
+              id: 'employee-id',
+              firstName: 'employee-first-name',
+              lastName: 'employee-last-name',
+              email: 'employee-email',
+            },
+          ],
         }),
-        new PositionBaseEntity({
+        new PositionEntityEmployeeHydrated({
           id: 'position-id-2',
           name: 'position-name',
+          department: {
+            id: 'department-id-2',
+            name: 'department-name-2',
+          },
+          employees: [],
         }),
       ];
 

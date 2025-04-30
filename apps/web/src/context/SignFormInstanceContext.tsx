@@ -11,7 +11,13 @@ import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { getLatestSignedFormLink } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
-import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
+import {
+  PDFCheckBox,
+  PDFDocument,
+  PDFTextField,
+  rgb,
+  StandardFonts,
+} from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
 
 export const SignFormInstanceContext =
@@ -225,12 +231,19 @@ export const SignFormInstanceContextProvider = ({
               break;
             case 'TEXT_FIELD':
               fieldToBeAdded = form.createTextField(field.id);
+              const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+              fieldToBeAdded.enableMultiline();
               fieldToBeAdded.setText(field.data.text);
               fieldToBeAdded.addToPage(page, {
                 width: widthOnPdf,
                 height: heightOnPdf,
                 x: xCoordOnPdf,
                 y: yCoordOnPdf,
+                borderWidth: 0,
+                borderColor: undefined,
+                backgroundColor: undefined, // This makes the background transparent
+                textColor: rgb(0, 0, 0),
+                font: helvetica,
               });
               break;
           }
@@ -271,6 +284,17 @@ export const SignFormInstanceContextProvider = ({
       if (res) {
         router.push(submitLink).then(() => {
           setSignFormInstanceLoading(false);
+        });
+        queryClient.invalidateQueries({
+          queryKey: formInstancesControllerFindAllQueryKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
         });
       }
     }
