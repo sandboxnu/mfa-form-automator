@@ -23,6 +23,7 @@ export class FormTemplatesService {
     const existingFormTemplate = await this.prisma.formTemplate.findFirst({
       where: {
         name: createFormTemplateDto.name,
+        disabled: false,
       },
     });
     if (existingFormTemplate) {
