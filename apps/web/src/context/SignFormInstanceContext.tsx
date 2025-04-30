@@ -232,7 +232,6 @@ export const SignFormInstanceContextProvider = ({
                 height: heightOnPdf,
                 x: xCoordOnPdf,
                 y: yCoordOnPdf,
-                borderColor: rgb(26 / 255, 166 / 255, 26 / 255),
               });
               break;
           }
