@@ -111,15 +111,10 @@ export interface ApproveFormInstanceContextType {
   formInstanceError: Error | null;
   isLoading: boolean;
   fields: FormField[][];
-  originalPdfLink: string;
+  completedPdfLink: string;
   signFormInstanceLoading: boolean;
-  modifiedPdfLink: string;
   groupNumber: number;
-  assignedGroupData: ContextAssignedGroupData[] 
-  nextApproveFormPage: (
-    submitLink: string,
-    isReviewPage: boolean,
-  ) => Promise<void>;
+  approvePdf: () => Promise<void>;
 }
 export interface UserFormsContextType {
   todoForms: FormInstanceEntity[];

@@ -21,6 +21,7 @@ import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
+import { useApproveFormInstance } from '@web/hooks/useApproveFormInstance';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -63,6 +64,7 @@ export const FormButtons = ({
   } = useCreateFormInstance();
   const [createFormLoading, setCreateFormLoading] = useState(false);
   const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
+  const { approvePdf } = useApproveFormInstance();
 
   const { user } = useAuth();
 
@@ -400,8 +402,12 @@ export const FormButtons = ({
               case FormInteractionType.EditFormTemplate:
                 _submitFormTemplate();
                 break;
+              case FormInteractionType.ApproveFormInstance:
+                approvePdf();
+                break;
               default:
                 nextSignFormPage(submitLink, review);
+                break;
             }
           }}
         >

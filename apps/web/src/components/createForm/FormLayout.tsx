@@ -89,17 +89,22 @@ export const FormLayout = ({
       </Flex>
       <FormButtons
         type={type}
-        heading={
-          type === FormInteractionType.CreateFormTemplate
-            ? 'Create form template'
-            : type == FormInteractionType.CreateFormInstance
-            ? 'Create form instance'
-            : type == FormInteractionType.EditFormTemplate
-            ? 'Edit form template'
-            : type == FormInteractionType.EditFormInstance
-            ? 'Edit form instance'
-            : 'Submit form'
-        }
+        heading={(() => {
+          switch (type) {
+            case FormInteractionType.CreateFormTemplate:
+              return 'Create form template';
+            case FormInteractionType.CreateFormInstance:
+              return 'Create form instance';
+            case FormInteractionType.EditFormTemplate:
+              return 'Edit form template';
+            case FormInteractionType.EditFormInstance:
+              return 'Edit form instance';
+            case FormInteractionType.ApproveFormInstance:
+              return 'Approve form';
+            default:
+              return 'Submit form';
+          }
+        })()}
         submitLink={submitLink}
         backLink={backLink}
         disabled={disabled}

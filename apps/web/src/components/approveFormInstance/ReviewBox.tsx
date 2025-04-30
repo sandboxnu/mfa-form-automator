@@ -5,7 +5,6 @@ import {
 } from '@web/utils/formInstanceUtils';
 import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
 import { FieldGroupBaseEntity } from '@web/client';
-import { useApproveFormInstance } from '@web/hooks/useApproveFormInstance';
 
 export const ReviewBox = ({
   pdfFile,
@@ -25,20 +24,6 @@ export const ReviewBox = ({
     border: '1px solid #E5E5E5',
     outlineColor: 'transparent',
     borderColor: 'transparent',
-  };
-  const {assignedGroupData} = useApproveFormInstance()
-
-  const GroupItem = ({ color, border }: { color: string; border: string }) => {
-    return (
-      <Flex gap="10px" alignItems="center">
-        <Box
-          width="24px"
-          height="24px"
-          backgroundColor={color}
-          border={`1px solid ${border}`}
-        />
-      </Flex>
-    );
   };
 
   return (
@@ -62,21 +47,6 @@ export const ReviewBox = ({
         <Flex gap="8px" flexDirection="column" width="480px">
           <Text fontWeight={600}>Description</Text>
           <Text {...textInputStyle}>{description}</Text>
-        </Flex>
-
-        <Flex flexDirection={'column'} gap="12px">
-          <Flex gap="12px" flexDirection="column" width="480px">
-            <Text fontWeight={600}>Assigned Field Groups</Text>
-          </Flex>
-          {assignedGroupData.map((group, i) => {
-            const [border, background] = groupColors[i % groupColors.length];
-            return (
-              <Flex key={i} align="center" mr={4}>
-                <GroupItem color={background} border={border} />
-                <Text ml={2}>{group ? group.name : 'No Group'}</Text>
-              </Flex>
-            );
-          })}
         </Flex>
       </Flex>
       <Flex

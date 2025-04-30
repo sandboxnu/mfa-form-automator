@@ -53,9 +53,7 @@ export const ApproveFormInstanceProvider = ({
       return failureCount < 3; // Retry up to 3 times for other errors
     },
   });
-  const [assignedGroupData, setAssignedGroupData] =
-    useState<ContextAssignedGroupData>();
-    
+
   const completeFormInstanceMutation = useMutation({
     ...formInstancesControllerCompleteFormInstanceMutation(),
     onSuccess: async () => {
@@ -74,7 +72,7 @@ export const ApproveFormInstanceProvider = ({
     },
   });
 
-  const handleApproveFormInstance = async () => {
+  const approvePdf = async () => {
     await completeFormInstanceMutation.mutateAsync({
       path: {
         formInstanceId: id,
@@ -90,91 +88,7 @@ export const ApproveFormInstanceProvider = ({
   const router = useRouter();
 
   // Fetch PDF data when links change
-  useEffect(() => {
-    const fetchPdfs = async () => {
-      if (completedPdfLink) {
-        const origPdf = await fetch(completedPdfLink).then((res) =>
-          res.arrayBuffer(),
-        );
-        setCompletedPdf(origPdf);
-      }
-      if (previewPdfLink) {
-        const modPdf = await fetch(previewPdfLink).then((res) =>
-          res.arrayBuffer(),
-        );
-        setPreviewPdf(modPdf);
-      }
-    };
 
-    fetchPdfs();
-  }, [completedPdfLink, previewPdfLink]);
-
-  const modifyPdf = async () => {
-    if (previewPdf) {
-      const pdfDoc = await PDFDocument.load(previewPdf);
-
-      const form = pdfDoc.getForm();
-
-      formInstance?.assignedGroups.forEach((assignedGroup) => {
-        assignedGroup.fieldGroup.templateBoxes.forEach((templateBox) => {
-          const {
-            width,
-            page: pageNum,
-            height,
-            x_coordinate: x,
-            y_coordinate: y,
-          } = templateBox;
-          const page = pdfDoc.getPage(pageNum);
-          const { width: pageWidth, height: pageHeight } = page.getSize();
-
-          if (formInstance) {
-            const formWidth = formInstance.formTemplate.pageWidth;
-            const formHeight = formInstance.formTemplate.pageHeight;
-
-            const widthOnPdf = (width * pageWidth) / formWidth;
-            const heightOnPdf = (height * pageHeight) / formHeight;
-            const xCoordOnPdf = (x * pageWidth) / formWidth;
-            const yCoordOnPdf =
-              pageHeight - (y * pageHeight) / formHeight - heightOnPdf;
-
-            try {
-              switch (templateBox.type) {
-                case 'CHECKBOX':
-                  const checkbox = form.getCheckBox(templateBox.id);
-                  checkbox.addToPage(page, {
-                    width: widthOnPdf,
-                    height: heightOnPdf,
-                    x: xCoordOnPdf,
-                    y: yCoordOnPdf,
-                    borderColor: groupRgbColors[assignedGroup.order][1],
-                  });
-                  break;
-                case 'TEXT_FIELD':
-                  const textField = form.getTextField(templateBox.id);
-                  textField.addToPage(page, {
-                    width: widthOnPdf,
-                    height: heightOnPdf,
-                    x: xCoordOnPdf,
-                    y: yCoordOnPdf,
-                    borderColor: groupRgbColors[assignedGroup.order][1],
-                  });
-                  break;
-                default:
-                  break;
-              }
-            } catch (error) {
-              console.log('ID does not match: ', error);
-            }
-          }
-        });
-      });
-
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      setPreviewPdfLink(url);
-    }
-  };
   useEffect(() => {
     if (!formInstance || formInstanceError) return;
 
@@ -225,42 +139,16 @@ export const ApproveFormInstanceProvider = ({
     user?.positionId,
   ]);
 
-  const submitPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
-    const form = pdfDoc.getForm();
-    form.getFields().forEach((fieldOnForm) => {
-      fieldOnForm.disableReadOnly();
-    });
-    const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-  };
-
-  const nextApproveFormPage = async (
-    submitLink: string,
-    isReviewPage: boolean,
-  ) => {
-    const existingPdfBytes = !isReviewPage ? completedPdf : previewPdf;
-
-    if (existingPdfBytes) {
-      const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      if (isReviewPage) {
-        modifyPdf();
-      } else {
-        submitPdf(submitLink, pdfDoc);
-      }
-    }
-  };
-
   return (
     <ApproveFormInstanceContext.Provider
       value={{
         formInstanceError,
         isLoading,
-        originalPdfLink: completedPdfLink,
-        modifiedPdfLink: previewPdfLink,
+        completedPdfLink,
         fields,
+        approvePdf,
         formInstance,
         groupNumber,
-        nextApproveFormPage,
         signFormInstanceLoading: isLoading,
       }}
     >
