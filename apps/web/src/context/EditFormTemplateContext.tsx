@@ -8,6 +8,13 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { groupColors } from '@web/utils/formTemplateUtils';
 import { v4 as uuidv4 } from 'uuid';
+import { useQuery } from '@tanstack/react-query';
+import { formTemplatesControllerFindOneOptions } from '@web/client/@tanstack/react-query.gen';
+import {
+  fetchPdfFile,
+  formEditorTranslateFieldGroups,
+  formEditorTranslateFormFields,
+} from '@web/utils/formInstanceUtils';
 
 export const EditFormTemplateContext =
   createContext<EditFormTemplateContextType>({} as EditFormTemplateContextType);
@@ -36,6 +43,37 @@ export const EditFormTemplateProvider = ({ children }: any) => {
   );
 
   const router = useRouter();
+
+  const { data: formTemplateData, isLoading: isLoadingFormTemplate } = useQuery(
+    {
+      ...formTemplatesControllerFindOneOptions({
+        path: {
+          id: (router.query.id as string) || '',
+        },
+      }),
+      enabled: !!router.query.id,
+    },
+  );
+
+  useEffect(() => {
+    if (formTemplateData) {
+      fetchPdfFile(setPdfFile, formTemplateData.formDocLink).then(() => {
+        setFormTemplateName(formTemplateData.name);
+        setFormTemplateDescription(formTemplateData.description);
+        setFormFields(
+          formEditorTranslateFormFields(formTemplateData.fieldGroups),
+        );
+        setFieldGroups(
+          formEditorTranslateFieldGroups(formTemplateData.fieldGroups),
+        );
+        setFormDimensions({
+          width: formTemplateData.pageWidth,
+          height: formTemplateData.pageHeight,
+        });
+        setFormTemplateUseId(formTemplateData.id);
+      });
+    }
+  }, [formTemplateData]);
 
   useEffect(() => {
     if (!pdfFile && router.pathname !== '/template-directory') {

@@ -5,6 +5,7 @@ import isAuth from '@web/components/isAuth';
 import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
 import { useRouter } from 'next/router';
 import Error from '@web/components/Error';
+import FormLoading from '@web/components/FormLoading';
 
 /**
  * The description page in the form instance creation flow, where users describe their form.
@@ -18,9 +19,14 @@ function Description() {
     formInstanceUseId,
     pdfFile,
     formTemplate,
+    isLoading,
   } = useEditFormInstance();
 
   const router = useRouter();
+
+  if (isLoading) {
+    return <FormLoading />;
+  }
 
   if (!formTemplate) {
     return <Error secondaryErrorMessage="Form template not found" />;

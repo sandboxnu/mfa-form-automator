@@ -24,34 +24,13 @@ import {
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { queryClient } from './_app';
-import {
-  Field,
-  FieldGroupColor,
-  FieldGroups,
-  fieldId,
-  FieldType,
-  FormFields,
-  groupId,
-} from '@web/components/createFormTemplate/types';
 import { distance } from 'fastest-levenshtein';
-import { groupColors } from '@web/utils/formTemplateUtils';
-import { fetchPdfFile } from '@web/utils/formInstanceUtils';
-import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
  */
 function TemplateDirectory() {
-  const {
-    setFormTemplateName,
-    setFormTemplateDescription,
-    setPdfFile,
-    setFormTemplateUseId,
-    setFieldGroups,
-    setFormFields,
-    setFormDimensions,
-  } = useEditFormTemplate();
   const router = useRouter();
   const loadMoreTriggerRef = useRef(null);
 
@@ -156,7 +135,6 @@ function TemplateDirectory() {
     if (!formTemplate) {
       return;
     }
-    await fetchPdfFile(setPdfFile, formTemplate.formDocLink);
 
     await disableFormTemplateMutation
       .mutateAsync({
@@ -184,75 +162,7 @@ function TemplateDirectory() {
     if (!formTemplate) {
       return;
     }
-    // old groups for the backend type
-    const oldGroups: FieldGroupBaseEntity[] = formTemplate.fieldGroups;
-    // new groups for the frontend type
-    let newGroups: Map<groupId, FieldGroupColor> = new Map<
-      groupId,
-      FieldGroupColor
-    >();
-    let newFields: Record<number, Map<fieldId, Field>> = {};
-
-    let groupNum: number = 0;
-    // for each old group, we are going to convert it into a group in field groups, and its fields
-    // into form fields
-    for (let oldGroup of oldGroups) {
-      // create a new group for this group
-      newGroups.set(oldGroup.id, {
-        background: groupColors[groupNum][1],
-        border: groupColors[groupNum][0],
-        groupName: oldGroup.name,
-      });
-      groupNum += 1;
-
-      // next, save its field groups.
-      // newFields is a dictionary from page number to fields on that page
-      for (let oldField of oldGroup.templateBoxes) {
-        console.log(oldField);
-
-        // determine the type of the field
-        let newType;
-        if (oldGroup.id == 'SIGNATURE') {
-          newType = FieldType.SIGNATURE;
-        } else if (oldGroup.id == 'CHECK BOX') {
-          newType = FieldType.CHECKBOX;
-        } else {
-          newType = FieldType.TEXT_FIELD;
-        }
-        let pageNum: number = oldField.page;
-        let newField: Field = {
-          position: {
-            x: oldField.x_coordinate,
-            y: oldField.y_coordinate,
-            width: oldField.width,
-            height: oldField.height,
-          },
-          groupId: oldGroup.id,
-          type: newType,
-        };
-        const existingFieldsOnPage: Map<fieldId, Field> =
-          newFields[pageNum] ?? new Map<fieldId, Field>();
-        existingFieldsOnPage.set(oldField.id, newField);
-        newFields[pageNum] = existingFieldsOnPage;
-      }
-    }
-
-    setFormTemplateName(formTemplate.name);
-    setFormTemplateDescription(formTemplate.description);
-    setFormTemplateUseId(formTemplate.id);
-    let castNewGroups: FieldGroups = newGroups;
-    setFieldGroups(castNewGroups);
-    let castNewFields: FormFields = newFields;
-    setFormFields(castNewFields);
-    setFormDimensions({
-      width: formTemplate.pageWidth,
-      height: formTemplate.pageHeight,
-    });
-    console.log(castNewGroups);
-    console.log(castNewFields);
-    fetchPdfFile(setPdfFile, formTemplate.formDocLink).then(() =>
-      router.push('/form-template/' + formTemplate.id + '/edit/description'),
-    );
+    router.push('/form-template/' + formTemplate.id + '/edit/description');
   }
 
   return (

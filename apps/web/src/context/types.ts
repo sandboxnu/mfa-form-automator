@@ -120,7 +120,7 @@ export interface EditFormInstanceContextType {
   setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
   formTemplate: FormTemplateEntity | null;
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
-
+  isLoading: boolean;
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
   formInstanceUseId: string | null;

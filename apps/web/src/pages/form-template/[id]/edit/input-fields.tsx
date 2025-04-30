@@ -6,6 +6,7 @@ import { Scope } from '@web/client';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 import { useRouter } from 'next/router';
+import Error from '@web/components/Error';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -19,10 +20,14 @@ function InputFields() {
     fieldGroups,
     setFieldGroups,
     pdfFile,
-    setFormDimensions,
+    formDimensions,
     formTemplateUseId,
   } = useEditFormTemplate();
   const router = useRouter();
+
+  if (!formDimensions) {
+    return <Error secondaryErrorMessage="Form dimensions not set." />;
+  }
 
   return (
     <FormLayout
@@ -36,14 +41,13 @@ function InputFields() {
         <Box width="100%">
           <FormEditor
             formTemplateName={formTemplateName ?? ''}
+            formTemplateDimensions={formDimensions}
             pdfFile={pdfFile}
             disableEdit={false}
             formFields={formFields}
             setFormFields={setFormFields}
             fieldGroups={fieldGroups}
             setFieldGroups={setFieldGroups}
-            scale={1}
-            setFormDimensions={setFormDimensions}
           />
         </Box>
       }

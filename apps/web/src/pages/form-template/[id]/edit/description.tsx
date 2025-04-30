@@ -5,6 +5,7 @@ import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 import { useRouter } from 'next/router';
+import Error from '@web/components/Error';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -17,9 +18,14 @@ function Description() {
     setFormTemplateDescription,
     pdfFile,
     formTemplateUseId,
-    fieldGroups,
+    formDimensions,
   } = useEditFormTemplate();
   const router = useRouter();
+
+  if (!formDimensions) {
+    return <Error secondaryErrorMessage="Error editing form template." />;
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.EditFormTemplate}
@@ -34,6 +40,7 @@ function Description() {
           description={formTemplateDescription}
           setName={setFormTemplateName}
           setDescription={setFormTemplateDescription}
+          formDimensions={formDimensions}
         />
       }
       submitFunction={() => {

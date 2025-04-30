@@ -95,7 +95,7 @@ function Review() {
   };
 
   if (!formTemplate) {
-    return <Error></Error>;
+    return <Error secondaryErrorMessage="Error editing instance" />;
   }
 
   return (
