@@ -8,6 +8,7 @@ import EditableFieldFactory from '@web/components/signFormInstance/EditableField
 import { PDFDisplayed } from '@web/components/signFormInstance/PDFDisplayed';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 import ErrorComponent from '../../components/Error';
 import { groupColors } from '@web/utils/formTemplateUtils';
 
@@ -24,6 +25,23 @@ export function SignFormPage() {
     originalPdfLink,
   } = useSignFormInstance();
 
+  // Store form template dimensions from the API response
+  const [formTemplateDimensions, setFormTemplateDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  // When formInstance data loads, extract dimensions
+  useEffect(() => {
+    if (formInstance && formInstance.formTemplate) {
+      setFormTemplateDimensions({
+        width: formInstance.formTemplate.pageWidth,
+        height: formInstance.formTemplate.pageHeight,
+      });
+    }
+  }, [formInstance]);
+
+  // Prepare field elements for each page
   const FieldBoxes = fields.map((page) => {
     return page.map((templateBox) => {
       return (
@@ -49,6 +67,7 @@ export function SignFormPage() {
   if (isLoading) {
     return <FormLoading />;
   }
+
   return (
     <>
       {formInstance && !formInstanceError ? (
@@ -63,6 +82,7 @@ export function SignFormPage() {
                 formFields={FieldBoxes ?? []}
                 pdfLink={originalPdfLink}
                 formTemplateName={formInstance.formTemplate.name}
+                formTemplateDimensions={formTemplateDimensions}
               />
             </Box>
           }

@@ -23,6 +23,7 @@ export const NameAndDescriptionBox = ({
   setName,
   description,
   setDescription,
+  formDimensions,
 }: {
   pdfFile: File | null;
   fieldGroups: FieldGroupBaseEntity[];
@@ -30,6 +31,7 @@ export const NameAndDescriptionBox = ({
   setName: Dispatch<SetStateAction<string | null>>;
   description: string | null;
   setDescription: Dispatch<SetStateAction<string | null>>;
+  formDimensions: { width: number; height: number };
 }) => {
   const textInputStyle = {
     padding: '8px 10px',
@@ -54,6 +56,7 @@ export const NameAndDescriptionBox = ({
         gap="24px"
         alignItems={'flex-start'}
         flex={1}
+        maxW="500px"
       >
         <Flex gap="10px" flexDirection="column" width="100%">
           <Text>
@@ -99,17 +102,16 @@ export const NameAndDescriptionBox = ({
           >
             Preview Only
           </Text>
-          <Box width="580px">
+          <Box minW="500px">
             <FormEditor
               formTemplateName={name ?? ''}
+              formTemplateDimensions={formDimensions}
               pdfFile={pdfFile}
               disableEdit
               fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
               formFields={formEditorTranslateFormFields(fieldGroups)}
               setFormFields={() => {}}
               setFieldGroups={() => {}}
-              scale={0.6875}
-              documentWidth={550}
               showNav={false}
             />
           </Box>

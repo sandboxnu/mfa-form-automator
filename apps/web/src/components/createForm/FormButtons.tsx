@@ -21,6 +21,7 @@ import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { Toaster, toaster } from '../ui/toaster';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
+import { PDF_HEIGHT_PX, PDF_WIDTH_PX } from '../createFormTemplate/utils';
 
 /**
  * Delete, Back, and Save & Continue buttons at the bottom of form template creation flow.
@@ -179,8 +180,8 @@ export const FormButtons = ({
       await createFormTemplateMutation
         .mutateAsync({
           body: {
-            pageHeight: formDimensions.height,
-            pageWidth: formDimensions.width,
+            pageHeight: formDimensions.height ?? PDF_HEIGHT_PX,
+            pageWidth: formDimensions.width ?? PDF_WIDTH_PX,
             name: formTemplateName ?? '',
             fieldGroups: fieldGroups,
             file: pdfFile,

@@ -20,36 +20,30 @@ import {
 import DraggableBoxFactory from './DraggableBoxFactory';
 import { debounce } from '@web/utils/misc';
 import { groupColors } from '@web/utils/formTemplateUtils';
+import { PDF_HEIGHT_PX, PDF_WIDTH_PX } from '../utils';
 
 export const FormEditor = ({
   formTemplateName,
+  formTemplateDimensions,
   pdfFile,
   disableEdit,
   formFields,
   setFormFields,
   fieldGroups,
   setFieldGroups,
-  scale,
-  setFormDimensions,
-  documentWidth = 800,
   showNav = true,
 }: {
   formTemplateName: string;
+  formTemplateDimensions: {
+    width: number;
+    height: number;
+  };
   pdfFile: File | null;
   disableEdit: boolean;
   formFields: FormFields;
   setFormFields: (fields: FormFields) => void;
   fieldGroups: FieldGroups;
   setFieldGroups: (groups: FieldGroups) => void;
-  scale: number;
-  setFormDimensions?: ({
-    width,
-    height,
-  }: {
-    width: number;
-    height: number;
-  }) => void;
-  documentWidth?: number;
   showNav?: boolean;
 }) => {
   const [currentGroup, setCurrentGroup] = useState<string>(
@@ -57,12 +51,42 @@ export const FormEditor = ({
   );
   const [pageNum, setPageNum] = useState(1); // Keep 1-based for display purposes
   const [totalPages, setTotalPages] = useState(0);
-  const documentRef = useRef(null);
+  const documentRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [groupNum, setGroupNum] = useState(fieldGroups.size);
   const [selectedField, setSelectedField] = useState<string | null>();
   const [lastClickTime, setLastClickTime] = useState(0);
+
+  const [displayDimensions, setDisplayDimensions] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
+
+  const heightScale =
+    displayDimensions.height /
+    (formTemplateDimensions?.height ?? PDF_HEIGHT_PX);
+  const widthScale =
+    displayDimensions.width / (formTemplateDimensions?.width ?? PDF_WIDTH_PX);
+
+  // Update display dimensions when page changes or window resizes
+  useEffect(() => {
+    const updateDisplayDimensions = () => {
+      if (documentRef.current) {
+        const rect = documentRef.current.getBoundingClientRect();
+        setDisplayDimensions({ width: rect.width, height: rect.height });
+      }
+    };
+
+    updateDisplayDimensions();
+
+    // Add resize event listener
+    window.addEventListener('resize', updateDisplayDimensions);
+
+    return () => {
+      window.removeEventListener('resize', updateDisplayDimensions);
+    };
+  }, [pageNum]);
 
   // Handle clicks on the document to clear selected field when clicking outside
   const handleDocumentClick = (event: React.MouseEvent) => {
@@ -123,7 +147,6 @@ export const FormEditor = ({
 
   const handleAddTextField = () => {
     if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
-      const { centerX, centerY } = convertCoordinates(documentRef.current);
       const id = uuidv4();
       setFormFields({
         ...formFields,
@@ -133,10 +156,10 @@ export const FormEditor = ({
             id,
             {
               position: {
-                x: centerX - 40,
-                y: centerY - 15,
-                width: 80,
-                height: 30,
+                x: (formTemplateDimensions?.width ?? PDF_WIDTH_PX) / 2 - 40,
+                y: (formTemplateDimensions?.height ?? PDF_HEIGHT_PX) / 2 - 15,
+                width: 240,
+                height: 90,
               },
               groupId: currentGroup,
               type: FieldType.TEXT_FIELD,
@@ -150,7 +173,6 @@ export const FormEditor = ({
 
   const handleAddCheckbox = () => {
     if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
-      const { centerX, centerY } = convertCoordinates(documentRef.current);
       const id = uuidv4();
       setFormFields({
         ...formFields,
@@ -160,10 +182,10 @@ export const FormEditor = ({
             id,
             {
               position: {
-                x: centerX - 40,
-                y: centerY - 15,
-                width: 10,
-                height: 10,
+                x: (formTemplateDimensions?.width ?? PDF_WIDTH_PX) / 2 - 40,
+                y: (formTemplateDimensions?.width ?? PDF_WIDTH_PX) / 2 - 15,
+                width: 40,
+                height: 40,
               },
               groupId: currentGroup,
               type: FieldType.CHECKBOX,
@@ -177,7 +199,6 @@ export const FormEditor = ({
 
   const handleAddSignatureField = () => {
     if (fieldGroups.size > 0 && documentRef.current && !disableEdit) {
-      const { centerX, centerY } = convertCoordinates(documentRef.current);
       const id = uuidv4();
       setFormFields({
         ...formFields,
@@ -187,10 +208,10 @@ export const FormEditor = ({
             id,
             {
               position: {
-                x: centerX - 75,
-                y: centerY - 25,
-                width: 150,
-                height: 50,
+                x: (formTemplateDimensions?.width ?? PDF_WIDTH_PX) / 2 - 75,
+                y: (formTemplateDimensions?.height ?? PDF_HEIGHT_PX) / 2 - 25,
+                width: 480,
+                height: 160,
               },
               groupId: currentGroup,
               type: FieldType.SIGNATURE,
@@ -249,21 +270,6 @@ export const FormEditor = ({
       setGroupNum(groupNum + 1);
       setCurrentGroup(myuuid);
     }
-  };
-
-  // converts HTML web coordinates to PDF coordinates
-  const convertCoordinates = (container: HTMLDivElement) => {
-    const {
-      scrollLeft,
-      scrollTop,
-      clientWidth: width,
-      clientHeight: height,
-    } = container;
-    if (setFormDimensions) setFormDimensions({ width, height });
-
-    const centerX = scrollLeft + width / 2;
-    const centerY = scrollTop + height / 2;
-    return { centerX, centerY };
   };
 
   // Function to handle manual page navigation
@@ -434,7 +440,6 @@ export const FormEditor = ({
           >
             <Box
               height="474px"
-              width={`${documentWidth}px`}
               overflow="scroll"
               display="flex"
               flexDirection="column"
@@ -480,74 +485,98 @@ export const FormEditor = ({
                       renderAnnotationLayer={false}
                       renderTextLayer={false}
                       pageNumber={index + 1}
-                      width={1000}
+                      onRenderSuccess={() => {
+                        // Set the form dimensions based on the PDF page size
+                        if (index === 0 && documentRef.current) {
+                          const rect =
+                            documentRef.current.getBoundingClientRect();
+                          setDisplayDimensions({
+                            width: rect.width,
+                            height: rect.height,
+                          });
+                        }
+                      }}
                     >
                       {formFields[index] &&
                         Array.from(formFields[index].entries()).map(
                           (
                             [fieldId, { position, groupId, type }],
                             fieldIndex,
-                          ) => (
-                            <DraggableBoxFactory
-                              type={type ?? FieldType.TEXT_FIELD}
-                              currentPosition={{
-                                x: position.x * scale,
-                                y: position.y * scale,
-                                width: position.width * scale,
-                                height: position.height * scale,
-                              }}
-                              onRemove={() => {
-                                handleRemoveField(fieldId);
-                              }}
-                              key={fieldIndex}
-                              color={
-                                fieldGroups.get(groupId)?.background ?? '#000'
-                              }
-                              onStop={(
-                                e: DraggableEvent,
-                                data: DraggableData,
-                              ) => {
-                                setSelectedField(fieldId);
+                          ) => {
+                            // positioning and dimensions should be adjusted from stored values to fit scaled container
+                            // we'll use a reference of PDF_WIDTH_PX px	by PDF_HEIGHT_PX px
+                            // Calculate the position based on the container dimensions
+                            const scaledPosition = {
+                              x: position.x * widthScale,
+                              y: position.y * heightScale,
+                            };
+                            const scaledDimensions = {
+                              width: position.width * widthScale,
+                              height: position.height * heightScale,
+                            };
 
-                                handleFieldUpdate(groupId, fieldId, {
-                                  width: position.width,
-                                  height: position.height,
-                                  x: data.x,
-                                  y: data.y,
-                                });
-                              }}
-                              onResizeStop={(
-                                e: MouseEvent | TouchEvent,
-                                dir,
-                                elementRef,
-                                delta,
-                                pos,
-                              ) => {
-                                setSelectedField(fieldId);
+                            if (!documentRef.current) {
+                              return <></>;
+                            }
 
-                                let newWidth = parseFloat(
-                                  elementRef.style.width,
-                                );
-                                let newHeight = parseFloat(
-                                  elementRef.style.height,
-                                );
+                            return (
+                              <DraggableBoxFactory
+                                type={type ?? FieldType.TEXT_FIELD}
+                                currentPosition={{
+                                  x: scaledPosition.x,
+                                  y: scaledPosition.y,
+                                  width: scaledDimensions.width,
+                                  height: scaledDimensions.height,
+                                }}
+                                onRemove={() => {
+                                  handleRemoveField(fieldId);
+                                }}
+                                key={fieldIndex}
+                                color={
+                                  fieldGroups.get(groupId)?.background ?? '#000'
+                                }
+                                onStop={(
+                                  e: DraggableEvent,
+                                  data: DraggableData,
+                                ) => {
+                                  setSelectedField(fieldId);
+                                  handleFieldUpdate(groupId, fieldId, {
+                                    width: position.width,
+                                    height: position.height,
+                                    x: data.x / widthScale,
+                                    y: data.y / heightScale,
+                                  });
+                                }}
+                                onResizeStop={(
+                                  e: MouseEvent | TouchEvent,
+                                  dir,
+                                  elementRef,
+                                  delta,
+                                  pos,
+                                ) => {
+                                  setSelectedField(fieldId);
 
-                                handleFieldUpdate(groupId, fieldId, {
-                                  width: Number.isNaN(newWidth)
-                                    ? position.width
-                                    : newWidth,
-                                  height: Number.isNaN(newHeight)
-                                    ? position.height
-                                    : newHeight,
-                                  x: pos.x,
-                                  y: pos.y,
-                                });
-                              }}
-                              disableEdit={disableEdit}
-                              selected={selectedField === fieldId}
-                              highlighted={selectedField === fieldId}
-                            />
-                          ),
+                                  let newWidth = parseFloat(
+                                    elementRef.style.width,
+                                  );
+                                  let newHeight = parseFloat(
+                                    elementRef.style.height,
+                                  );
+
+                                  // Convert dimensions back to original scale when storing
+                                  handleFieldUpdate(groupId, fieldId, {
+                                    width: newWidth / widthScale,
+                                    height: newHeight / heightScale,
+                                    x: position.x,
+                                    y: position.y,
+                                  });
+                                }}
+                                disableEdit={disableEdit}
+                                selected={selectedField === fieldId}
+                                highlighted={selectedField === fieldId}
+                              />
+                            );
+                          },
                         )}
                     </Page>
                   </div>
