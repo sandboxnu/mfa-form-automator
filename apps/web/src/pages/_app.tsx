@@ -160,7 +160,7 @@ export default function App({
     // used in index, pending, todo, completed pages
     if (
       ['/pending', '/todo', '/completed'].includes(appProps.router.pathname) ||
-      appProps.router.pathname == ''
+      appProps.router.pathname == '/'
     ) {
       root = <UserFormsContextProvider>{root}</UserFormsContextProvider>;
     }
