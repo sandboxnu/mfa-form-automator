@@ -699,6 +699,9 @@ describe('FormTemplatesIntegrationTest', () => {
           },
         });
       expect(formTemplates).toHaveLength(1);
+      expect(formTemplates[0].name).toBe('Form Template 1');
+      expect(formTemplates[0].description).toBe('Form Template Description 1');
+      expect(formTemplates[0].disabled).toBe(true);
     });
 
     it('updates but does not create a new template if provided field groups are the same', async () => {
