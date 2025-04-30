@@ -99,6 +99,7 @@ export default function App({
     '/signin',
     '/register',
     '/form-template/create/success',
+    '/sign-form/success',
   ];
   const excludeLayoutPathsRegex = [
     /^\/form-instance\/[^\/]+\/edit\/success/,

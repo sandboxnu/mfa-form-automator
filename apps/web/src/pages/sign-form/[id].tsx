@@ -23,6 +23,7 @@ export function SignFormPage() {
     fields,
     groupNumber,
     originalPdfLink,
+    nextSignFormPage,
   } = useSignFormInstance();
 
   // Store form template dimensions from the API response
@@ -87,6 +88,7 @@ export function SignFormPage() {
             </Box>
           }
           submitFunction={() => {
+            nextSignFormPage(`/sign-form/review/${id}`, false);
             router.push(`/sign-form/review/${id}`);
           }}
           backLink={'/'}
