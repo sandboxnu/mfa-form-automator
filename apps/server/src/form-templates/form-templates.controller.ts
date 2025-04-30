@@ -206,7 +206,6 @@ export class FormTemplatesController {
       );
       return new FormTemplateEntity(updatedFormTemplate);
     } catch (e) {
-      console.log(e);
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2025') {
           this.loggerService.error(

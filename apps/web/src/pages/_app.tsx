@@ -178,7 +178,9 @@ export default function App({
       <>
         <WrapperComponent>
           <CreateFormTemplateProvider>
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </CreateFormTemplateProvider>
         </WrapperComponent>
       </>
@@ -190,27 +192,14 @@ export default function App({
       <>
         <WrapperComponent>
           <CreateFormInstanceProvider>
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </CreateFormInstanceProvider>
         </WrapperComponent>
       </>
     );
   }
-
-  if (appProps.router.pathname.includes(createFormTemplatePath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <CreateFormTemplateProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </CreateFormTemplateProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
-
   if (
     appProps.router.pathname.includes(templateDirectoryPath) ||
     editTemplateRegExPath.test(appProps.router.pathname)

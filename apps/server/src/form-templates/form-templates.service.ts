@@ -162,12 +162,15 @@ export class FormTemplatesService {
    * @returns the updated form template, hydrated
    */
   async update(id: string, updateFormTemplateDto: UpdateFormTemplateDto) {
-    const templateFound = await this.prisma.formTemplate.findUnique({
-      where: { id },
-    });
-
-    if (!templateFound) {
-      throw new Error(`Form template with ID ${id} does not exist.`);
+    if (updateFormTemplateDto.name) {
+      const existingFormTemplate = await this.prisma.formTemplate.findFirst({
+        where: {
+          name: updateFormTemplateDto.name,
+        },
+      });
+      if (existingFormTemplate && existingFormTemplate.id !== id) {
+        throw new Error(FormTemplateErrorMessage.FORM_TEMPLATE_EXISTS);
+      }
     }
 
     const updatedFormTemplate = await this.prisma.$transaction(async (tx) => {
@@ -178,7 +181,6 @@ export class FormTemplatesService {
           description: updateFormTemplateDto.description,
           disabled: updateFormTemplateDto.disabled,
           fieldGroups: {
-            set: [],
             create: updateFormTemplateDto.fieldGroups?.map((fieldGroup) => ({
               name: fieldGroup.name,
               order: fieldGroup.order,
@@ -199,6 +201,9 @@ export class FormTemplatesService {
           fieldGroups: {
             include: {
               templateBoxes: true,
+            },
+            orderBy: {
+              order: 'asc',
             },
           },
           formInstances: {
