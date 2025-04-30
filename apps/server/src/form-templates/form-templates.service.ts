@@ -148,6 +148,7 @@ export class FormTemplatesService {
       const existingFormTemplate = await this.prisma.formTemplate.findFirst({
         where: {
           name: updateFormTemplateDto.name,
+          disabled: false,
         },
       });
       if (existingFormTemplate && existingFormTemplate.id !== id) {

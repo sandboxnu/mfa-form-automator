@@ -153,6 +153,7 @@ function Review() {
       backLink={'/form-template/' + formTemplateUseId + '/edit/input-fields'}
       disabled={createFormLoading}
       review={true}
+      loading={createFormLoading}
     />
   );
 }
