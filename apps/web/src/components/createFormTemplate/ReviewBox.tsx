@@ -31,7 +31,7 @@ export const ReviewBox = ({
     borderColor: 'transparent',
   };
 
-  const { formFields } = useCreateFormTemplate();
+  const { formFields, formDimensions } = useCreateFormTemplate();
 
   const GroupItem = ({
     num,
@@ -54,6 +54,10 @@ export const ReviewBox = ({
       </Flex>
     );
   };
+
+  if (!formDimensions || !formFields) {
+    return <></>;
+  }
 
   return (
     <Flex
@@ -112,17 +116,16 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <Box width="500px">
+        <Box minW="500px">
           <FormEditor
             formTemplateName={name}
+            formTemplateDimensions={formDimensions}
             pdfFile={pdfFile}
             disableEdit
             fieldGroups={fieldGroups}
             formFields={formFields}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
-            scale={0.625}
-            documentWidth={500}
             showNav={false}
           />
         </Box>

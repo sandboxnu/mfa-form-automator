@@ -51,7 +51,6 @@ export const SignIn: React.FC = () => {
               });
             }
           } catch (e) {
-            console.log(e);
             toaster.create({
               title: 'Failed to log in',
               description: 'Please try again.',

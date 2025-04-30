@@ -25,11 +25,6 @@ function SelectTemplate() {
     [setFormTemplate, setFormInstanceName],
   );
 
-  // Memoize the delete function to prevent re-renders
-  const handleDelete = useCallback(() => {
-    setFormTemplate(null);
-  }, [setFormTemplate]);
-
   const allowCreate =
     user?.scope === Scope.ADMIN || user?.scope === Scope.CONTRIBUTOR;
 

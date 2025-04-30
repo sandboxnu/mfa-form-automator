@@ -72,4 +72,4 @@ export const CreateFormInstanceProvider = ({ children }: any) => {
 };
 
 export const useCreateFormInstance = () =>
-  useContext(CreateFormInstanceContext);
+  useContext<CreateFormInstanceContextType>(CreateFormInstanceContext);

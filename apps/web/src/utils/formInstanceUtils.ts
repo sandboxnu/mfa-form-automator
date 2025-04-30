@@ -200,34 +200,34 @@ export const formEditorTranslateFieldGroups = (
   );
 };
 
-export const formEditorTranslateFormFields: (
+export const formEditorTranslateFormFields = (
   fieldGroups: FieldGroupBaseEntity[],
-) => FormFields = (fieldGroups: FieldGroupBaseEntity[]) => {
-  return Object.fromEntries(
-    fieldGroups.flatMap((fieldGroup) =>
-      fieldGroup.templateBoxes.map((templateBox) => [
-        templateBox.page,
-        new Map([
-          [
-            templateBox.id,
-            {
-              position: {
-                x: templateBox.x_coordinate,
-                y: templateBox.y_coordinate,
-                width: templateBox.width,
-                height: templateBox.height,
-              },
-              groupId: fieldGroup.id,
-              type:
-                (templateBox.type as string) in FieldType
-                  ? (templateBox.type as FieldType)
-                  : FieldType.TEXT_FIELD,
-            },
-          ],
-        ]),
-      ]),
-    ),
-  );
+): FormFields => {
+  const pageMap: Record<number, Map<string, any>> = {};
+
+  fieldGroups.forEach((fieldGroup) => {
+    fieldGroup.templateBoxes.forEach((templateBox) => {
+      if (!pageMap[templateBox.page]) {
+        pageMap[templateBox.page] = new Map();
+      }
+
+      pageMap[templateBox.page].set(templateBox.id, {
+        position: {
+          x: templateBox.x_coordinate,
+          y: templateBox.y_coordinate,
+          width: templateBox.width,
+          height: templateBox.height,
+        },
+        groupId: fieldGroup.id,
+        type:
+          (templateBox.type as string) in FieldType
+            ? (templateBox.type as FieldType)
+            : FieldType.TEXT_FIELD,
+      });
+    });
+  });
+
+  return pageMap;
 };
 
 export const getLatestSignedFormLink = (formInstance: FormInstanceEntity) => {

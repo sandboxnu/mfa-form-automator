@@ -7,6 +7,7 @@ import {
   formEditorTranslateFormFields,
 } from '@web/utils/formInstanceUtils';
 import { groupColors } from '@web/utils/formTemplateUtils';
+import Error from '../Error';
 
 export const ReviewBox = ({
   pdfFile,
@@ -28,7 +29,7 @@ export const ReviewBox = ({
     borderColor: 'transparent',
   };
 
-  const { assignedGroupData } = useCreateFormInstance();
+  const { assignedGroupData, formTemplate } = useCreateFormInstance();
 
   const GroupItem = ({ color, border }: { color: string; border: string }) => {
     return (
@@ -42,6 +43,10 @@ export const ReviewBox = ({
       </Flex>
     );
   };
+
+  if (!formTemplate) {
+    return <Error></Error>;
+  }
 
   return (
     <Flex
@@ -95,7 +100,7 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <Box width="500px">
+        <Box minW="500px">
           <FormEditor
             formTemplateName={name ?? ''}
             pdfFile={pdfFile}
@@ -104,9 +109,11 @@ export const ReviewBox = ({
             formFields={formEditorTranslateFormFields(fieldGroups)}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
-            scale={0.625}
-            documentWidth={500}
             showNav={false}
+            formTemplateDimensions={{
+              width: formTemplate?.pageWidth,
+              height: formTemplate?.pageHeight,
+            }}
           />
         </Box>
       </Flex>
