@@ -6,6 +6,7 @@ import isAuth from '@web/components/isAuth';
 import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 import { useRouter } from 'next/router';
 import Error from '@web/components/Error';
+import FormLoading from '@web/components/FormLoading';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -19,8 +20,13 @@ function Description() {
     pdfFile,
     formTemplateUseId,
     formDimensions,
+    isLoadingEditContext,
   } = useEditFormTemplate();
   const router = useRouter();
+
+  if (isLoadingEditContext) {
+    return <FormLoading />;
+  }
 
   if (!formDimensions) {
     return <Error secondaryErrorMessage="Error editing form template." />;

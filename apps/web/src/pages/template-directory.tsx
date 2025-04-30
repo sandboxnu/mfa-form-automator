@@ -195,6 +195,7 @@ function TemplateDirectory() {
                 cursor="pointer"
               />
               <Flex
+                as="button"
                 height="38px"
                 padding="8px 16px"
                 justifyContent={'center'}

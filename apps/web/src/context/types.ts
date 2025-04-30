@@ -111,6 +111,7 @@ export interface EditFormTemplateContextType {
   >;
   formTemplateUseId: string | null;
   setFormTemplateUseId: Dispatch<SetStateAction<string | null>>;
+  isLoadingEditContext: boolean;
 }
 
 export interface EditFormInstanceContextType {

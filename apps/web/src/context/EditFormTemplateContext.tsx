@@ -33,6 +33,8 @@ export const EditFormTemplateProvider = ({ children }: any) => {
       groupName: `Group ${1}`,
     }),
   );
+  const [isLoadingEditContext, setIsLoadingEditContext] =
+    useState<boolean>(true);
 
   const [formDimensions, setFormDimensions] = useState<{
     width: number;
@@ -57,21 +59,25 @@ export const EditFormTemplateProvider = ({ children }: any) => {
 
   useEffect(() => {
     if (formTemplateData) {
-      fetchPdfFile(setPdfFile, formTemplateData.formDocLink).then(() => {
-        setFormTemplateName(formTemplateData.name);
-        setFormTemplateDescription(formTemplateData.description);
-        setFormFields(
-          formEditorTranslateFormFields(formTemplateData.fieldGroups),
-        );
-        setFieldGroups(
-          formEditorTranslateFieldGroups(formTemplateData.fieldGroups),
-        );
-        setFormDimensions({
-          width: formTemplateData.pageWidth,
-          height: formTemplateData.pageHeight,
+      fetchPdfFile(setPdfFile, formTemplateData.formDocLink)
+        .then(() => {
+          setFormTemplateName(formTemplateData.name);
+          setFormTemplateDescription(formTemplateData.description);
+          setFormFields(
+            formEditorTranslateFormFields(formTemplateData.fieldGroups),
+          );
+          setFieldGroups(
+            formEditorTranslateFieldGroups(formTemplateData.fieldGroups),
+          );
+          setFormDimensions({
+            width: formTemplateData.pageWidth,
+            height: formTemplateData.pageHeight,
+          });
+          setFormTemplateUseId(formTemplateData.id);
+        })
+        .finally(() => {
+          setIsLoadingEditContext(false);
         });
-        setFormTemplateUseId(formTemplateData.id);
-      });
     }
   }, [formTemplateData]);
 
@@ -98,6 +104,7 @@ export const EditFormTemplateProvider = ({ children }: any) => {
         setFormDimensions,
         formTemplateUseId,
         setFormTemplateUseId,
+        isLoadingEditContext: isLoadingFormTemplate || isLoadingEditContext,
       }}
     >
       {children}
