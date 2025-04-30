@@ -106,6 +106,21 @@ export interface SignFormInstanceContextType {
   ) => Promise<void>;
 }
 
+export interface ApproveFormInstanceContextType {
+  formInstance: FormInstanceEntity | undefined;
+  formInstanceError: Error | null;
+  isLoading: boolean;
+  fields: FormField[][];
+  originalPdfLink: string;
+  signFormInstanceLoading: boolean;
+  modifiedPdfLink: string;
+  groupNumber: number;
+  assignedGroupData: ContextAssignedGroupData[] 
+  nextApproveFormPage: (
+    submitLink: string,
+    isReviewPage: boolean,
+  ) => Promise<void>;
+}
 export interface UserFormsContextType {
   todoForms: FormInstanceEntity[];
   pendingForms: FormInstanceEntity[];

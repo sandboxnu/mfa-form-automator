@@ -71,12 +71,7 @@ export const SignFormInstancePreview = ({
   }
 
   const handleApproveFormInstance = async () => {
-    setMarkedCompletedLoading(true);
-    await completeFormInstanceMutation.mutateAsync({
-      path: {
-        formInstanceId: formInstance?.id,
-      },
-    });
+    router.push(`/approve-form/${formInstance.id}`);
   };
 
   const openForm = () => {
@@ -261,7 +256,7 @@ export const SignFormInstancePreview = ({
                         justifyContent="center"
                       >
                         <PenSigningIcon color="#FFF" />
-                        <Text color="#FFF">Mark Completed</Text>
+                        <Text color="#FFF">Approve form</Text>
                       </Flex>
                     </Button>
                   </>

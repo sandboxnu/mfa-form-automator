@@ -11,7 +11,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { getLatestSignedFormLink } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
-import { PDFCheckBox, PDFDocument, PDFTextField } from 'pdf-lib';
+import { PDFCheckBox, PDFDocument, PDFTextField, rgb } from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
 
 export const SignFormInstanceContext =
@@ -193,13 +193,13 @@ export const SignFormInstanceContextProvider = ({
             pageHeight - (y * pageHeight) / formHeight - heightOnPdf;
 
           let fieldToBeAdded: PDFCheckBox | PDFTextField | undefined;
-
           switch (field.type) {
             case 'SIGNATURE':
               if (user?.signatureLink && field.data.filled) {
                 const signatureImageBytes = await fetch(
                   user.signatureLink,
                 ).then((res) => res.arrayBuffer());
+
                 const pngImage = await pdfDoc.embedPng(signatureImageBytes);
                 page.drawImage(pngImage, {
                   x: xCoordOnPdf,
@@ -217,6 +217,7 @@ export const SignFormInstanceContextProvider = ({
                 x: xCoordOnPdf,
                 y: yCoordOnPdf,
               });
+              field;
               if (field.data.filled) {
                 fieldToBeAdded.check();
               }
@@ -224,11 +225,14 @@ export const SignFormInstanceContextProvider = ({
             case 'TEXT_FIELD':
               fieldToBeAdded = form.createTextField(field.id);
               fieldToBeAdded.setText(field.data.text);
+              fieldToBeAdded.enableMultiline();
+              fieldToBeAdded.enableScrolling();
               fieldToBeAdded.addToPage(page, {
                 width: widthOnPdf,
                 height: heightOnPdf,
                 x: xCoordOnPdf,
                 y: yCoordOnPdf,
+                borderColor: rgb(26 / 255, 166 / 255, 26 / 255),
               });
               break;
           }

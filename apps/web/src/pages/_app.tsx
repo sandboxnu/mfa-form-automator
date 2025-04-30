@@ -20,7 +20,7 @@ import { appControllerRefresh } from '@web/client';
 import { SignFormInstanceContextProvider } from '@web/context/SignFormInstanceContext';
 import { pdfjs } from 'react-pdf';
 import { UserFormsContextProvider } from '@web/context/UserFormsContext';
-
+import { ApproveFormInstanceProvider } from '@web/context/ApproveFormInstanceContext';
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 client.instance.interceptors.response.use(
@@ -90,6 +90,8 @@ export default function App({
   const createFormTemplatePath = '/create-template';
   const createFormInstancePath = '/create-instance';
   const signFormInstancePath = '/sign-form';
+  const approveFormInstancePath = '/approve-form';
+
   const excludeLayoutPaths = [
     '/signin',
     '/register',
@@ -175,6 +177,18 @@ export default function App({
           </CreateFormInstanceProvider>
         </WrapperComponent>
       </>
+    );
+  }
+  if (appProps.router.pathname.startsWith(approveFormInstancePath)) {
+    const { id } = appProps.router.query;
+    return (
+      <WrapperComponent>
+        <ApproveFormInstanceProvider id={id as string}>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ApproveFormInstanceProvider>
+      </WrapperComponent>
     );
   }
 

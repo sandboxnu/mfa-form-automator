@@ -67,8 +67,12 @@ export const FormEditor = ({
   // Handle clicks on the document to clear selected field when clicking outside
   const handleDocumentClick = (event: React.MouseEvent) => {
     // If the click originated from a field component, it will be handled by that component
+    // Ignore clicks on add field buttons
     // Otherwise, clear the selected field
-    if ((event.target as HTMLElement).closest('.field-box') === null) {
+    if (
+      (event.target as HTMLElement).closest('.chakra-button') === null &&
+      (event.target as HTMLElement).closest('.field-box') === null
+    ) {
       setSelectedField(null);
     }
   };
@@ -144,7 +148,7 @@ export const FormEditor = ({
           ],
         ]),
       });
-      setSelectedField(null);
+      setSelectedField(id);
     }
   };
 
@@ -171,7 +175,7 @@ export const FormEditor = ({
           ],
         ]),
       });
-      setSelectedField(null);
+      setSelectedField(id);
     }
   };
 
@@ -198,7 +202,7 @@ export const FormEditor = ({
           ],
         ]),
       });
-      setSelectedField(null);
+      setSelectedField(id);
     }
   };
 
