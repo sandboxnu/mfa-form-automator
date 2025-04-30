@@ -3,6 +3,7 @@ import {
   formInstancesControllerCreateMutation,
   formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
   formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllInfiniteQueryKey,
   formInstancesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { FormLayout } from '@web/components/createForm/FormLayout';
@@ -16,6 +17,7 @@ import { queryClient } from '@web/pages/_app';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import Error from '@web/components/Error';
 
 function Review() {
   const [createFormLoading, setCreateFormLoading] = useState(false);
@@ -32,6 +34,10 @@ function Review() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: formInstancesControllerFindAllQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: formInstancesControllerFindAllInfiniteQueryKey(),
       });
 
       queryClient.invalidateQueries({
@@ -116,6 +122,10 @@ function Review() {
     setCreateFormLoading(false);
   };
 
+  if (!formTemplate) {
+    return <Error></Error>;
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.CreateFormInstance}
@@ -128,7 +138,8 @@ function Review() {
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}
-          fieldGroups={formTemplate?.fieldGroups ?? []}
+          fieldGroups={formTemplate.fieldGroups ?? []}
+          formTemplate={formTemplate}
         />
       }
       submitFunction={_submitFormInstance}

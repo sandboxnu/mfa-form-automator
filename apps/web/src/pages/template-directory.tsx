@@ -16,6 +16,7 @@ import {
 } from '@web/client';
 import {
   formTemplatesControllerFindAllInfiniteOptions,
+  formTemplatesControllerFindAllInfiniteQueryKey,
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
 } from '@web/client/@tanstack/react-query.gen';
@@ -144,6 +145,9 @@ function TemplateDirectory() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: formTemplatesControllerFindAllQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllInfiniteQueryKey(),
       });
     },
   });

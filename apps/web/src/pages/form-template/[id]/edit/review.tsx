@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { CreateFieldGroupDto, CreateTemplateBoxDto, Scope } from '@web/client';
 import {
+  formTemplatesControllerFindAllInfiniteQueryKey,
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
 } from '@web/client/@tanstack/react-query.gen';
@@ -38,6 +39,9 @@ function Review() {
       queryClient.invalidateQueries({
         queryKey: formTemplatesControllerFindAllQueryKey(),
       });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllInfiniteQueryKey(),
+      });
     },
   });
   const _submitFormTemplate = async () => {
@@ -50,10 +54,8 @@ function Review() {
 
     setCreateFormLoading(true);
 
-    console.log('submitting template');
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
-    console.log(fieldGroupsContext);
 
     // populate fieldGroups with fieldGroupsContext
     fieldGroupsContext.forEach((value, groupId) => {
@@ -131,11 +133,6 @@ function Review() {
     setCreateFormLoading(false);
   };
 
-  function printDetails() {
-    console.log(fieldGroupsContext);
-    console.log(formFieldsContext);
-  }
-
   return (
     <FormLayout
       type={FormInteractionType.EditFormTemplate}
@@ -149,6 +146,7 @@ function Review() {
           name={formTemplateName ?? ''}
           description={formTemplateDescription ?? ''}
           fieldGroups={fieldGroupsContext}
+          formDimensions={formDimensions}
         />
       }
       submitFunction={_submitFormTemplate}

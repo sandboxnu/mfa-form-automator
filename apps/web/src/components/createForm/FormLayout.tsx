@@ -39,7 +39,7 @@ export const FormLayout = ({
   review?: boolean;
 }) => {
   return (
-    <Box height="100vh" marginTop="36px">
+    <Box height="100vh" marginTop="36px" minW="1000px">
       <Flex position="absolute" margin="0px" zIndex={5000}>
         <SideCreateForm curStep={pageNumber} interactionType={type} />
       </Flex>

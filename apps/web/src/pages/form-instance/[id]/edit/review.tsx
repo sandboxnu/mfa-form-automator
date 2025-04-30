@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import {
+  formInstancesControllerFindAllInfiniteQueryKey,
+  formInstancesControllerFindAllQueryKey,
   formInstancesControllerUpdateMutation,
-  formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
@@ -14,6 +15,7 @@ import { queryClient } from '@web/pages/_app';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import Error from '@web/components/Error';
 
 function Review() {
   const {
@@ -29,7 +31,10 @@ function Review() {
     ...formInstancesControllerUpdateMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
+        queryKey: formInstancesControllerFindAllQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: formInstancesControllerFindAllInfiniteQueryKey(),
       });
     },
   });
@@ -89,6 +94,10 @@ function Review() {
       });
   };
 
+  if (!formTemplate) {
+    return <Error></Error>;
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.EditFormInstance}
@@ -102,6 +111,7 @@ function Review() {
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}
           fieldGroups={formTemplate?.fieldGroups ?? []}
+          formTemplate={formTemplate}
         />
       }
       submitFunction={_submitFormInstance}

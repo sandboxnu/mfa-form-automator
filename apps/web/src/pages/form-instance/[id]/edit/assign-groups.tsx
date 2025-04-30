@@ -4,6 +4,7 @@ import { AssignGroupsBox } from '@web/components/createFormInstance/AssignGroups
 import isAuth from '@web/components/isAuth';
 import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
 import { useRouter } from 'next/router';
+import Error from '@web/components/Error';
 
 function AssignGroups() {
   const {
@@ -18,6 +19,10 @@ function AssignGroups() {
 
   const router = useRouter();
 
+  if (!formTemplate) {
+    return <Error></Error>;
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.EditFormInstance}
@@ -30,6 +35,7 @@ function AssignGroups() {
         <AssignGroupsBox
           assignedGroupData={assignedGroupData}
           setAssignedGroupData={setAssignedGroupData}
+          formTemplate={formTemplate}
           pdfFile={pdfFile}
           name={formInstanceName ?? ''}
           description={formInstanceDescription ?? ''}

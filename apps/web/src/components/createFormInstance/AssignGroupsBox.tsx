@@ -1,12 +1,14 @@
 import { Text, Flex, Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { FieldGroupBaseEntity } from '../../client/types.gen';
+import {
+  FieldGroupBaseEntity,
+  FormTemplateEntity,
+} from '../../client/types.gen';
 import {
   departmentsControllerFindAllOptions,
   employeesControllerFindAllOptions,
   positionsControllerFindAllOptions,
 } from '@web/client/@tanstack/react-query.gen';
-import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { SignatureDropdown } from './SignatureDropdown';
 import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
 import {
@@ -14,9 +16,6 @@ import {
   formEditorTranslateFormFields,
 } from '@web/utils/formInstanceUtils';
 import { groupColors } from '@web/utils/formTemplateUtils';
-import { FormInteractionType } from '../createForm/types';
-import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
-import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
 import { ContextAssignedGroupData } from '@web/context/types';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -31,6 +30,7 @@ import { Dispatch, SetStateAction } from 'react';
 export const AssignGroupsBox = ({
   assignedGroupData,
   setAssignedGroupData,
+  formTemplate,
   pdfFile,
   name,
   description,
@@ -38,6 +38,7 @@ export const AssignGroupsBox = ({
 }: {
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
+  formTemplate: FormTemplateEntity;
   pdfFile: File | null;
   name: string;
   description: string;
@@ -120,7 +121,7 @@ export const AssignGroupsBox = ({
         >
           Preview Only
         </Text>
-        <Box width="500px">
+        <Box minW="500px">
           <FormEditor
             formTemplateName={name ?? ''}
             pdfFile={pdfFile}
@@ -129,9 +130,11 @@ export const AssignGroupsBox = ({
             formFields={formEditorTranslateFormFields(fieldGroups)}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
-            scale={0.625}
-            documentWidth={500}
             showNav={false}
+            formTemplateDimensions={{
+              width: formTemplate?.pageWidth,
+              height: formTemplate?.pageHeight,
+            }}
           />
         </Box>
       </Flex>

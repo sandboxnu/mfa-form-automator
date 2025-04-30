@@ -1,9 +1,6 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
 import { FormEditor } from './createFormTemplateEditor/FormEditor';
 import { FieldGroups, FormFields } from './types';
-import { useCreateFormTemplate } from '../../context/CreateFormTemplateContext';
-import { FormInteractionType } from '../createForm/types';
-import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 
 /**
  * The contents of the white box for the page (step 2) that asks the user for the form's name and
@@ -15,12 +12,14 @@ import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
  */
 export const ReviewBox = ({
   formFields,
+  formDimensions,
   pdfFile,
   name,
   description,
   fieldGroups,
 }: {
   formFields: FormFields;
+  formDimensions?: { width: number; height: number };
   pdfFile: File | null;
   name: string;
   description: string;
@@ -56,6 +55,10 @@ export const ReviewBox = ({
       </Flex>
     );
   };
+
+  if (!formDimensions || !formFields) {
+    return <></>;
+  }
 
   return (
     <Flex
@@ -114,17 +117,16 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <Box width="500px">
+        <Box minW="500px">
           <FormEditor
             formTemplateName={name}
+            formTemplateDimensions={formDimensions}
             pdfFile={pdfFile}
             disableEdit
             fieldGroups={fieldGroups}
             formFields={formFields}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
-            scale={0.625}
-            documentWidth={500}
             showNav={false}
           />
         </Box>

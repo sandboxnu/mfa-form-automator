@@ -19,6 +19,10 @@ function Description() {
   } = useCreateFormInstance();
   const router = useRouter();
 
+  if (!formTemplate) {
+    return <div>Error: Form template not found.</div>;
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.CreateFormInstance}
@@ -33,6 +37,10 @@ function Description() {
           description={formInstanceDescription}
           setName={setFormInstanceName}
           setDescription={setFormInstanceDescription}
+          formDimensions={{
+            width: formTemplate?.pageWidth,
+            height: formTemplate?.pageHeight,
+          }}
         />
       }
       submitFunction={() => {

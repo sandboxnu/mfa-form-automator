@@ -5,7 +5,8 @@ import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
-import { useState, useEffect, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
+import Error from '@web/components/Error';
 
 function AssignGroups() {
   const {
@@ -23,6 +24,10 @@ function AssignGroups() {
     fetchPdfFile(setPdfFile, formTemplate?.formDocLink);
   }, [formTemplate?.formDocLink]);
 
+  if (!formTemplate) {
+    return <Error></Error>;
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.CreateFormInstance}
@@ -39,6 +44,7 @@ function AssignGroups() {
           fieldGroups={formTemplate?.fieldGroups ?? []}
           assignedGroupData={assignedGroupData}
           setAssignedGroupData={setAssignedGroupData}
+          formTemplate={formTemplate}
         />
       }
       submitFunction={() => {

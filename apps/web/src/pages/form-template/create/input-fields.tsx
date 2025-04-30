@@ -6,6 +6,7 @@ import isAuth from '@web/components/isAuth';
 import { Scope } from '@web/client';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { useRouter } from 'next/router';
+import Error from '@web/components/Error';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -19,9 +20,15 @@ function InputFields() {
     fieldGroups,
     setFieldGroups,
     pdfFile,
-    setFormDimensions,
+    formDimensions,
   } = useCreateFormTemplate();
+
   const router = useRouter();
+
+  if (!formDimensions || !formFields) {
+    return <Error></Error>;
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.CreateFormTemplate}
@@ -34,14 +41,13 @@ function InputFields() {
         <Box width="100%">
           <FormEditor
             formTemplateName={formTemplateName ?? ''}
+            formTemplateDimensions={formDimensions}
             pdfFile={pdfFile}
             disableEdit={false}
             formFields={formFields}
             setFormFields={setFormFields}
             fieldGroups={fieldGroups}
             setFieldGroups={setFieldGroups}
-            scale={1}
-            setFormDimensions={setFormDimensions}
           />
         </Box>
       }

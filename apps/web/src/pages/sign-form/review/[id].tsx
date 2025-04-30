@@ -7,6 +7,7 @@ import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
+import Error from '@web/components/Error';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -22,6 +23,10 @@ function Review() {
 
   const { id } = router.query;
 
+  if (!formInstance) {
+    return <Error></Error>;
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.SignFormInstance}
@@ -34,6 +39,10 @@ function Review() {
           fieldGroups={[]}
           name={formInstance?.name ?? ''}
           description={formInstance?.description ?? ''}
+          dimensions={{
+            width: formInstance?.formTemplate.pageWidth,
+            height: formInstance?.formTemplate.pageHeight,
+          }}
         />
       }
       submitFunction={() => {

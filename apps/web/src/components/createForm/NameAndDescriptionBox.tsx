@@ -23,6 +23,7 @@ export const NameAndDescriptionBox = ({
   setName,
   description,
   setDescription,
+  formDimensions,
 }: {
   pdfFile: File | null;
   fieldGroups: FieldGroupBaseEntity[];
@@ -30,6 +31,7 @@ export const NameAndDescriptionBox = ({
   setName: Dispatch<SetStateAction<string | null>>;
   description: string | null;
   setDescription: Dispatch<SetStateAction<string | null>>;
+  formDimensions: { width: number; height: number };
 }) => {
   const textInputStyle = {
     padding: '8px 10px',
@@ -54,6 +56,7 @@ export const NameAndDescriptionBox = ({
         gap="24px"
         alignItems={'flex-start'}
         flex={1}
+        maxW="500px"
       >
         <Flex gap="10px" flexDirection="column" width="100%">
           <Text>
@@ -84,36 +87,33 @@ export const NameAndDescriptionBox = ({
           />
         </Flex>
       </Flex>
-      <Flex>
-        <Flex
-          flexDirection={'column'}
-          gap="8px"
-          alignItems="flex-start"
-          flex="1 0 0"
+      <Flex
+        flexDirection={'column'}
+        gap="8px"
+        alignItems="flex-start"
+        flex="1 0 0"
+      >
+        <Text
+          color="#7C7F86"
+          fontSize="14px"
+          fontWeight="500px"
+          lineHeight="21px"
         >
-          <Text
-            color="#7C7F86"
-            fontSize="14px"
-            fontWeight="500px"
-            lineHeight="21px"
-          >
-            Preview Only
-          </Text>
-          <Flex width="580px">
-            <FormEditor
-              formTemplateName={name ?? ''}
-              pdfFile={pdfFile}
-              disableEdit
-              fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
-              formFields={formEditorTranslateFormFields(fieldGroups)}
-              setFormFields={() => {}}
-              setFieldGroups={() => {}}
-              scale={0.6875}
-              documentWidth={550}
-              showNav={false}
-            />
-          </Flex>
-        </Flex>
+          Preview Only
+        </Text>
+        <Box minW="500px">
+          <FormEditor
+            formTemplateName={name ?? ''}
+            formTemplateDimensions={formDimensions}
+            pdfFile={pdfFile}
+            disableEdit
+            fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
+            formFields={formEditorTranslateFormFields(fieldGroups)}
+            setFormFields={() => {}}
+            setFieldGroups={() => {}}
+            showNav={false}
+          />
+        </Box>
       </Flex>
     </Flex>
   );

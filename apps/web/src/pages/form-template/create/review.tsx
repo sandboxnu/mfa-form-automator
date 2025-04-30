@@ -4,11 +4,16 @@ import {
   formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
   formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
   formTemplatesControllerCreateMutation,
+  formTemplatesControllerFindAllInfiniteQueryKey,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { ReviewBox } from '@web/components/createFormTemplate/ReviewBox';
+import {
+  PDF_HEIGHT_PX,
+  PDF_WIDTH_PX,
+} from '@web/components/createFormTemplate/utils';
 import isAuth from '@web/components/isAuth';
 import { toaster } from '@web/components/ui/toaster';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
@@ -42,6 +47,10 @@ function Review() {
       });
 
       queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllInfiniteQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
         queryKey:
           formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
       });
@@ -52,6 +61,10 @@ function Review() {
       });
     },
   });
+
+  /**
+   * Upload and create a form template
+   */
   const _submitFormTemplate = async () => {
     if (createFormLoading) {
       return;
@@ -62,10 +75,8 @@ function Review() {
 
     setCreateFormLoading(true);
 
-    console.log('submitting template');
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
-    console.log(formFieldsContext);
 
     // populate fieldGroups with fieldGroupsContext
     fieldGroupsContext.forEach((value, groupId) => {
@@ -111,9 +122,6 @@ function Review() {
           },
         })
         .then(async (response) => {
-          await queryClient.invalidateQueries({
-            queryKey: formTemplatesControllerFindAllQueryKey(),
-          });
           router.push('/form-template/create/success').then(() => {
             setCreateFormLoading(false);
           });
@@ -154,6 +162,7 @@ function Review() {
           description={formTemplateDescription ?? ''}
           fieldGroups={fieldGroupsContext}
           formFields={formFieldsContext}
+          formDimensions={formDimensions}
         />
       }
       submitFunction={_submitFormTemplate}

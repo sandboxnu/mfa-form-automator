@@ -1,24 +1,23 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
-import { FieldGroupBaseEntity } from '@web/client';
+import { FieldGroupBaseEntity, FormTemplateEntity } from '@web/client';
 import {
   formEditorTranslateFieldGroups,
   formEditorTranslateFormFields,
 } from '@web/utils/formInstanceUtils';
 import { groupColors } from '@web/utils/formTemplateUtils';
-import { FormInteractionType } from '../createForm/types';
-import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
 import { ContextAssignedGroupData } from '@web/context/types';
 
 export const ReviewBox = ({
   assignedGroupData,
+  formTemplate,
   pdfFile,
   name,
   description,
   fieldGroups,
 }: {
   assignedGroupData: ContextAssignedGroupData[];
+  formTemplate: FormTemplateEntity;
   pdfFile: File | null;
   name: string;
   description: string;
@@ -98,7 +97,7 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <Box width="500px">
+        <Box minW="500px">
           <FormEditor
             formTemplateName={name ?? ''}
             pdfFile={pdfFile}
@@ -107,9 +106,11 @@ export const ReviewBox = ({
             formFields={formEditorTranslateFormFields(fieldGroups)}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
-            scale={0.625}
-            documentWidth={500}
             showNav={false}
+            formTemplateDimensions={{
+              width: formTemplate?.pageWidth,
+              height: formTemplate?.pageHeight,
+            }}
           />
         </Box>
       </Flex>
