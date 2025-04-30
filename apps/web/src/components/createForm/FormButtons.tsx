@@ -65,7 +65,7 @@ export const FormButtons = ({
   } = useCreateFormInstance();
   const [createFormLoading, setCreateFormLoading] = useState(false);
   const { nextSignFormPage, signFormInstanceLoading } = useSignFormInstance();
-  const { approvePdf } = useApproveFormInstance();
+  const { approveForm } = useApproveFormInstance();
 
   const { user } = useAuth();
 
@@ -398,7 +398,7 @@ export const FormButtons = ({
                 _submitFormTemplate();
                 break;
               case FormInteractionType.ApproveFormInstance:
-                approvePdf();
+                approveForm();
                 break;
               case FormInteractionType.SignFormInstance:
                 nextSignFormPage(submitLink, review);

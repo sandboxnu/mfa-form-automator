@@ -111,7 +111,7 @@ export interface ApproveFormInstanceContextType {
   formInstanceError: Error | null;
   isLoading: boolean;
   completedPdfLink: string;
-  approvePdf: () => Promise<void>;
+  approveForm: () => Promise<void>;
 }
 export interface UserFormsContextType {
   todoForms: FormInstanceEntity[];
