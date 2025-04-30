@@ -10,7 +10,7 @@ function Success() {
     <SuccessPage
       message={'Your form template has been created!'}
       linkText={'Create form instance'}
-      linkAction={() => router.push('/form-instance/create/select-template')}
+      linkAction={() => router.push('/')}
     />
   );
 }
