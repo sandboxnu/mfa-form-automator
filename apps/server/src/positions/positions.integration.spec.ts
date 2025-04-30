@@ -27,43 +27,44 @@ describe('PositionsServiceIntegrationTest', () => {
         module.get<PrismaService>(PrismaService).department.deleteMany(),
       ]);
   });
+  describe('findAll', () => {
+    describe('sorting', () => {
+      beforeEach(async () => {
+        // Create departments for positions
+        const department = await module
+          .get<PrismaService>(PrismaService)
+          .department.create({
+            data: { name: 'Department' },
+          });
 
-  describe('sorting', () => {
-    beforeEach(async () => {
-      // Create departments for positions
-      const department = await module
-        .get<PrismaService>(PrismaService)
-        .department.create({
-          data: { name: 'Department' },
-        });
-
-      // Create positions with different names to test sorting
-      for (let i = 1; i <= 10; i++) {
-        await positionsService.create({
-          name: `Position ${i}`,
-          departmentId: department.id,
-        });
-      }
-    });
-
-    it('sorts by name in ascending order', async () => {
-      const positions = await positionsService.findAll({
-        sortBy: SortOption.NAME_ASC,
+        // Create positions with different names to test sorting
+        for (let i = 1; i <= 10; i++) {
+          await positionsService.create({
+            name: `Position ${i}`,
+            departmentId: department.id,
+          });
+        }
       });
 
-      expect(positions).toHaveLength(10);
-      expect(positions[0].name).toBe('Position 1');
-      expect(positions[1].name).toBe('Position 10');
-    });
+      it('sorts by name in ascending order', async () => {
+        const positions = await positionsService.findAll({
+          sortBy: SortOption.NAME_ASC,
+        });
 
-    it('sorts by name in descending order', async () => {
-      const positions = await positionsService.findAll({
-        sortBy: SortOption.NAME_DESC,
+        expect(positions).toHaveLength(10);
+        expect(positions[0].name).toBe('Position 1');
+        expect(positions[1].name).toBe('Position 10');
       });
 
-      expect(positions).toHaveLength(10);
-      expect(positions[0].name).toBe('Position 9');
-      expect(positions[1].name).toBe('Position 8');
+      it('sorts by name in descending order', async () => {
+        const positions = await positionsService.findAll({
+          sortBy: SortOption.NAME_DESC,
+        });
+
+        expect(positions).toHaveLength(10);
+        expect(positions[0].name).toBe('Position 9');
+        expect(positions[1].name).toBe('Position 8');
+      });
     });
   });
 });
