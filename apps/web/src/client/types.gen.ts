@@ -1358,7 +1358,18 @@ export type FormInstancesControllerCreateResponse =
 export type FormInstancesControllerFindAllAssignedToCurrentEmployeeData = {
   body?: never;
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Form instance sorting option
+     */
+    sortBy?:
+      | 'createdAtAsc'
+      | 'createdAtDesc'
+      | 'updatedAtAsc'
+      | 'updatedAtDesc'
+      | 'nameAsc'
+      | 'nameDesc';
+  };
   url: '/api/form-instances/me';
 };
 
@@ -1383,7 +1394,18 @@ export type FormInstancesControllerFindAllAssignedToCurrentEmployeeResponse =
 export type FormInstancesControllerFindAllCreatedByCurrentEmployeeData = {
   body?: never;
   path?: never;
-  query?: never;
+  query?: {
+    /**
+     * Form instance sorting option
+     */
+    sortBy?:
+      | 'createdAtAsc'
+      | 'createdAtDesc'
+      | 'updatedAtAsc'
+      | 'updatedAtDesc'
+      | 'nameAsc'
+      | 'nameDesc';
+  };
   url: '/api/form-instances/created/me';
 };
 

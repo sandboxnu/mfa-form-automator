@@ -308,9 +308,16 @@ export class FormInstancesService {
   /**
    * Find all form instances assigned to an employee.
    * @param employeeId the employee id
+   * @param sortBy optional sorting parameter
    * @returns all form instances assigned to the employee, employees are assigned to a form instance if their id, position id, or department id matches the signer
    */
-  async findAssignedTo(employeeId: string) {
+  async findAssignedTo({
+    employeeId,
+    sortBy,
+  }: {
+    employeeId: string;
+    sortBy?: SortOption;
+  }) {
     let employee;
 
     try {
@@ -326,6 +333,7 @@ export class FormInstancesService {
     }
 
     const formInstances = await this.prisma.formInstance.findMany({
+      orderBy: orderBy(sortBy),
       where: {
         assignedGroups: {
           some: {
@@ -480,10 +488,18 @@ export class FormInstancesService {
   /**
    * Finds all form instances created by an employee.
    * @param employeeId the employee id
+   * @param sortBy optional sorting parameter
    * @returns all form instances created by the employee
    */
-  async findCreatedBy(employeeId: string) {
+  async findCreatedBy({
+    employeeId,
+    sortBy,
+  }: {
+    employeeId: string;
+    sortBy?: SortOption;
+  }) {
     const formInstances = await this.prisma.formInstance.findMany({
+      orderBy: orderBy(sortBy),
       where: {
         originatorId: {
           equals: employeeId,

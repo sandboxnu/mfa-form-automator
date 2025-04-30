@@ -30,7 +30,11 @@ export const UserFormsContextProvider = ({
     error: assignedFIError,
     data: assignedFIData,
   } = useQuery({
-    ...formInstancesControllerFindAllAssignedToCurrentEmployeeOptions(),
+    ...formInstancesControllerFindAllAssignedToCurrentEmployeeOptions({
+      query: {
+        sortBy: 'updatedAtDesc',
+      },
+    }),
     enabled: !!user,
   });
 
@@ -39,7 +43,11 @@ export const UserFormsContextProvider = ({
     error: createdFIError,
     data: createdFIData,
   } = useQuery({
-    ...formInstancesControllerFindAllCreatedByCurrentEmployeeOptions(),
+    ...formInstancesControllerFindAllCreatedByCurrentEmployeeOptions({
+      query: {
+        sortBy: 'updatedAtDesc',
+      },
+    }),
     enabled: !!user,
   });
 
