@@ -53,8 +53,8 @@ describe('DepartmentServiceIntegrationTest', () => {
     it('should retrieve all departments', async () => {
       const departments = await departmentsService.findAll({});
       expect(departments.length).toEqual(2);
-      expect(departments[0].name).toEqual('HR');
-      expect(departments[1].name).toEqual('Engineering');
+      expect(departments[0].name).toEqual('Engineering');
+      expect(departments[1].name).toEqual('HR');
     });
   });
 
