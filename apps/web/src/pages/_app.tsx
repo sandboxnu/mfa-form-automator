@@ -100,6 +100,10 @@ export default function App({
     '/register',
     '/form-template/create/success',
   ];
+  const excludeLayoutPathsRegex = [
+    /^\/form-instance\/[^\/]+\/edit\/success/,
+    /^\/form-template\/[^\/]+\/edit\/success/,
+  ];
   // to allow form template context to be populated before moving into edit mode
   const templateDirectoryPath = '/template-directory';
   // to allow form instance context for accessing id of just created to move into edit mode
@@ -169,10 +173,14 @@ export default function App({
     // skip layout for error pages
     // skip layout for excludeLayoutPaths
     // skip layout for instanceCreateSuccessPath
+    // skip layout for edit template/instance success pages
     if (
       !isErrorPage &&
       !excludeLayoutPaths.includes(appProps.router.pathname) &&
-      !appProps.router.pathname.includes(instanceCreateSuccessPath)
+      !appProps.router.pathname.includes(instanceCreateSuccessPath) &&
+      !excludeLayoutPathsRegex.some((regex) =>
+        regex.test(appProps.router.pathname),
+      )
     ) {
       root = <Layout>{root}</Layout>;
     }
