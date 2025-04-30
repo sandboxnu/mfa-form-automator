@@ -15,6 +15,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { RxCross2 } from 'react-icons/rx';
 import { DeleteConfirmModal } from '../DeleteConfirmModal';
 import { RiSubtractFill } from 'react-icons/ri';
+import { Toaster, toaster } from '@web/components/ui/toaster';
 
 export const ModifyDepartmentCard = ({
   department,
@@ -32,8 +33,14 @@ export const ModifyDepartmentCard = ({
     onMutate: () => {
       setLoading(true);
     },
-    onError: (_) => {
+    onError: (error) => {
       setLoading(false);
+      toaster.create({
+        title: 'Error',
+        description: `Failed to update department: ${error.message || 'Please try again'}`,
+        type: 'error',
+        duration: 5000,
+      });
     },
     onSuccess: () => {
       setIsEditing(false);
@@ -45,11 +52,25 @@ export const ModifyDepartmentCard = ({
         queryKey: positionsControllerFindAllQueryKey(),
       });
       refreshUser();
+      toaster.create({
+        title: 'Success',
+        description: 'Department updated successfully',
+        type: 'success',
+        duration: 5000,
+      });
     },
   });
 
   const updatePosition = useMutation({
     ...positionsControllerUpdateMutation(),
+    onError: (error) => {
+      toaster.create({
+        title: 'Error',
+        description: `Failed to update position: ${error.message || 'Please try again'}`,
+        type: 'error',
+        duration: 5000,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: departmentsControllerFindAllQueryKey(),
@@ -63,6 +84,16 @@ export const ModifyDepartmentCard = ({
 
   const removeDepartment = useMutation({
     ...departmentsControllerRemoveMutation(),
+    onError: (error) => {
+      setLoading(false);
+      setIsDeleteConfirmOpen(false);
+      toaster.create({
+        title: 'Error',
+        description: `Failed to delete department: ${error.message || 'Please try again'}`,
+        type: 'error',
+        duration: 5000,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: departmentsControllerFindAllQueryKey(),
@@ -71,6 +102,12 @@ export const ModifyDepartmentCard = ({
         queryKey: positionsControllerFindAllQueryKey(),
       });
       refreshUser();
+      toaster.create({
+        title: 'Success',
+        description: 'Department deleted successfully',
+        type: 'success',
+        duration: 5000,
+      });
     },
   });
 
@@ -85,6 +122,12 @@ export const ModifyDepartmentCard = ({
 
   const handleSave = () => {
     if (departmentName.trim() === '') {
+      toaster.create({
+        title: 'Error',
+        description: 'Department name cannot be empty',
+        type: 'error',
+        duration: 5000,
+      });
       return;
     }
     updateDepartment.mutate({
@@ -99,30 +142,36 @@ export const ModifyDepartmentCard = ({
 
   const handleDelete = async () => {
     setLoading(true);
-    await Promise.all(
-      department.positions.map((position) => {
-        return updatePosition.mutateAsync({
-          path: {
-            id: position.id,
-          },
-          body: {
-            departmentId: null,
-          },
-        });
-      }),
-    );
+    try {
+      await Promise.all(
+        department.positions.map((position) => {
+          return updatePosition.mutateAsync({
+            path: {
+              id: position.id,
+            },
+            body: {
+              departmentId: null,
+            },
+          });
+        }),
+      );
 
-    await removeDepartment.mutateAsync({
-      path: {
-        id: department.id,
-      },
-    });
-    setIsDeleteConfirmOpen(false);
-    setLoading(false);
+      await removeDepartment.mutateAsync({
+        path: {
+          id: department.id,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to delete department:', error);
+    } finally {
+      setIsDeleteConfirmOpen(false);
+      setLoading(false);
+    }
   };
 
   return (
     <>
+      <Toaster />
       <Flex
         borderRadius="5px"
         bg="#FFF"

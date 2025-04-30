@@ -201,16 +201,20 @@ export const ProfileIcon = createIcon({
 interface UserProfileAvatarProps {
   firstName: string;
   lastName: string;
+  bg?: string;
+  color?: string;
 }
 
 export const UserProfileAvatar: React.FC<UserProfileAvatarProps> = ({
   firstName,
   lastName,
+  bg = "#E2E8F0", // Gray.200 in Chakra UI
+  color = "black",
 }) => {
   return (
     <Avatar.Root
-      bg="#1367EA"
-      color="white"
+      bg={bg}
+      color={color}
       h="32px"
       w="32px"
       fontSize="16px"

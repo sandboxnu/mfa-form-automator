@@ -16,6 +16,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { NewPositionCard } from './NewPositionCard';
 import { MdOutlineSearch } from 'react-icons/md';
+import { Toaster, toaster } from '@web/components/ui/toaster';
 
 export const EditPositionsModal = ({
   isOpen,
@@ -69,8 +70,14 @@ export const EditPositionsModal = ({
     onMutate: () => {
       setIsLoading(true);
     },
-    onError: () => {
+    onError: (error) => {
       setIsLoading(false);
+      toaster.create({
+        title: 'Error',
+        description: `Failed to create position: ${error.message || 'Please try again'}`,
+        type: 'error',
+        duration: 5000,
+      });
     },
     onSuccess: () => {
       setIsLoading(false);
@@ -83,6 +90,12 @@ export const EditPositionsModal = ({
         queryKey: departmentsControllerFindAllQueryKey(),
       });
       refreshUser();
+      toaster.create({
+        title: 'Success',
+        description: 'Position created successfully',
+        type: 'success',
+        duration: 5000,
+      });
     },
   });
 
@@ -97,6 +110,12 @@ export const EditPositionsModal = ({
 
   const handleSaveNewPosition = () => {
     if (newPositionName.trim() === '' || newPositionDepartmentId === null) {
+      toaster.create({
+        title: 'Error',
+        description: 'Position name and department are required',
+        type: 'error',
+        duration: 5000,
+      });
       return;
     }
 
@@ -129,6 +148,7 @@ export const EditPositionsModal = ({
             boxShadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
             overflow="hidden"
           >
+            <Toaster />
             <Dialog.Header>
               <Flex
                 width="100%"

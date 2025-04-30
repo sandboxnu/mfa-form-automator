@@ -11,7 +11,8 @@ interface ConfirmEmployeeChangesModalProps {
   onClose: () => void;
   onSave: () => void;
   employee: EmployeeBaseEntity;
-  editedName: string;
+  editedFirstName: string;
+  editedLastName: string;
   selectedDepartment: string;
   selectedPosition: string;
   departments: DepartmentEntity[];
@@ -23,21 +24,29 @@ export const ConfirmEmployeeChangesModal = ({
   onClose,
   onSave,
   employee,
-  editedName,
+  editedFirstName,
+  editedLastName,
   selectedDepartment,
   selectedPosition,
   departments,
   positions,
 }: ConfirmEmployeeChangesModalProps) => {
+  // Safety check - if employee is undefined or null, close the modal
+  if (!employee) {
+    // Close the modal on the next render cycle to avoid React state update errors
+    setTimeout(() => onClose(), 0);
+    return null;
+  }
+
   // @ts-ignore - position exists on employee but not in type
-  const currentDepartment = employee.position?.department;
+  const currentDepartment = employee?.position?.department;
   // @ts-ignore - position exists on employee but not in type
-  const currentPosition = employee.position;
+  const currentPosition = employee?.position;
   const newDepartment = departments.find((d) => d.id === selectedDepartment);
   const newPosition = positions.find((p) => p.id === selectedPosition);
 
   const hasNameChange =
-    editedName !== `${employee.firstName} ${employee.lastName}`;
+    editedFirstName !== employee.firstName || editedLastName !== employee.lastName;
   const hasDepartmentChange = currentDepartment?.id !== selectedDepartment;
   const hasPositionChange = currentPosition?.id !== selectedPosition;
 
@@ -96,7 +105,7 @@ export const ConfirmEmployeeChangesModal = ({
                     <Text color="gray.600">
                       Current: {employee.firstName} {employee.lastName}
                     </Text>
-                    <Text color="blue.500">New: {editedName}</Text>
+                    <Text color="blue.500">New: {editedFirstName} {editedLastName}</Text>
                   </Flex>
                 )}
                 {hasDepartmentChange && (

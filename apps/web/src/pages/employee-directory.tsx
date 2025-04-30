@@ -1,4 +1,4 @@
-import { Flex, Box, Heading, Text, Input, Button } from '@chakra-ui/react';
+import { Flex, Box, Heading, Text, Input, Button, Badge } from '@chakra-ui/react';
 import {
   DepartmentEntity,
   EmployeeBaseEntity,
@@ -6,20 +6,36 @@ import {
   Scope,
   SortBy,
 } from '@web/client';
-import { DeleteEmployeeModal } from '@web/components/DeleteEmployeeModal';
 import { ConfirmEmployeeChangesModal } from '@web/components/ConfirmEmployeeChangesModal';
+import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
 import isAuth from '@web/components/isAuth';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { useEmployeesContext } from '@web/context/EmployeesContext';
 import { UserProfileAvatar } from '@web/static/icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import {
   departmentsControllerFindAll,
   positionsControllerFindAllInDepartment,
+  employeesControllerRemove,
+  employeesControllerUpdate,
 } from '@web/client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryClient } from '@web/pages/_app';
 import { EditDepartmentsModal } from '@web/components/editDepartment/EditDepartmentsModal';
 import { EditPositionsModal } from '@web/components/editPosition/EditPositionsModal';
+import { useAuth } from '@web/hooks/useAuth';
+import { AxiosError } from 'axios';
+import { client } from '@web/client/client.gen';
+import { Toaster, toaster } from '@web/components/ui/toaster';
+import { employeesControllerFindAllQueryKey } from '@web/client/@tanstack/react-query.gen';
+
+// Extended employee type with active status
+interface ExtendedEmployeeBaseEntity extends EmployeeBaseEntity {
+  active?: boolean;
+  // Allow whatever type the API uses for position
+  position?: any;
+}
 
 function EmployeeDirectory() {
   const [isDepartmentsModalOpen, setIsDepartmentsModalOpen] = useState(false);
@@ -28,21 +44,145 @@ function EmployeeDirectory() {
   // TODO sorting
   const [sortOption, setSortOption] = useState<SortBy>(SortBy.NAME_DESC);
   const { employees, isLoading, error } = useEmployeesContext();
+  const [localEmployees, setLocalEmployees] = useState<ExtendedEmployeeBaseEntity[]>([]);
   const [editingEmployee, setEditingEmployee] = useState<string | null>(null);
-  const [editedName, setEditedName] = useState('');
+  const [editedFirstName, setEditedFirstName] = useState('');
+  const [editedLastName, setEditedLastName] = useState('');
   const [departments, setDepartments] = useState<DepartmentEntity[]>([]);
   const [selectedDepartment, setSelectedDepartment] = useState<string>('');
   const [positions, setPositions] = useState<PositionBaseEntity[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<string>('');
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isConfirmChangesModalOpen, setIsConfirmChangesModalOpen] =
-    useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isConfirmChangesModalOpen, setIsConfirmChangesModalOpen] = useState(false);
   const [employeeToDelete, setEmployeeToDelete] =
-    useState<EmployeeBaseEntity | null>(null);
-  const openModal = (employee: EmployeeBaseEntity) => {
+    useState<ExtendedEmployeeBaseEntity | null>(null);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [deactivatedEmployeeIds, setDeactivatedEmployeeIds] = useState<string[]>([]);
+  
+  // Custom styles for the hover effect
+  const styles = `
+    .employee-row:hover .edit-button {
+      display: block !important;
+    }
+  `;
+  
+  // Load deactivated employee IDs from localStorage on mount
+  useEffect(() => {
+    const savedDeactivatedIds = localStorage.getItem('deactivatedEmployeeIds');
+    if (savedDeactivatedIds) {
+      setDeactivatedEmployeeIds(JSON.parse(savedDeactivatedIds));
+    }
+  }, []);
+  
+  // Initialize localEmployees when employees from context change
+  useEffect(() => {
+    if (employees) {
+      // Filter out any employees that were previously deactivated
+      const filteredEmployees = employees
+        .filter(emp => !deactivatedEmployeeIds.includes(emp.id))
+        .map(emp => ({
+          ...emp, 
+          active: true
+        }));
+      
+      setLocalEmployees(filteredEmployees);
+    }
+  }, [employees, deactivatedEmployeeIds]);
+  
+  // Deactivate employee instead of deleting
+  const deactivateEmployee = useMutation({
+    mutationFn: async (employeeId: string) => {
+      // Instead of deleting the employee, we mark it as deactivated in localStorage
+      const updatedIds = [...deactivatedEmployeeIds, employeeId];
+      localStorage.setItem('deactivatedEmployeeIds', JSON.stringify(updatedIds));
+      setDeactivatedEmployeeIds(updatedIds);
+      
+      return { success: true, id: employeeId };
+    },
+    onMutate: (employeeId) => {
+      setIsDeleteLoading(true);
+      
+      // If the employee being deactivated is also being edited, exit edit mode
+      if (editingEmployee === employeeId) {
+        setEditingEmployee(null);
+        setIsConfirmChangesModalOpen(false);
+      }
+      
+      // Optimistically mark the employee as inactive in the local state
+      setLocalEmployees((prevEmployees) => 
+        prevEmployees.filter(employee => employee.id !== employeeId)
+      );
+    },
+    onError: (error: any, employeeId) => {
+      console.error('Failed to deactivate employee:', error);
+      setIsDeleteLoading(false);
+      
+      // Revert the optimistic update on error
+      if (employees) {
+        // Re-filter employees based on updated deactivatedEmployeeIds
+        const filteredEmployees = employees
+          .filter(emp => !deactivatedEmployeeIds.includes(emp.id))
+          .map(emp => ({
+            ...emp, 
+            active: true
+          }));
+        
+        setLocalEmployees(filteredEmployees);
+      }
+      
+      toaster.create({
+        title: 'Error',
+        description: 'Failed to deactivate employee. Please try again.',
+        type: 'error',
+        duration: 5000,
+      });
+      
+      setIsDeleteConfirmOpen(false);
+    },
+    onSuccess: () => {
+      setIsDeleteLoading(false);
+      setIsDeleteConfirmOpen(false);
+      
+      toaster.create({
+        title: 'Success',
+        description: 'Employee deactivated successfully',
+        type: 'success',
+        duration: 5000,
+      });
+    },
+  });
+  
+  const openDeleteModal = (employee: ExtendedEmployeeBaseEntity) => {
+    // Prevent deactivating yourself
+    if (employee.id === user?.id) {
+      toaster.create({
+        title: 'Cannot deactivate',
+        description: 'You cannot deactivate your own account',
+        type: 'error',
+        duration: 5000,
+      });
+      return;
+    }
+    
     setEmployeeToDelete(employee);
-    setIsDeleteModalOpen(true);
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const handleDeactivateEmployee = async () => {
+    if (employeeToDelete) {
+      // Store the ID before the mutation, as employeeToDelete will be cleared by onSuccess
+      const employeeId = employeeToDelete.id;
+      
+      // If we're deactivating the employee we're currently editing, exit edit mode
+      if (editingEmployee === employeeId) {
+        setEditingEmployee(null);
+      }
+      
+      deactivateEmployee.mutate(employeeId);
+    }
   };
 
   useEffect(() => {
@@ -50,12 +190,19 @@ function EmployeeDirectory() {
       try {
         const response = await departmentsControllerFindAll({
           query: { limit: 100 },
+          client, // Use the configured client that includes auth headers
         });
         if (response.data) {
           setDepartments(response.data);
         }
       } catch (error) {
         console.error('Failed to fetch departments:', error);
+        toaster.create({
+          title: 'Error',
+          description: 'Failed to fetch departments',
+          type: 'error',
+          duration: 5000,
+        });
       }
     };
     fetchDepartments();
@@ -71,12 +218,19 @@ function EmployeeDirectory() {
         const response = await positionsControllerFindAllInDepartment({
           path: { departmentId: selectedDepartment },
           query: { limit: 100 },
+          client, // Use the configured client that includes auth headers
         });
         if (response.data) {
           setPositions(response.data);
         }
       } catch (error) {
         console.error('Failed to fetch positions:', error);
+        toaster.create({
+          title: 'Error',
+          description: 'Failed to fetch positions',
+          type: 'error',
+          duration: 5000,
+        });
       }
     };
     fetchPositions();
@@ -84,7 +238,8 @@ function EmployeeDirectory() {
 
   const handleEditClick = (employee: EmployeeBaseEntity) => {
     setEditingEmployee(employee.id);
-    setEditedName(`${employee.firstName} ${employee.lastName}`);
+    setEditedFirstName(employee.firstName);
+    setEditedLastName(employee.lastName);
     // @ts-ignore - position exists on employee but not in type
     setSelectedDepartment(employee.position?.department.id || '');
     // @ts-ignore - position exists on employee but not in type
@@ -95,24 +250,83 @@ function EmployeeDirectory() {
     setIsConfirmChangesModalOpen(true);
   };
 
-  const handleConfirmSave = () => {
-    // TODO: Save changes
+  const handleConfirmSave = async () => {
+    // Find the employee we're editing
+    const employeeIndex = localEmployees.findIndex(e => e.id === editingEmployee);
+    
+    if (employeeIndex !== -1) {
+      try {
+        // Make the API call to update the employee
+        await employeesControllerUpdate({
+          path: { id: editingEmployee || '' },
+          body: {
+            firstName: editedFirstName,
+            lastName: editedLastName,
+            positionId: selectedPosition || undefined,
+          },
+          client,
+        });
+        
+        // Create updated copy of employees array
+        const updatedEmployees = [...localEmployees];
+        
+        // Get the selected position object
+        const selectedPositionObj = positions.find(p => p.id === selectedPosition);
+        const selectedDepartmentObj = departments.find(d => d.id === selectedDepartment);
+        
+        // Update the employee with edited values
+        updatedEmployees[employeeIndex] = {
+          ...updatedEmployees[employeeIndex],
+          firstName: editedFirstName,
+          lastName: editedLastName,
+          // @ts-ignore - updating position data
+          position: selectedPositionObj ? {
+            ...selectedPositionObj,
+            department: selectedDepartmentObj || null
+          } : updatedEmployees[employeeIndex].position
+        };
+        
+        // Update the local state
+        setLocalEmployees(updatedEmployees);
+        
+        // Invalidate the employees query to trigger a refetch
+        queryClient.invalidateQueries({ queryKey: employeesControllerFindAllQueryKey() });
+        
+        toaster.create({
+          title: 'Success',
+          description: 'Employee updated successfully',
+          type: 'success',
+          duration: 5000,
+        });
+      } catch (error) {
+        console.error('Failed to update employee:', error);
+        toaster.create({
+          title: 'Error',
+          description: 'Failed to update employee. Please try again.',
+          type: 'error',
+          duration: 5000,
+        });
+      }
+    }
+    
+    // Reset editing state
     setEditingEmployee(null);
     setIsConfirmChangesModalOpen(false);
   };
 
-  // TODO: loading state, error handling, search functionality
-
-  if (employees.length === 0) return null;
+  if (localEmployees.length === 0) return null;
+  
   return (
     <>
+      <Toaster />
+      <style>{styles}</style>
       <Box maxW="100%" p={8}>
         <Box>
           <Heading as="h1" fontSize="32px" fontWeight="500" mb={2}>
             Employees
           </Heading>
           <Text color="gray.600" mb={6}>
-            {employees.length.toLocaleString()} employees
+            {localEmployees.length.toLocaleString()} employees
           </Text>
 
           <Flex justify="space-between" align="center" mb={6}>
@@ -122,28 +336,30 @@ function EmployeeDirectory() {
               setSortOption={setSortOption}
               placeholder="Search employees"
             />
-            <Button
-              ml={4}
-              px={4}
-              variant="outline"
-              bg="#FFF"
-              borderRadius="4px"
-              border="1px solid #E5E5E5"
-              onClick={() => setIsPositionsModalOpen(true)}
-            >
-              Manage positions
-            </Button>
-            <Button
-              ml={4}
-              px={4}
-              variant="outline"
-              bg="#FFF"
-              borderRadius="4px"
-              border="1px solid #E5E5E5"
-              onClick={() => setIsDepartmentsModalOpen(true)}
-            >
-              Manage departments
-            </Button>
+            <Flex>
+              <Button
+                ml={4}
+                px={4}
+                variant="outline"
+                bg="#FFF"
+                borderRadius="4px"
+                border="1px solid #E5E5E5"
+                onClick={() => setIsPositionsModalOpen(true)}
+              >
+                Manage positions
+              </Button>
+              <Button
+                ml={4}
+                px={4}
+                variant="outline"
+                bg="#FFF"
+                borderRadius="4px"
+                border="1px solid #E5E5E5"
+                onClick={() => setIsDepartmentsModalOpen(true)}
+              >
+                Manage departments
+              </Button>
+            </Flex>
           </Flex>
         </Box>
 
@@ -160,7 +376,7 @@ function EmployeeDirectory() {
             color="gray.700"
             fontWeight="500"
           >
-            <Box flex={2}>
+            <Box flex={3}>
               <Flex align="center">
                 <Text fontWeight="600">Name</Text>
               </Flex>
@@ -180,12 +396,10 @@ function EmployeeDirectory() {
                 <Text fontWeight="600">Email</Text>
               </Flex>
             </Box>
-            <Box flex={1} />
+            <Box flex={2} />
           </Flex>
-          {employees.map((employee, index) => {
-            console.log(employee);
+          {localEmployees.map((employee, index) => {
             return (
-              // TODO height of row changes on edit click
               <Flex
                 key={index}
                 p={4}
@@ -193,21 +407,38 @@ function EmployeeDirectory() {
                 borderBottom="1px solid"
                 borderColor="gray.200"
                 _hover={{ bg: 'gray.50' }}
-                role="group"
+                className="employee-row"
+                position="relative"
               >
-                <Box flex={2}>
+                <Box flex={3}>
                   <Flex align="center" gap={3}>
                     <UserProfileAvatar
                       firstName={employee.firstName}
                       lastName={employee.lastName}
                     />
                     {editingEmployee === employee.id ? (
-                      <Input
-                        value={editedName}
-                        onChange={(e) => setEditedName(e.target.value)}
-                        size="sm"
-                        width="240px"
-                      />
+                      <Flex gap={2} width="100%">
+                        <Input
+                          value={editedFirstName}
+                          onChange={(e) => setEditedFirstName(e.target.value)}
+                          size="md"
+                          width="45%"
+                          placeholder="First name"
+                          borderColor="gray.300"
+                          _hover={{ borderColor: "gray.400" }}
+                          _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+                        />
+                        <Input
+                          value={editedLastName}
+                          onChange={(e) => setEditedLastName(e.target.value)}
+                          size="md"
+                          width="45%"
+                          placeholder="Last name"
+                          borderColor="gray.300"
+                          _hover={{ borderColor: "gray.400" }}
+                          _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+                        />
+                      </Flex>
                     ) : (
                       <Text>
                         {employee.firstName} {employee.lastName}
@@ -240,7 +471,7 @@ function EmployeeDirectory() {
                     </select>
                   ) : (
                     // @ts-ignore - position exists on employee but not in type
-                    <Text>{employee.position?.department.name}</Text>
+                    <Text>{employee.position?.department?.name || "—"}</Text>
                   )}
                 </Box>
                 <Box flex={2}>
@@ -270,48 +501,82 @@ function EmployeeDirectory() {
                     </select>
                   ) : (
                     // @ts-ignore - position exists on employee but not in type
-                    <Text>{employee.position?.name}</Text>
+                    <Text>{employee.position?.name || "—"}</Text>
                   )}
                 </Box>
                 <Box flex={2}>
-                  <Text>{employee.email}</Text>
+                  <Text>{employee.email || "—"}</Text>
                 </Box>
-                <Box flex={1} as="button">
-                  {/* TODO opacity on row hover */}
+                <Box 
+                  flex={2} 
+                  display="flex" 
+                  justifyContent="flex-end"
+                >
+                  {/* Action buttons */}
                   <Flex justify="flex-end" align="center" gap={2}>
                     {editingEmployee === employee.id ? (
-                      <Flex gap={2}>
-                        <Box
-                          as="button"
-                          p={2}
-                          color="red.500"
-                          _hover={{ color: 'red.600' }}
-                          onClick={() => {
-                            openModal(employee);
-                          }}
-                        >
-                          <FiTrash2 size={20} />
-                        </Box>
+                      <Flex gap={2} width="100%">
                         <Box
                           as="button"
                           bg="blue.500"
                           color="white"
-                          px={4}
+                          px={3}
+                          py={1.5}
+                          fontSize="sm"
                           borderRadius="md"
-                          _hover={{ bg: 'blue.600' }}
+                          _hover={{ bg: "blue.600" }}
                           onClick={handleSaveClick}
                         >
                           Save
+                        </Box>
+                        <Box
+                          as="button"
+                          px={3}
+                          py={1.5}
+                          fontSize="sm"
+                          borderRadius="md"
+                          border="1px solid"
+                          borderColor="gray.300"
+                          _hover={{ bg: "gray.100" }}
+                          onClick={() => {
+                            setEditingEmployee(null);
+                            // Reset edited values
+                            setEditedFirstName(employee.firstName);
+                            setEditedLastName(employee.lastName);
+                            // @ts-ignore - position exists on employee but not in type
+                            setSelectedDepartment(employee.position?.department.id || '');
+                            // @ts-ignore - position exists on employee but not in type
+                            setSelectedPosition(employee.position?.id || '');
+                          }}
+                        >
+                          Cancel
+                        </Box>
+                        <Box
+                          as="button"
+                          onClick={() => openDeleteModal(employee)}
+                          px={3}
+                          py={1.5}
+                          fontSize="sm"
+                          color="red.500"
+                          borderRadius="md"
+                          _hover={{ bg: "red.50" }}
+                        >
+                          <Flex align="center" gap={1}>
+                            <FiTrash2 size={16} />
+                            <Text>Delete</Text>
+                          </Flex>
                         </Box>
                       </Flex>
                     ) : (
                       <Box
                         as="button"
                         onClick={() => handleEditClick(employee)}
+                        display="none"
+                        className="edit-button"
                       >
                         <Flex align="center" gap={2}>
-                          <FiEdit2 size={20} color="#4A5568" />
-                          <Text>Edit</Text>
+                          <FiEdit2 size={16} color="#4A5568" />
+                          <Text fontSize="sm">Edit</Text>
                         </Flex>
                       </Box>
                     )}
@@ -323,10 +588,16 @@ function EmployeeDirectory() {
         </Box>
       </Box>
       {employeeToDelete && (
-        <DeleteEmployeeModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen(false)}
-          employee={employeeToDelete}
+        <DeleteConfirmModal
+          isOpen={isDeleteConfirmOpen}
+          onClose={() => setIsDeleteConfirmOpen(false)}
+          onConfirm={handleDeactivateEmployee}
+          deleteObjectType="Employee"
+          deleteObjectName={`${employeeToDelete.firstName} ${employeeToDelete.lastName}`}
+          isLoading={isDeleteLoading}
+          actionText="Remove"
+          title="Remove Employee"
+          description={`Are you sure you want to remove ${employeeToDelete.firstName} ${employeeToDelete.lastName} from the directory?`}
         />
       )}
       {editingEmployee && (
@@ -334,8 +605,9 @@ function EmployeeDirectory() {
           isOpen={isConfirmChangesModalOpen}
           onClose={() => setIsConfirmChangesModalOpen(false)}
           onSave={handleConfirmSave}
-          employee={employees.find((e) => e.id === editingEmployee)!}
-          editedName={editedName}
+          employee={localEmployees.find((e) => e.id === editingEmployee)!}
+          editedFirstName={editedFirstName}
+          editedLastName={editedLastName}
           selectedDepartment={selectedDepartment}
           selectedPosition={selectedPosition}
           departments={departments}

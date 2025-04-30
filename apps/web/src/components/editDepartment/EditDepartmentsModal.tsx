@@ -15,6 +15,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { NewDepartmentCard } from './NewDepartmentCard';
 import { DepartmentEntityHydrated } from '@web/client';
 import { MdOutlineSearch } from 'react-icons/md';
+import { Toaster, toaster } from '@web/components/ui/toaster';
 
 export const EditDepartmentsModal = ({
   isOpen,
@@ -61,8 +62,14 @@ export const EditDepartmentsModal = ({
     onMutate: () => {
       setIsLoading(true);
     },
-    onError: () => {
+    onError: (error) => {
       setIsLoading(false);
+      toaster.create({
+        title: 'Error',
+        description: `Failed to create department: ${error.message || 'Please try again.'}`,
+        type: 'error',
+        duration: 5000,
+      });
     },
     onSuccess: () => {
       setIsLoading(false);
@@ -75,6 +82,12 @@ export const EditDepartmentsModal = ({
         queryKey: positionsControllerFindAllQueryKey(),
       });
       refreshUser();
+      toaster.create({
+        title: 'Success',
+        description: 'Department created successfully',
+        type: 'success',
+        duration: 5000,
+      });
     },
   });
 
@@ -89,6 +102,12 @@ export const EditDepartmentsModal = ({
 
   const handleSaveNewDepartment = () => {
     if (newDepartmentName.trim() === '') {
+      toaster.create({
+        title: 'Error',
+        description: 'Department name cannot be empty',
+        type: 'error',
+        duration: 5000,
+      });
       return;
     }
 
@@ -120,6 +139,7 @@ export const EditDepartmentsModal = ({
             boxShadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
             overflow="hidden"
           >
+            <Toaster />
             <Dialog.Header>
               <Flex
                 width="100%"
