@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EmployeeScope } from '@prisma/client';
+import { Transform } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
@@ -20,7 +21,11 @@ export class CreateEmployeeDto {
   lastName: string;
 
   @IsUUID()
-  @ApiProperty()
+  @ApiProperty({ required: false, nullable: true })
+  @Transform(({ value }) => {
+    if (value === 'null') return null;
+    return value;
+  })
   positionId?: string | null;
 
   @IsEmail()

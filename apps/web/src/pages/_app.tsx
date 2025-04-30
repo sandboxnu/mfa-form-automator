@@ -92,12 +92,13 @@ export default function App({
   const signFormInstancePath = '/sign-form';
   const approveFormInstancePath = '/approve-form';
 
-  const excludeLayoutPaths = [
-    '/signin',
-    '/register',
-    '/create-template/success',
-    '/create-instance/success',
-  ];
+ 
+  // paths that do not include layout or require context
+  // success pages require context and no layout, so they are in a unique paths
+  const excludeLayoutPaths = ['/signin', '/register', '/sign-form/success'];
+  const createFormTemplateSuccessPath = '/create-template/success';
+  const createFormInstanceSuccessPath = '/create-instance/success';
+
   // to allow template context to be populated before moving into edit mode
   const formDirectoryPath = '/template-directory';
   const previewForm = '/preview-form';
@@ -135,6 +136,30 @@ export default function App({
           <Component {...pageProps} />
         </Layout>
       </WrapperComponent>
+    );
+  }
+
+  if (appProps.router.pathname.includes(createFormTemplateSuccessPath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <CreateFormTemplateProvider>
+            <Component {...pageProps} />
+          </CreateFormTemplateProvider>
+        </WrapperComponent>
+      </>
+    );
+  }
+
+  if (appProps.router.pathname.includes(createFormInstanceSuccessPath)) {
+    return (
+      <>
+        <WrapperComponent>
+          <CreateFormInstanceProvider>
+            <Component {...pageProps} />
+          </CreateFormInstanceProvider>
+        </WrapperComponent>
+      </>
     );
   }
 

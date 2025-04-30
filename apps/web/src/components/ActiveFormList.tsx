@@ -217,7 +217,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
                           <Status.Root
                             size="lg"
                             width="100px"
-                            colorPalette="yellow"
+                            colorPalette="green"
                           >
                             <Status.Indicator />
                             Complete
@@ -226,7 +226,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
                           <Status.Root
                             size="lg"
                             width="100px"
-                            colorPalette="green"
+                            colorPalette="yellow"
                           >
                             <Status.Indicator />
                             Pending

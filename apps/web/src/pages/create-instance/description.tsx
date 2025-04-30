@@ -18,6 +18,10 @@ function Description() {
     pdfFile,
   } = useCreateFormInstance();
 
+  if (!formTemplate) {
+    return <div>Error: Form template not found.</div>;
+  }
+
   return (
     <FormLayout
       type={
@@ -38,6 +42,10 @@ function Description() {
           description={formInstanceDescription}
           setName={setFormInstanceName}
           setDescription={setFormInstanceDescription}
+          formDimensions={{
+            width: formTemplate?.pageWidth,
+            height: formTemplate?.pageHeight,
+          }}
         />
       }
       submitLink={'/create-instance/assign-groups'}

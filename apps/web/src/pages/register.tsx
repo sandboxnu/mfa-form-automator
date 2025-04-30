@@ -32,13 +32,9 @@ function Register() {
   }, [router, user]);
 
   // Fetch departments and positions
-  const { data: departmentsData } = useQuery({
-    ...departmentsControllerFindAllOptions({
-      query: {
-        limit: 1000,
-      },
-    }),
-  });
+  const { data: departmentsData } = useQuery(
+    departmentsControllerFindAllOptions(),
+  );
 
   const { data: positionsData } = useQuery({
     ...positionsControllerFindAllInDepartmentOptions({

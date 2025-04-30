@@ -2,6 +2,7 @@ import { Scope } from '@web/client';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import { FormInteractionType } from '@web/components/createForm/types';
+import Error from '@web/components/Error';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 
@@ -16,7 +17,12 @@ function Description() {
     setFormTemplateDescription,
     pdfFile,
     formTemplateUseId,
+    formDimensions,
   } = useCreateFormTemplate();
+
+  if (!pdfFile || !formDimensions) {
+    return <Error></Error>;
+  }
 
   return (
     <FormLayout
@@ -36,6 +42,7 @@ function Description() {
           fieldGroups={[]}
           name={formTemplateName}
           description={formTemplateDescription}
+          formDimensions={formDimensions}
           setName={setFormTemplateName}
           setDescription={setFormTemplateDescription}
         />

@@ -11,7 +11,13 @@ import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { getLatestSignedFormLink } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
-import { PDFCheckBox, PDFDocument, PDFTextField, rgb } from 'pdf-lib';
+import {
+  PDFCheckBox,
+  PDFDocument,
+  PDFTextField,
+  rgb,
+  StandardFonts,
+} from 'pdf-lib';
 import React, { createContext, useEffect, useState } from 'react';
 
 export const SignFormInstanceContext =
@@ -50,7 +56,9 @@ export const SignFormInstanceContextProvider = ({
   const [originalPdf, setOriginalPdf] = useState<ArrayBuffer | null>(null);
   const [modifiedPdf, setModifiedPdf] = useState<ArrayBuffer | null>(null);
   const [assignedGroupId, setAssignedGroupId] = useState<string>();
+  const [signFormInstanceLoading, setSignFormInstanceLoading] = useState(false);
   const router = useRouter();
+
   const signFormInstanceMutation = useMutation({
     ...formInstancesControllerSignFormInstanceMutation(),
     onSuccess: async () => {
@@ -224,6 +232,8 @@ export const SignFormInstanceContextProvider = ({
               break;
             case 'TEXT_FIELD':
               fieldToBeAdded = form.createTextField(field.id);
+              const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+              fieldToBeAdded.enableMultiline();
               fieldToBeAdded.setText(field.data.text);
               fieldToBeAdded.enableMultiline();
               fieldToBeAdded.enableScrolling();
@@ -232,6 +242,11 @@ export const SignFormInstanceContextProvider = ({
                 height: heightOnPdf,
                 x: xCoordOnPdf,
                 y: yCoordOnPdf,
+                borderWidth: 0,
+                borderColor: undefined,
+                backgroundColor: undefined, // This makes the background transparent
+                textColor: rgb(0, 0, 0),
+                font: helvetica,
               });
               break;
           }
@@ -251,6 +266,8 @@ export const SignFormInstanceContextProvider = ({
   };
 
   const submitPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
+    setSignFormInstanceLoading(true);
+
     const form = pdfDoc.getForm();
     form.getFields().forEach((fieldOnForm) => {
       fieldOnForm.disableReadOnly();
@@ -268,9 +285,25 @@ export const SignFormInstanceContextProvider = ({
         },
       });
       if (res) {
-        router.push(submitLink);
+        router.push(submitLink).then(() => {
+          setSignFormInstanceLoading(false);
+        });
+        queryClient.invalidateQueries({
+          queryKey: formInstancesControllerFindAllQueryKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey:
+            formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+        });
       }
     }
+
+    // in case of error, set loading to false
+    setSignFormInstanceLoading(false);
   };
 
   const nextSignFormPage = async (
@@ -301,7 +334,7 @@ export const SignFormInstanceContextProvider = ({
         groupNumber,
         nextSignFormPage,
         updateField,
-        signFormInstanceLoading: isLoading,
+        signFormInstanceLoading,
       }}
     >
       {children}
