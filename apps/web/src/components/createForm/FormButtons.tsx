@@ -8,7 +8,6 @@ import {
   formInstancesControllerFindAllQueryKey,
   formTemplatesControllerCreateMutation,
   formTemplatesControllerUpdateMutation,
-  formInstancesControllerUpdateMutation,
   formTemplatesControllerFindAllQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
@@ -115,15 +114,6 @@ export const FormButtons = ({
     },
   });
 
-  const updateFormInstanceMutation = useMutation({
-    ...formInstancesControllerUpdateMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: formTemplatesControllerFindAllQueryKey(),
-      });
-    },
-  });
-
   /**
    * Upload and create a form template
    */
@@ -141,10 +131,8 @@ export const FormButtons = ({
 
     setCreateFormLoading(true);
 
-    console.log('submitting template');
     let fieldGroups: CreateFieldGroupDto[] = [];
     let orderVal = 0;
-    console.log(fieldGroupsContext);
 
     // populate fieldGroups with fieldGroupsContext
     fieldGroupsContext.forEach((value, groupId) => {
