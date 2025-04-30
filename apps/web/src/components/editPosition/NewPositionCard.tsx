@@ -57,10 +57,19 @@ export const NewPositionCard = ({
             marginTop: '8px',
             border: '1px solid #C0C0C0',
             borderRadius: '6px',
-            padding: '10px',
+            paddingLeft: '8px',
             fontSize: '16px',
             width: '100%',
             height: '40px',
+            WebkitAppearance: 'none',
+            MozAppearance: 'none',
+            appearance: 'none',
+            color: '#000',
+            backgroundImage: `url('/dropdown_arrow_down.svg')`,
+            backgroundPosition: 'right 10px center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '8px',
+            paddingRight: '30px',
           }}
         >
           <option value="" disabled selected>
