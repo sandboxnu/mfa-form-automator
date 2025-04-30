@@ -10,10 +10,6 @@ import {
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { ReviewBox } from '@web/components/createFormTemplate/ReviewBox';
-import {
-  PDF_HEIGHT_PX,
-  PDF_WIDTH_PX,
-} from '@web/components/createFormTemplate/utils';
 import isAuth from '@web/components/isAuth';
 import { toaster } from '@web/components/ui/toaster';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';

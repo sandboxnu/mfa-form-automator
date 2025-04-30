@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { EditFormInstanceContextType } from './types';
 import { FormTemplateEntity } from '@web/client';
 import { ContextAssignedGroupData } from './types';
@@ -24,7 +23,6 @@ export const EditFormInstanceProvider = ({ children }: any) => {
     null,
   );
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     fetchPdfFile(setPdfFile, formTemplate?.formDocLink);

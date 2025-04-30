@@ -1,12 +1,4 @@
-import {
-  Button,
-  Dialog,
-  DialogPositioner,
-  Flex,
-  Portal,
-  Text,
-  Box,
-} from '@chakra-ui/react';
+import { Button, Flex, Text, Box } from '@chakra-ui/react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 import {
   FieldGroupBaseEntity,

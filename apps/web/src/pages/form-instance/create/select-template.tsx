@@ -5,7 +5,6 @@ import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTempl
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useAuth } from '@web/hooks/useAuth';
-import { formTemplatesControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 

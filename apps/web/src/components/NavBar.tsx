@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text, Separator } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import {
   OverViewIcon,
   ToDoIcon,
@@ -113,13 +113,7 @@ const NavItem = ({
   );
 };
 
-export const NavBar = ({
-  onOpenCreateFormInstance,
-  ...props
-}: {
-  onOpenCreateFormInstance: () => void;
-  props?: {};
-}) => {
+export const NavBar = ({ ...props }: { props?: {} }) => {
   const router = useRouter();
   const { user } = useAuth();
   const isAdmin = user?.scope == Scope.ADMIN;

@@ -18,31 +18,6 @@ import { useAuth } from '@web/hooks/useAuth';
 import { RxCross2 } from 'react-icons/rx';
 import { DeleteConfirmModal } from '../DeleteConfirmModal';
 import { RiSubtractFill } from 'react-icons/ri';
-import { ChakraStylesConfig } from 'chakra-react-select';
-
-const selectStyles: ChakraStylesConfig = {
-  control: (provided) => ({
-    ...provided,
-    border: '1px solid #E5E5E5',
-    boxShadow: 'none',
-    minHeight: '40px',
-    padding: '0px 8px',
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    padding: '10px 12px',
-    cursor: 'pointer',
-  }),
-  container: (provided) => ({
-    ...provided,
-    width: '100%',
-    cursor: 'pointer',
-  }),
-  multiValue: (provided) => ({
-    ...provided,
-    padding: '6px',
-  }),
-};
 
 export const ModifyPositionCard = ({
   position,

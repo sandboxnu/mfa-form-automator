@@ -1,5 +1,4 @@
 import { Button, Flex, Link, Text } from '@chakra-ui/react';
-import { TopBar } from '@web/components/TopBar';
 import { WhiteCheck } from '@web/static/icons';
 import { useRouter } from 'next/router';
 

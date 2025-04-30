@@ -1,4 +1,3 @@
-import { Scope } from '@web/client';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { ReviewBox } from '@web/components/signFormInstance/ReviewBox';
