@@ -597,7 +597,23 @@ describe('FormTemplatesIntegrationTest', () => {
       });
     });
 
-    it('successfully updates a form template', async () => {
+    it('successfully updates the name and description, no field group changes', async () => {
+      const updatedFormTemplate = await service.update(formTemplate1!.id, {
+        name: 'Updated Form Template',
+        description: 'Updated Form Template Description',
+      });
+
+      expect(updatedFormTemplate).toBeDefined();
+      expect(updatedFormTemplate.name).toBe('Updated Form Template');
+      expect(updatedFormTemplate.description).toBe(
+        'Updated Form Template Description',
+      );
+      // field groups remain unchanged
+      expect(updatedFormTemplate.fieldGroups).toHaveLength(1);
+      expect(updatedFormTemplate.fieldGroups[0].name).toBe('Field Group 1');
+    });
+
+    it('successfully updates a form template, including field group changes', async () => {
       const updatedFormTemplate = await service.update(formTemplate1!.id, {
         name: 'Updated Form Template',
         description: 'Updated Form Template Description',
@@ -671,27 +687,27 @@ describe('FormTemplatesIntegrationTest', () => {
           }),
         ]),
       );
+
+      // the old template should still exist
+      const formTemplates = await module
+        .get<PrismaService>(PrismaService)
+        .formTemplate.findMany({
+          where: {
+            id: formTemplate1!.id,
+            name: 'Form Template 1',
+            description: 'Form Template Description 1',
+          },
+        });
+      expect(formTemplates).toHaveLength(1);
     });
 
-    it('throws an error when form template is not found', async () => {
-      await expect(
-        service.update('non-existent-id', {
-          name: 'Updated Form Template',
-          description: 'Updated Form Template Description',
-        }),
-      ).rejects.toThrowError();
-    });
-
-    it('throws an error when updating a form template with an existing name', async () => {
-      await service.create({
-        name: 'Form Template 2',
-        description: 'Form Template Description 2',
-        file: emptyFile,
-        pageWidth: 800,
-        pageHeight: 1035,
+    it('updates but does not create a new template if provided field groups are the same', async () => {
+      const updatedFormTemplate = await service.update(formTemplate1!.id, {
+        name: 'Updated Form Template',
+        description: 'Updated Form Template Description',
         fieldGroups: [
           {
-            name: 'Field Group 2',
+            name: 'Field Group 1',
             order: 0,
             templateBoxes: [
               {
@@ -705,11 +721,37 @@ describe('FormTemplatesIntegrationTest', () => {
             ],
           },
         ],
-        disabled: false,
       });
+
+      expect(updatedFormTemplate).toBeDefined();
+      expect(updatedFormTemplate.name).toBe('Updated Form Template');
+      expect(updatedFormTemplate.description).toBe(
+        'Updated Form Template Description',
+      );
+      // field groups remain unchanged
+      expect(updatedFormTemplate.fieldGroups).toHaveLength(1);
+      expect(updatedFormTemplate.fieldGroups[0].name).toBe('Field Group 1');
+
+      // the old template should still exist
+      const formTemplates = await module
+        .get<PrismaService>(PrismaService)
+        .formTemplate.findMany({});
+      expect(formTemplates).toHaveLength(1);
+    });
+
+    it('throws an error when form template is not found', async () => {
+      await expect(
+        service.update('non-existent-id', {
+          name: 'Updated Form Template',
+          description: 'Updated Form Template Description',
+        }),
+      ).rejects.toThrowError();
+    });
+
+    it('throws an error when updating a form template with an existing name', async () => {
       await expect(
         service.update(formTemplate1!.id, {
-          name: 'Form Template 2',
+          name: 'Form Template 1',
           description: 'Updated Form Template Description',
         }),
       ).rejects.toThrowError('Form template with this name already exists');
