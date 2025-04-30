@@ -49,7 +49,7 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
     }
   }, [pdfFile, router]);
 
-  // reset field groups and form fields if user switches PDF 
+  // reset field groups and form fields if user imports a new PDF file
   useEffect(() => {
     setFormFields({});
     setFieldGroups(

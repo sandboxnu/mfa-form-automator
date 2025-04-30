@@ -34,7 +34,6 @@ export const SignFormInstancePreview = ({
   formInstance?: FormInstanceEntity;
 }) => {
   const router = useRouter();
-  const [reviewedForm, setReviewedForm] = useState(false);
   const [markedCompletedLoading, setMarkedCompletedLoading] = useState(false);
   const { user } = useAuth();
 
@@ -80,7 +79,6 @@ export const SignFormInstancePreview = ({
         .signedDocLink ?? formInstance.formDocLink;
     if (url) {
       window.open(url, '_blank');
-      setReviewedForm(true);
     }
   };
 
@@ -248,7 +246,7 @@ export const SignFormInstancePreview = ({
                         background: '#1367EA',
                       }}
                       loading={markedCompletedLoading}
-                      disabled={markedCompletedLoading || !reviewedForm}
+                      disabled={markedCompletedLoading}
                     >
                       <Flex
                         gap="8px"

@@ -110,10 +110,7 @@ export interface ApproveFormInstanceContextType {
   formInstance: FormInstanceEntity | undefined;
   formInstanceError: Error | null;
   isLoading: boolean;
-  fields: FormField[][];
   completedPdfLink: string;
-  signFormInstanceLoading: boolean;
-  groupNumber: number;
   approvePdf: () => Promise<void>;
 }
 export interface UserFormsContextType {
