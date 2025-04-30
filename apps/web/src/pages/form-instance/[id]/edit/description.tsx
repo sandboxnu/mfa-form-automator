@@ -1,16 +1,10 @@
-import { FormTemplateBaseEntity } from '@web/client';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
-import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
-import { useUserFormsContext } from '@web/context/UserFormsContext';
-import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
-import { L } from 'node_modules/framer-motion/dist/types.d-6pKw1mTI';
-import { useEffect, useState } from 'react';
+import Error from '@web/components/Error';
 
 /**
  * The description page in the form instance creation flow, where users describe their form.
@@ -22,11 +16,16 @@ function Description() {
     setFormInstanceName,
     setFormInstanceDescription,
     formInstanceUseId,
-    setFormInstanceUseId,
     pdfFile,
+    formTemplate,
   } = useEditFormInstance();
 
   const router = useRouter();
+
+  if (!formTemplate) {
+    return <Error secondaryErrorMessage="Form template not found" />;
+  }
+
   return (
     <FormLayout
       type={FormInteractionType.EditFormInstance}
@@ -41,6 +40,10 @@ function Description() {
           description={formInstanceDescription}
           setName={setFormInstanceName}
           setDescription={setFormInstanceDescription}
+          formDimensions={{
+            width: formTemplate?.pageWidth ?? 0,
+            height: formTemplate?.pageHeight ?? 0,
+          }}
         />
       }
       submitFunction={() => {
