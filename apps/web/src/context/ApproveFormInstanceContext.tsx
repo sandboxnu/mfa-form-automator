@@ -61,11 +61,11 @@ export const ApproveFormInstanceProvider = ({
         queryKey:
           formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
       });
-      router.push('/approve-form/success').then(() => {});
+      router.push('/completed').then(() => {});
     },
   });
 
-  const approveForm = async () => {
+  const approvePdf = async () => {
     await completeFormInstanceMutation.mutateAsync({
       path: {
         formInstanceId: id,
@@ -93,7 +93,7 @@ export const ApproveFormInstanceProvider = ({
         formInstanceError,
         isLoading,
         completedPdfLink,
-        approveForm,
+        approvePdf,
         formInstance,
       }}
     >

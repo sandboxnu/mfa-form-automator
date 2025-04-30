@@ -11,13 +11,11 @@ export const ReviewBox = ({
   name,
   description,
   fieldGroups,
-  dimensions,
 }: {
   pdfFile: File | null;
   name: string;
   description: string;
   fieldGroups: FieldGroupBaseEntity[];
-  dimensions: { width: number; height: number };
 }) => {
   const textInputStyle = {
     alignSelf: 'stretch',
@@ -65,16 +63,17 @@ export const ReviewBox = ({
         >
           Preview Only
         </Text>
-        <Box width="500px">
+        <Box width="580px">
           <FormEditor
             formTemplateName={name ?? ''}
-            formTemplateDimensions={dimensions}
             pdfFile={pdfFile}
             disableEdit
             fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
             formFields={formEditorTranslateFormFields(fieldGroups)}
             setFormFields={() => {}}
             setFieldGroups={() => {}}
+            scale={0.6875}
+            documentWidth={550}
             showNav={false}
           />
         </Box>
