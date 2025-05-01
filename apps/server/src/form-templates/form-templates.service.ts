@@ -220,32 +220,28 @@ export class FormTemplatesService {
             )
           ) {
             // if only updating name, description, or disabled, we can edit the existing template
-            const updatedFormTemplate = await this.prisma.$transaction(
-              async (tx) => {
-                return tx.formTemplate.update({
-                  where: { id },
-                  data: {
-                    name: updateFormTemplateDto.name,
-                    description: updateFormTemplateDto.description,
-                    disabled: updateFormTemplateDto.disabled,
-                  },
-                  include: {
-                    fieldGroups: {
-                      include: {
-                        templateBoxes: true,
-                      },
-                      orderBy: {
-                        order: 'asc',
-                      },
-                    },
-                  },
-                });
+            const updatedFormTemplate = await tx.formTemplate.update({
+              where: { id },
+              data: {
+                name: updateFormTemplateDto.name,
+                description: updateFormTemplateDto.description,
+                disabled: updateFormTemplateDto.disabled,
               },
-            );
+              include: {
+                fieldGroups: {
+                  include: {
+                    templateBoxes: true,
+                  },
+                  orderBy: {
+                    order: 'asc',
+                  },
+                },
+              },
+            });
             return updatedFormTemplate;
           }
 
-          const newFormTemplate = await this.prisma.formTemplate.create({
+          const newFormTemplate = await tx.formTemplate.create({
             data: {
               name: updateFormTemplateDto.name ?? existingFormTemplate.name,
               description:
@@ -287,7 +283,7 @@ export class FormTemplatesService {
               },
             },
           });
-          await this.prisma.formTemplate.update({
+          await tx.formTemplate.update({
             where: { id: existingFormTemplate.id },
             data: {
               disabled: true,
