@@ -10,6 +10,7 @@ import {
 import {
   DepartmentEntity,
   EmployeeBaseEntity,
+  EmployeeSecureEntityHydrated,
   PositionBaseEntity,
   Scope,
   SortBy,
@@ -18,7 +19,6 @@ import { ConfirmEmployeeChangesModal } from '@web/components/ConfirmEmployeeChan
 import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
 import isAuth from '@web/components/isAuth';
 import { SearchAndSort } from '@web/components/SearchAndSort';
-import { useEmployeesContext } from '@web/context/EmployeesContext';
 import { UserProfileAvatar } from '@web/static/icons';
 import { useState, useEffect, useMemo } from 'react';
 import { FiTrash2, FiEdit2 } from 'react-icons/fi';
@@ -28,7 +28,7 @@ import {
   employeesControllerRemove,
   employeesControllerUpdate,
 } from '@web/client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { EditDepartmentsModal } from '@web/components/editDepartment/EditDepartmentsModal';
 import { EditPositionsModal } from '@web/components/editPosition/EditPositionsModal';
@@ -36,13 +36,11 @@ import { useAuth } from '@web/hooks/useAuth';
 import { AxiosError } from 'axios';
 import { client } from '@web/client/client.gen';
 import { Toaster, toaster } from '@web/components/ui/toaster';
-import { employeesControllerFindAllQueryKey } from '@web/client/@tanstack/react-query.gen';
+import { employeesControllerFindAllQueryKey, employeesControllerFindAllOptions } from '@web/client/@tanstack/react-query.gen';
 
 // Extended employee type with active status
-interface ExtendedEmployeeBaseEntity extends EmployeeBaseEntity {
+interface ExtendedEmployeeBaseEntity extends EmployeeSecureEntityHydrated {
   active?: boolean;
-  // Allow whatever type the API uses for position
-  position?: any;
 }
 
 function EmployeeDirectory() {
@@ -51,7 +49,18 @@ function EmployeeDirectory() {
   const [searchQuery, setSearchQuery] = useState('');
   // TODO sorting
   const [sortOption, setSortOption] = useState<SortBy>(SortBy.NAME_DESC);
-  const { employees, isLoading, error } = useEmployeesContext();
+  
+  // Use react-query directly in the component instead of through context
+  const { isLoading, error, data } = useQuery({
+    ...employeesControllerFindAllOptions({
+      query: {
+        secure: true,
+      },
+    }),
+  });
+  
+  const employees = (data?.employees ?? []) as EmployeeSecureEntityHydrated[];
+  
   const [localEmployees, setLocalEmployees] = useState<
     ExtendedEmployeeBaseEntity[]
   >([]);
@@ -324,15 +333,13 @@ function EmployeeDirectory() {
     fetchPositions();
   }, [selectedDepartment]);
 
-  const handleEditClick = (employee: EmployeeBaseEntity) => {
+  const handleEditClick = (employee: EmployeeSecureEntityHydrated) => {
     setEditingEmployee(employee.id);
     setEditedFirstName(employee.firstName);
     setEditedLastName(employee.lastName);
 
-    // Set the department and position values
-    // @ts-ignore - position exists on employee but not in type
+    // Set the department and position values with proper null checking
     const departmentId = employee.position?.department?.id || '';
-    // @ts-ignore - position exists on employee but not in type
     const positionId = employee.position?.id || '';
 
     // Store original data for comparison
@@ -610,14 +617,20 @@ function EmployeeDirectory() {
                       value={selectedDepartment}
                       onChange={(e) => setSelectedDepartment(e.target.value)}
                       style={{
-                        marginTop: '8px',
-                        border: '1px solid #C0C0C0',
-                        borderRadius: '6px',
-                        padding: '10px',
-                        width: '200px',
-                        height: '40px',
-                        fontSize: '14px',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '0.375rem',
+                        padding: '0.5rem 1rem',
+                        width: '80%',
+                        maxWidth: '200px',
+                        fontSize: '1rem',
+                        height: '2.5rem',
+                        outline: 'none',
                         color: '#2D3748',
+                        appearance: 'none',
+                        backgroundImage: 'url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%232D3748\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'/%3E%3C/svg%3E")',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 0.5rem center',
+                        backgroundSize: '1.5em 1.5em',
                       }}
                     >
                       <option value="" disabled>
@@ -645,34 +658,36 @@ function EmployeeDirectory() {
                       onChange={(e) => setSelectedPosition(e.target.value)}
                       disabled={!selectedDepartment}
                       style={{
-                        marginTop: '8px',
-                        border: '1px solid #C0C0C0',
-                        borderRadius: '6px',
-                        padding: '10px',
-                        width: '200px',
-                        height: '40px',
-                        fontSize: '14px',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '0.375rem',
+                        padding: '0.5rem 1rem',
+                        width: '80%',
+                        maxWidth: '200px',
+                        fontSize: '1rem',
+                        height: '2.5rem',
+                        outline: 'none',
                         color: '#2D3748',
                         opacity: selectedDepartment ? 1 : 0.5,
+                        appearance: 'none',
+                        backgroundImage: 'url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%232D3748\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'/%3E%3C/svg%3E")',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 0.5rem center',
+                        backgroundSize: '1.5em 1.5em',
                       }}
                     >
-                      <option value="" disabled>
-                        Select Position
-                      </option>
-                      {selectedDepartment ? (
-                        positions.length > 0 ? (
-                          positions.map((pos) => (
+                      {!selectedDepartment ? (
+                        <option disabled value="">Select a department first</option>
+                      ) : positions.length > 0 ? (
+                        <>
+                          <option value="" disabled>Select Position</option>
+                          {positions.map((pos) => (
                             <option key={pos.id} value={pos.id}>
                               {pos.name}
                             </option>
-                          ))
-                        ) : (
-                          <option disabled>
-                            No positions for this department
-                          </option>
-                        )
+                          ))}
+                        </>
                       ) : (
-                        <option disabled>Select a department first</option>
+                        <option disabled value="">No positions for this department</option>
                       )}
                     </select>
                   ) : (
@@ -719,11 +734,9 @@ function EmployeeDirectory() {
                             // Reset edited values
                             setEditedFirstName(employee.firstName);
                             setEditedLastName(employee.lastName);
-                            // @ts-ignore - position exists on employee but not in type
                             setSelectedDepartment(
-                              employee.position?.department.id || '',
+                              employee.position?.department?.id || '',
                             );
-                            // @ts-ignore - position exists on employee but not in type
                             setSelectedPosition(employee.position?.id || '');
                           }}
                         >
@@ -786,10 +799,8 @@ function EmployeeDirectory() {
           employee={localEmployees.find((e) => e.id === editingEmployee)!}
           editedFirstName={editedFirstName}
           editedLastName={editedLastName}
-          selectedDepartment={selectedDepartment}
-          selectedPosition={selectedPosition}
-          departments={departments}
-          positions={positions}
+          selectedNewDepartment={departments.find(d => d.id === selectedDepartment) || null}
+          selectedNewPosition={positions.find(p => p.id === selectedPosition) || null}
         />
       )}
       <EditDepartmentsModal

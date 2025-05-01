@@ -1,22 +1,38 @@
 import { Dialog, Flex, Portal, Text, Button, Box } from '@chakra-ui/react';
 import {
   DepartmentEntity,
+  EmployeeSecureEntityHydrated,
   EmployeeBaseEntity,
   PositionBaseEntity,
+  DepartmentBaseEntity,
 } from '@web/client';
 import { CloseIcon } from '@web/static/icons';
+
+// Type to allow both secure and extended employee entities
+type EmployeeWithPosition = EmployeeSecureEntityHydrated | {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  position?: {
+    id: string;
+    name: string;
+    department?: {
+      id: string;
+      name: string;
+    } | null;
+  } | null;
+};
 
 interface ConfirmEmployeeChangesModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
-  employee: EmployeeBaseEntity;
+  employee: EmployeeWithPosition;
   editedFirstName: string;
   editedLastName: string;
-  selectedDepartment: string;
-  selectedPosition: string;
-  departments: DepartmentEntity[];
-  positions: PositionBaseEntity[];
+  selectedNewDepartment: DepartmentBaseEntity | null;
+  selectedNewPosition: PositionBaseEntity | null;
 }
 
 export const ConfirmEmployeeChangesModal = ({
@@ -26,10 +42,8 @@ export const ConfirmEmployeeChangesModal = ({
   employee,
   editedFirstName,
   editedLastName,
-  selectedDepartment,
-  selectedPosition,
-  departments,
-  positions,
+  selectedNewDepartment,
+  selectedNewPosition,
 }: ConfirmEmployeeChangesModalProps) => {
   // Safety check - if employee is undefined or null, close the modal
   if (!employee) {
@@ -38,18 +52,14 @@ export const ConfirmEmployeeChangesModal = ({
     return null;
   }
 
-  // @ts-ignore - position exists on employee but not in type
-  const currentDepartment = employee?.position?.department;
-  // @ts-ignore - position exists on employee but not in type
-  const currentPosition = employee?.position;
-  const newDepartment = departments.find((d) => d.id === selectedDepartment);
-  const newPosition = positions.find((p) => p.id === selectedPosition);
+  const currentDepartment = employee.position?.department;
+  const currentPosition = employee.position;
 
   const hasNameChange =
     editedFirstName !== employee.firstName ||
     editedLastName !== employee.lastName;
-  const hasDepartmentChange = currentDepartment?.id !== selectedDepartment;
-  const hasPositionChange = currentPosition?.id !== selectedPosition;
+  const hasDepartmentChange = currentDepartment?.id !== selectedNewDepartment?.id;
+  const hasPositionChange = currentPosition?.id !== selectedNewPosition?.id;
 
   // Check if any changes have been made
   const hasChanges = hasNameChange || hasDepartmentChange || hasPositionChange;
@@ -151,7 +161,7 @@ export const ConfirmEmployeeChangesModal = ({
                         </Text>
                       </Box>
                       <Text fontWeight="medium">
-                        {newDepartment?.name || '—'}
+                        {selectedNewDepartment?.name || '—'}
                       </Text>
                     </Flex>
                   ) : (
@@ -181,7 +191,7 @@ export const ConfirmEmployeeChangesModal = ({
                         </Text>
                       </Box>
                       <Text fontWeight="medium">
-                        {newPosition?.name || '—'}
+                        {selectedNewPosition?.name || '—'}
                       </Text>
                     </Flex>
                   </Box>

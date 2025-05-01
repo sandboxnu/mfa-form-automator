@@ -2,6 +2,7 @@ import {
   CreateAssignedGroupDto,
   EmployeeBaseEntity,
   EmployeeBaseEntityResponse,
+  EmployeeSecureEntityHydrated,
   EmployeesFindAllResponse,
   FormInstanceEntity,
   FormTemplateBaseEntity,
@@ -164,12 +165,6 @@ export type FormField = TemplateBoxBaseEntity & {
 export type ContextAssignedGroupData = CreateAssignedGroupDto & {
   name: string;
 };
-
-export interface EmployeesContextType {
-  employees: EmployeeBaseEntityResponse[];
-  isLoading: boolean;
-  error: Error | null;
-}
 
 export interface RouterContextType {
   isRouteChanging: boolean;

@@ -20,7 +20,6 @@ import { appControllerRefresh } from '@web/client';
 import { SignFormInstanceContextProvider } from '@web/context/SignFormInstanceContext';
 import { pdfjs } from 'react-pdf';
 import { UserFormsContextProvider } from '@web/context/UserFormsContext';
-import { EmployeesContextProvider } from '@web/context/EmployeesContext';
 import { EditFormTemplateProvider } from '@web/context/EditFormTemplateContext';
 import { EditFormInstanceProvider } from '@web/context/EditFormInstanceContext';
 import { RouterProvider } from '@web/context/RouterProvider';
@@ -172,11 +171,6 @@ export default function App({
       appProps.router.pathname == '/'
     ) {
       root = <UserFormsContextProvider>{root}</UserFormsContextProvider>;
-    }
-
-    // provide employees context if needed for employee directory
-    if (appProps.router.pathname === '/employee-directory') {
-      root = <EmployeesContextProvider>{root}</EmployeesContextProvider>;
     }
 
     // not every page needs layout
