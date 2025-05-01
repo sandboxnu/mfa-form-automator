@@ -166,23 +166,22 @@ export class FormTemplatesService {
       updateFormTemplateDto.fieldGroups?.length > 0
     ) {
       const pseudoUpdatedFormTemplate = await this.prisma.$transaction(
-        async () => {
-          const existingFormTemplate =
-            await this.prisma.formTemplate.findFirstOrThrow({
-              where: {
-                id: id,
-              },
-              include: {
-                fieldGroups: {
-                  include: {
-                    templateBoxes: true,
-                  },
-                  orderBy: {
-                    order: 'asc',
-                  },
+        async (tx) => {
+          const existingFormTemplate = await tx.formTemplate.findFirstOrThrow({
+            where: {
+              id: id,
+            },
+            include: {
+              fieldGroups: {
+                include: {
+                  templateBoxes: true,
+                },
+                orderBy: {
+                  order: 'asc',
                 },
               },
-            });
+            },
+          });
 
           // make sure that the new field groups are different from the existing ones, and that all properties are the same
           const areFieldGroupsEqual = (
