@@ -1,4 +1,12 @@
-import { Flex, Box, Heading, Text, Input, Button, Badge } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Heading,
+  Text,
+  Input,
+  Button,
+  Badge,
+} from '@chakra-ui/react';
 import {
   DepartmentEntity,
   EmployeeBaseEntity,
@@ -44,7 +52,9 @@ function EmployeeDirectory() {
   // TODO sorting
   const [sortOption, setSortOption] = useState<SortBy>(SortBy.NAME_DESC);
   const { employees, isLoading, error } = useEmployeesContext();
-  const [localEmployees, setLocalEmployees] = useState<ExtendedEmployeeBaseEntity[]>([]);
+  const [localEmployees, setLocalEmployees] = useState<
+    ExtendedEmployeeBaseEntity[]
+  >([]);
   const [editingEmployee, setEditingEmployee] = useState<string | null>(null);
   const [editedFirstName, setEditedFirstName] = useState('');
   const [editedLastName, setEditedLastName] = useState('');
@@ -62,19 +72,22 @@ function EmployeeDirectory() {
   const queryClient = useQueryClient();
 
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [isConfirmChangesModalOpen, setIsConfirmChangesModalOpen] = useState(false);
+  const [isConfirmChangesModalOpen, setIsConfirmChangesModalOpen] =
+    useState(false);
   const [employeeToDelete, setEmployeeToDelete] =
     useState<ExtendedEmployeeBaseEntity | null>(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
-  const [deactivatedEmployeeIds, setDeactivatedEmployeeIds] = useState<string[]>([]);
-  
+  const [deactivatedEmployeeIds, setDeactivatedEmployeeIds] = useState<
+    string[]
+  >([]);
+
   // Custom styles for the hover effect
   const styles = `
     .employee-row:hover .edit-button {
       display: block !important;
     }
   `;
-  
+
   // Load deactivated employee IDs from localStorage on mount
   useEffect(() => {
     const savedDeactivatedIds = localStorage.getItem('deactivatedEmployeeIds');
@@ -82,36 +95,40 @@ function EmployeeDirectory() {
       setDeactivatedEmployeeIds(JSON.parse(savedDeactivatedIds));
     }
   }, []);
-  
+
   // Initialize localEmployees when employees from context change
   useEffect(() => {
     if (employees) {
       // Filter out any employees that were previously deactivated
       const filteredEmployees = employees
-        .filter(emp => !deactivatedEmployeeIds.includes(emp.id))
-        .map(emp => ({
-          ...emp, 
-          active: true
+        .filter((emp) => !deactivatedEmployeeIds.includes(emp.id))
+        .map((emp) => ({
+          ...emp,
+          active: true,
         }));
-      
+
       setLocalEmployees(filteredEmployees);
     }
   }, [employees, deactivatedEmployeeIds]);
-  
+
   // Apply sorting to the employees list
   const sortedEmployees = useMemo(() => {
     if (!localEmployees.length) return [];
-    
+
     const employees = [...localEmployees];
-    
+
     switch (sortOption) {
       case SortBy.NAME_ASC:
-        return employees.sort((a, b) => 
-          `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`)
+        return employees.sort((a, b) =>
+          `${a.firstName} ${a.lastName}`.localeCompare(
+            `${b.firstName} ${b.lastName}`,
+          ),
         );
       case SortBy.NAME_DESC:
-        return employees.sort((a, b) => 
-          `${b.firstName} ${b.lastName}`.localeCompare(`${a.firstName} ${a.lastName}`)
+        return employees.sort((a, b) =>
+          `${b.firstName} ${b.lastName}`.localeCompare(
+            `${a.firstName} ${a.lastName}`,
+          ),
         );
       case SortBy.CREATED_AT_ASC:
         return employees.sort((a, b) => {
@@ -133,22 +150,24 @@ function EmployeeDirectory() {
         return employees;
     }
   }, [localEmployees, sortOption]);
-  
+
   // Apply search filtering to the sorted employees
   const filteredEmployees = useMemo(() => {
     if (!sortedEmployees.length) return [];
     if (!searchQuery.trim()) return sortedEmployees;
-    
+
     const query = searchQuery.toLowerCase().trim();
-    
-    return sortedEmployees.filter(employee => {
-      const fullName = `${employee.firstName} ${employee.lastName}`.toLowerCase();
+
+    return sortedEmployees.filter((employee) => {
+      const fullName =
+        `${employee.firstName} ${employee.lastName}`.toLowerCase();
       // @ts-ignore - position might not be directly accessible in the type
-      const departmentName = employee.position?.department?.name?.toLowerCase() || '';
+      const departmentName =
+        employee.position?.department?.name?.toLowerCase() || '';
       // @ts-ignore - position might not be directly accessible in the type
       const positionName = employee.position?.name?.toLowerCase() || '';
       const email = employee.email.toLowerCase();
-      
+
       return (
         fullName.includes(query) ||
         departmentName.includes(query) ||
@@ -157,61 +176,64 @@ function EmployeeDirectory() {
       );
     });
   }, [sortedEmployees, searchQuery]);
-  
+
   // Deactivate employee instead of deleting
   const deactivateEmployee = useMutation({
     mutationFn: async (employeeId: string) => {
       // Instead of deleting the employee, we mark it as deactivated in localStorage
       const updatedIds = [...deactivatedEmployeeIds, employeeId];
-      localStorage.setItem('deactivatedEmployeeIds', JSON.stringify(updatedIds));
+      localStorage.setItem(
+        'deactivatedEmployeeIds',
+        JSON.stringify(updatedIds),
+      );
       setDeactivatedEmployeeIds(updatedIds);
-      
+
       return { success: true, id: employeeId };
     },
     onMutate: (employeeId) => {
       setIsDeleteLoading(true);
-      
+
       // If the employee being deactivated is also being edited, exit edit mode
       if (editingEmployee === employeeId) {
         setEditingEmployee(null);
         setIsConfirmChangesModalOpen(false);
       }
-      
+
       // Optimistically mark the employee as inactive in the local state
-      setLocalEmployees((prevEmployees) => 
-        prevEmployees.filter(employee => employee.id !== employeeId)
+      setLocalEmployees((prevEmployees) =>
+        prevEmployees.filter((employee) => employee.id !== employeeId),
       );
     },
     onError: (error: any, employeeId) => {
       console.error('Failed to deactivate employee:', error);
       setIsDeleteLoading(false);
-      
+
       // Revert the optimistic update on error
       if (employees) {
         // Re-filter employees based on updated deactivatedEmployeeIds
         const filteredEmployees = employees
-          .filter(emp => !deactivatedEmployeeIds.includes(emp.id))
-          .map(emp => ({
-            ...emp, 
-            active: true
+          .filter((emp) => !deactivatedEmployeeIds.includes(emp.id))
+          .map((emp) => ({
+            ...emp,
+            active: true,
           }));
-        
+
         setLocalEmployees(filteredEmployees);
       }
-      
+
       toaster.create({
         title: 'Error',
         description: 'Failed to deactivate employee. Please try again.',
         type: 'error',
         duration: 5000,
       });
-      
+
       setIsDeleteConfirmOpen(false);
     },
     onSuccess: () => {
       setIsDeleteLoading(false);
       setIsDeleteConfirmOpen(false);
-      
+
       toaster.create({
         title: 'Success',
         description: 'Employee deactivated successfully',
@@ -220,7 +242,7 @@ function EmployeeDirectory() {
       });
     },
   });
-  
+
   const openDeleteModal = (employee: ExtendedEmployeeBaseEntity) => {
     // Prevent deactivating yourself
     if (employee.id === user?.id) {
@@ -232,7 +254,7 @@ function EmployeeDirectory() {
       });
       return;
     }
-    
+
     setEmployeeToDelete(employee);
     setIsDeleteConfirmOpen(true);
   };
@@ -241,12 +263,12 @@ function EmployeeDirectory() {
     if (employeeToDelete) {
       // Store the ID before the mutation, as employeeToDelete will be cleared by onSuccess
       const employeeId = employeeToDelete.id;
-      
+
       // If we're deactivating the employee we're currently editing, exit edit mode
       if (editingEmployee === employeeId) {
         setEditingEmployee(null);
       }
-      
+
       deactivateEmployee.mutate(employeeId);
     }
   };
@@ -306,30 +328,30 @@ function EmployeeDirectory() {
     setEditingEmployee(employee.id);
     setEditedFirstName(employee.firstName);
     setEditedLastName(employee.lastName);
-    
+
     // Set the department and position values
     // @ts-ignore - position exists on employee but not in type
     const departmentId = employee.position?.department?.id || '';
     // @ts-ignore - position exists on employee but not in type
     const positionId = employee.position?.id || '';
-    
+
     // Store original data for comparison
     setOriginalData({
       firstName: employee.firstName,
       lastName: employee.lastName,
       departmentId,
-      positionId
+      positionId,
     });
-    
+
     setSelectedDepartment(departmentId);
     setSelectedPosition(positionId);
-    
+
     // If the employee has a department, fetch the positions for that department
     if (departmentId) {
       fetchPositionsForDepartment(departmentId);
     }
   };
-  
+
   // Helper function to fetch positions for a specific department
   const fetchPositionsForDepartment = async (departmentId: string) => {
     try {
@@ -358,8 +380,10 @@ function EmployeeDirectory() {
 
   const handleConfirmSave = async () => {
     // Find the employee we're editing
-    const employeeIndex = localEmployees.findIndex(e => e.id === editingEmployee);
-    
+    const employeeIndex = localEmployees.findIndex(
+      (e) => e.id === editingEmployee,
+    );
+
     if (employeeIndex !== -1) {
       try {
         // Make the API call to update the employee
@@ -372,32 +396,40 @@ function EmployeeDirectory() {
           },
           client,
         });
-        
+
         // Create updated copy of employees array
         const updatedEmployees = [...localEmployees];
-        
+
         // Get the selected position object
-        const selectedPositionObj = positions.find(p => p.id === selectedPosition);
-        const selectedDepartmentObj = departments.find(d => d.id === selectedDepartment);
-        
+        const selectedPositionObj = positions.find(
+          (p) => p.id === selectedPosition,
+        );
+        const selectedDepartmentObj = departments.find(
+          (d) => d.id === selectedDepartment,
+        );
+
         // Update the employee with edited values
         updatedEmployees[employeeIndex] = {
           ...updatedEmployees[employeeIndex],
           firstName: editedFirstName,
           lastName: editedLastName,
           // @ts-ignore - updating position data
-          position: selectedPositionObj ? {
-            ...selectedPositionObj,
-            department: selectedDepartmentObj || null
-          } : updatedEmployees[employeeIndex].position
+          position: selectedPositionObj
+            ? {
+                ...selectedPositionObj,
+                department: selectedDepartmentObj || null,
+              }
+            : updatedEmployees[employeeIndex].position,
         };
-        
+
         // Update the local state
         setLocalEmployees(updatedEmployees);
-        
+
         // Invalidate the employees query to trigger a refetch
-        queryClient.invalidateQueries({ queryKey: employeesControllerFindAllQueryKey() });
-        
+        queryClient.invalidateQueries({
+          queryKey: employeesControllerFindAllQueryKey(),
+        });
+
         toaster.create({
           title: 'Success',
           description: 'Employee updated successfully',
@@ -414,7 +446,7 @@ function EmployeeDirectory() {
         });
       }
     }
-    
+
     // Reset editing state
     setEditingEmployee(null);
     setIsConfirmChangesModalOpen(false);
@@ -423,7 +455,7 @@ function EmployeeDirectory() {
   // Check if any changes have been made to the employee being edited
   const hasChanges = () => {
     if (!originalData || !editingEmployee) return false;
-    
+
     return (
       editedFirstName !== originalData.firstName ||
       editedLastName !== originalData.lastName ||
@@ -433,7 +465,7 @@ function EmployeeDirectory() {
   };
 
   if (localEmployees.length === 0) return null;
-  
+
   return (
     <>
       <Toaster />
@@ -544,8 +576,11 @@ function EmployeeDirectory() {
                           placeholder="First name"
                           borderColor="gray.300"
                           paddingLeft="12px"
-                          _hover={{ borderColor: "gray.400" }}
-                          _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+                          _hover={{ borderColor: 'gray.400' }}
+                          _focus={{
+                            borderColor: 'blue.500',
+                            boxShadow: '0 0 0 1px #3182ce',
+                          }}
                         />
                         <Input
                           value={editedLastName}
@@ -555,8 +590,11 @@ function EmployeeDirectory() {
                           placeholder="Last name"
                           borderColor="gray.300"
                           paddingLeft="12px"
-                          _hover={{ borderColor: "gray.400" }}
-                          _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+                          _hover={{ borderColor: 'gray.400' }}
+                          _focus={{
+                            borderColor: 'blue.500',
+                            boxShadow: '0 0 0 1px #3182ce',
+                          }}
                         />
                       </Flex>
                     ) : (
@@ -582,7 +620,9 @@ function EmployeeDirectory() {
                         color: '#2D3748',
                       }}
                     >
-                      <option value="" disabled>Select Department</option>
+                      <option value="" disabled>
+                        Select Department
+                      </option>
                       {departments.length > 0 ? (
                         departments.map((dept) => (
                           <option key={dept.id} value={dept.id}>
@@ -595,7 +635,7 @@ function EmployeeDirectory() {
                     </select>
                   ) : (
                     // @ts-ignore - position exists on employee but not in type
-                    <Text>{employee.position?.department?.name || "—"}</Text>
+                    <Text>{employee.position?.department?.name || '—'}</Text>
                   )}
                 </Box>
                 <Box flex={2}>
@@ -616,7 +656,9 @@ function EmployeeDirectory() {
                         opacity: selectedDepartment ? 1 : 0.5,
                       }}
                     >
-                      <option value="" disabled>Select Position</option>
+                      <option value="" disabled>
+                        Select Position
+                      </option>
                       {selectedDepartment ? (
                         positions.length > 0 ? (
                           positions.map((pos) => (
@@ -625,7 +667,9 @@ function EmployeeDirectory() {
                             </option>
                           ))
                         ) : (
-                          <option disabled>No positions for this department</option>
+                          <option disabled>
+                            No positions for this department
+                          </option>
                         )
                       ) : (
                         <option disabled>Select a department first</option>
@@ -633,30 +677,28 @@ function EmployeeDirectory() {
                     </select>
                   ) : (
                     // @ts-ignore - position exists on employee but not in type
-                    <Text>{employee.position?.name || "—"}</Text>
+                    <Text>{employee.position?.name || '—'}</Text>
                   )}
                 </Box>
                 <Box flex={2}>
-                  <Text>{employee.email || "—"}</Text>
+                  <Text>{employee.email || '—'}</Text>
                 </Box>
-                <Box 
-                  flex={2} 
-                  display="flex" 
-                  justifyContent="flex-end"
-                >
+                <Box flex={2} display="flex" justifyContent="flex-end">
                   {/* Action buttons */}
                   <Flex justify="flex-end" align="center" gap={2}>
                     {editingEmployee === employee.id ? (
                       <Flex gap={2} width="100%">
                         <Box
                           as="button"
-                          bg={hasChanges() ? "blue.500" : "blue.300"}
+                          bg={hasChanges() ? 'blue.500' : 'blue.300'}
                           color="white"
                           px={3}
                           py={1.5}
                           fontSize="sm"
                           borderRadius="md"
-                          _hover={{ bg: hasChanges() ? "blue.600" : "blue.300" }}
+                          _hover={{
+                            bg: hasChanges() ? 'blue.600' : 'blue.300',
+                          }}
                           onClick={hasChanges() ? handleSaveClick : undefined}
                           opacity={hasChanges() ? 1 : 0.7}
                           cursor="pointer"
@@ -671,14 +713,16 @@ function EmployeeDirectory() {
                           borderRadius="md"
                           border="1px solid"
                           borderColor="gray.300"
-                          _hover={{ bg: "gray.100" }}
+                          _hover={{ bg: 'gray.100' }}
                           onClick={() => {
                             setEditingEmployee(null);
                             // Reset edited values
                             setEditedFirstName(employee.firstName);
                             setEditedLastName(employee.lastName);
                             // @ts-ignore - position exists on employee but not in type
-                            setSelectedDepartment(employee.position?.department.id || '');
+                            setSelectedDepartment(
+                              employee.position?.department.id || '',
+                            );
                             // @ts-ignore - position exists on employee but not in type
                             setSelectedPosition(employee.position?.id || '');
                           }}
@@ -693,7 +737,7 @@ function EmployeeDirectory() {
                           fontSize="sm"
                           color="red.500"
                           borderRadius="md"
-                          _hover={{ bg: "red.50" }}
+                          _hover={{ bg: 'red.50' }}
                         >
                           <Flex align="center" gap={1}>
                             <FiTrash2 size={16} />

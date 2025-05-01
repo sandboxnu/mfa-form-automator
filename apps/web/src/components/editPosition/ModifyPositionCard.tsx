@@ -70,7 +70,9 @@ export const ModifyPositionCard = ({
       setLoading(false);
       toaster.create({
         title: 'Error',
-        description: `Failed to update position: ${error.message || 'Please try again'}`,
+        description: `Failed to update position: ${
+          error.message || 'Please try again'
+        }`,
         type: 'error',
         duration: 5000,
       });
@@ -99,7 +101,9 @@ export const ModifyPositionCard = ({
     onError: (error) => {
       toaster.create({
         title: 'Error',
-        description: `Failed to update employee: ${error.message || 'Please try again'}`,
+        description: `Failed to update employee: ${
+          error.message || 'Please try again'
+        }`,
         type: 'error',
         duration: 5000,
       });
@@ -122,7 +126,9 @@ export const ModifyPositionCard = ({
       setIsDeleteConfirmOpen(false);
       toaster.create({
         title: 'Error',
-        description: `Failed to delete position: ${error.message || 'Please try again'}`,
+        description: `Failed to delete position: ${
+          error.message || 'Please try again'
+        }`,
         type: 'error',
         duration: 5000,
       });

@@ -66,7 +66,9 @@ export const EditDepartmentsModal = ({
       setIsLoading(false);
       toaster.create({
         title: 'Error',
-        description: `Failed to create department: ${error.message || 'Please try again.'}`,
+        description: `Failed to create department: ${
+          error.message || 'Please try again.'
+        }`,
         type: 'error',
         duration: 5000,
       });

@@ -57,7 +57,9 @@ const icons = {
   ),
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
   test: <FiEdit2 size={24} style={{ marginRight: '8px' }} color="#4A5568" />,
-  testActive: <FiEdit2 size={24} style={{ marginRight: '8px' }} color="black" />,
+  testActive: (
+    <FiEdit2 size={24} style={{ marginRight: '8px' }} color="black" />
+  ),
   template: <TemplateFolder boxSize="24px" mr="2" fill="#5E5E5E" />,
   templateActive: <TemplateFolder boxSize="24px" mr="2" fill="black" />,
   employeeDirectory: (

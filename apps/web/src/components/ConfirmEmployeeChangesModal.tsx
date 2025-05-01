@@ -46,10 +46,11 @@ export const ConfirmEmployeeChangesModal = ({
   const newPosition = positions.find((p) => p.id === selectedPosition);
 
   const hasNameChange =
-    editedFirstName !== employee.firstName || editedLastName !== employee.lastName;
+    editedFirstName !== employee.firstName ||
+    editedLastName !== employee.lastName;
   const hasDepartmentChange = currentDepartment?.id !== selectedDepartment;
   const hasPositionChange = currentPosition?.id !== selectedPosition;
-  
+
   // Check if any changes have been made
   const hasChanges = hasNameChange || hasDepartmentChange || hasPositionChange;
 
@@ -107,14 +108,21 @@ export const ConfirmEmployeeChangesModal = ({
             <Dialog.Body pt={4}>
               <Flex flexDirection="column" gap="20px">
                 <Box>
-                  <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={1}>
+                  <Text
+                    fontSize="sm"
+                    fontWeight="medium"
+                    color="gray.600"
+                    mb={1}
+                  >
                     Name
                   </Text>
                   {hasNameChange ? (
                     <Flex align="center">
                       <Text fontWeight="medium">{oldFullName}</Text>
                       <Box mx={2} color="blue.500">
-                        <Text fontSize="sm" fontWeight="bold">►</Text>
+                        <Text fontSize="sm" fontWeight="bold">
+                          ►
+                        </Text>
                       </Box>
                       <Text fontWeight="medium">{newFullName}</Text>
                     </Flex>
@@ -122,39 +130,63 @@ export const ConfirmEmployeeChangesModal = ({
                     <Text fontWeight="medium">{oldFullName}</Text>
                   )}
                 </Box>
-                
+
                 <Box>
-                  <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={1}>
+                  <Text
+                    fontSize="sm"
+                    fontWeight="medium"
+                    color="gray.600"
+                    mb={1}
+                  >
                     Department
                   </Text>
                   {hasDepartmentChange ? (
                     <Flex align="center">
-                      <Text fontWeight="medium">{currentDepartment?.name || "—"}</Text>
+                      <Text fontWeight="medium">
+                        {currentDepartment?.name || '—'}
+                      </Text>
                       <Box mx={2} color="blue.500">
-                        <Text fontSize="sm" fontWeight="bold">►</Text>
+                        <Text fontSize="sm" fontWeight="bold">
+                          ►
+                        </Text>
                       </Box>
-                      <Text fontWeight="medium">{newDepartment?.name || "—"}</Text>
+                      <Text fontWeight="medium">
+                        {newDepartment?.name || '—'}
+                      </Text>
                     </Flex>
                   ) : (
-                    <Text fontWeight="medium">{currentDepartment?.name || "—"}</Text>
+                    <Text fontWeight="medium">
+                      {currentDepartment?.name || '—'}
+                    </Text>
                   )}
                 </Box>
-                
+
                 {hasPositionChange && (
                   <Box>
-                    <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={1}>
+                    <Text
+                      fontSize="sm"
+                      fontWeight="medium"
+                      color="gray.600"
+                      mb={1}
+                    >
                       Position
                     </Text>
                     <Flex align="center">
-                      <Text fontWeight="medium">{currentPosition?.name || "—"}</Text>
+                      <Text fontWeight="medium">
+                        {currentPosition?.name || '—'}
+                      </Text>
                       <Box mx={2} color="blue.500">
-                        <Text fontSize="sm" fontWeight="bold">►</Text>
+                        <Text fontSize="sm" fontWeight="bold">
+                          ►
+                        </Text>
                       </Box>
-                      <Text fontWeight="medium">{newPosition?.name || "—"}</Text>
+                      <Text fontWeight="medium">
+                        {newPosition?.name || '—'}
+                      </Text>
                     </Flex>
                   </Box>
                 )}
-                
+
                 <Box mt={2}>
                   <Flex gap={4} justify="center" width="100%">
                     <Button
@@ -183,7 +215,7 @@ export const ConfirmEmployeeChangesModal = ({
                       borderRadius="4px"
                       disabled={!hasChanges}
                       opacity={!hasChanges ? 0.6 : 1}
-                      cursor={!hasChanges ? "not-allowed" : "pointer"}
+                      cursor={!hasChanges ? 'not-allowed' : 'pointer'}
                     >
                       save
                     </Button>

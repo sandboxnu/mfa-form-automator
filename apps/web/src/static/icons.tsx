@@ -208,8 +208,8 @@ interface UserProfileAvatarProps {
 export const UserProfileAvatar: React.FC<UserProfileAvatarProps> = ({
   firstName,
   lastName,
-  bg = "#E2E8F0", // Gray.200 in Chakra UI
-  color = "black",
+  bg = '#E2E8F0', // Gray.200 in Chakra UI
+  color = 'black',
 }) => {
   return (
     <Avatar.Root

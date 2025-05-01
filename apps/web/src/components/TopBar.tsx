@@ -90,8 +90,8 @@ export const TopBar: React.FC = () => {
                         color="white"
                       />
                     ) : (
-                      <UserProfileAvatar 
-                        firstName="Default" 
+                      <UserProfileAvatar
+                        firstName="Default"
                         lastName="User"
                         bg="#1367EA"
                         color="white"

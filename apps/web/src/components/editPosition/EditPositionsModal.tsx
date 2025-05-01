@@ -74,7 +74,9 @@ export const EditPositionsModal = ({
       setIsLoading(false);
       toaster.create({
         title: 'Error',
-        description: `Failed to create position: ${error.message || 'Please try again'}`,
+        description: `Failed to create position: ${
+          error.message || 'Please try again'
+        }`,
         type: 'error',
         duration: 5000,
       });
