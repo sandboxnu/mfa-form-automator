@@ -5,7 +5,7 @@ import {
   Text,
   Input,
   Button,
-  Badge,
+  Spinner,
 } from '@chakra-ui/react';
 import {
   DepartmentEntity,
@@ -19,11 +19,10 @@ import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
 import isAuth from '@web/components/isAuth';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { UserProfileAvatar } from '@web/static/icons';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { FiTrash2, FiEdit2 } from 'react-icons/fi';
 import {
   departmentsControllerFindAll,
-  positionsControllerFindAllInDepartment,
   employeesControllerUpdate,
   employeesControllerRemove,
 } from '@web/client';
@@ -37,6 +36,9 @@ import { Toaster, toaster } from '@web/components/ui/toaster';
 import {
   employeesControllerFindAllQueryKey,
   employeesControllerFindAllOptions,
+  employeesControllerRemoveMutation,
+  departmentsControllerFindAllOptions,
+  positionsControllerFindAllInDepartmentOptions,
 } from '@web/client/@tanstack/react-query.gen';
 
 /**
@@ -59,15 +61,17 @@ function EmployeeDirectory() {
     }),
   });
 
+  const { data: departments = [] } = useQuery({
+    ...departmentsControllerFindAllOptions(),
+  });
+
   const [filteredEmployees, setFilteredEmployees] = useState<
     EmployeeBaseEntityResponse[]
   >([]);
   const [editingEmployee, setEditingEmployee] = useState<string | null>(null);
   const [editedFirstName, setEditedFirstName] = useState('');
   const [editedLastName, setEditedLastName] = useState('');
-  const [departments, setDepartments] = useState<DepartmentEntity[]>([]);
   const [selectedDepartment, setSelectedDepartment] = useState<string>('');
-  const [positions, setPositions] = useState<PositionBaseEntity[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<string>('');
   const [originalData, setOriginalData] = useState<{
     firstName: string;
@@ -83,18 +87,23 @@ function EmployeeDirectory() {
   const [employeeToDelete, setEmployeeToDelete] =
     useState<EmployeeBaseEntityResponse | null>(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [hoveredRowIndex, setHoveredRowIndex] = useState<string | null>(null);
 
-  const styles = `
-    .employee-row:hover .edit-button {
-      display: block !important;
-    }
-  `;
+  const { data: positions } = useQuery({
+    ...positionsControllerFindAllInDepartmentOptions({
+      path: {
+        departmentId: selectedDepartment || '',
+      },
+    }),
+    enabled: !!selectedDepartment,
+  });
 
   useEffect(() => {
     if (!employees) return;
 
     if (searchQuery.trim() === '') {
       setFilteredEmployees(employees);
+    } else {
       const query = searchQuery.toLowerCase().trim();
       const filtered = employees.filter((employee) => {
         const fullName =
@@ -102,7 +111,7 @@ function EmployeeDirectory() {
         const departmentName =
           employee.position?.department?.name?.toLowerCase() || '';
         const positionName = employee.position?.name?.toLowerCase() || '';
-        const email = employee.email.toLowerCase();
+        const email = employee.email?.toLowerCase() || '';
 
         return (
           fullName.includes(query) ||
@@ -120,26 +129,11 @@ function EmployeeDirectory() {
    * Calls the API to deactivate the employee instead of storing IDs in localStorage
    */
   const deactivateEmployee = useMutation({
-    mutationFn: async (employeeId: string) => {
-      // Call the API to deactivate the employee
-      const response = await employeesControllerRemove({
-        path: { id: employeeId },
-        client,
-      });
-      return { success: true, id: employeeId };
-    },
-    onMutate: (employeeId) => {
+    ...employeesControllerRemoveMutation(),
+    onMutate: () => {
       setIsDeleteLoading(true);
-      if (editingEmployee === employeeId) {
-        setEditingEmployee(null);
-        setIsConfirmChangesModalOpen(false);
-      }
-      setFilteredEmployees((prevEmployees) =>
-        prevEmployees.filter((employee) => employee.id !== employeeId),
-      );
     },
-    onError: (error: any, employeeId) => {
-      console.error('Failed to deactivate employee:', error);
+    onError: () => {
       setIsDeleteLoading(false);
 
       // Refresh the employee list on error to restore the employee that failed to deactivate
@@ -202,62 +196,11 @@ function EmployeeDirectory() {
       if (editingEmployee === employeeId) {
         setEditingEmployee(null);
       }
-      deactivateEmployee.mutate(employeeId);
+      deactivateEmployee.mutate({
+        path: { id: employeeId },
+      });
     }
   };
-
-  // Fetch departments when component mounts
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await departmentsControllerFindAll({
-          query: { limit: 100 },
-          client,
-        });
-        if (response.data) {
-          setDepartments(response.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch departments:', error);
-        toaster.create({
-          title: 'Error',
-          description: 'Failed to fetch departments',
-          type: 'error',
-          duration: 5000,
-        });
-      }
-    };
-    fetchDepartments();
-  }, []);
-
-  // Fetch positions when selected department changes
-  useEffect(() => {
-    const fetchPositions = async () => {
-      if (!selectedDepartment) {
-        setPositions([]);
-        return;
-      }
-      try {
-        const response = await positionsControllerFindAllInDepartment({
-          path: { departmentId: selectedDepartment },
-          query: { limit: 100 },
-          client,
-        });
-        if (response.data) {
-          setPositions(response.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch positions:', error);
-        toaster.create({
-          title: 'Error',
-          description: 'Failed to fetch positions',
-          type: 'error',
-          duration: 5000,
-        });
-      }
-    };
-    fetchPositions();
-  }, [selectedDepartment]);
 
   /**
    * Sets up the form for editing an employee
@@ -280,35 +223,6 @@ function EmployeeDirectory() {
 
     setSelectedDepartment(departmentId);
     setSelectedPosition(positionId);
-
-    if (departmentId) {
-      fetchPositionsForDepartment(departmentId);
-    }
-  };
-
-  /**
-   * Fetches positions for a specific department
-   * @param departmentId - The ID of the department to fetch positions for
-   */
-  const fetchPositionsForDepartment = async (departmentId: string) => {
-    try {
-      const response = await positionsControllerFindAllInDepartment({
-        path: { departmentId },
-        query: { limit: 100 },
-        client,
-      });
-      if (response.data) {
-        setPositions(response.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch positions:', error);
-      toaster.create({
-        title: 'Error',
-        description: 'Failed to fetch positions',
-        type: 'error',
-        duration: 5000,
-      });
-    }
   };
 
   /**
@@ -339,7 +253,7 @@ function EmployeeDirectory() {
         });
 
         const updatedEmployees = [...filteredEmployees];
-        const selectedPositionObj = positions.find(
+        const selectedPositionObj = positions?.find(
           (p) => p.id === selectedPosition,
         );
         const selectedDepartmentObj = departments.find(
@@ -404,7 +318,6 @@ function EmployeeDirectory() {
   return (
     <>
       <Toaster />
-      <style>{styles}</style>
       <Box maxW="100%" p={8}>
         <Box>
           <Heading as="h1" fontSize="32px" fontWeight="500" mb={2}>
@@ -495,6 +408,8 @@ function EmployeeDirectory() {
               _hover={{ bg: 'gray.50' }}
               className="employee-row"
               position="relative"
+              onMouseEnter={() => setHoveredRowIndex(employee.id)}
+              onMouseLeave={() => setHoveredRowIndex(null)}
             >
               {/* Name with avatar */}
               <Box flex={3}>
@@ -549,21 +464,23 @@ function EmployeeDirectory() {
                     value={selectedDepartment}
                     onChange={(e) => setSelectedDepartment(e.target.value)}
                     style={{
-                      border: '1px solid #E2E8F0',
-                      borderRadius: '0.375rem',
-                      padding: '0.5rem 1rem',
-                      width: '80%',
+                      marginTop: '0px',
+                      border: '1px solid #C0C0C0',
+                      borderRadius: '6px',
+                      paddingLeft: '8px',
+                      fontSize: '16px',
+                      width: '100%',
                       maxWidth: '200px',
-                      fontSize: '1rem',
-                      height: '2.5rem',
-                      outline: 'none',
-                      color: '#2D3748',
+                      height: '40px',
+                      WebkitAppearance: 'none',
+                      MozAppearance: 'none',
                       appearance: 'none',
-                      backgroundImage:
-                        "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232D3748'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\")",
+                      color: '#000',
+                      backgroundImage: `url('/dropdown_arrow_down.svg')`,
+                      backgroundPosition: 'right 10px center',
                       backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'right 0.5rem center',
-                      backgroundSize: '1.5em 1.5em',
+                      backgroundSize: '8px',
+                      paddingRight: '30px',
                     }}
                   >
                     <option value="" disabled>
@@ -592,29 +509,31 @@ function EmployeeDirectory() {
                     onChange={(e) => setSelectedPosition(e.target.value)}
                     disabled={!selectedDepartment}
                     style={{
-                      border: '1px solid #E2E8F0',
-                      borderRadius: '0.375rem',
-                      padding: '0.5rem 1rem',
-                      width: '80%',
+                      marginTop: '0px',
+                      border: '1px solid #C0C0C0',
+                      borderRadius: '6px',
+                      paddingLeft: '8px',
+                      fontSize: '16px',
+                      width: '100%',
                       maxWidth: '200px',
-                      fontSize: '1rem',
-                      height: '2.5rem',
-                      outline: 'none',
-                      color: '#2D3748',
-                      opacity: selectedDepartment ? 1 : 0.5,
+                      height: '40px',
+                      WebkitAppearance: 'none',
+                      MozAppearance: 'none',
                       appearance: 'none',
-                      backgroundImage:
-                        "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232D3748'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E\")",
+                      color: selectedDepartment ? '#000' : '#6C757D',
+                      opacity: selectedDepartment ? 1 : 0.5,
+                      backgroundImage: `url('/dropdown_arrow_down.svg')`,
+                      backgroundPosition: 'right 10px center',
                       backgroundRepeat: 'no-repeat',
-                      backgroundPosition: 'right 0.5rem center',
-                      backgroundSize: '1.5em 1.5em',
+                      backgroundSize: '8px',
+                      paddingRight: '30px',
                     }}
                   >
                     {!selectedDepartment ? (
                       <option disabled value="">
                         Select a department first
                       </option>
-                    ) : positions.length > 0 ? (
+                    ) : positions && positions.length > 0 ? (
                       <>
                         <option value="" disabled>
                           Select Position
@@ -681,6 +600,7 @@ function EmployeeDirectory() {
                           );
                           setSelectedPosition(employee.position?.id || '');
                         }}
+                        cursor="pointer"
                       >
                         Cancel
                       </Box>
@@ -693,9 +613,9 @@ function EmployeeDirectory() {
                         color="red.500"
                         borderRadius="md"
                         _hover={{ bg: 'red.50' }}
+                        cursor="pointer"
                       >
                         <Flex align="center" gap={1}>
-                          <FiTrash2 size={16} />
                           <Text>Delete</Text>
                         </Flex>
                       </Box>
@@ -704,8 +624,10 @@ function EmployeeDirectory() {
                     <Box
                       as="button"
                       onClick={() => handleEditClick(employee)}
-                      display="none"
-                      className="edit-button"
+                      display={
+                        hoveredRowIndex === employee.id ? 'block' : 'none'
+                      }
+                      cursor="pointer"
                     >
                       <Flex align="center" gap={2}>
                         <FiEdit2 size={16} color="#4A5568" />
@@ -745,7 +667,7 @@ function EmployeeDirectory() {
             departments.find((d) => d.id === selectedDepartment) || null
           }
           selectedNewPosition={
-            positions.find((p) => p.id === selectedPosition) || null
+            positions?.find((p) => p.id === selectedPosition) || null
           }
         />
       )}
