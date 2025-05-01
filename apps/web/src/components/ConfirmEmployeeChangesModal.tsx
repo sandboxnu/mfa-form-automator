@@ -16,6 +16,7 @@ interface ConfirmEmployeeChangesModalProps {
   editedLastName: string;
   selectedNewDepartment: DepartmentBaseEntity | null;
   selectedNewPosition: PositionBaseEntity | null;
+  isLoading: boolean;
 }
 
 /**
@@ -39,6 +40,7 @@ export const ConfirmEmployeeChangesModal = ({
   editedLastName,
   selectedNewDepartment,
   selectedNewPosition,
+  isLoading,
 }: ConfirmEmployeeChangesModalProps) => {
   if (!employee) {
     setTimeout(() => onClose(), 0);
@@ -218,6 +220,7 @@ export const ConfirmEmployeeChangesModal = ({
                       disabled={!hasChanges}
                       opacity={!hasChanges ? 0.6 : 1}
                       cursor={!hasChanges ? 'not-allowed' : 'pointer'}
+                      loading={isLoading}
                     >
                       Save
                     </Button>

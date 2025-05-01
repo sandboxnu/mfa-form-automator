@@ -20,18 +20,12 @@ import isAuth from '@web/components/isAuth';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { UserProfileAvatar } from '@web/static/icons';
 import { useState, useEffect } from 'react';
-import { FiTrash2, FiEdit2 } from 'react-icons/fi';
-import {
-  departmentsControllerFindAll,
-  employeesControllerUpdate,
-  employeesControllerRemove,
-} from '@web/client';
+import { FiEdit2 } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { EditDepartmentsModal } from '@web/components/editDepartment/EditDepartmentsModal';
 import { EditPositionsModal } from '@web/components/editPosition/EditPositionsModal';
 import { useAuth } from '@web/hooks/useAuth';
-import { client } from '@web/client/client.gen';
 import { Toaster, toaster } from '@web/components/ui/toaster';
 import {
   employeesControllerFindAllQueryKey,
@@ -39,6 +33,8 @@ import {
   employeesControllerRemoveMutation,
   departmentsControllerFindAllOptions,
   positionsControllerFindAllInDepartmentOptions,
+  employeesControllerUpdateMutation,
+  employeesControllerCreateMutation,
 } from '@web/client/@tanstack/react-query.gen';
 
 /**
@@ -79,14 +75,13 @@ function EmployeeDirectory() {
     departmentId: string;
     positionId: string;
   } | null>(null);
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
+  const { user, refreshUser } = useAuth();
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isConfirmChangesModalOpen, setIsConfirmChangesModalOpen] =
     useState(false);
   const [employeeToDelete, setEmployeeToDelete] =
     useState<EmployeeBaseEntityResponse | null>(null);
-  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [hoveredRowIndex, setHoveredRowIndex] = useState<string | null>(null);
 
   const { data: positions } = useQuery({
@@ -96,6 +91,46 @@ function EmployeeDirectory() {
       },
     }),
     enabled: !!selectedDepartment,
+  });
+
+  const createEmployee = useMutation({
+    ...employeesControllerCreateMutation(),
+  });
+
+  const updateEmployee = useMutation({
+    ...employeesControllerUpdateMutation(),
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onError: (error) => {
+      setIsLoading(false);
+      toaster.create({
+        title: 'Error',
+        description: `Failed to update employee: ${
+          error.message || 'Please try again.'
+        }`,
+        type: 'error',
+        duration: 5000,
+      });
+    },
+    onSuccess: () => {
+      setIsLoading(false);
+      setEditingEmployee(null);
+      setIsConfirmChangesModalOpen(false);
+
+      // Refresh the employee list to ensure it's up to date
+      queryClient.invalidateQueries({
+        queryKey: employeesControllerFindAllQueryKey(),
+      });
+      refreshUser();
+
+      toaster.create({
+        title: 'Success',
+        description: 'Employee updated successfully',
+        type: 'success',
+        duration: 5000,
+      });
+    },
   });
 
   useEffect(() => {
@@ -124,17 +159,13 @@ function EmployeeDirectory() {
     }
   }, [employees, searchQuery]);
 
-  /**
-   * Mutation to handle deactivating an employee
-   * Calls the API to deactivate the employee instead of storing IDs in localStorage
-   */
   const deactivateEmployee = useMutation({
     ...employeesControllerRemoveMutation(),
     onMutate: () => {
-      setIsDeleteLoading(true);
+      setIsLoading(true);
     },
     onError: () => {
-      setIsDeleteLoading(false);
+      setIsLoading(false);
 
       // Refresh the employee list on error to restore the employee that failed to deactivate
       queryClient.invalidateQueries({
@@ -151,7 +182,7 @@ function EmployeeDirectory() {
       setIsDeleteConfirmOpen(false);
     },
     onSuccess: () => {
-      setIsDeleteLoading(false);
+      setIsLoading(false);
       setIsDeleteConfirmOpen(false);
 
       // Refresh the employee list to ensure it's up to date
@@ -232,70 +263,20 @@ function EmployeeDirectory() {
     setIsConfirmChangesModalOpen(true);
   };
 
-  /**
-   * Handles saving the edited employee information after confirmation
+  /*
+   * Handles updating the employee after confirmation
    */
   const handleConfirmSave = async () => {
-    const employeeIndex = filteredEmployees.findIndex(
-      (e) => e.id === editingEmployee,
-    );
+    if (!editingEmployee || !originalData || !selectedPosition) return;
 
-    if (employeeIndex !== -1) {
-      try {
-        await employeesControllerUpdate({
-          path: { id: editingEmployee || '' },
-          body: {
-            firstName: editedFirstName,
-            lastName: editedLastName,
-            positionId: selectedPosition || undefined,
-          },
-          client,
-        });
-
-        const updatedEmployees = [...filteredEmployees];
-        const selectedPositionObj = positions?.find(
-          (p) => p.id === selectedPosition,
-        );
-        const selectedDepartmentObj = departments.find(
-          (d) => d.id === selectedDepartment,
-        );
-
-        updatedEmployees[employeeIndex] = {
-          ...updatedEmployees[employeeIndex],
-          firstName: editedFirstName,
-          lastName: editedLastName,
-          position: selectedPositionObj
-            ? {
-                ...selectedPositionObj,
-                department: selectedDepartmentObj || null,
-              }
-            : updatedEmployees[employeeIndex].position,
-        };
-
-        setFilteredEmployees(updatedEmployees);
-        queryClient.invalidateQueries({
-          queryKey: employeesControllerFindAllQueryKey(),
-        });
-
-        toaster.create({
-          title: 'Success',
-          description: 'Employee updated successfully',
-          type: 'success',
-          duration: 5000,
-        });
-      } catch (error) {
-        console.error('Failed to update employee:', error);
-        toaster.create({
-          title: 'Error',
-          description: 'Failed to update employee. Please try again.',
-          type: 'error',
-          duration: 5000,
-        });
-      }
-    }
-
-    setEditingEmployee(null);
-    setIsConfirmChangesModalOpen(false);
+    updateEmployee.mutateAsync({
+      path: { id: editingEmployee },
+      body: {
+        firstName: editedFirstName,
+        lastName: editedLastName,
+        positionId: selectedPosition || undefined,
+      },
+    });
   };
 
   /**
@@ -649,7 +630,7 @@ function EmployeeDirectory() {
           onConfirm={handleDeactivateEmployee}
           deleteObjectType="Employee"
           deleteObjectName={`${employeeToDelete.firstName} ${employeeToDelete.lastName}`}
-          isLoading={isDeleteLoading}
+          isLoading={isLoading}
           actionText="Remove"
           title="Remove Employee"
           description={`Are you sure you want to remove ${employeeToDelete.firstName} ${employeeToDelete.lastName} from the directory?`}
@@ -669,6 +650,7 @@ function EmployeeDirectory() {
           selectedNewPosition={
             positions?.find((p) => p.id === selectedPosition) || null
           }
+          isLoading={isLoading}
         />
       )}
       <EditDepartmentsModal
