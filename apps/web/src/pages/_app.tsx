@@ -23,6 +23,7 @@ import { UserFormsContextProvider } from '@web/context/UserFormsContext';
 import { EditFormTemplateProvider } from '@web/context/EditFormTemplateContext';
 import { EditFormInstanceProvider } from '@web/context/EditFormInstanceContext';
 import { RouterProvider } from '@web/context/RouterProvider';
+import { ApproveFormInstanceProvider } from '@web/context/ApproveFormInstanceContext';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -94,6 +95,7 @@ export default function App({
 
   const createFormTemplatePath = '/form-template/create';
   const createFormInstancePath = '/form-instance/create';
+  const approveFormInstancePath = '/approve-form';
   const editInstanceRegExPath = /^\/form-instance\/[^\/]+\/edit\/[^\/]+\/?$/;
   const editTemplateRegExPath = /^\/form-template\/[^\/]+\/edit\/[^\/]+\/?$/;
 
@@ -103,6 +105,7 @@ export default function App({
     '/register',
     '/form-template/create/success',
     '/sign-form/success',
+    '/approve-form/success',
   ];
   const excludeLayoutPathsRegex = [
     /^\/form-instance\/[^\/]+\/edit\/success/,
@@ -164,6 +167,14 @@ export default function App({
       root = <EditFormTemplateProvider>{root}</EditFormTemplateProvider>;
     }
 
+    if (appProps.router.pathname.includes(approveFormInstancePath)) {
+      const { id } = appProps.router.query;
+      root = (
+        <ApproveFormInstanceProvider id={id as string}>
+          {root}
+        </ApproveFormInstanceProvider>
+      );
+    }
     // provide user forms context if needed
     // used in index, pending, todo, completed pages
     if (

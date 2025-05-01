@@ -11,7 +11,6 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import ErrorComponent from '../../components/Error';
 import { groupColors } from '@web/utils/formTemplateUtils';
-import { useRouterContext } from '@web/context/RouterProvider';
 
 export function SignFormPage() {
   const router = useRouter();
@@ -66,10 +65,6 @@ export function SignFormPage() {
     });
   });
 
-  if (isLoading) {
-    return <FormLoading />;
-  }
-
   return (
     <>
       {formInstance && !formInstanceError ? (
@@ -90,14 +85,15 @@ export function SignFormPage() {
           }
           submitFunction={async () => {
             setIsLoading(true);
-            await nextSignFormPage(`/sign-form/review/${id}`, false);
+            await nextSignFormPage(`/`, false);
+            console.log('Form submitted successfully');
             router.push(`/sign-form/review/${id}`).then(() => {
               setIsLoading(false);
             });
           }}
           backLink={'/'}
           disabled={isLoading}
-          loading={isLoading}
+          loading={false}
         />
       ) : formInstanceError?.message ===
         'Request failed with status code 401' ? (

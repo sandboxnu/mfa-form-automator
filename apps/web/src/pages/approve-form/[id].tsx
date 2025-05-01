@@ -5,23 +5,67 @@ import isAuth from '@web/components/isAuth';
 import { useApproveFormInstance } from '@web/hooks/useApproveFormInstance';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useEffect, useState } from 'react';
-import Error from '@web/components/Error';
+import { useRouter } from 'next/router';
+import { useMutation } from '@tanstack/react-query';
+import {
+  formInstancesControllerCompleteFormInstanceMutation,
+  formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
+  formInstancesControllerFindAllQueryKey,
+} from '@web/client/@tanstack/react-query.gen';
+import { queryClient } from '../_app';
 
 function ReviewAndApproveForm() {
   const { formInstance, completedPdfLink } = useApproveFormInstance();
+  const router = useRouter();
   const [completedPdfFile, setCompletedPdfFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const completeFormInstanceMutation = useMutation({
+    ...formInstancesControllerCompleteFormInstanceMutation(),
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({
+        queryKey: formInstancesControllerFindAllQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey:
+          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
+      });
+
+      router.push('/approve-form/success').then(() => {
+        setIsLoading(false);
+      });
+    },
+  });
 
   useEffect(() => {
     fetchPdfFile(setCompletedPdfFile, completedPdfLink);
   }, [completedPdfLink]);
+
   if (!formInstance) {
-    return <Error></Error>;
+    return <></>;
   }
+
+  const handleApproveFormInstance = async () => {
+    await completeFormInstanceMutation.mutateAsync({
+      path: {
+        formInstanceId: formInstance?.id,
+      },
+    });
+  };
+
   return (
     <FormLayout
       type={FormInteractionType.ApproveFormInstance}
       pageNumber={1}
-      heading={'Review signed instance'}
+      heading={'Mark Completed'}
       subheading={'Review and Approve the completed form'}
       boxContent={
         <ReviewBox
@@ -35,10 +79,11 @@ function ReviewAndApproveForm() {
           description={formInstance?.description ?? ''}
         />
       }
-      submitLink={'/approve-instance/success'}
-      backLink={'/pending'}
+      submitFunction={handleApproveFormInstance}
+      backLink={'/'}
       review={true}
-      disabled={false}
+      disabled={isLoading}
+      loading={isLoading}
     />
   );
 }

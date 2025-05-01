@@ -23,7 +23,7 @@ function Description() {
   const router = useRouter();
 
   if (!pdfFile || !formDimensions) {
-    return <Error></Error>;
+    return <></>;
   }
 
   return (

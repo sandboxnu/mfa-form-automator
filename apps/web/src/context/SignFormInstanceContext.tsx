@@ -174,7 +174,7 @@ export const SignFormInstanceContextProvider = ({
     });
   };
 
-  const modifyPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
+  const modifyPdf = async (pdfDoc: PDFDocument) => {
     const form = pdfDoc.getForm();
 
     for (const [pageNum, formFields] of fields.entries()) {
@@ -258,7 +258,6 @@ export const SignFormInstanceContextProvider = ({
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
     setModifiedPdfLink(url);
-    router.push(submitLink);
   };
 
   const submitPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
@@ -281,9 +280,6 @@ export const SignFormInstanceContextProvider = ({
         },
       });
       if (res) {
-        router.push(submitLink).then(() => {
-          setSignFormInstanceLoading(false);
-        });
         queryClient.invalidateQueries({
           queryKey: formInstancesControllerFindAllQueryKey(),
         });
@@ -295,11 +291,11 @@ export const SignFormInstanceContextProvider = ({
           queryKey:
             formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
         });
+        router.push(submitLink).then(() => {
+          setSignFormInstanceLoading(false);
+        });
       }
     }
-
-    // in case of error, set loading to false
-    setSignFormInstanceLoading(false);
   };
 
   const nextSignFormPage = async (
@@ -311,7 +307,7 @@ export const SignFormInstanceContextProvider = ({
     if (existingPdfBytes) {
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
       if (!isReviewPage) {
-        modifyPdf(submitLink, pdfDoc);
+        modifyPdf(pdfDoc);
       } else {
         submitPdf(submitLink, pdfDoc);
       }

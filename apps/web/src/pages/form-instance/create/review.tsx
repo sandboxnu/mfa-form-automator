@@ -123,7 +123,7 @@ function Review() {
   };
 
   if (!formTemplate) {
-    return <Error></Error>;
+    return <></>;
   }
 
   return (

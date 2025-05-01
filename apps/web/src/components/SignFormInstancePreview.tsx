@@ -7,15 +7,6 @@ import { useAuth } from '@web/hooks/useAuth';
 import AssigneeMap from './AssigneeMap';
 import { Avatar } from './ui/avatar.tsx';
 import { nextSigner, signerIsUser } from '@web/utils/formInstanceUtils';
-import {
-  formInstancesControllerCompleteFormInstanceMutation,
-  formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
-  formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
-  formInstancesControllerFindAllQueryKey,
-} from '@web/client/@tanstack/react-query.gen.ts';
-import { useMutation } from '@tanstack/react-query';
-import { queryClient } from '@web/pages/_app.tsx';
-import { useState } from 'react';
 import { useRouterContext } from '@web/context/RouterProvider.tsx';
 
 /**
@@ -35,30 +26,8 @@ export const SignFormInstancePreview = ({
   formInstance?: FormInstanceEntity;
 }) => {
   const router = useRouter();
-  const [markedCompletedLoading, setMarkedCompletedLoading] = useState(false);
   const { user } = useAuth();
   const { isRouteChanging } = useRouterContext();
-
-  const completeFormInstanceMutation = useMutation({
-    ...formInstancesControllerCompleteFormInstanceMutation(),
-    onSuccess: async () => {
-      queryClient.invalidateQueries({
-        queryKey: formInstancesControllerFindAllQueryKey(),
-      });
-      queryClient.invalidateQueries({
-        queryKey:
-          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
-      });
-      queryClient.invalidateQueries({
-        queryKey:
-          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
-      });
-      router.push('/completed').then(() => {
-        setMarkedCompletedLoading(false);
-        onClose();
-      });
-    },
-  });
 
   const subheadingStyle = {
     lineHeight: 'normal',
@@ -70,10 +39,6 @@ export const SignFormInstancePreview = ({
   if (!formInstance || !user) {
     return <></>;
   }
-
-  const handleApproveFormInstance = async () => {
-    router.push(`/approve-form/${formInstance.id}`);
-  };
 
   const openForm = () => {
     const url =
@@ -245,12 +210,14 @@ export const SignFormInstancePreview = ({
                       padding="4px 16px"
                       borderRadius="6px"
                       background="#1367EA"
-                      onClick={handleApproveFormInstance}
+                      onClick={() =>
+                        router.push(`/approve-form/${formInstance.id}`)
+                      }
                       _hover={{
                         background: '#1367EA',
                       }}
-                      loading={markedCompletedLoading}
-                      disabled={markedCompletedLoading}
+                      loading={isRouteChanging}
+                      disabled={isRouteChanging}
                     >
                       <Flex
                         gap="8px"

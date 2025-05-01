@@ -26,7 +26,7 @@ function InputFields() {
   const router = useRouter();
 
   if (!formDimensions || !formFields) {
-    return <Error></Error>;
+    return <></>;
   }
 
   return (
