@@ -1,4 +1,4 @@
-import { Button, Flex, Input, Text, Select } from '@chakra-ui/react';
+import { Button, Flex, Input } from '@chakra-ui/react';
 import { DepartmentEntityHydrated } from '@web/client';
 import { RxCross2 } from 'react-icons/rx';
 

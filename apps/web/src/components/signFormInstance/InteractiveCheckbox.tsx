@@ -1,4 +1,3 @@
-import { Box } from '@chakra-ui/react';
 import { TextFieldPosition } from '../createFormTemplate/types';
 import { Checkbox } from '@chakra-ui/react';
 import { useSignFormInstance } from '../../hooks/useSignFormInstance';
@@ -7,14 +6,12 @@ export default function InteractiveCheckbox({
   data,
   color,
   currentPosition,
-  highlighted,
   pageNum,
   id,
 }: {
   data: boolean;
   color: string;
   currentPosition: TextFieldPosition;
-  highlighted: boolean;
   pageNum: number;
   id: string;
 }) {

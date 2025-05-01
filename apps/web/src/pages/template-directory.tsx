@@ -1,21 +1,9 @@
-import {
-  Button,
-  Dialog,
-  DialogPositioner,
-  Flex,
-  Portal,
-  Text,
-  Box,
-} from '@chakra-ui/react';
+import { Button, Flex, Text, Box } from '@chakra-ui/react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
-import {
-  FieldGroupBaseEntity,
-  FormTemplateEntity,
-  Scope,
-  SortBy,
-} from '@web/client';
+import { FormTemplateEntity, Scope, SortBy } from '@web/client';
 import {
   formTemplatesControllerFindAllInfiniteOptions,
+  formTemplatesControllerFindAllInfiniteQueryKey,
   formTemplatesControllerFindAllQueryKey,
   formTemplatesControllerUpdateMutation,
 } from '@web/client/@tanstack/react-query.gen';
@@ -30,35 +18,15 @@ import {
 } from '@web/static/icons';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
 import { queryClient } from './_app';
-import {
-  Field,
-  FieldGroupColor,
-  FieldGroups,
-  fieldId,
-  FieldType,
-  FormFields,
-  groupId,
-} from '@web/components/createFormTemplate/types';
 import { distance } from 'fastest-levenshtein';
-import { groupColors } from '@web/utils/formTemplateUtils';
-import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
  */
 function TemplateDirectory() {
-  const {
-    setFormTemplateName,
-    setFormTemplateDescription,
-    setPdfFile,
-    setFormTemplateUseId,
-    setFieldGroups,
-    setFormFields,
-    setFormDimensions,
-  } = useCreateFormTemplate();
   const router = useRouter();
   const loadMoreTriggerRef = useRef(null);
 
@@ -73,6 +41,7 @@ function TemplateDirectory() {
   const [sortedFormTemplates, setSortedFormTemplates] = useState<
     FormTemplateEntity[]
   >([]);
+  const { isRouteChanging } = useRouterContext();
 
   const {
     data: infiniteFormTemplates,
@@ -146,6 +115,9 @@ function TemplateDirectory() {
       queryClient.invalidateQueries({
         queryKey: formTemplatesControllerFindAllQueryKey(),
       });
+      queryClient.invalidateQueries({
+        queryKey: formTemplatesControllerFindAllInfiniteQueryKey(),
+      });
     },
   });
 
@@ -160,7 +132,6 @@ function TemplateDirectory() {
     if (!formTemplate) {
       return;
     }
-    await fetchPdfFile(setPdfFile, formTemplate.formDocLink);
 
     await disableFormTemplateMutation
       .mutateAsync({
@@ -188,65 +159,7 @@ function TemplateDirectory() {
     if (!formTemplate) {
       return;
     }
-    // TRANSLATOR FROM BACKEND TYPE GROUPS TO FRONTEND TYPE GROUPS
-    // old groups for the backend type
-    const oldGroups: FieldGroupBaseEntity[] = formTemplate.fieldGroups;
-    // new groups for the frontend type
-    let newGroups: Map<groupId, FieldGroupColor> = new Map<
-      groupId,
-      FieldGroupColor
-    >();
-    let newFields: Record<number, Map<fieldId, Field>> = {};
-
-    let groupNum: number = 0;
-    for (let oldGroup of oldGroups) {
-      newGroups.set(oldGroup.id, {
-        background: groupColors[groupNum][1],
-        border: groupColors[groupNum][0],
-        groupName: oldGroup.name,
-      });
-      groupNum += 1;
-
-      let count = 0;
-      let newFieldMap = new Map<fieldId, Field>();
-      for (let oldField of oldGroup.templateBoxes) {
-        let newType;
-        if (oldGroup.id == 'SIGNATURE') {
-          newType = FieldType.SIGNATURE;
-        } else if (oldGroup.id == 'CHECK BOX') {
-          newType = FieldType.CHECKBOX;
-        } else {
-          newType = FieldType.TEXT_FIELD;
-        }
-
-        newFieldMap.set(oldField.id, {
-          position: {
-            x: oldField.x_coordinate,
-            y: oldField.y_coordinate,
-            width: oldField.width,
-            height: oldField.height,
-          },
-          groupId: oldGroup.id,
-          type: newType,
-        });
-        newFields[count] = newFieldMap;
-      }
-    }
-
-    setFormTemplateName(formTemplate.name);
-    setFormTemplateDescription(formTemplate.description);
-    setFormTemplateUseId(formTemplate.id);
-    let castNewGroups: FieldGroups = newGroups;
-    setFieldGroups(castNewGroups);
-    let castNewFields: FormFields = newFields;
-    setFormFields(castNewFields);
-    setFormDimensions({
-      width: formTemplate.pageWidth,
-      height: formTemplate.pageHeight,
-    });
-    fetchPdfFile(setPdfFile, formTemplate.formDocLink).then(() =>
-      router.push('/create-template/description'),
-    );
+    router.push('/form-template/' + formTemplate.id + '/edit/description');
   }
 
   return (
@@ -279,6 +192,7 @@ function TemplateDirectory() {
                 cursor="pointer"
               />
               <Flex
+                as="button"
                 height="38px"
                 padding="8px 16px"
                 justifyContent={'center'}
@@ -377,6 +291,8 @@ function TemplateDirectory() {
             border="1px solid #1367EA"
             background="#FFF"
             padding="7px"
+            loading={isRouteChanging}
+            variant="outline"
           >
             <Text
               fontFamily="Hanken Grotesk"
@@ -385,7 +301,7 @@ function TemplateDirectory() {
               fontWeight={'500px'}
               lineHeight={'20px'}
               onClick={() => {
-                router.push('create-template/upload');
+                router.push('form-template/create/upload');
               }}
             >
               Create Form Template

@@ -31,11 +31,7 @@ export const SignFormInstanceContextProvider = ({
   children: React.ReactNode;
 }) => {
   const { user } = useAuth();
-  const {
-    data: formInstance,
-    error: formInstanceError,
-    isLoading,
-  } = useQuery({
+  const { data: formInstance, error: formInstanceError } = useQuery({
     ...formInstancesControllerFindOneOptions({
       path: {
         id: id,
@@ -326,7 +322,6 @@ export const SignFormInstanceContextProvider = ({
     <SignFormInstanceContext.Provider
       value={{
         formInstanceError,
-        isLoading,
         originalPdfLink,
         modifiedPdfLink,
         fields,

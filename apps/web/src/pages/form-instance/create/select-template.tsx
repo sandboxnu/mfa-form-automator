@@ -5,16 +5,16 @@ import { TemplateSelectGrid } from '@web/components/createFormInstance/FormTempl
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useAuth } from '@web/hooks/useAuth';
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 function SelectTemplate() {
   const { user } = useAuth();
-  const {
-    formTemplate,
-    formInstanceUseId,
-    setFormTemplate,
-    setFormInstanceName,
-  } = useCreateFormInstance();
+  const { formTemplate, setFormTemplate, setFormInstanceName } =
+    useCreateFormInstance();
+  const router = useRouter();
+  const { isRouteChanging } = useRouterContext();
 
   // Memoize the handleSelectTemplate function to prevent re-renders
   const handleSelectTemplate = useCallback(
@@ -30,15 +30,9 @@ function SelectTemplate() {
 
   return (
     <FormLayout
-      type={
-        formInstanceUseId
-          ? FormInteractionType.EditFormInstance
-          : FormInteractionType.CreateFormInstance
-      }
+      type={FormInteractionType.CreateFormInstance}
       pageNumber={1}
-      heading={
-        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
-      }
+      heading={'Create form instance'}
       subheading={'Select a form template'}
       boxContent={
         <TemplateSelectGrid
@@ -47,10 +41,11 @@ function SelectTemplate() {
           selectedFormTemplate={formTemplate}
         />
       }
-      submitLink={'/create-instance/description'}
+      submitFunction={() => router.push('/form-instance/create/description')}
       backLink={'/'}
       review={false}
       disabled={!formTemplate}
+      loading={isRouteChanging}
     />
   );
 }

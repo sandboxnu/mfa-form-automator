@@ -87,35 +87,33 @@ export const NameAndDescriptionBox = ({
           />
         </Flex>
       </Flex>
-      <Flex flex={1}>
-        <Flex
-          flexDirection={'column'}
-          gap="8px"
-          alignItems="flex-start"
-          flex="1 0 0"
+      <Flex
+        flexDirection={'column'}
+        gap="8px"
+        alignItems="flex-start"
+        flex="1 0 0"
+      >
+        <Text
+          color="#7C7F86"
+          fontSize="14px"
+          fontWeight="500px"
+          lineHeight="21px"
         >
-          <Text
-            color="#7C7F86"
-            fontSize="14px"
-            fontWeight="500px"
-            lineHeight="21px"
-          >
-            Preview Only
-          </Text>
-          <Box minW="500px">
-            <FormEditor
-              formTemplateName={name ?? ''}
-              formTemplateDimensions={formDimensions}
-              pdfFile={pdfFile}
-              disableEdit
-              fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
-              formFields={formEditorTranslateFormFields(fieldGroups)}
-              setFormFields={() => {}}
-              setFieldGroups={() => {}}
-              showNav={false}
-            />
-          </Box>
-        </Flex>
+          Preview Only
+        </Text>
+        <Box minW="500px">
+          <FormEditor
+            formTemplateName={name ?? ''}
+            formTemplateDimensions={formDimensions}
+            pdfFile={pdfFile}
+            disableEdit
+            fieldGroups={formEditorTranslateFieldGroups(fieldGroups)}
+            formFields={formEditorTranslateFormFields(fieldGroups)}
+            setFormFields={() => {}}
+            setFieldGroups={() => {}}
+            showNav={false}
+          />
+        </Box>
       </Flex>
     </Flex>
   );

@@ -16,6 +16,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app.tsx';
 import { useState } from 'react';
+import { useRouterContext } from '@web/context/RouterProvider.tsx';
 
 /**
  * Modal used in OverviewRow component for To Do forms
@@ -36,6 +37,7 @@ export const SignFormInstancePreview = ({
   const router = useRouter();
   const [markedCompletedLoading, setMarkedCompletedLoading] = useState(false);
   const { user } = useAuth();
+  const { isRouteChanging } = useRouterContext();
 
   const completeFormInstanceMutation = useMutation({
     ...formInstancesControllerCompleteFormInstanceMutation(),
@@ -207,6 +209,8 @@ export const SignFormInstancePreview = ({
                   _hover={{
                     background: '#1367EA',
                   }}
+                  loading={isRouteChanging}
+                  disabled={isRouteChanging}
                 >
                   <Flex gap="8px" alignItems="center" justifyContent="center">
                     <PenSigningIcon color="#FFF" />

@@ -1,20 +1,23 @@
 import { Box, Text, Flex } from '@chakra-ui/react';
-import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
-import { FieldGroupBaseEntity } from '@web/client';
+import { FieldGroupBaseEntity, FormTemplateEntity } from '@web/client';
 import {
   formEditorTranslateFieldGroups,
   formEditorTranslateFormFields,
 } from '@web/utils/formInstanceUtils';
 import { groupColors } from '@web/utils/formTemplateUtils';
-import Error from '../Error';
+import { ContextAssignedGroupData } from '@web/context/types';
 
 export const ReviewBox = ({
+  assignedGroupData,
+  formTemplate,
   pdfFile,
   name,
   description,
   fieldGroups,
 }: {
+  assignedGroupData: ContextAssignedGroupData[];
+  formTemplate: FormTemplateEntity;
   pdfFile: File | null;
   name: string;
   description: string;
@@ -29,8 +32,6 @@ export const ReviewBox = ({
     borderColor: 'transparent',
   };
 
-  const { assignedGroupData, formTemplate } = useCreateFormInstance();
-
   const GroupItem = ({ color, border }: { color: string; border: string }) => {
     return (
       <Flex gap="10px" alignItems="center">
@@ -43,10 +44,6 @@ export const ReviewBox = ({
       </Flex>
     );
   };
-
-  if (!formTemplate) {
-    return <Error></Error>;
-  }
 
   return (
     <Flex

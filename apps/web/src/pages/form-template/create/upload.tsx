@@ -4,12 +4,14 @@ import { FormInteractionType } from '@web/components/createForm/types';
 import { UploadBox } from '@web/components/createFormTemplate/UploadBox';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
+import { useRouter } from 'next/router';
 import { pdfjs } from 'react-pdf';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
  */
 function Upload() {
+  const router = useRouter();
   const { pdfFile, setPdfFile, setFormDimensions } = useCreateFormTemplate();
 
   return (
@@ -46,7 +48,9 @@ function Upload() {
           }}
         />
       }
-      submitLink={'/create-template/description'}
+      submitFunction={() => {
+        router.push('/form-template/create/description');
+      }}
       backLink={'/'}
       review={false}
       disabled={!pdfFile}

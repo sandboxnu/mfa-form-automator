@@ -2,7 +2,6 @@ import { Box, Text } from '@chakra-ui/react';
 import { useState, useRef, useEffect } from 'react';
 import { Document, Page } from 'react-pdf';
 import PagingControl from '../createFormTemplate/createFormTemplateEditor/PagingControl';
-import { debounce } from '@web/utils/misc';
 import {
   PDF_HEIGHT_PX,
   PDF_WIDTH_PX,
