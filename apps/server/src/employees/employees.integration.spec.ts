@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { ValidateEmployeeHandler } from './validate-employee/ValidateEmployeeHandlerInterface';
 import { MockValidateEmployeeHandler } from './validate-employee/MockValidateEmployeeHandler';
 import { EmployeeErrorMessage } from './employees.errors';
+import { SortOption } from '../utils';
 
 describe('EmployeesServiceIntegrationTest', () => {
   let module: TestingModule;
@@ -327,6 +328,7 @@ describe('EmployeesServiceIntegrationTest', () => {
         accessToken: '123456',
       };
       employeeId1 = (await service.create(employeeDto1)).id;
+      await new Promise((resolve) => setTimeout(resolve, 10));
       employeeId2 = (await service.create(employeeDto2)).id;
       await module.get<PrismaService>(PrismaService).employee.update({
         where: {
@@ -357,12 +359,160 @@ describe('EmployeesServiceIntegrationTest', () => {
     it('successfully retrieves all employees with secure data', async () => {
       const employees = await service.findAllSecure({});
       expect(employees).toHaveLength(2);
-      expect(employees[0].id).toBe(employeeId1);
-      expect(employees[1].id).toBe(employeeId2);
+      expect(employees[0].id).toBe(employeeId2);
+      expect(employees[1].id).toBe(employeeId1);
       expect(employees[0].position?.department?.id).toBe(departmentId);
       expect(employees[1].position?.department?.id).toBe(departmentId);
       expect(employees[0].scope).toBe($Enums.EmployeeScope.ADMIN);
       expect(employees[1].scope).toBe($Enums.EmployeeScope.ADMIN);
+    });
+  });
+
+  describe('sorting with findAll', () => {
+    beforeEach(async () => {
+      const employeeDto1: CreateEmployeeDto = {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        password: 'password',
+        scope: $Enums.EmployeeScope.ADMIN,
+        positionId: positionId1,
+        accessToken: '123456',
+      };
+      const employeeDto2: CreateEmployeeDto = {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@example.com',
+        password: 'password123',
+        scope: $Enums.EmployeeScope.ADMIN,
+        positionId: positionId2,
+        accessToken: '123456',
+      };
+      employeeId1 = (await service.create(employeeDto1)).id;
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      employeeId2 = (await service.create(employeeDto2)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId2,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId2,
+            },
+          },
+        },
+      });
+    });
+
+    it('sorts by name in ascending order', async () => {
+      const employees = await service.findAll({
+        sortBy: SortOption.NAME_ASC,
+      });
+
+      expect(employees).toHaveLength(2);
+      expect(employees[0].firstName).toBe('Jane');
+      expect(employees[1].firstName).toBe('John');
+    });
+
+    it('sorts by name in descending order', async () => {
+      const employees = await service.findAll({
+        sortBy: SortOption.NAME_DESC,
+      });
+
+      expect(employees).toHaveLength(2);
+      expect(employees[0].firstName).toBe('John');
+      expect(employees[1].firstName).toBe('Jane');
+    });
+  });
+
+  describe('sorting with findAllSecure', () => {
+    beforeEach(async () => {
+      const employeeDto1: CreateEmployeeDto = {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        password: 'password',
+        scope: $Enums.EmployeeScope.ADMIN,
+        positionId: positionId1,
+        accessToken: '123456',
+      };
+      const employeeDto2: CreateEmployeeDto = {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@example.com',
+        password: 'password123',
+        scope: $Enums.EmployeeScope.ADMIN,
+        positionId: positionId2,
+        accessToken: '123456',
+      };
+      employeeId1 = (await service.create(employeeDto1)).id;
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      employeeId2 = (await service.create(employeeDto2)).id;
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId1,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId1,
+            },
+          },
+        },
+      });
+      await module.get<PrismaService>(PrismaService).employee.update({
+        where: {
+          id: employeeId2,
+        },
+        data: {
+          position: {
+            connect: {
+              id: positionId2,
+            },
+          },
+        },
+      });
+    });
+
+    it('sorts by name in ascending order in secure mode', async () => {
+      const employees = await service.findAllSecure({
+        sortBy: SortOption.NAME_ASC,
+      });
+
+      expect(employees).toHaveLength(2);
+      expect(employees[0].firstName).toBe('Jane');
+      expect(employees[1].firstName).toBe('John');
+
+      // Verify we have secure data
+      expect(employees[0].position?.department).toBeDefined();
+      expect(employees[0].scope).toBeDefined();
+    });
+
+    it('sorts by name in descending order in secure mode', async () => {
+      const employees = await service.findAllSecure({
+        sortBy: SortOption.NAME_DESC,
+      });
+
+      expect(employees).toHaveLength(2);
+      expect(employees[0].firstName).toBe('John');
+      expect(employees[1].firstName).toBe('Jane');
+
+      // Verify we have secure data
+      expect(employees[0].position?.department).toBeDefined();
+      expect(employees[0].scope).toBeDefined();
     });
   });
 

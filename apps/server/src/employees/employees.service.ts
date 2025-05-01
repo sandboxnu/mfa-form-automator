@@ -91,7 +91,7 @@ export class EmployeesService {
           },
         })
       : await this.prisma.employee.findMany({
-          orderBy: orderBy(sortBy),
+          orderBy: orderBy(sortBy, true),
           where: {
             isActive: true,
           } as any,
@@ -113,7 +113,7 @@ export class EmployeesService {
     limit?: number;
     sortBy?: SortOption;
   }) {
-    return await this.prisma.employee.findMany({
+    const employees = await this.prisma.employee.findMany({
       ...(limit ? { take: limit } : {}),
       orderBy: orderBy(sortBy, true),
       where: {
@@ -139,6 +139,7 @@ export class EmployeesService {
         scope: true,
       },
     });
+    return employees;
   }
 
   /**
