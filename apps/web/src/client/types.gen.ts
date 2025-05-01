@@ -82,6 +82,7 @@ export type EmployeeBaseEntity = {
   firstName: string;
   lastName: string;
   email: string;
+  isActive: boolean;
 };
 
 export type UpdateEmployeeDto = {

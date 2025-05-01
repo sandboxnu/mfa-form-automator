@@ -4,7 +4,11 @@ import { useRouter } from 'next/router';
 import { Scope } from '@web/client';
 import { ErrorIcon } from '@web/static/icons';
 
-export default function isAuth(Component: any, scopes?: Scope[]) {
+export default function isAuth(
+  Component: any,
+  scopes?: Scope[],
+  originatorId?: string,
+) {
   return function IsAuth(props: any) {
     const router = useRouter();
     const { user } = useAuth();
@@ -19,7 +23,8 @@ export default function isAuth(Component: any, scopes?: Scope[]) {
       !user ||
       (scopes &&
         scopes.length > 0 &&
-        scopes.every((scope) => user.scope !== scope))
+        scopes.every((scope) => user.scope !== scope)) ||
+      (originatorId && user.id !== originatorId)
     ) {
       return (
         <div style={{ textAlign: 'center', paddingTop: '144px' }}>

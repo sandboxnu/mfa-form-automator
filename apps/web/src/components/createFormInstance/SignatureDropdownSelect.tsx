@@ -4,9 +4,9 @@ import { ChakraStylesConfig, Select } from 'chakra-react-select';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { OptionType } from './types';
 
-export type SignatureDropdownSelectProps<OptionType> = {
-  assignedGroupData: ContextAssignedGroupData[];
-  setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
+export type SignatureDropdownSelectProps = {
+  assignedGroupData: any[];
+  setAssignedGroupData: Dispatch<SetStateAction<any[]>>;
   fieldGroup: FieldGroupBaseEntity;
   options: OptionType[];
   activeTab: string;
@@ -14,7 +14,7 @@ export type SignatureDropdownSelectProps<OptionType> = {
   isMulti?: boolean;
 };
 
-export const SignatureDropdownSelect = <T extends object>({
+export const SignatureDropdownSelect = ({
   assignedGroupData,
   setAssignedGroupData,
   fieldGroup,
@@ -22,8 +22,9 @@ export const SignatureDropdownSelect = <T extends object>({
   activeTab,
   setActiveTab,
   isMulti = false,
-}: SignatureDropdownSelectProps<T>) => {
+}: SignatureDropdownSelectProps) => {
   const [selectedOptions, setSelectedOptions] = useState<OptionType[]>([]);
+
   const selectStyles: ChakraStylesConfig = {
     control: (provided) => ({
       ...provided,
@@ -32,7 +33,7 @@ export const SignatureDropdownSelect = <T extends object>({
       minHeight: '40px',
       padding: '0px 8px',
     }),
-    option: (provided, state) => ({
+    option: (provided) => ({
       ...provided,
       padding: '10px 12px',
       cursor: 'pointer',
@@ -48,10 +49,15 @@ export const SignatureDropdownSelect = <T extends object>({
     }),
   };
 
-  const getSignerType = (tab: string, options: OptionType[]): SignerType => {
+  const getSignerType = (
+    tab: string,
+    selectedOpts: OptionType[],
+  ): SignerType => {
     switch (tab) {
       case 'Employee':
-        return options.length === 1 ? SignerType.USER : SignerType.USER_LIST;
+        return selectedOpts.length === 1
+          ? SignerType.USER
+          : SignerType.USER_LIST;
       case 'Role':
         return SignerType.POSITION;
       case 'Department':
@@ -61,59 +67,129 @@ export const SignatureDropdownSelect = <T extends object>({
     }
   };
 
-  // prefill dropdown if assigned group exists
+  // Effect to prefill dropdown if assigned group exists
   useEffect(() => {
     const assignedGroup = assignedGroupData.find(
       (group) => group.fieldGroupId === fieldGroup.id,
     );
 
-    if (!assignedGroup) return;
+    if (!assignedGroup) {
+      setSelectedOptions([]);
+      return;
+    }
 
     const signerType = assignedGroup.signerType;
 
     switch (signerType) {
       case SignerType.USER:
         setActiveTab('Employee');
-        setSelectedOptions([
-          {
-            value: assignedGroup.signerEmployeeId!,
-            label: assignedGroup.name,
-          },
-        ]);
+        if (assignedGroup.signerEmployeeId) {
+          setSelectedOptions([
+            {
+              value: assignedGroup.signerEmployeeId,
+              label: assignedGroup.name,
+            },
+          ]);
+        }
         break;
       case SignerType.POSITION:
         setActiveTab('Role');
-        setSelectedOptions([
-          {
-            value: assignedGroup.signerPositionId!,
-            label: assignedGroup.name,
-          },
-        ]);
+        if (assignedGroup.signerPositionId) {
+          setSelectedOptions([
+            {
+              value: assignedGroup.signerPositionId,
+              label: assignedGroup.name,
+            },
+          ]);
+        }
         break;
       case SignerType.DEPARTMENT:
         setActiveTab('Department');
-        setSelectedOptions([
-          {
-            value: assignedGroup.signerDepartmentId!,
-            label: assignedGroup.name,
-          },
-        ]);
+        if (assignedGroup.signerDepartmentId) {
+          setSelectedOptions([
+            {
+              value: assignedGroup.signerDepartmentId,
+              label: assignedGroup.name,
+            },
+          ]);
+        }
         break;
       case SignerType.USER_LIST:
         setActiveTab('Employee');
-        setSelectedOptions(
-          assignedGroup.signerEmployeeList.map((employee) => ({
-            value: employee.id,
-            label: employee.id,
-          })),
-        );
+        if (
+          assignedGroup.signerEmployeeList &&
+          assignedGroup.signerEmployeeList.length > 0
+        ) {
+          setSelectedOptions(
+            assignedGroup.signerEmployeeList.map(
+              (employee: { id: string; name: string }) => ({
+                value: employee.id,
+                label: employee.name,
+              }),
+            ),
+          );
+        }
         break;
     }
   }, [assignedGroupData, fieldGroup.id, setActiveTab]);
 
+  // Reset selected options when tab changes
   useEffect(() => {
     setSelectedOptions([]);
   }, [activeTab]);
+
+  const handleSelectChange = (selected: any) => {
+    const selectedArray = Array.isArray(selected) ? selected : [selected];
+    setSelectedOptions(selectedArray);
+
+    if (!selectedArray.length) {
+      // Remove assignment if nothing is selected
+      setAssignedGroupData((prev) =>
+        prev.filter((group) => group.fieldGroupId !== fieldGroup.id),
+      );
+      return;
+    }
+
+    // Create assigned group object
+    const assignedGroup: ContextAssignedGroupData = {
+      name: selectedArray.map((o) => o.label).join(', '),
+      order: fieldGroup.order,
+      fieldGroupId: fieldGroup.id,
+      signerType: getSignerType(activeTab, selectedArray),
+      signerEmployeeList: [],
+    };
+
+    if (selectedArray.length === 1) {
+      // Single selection
+      if (activeTab === 'Employee') {
+        assignedGroup.signerEmployeeId = selectedArray[0].value;
+      } else if (activeTab === 'Role') {
+        assignedGroup.signerPositionId = selectedArray[0].value;
+      } else if (activeTab === 'Department') {
+        assignedGroup.signerDepartmentId = selectedArray[0].value;
+      }
+    } else if (activeTab === 'Employee') {
+      // Multiple employee selection
+      assignedGroup.signerEmployeeList = selectedArray.map((o) => ({
+        id: o.value,
+        name: o.label,
+      }));
+    }
+
+    // If the group id already exists, update it
+    const existingIndex = assignedGroupData.findIndex(
+      (group) => group.fieldGroupId === fieldGroup.id,
+    );
+
+    if (existingIndex !== -1) {
+      const newAssignedGroupData = [...assignedGroupData];
+      newAssignedGroupData[existingIndex] = assignedGroup;
+      setAssignedGroupData(newAssignedGroupData);
+    } else {
+      // Otherwise, add it to the list
+      setAssignedGroupData((prev) => [...prev, assignedGroup]);
+    }
+  };
 
   return (
     <Select
@@ -121,48 +197,7 @@ export const SignatureDropdownSelect = <T extends object>({
       useBasicStyles
       selectedOptionStyle="check"
       options={options}
-      onChange={(selected: OptionType[]) => {
-        setSelectedOptions(selected);
-
-        // create assigned group object
-        const assignedGroup: ContextAssignedGroupData = {
-          name: selected.map((o) => o.label).join(', '),
-          order: fieldGroup.order,
-          fieldGroupId: fieldGroup.id,
-          signerType: getSignerType(activeTab, selected),
-          signerEmployeeList: [],
-        };
-
-        if (selected.length === 1) {
-          assignedGroup[
-            activeTab === 'Employee'
-              ? 'signerEmployeeId'
-              : activeTab === 'Role'
-              ? 'signerPositionId'
-              : 'signerDepartmentId'
-          ] = selected[0].value;
-        } else {
-          if (activeTab === 'Employee') {
-            assignedGroup.signerEmployeeList = selected.map((o) => ({
-              id: o.value,
-              name: o.label,
-            }));
-          }
-        }
-
-        // if the group id already exists, update it
-        const existingIndex = assignedGroupData.findIndex(
-          (group) => group.fieldGroupId === fieldGroup.id,
-        );
-        if (existingIndex !== -1) {
-          const newAssignedGroupData = [...assignedGroupData];
-          newAssignedGroupData[existingIndex] = assignedGroup;
-          setAssignedGroupData(newAssignedGroupData);
-        } else {
-          // otherwise, add it to the list
-          setAssignedGroupData([...assignedGroupData, assignedGroup]);
-        }
-      }}
+      onChange={handleSelectChange}
       value={selectedOptions}
       chakraStyles={selectStyles}
     />

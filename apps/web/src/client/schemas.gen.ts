@@ -248,8 +248,11 @@ export const EmployeeBaseEntitySchema = {
     email: {
       type: 'string',
     },
+    isActive: {
+      type: 'boolean',
+    },
   },
-  required: ['id', 'firstName', 'lastName', 'email'],
+  required: ['id', 'firstName', 'lastName', 'email', 'isActive'],
 } as const;
 
 export const UpdateEmployeeDtoSchema = {

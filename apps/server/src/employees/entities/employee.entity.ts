@@ -16,6 +16,9 @@ export class EmployeeBaseEntity {
   @ApiProperty()
   email: string;
 
+  @ApiProperty()
+  isActive: boolean;
+
   constructor(partial: Partial<EmployeeBaseEntity>) {
     Object.assign(this, partial);
   }

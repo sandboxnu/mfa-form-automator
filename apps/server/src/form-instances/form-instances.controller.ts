@@ -195,6 +195,31 @@ export class FormInstancesController {
     return new FormInstanceEntity(formInstance);
   }
 
+  async checkAuthorization(
+    formInstanceId: string,
+    currentUser: UserEntity,
+  ): Promise<void> {
+    const formInstance = await this.formInstancesService.findOne(
+      formInstanceId,
+    );
+    if (formInstance == null) {
+      this.loggerService.error(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND,
+      );
+      throw new NotFoundException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_FOUND_CLIENT,
+      );
+    }
+    if (formInstance.originatorId !== currentUser.id) {
+      this.loggerService.error(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_AUTHORIZED,
+      );
+      throw new UnauthorizedException(
+        FormInstanceErrorMessage.FORM_INSTANCE_NOT_AUTHORIZED,
+      );
+    }
+  }
+
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ type: FormInstanceEntity })
@@ -205,11 +230,12 @@ export class FormInstancesController {
   })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async update(
+    @AuthUser() currentUser: UserEntity,
     @Param('id') id: string,
     @Body(new ValidationPipe({ transform: true }))
     updateFormInstanceDto: UpdateFormInstanceDto,
   ) {
-    // TODO: Who is alloed to update a form instance? Creator? Admin? etc?
+    await this.checkAuthorization(id, currentUser);
     try {
       const updatedFormInstance = await this.formInstancesService.update(
         id,
@@ -237,8 +263,8 @@ export class FormInstancesController {
   @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
-  async remove(@Param('id') id: string) {
-    // TODO: Who is alloed to update a form instance? Creator? Admin? etc?
+  async remove(@AuthUser() currentUser: UserEntity, @Param('id') id: string) {
+    await this.checkAuthorization(id, currentUser);
     try {
       await this.formInstancesService.remove(id);
     } catch (e) {
@@ -311,6 +337,7 @@ export class FormInstancesController {
     @AuthUser() currentUser: UserEntity,
     @Param('formInstanceId') formInstanceId: string,
   ) {
+    await this.checkAuthorization(formInstanceId, currentUser);
     try {
       const updatedFormInstance =
         await this.formInstancesService.markFormInstanceAsCompleted(

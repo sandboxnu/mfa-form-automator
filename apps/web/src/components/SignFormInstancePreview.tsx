@@ -1,5 +1,9 @@
 import { Button, Dialog, Flex, Portal, Text } from '@chakra-ui/react';
-import { FormInstanceEntity, SignerType } from '@web/client/types.gen';
+import {
+  AssignedGroupEntityHydrated,
+  FormInstanceEntity,
+  SignerType,
+} from '@web/client/types.gen';
 import { useRouter } from 'next/router';
 import { CloseIcon, PenSigningIcon } from '@web/static/icons';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
@@ -39,6 +43,40 @@ export const SignFormInstancePreview = ({
   if (!formInstance || !user) {
     return <></>;
   }
+
+  /**
+   * Determine if an assigned group is active based on signer type
+   * @param assignedGroup - The assigned group to check
+   * @returns boolean indicating if the assigned group is active
+   */
+  const getIsActive = (assignedGroup: AssignedGroupEntityHydrated): boolean => {
+    const { signerType } = assignedGroup;
+
+    // Department or Position are always active
+    if (
+      signerType === SignerType.DEPARTMENT ||
+      signerType === SignerType.POSITION
+    ) {
+      return true;
+    }
+
+    // For User type, check if the user is active
+    if (signerType === SignerType.USER) {
+      return assignedGroup?.signerEmployee?.isActive ?? false;
+    }
+
+    // For User List type, check if any user in the list is active
+    if (signerType === SignerType.USER_LIST) {
+      return (
+        assignedGroup?.signerEmployeeList?.some(
+          (employee) => employee.isActive,
+        ) ?? false
+      );
+    }
+
+    // Default case for unknown signer types
+    return false;
+  };
 
   const openForm = () => {
     const url =
@@ -156,6 +194,7 @@ export const SignFormInstancePreview = ({
                         title: getNameFromAssignedGroup(assignedGroup),
                         signerType: assignedGroup.signerType as SignerType,
                         signedAt: assignedGroup.signed,
+                        isActive: getIsActive(assignedGroup),
                       }),
                     )}
                   />
@@ -163,6 +202,42 @@ export const SignFormInstancePreview = ({
               </Flex>
             </Dialog.Body>
             <Dialog.Footer>
+              {user.id === formInstance.originator.id && (
+                <Button
+                  height="32px"
+                  padding="4px 16px"
+                  borderRadius="6px"
+                  background="#1367EA"
+                  onClick={() =>
+                    router.push(
+                      `/form-instance/${formInstance.id}/edit/description`,
+                    )
+                  }
+                  _hover={{
+                    background: '#1367EA',
+                  }}
+                  loading={isRouteChanging}
+                  disabled={isRouteChanging}
+                >
+                  <Flex gap="8px" alignItems="center" justifyContent="center">
+                    <Text color="#FFF">Edit Form</Text>
+                  </Flex>
+                </Button>
+              )}
+              <Button
+                height="32px"
+                padding="4px 16px"
+                borderRadius="6px"
+                background="#1367EA"
+                onClick={openForm}
+                _hover={{
+                  background: '#1367EA',
+                }}
+              >
+                <Flex gap="8px" alignItems="center" justifyContent="center">
+                  <Text color="#FFF">Open Form </Text>
+                </Flex>
+              </Button>
               {nextAssignedGroup && signerIsUser(nextAssignedGroup, user) && (
                 <Button
                   width="158px"
@@ -184,23 +259,6 @@ export const SignFormInstancePreview = ({
                   </Flex>
                 </Button>
               )}
-              {
-                <Button
-                  height="32px"
-                  padding="4px 16px"
-                  borderRadius="6px"
-                  background="#1367EA"
-                  onClick={openForm}
-                  _hover={{
-                    background: '#1367EA',
-                  }}
-                >
-                  <Flex gap="8px" alignItems="center" justifyContent="center">
-                    <Text color="#FFF">Open Form </Text>
-                  </Flex>
-                </Button>
-              }
-
               {!nextAssignedGroup &&
                 !formInstance.markedCompleted &&
                 user.id === formInstance.originator.id && (
