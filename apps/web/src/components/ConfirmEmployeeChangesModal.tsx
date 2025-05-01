@@ -3,6 +3,7 @@ import {
   EmployeeSecureEntityHydrated,
   PositionBaseEntity,
   DepartmentBaseEntity,
+  EmployeeBaseEntityResponse,
 } from '@web/client';
 import { CloseIcon } from '@web/static/icons';
 
@@ -10,7 +11,7 @@ interface ConfirmEmployeeChangesModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
-  employee: EmployeeSecureEntityHydrated;
+  employee: EmployeeBaseEntityResponse;
   editedFirstName: string;
   editedLastName: string;
   selectedNewDepartment: DepartmentBaseEntity | null;

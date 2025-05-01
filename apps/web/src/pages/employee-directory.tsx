@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import {
   DepartmentEntity,
-  EmployeeSecureEntityHydrated,
+  EmployeeBaseEntityResponse,
   PositionBaseEntity,
   Scope,
   SortBy,
@@ -50,7 +50,7 @@ function EmployeeDirectory() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState<SortBy>(SortBy.NAME_DESC);
 
-  const { isLoading, error, data } = useQuery({
+  const { data: { employees = [] } = {} } = useQuery({
     ...employeesControllerFindAllOptions({
       query: {
         secure: true,
@@ -58,10 +58,8 @@ function EmployeeDirectory() {
     }),
   });
 
-  const employees = (data?.employees ?? []) as EmployeeSecureEntityHydrated[];
-
-  const [localEmployees, setLocalEmployees] = useState<
-    EmployeeSecureEntityHydrated[]
+  const [filteredEmployees, setFilteredEmployees] = useState<
+    EmployeeBaseEntityResponse[]
   >([]);
   const [editingEmployee, setEditingEmployee] = useState<string | null>(null);
   const [editedFirstName, setEditedFirstName] = useState('');
@@ -82,7 +80,7 @@ function EmployeeDirectory() {
   const [isConfirmChangesModalOpen, setIsConfirmChangesModalOpen] =
     useState(false);
   const [employeeToDelete, setEmployeeToDelete] =
-    useState<EmployeeSecureEntityHydrated | null>(null);
+    useState<EmployeeBaseEntityResponse | null>(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
   const styles = `
@@ -91,77 +89,69 @@ function EmployeeDirectory() {
     }
   `;
 
-  // Set up initial data from API
   useEffect(() => {
-    if (employees) {
-      setLocalEmployees(employees);
-    }
-  }, [employees]);
+    if (!employees) return;
 
-  /**
-   * Sort employees based on the selected sort option
-   * @returns Sorted array of employees
-   */
-  const sortedEmployees = useMemo(() => {
-    if (!localEmployees.length) return [];
-    const employeesCopy = [...localEmployees];
+    if (searchQuery.trim() === '') {
+      setFilteredEmployees(employees);
+      const query = searchQuery.toLowerCase().trim();
+      const filtered = employees.filter((employee) => {
+        const fullName =
+          `${employee.firstName} ${employee.lastName}`.toLowerCase();
+        const departmentName =
+          employee.position?.department?.name?.toLowerCase() || '';
+        const positionName = employee.position?.name?.toLowerCase() || '';
+        const email = employee.email.toLowerCase();
 
-    switch (sortOption) {
-      case SortBy.NAME_ASC:
-        return employeesCopy.sort((a, b) =>
-          `${a.firstName} ${a.lastName}`.localeCompare(
-            `${b.firstName} ${b.lastName}`,
-          ),
+        return (
+          fullName.includes(query) ||
+          departmentName.includes(query) ||
+          positionName.includes(query) ||
+          email.includes(query)
         );
-      case SortBy.NAME_DESC:
-        return employeesCopy.sort((a, b) =>
-          `${b.firstName} ${b.lastName}`.localeCompare(
-            `${a.firstName} ${a.lastName}`,
-          ),
-        );
-      case SortBy.CREATED_AT_ASC:
-        return employeesCopy.sort((a, b) => {
-          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-          return dateA - dateB;
-        });
-      case SortBy.CREATED_AT_DESC:
-        return employeesCopy.sort((a, b) => {
-          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-          return dateB - dateA;
-        });
-      default:
-        return employeesCopy;
+      });
+      setFilteredEmployees(filtered);
     }
-  }, [localEmployees, sortOption]);
+  }, [employees, searchQuery]);
 
-  /**
-   * Filter employees based on search query
-   * @returns Filtered array of employees matching the search query
-   */
-  const filteredEmployees = useMemo(() => {
-    if (!sortedEmployees.length) return [];
-    if (!searchQuery.trim()) return sortedEmployees;
+  // TODO: sort on server side
+  // /**
+  //  * Sort employees based on the selected sort option
+  //  * @returns Sorted array of employees
+  //  */
+  // const sortedEmployees = useMemo(() => {
+  //   if (!localEmployees.length) return [];
+  //   const employeesCopy = [...localEmployees];
 
-    const query = searchQuery.toLowerCase().trim();
-
-    return sortedEmployees.filter((employee) => {
-      const fullName =
-        `${employee.firstName} ${employee.lastName}`.toLowerCase();
-      const departmentName =
-        employee.position?.department?.name?.toLowerCase() || '';
-      const positionName = employee.position?.name?.toLowerCase() || '';
-      const email = employee.email.toLowerCase();
-
-      return (
-        fullName.includes(query) ||
-        departmentName.includes(query) ||
-        positionName.includes(query) ||
-        email.includes(query)
-      );
-    });
-  }, [sortedEmployees, searchQuery]);
+  //   switch (sortOption) {
+  //     case SortBy.NAME_ASC:
+  //       return employeesCopy.sort((a, b) =>
+  //         `${a.firstName} ${a.lastName}`.localeCompare(
+  //           `${b.firstName} ${b.lastName}`,
+  //         ),
+  //       );
+  //     case SortBy.NAME_DESC:
+  //       return employeesCopy.sort((a, b) =>
+  //         `${b.firstName} ${b.lastName}`.localeCompare(
+  //           `${a.firstName} ${a.lastName}`,
+  //         ),
+  //       );
+  //     case SortBy.CREATED_AT_ASC:
+  //       return employeesCopy.sort((a, b) => {
+  //         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+  //         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+  //         return dateA - dateB;
+  //       });
+  //     case SortBy.CREATED_AT_DESC:
+  //       return employeesCopy.sort((a, b) => {
+  //         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+  //         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+  //         return dateB - dateA;
+  //       });
+  //     default:
+  //       return employeesCopy;
+  //   }
+  // }, [localEmployees, sortOption]);
 
   /**
    * Mutation to handle deactivating an employee
@@ -182,7 +172,7 @@ function EmployeeDirectory() {
         setEditingEmployee(null);
         setIsConfirmChangesModalOpen(false);
       }
-      setLocalEmployees((prevEmployees) =>
+      setFilteredEmployees((prevEmployees) =>
         prevEmployees.filter((employee) => employee.id !== employeeId),
       );
     },
@@ -226,7 +216,7 @@ function EmployeeDirectory() {
    * Opens the delete confirmation modal for an employee
    * @param employee - The employee to be deleted
    */
-  const openDeleteModal = (employee: EmployeeSecureEntityHydrated) => {
+  const openDeleteModal = (employee: EmployeeBaseEntityResponse) => {
     if (employee.id === user?.id) {
       toaster.create({
         title: 'Cannot deactivate',
@@ -311,7 +301,7 @@ function EmployeeDirectory() {
    * Sets up the form for editing an employee
    * @param employee - The employee to be edited
    */
-  const handleEditClick = (employee: EmployeeSecureEntityHydrated) => {
+  const handleEditClick = (employee: EmployeeBaseEntityResponse) => {
     setEditingEmployee(employee.id);
     setEditedFirstName(employee.firstName);
     setEditedLastName(employee.lastName);
@@ -370,7 +360,7 @@ function EmployeeDirectory() {
    * Handles saving the edited employee information after confirmation
    */
   const handleConfirmSave = async () => {
-    const employeeIndex = localEmployees.findIndex(
+    const employeeIndex = filteredEmployees.findIndex(
       (e) => e.id === editingEmployee,
     );
 
@@ -386,7 +376,7 @@ function EmployeeDirectory() {
           client,
         });
 
-        const updatedEmployees = [...localEmployees];
+        const updatedEmployees = [...filteredEmployees];
         const selectedPositionObj = positions.find(
           (p) => p.id === selectedPosition,
         );
@@ -406,7 +396,7 @@ function EmployeeDirectory() {
             : updatedEmployees[employeeIndex].position,
         };
 
-        setLocalEmployees(updatedEmployees);
+        setFilteredEmployees(updatedEmployees);
         queryClient.invalidateQueries({
           queryKey: employeesControllerFindAllQueryKey(),
         });
@@ -447,7 +437,7 @@ function EmployeeDirectory() {
     );
   };
 
-  if (localEmployees.length === 0) return null;
+  if (filteredEmployees.length === 0) return null;
 
   return (
     <>
@@ -786,7 +776,7 @@ function EmployeeDirectory() {
           isOpen={isConfirmChangesModalOpen}
           onClose={() => setIsConfirmChangesModalOpen(false)}
           onSave={handleConfirmSave}
-          employee={localEmployees.find((e) => e.id === editingEmployee)!}
+          employee={filteredEmployees.find((e) => e.id === editingEmployee)!}
           editedFirstName={editedFirstName}
           editedLastName={editedLastName}
           selectedNewDepartment={
