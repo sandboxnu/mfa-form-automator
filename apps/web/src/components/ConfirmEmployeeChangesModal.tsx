@@ -50,7 +50,8 @@ export const ConfirmEmployeeChangesModal = ({
   const hasNameChange =
     editedFirstName !== employee.firstName ||
     editedLastName !== employee.lastName;
-  const hasDepartmentChange = currentDepartment?.id !== selectedNewDepartment?.id;
+  const hasDepartmentChange =
+    currentDepartment?.id !== selectedNewDepartment?.id;
   const hasPositionChange = currentPosition?.id !== selectedNewPosition?.id;
   const hasChanges = hasNameChange || hasDepartmentChange || hasPositionChange;
 
