@@ -6,6 +6,7 @@ import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
 import { useRouter } from 'next/router';
 import Error from '@web/components/Error';
 import FormLoading from '@web/components/FormLoading';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 /**
  * The description page in the form instance creation flow, where users describe their form.
@@ -21,6 +22,7 @@ function Description() {
     formTemplate,
     isLoading,
   } = useEditFormInstance();
+  const { isRouteChanging } = useRouterContext();
 
   const router = useRouter();
 
@@ -58,7 +60,8 @@ function Description() {
         );
       }}
       backLink={'/form-instance/' + formInstanceUseId + '/edit/success'}
-      disabled={!formInstanceName}
+      disabled={!formInstanceName || isRouteChanging}
+      loading={isRouteChanging}
     />
   );
 }

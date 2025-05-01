@@ -1,11 +1,6 @@
 import { Button, Flex, Text, Box } from '@chakra-ui/react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
-import {
-  FieldGroupBaseEntity,
-  FormTemplateEntity,
-  Scope,
-  SortBy,
-} from '@web/client';
+import { FormTemplateEntity, Scope, SortBy } from '@web/client';
 import {
   formTemplatesControllerFindAllInfiniteOptions,
   formTemplatesControllerFindAllInfiniteQueryKey,
@@ -26,6 +21,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { queryClient } from './_app';
 import { distance } from 'fastest-levenshtein';
 import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -45,6 +41,7 @@ function TemplateDirectory() {
   const [sortedFormTemplates, setSortedFormTemplates] = useState<
     FormTemplateEntity[]
   >([]);
+  const { isRouteChanging } = useRouterContext();
 
   const {
     data: infiniteFormTemplates,
@@ -294,6 +291,8 @@ function TemplateDirectory() {
             border="1px solid #1367EA"
             background="#FFF"
             padding="7px"
+            loading={isRouteChanging}
+            variant="outline"
           >
             <Text
               fontFamily="Hanken Grotesk"

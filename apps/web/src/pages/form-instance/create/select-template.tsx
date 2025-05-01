@@ -7,12 +7,14 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { useAuth } from '@web/hooks/useAuth';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 function SelectTemplate() {
   const { user } = useAuth();
   const { formTemplate, setFormTemplate, setFormInstanceName } =
     useCreateFormInstance();
   const router = useRouter();
+  const { isRouteChanging } = useRouterContext();
 
   // Memoize the handleSelectTemplate function to prevent re-renders
   const handleSelectTemplate = useCallback(
@@ -43,6 +45,7 @@ function SelectTemplate() {
       backLink={'/'}
       review={false}
       disabled={!formTemplate}
+      loading={isRouteChanging}
     />
   );
 }

@@ -5,6 +5,7 @@ import isAuth from '@web/components/isAuth';
 import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
 import { useRouter } from 'next/router';
 import Error from '@web/components/Error';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 function AssignGroups() {
   const {
@@ -16,6 +17,7 @@ function AssignGroups() {
     setAssignedGroupData,
     pdfFile,
   } = useEditFormInstance();
+  const { isRouteChanging } = useRouterContext();
 
   const router = useRouter();
   if (!formTemplate) {
@@ -45,7 +47,11 @@ function AssignGroups() {
         router.push('/form-instance/' + formInstanceUseId + '/edit/review');
       }}
       backLink={'/form-instance/' + formInstanceUseId + '/edit/description'}
-      disabled={formTemplate?.fieldGroups.length !== assignedGroupData.length}
+      disabled={
+        formTemplate?.fieldGroups.length !== assignedGroupData.length ||
+        isRouteChanging
+      }
+      loading={isRouteChanging}
     />
   );
 }

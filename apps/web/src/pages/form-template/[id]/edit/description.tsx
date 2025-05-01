@@ -7,6 +7,7 @@ import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 import { useRouter } from 'next/router';
 import Error from '@web/components/Error';
 import FormLoading from '@web/components/FormLoading';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -23,6 +24,7 @@ function Description() {
     isLoadingEditContext,
   } = useEditFormTemplate();
   const router = useRouter();
+  const { isRouteChanging } = useRouterContext();
 
   if (isLoadingEditContext) {
     return <FormLoading />;
@@ -55,7 +57,8 @@ function Description() {
         );
       }}
       backLink={'/template-directory'}
-      disabled={!formTemplateName}
+      disabled={!formTemplateName || isRouteChanging}
+      loading={isRouteChanging}
     />
   );
 }

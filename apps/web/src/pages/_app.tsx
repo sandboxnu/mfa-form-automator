@@ -22,6 +22,7 @@ import { pdfjs } from 'react-pdf';
 import { UserFormsContextProvider } from '@web/context/UserFormsContext';
 import { EditFormTemplateProvider } from '@web/context/EditFormTemplateContext';
 import { EditFormInstanceProvider } from '@web/context/EditFormInstanceContext';
+import { RouterProvider } from '@web/context/RouterProvider';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -70,7 +71,9 @@ const WrapperComponent = memo(({ children }: { children: ReactNode }) => {
       <MsalProvider instance={publicClientApplication}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <Provider>{children}</Provider>
+            <RouterProvider>
+              <Provider>{children}</Provider>
+            </RouterProvider>
           </AuthProvider>
         </QueryClientProvider>
       </MsalProvider>

@@ -7,6 +7,7 @@ import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Error from '@web/components/Error';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 function AssignGroups() {
   const {
@@ -18,6 +19,7 @@ function AssignGroups() {
   } = useCreateFormInstance();
 
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const { isRouteChanging } = useRouterContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -51,7 +53,8 @@ function AssignGroups() {
         router.push('/form-instance/create/review');
       }}
       backLink={'/form-instance/create/description'}
-      disabled={false}
+      disabled={isRouteChanging}
+      loading={isRouteChanging}
     />
   );
 }

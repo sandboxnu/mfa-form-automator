@@ -3,6 +3,7 @@ import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescrip
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { useRouterContext } from '@web/context/RouterProvider';
 import { useRouter } from 'next/router';
 
 /**
@@ -18,6 +19,7 @@ function Description() {
     pdfFile,
   } = useCreateFormInstance();
   const router = useRouter();
+  const { isRouteChanging } = useRouterContext();
 
   if (!formTemplate) {
     return <div>Error: Form template not found.</div>;
@@ -47,7 +49,8 @@ function Description() {
         router.push('/form-instance/create/assign-groups');
       }}
       backLink={'/form-instance/create/select-template'}
-      disabled={!formInstanceName}
+      disabled={!formInstanceName || isRouteChanging}
+      loading={isRouteChanging}
     />
   );
 }

@@ -12,8 +12,12 @@ import Error from '@web/components/Error';
  * The upload page in the form template creation flow, where users add their pdf.
  */
 function Review() {
-  const { formInstance, modifiedPdfLink, nextSignFormPage } =
-    useSignFormInstance();
+  const {
+    formInstance,
+    modifiedPdfLink,
+    nextSignFormPage,
+    signFormInstanceLoading,
+  } = useSignFormInstance();
   const router = useRouter();
   const [modifiedPdfFile, setModifiedPdfFile] = useState<File | null>(null);
 
@@ -45,11 +49,12 @@ function Review() {
           }}
         />
       }
-      submitFunction={() => {
-        nextSignFormPage('/sign-form/success', true);
+      submitFunction={async () => {
+        await nextSignFormPage('/sign-form/success', true);
       }}
       backLink={`/sign-form/${id}`}
-      disabled={false}
+      disabled={signFormInstanceLoading}
+      loading={signFormInstanceLoading}
       review={true}
     />
   );

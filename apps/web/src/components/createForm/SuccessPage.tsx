@@ -1,4 +1,5 @@
 import { Button, Flex, Link, Text } from '@chakra-ui/react';
+import { useRouterContext } from '@web/context/RouterProvider';
 import { WhiteCheck } from '@web/static/icons';
 import { useRouter } from 'next/router';
 
@@ -12,6 +13,8 @@ export const SuccessPage = ({
   linkAction: () => void;
 }) => {
   const router = useRouter();
+  const { isRouteChanging } = useRouterContext();
+
   return (
     <>
       <Flex
@@ -70,6 +73,7 @@ export const SuccessPage = ({
                 router.push('/');
               }}
               _hover={{ backgroundColor: '#1367EA' }}
+              loading={isRouteChanging}
             >
               <Text
                 color="#FCFCFC"

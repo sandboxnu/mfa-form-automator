@@ -7,6 +7,7 @@ import { FormInteractionType } from '@web/components/createForm/types';
 import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
 import { useRouter } from 'next/router';
 import Error from '@web/components/Error';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -24,6 +25,7 @@ function InputFields() {
     formTemplateUseId,
   } = useEditFormTemplate();
   const router = useRouter();
+  const { isRouteChanging } = useRouterContext();
 
   if (!formDimensions) {
     return <Error secondaryErrorMessage="Form dimensions not set." />;
@@ -55,8 +57,8 @@ function InputFields() {
         router.push('/form-template/' + formTemplateUseId + '/edit/review');
       }}
       backLink={'/form-template/' + formTemplateUseId + '/edit/description'}
-      // TODO set disabled based on some state in the pdf editor component
-      disabled={false}
+      disabled={isRouteChanging}
+      loading={isRouteChanging}
     />
   );
 }

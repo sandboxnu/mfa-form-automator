@@ -132,7 +132,6 @@ export interface EditFormInstanceContextType {
 export interface SignFormInstanceContextType {
   formInstance: FormInstanceEntity | undefined;
   formInstanceError: Error | null;
-  isLoading: boolean;
   fields: FormField[][];
   originalPdfLink: string;
   signFormInstanceLoading: boolean;
@@ -162,3 +161,7 @@ export type FormField = TemplateBoxBaseEntity & {
 export type ContextAssignedGroupData = CreateAssignedGroupDto & {
   name: string;
 };
+
+export interface RouterContextType {
+  isRouteChanging: boolean;
+}
