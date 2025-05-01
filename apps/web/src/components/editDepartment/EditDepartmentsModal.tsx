@@ -70,7 +70,7 @@ export const EditDepartmentsModal = ({
           error.message || 'Please try again.'
         }`,
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
     },
     onSuccess: () => {
@@ -88,7 +88,7 @@ export const EditDepartmentsModal = ({
         title: 'Success',
         description: 'Department created successfully',
         type: 'success',
-        duration: 5000,
+        duration: 8000,
       });
     },
   });
@@ -108,7 +108,7 @@ export const EditDepartmentsModal = ({
         title: 'Error',
         description: 'Department name cannot be empty',
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
       return;
     }

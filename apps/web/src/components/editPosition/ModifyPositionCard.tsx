@@ -18,32 +18,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { RxCross2 } from 'react-icons/rx';
 import { DeleteConfirmModal } from '../DeleteConfirmModal';
 import { RiSubtractFill } from 'react-icons/ri';
-import { ChakraStylesConfig } from 'chakra-react-select';
 import { Toaster, toaster } from '@web/components/ui/toaster';
-
-const selectStyles: ChakraStylesConfig = {
-  control: (provided) => ({
-    ...provided,
-    border: '1px solid #E5E5E5',
-    boxShadow: 'none',
-    minHeight: '40px',
-    padding: '0px 8px',
-  }),
-  option: (provided, state) => ({
-    ...provided,
-    padding: '10px 12px',
-    cursor: 'pointer',
-  }),
-  container: (provided) => ({
-    ...provided,
-    width: '100%',
-    cursor: 'pointer',
-  }),
-  multiValue: (provided) => ({
-    ...provided,
-    padding: '6px',
-  }),
-};
 
 export const ModifyPositionCard = ({
   position,
@@ -74,7 +49,7 @@ export const ModifyPositionCard = ({
           error.message || 'Please try again'
         }`,
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
     },
     onSuccess: () => {
@@ -91,7 +66,7 @@ export const ModifyPositionCard = ({
         title: 'Success',
         description: 'Position updated successfully',
         type: 'success',
-        duration: 5000,
+        duration: 8000,
       });
     },
   });
@@ -105,7 +80,7 @@ export const ModifyPositionCard = ({
           error.message || 'Please try again'
         }`,
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
     },
     onSuccess: () => {
@@ -130,7 +105,7 @@ export const ModifyPositionCard = ({
           error.message || 'Please try again'
         }`,
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
     },
     onSuccess: () => {
@@ -145,7 +120,7 @@ export const ModifyPositionCard = ({
         title: 'Success',
         description: 'Position deleted successfully',
         type: 'success',
-        duration: 5000,
+        duration: 8000,
       });
     },
   });
@@ -165,7 +140,7 @@ export const ModifyPositionCard = ({
         title: 'Error',
         description: 'Position name and department are required',
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
       return;
     }

@@ -41,7 +41,7 @@ export const ModifyDepartmentCard = ({
           error.message || 'Please try again'
         }`,
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
     },
     onSuccess: () => {
@@ -58,7 +58,7 @@ export const ModifyDepartmentCard = ({
         title: 'Success',
         description: 'Department updated successfully',
         type: 'success',
-        duration: 5000,
+        duration: 8000,
       });
     },
   });
@@ -72,7 +72,7 @@ export const ModifyDepartmentCard = ({
           error.message || 'Please try again'
         }`,
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
     },
     onSuccess: () => {
@@ -97,7 +97,7 @@ export const ModifyDepartmentCard = ({
           error.message || 'Please try again'
         }`,
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
     },
     onSuccess: () => {
@@ -112,7 +112,7 @@ export const ModifyDepartmentCard = ({
         title: 'Success',
         description: 'Department deleted successfully',
         type: 'success',
-        duration: 5000,
+        duration: 8000,
       });
     },
   });
@@ -132,7 +132,7 @@ export const ModifyDepartmentCard = ({
         title: 'Error',
         description: 'Department name cannot be empty',
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
       return;
     }

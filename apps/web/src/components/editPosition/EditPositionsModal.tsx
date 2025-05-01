@@ -78,7 +78,7 @@ export const EditPositionsModal = ({
           error.message || 'Please try again'
         }`,
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
     },
     onSuccess: () => {
@@ -96,7 +96,7 @@ export const EditPositionsModal = ({
         title: 'Success',
         description: 'Position created successfully',
         type: 'success',
-        duration: 5000,
+        duration: 8000,
       });
     },
   });
@@ -116,7 +116,7 @@ export const EditPositionsModal = ({
         title: 'Error',
         description: 'Position name and department are required',
         type: 'error',
-        duration: 5000,
+        duration: 8000,
       });
       return;
     }

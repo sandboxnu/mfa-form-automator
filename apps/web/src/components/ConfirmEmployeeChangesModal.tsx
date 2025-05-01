@@ -1,40 +1,34 @@
-import { Dialog, Flex, Portal, Text, Button, Box } from '@chakra-ui/react';
+import { Dialog, Flex, Text, Button, Box, Portal } from '@chakra-ui/react';
 import {
-  DepartmentEntity,
   EmployeeSecureEntityHydrated,
-  EmployeeBaseEntity,
   PositionBaseEntity,
   DepartmentBaseEntity,
 } from '@web/client';
 import { CloseIcon } from '@web/static/icons';
 
-// Type to allow both secure and extended employee entities
-type EmployeeWithPosition = EmployeeSecureEntityHydrated | {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  position?: {
-    id: string;
-    name: string;
-    department?: {
-      id: string;
-      name: string;
-    } | null;
-  } | null;
-};
-
 interface ConfirmEmployeeChangesModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
-  employee: EmployeeWithPosition;
+  employee: EmployeeSecureEntityHydrated;
   editedFirstName: string;
   editedLastName: string;
   selectedNewDepartment: DepartmentBaseEntity | null;
   selectedNewPosition: PositionBaseEntity | null;
 }
 
+/**
+ * Modal that displays changes made to an employee and asks for confirmation before saving
+ * @param isOpen - Whether the modal is open
+ * @param onClose - Function to close the modal
+ * @param onSave - Function to save the changes
+ * @param employee - The employee being edited
+ * @param editedFirstName - The new first name
+ * @param editedLastName - The new last name
+ * @param selectedNewDepartment - The new department
+ * @param selectedNewPosition - The new position
+ * @returns A modal showing changes and confirmation buttons
+ */
 export const ConfirmEmployeeChangesModal = ({
   isOpen,
   onClose,
@@ -45,9 +39,7 @@ export const ConfirmEmployeeChangesModal = ({
   selectedNewDepartment,
   selectedNewPosition,
 }: ConfirmEmployeeChangesModalProps) => {
-  // Safety check - if employee is undefined or null, close the modal
   if (!employee) {
-    // Close the modal on the next render cycle to avoid React state update errors
     setTimeout(() => onClose(), 0);
     return null;
   }
@@ -60,8 +52,6 @@ export const ConfirmEmployeeChangesModal = ({
     editedLastName !== employee.lastName;
   const hasDepartmentChange = currentDepartment?.id !== selectedNewDepartment?.id;
   const hasPositionChange = currentPosition?.id !== selectedNewPosition?.id;
-
-  // Check if any changes have been made
   const hasChanges = hasNameChange || hasDepartmentChange || hasPositionChange;
 
   const oldFullName = `${employee.firstName} ${employee.lastName}`;
@@ -75,12 +65,12 @@ export const ConfirmEmployeeChangesModal = ({
     >
       <Portal>
         <Dialog.Backdrop bg="rgba(0, 0, 0, 0.5)" />
-        <Dialog.Positioner alignItems="center" justifyContent={'center'}>
+        <Dialog.Positioner alignItems="center" justifyContent="center">
           <Dialog.Content
-            padding={'24px 32px'}
+            padding="24px 32px"
             gap="24px"
             backgroundColor="#fff"
-            flexDir={'column'}
+            flexDir="column"
             width="450px"
             borderRadius="8px"
             boxShadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
@@ -89,12 +79,12 @@ export const ConfirmEmployeeChangesModal = ({
               <Flex
                 width="100%"
                 flexDirection="row"
-                justifyContent={'center'}
-                alignItems={'center'}
+                justifyContent="center"
+                alignItems="center"
                 position="relative"
               >
                 <Dialog.Title
-                  fontFamily={'Hanken Grotesk'}
+                  fontFamily="Hanken Grotesk"
                   fontSize="20px"
                   fontWeight="semibold"
                   lineHeight="26px"
@@ -211,7 +201,7 @@ export const ConfirmEmployeeChangesModal = ({
                       _hover={{ bg: 'gray.50' }}
                       borderRadius="4px"
                     >
-                      cancel
+                      Cancel
                     </Button>
                     <Button
                       bg="blue.500"
@@ -227,7 +217,7 @@ export const ConfirmEmployeeChangesModal = ({
                       opacity={!hasChanges ? 0.6 : 1}
                       cursor={!hasChanges ? 'not-allowed' : 'pointer'}
                     >
-                      save
+                      Save
                     </Button>
                   </Flex>
                 </Box>
