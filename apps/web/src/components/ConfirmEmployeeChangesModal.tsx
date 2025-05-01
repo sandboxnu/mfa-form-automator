@@ -1,11 +1,18 @@
 import { Dialog, Flex, Text, Button, Box, Portal } from '@chakra-ui/react';
 import {
-  EmployeeSecureEntityHydrated,
   PositionBaseEntity,
   DepartmentBaseEntity,
   EmployeeBaseEntityResponse,
+  Scope,
 } from '@web/client';
 import { CloseIcon } from '@web/static/icons';
+
+// Map of scope values to user-friendly display names
+const ScopeDisplayNames = {
+  [Scope.BASE_USER]: 'Base User',
+  [Scope.CONTRIBUTOR]: 'Contributor',
+  [Scope.ADMIN]: 'Administrator',
+};
 
 interface ConfirmEmployeeChangesModalProps {
   isOpen: boolean;
@@ -16,6 +23,7 @@ interface ConfirmEmployeeChangesModalProps {
   editedLastName: string;
   selectedNewDepartment: DepartmentBaseEntity | null;
   selectedNewPosition: PositionBaseEntity | null;
+  selectedNewScope: Scope | null;
   isLoading: boolean;
 }
 
@@ -29,6 +37,7 @@ interface ConfirmEmployeeChangesModalProps {
  * @param editedLastName - The new last name
  * @param selectedNewDepartment - The new department
  * @param selectedNewPosition - The new position
+ * @param selectedNewScope - The new scope
  * @returns A modal showing changes and confirmation buttons
  */
 export const ConfirmEmployeeChangesModal = ({
@@ -40,6 +49,7 @@ export const ConfirmEmployeeChangesModal = ({
   editedLastName,
   selectedNewDepartment,
   selectedNewPosition,
+  selectedNewScope,
   isLoading,
 }: ConfirmEmployeeChangesModalProps) => {
   if (!employee) {
@@ -49,6 +59,7 @@ export const ConfirmEmployeeChangesModal = ({
 
   const currentDepartment = employee.position?.department;
   const currentPosition = employee.position;
+  const currentScope = (employee.scope as Scope) || Scope.BASE_USER;
 
   const hasNameChange =
     editedFirstName !== employee.firstName ||
@@ -56,7 +67,14 @@ export const ConfirmEmployeeChangesModal = ({
   const hasDepartmentChange =
     currentDepartment?.id !== selectedNewDepartment?.id;
   const hasPositionChange = currentPosition?.id !== selectedNewPosition?.id;
-  const hasChanges = hasNameChange || hasDepartmentChange || hasPositionChange;
+  const hasScopeChange = currentScope !== selectedNewScope;
+  const hasChanges =
+    hasNameChange || hasDepartmentChange || hasPositionChange || hasScopeChange;
+
+  // Get user-friendly scope display names
+  const getScopeDisplayName = (scope: Scope) => {
+    return ScopeDisplayNames[scope] || scope;
+  };
 
   const oldFullName = `${employee.firstName} ${employee.lastName}`;
   const newFullName = `${editedFirstName} ${editedLastName}`;
@@ -110,7 +128,7 @@ export const ConfirmEmployeeChangesModal = ({
               </Flex>
             </Dialog.Header>
             <Dialog.Body pt={4}>
-              <Flex flexDirection="column" gap="20px">
+              <Flex flexDirection="column" gap="10px">
                 <Box>
                   <Text
                     fontSize="sm"
@@ -136,32 +154,30 @@ export const ConfirmEmployeeChangesModal = ({
                 </Box>
 
                 <Box>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="medium"
-                    color="gray.600"
-                    mb={1}
-                  >
-                    Department
-                  </Text>
-                  {hasDepartmentChange ? (
-                    <Flex align="center">
-                      <Text fontWeight="medium">
-                        {currentDepartment?.name || '—'}
+                  {hasDepartmentChange && (
+                    <Box>
+                      <Text
+                        fontSize="sm"
+                        fontWeight="medium"
+                        color="gray.600"
+                        mb={1}
+                      >
+                        Department
                       </Text>
-                      <Box mx={2} color="blue.500">
-                        <Text fontSize="sm" fontWeight="bold">
-                          ►
+                      <Flex align="center">
+                        <Text fontWeight="medium">
+                          {currentDepartment?.name || '—'}
                         </Text>
-                      </Box>
-                      <Text fontWeight="medium">
-                        {selectedNewDepartment?.name || '—'}
-                      </Text>
-                    </Flex>
-                  ) : (
-                    <Text fontWeight="medium">
-                      {currentDepartment?.name || '—'}
-                    </Text>
+                        <Box mx={2} color="blue.500">
+                          <Text fontSize="sm" fontWeight="bold">
+                            ►
+                          </Text>
+                        </Box>
+                        <Text fontWeight="medium">
+                          {selectedNewDepartment?.name || '—'}
+                        </Text>
+                      </Flex>
+                    </Box>
                   )}
                 </Box>
 
@@ -186,6 +202,35 @@ export const ConfirmEmployeeChangesModal = ({
                       </Box>
                       <Text fontWeight="medium">
                         {selectedNewPosition?.name || '—'}
+                      </Text>
+                    </Flex>
+                  </Box>
+                )}
+
+                {/* Scope changes section */}
+                {hasScopeChange && (
+                  <Box>
+                    <Text
+                      fontSize="sm"
+                      fontWeight="medium"
+                      color="gray.600"
+                      mb={1}
+                    >
+                      Permission Scope
+                    </Text>
+                    <Flex align="center">
+                      <Text fontWeight="medium">
+                        {getScopeDisplayName(currentScope)}
+                      </Text>
+                      <Box mx={2} color="blue.500">
+                        <Text fontSize="sm" fontWeight="bold">
+                          ►
+                        </Text>
+                      </Box>
+                      <Text fontWeight="medium">
+                        {selectedNewScope
+                          ? getScopeDisplayName(selectedNewScope)
+                          : '—'}
                       </Text>
                     </Flex>
                   </Box>

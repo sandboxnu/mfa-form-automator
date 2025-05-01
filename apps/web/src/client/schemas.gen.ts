@@ -158,10 +158,6 @@ export const CreateEmployeeDtoSchema = {
       type: 'string',
       format: 'email',
     },
-    password: {
-      type: 'string',
-      minLength: 5,
-    },
     scope: {
       type: 'string',
       enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
@@ -170,14 +166,7 @@ export const CreateEmployeeDtoSchema = {
       type: 'string',
     },
   },
-  required: [
-    'firstName',
-    'lastName',
-    'email',
-    'password',
-    'scope',
-    'accessToken',
-  ],
+  required: ['firstName', 'lastName', 'email', 'scope', 'accessToken'],
 } as const;
 
 export const OnboardEmployeeDtoSchema = {

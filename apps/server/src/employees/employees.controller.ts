@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -65,8 +66,21 @@ export class EmployeesController {
     @Body(new ValidationPipe({ transform: true }))
     createEmployeeDto: CreateEmployeeDto,
   ) {
-    const newEmployee = await this.employeesService.create(createEmployeeDto);
-    return new EmployeeSecureEntityHydrated(newEmployee);
+    try {
+      const newEmployee = await this.employeesService.create(createEmployeeDto);
+      return new EmployeeSecureEntityHydrated(newEmployee);
+    } catch (e) {
+      if (e instanceof Error) {
+        if (e.message === EmployeeErrorMessage.EMPLOYEE_EMAIL_ALREADY_EXISTS) {
+          this.loggerService.error(
+            EmployeeErrorMessage.EMPLOYEE_EMAIL_ALREADY_EXISTS,
+          );
+          throw new UnprocessableEntityException(
+            EmployeeErrorMessage.EMPLOYEE_EMAIL_ALREADY_EXISTS,
+          );
+        }
+      }
+    }
   }
 
   @Patch('/onboarding')

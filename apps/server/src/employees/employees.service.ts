@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
 import { ValidateEmployeeHandler } from './validate-employee/ValidateEmployeeHandlerInterface';
 import { EmployeeErrorMessage } from './employees.errors';
 import { orderBy, SortOption } from '../utils';
@@ -41,16 +40,26 @@ export class EmployeesService {
    * @returns the created employee, hydrated
    */
   async create(createEmployeeDto: CreateEmployeeDto) {
+    // manually make sure email is unique (since we are not using unique constraint in the database due to disabled flag)
+    const existingEmployee = await this.prisma.employee.findFirst({
+      where: {
+        email: createEmployeeDto.email,
+        isActive: true,
+      },
+    });
+
+    if (existingEmployee) {
+      throw new Error(EmployeeErrorMessage.EMPLOYEE_EMAIL_ALREADY_EXISTS);
+    }
+
     const newEmployee = await this.prisma.employee.create({
       data: {
         firstName: createEmployeeDto.firstName,
         lastName: createEmployeeDto.lastName,
         email: createEmployeeDto.email,
-        pswdHash: await bcrypt.hash(
-          createEmployeeDto.password,
-          await bcrypt.genSalt(Number(process.env.SALT_ROUNDS) || 10),
-        ),
+        positionId: createEmployeeDto.positionId,
         scope: createEmployeeDto.scope,
+        isActive: true,
       },
       include: {
         position: {
@@ -151,6 +160,7 @@ export class EmployeesService {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         id: id,
+        isActive: true,
       },
       include: {
         position: {
@@ -180,6 +190,7 @@ export class EmployeesService {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         AND: [{ id: id }, { refreshToken: refreshToken }],
+        isActive: true,
       },
       include: {
         position: {
@@ -208,6 +219,7 @@ export class EmployeesService {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         email: email,
+        isActive: true,
       },
       select: {
         id: true,

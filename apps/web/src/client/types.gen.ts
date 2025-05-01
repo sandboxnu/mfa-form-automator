@@ -50,7 +50,6 @@ export type CreateEmployeeDto = {
   lastName: string;
   positionId?: string | null;
   email: string;
-  password: string;
   scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
   accessToken: string;
 };

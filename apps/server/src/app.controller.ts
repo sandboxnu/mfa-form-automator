@@ -137,7 +137,6 @@ export class AppController {
       firstName: registerEmployeeDto.firstName,
       lastName: registerEmployeeDto.lastName,
       email: registerEmployeeDto.email,
-      password: registerEmployeeDto.password,
       scope: EmployeeScope.BASE_USER,
       accessToken: registerEmployeeDto.accessToken,
     };

@@ -5,7 +5,6 @@ import { PositionsService } from '../positions/positions.service';
 import { DepartmentsService } from '../departments/departments.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { $Enums } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
 import { ValidateEmployeeHandler } from './validate-employee/ValidateEmployeeHandlerInterface';
 import { MockValidateEmployeeHandler } from './validate-employee/MockValidateEmployeeHandler';
 import { EmployeeErrorMessage } from './employees.errors';
@@ -92,7 +91,6 @@ describe('EmployeesServiceIntegrationTest', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john.doe@example.com',
-          password: 'password',
           scope: $Enums.EmployeeScope.ADMIN,
           positionId: positionId1,
           accessToken: '123456',
@@ -108,9 +106,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         expect(newEmployee.scope).toBe(employeeDto.scope);
         expect(newEmployee.refreshToken).toBeNull();
         expect(newEmployee.pswdHash).toBeDefined();
-        expect(
-          bcrypt.compare(employeeDto.password, newEmployee.pswdHash!),
-        ).toBeTruthy();
         expect(validateEmployeeHandler.validateEmployee).toHaveBeenCalled();
       });
 
@@ -126,7 +121,6 @@ describe('EmployeesServiceIntegrationTest', () => {
             firstName: 'John',
             lastName: 'Doe',
             email: 'john.doe@example.com',
-            password: 'password',
             scope: $Enums.EmployeeScope.ADMIN,
             positionId: positionId1,
             accessToken: '123456',
@@ -146,7 +140,6 @@ describe('EmployeesServiceIntegrationTest', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john.doe@example.com',
-          password: 'password',
           scope: $Enums.EmployeeScope.ADMIN,
           positionId: positionId1,
           accessToken: '123456',
@@ -161,9 +154,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         expect(newEmployee.scope).toBe(employeeDto.scope);
         expect(newEmployee.refreshToken).toBeNull();
         expect(newEmployee.pswdHash).toBeDefined();
-        expect(
-          bcrypt.compare(employeeDto.password, newEmployee.pswdHash!),
-        ).toBeTruthy();
       });
     });
   });
@@ -174,7 +164,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.BASE_USER,
         positionId: positionId1,
         accessToken: '123456',
@@ -219,7 +208,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.BASE_USER,
         positionId: positionId1,
         accessToken: '123456',
@@ -255,7 +243,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
         accessToken: '123456',
@@ -264,7 +251,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'Jane',
         lastName: 'Doe',
         email: 'jane.doe@example.com',
-        password: 'password123',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId2,
         accessToken: '123456',
@@ -313,7 +299,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
         accessToken: '123456',
@@ -322,7 +307,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'Jane',
         lastName: 'Doe',
         email: 'jane.doe@example.com',
-        password: 'password123',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId2,
         accessToken: '123456',
@@ -374,7 +358,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
         accessToken: '123456',
@@ -383,7 +366,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'Jane',
         lastName: 'Doe',
         email: 'jane.doe@example.com',
-        password: 'password123',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId2,
         accessToken: '123456',
@@ -444,7 +426,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
         accessToken: '123456',
@@ -453,7 +434,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'Jane',
         lastName: 'Doe',
         email: 'jane.doe@example.com',
-        password: 'password123',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId2,
         accessToken: '123456',
@@ -522,7 +502,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
         accessToken: '123456',
@@ -561,7 +540,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
         accessToken: '123456',
@@ -602,7 +580,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
         accessToken: '123456',
@@ -643,7 +620,6 @@ describe('EmployeesServiceIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         positionId: positionId1,
         accessToken: '123456',

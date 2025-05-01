@@ -6,19 +6,15 @@ import {
   Input,
   Button,
   Spinner,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react';
-import {
-  DepartmentEntity,
-  EmployeeBaseEntityResponse,
-  PositionBaseEntity,
-  Scope,
-  SortBy,
-} from '@web/client';
+import { EmployeeBaseEntityResponse, Scope, SortBy } from '@web/client';
 import { ConfirmEmployeeChangesModal } from '@web/components/ConfirmEmployeeChangesModal';
 import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
 import isAuth from '@web/components/isAuth';
 import { SearchAndSort } from '@web/components/SearchAndSort';
-import { UserProfileAvatar } from '@web/static/icons';
+import { PlusIcon, UserProfileAvatar } from '@web/static/icons';
 import { useState, useEffect } from 'react';
 import { FiEdit2 } from 'react-icons/fi';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -37,6 +33,16 @@ import {
   employeesControllerCreateMutation,
 } from '@web/client/@tanstack/react-query.gen';
 
+// Enhanced Scope enum with user-friendly display names
+const ScopeDisplayNames = {
+  [Scope.BASE_USER]: 'Base User',
+  [Scope.CONTRIBUTOR]: 'Contributor',
+  [Scope.ADMIN]: 'Administrator',
+};
+
+// Grid template columns for the table - evenly spaced
+const gridTemplateColumns = '25% 15% 15% 15% 20% 10%';
+
 /**
  * Employee Directory page that displays all employees with their details
  * and provides functionality to edit, filter, and remove employees.
@@ -46,7 +52,7 @@ function EmployeeDirectory() {
   const [isDepartmentsModalOpen, setIsDepartmentsModalOpen] = useState(false);
   const [isPositionsModalOpen, setIsPositionsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortOption, setSortOption] = useState<SortBy>(SortBy.NAME_DESC);
+  const [sortOption, setSortOption] = useState<SortBy>(SortBy.CREATED_AT_DESC);
 
   const { data: { employees = [] } = {} } = useQuery({
     ...employeesControllerFindAllOptions({
@@ -69,11 +75,13 @@ function EmployeeDirectory() {
   const [editedLastName, setEditedLastName] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState<string>('');
   const [selectedPosition, setSelectedPosition] = useState<string>('');
+  const [selectedScope, setSelectedScope] = useState<Scope>(Scope.BASE_USER);
   const [originalData, setOriginalData] = useState<{
     firstName: string;
     lastName: string;
     departmentId: string;
     positionId: string;
+    scope: Scope;
   } | null>(null);
   const { user, refreshUser } = useAuth();
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
@@ -84,6 +92,16 @@ function EmployeeDirectory() {
   const [isLoading, setIsLoading] = useState(false);
   const [hoveredRowIndex, setHoveredRowIndex] = useState<string | null>(null);
 
+  // New employee creation states
+  const [isCreatingEmployee, setIsCreatingEmployee] = useState(false);
+  const [newFirstName, setNewFirstName] = useState('');
+  const [newLastName, setNewLastName] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [newDepartment, setNewDepartment] = useState<string>('');
+  const [newPosition, setNewPosition] = useState<string>('');
+  const [newScope, setNewScope] = useState<Scope>(Scope.BASE_USER);
+  const [isCreationLoading, setIsCreationLoading] = useState(false);
+
   const { data: positions } = useQuery({
     ...positionsControllerFindAllInDepartmentOptions({
       path: {
@@ -93,8 +111,49 @@ function EmployeeDirectory() {
     enabled: !!selectedDepartment,
   });
 
+  const { data: newPositions } = useQuery({
+    ...positionsControllerFindAllInDepartmentOptions({
+      path: {
+        departmentId: newDepartment || '',
+      },
+    }),
+    enabled: !!newDepartment,
+  });
+
   const createEmployee = useMutation({
     ...employeesControllerCreateMutation(),
+    onMutate: () => {
+      setIsCreationLoading(true);
+    },
+    onError: (error) => {
+      setIsCreationLoading(false);
+      toaster.create({
+        title: 'Error',
+        description: `Failed to create employee: ${
+          error.message || 'Please try again.'
+        }`,
+        type: 'error',
+        duration: 5000,
+      });
+    },
+    onSuccess: () => {
+      setIsCreationLoading(false);
+      setIsCreatingEmployee(false);
+      resetNewEmployeeForm();
+
+      // Refresh the employee list to ensure it's up to date
+      queryClient.invalidateQueries({
+        queryKey: employeesControllerFindAllQueryKey(),
+      });
+      refreshUser();
+
+      toaster.create({
+        title: 'Success',
+        description: 'Employee created successfully',
+        type: 'success',
+        duration: 5000,
+      });
+    },
   });
 
   const updateEmployee = useMutation({
@@ -147,12 +206,14 @@ function EmployeeDirectory() {
           employee.position?.department?.name?.toLowerCase() || '';
         const positionName = employee.position?.name?.toLowerCase() || '';
         const email = employee.email?.toLowerCase() || '';
+        const scope = employee.scope?.toLowerCase() || '';
 
         return (
           fullName.includes(query) ||
           departmentName.includes(query) ||
           positionName.includes(query) ||
-          email.includes(query)
+          email.includes(query) ||
+          scope.includes(query)
         );
       });
       setFilteredEmployees(filtered);
@@ -200,6 +261,54 @@ function EmployeeDirectory() {
   });
 
   /**
+   * Toggles the create employee form
+   */
+  const toggleCreateEmployeeForm = () => {
+    setIsCreatingEmployee(!isCreatingEmployee);
+    if (!isCreatingEmployee) {
+      resetNewEmployeeForm();
+    }
+  };
+
+  /**
+   * Resets the new employee form to its initial state
+   */
+  const resetNewEmployeeForm = () => {
+    setNewFirstName('');
+    setNewLastName('');
+    setNewEmail('');
+    setNewDepartment('');
+    setNewPosition('');
+    setNewScope(Scope.BASE_USER);
+  };
+
+  /**
+   * Handles creating a new employee
+   */
+  const handleCreateEmployee = () => {
+    if (!newFirstName || !newLastName || !newEmail) {
+      toaster.create({
+        title: 'Error',
+        description: 'First name, last name, and email are required.',
+        type: 'error',
+        duration: 5000,
+      });
+      return;
+    }
+
+    createEmployee.mutate({
+      body: {
+        firstName: newFirstName,
+        lastName: newLastName,
+        email: newEmail,
+        positionId: newPosition || undefined,
+        scope: newScope,
+        accessToken: 'test',
+      },
+    });
+  };
+
+  /**
    * Opens the delete confirmation modal for an employee
    * @param employee - The employee to be deleted
    */
@@ -244,16 +353,19 @@ function EmployeeDirectory() {
 
     const departmentId = employee.position?.department?.id || '';
     const positionId = employee.position?.id || '';
+    const scope = (employee.scope as Scope) || Scope.BASE_USER;
 
     setOriginalData({
       firstName: employee.firstName,
       lastName: employee.lastName,
       departmentId,
       positionId,
+      scope,
     });
 
     setSelectedDepartment(departmentId);
     setSelectedPosition(positionId);
+    setSelectedScope(scope);
   };
 
   /**
@@ -267,7 +379,7 @@ function EmployeeDirectory() {
    * Handles updating the employee after confirmation
    */
   const handleConfirmSave = async () => {
-    if (!editingEmployee || !originalData || !selectedPosition) return;
+    if (!editingEmployee || !originalData) return;
 
     updateEmployee.mutateAsync({
       path: { id: editingEmployee },
@@ -275,6 +387,7 @@ function EmployeeDirectory() {
         firstName: editedFirstName,
         lastName: editedLastName,
         positionId: selectedPosition || undefined,
+        scope: selectedScope,
       },
     });
   };
@@ -290,11 +403,24 @@ function EmployeeDirectory() {
       editedFirstName !== originalData.firstName ||
       editedLastName !== originalData.lastName ||
       selectedDepartment !== originalData.departmentId ||
-      selectedPosition !== originalData.positionId
+      selectedPosition !== originalData.positionId ||
+      selectedScope !== originalData.scope
     );
   };
 
-  if (filteredEmployees.length === 0) return null;
+  // Get user-friendly scope display names
+  const getScopeDisplayName = (scope: Scope) => {
+    return ScopeDisplayNames[scope] || scope;
+  };
+
+  // Get all available scopes as an array for display
+  const scopeEntries = Object.entries(Scope).map(([key, value]) => ({
+    key,
+    value,
+    displayName: ScopeDisplayNames[value] || value,
+  }));
+
+  if (filteredEmployees.length === 0 && !isCreatingEmployee) return null;
 
   return (
     <>
@@ -338,6 +464,24 @@ function EmployeeDirectory() {
               >
                 Manage departments
               </Button>
+              <Button
+                variant="outline"
+                ml="4"
+                padding="4px 12px"
+                bg="#1367EA"
+                color="white"
+                borderRadius="6px"
+                onClick={toggleCreateEmployeeForm}
+              >
+                <PlusIcon
+                  boxSize="14px"
+                  fill="white"
+                  stroke="white"
+                  strokeWidth="0.38"
+                  mr="2"
+                />
+                {isCreatingEmployee ? 'Cancel' : 'Create Employee'}
+              </Button>
             </Flex>
           </Flex>
         </Box>
@@ -348,42 +492,271 @@ function EmployeeDirectory() {
           border="1px solid"
           borderColor="gray.200"
         >
-          <Flex
+          {/* Table Header */}
+          <Grid
+            templateColumns={gridTemplateColumns}
             p={4}
             borderBottom="1px solid"
             borderColor="gray.200"
             color="gray.700"
             fontWeight="500"
           >
-            <Box flex={3}>
-              <Flex align="center">
-                <Text fontWeight="600">Name</Text>
-              </Flex>
-            </Box>
-            <Box flex={2}>
-              <Flex align="center">
-                <Text fontWeight="600">Department</Text>
-              </Flex>
-            </Box>
-            <Box flex={2}>
-              <Flex align="center">
-                <Text fontWeight="600">Position</Text>
-              </Flex>
-            </Box>
-            <Box flex={2}>
-              <Flex align="center">
-                <Text fontWeight="600">Email</Text>
-              </Flex>
-            </Box>
-            <Box flex={2} />
-          </Flex>
+            <GridItem>
+              <Text fontWeight="600">Name</Text>
+            </GridItem>
+            <GridItem>
+              <Text fontWeight="600">Department</Text>
+            </GridItem>
+            <GridItem>
+              <Text fontWeight="600">Position</Text>
+            </GridItem>
+            <GridItem>
+              <Text fontWeight="600">Scope</Text>
+            </GridItem>
+            <GridItem>
+              <Text fontWeight="600">Email</Text>
+            </GridItem>
+            <GridItem textAlign="right">
+              <Text fontWeight="600">Actions</Text>
+            </GridItem>
+          </Grid>
+
+          {/* Create new employee row */}
+          {isCreatingEmployee && (
+            <Grid
+              templateColumns={gridTemplateColumns}
+              p={4}
+              alignItems="center"
+              borderBottom="1px solid"
+              borderColor="gray.200"
+              bg="blue.50"
+            >
+              {/* Name with avatar */}
+              <GridItem>
+                <Flex gap={2} width="100%">
+                  <Input
+                    value={newFirstName}
+                    onChange={(e) => setNewFirstName(e.target.value)}
+                    size="md"
+                    width="45%"
+                    placeholder="First name"
+                    borderColor="gray.300"
+                    paddingLeft="12px"
+                    _hover={{ borderColor: 'gray.400' }}
+                    _focus={{
+                      borderColor: 'blue.500',
+                      boxShadow: '0 0 0 1px #3182ce',
+                    }}
+                    autoFocus
+                  />
+                  <Input
+                    value={newLastName}
+                    onChange={(e) => setNewLastName(e.target.value)}
+                    size="md"
+                    width="45%"
+                    placeholder="Last name"
+                    borderColor="gray.300"
+                    paddingLeft="12px"
+                    _hover={{ borderColor: 'gray.400' }}
+                    _focus={{
+                      borderColor: 'blue.500',
+                      boxShadow: '0 0 0 1px #3182ce',
+                    }}
+                  />
+                </Flex>
+              </GridItem>
+
+              {/* Department */}
+              <GridItem>
+                <select
+                  value={newDepartment}
+                  onChange={(e) => setNewDepartment(e.target.value)}
+                  style={{
+                    marginTop: '0px',
+                    border: '1px solid #C0C0C0',
+                    borderRadius: '6px',
+                    paddingLeft: '8px',
+                    fontSize: '16px',
+                    width: '100%',
+                    maxWidth: '200px',
+                    height: '40px',
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'none',
+                    appearance: 'none',
+                    color: '#000',
+                    backgroundImage: `url('/dropdown_arrow_down.svg')`,
+                    backgroundPosition: 'right 10px center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: '8px',
+                    paddingRight: '30px',
+                  }}
+                >
+                  <option value="" disabled>
+                    Select Department
+                  </option>
+                  {departments.length > 0 ? (
+                    departments.map((dept) => (
+                      <option key={dept.id} value={dept.id}>
+                        {dept.name}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>No departments available</option>
+                  )}
+                </select>
+              </GridItem>
+
+              {/* Position */}
+              <GridItem>
+                <select
+                  value={newPosition}
+                  onChange={(e) => setNewPosition(e.target.value)}
+                  disabled={!newDepartment}
+                  style={{
+                    marginTop: '0px',
+                    border: '1px solid #C0C0C0',
+                    borderRadius: '6px',
+                    paddingLeft: '8px',
+                    fontSize: '16px',
+                    width: '100%',
+                    maxWidth: '200px',
+                    height: '40px',
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'none',
+                    appearance: 'none',
+                    color: newDepartment ? '#000' : '#6C757D',
+                    opacity: newDepartment ? 1 : 0.5,
+                    backgroundImage: `url('/dropdown_arrow_down.svg')`,
+                    backgroundPosition: 'right 10px center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: '8px',
+                    paddingRight: '30px',
+                  }}
+                >
+                  {!newDepartment ? (
+                    <option disabled value="">
+                      Select a department first
+                    </option>
+                  ) : newPositions && newPositions.length > 0 ? (
+                    <>
+                      <option value="" disabled>
+                        Select Position
+                      </option>
+                      {newPositions.map((pos) => (
+                        <option key={pos.id} value={pos.id}>
+                          {pos.name}
+                        </option>
+                      ))}
+                    </>
+                  ) : (
+                    <option disabled value="">
+                      No positions for this department
+                    </option>
+                  )}
+                </select>
+              </GridItem>
+
+              {/* Scope */}
+              <GridItem>
+                <select
+                  value={newScope}
+                  onChange={(e) => setNewScope(e.target.value as Scope)}
+                  style={{
+                    marginTop: '0px',
+                    border: '1px solid #C0C0C0',
+                    borderRadius: '6px',
+                    paddingLeft: '8px',
+                    fontSize: '16px',
+                    width: '100%',
+                    maxWidth: '200px',
+                    height: '40px',
+                    WebkitAppearance: 'none',
+                    MozAppearance: 'none',
+                    appearance: 'none',
+                    color: '#000',
+                    backgroundImage: `url('/dropdown_arrow_down.svg')`,
+                    backgroundPosition: 'right 10px center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: '8px',
+                    paddingRight: '30px',
+                  }}
+                >
+                  {Object.values(Scope).map((scope) => (
+                    <option key={scope} value={scope}>
+                      {getScopeDisplayName(scope)}
+                    </option>
+                  ))}
+                </select>
+              </GridItem>
+
+              {/* Email */}
+              <GridItem>
+                <Input
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  size="md"
+                  width="100%"
+                  placeholder="Email"
+                  borderColor="gray.300"
+                  paddingLeft="12px"
+                  _hover={{ borderColor: 'gray.400' }}
+                  _focus={{
+                    borderColor: 'blue.500',
+                    boxShadow: '0 0 0 1px #3182ce',
+                  }}
+                />
+              </GridItem>
+
+              {/* Actions */}
+              <GridItem textAlign="right">
+                <Flex justify="flex-end" align="center" gap={2}>
+                  <Box
+                    as="button"
+                    bg="green.500"
+                    color="white"
+                    px={3}
+                    py={1.5}
+                    fontSize="sm"
+                    borderRadius="md"
+                    _hover={{ bg: 'green.600' }}
+                    onClick={handleCreateEmployee}
+                    cursor="pointer"
+                  >
+                    {isCreationLoading ? (
+                      <Flex align="center" gap={1}>
+                        <Spinner size="sm" color="white" mr={1} />
+                        <Text>Creating...</Text>
+                      </Flex>
+                    ) : (
+                      'Create'
+                    )}
+                  </Box>
+                  <Box
+                    as="button"
+                    px={3}
+                    py={1.5}
+                    fontSize="sm"
+                    borderRadius="md"
+                    border="1px solid"
+                    borderColor="gray.300"
+                    _hover={{ bg: 'gray.100' }}
+                    onClick={toggleCreateEmployeeForm}
+                    cursor="pointer"
+                  >
+                    Cancel
+                  </Box>
+                </Flex>
+              </GridItem>
+            </Grid>
+          )}
 
           {/* Employee rows */}
           {filteredEmployees.map((employee, index) => (
-            <Flex
+            <Grid
               key={index}
+              templateColumns={gridTemplateColumns}
               p={4}
-              align="center"
+              alignItems="center"
               borderBottom="1px solid"
               borderColor="gray.200"
               _hover={{ bg: 'gray.50' }}
@@ -393,7 +766,7 @@ function EmployeeDirectory() {
               onMouseLeave={() => setHoveredRowIndex(null)}
             >
               {/* Name with avatar */}
-              <Box flex={3}>
+              <GridItem>
                 <Flex align="center" gap={3}>
                   <UserProfileAvatar
                     firstName={employee.firstName}
@@ -436,10 +809,10 @@ function EmployeeDirectory() {
                     </Text>
                   )}
                 </Flex>
-              </Box>
+              </GridItem>
 
               {/* Department */}
-              <Box flex={2}>
+              <GridItem>
                 {editingEmployee === employee.id ? (
                   <select
                     value={selectedDepartment}
@@ -480,10 +853,10 @@ function EmployeeDirectory() {
                 ) : (
                   <Text>{employee.position?.department?.name || '—'}</Text>
                 )}
-              </Box>
+              </GridItem>
 
               {/* Position */}
-              <Box flex={2}>
+              <GridItem>
                 {editingEmployee === employee.id ? (
                   <select
                     value={selectedPosition}
@@ -534,18 +907,57 @@ function EmployeeDirectory() {
                 ) : (
                   <Text>{employee.position?.name || '—'}</Text>
                 )}
-              </Box>
+              </GridItem>
+
+              {/* Scope */}
+              <GridItem>
+                {editingEmployee === employee.id ? (
+                  <select
+                    value={selectedScope}
+                    onChange={(e) => setSelectedScope(e.target.value as Scope)}
+                    style={{
+                      marginTop: '0px',
+                      border: '1px solid #C0C0C0',
+                      borderRadius: '6px',
+                      paddingLeft: '8px',
+                      fontSize: '16px',
+                      width: '100%',
+                      maxWidth: '200px',
+                      height: '40px',
+                      WebkitAppearance: 'none',
+                      MozAppearance: 'none',
+                      appearance: 'none',
+                      color: '#000',
+                      backgroundImage: `url('/dropdown_arrow_down.svg')`,
+                      backgroundPosition: 'right 10px center',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundSize: '8px',
+                      paddingRight: '30px',
+                    }}
+                  >
+                    {Object.values(Scope).map((scope) => (
+                      <option key={scope} value={scope}>
+                        {getScopeDisplayName(scope)}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <Text>
+                    {getScopeDisplayName(employee.scope as Scope) || '—'}
+                  </Text>
+                )}
+              </GridItem>
 
               {/* Email */}
-              <Box flex={2}>
+              <GridItem>
                 <Text>{employee.email || '—'}</Text>
-              </Box>
+              </GridItem>
 
               {/* Actions */}
-              <Box flex={2} display="flex" justifyContent="flex-end">
+              <GridItem textAlign="right">
                 <Flex justify="flex-end" align="center" gap={2}>
                   {editingEmployee === employee.id ? (
-                    <Flex gap={2} width="100%">
+                    <Flex gap={2}>
                       <Box
                         as="button"
                         bg={hasChanges() ? 'blue.500' : 'blue.300'}
@@ -580,6 +992,9 @@ function EmployeeDirectory() {
                             employee.position?.department?.id || '',
                           );
                           setSelectedPosition(employee.position?.id || '');
+                          setSelectedScope(
+                            (employee.scope as Scope) || Scope.BASE_USER,
+                          );
                         }}
                         cursor="pointer"
                       >
@@ -617,8 +1032,8 @@ function EmployeeDirectory() {
                     </Box>
                   )}
                 </Flex>
-              </Box>
-            </Flex>
+              </GridItem>
+            </Grid>
           ))}
         </Box>
       </Box>
@@ -650,6 +1065,7 @@ function EmployeeDirectory() {
           selectedNewPosition={
             positions?.find((p) => p.id === selectedPosition) || null
           }
+          selectedNewScope={selectedScope}
           isLoading={isLoading}
         />
       )}
