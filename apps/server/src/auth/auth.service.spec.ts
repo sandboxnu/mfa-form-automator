@@ -157,6 +157,7 @@ describe('AuthService', () => {
         updatedAt: new Date(0),
         refreshToken: null,
         signatureLink: 'signatureLink',
+        isActive: true,
       };
       const result = await service.login(user);
       const decodedAccessToken = jwtService.decode(result.accessToken);
