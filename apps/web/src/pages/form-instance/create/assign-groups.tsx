@@ -6,7 +6,6 @@ import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { fetchPdfFile } from '@web/utils/formInstanceUtils';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import Error from '@web/components/Error';
 import { useRouterContext } from '@web/context/RouterProvider';
 
 function AssignGroups() {
@@ -27,7 +26,7 @@ function AssignGroups() {
   }, [formTemplate?.formDocLink]);
 
   if (!formTemplate) {
-    return <Error></Error>;
+    return <></>;
   }
 
   return (

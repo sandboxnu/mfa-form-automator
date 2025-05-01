@@ -9,9 +9,8 @@ import { PDFDisplayed } from '@web/components/signFormInstance/PDFDisplayed';
 import { useSignFormInstance } from '@web/hooks/useSignFormInstance';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import ErrorComponent from '../../components/Error';
+import Error from '@web/components/Error';
 import { groupColors } from '@web/utils/formTemplateUtils';
-import { useRouterContext } from '@web/context/RouterProvider';
 
 export function SignFormPage() {
   const router = useRouter();
@@ -66,45 +65,43 @@ export function SignFormPage() {
     });
   });
 
-  if (isLoading) {
-    return <FormLoading />;
+  if (!formInstance) {
+    return <></>;
+  }
+
+  if (formInstanceError) {
+    return <Error />;
   }
 
   return (
     <>
-      {formInstance && !formInstanceError ? (
-        <FormLayout
-          pageNumber={1}
-          type={FormInteractionType.SignFormInstance}
-          heading={'Sign MFA Oracle Logon Request Form'}
-          subheading={'Click the highlighted spaces to sign the form'}
-          boxContent={
-            <Box width="100%">
-              <PDFDisplayed
-                formFields={FieldBoxes ?? []}
-                pdfLink={originalPdfLink}
-                formTemplateName={formInstance.formTemplate.name}
-                formTemplateDimensions={formTemplateDimensions}
-              />
-            </Box>
-          }
-          submitFunction={async () => {
-            setIsLoading(true);
-            await nextSignFormPage(`/sign-form/review/${id}`, false);
-            router.push(`/sign-form/review/${id}`).then(() => {
-              setIsLoading(false);
-            });
-          }}
-          backLink={'/'}
-          disabled={isLoading}
-          loading={isLoading}
-        />
-      ) : formInstanceError?.message ===
-        'Request failed with status code 401' ? (
-        <ErrorComponent primaryErrorMessage="User is not authorized to access this form instance" />
-      ) : (
-        <ErrorComponent />
-      )}
+      <FormLayout
+        pageNumber={1}
+        type={FormInteractionType.SignFormInstance}
+        heading={'Sign MFA Oracle Logon Request Form'}
+        subheading={'Click the highlighted spaces to sign the form'}
+        boxContent={
+          <Box width="100%">
+            <PDFDisplayed
+              formFields={FieldBoxes ?? []}
+              pdfLink={originalPdfLink}
+              formTemplateName={formInstance.formTemplate.name}
+              formTemplateDimensions={formTemplateDimensions}
+            />
+          </Box>
+        }
+        submitFunction={async () => {
+          setIsLoading(true);
+          await nextSignFormPage(`/`, false);
+          console.log('Form submitted successfully');
+          router.push(`/sign-form/review/${id}`).then(() => {
+            setIsLoading(false);
+          });
+        }}
+        backLink={'/'}
+        disabled={isLoading}
+        loading={false}
+      />
     </>
   );
 }

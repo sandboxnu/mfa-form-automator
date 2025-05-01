@@ -28,7 +28,7 @@ function Review() {
   const { id } = router.query;
 
   if (!formInstance) {
-    return <Error></Error>;
+    return <></>;
   }
 
   return (

@@ -13,6 +13,14 @@ export const SignIn: React.FC = () => {
     email: '',
     password: '',
   });
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    const loginResult = await login(loginForm.email, loginForm.password);
+    setLoading(false);
+    return loginResult;
+  };
 
   return (
     <>
@@ -42,7 +50,7 @@ export const SignIn: React.FC = () => {
         marginBottom="20px"
         onClick={async () => {
           try {
-            if (!(await login(loginForm.email, loginForm.password))) {
+            if (!(await handleLogin())) {
               toaster.create({
                 title: 'Failed to log in',
                 description: 'Invalid credentials.',
@@ -59,6 +67,8 @@ export const SignIn: React.FC = () => {
             });
           }
         }}
+        loading={loading}
+        disabled={loading}
       >
         Sign in
       </Button>

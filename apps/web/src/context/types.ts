@@ -144,6 +144,13 @@ export interface SignFormInstanceContextType {
   ) => Promise<void>;
 }
 
+export interface ApproveFormInstanceContextType {
+  formInstance: FormInstanceEntity | undefined;
+  formInstanceError: Error | null;
+  isLoading: boolean;
+  completedPdfLink: string;
+  approveForm: () => Promise<void>;
+}
 export interface UserFormsContextType {
   todoForms: FormInstanceEntity[];
   pendingForms: FormInstanceEntity[];
