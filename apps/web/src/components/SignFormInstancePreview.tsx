@@ -7,15 +7,6 @@ import { useAuth } from '@web/hooks/useAuth';
 import AssigneeMap from './AssigneeMap';
 import { Avatar } from './ui/avatar.tsx';
 import { nextSigner, signerIsUser } from '@web/utils/formInstanceUtils';
-import {
-  formInstancesControllerCompleteFormInstanceMutation,
-  formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey,
-  formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey,
-  formInstancesControllerFindAllQueryKey,
-} from '@web/client/@tanstack/react-query.gen.ts';
-import { useMutation } from '@tanstack/react-query';
-import { queryClient } from '@web/pages/_app.tsx';
-import { useState } from 'react';
 import { useRouterContext } from '@web/context/RouterProvider.tsx';
 
 /**
@@ -35,30 +26,8 @@ export const SignFormInstancePreview = ({
   formInstance?: FormInstanceEntity;
 }) => {
   const router = useRouter();
-  const [markedCompletedLoading, setMarkedCompletedLoading] = useState(false);
   const { user } = useAuth();
   const { isRouteChanging } = useRouterContext();
-
-  const completeFormInstanceMutation = useMutation({
-    ...formInstancesControllerCompleteFormInstanceMutation(),
-    onSuccess: async () => {
-      queryClient.invalidateQueries({
-        queryKey: formInstancesControllerFindAllQueryKey(),
-      });
-      queryClient.invalidateQueries({
-        queryKey:
-          formInstancesControllerFindAllAssignedToCurrentEmployeeQueryKey(),
-      });
-      queryClient.invalidateQueries({
-        queryKey:
-          formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
-      });
-      router.push('/completed').then(() => {
-        setMarkedCompletedLoading(false);
-        onClose();
-      });
-    },
-  });
 
   const subheadingStyle = {
     lineHeight: 'normal',
@@ -71,13 +40,13 @@ export const SignFormInstancePreview = ({
     return <></>;
   }
 
-  const handleApproveFormInstance = async () => {
-    setMarkedCompletedLoading(true);
-    await completeFormInstanceMutation.mutateAsync({
-      path: {
-        formInstanceId: formInstance?.id,
-      },
-    });
+  const openForm = () => {
+    const url =
+      formInstance.assignedGroups[formInstance.assignedGroups.length - 1]
+        .signedDocLink ?? formInstance.formDocLink;
+    if (url) {
+      window.open(url, '_blank');
+    }
   };
 
   const nextAssignedGroup = nextSigner(formInstance);
@@ -215,28 +184,51 @@ export const SignFormInstancePreview = ({
                   </Flex>
                 </Button>
               )}
+              {
+                <Button
+                  height="32px"
+                  padding="4px 16px"
+                  borderRadius="6px"
+                  background="#1367EA"
+                  onClick={openForm}
+                  _hover={{
+                    background: '#1367EA',
+                  }}
+                >
+                  <Flex gap="8px" alignItems="center" justifyContent="center">
+                    <Text color="#FFF">Open Form </Text>
+                  </Flex>
+                </Button>
+              }
+
               {!nextAssignedGroup &&
                 !formInstance.markedCompleted &&
                 user.id === formInstance.originator.id && (
-                  <Button
-                    width="158px"
-                    height="32px"
-                    padding="4px 16px"
-                    borderRadius="6px"
-                    background="#1367EA"
-                    onClick={handleApproveFormInstance}
-                    _hover={{
-                      background: '#1367EA',
-                    }}
-                    loading={markedCompletedLoading}
-                    disabled={markedCompletedLoading}
-                  >
-                    <Flex gap="8px" alignItems="center" justifyContent="center">
-                      <PenSigningIcon color="#FFF" />
-
-                      <Text color="#FFF">Mark Completed</Text>
-                    </Flex>
-                  </Button>
+                  <>
+                    <Button
+                      height="32px"
+                      padding="4px 16px"
+                      borderRadius="6px"
+                      background="#1367EA"
+                      onClick={() =>
+                        router.push(`/approve-form/${formInstance.id}`)
+                      }
+                      _hover={{
+                        background: '#1367EA',
+                      }}
+                      loading={isRouteChanging}
+                      disabled={isRouteChanging}
+                    >
+                      <Flex
+                        gap="8px"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <PenSigningIcon color="#FFF" />
+                        <Text color="#FFF">Approve form</Text>
+                      </Flex>
+                    </Button>
+                  </>
                 )}
             </Dialog.Footer>
           </Dialog.Content>

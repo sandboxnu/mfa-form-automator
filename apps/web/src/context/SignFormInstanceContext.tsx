@@ -174,7 +174,7 @@ export const SignFormInstanceContextProvider = ({
     });
   };
 
-  const modifyPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
+  const modifyPdf = async (pdfDoc: PDFDocument) => {
     const form = pdfDoc.getForm();
 
     for (const [pageNum, formFields] of fields.entries()) {
@@ -197,13 +197,13 @@ export const SignFormInstanceContextProvider = ({
             pageHeight - (y * pageHeight) / formHeight - heightOnPdf;
 
           let fieldToBeAdded: PDFCheckBox | PDFTextField | undefined;
-
           switch (field.type) {
             case 'SIGNATURE':
               if (user?.signatureLink && field.data.filled) {
                 const signatureImageBytes = await fetch(
                   user.signatureLink,
                 ).then((res) => res.arrayBuffer());
+
                 const pngImage = await pdfDoc.embedPng(signatureImageBytes);
                 page.drawImage(pngImage, {
                   x: xCoordOnPdf,
@@ -221,6 +221,7 @@ export const SignFormInstanceContextProvider = ({
                 x: xCoordOnPdf,
                 y: yCoordOnPdf,
               });
+              field;
               if (field.data.filled) {
                 fieldToBeAdded.check();
               }
@@ -230,6 +231,8 @@ export const SignFormInstanceContextProvider = ({
               const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
               fieldToBeAdded.enableMultiline();
               fieldToBeAdded.setText(field.data.text);
+              fieldToBeAdded.enableMultiline();
+              fieldToBeAdded.enableScrolling();
               fieldToBeAdded.addToPage(page, {
                 width: widthOnPdf,
                 height: heightOnPdf,
@@ -255,7 +258,6 @@ export const SignFormInstanceContextProvider = ({
     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
     setModifiedPdfLink(url);
-    router.push(submitLink);
   };
 
   const submitPdf = async (submitLink: string, pdfDoc: PDFDocument) => {
@@ -278,9 +280,6 @@ export const SignFormInstanceContextProvider = ({
         },
       });
       if (res) {
-        router.push(submitLink).then(() => {
-          setSignFormInstanceLoading(false);
-        });
         queryClient.invalidateQueries({
           queryKey: formInstancesControllerFindAllQueryKey(),
         });
@@ -292,11 +291,11 @@ export const SignFormInstanceContextProvider = ({
           queryKey:
             formInstancesControllerFindAllCreatedByCurrentEmployeeQueryKey(),
         });
+        router.push(submitLink).then(() => {
+          setSignFormInstanceLoading(false);
+        });
       }
     }
-
-    // in case of error, set loading to false
-    setSignFormInstanceLoading(false);
   };
 
   const nextSignFormPage = async (
@@ -308,7 +307,7 @@ export const SignFormInstanceContextProvider = ({
     if (existingPdfBytes) {
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
       if (!isReviewPage) {
-        modifyPdf(submitLink, pdfDoc);
+        modifyPdf(pdfDoc);
       } else {
         submitPdf(submitLink, pdfDoc);
       }

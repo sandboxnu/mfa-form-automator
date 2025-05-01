@@ -42,6 +42,18 @@ export const CreateFormTemplateProvider = ({ children }: any) => {
     }
   }, [pdfFile, router]);
 
+  // reset field groups and form fields if user imports a new PDF file
+  useEffect(() => {
+    setFormFields({});
+    setFieldGroups(
+      new Map().set(uuidv4(), {
+        border: groupColors[0][0],
+        background: groupColors[0][1],
+        groupName: `Group ${1}`,
+      }),
+    );
+  }, [pdfFile]);
+
   return (
     <CreateFormTemplateContext.Provider
       value={{

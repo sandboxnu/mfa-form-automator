@@ -33,9 +33,11 @@ export const SideCreateForm = ({
     'Assign groups',
     'Review',
   ];
+  const approveFormLabels = ['Review'];
   const signFormInstanceLabels = ['Sign', 'Review'];
 
   const labels: Record<FormInteractionType, string[]> = {
+    [FormInteractionType.ApproveFormInstance]: approveFormLabels,
     [FormInteractionType.CreateFormTemplate]: formTemplateLabels,
     [FormInteractionType.CreateFormInstance]: formInstanceLabels,
     [FormInteractionType.SignFormInstance]: signFormInstanceLabels,

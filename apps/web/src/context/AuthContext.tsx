@@ -139,7 +139,7 @@ export const AuthProvider = ({ children }: any) => {
             return false;
           }
           await parseUser(response.data);
-          router.push('/');
+          await router.push('/');
           return true;
         })
         .catch((e) => {
