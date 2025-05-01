@@ -5,6 +5,7 @@ import { Box } from '@chakra-ui/react';
 import isAuth from '@web/components/isAuth';
 import { Scope } from '@web/client';
 import { FormInteractionType } from '@web/components/createForm/types';
+import { useRouter } from 'next/router';
 import Error from '@web/components/Error';
 
 /**
@@ -20,8 +21,9 @@ function InputFields() {
     setFieldGroups,
     pdfFile,
     formDimensions,
-    formTemplateUseId,
   } = useCreateFormTemplate();
+
+  const router = useRouter();
 
   if (!formDimensions || !formFields) {
     return <Error></Error>;
@@ -29,15 +31,9 @@ function InputFields() {
 
   return (
     <FormLayout
-      type={
-        formTemplateUseId
-          ? FormInteractionType.EditFormTemplate
-          : FormInteractionType.CreateFormTemplate
-      }
+      type={FormInteractionType.CreateFormTemplate}
       pageNumber={3}
-      heading={
-        formTemplateUseId ? 'Edit form template' : 'Create form template'
-      }
+      heading={'Create form template'}
       subheading={
         'Select an assignee group and drag to add input fields for each'
       }
@@ -55,8 +51,11 @@ function InputFields() {
           />
         </Box>
       }
-      submitLink={'/create-template/review'}
-      backLink={'/create-template/description'}
+      submitFunction={() => {
+        router.push('/form-template/create/review');
+      }}
+      backLink={'/form-template/create/description'}
+      // TODO set disabled based on some state in the pdf editor component
       disabled={
         Object.values(formFields)
           .map((page) => Array.from(page.values()))

@@ -200,7 +200,6 @@ export type UpdateFormTemplateDto = {
   name?: string;
   description?: string;
   pageWidth?: number;
-  pageHeight?: number;
   fieldGroups?: Array<CreateFieldGroupDto>;
   disabled?: boolean;
 };

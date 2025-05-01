@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import ErrorComponent from '../../components/Error';
 import { groupColors } from '@web/utils/formTemplateUtils';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 export function SignFormPage() {
   const router = useRouter();
@@ -18,11 +19,11 @@ export function SignFormPage() {
 
   const {
     formInstance,
-    isLoading,
     formInstanceError,
     fields,
     groupNumber,
     originalPdfLink,
+    nextSignFormPage,
   } = useSignFormInstance();
 
   // Store form template dimensions from the API response
@@ -30,6 +31,7 @@ export function SignFormPage() {
     width: 0,
     height: 0,
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   // When formInstance data loads, extract dimensions
   useEffect(() => {
@@ -86,9 +88,16 @@ export function SignFormPage() {
               />
             </Box>
           }
-          submitLink={`/sign-form/review/${id}`}
+          submitFunction={async () => {
+            setIsLoading(true);
+            await nextSignFormPage(`/sign-form/review/${id}`, false);
+            router.push(`/sign-form/review/${id}`).then(() => {
+              setIsLoading(false);
+            });
+          }}
           backLink={'/'}
-          disabled={false}
+          disabled={isLoading}
+          loading={isLoading}
         />
       ) : formInstanceError?.message ===
         'Request failed with status code 401' ? (

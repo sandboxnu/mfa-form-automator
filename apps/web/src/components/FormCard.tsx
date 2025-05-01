@@ -6,18 +6,15 @@ import { AssignedAvatarGroup } from './AssignedAvatarGroup';
 /**
  * @param formName - the name of the form
  * @param assignedGroups - the assigned groups on the form
- * @param link - the link to the form
  * @returns a card for a form
  */
 export const FormCard = ({
   formName,
   assignedGroups,
-  link,
   onClick,
 }: {
   formName: String;
   assignedGroups: AssignedGroupEntityHydrated[];
-  link: string;
   onClick: MouseEventHandler<HTMLDivElement>;
 }) => {
   return (

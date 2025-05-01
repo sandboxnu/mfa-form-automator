@@ -21,6 +21,9 @@ import { SignFormInstanceContextProvider } from '@web/context/SignFormInstanceCo
 import { pdfjs } from 'react-pdf';
 import { UserFormsContextProvider } from '@web/context/UserFormsContext';
 import { EmployeesContextProvider } from '@web/context/EmployeesContext';
+import { EditFormTemplateProvider } from '@web/context/EditFormTemplateContext';
+import { EditFormInstanceProvider } from '@web/context/EditFormInstanceContext';
+import { RouterProvider } from '@web/context/RouterProvider';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -69,7 +72,9 @@ const WrapperComponent = memo(({ children }: { children: ReactNode }) => {
       <MsalProvider instance={publicClientApplication}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <Provider>{children}</Provider>
+            <RouterProvider>
+              <Provider>{children}</Provider>
+            </RouterProvider>
           </AuthProvider>
         </QueryClientProvider>
       </MsalProvider>
@@ -88,170 +93,113 @@ export default function App({
     withCredentials: true,
   });
 
-  const createFormTemplatePath = '/create-template';
-  const createFormInstancePath = '/create-instance';
-  const signFormInstancePath = '/sign-form';
-  // paths that do not include layout or require context
-  // success pages require context and no layout, so they are in a unique paths
-  const excludeLayoutPaths = ['/signin', '/register', '/sign-form/success'];
-  const createFormTemplateSuccessPath = '/create-template/success';
-  const createFormInstanceSuccessPath = '/create-instance/success';
+  const createFormTemplatePath = '/form-template/create';
+  const createFormInstancePath = '/form-instance/create';
+  const editInstanceRegExPath = /^\/form-instance\/[^\/]+\/edit\/[^\/]+\/?$/;
+  const editTemplateRegExPath = /^\/form-template\/[^\/]+\/edit\/[^\/]+\/?$/;
 
-  // to allow template context to be populated before moving into edit mode
-  const formDirectoryPath = '/template-directory';
-  const previewForm = '/preview-form';
-  const instancesDirectoryPath = '/instance-directory';
-  const employeeDirectoryPath = '/employee-directory';
+  const signFormInstancePath = '/sign-form';
+  const excludeLayoutPaths = [
+    '/signin',
+    '/register',
+    '/form-template/create/success',
+    '/sign-form/success',
+  ];
+  const excludeLayoutPathsRegex = [
+    /^\/form-instance\/[^\/]+\/edit\/success/,
+    /^\/form-template\/[^\/]+\/edit\/success/,
+  ];
+  // to allow form template context to be populated before moving into edit mode
+  const templateDirectoryPath = '/template-directory';
+  // to allow form instance context for accessing id of just created to move into edit mode
+  const instanceCreateSuccessPath = '/form-instance/create/success';
 
   // Check if the current page is an error page
   const isErrorPage =
     Component.displayName === 'ErrorPage' ||
     appProps.router.pathname === '/_error';
 
-  // If it's an error page, render just the component without Layout
-  if (isErrorPage) {
-    return (
-      <WrapperComponent>
-        <Component {...pageProps} />
-      </WrapperComponent>
-    );
-  }
+  const createApp = () => {
+    let root = <Component {...pageProps} />;
 
-  if (excludeLayoutPaths.includes(appProps.router.pathname)) {
-    return (
-      <>
-        <WrapperComponent>
-          <Component {...pageProps} />
-        </WrapperComponent>
-      </>
-    );
-  }
+    // not every page needs layout
+    // skip layout for error pages
+    // skip layout for excludeLayoutPaths
+    // skip layout for instanceCreateSuccessPath
 
-  if (appProps.router.pathname.startsWith(previewForm)) {
-    return (
-      <WrapperComponent>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </WrapperComponent>
-    );
-  }
+    // provide create form instance context if needed
+    if (appProps.router.pathname.includes(createFormInstancePath)) {
+      root = <CreateFormInstanceProvider>{root}</CreateFormInstanceProvider>;
+    }
 
-  if (appProps.router.pathname.includes(createFormTemplateSuccessPath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <CreateFormTemplateProvider>
-            <Component {...pageProps} />
-          </CreateFormTemplateProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
+    // provide edit form instance context if needed.
+    // we need this when creating and editing form instances,
+    // so ordering of these statements is critical
+    if (
+      appProps.router.pathname.includes(createFormInstancePath) ||
+      editInstanceRegExPath.test(appProps.router.pathname)
+    ) {
+      root = <EditFormInstanceProvider>{root}</EditFormInstanceProvider>;
+    }
 
-  if (appProps.router.pathname.includes(createFormInstanceSuccessPath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <CreateFormInstanceProvider>
-            <Component {...pageProps} />
-          </CreateFormInstanceProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
+    // provide sign form instance context if needed
+    if (appProps.router.pathname.includes(signFormInstancePath)) {
+      const { id } = appProps.router.query;
+      root = (
+        <SignFormInstanceContextProvider id={id as string}>
+          {root}
+        </SignFormInstanceContextProvider>
+      );
+    }
 
-  if (appProps.router.pathname.includes(createFormTemplatePath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <CreateFormTemplateProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </CreateFormTemplateProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
+    // provide create form template context if needed
+    if (appProps.router.pathname.includes(createFormTemplatePath)) {
+      root = <CreateFormTemplateProvider>{root}</CreateFormTemplateProvider>;
+    }
 
-  if (appProps.router.pathname.includes(formDirectoryPath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <CreateFormTemplateProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </CreateFormTemplateProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
+    // provide edit form template context if needed
+    if (
+      appProps.router.pathname.includes(templateDirectoryPath) ||
+      editTemplateRegExPath.test(appProps.router.pathname)
+    ) {
+      root = <EditFormTemplateProvider>{root}</EditFormTemplateProvider>;
+    }
 
-  if (appProps.router.pathname.includes(createFormInstancePath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <CreateFormInstanceProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </CreateFormInstanceProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
+    // provide user forms context if needed
+    // used in index, pending, todo, completed pages
+    if (
+      ['/pending', '/todo', '/completed'].includes(appProps.router.pathname) ||
+      appProps.router.pathname == '/'
+    ) {
+      root = <UserFormsContextProvider>{root}</UserFormsContextProvider>;
+    }
 
-  if (appProps.router.pathname.includes(signFormInstancePath)) {
-    const { id } = appProps.router.query;
-    return (
-      <>
-        <WrapperComponent>
-          <SignFormInstanceContextProvider id={id as string}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </SignFormInstanceContextProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
+    // provide employees context if needed for employee directory
+    if (appProps.router.pathname === '/employee-directory') {
+      root = <EmployeesContextProvider>{root}</EmployeesContextProvider>;
+    }
 
-  if (appProps.router.pathname.includes(employeeDirectoryPath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <EmployeesContextProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </EmployeesContextProvider>
-        </WrapperComponent>
-      </>
-    );
-  }
+    // not every page needs layout
+    // skip layout for error pages
+    // skip layout for excludeLayoutPaths
+    // skip layout for instanceCreateSuccessPath
+    // skip layout for edit template/instance success pages
+    if (
+      !isErrorPage &&
+      !excludeLayoutPaths.includes(appProps.router.pathname) &&
+      !appProps.router.pathname.includes(instanceCreateSuccessPath) &&
+      !excludeLayoutPathsRegex.some((regex) =>
+        regex.test(appProps.router.pathname),
+      )
+    ) {
+      root = <Layout>{root}</Layout>;
+    }
 
-  if (appProps.router.pathname.includes(instancesDirectoryPath)) {
-    return (
-      <>
-        <WrapperComponent>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </WrapperComponent>
-      </>
-    );
-  }
-  return (
-    <>
-      <WrapperComponent>
-        <Layout>
-          <UserFormsContextProvider>
-            <Component {...pageProps} />
-          </UserFormsContextProvider>
-        </Layout>
-      </WrapperComponent>
-    </>
-  );
+    // all pages need the wrapper component
+    root = <WrapperComponent>{root}</WrapperComponent>;
+
+    return root;
+  };
+
+  return createApp();
 }

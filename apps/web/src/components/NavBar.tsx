@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text, Separator } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import {
   OverViewIcon,
   ToDoIcon,
@@ -115,13 +115,7 @@ const NavItem = ({
   );
 };
 
-export const NavBar = ({
-  onOpenCreateFormInstance,
-  ...props
-}: {
-  onOpenCreateFormInstance: () => void;
-  props?: {};
-}) => {
+export const NavBar = ({ ...props }: { props?: {} }) => {
   const router = useRouter();
   const { user } = useAuth();
   const isAdmin = user?.scope == Scope.ADMIN;
@@ -180,7 +174,7 @@ export const NavBar = ({
           <MenuContent zIndex="1100" py="6px">
             {isAdminOrContributor && (
               <MenuItem
-                onClick={() => router.push('create-template/upload')}
+                onClick={() => router.push('form-template/create/upload')}
                 value="template"
                 padding="10px"
                 w="140px"
@@ -193,7 +187,9 @@ export const NavBar = ({
               </MenuItem>
             )}
             <MenuItem
-              onClick={() => router.push('create-instance/select-template')}
+              onClick={() =>
+                router.push('form-instance/create/select-template')
+              }
               value="form"
               padding="10px"
               w="140px"

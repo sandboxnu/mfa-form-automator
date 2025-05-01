@@ -4,6 +4,7 @@ import {
   EmployeeBaseEntityResponse,
   EmployeesFindAllResponse,
   FormInstanceEntity,
+  FormTemplateBaseEntity,
   FormTemplateEntity,
   PositionBaseEntity,
   Scope,
@@ -76,9 +77,8 @@ export interface CreateFormTemplateContextType {
       | undefined
     >
   >;
-  formTemplateUseId: string | null;
-  setFormTemplateUseId: Dispatch<SetStateAction<string | null>>;
 }
+
 export interface CreateFormInstanceContextType {
   formInstanceName: string | null;
   formInstanceDescription: string | null;
@@ -86,6 +86,45 @@ export interface CreateFormInstanceContextType {
   setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
   formTemplate: FormTemplateEntity | null;
   setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
+  assignedGroupData: ContextAssignedGroupData[];
+  setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
+  pdfFile: File | null;
+}
+
+export interface EditFormTemplateContextType {
+  formTemplateName: string | null;
+  formTemplateDescription: string | null;
+  setFormTemplateName: Dispatch<SetStateAction<string | null>>;
+  setFormTemplateDescription: Dispatch<SetStateAction<string | null>>;
+  pdfFile: File | null;
+  setPdfFile: Dispatch<SetStateAction<File | null>>;
+  formFields: FormFields;
+  setFormFields: Dispatch<SetStateAction<FormFields>>;
+  fieldGroups: FieldGroups;
+  setFieldGroups: Dispatch<SetStateAction<FieldGroups>>;
+  formDimensions: { width: number; height: number } | undefined;
+  setFormDimensions: Dispatch<
+    React.SetStateAction<
+      | {
+          width: number;
+          height: number;
+        }
+      | undefined
+    >
+  >;
+  formTemplateUseId: string | null;
+  setFormTemplateUseId: Dispatch<SetStateAction<string | null>>;
+  isLoadingEditContext: boolean;
+}
+
+export interface EditFormInstanceContextType {
+  formInstanceName: string | null;
+  formInstanceDescription: string | null;
+  setFormInstanceName: Dispatch<SetStateAction<string | null>>;
+  setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
+  formTemplate: FormTemplateEntity | null;
+  setFormTemplate: Dispatch<SetStateAction<FormTemplateEntity | null>>;
+  isLoading: boolean;
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
   formInstanceUseId: string | null;
@@ -96,7 +135,6 @@ export interface CreateFormInstanceContextType {
 export interface SignFormInstanceContextType {
   formInstance: FormInstanceEntity | undefined;
   formInstanceError: Error | null;
-  isLoading: boolean;
   fields: FormField[][];
   originalPdfLink: string;
   signFormInstanceLoading: boolean;
@@ -131,4 +169,8 @@ export interface EmployeesContextType {
   employees: EmployeeBaseEntityResponse[];
   isLoading: boolean;
   error: Error | null;
+}
+
+export interface RouterContextType {
+  isRouteChanging: boolean;
 }

@@ -1,4 +1,4 @@
-import { Flex, Text, Box, useBreakpointValue } from '@chakra-ui/react';
+import { Flex, Text, Box } from '@chakra-ui/react';
 import { FormCard } from './FormCard.tsx';
 import { FormInstanceEntity } from '@web/client/types.gen.ts';
 import React, { useState, useEffect, useRef } from 'react';
@@ -112,7 +112,6 @@ export const OverviewRow = ({
                     onClick={() => handleModalOpen(formInstance)}
                     formName={formInstance.name}
                     assignedGroups={formInstance.assignedGroups}
-                    link={'/sign-form/' + formInstance.id}
                   />
                 )}
               </Box>
