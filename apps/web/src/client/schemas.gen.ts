@@ -608,9 +608,6 @@ export const UpdateFormTemplateDtoSchema = {
     pageWidth: {
       type: 'number',
     },
-    pageHeight: {
-      type: 'number',
-    },
     fieldGroups: {
       minItems: 1,
       type: 'array',

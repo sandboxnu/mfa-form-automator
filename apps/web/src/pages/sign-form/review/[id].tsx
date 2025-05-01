@@ -1,4 +1,3 @@
-import { Scope } from '@web/client';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { ReviewBox } from '@web/components/signFormInstance/ReviewBox';
@@ -13,7 +12,12 @@ import Error from '@web/components/Error';
  * The upload page in the form template creation flow, where users add their pdf.
  */
 function Review() {
-  const { formInstance, modifiedPdfLink } = useSignFormInstance();
+  const {
+    formInstance,
+    modifiedPdfLink,
+    nextSignFormPage,
+    signFormInstanceLoading,
+  } = useSignFormInstance();
   const router = useRouter();
   const [modifiedPdfFile, setModifiedPdfFile] = useState<File | null>(null);
 
@@ -45,9 +49,12 @@ function Review() {
           }}
         />
       }
-      submitLink={'/sign-form/success'}
+      submitFunction={async () => {
+        await nextSignFormPage('/sign-form/success', true);
+      }}
       backLink={`/sign-form/${id}`}
-      disabled={false}
+      disabled={signFormInstanceLoading}
+      loading={signFormInstanceLoading}
       review={true}
     />
   );

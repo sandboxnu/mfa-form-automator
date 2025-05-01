@@ -21,9 +21,10 @@ export const FormLayout = ({
   heading,
   subheading,
   boxContent,
-  submitLink,
+  submitFunction,
   backLink,
   disabled,
+  loading,
   review,
 }: {
   type: FormInteractionType;
@@ -31,9 +32,10 @@ export const FormLayout = ({
   heading: string;
   subheading: string;
   boxContent: React.ReactNode;
-  submitLink: string;
+  submitFunction: Function;
   backLink: string;
   disabled: boolean;
+  loading?: boolean;
   review?: boolean;
 }) => {
   return (
@@ -88,22 +90,12 @@ export const FormLayout = ({
         {boxContent}
       </Flex>
       <FormButtons
-        type={type}
-        heading={
-          type === FormInteractionType.CreateFormTemplate
-            ? 'Create form template'
-            : type === FormInteractionType.CreateFormInstance
-            ? 'Create form instance'
-            : type === FormInteractionType.EditFormTemplate
-            ? 'Edit form template'
-            : type === FormInteractionType.EditFormInstance
-            ? 'Edit form instance'
-            : 'Submit form'
-        }
-        submitLink={submitLink}
+        heading={heading}
+        submitFunction={submitFunction}
         backLink={backLink}
         disabled={disabled}
         review={review}
+        loading={loading ?? false}
       />
     </Box>
   );

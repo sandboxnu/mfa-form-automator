@@ -2,9 +2,12 @@ import { Scope } from '@web/client';
 import { FormLayout } from '@web/components/createForm/FormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import { FormInteractionType } from '@web/components/createForm/types';
-import Error from '@web/components/Error';
 import isAuth from '@web/components/isAuth';
-import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
+import { useEditFormTemplate } from '@web/context/EditFormTemplateContext';
+import { useRouter } from 'next/router';
+import Error from '@web/components/Error';
+import FormLoading from '@web/components/FormLoading';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -18,23 +21,24 @@ function Description() {
     pdfFile,
     formTemplateUseId,
     formDimensions,
-  } = useCreateFormTemplate();
+    isLoadingEditContext,
+  } = useEditFormTemplate();
+  const router = useRouter();
+  const { isRouteChanging } = useRouterContext();
 
-  if (!pdfFile || !formDimensions) {
-    return <Error></Error>;
+  if (isLoadingEditContext) {
+    return <FormLoading />;
+  }
+
+  if (!formDimensions) {
+    return <Error secondaryErrorMessage="Error editing form template." />;
   }
 
   return (
     <FormLayout
-      type={
-        formTemplateUseId
-          ? FormInteractionType.EditFormTemplate
-          : FormInteractionType.CreateFormTemplate
-      }
+      type={FormInteractionType.EditFormTemplate}
       pageNumber={2}
-      heading={
-        formTemplateUseId ? 'Edit form template' : 'Create form template'
-      }
+      heading={'Edit form template'}
       subheading={'Give your form template a name and short description'}
       boxContent={
         <NameAndDescriptionBox
@@ -42,20 +46,19 @@ function Description() {
           fieldGroups={[]}
           name={formTemplateName}
           description={formTemplateDescription}
-          formDimensions={formDimensions}
           setName={setFormTemplateName}
           setDescription={setFormTemplateDescription}
+          formDimensions={formDimensions}
         />
       }
-      submitLink={
-        formTemplateUseId
-          ? '/create-template/review'
-          : '/create-template/input-fields'
-      }
-      backLink={
-        formTemplateUseId ? '/template-directory' : '/create-template/upload'
-      }
-      disabled={!formTemplateName}
+      submitFunction={() => {
+        router.push(
+          '/form-template/' + formTemplateUseId + '/edit/input-fields',
+        );
+      }}
+      backLink={'/template-directory'}
+      disabled={!formTemplateName || isRouteChanging}
+      loading={isRouteChanging}
     />
   );
 }

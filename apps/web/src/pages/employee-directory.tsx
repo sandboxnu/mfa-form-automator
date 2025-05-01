@@ -1,17 +1,10 @@
-import {
-  Button,
-  Flex,
-  Input,
-  TableBody,
-  TableHeader,
-  TableRow,
-} from '@chakra-ui/react';
+import { Button, Flex, Input } from '@chakra-ui/react';
 import { Box } from '@chakra-ui/react/box';
 import { Heading, Text } from '@chakra-ui/react/typography';
 import { Scope } from '@web/client';
 import isAuth from '@web/components/isAuth';
 import { InputGroup } from '@web/components/ui/input-group';
-import { RightSearchIcon, UserProfileAvatar } from '@web/static/icons';
+import { UserProfileAvatar } from '@web/static/icons';
 import { EditDepartmentsModal } from '@web/components/editDepartment/EditDepartmentsModal';
 import { EditPositionsModal } from '@web/components/editPosition/EditPositionsModal';
 import { useState } from 'react';

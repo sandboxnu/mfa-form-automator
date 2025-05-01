@@ -1,12 +1,14 @@
 import { Text, Flex, Box } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
-import { FieldGroupBaseEntity } from '../../client/types.gen';
+import {
+  FieldGroupBaseEntity,
+  FormTemplateEntity,
+} from '../../client/types.gen';
 import {
   departmentsControllerFindAllOptions,
   employeesControllerFindAllOptions,
   positionsControllerFindAllOptions,
 } from '@web/client/@tanstack/react-query.gen';
-import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
 import { SignatureDropdown } from './SignatureDropdown';
 import { FormEditor } from '../createFormTemplate/createFormTemplateEditor/FormEditor';
 import {
@@ -14,7 +16,8 @@ import {
   formEditorTranslateFormFields,
 } from '@web/utils/formInstanceUtils';
 import { groupColors } from '@web/utils/formTemplateUtils';
-import Error from '../Error';
+import { ContextAssignedGroupData } from '@web/context/types';
+import { Dispatch, SetStateAction } from 'react';
 
 /**
  * The contents of the white box for assigning groups.
@@ -25,11 +28,17 @@ import Error from '../Error';
  * @param fieldGroups list of signature fields in the form template
  */
 export const AssignGroupsBox = ({
+  assignedGroupData,
+  setAssignedGroupData,
+  formTemplate,
   pdfFile,
   name,
   description,
   fieldGroups,
 }: {
+  assignedGroupData: ContextAssignedGroupData[];
+  setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
+  formTemplate: FormTemplateEntity;
   pdfFile: File | null;
   name: string;
   description: string;
@@ -43,16 +52,9 @@ export const AssignGroupsBox = ({
     outlineColor: 'transparent',
     borderColor: 'transparent',
   };
-
-  const { assignedGroupData, setAssignedGroupData, formTemplate } =
-    useCreateFormInstance();
   const { data: positions } = useQuery(positionsControllerFindAllOptions());
   const { data: employees } = useQuery(employeesControllerFindAllOptions());
   const { data: departments } = useQuery(departmentsControllerFindAllOptions());
-
-  if (!formTemplate) {
-    return <Error></Error>;
-  }
 
   return (
     <Flex

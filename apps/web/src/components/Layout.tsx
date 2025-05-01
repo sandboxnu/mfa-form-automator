@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { NavBar } from './NavBar';
 import { TopBar } from './TopBar';
@@ -8,9 +7,6 @@ import { TopBar } from './TopBar';
  * @returns overall layout of the application
  */
 export const Layout = ({ children }: { children: any }) => {
-  const [isCreateFormInstanceOpen, setIsCreateFormInstanceOpen] =
-    useState(false);
-
   return (
     <Box
       as="section"
@@ -20,9 +16,7 @@ export const Layout = ({ children }: { children: any }) => {
       display="flex"
       flexDirection="column"
     >
-      <NavBar
-        onOpenCreateFormInstance={() => setIsCreateFormInstanceOpen(true)}
-      />
+      <NavBar />
       <Box flex="1" display="flex" flexDirection="column">
         <TopBar />
         <Box as="main" ml="60" pt="60px" pb="30px" px="8">

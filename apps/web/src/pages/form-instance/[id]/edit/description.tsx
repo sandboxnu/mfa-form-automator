@@ -2,55 +2,66 @@ import { FormLayout } from '@web/components/createForm/FormLayout';
 import { NameAndDescriptionBox } from '@web/components/createForm/NameAndDescriptionBox';
 import { FormInteractionType } from '@web/components/createForm/types';
 import isAuth from '@web/components/isAuth';
-import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { useEditFormInstance } from '@web/context/EditFormInstanceContext';
+import { useRouter } from 'next/router';
+import Error from '@web/components/Error';
+import FormLoading from '@web/components/FormLoading';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 /**
  * The description page in the form instance creation flow, where users describe their form.
  */
 function Description() {
   const {
-    formTemplate,
     formInstanceName,
     formInstanceDescription,
     setFormInstanceName,
     setFormInstanceDescription,
     formInstanceUseId,
     pdfFile,
-  } = useCreateFormInstance();
+    formTemplate,
+    isLoading,
+  } = useEditFormInstance();
+  const { isRouteChanging } = useRouterContext();
+
+  const router = useRouter();
+
+  if (isLoading) {
+    return <FormLoading />;
+  }
 
   if (!formTemplate) {
-    return <div>Error: Form template not found.</div>;
+    return <Error secondaryErrorMessage="Form template not found" />;
   }
 
   return (
     <FormLayout
-      type={
-        formInstanceUseId
-          ? FormInteractionType.EditFormInstance
-          : FormInteractionType.CreateFormInstance
-      }
+      type={FormInteractionType.EditFormInstance}
       pageNumber={2}
-      heading={
-        formInstanceUseId ? 'Edit form instance' : 'Create form instance'
-      }
+      heading={'Edit form instance'}
       subheading={'Edit your form instance name and description'}
       boxContent={
         <NameAndDescriptionBox
           pdfFile={pdfFile}
-          fieldGroups={formTemplate?.fieldGroups ?? []}
+          fieldGroups={[]}
           name={formInstanceName}
           description={formInstanceDescription}
           setName={setFormInstanceName}
           setDescription={setFormInstanceDescription}
           formDimensions={{
-            width: formTemplate?.pageWidth,
-            height: formTemplate?.pageHeight,
+            width: formTemplate?.pageWidth ?? 0,
+            height: formTemplate?.pageHeight ?? 0,
           }}
         />
       }
-      submitLink={'/create-instance/assign-groups'}
-      backLink={'/create-instance/select-template'}
-      disabled={!formInstanceName}
+      submitFunction={() => {
+        router.push(
+          '/form-instance/' + formInstanceUseId + '/edit/assign-groups',
+        );
+      }}
+      backLink={'/form-instance/' + formInstanceUseId + '/edit/success'}
+      disabled={!formInstanceName || isRouteChanging}
+      loading={isRouteChanging}
     />
   );
 }
