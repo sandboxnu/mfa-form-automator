@@ -46,6 +46,9 @@ export class EmployeeSecureEntity implements Employee {
   @Exclude({ toPlainOnly: true })
   pswdHash: string | null;
 
+  @ApiProperty()
+  isActive: boolean;
+
   @Exclude({ toPlainOnly: true })
   createdAt: Date;
 

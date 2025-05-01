@@ -78,6 +78,9 @@ export class EmployeesService {
     const employees = limit
       ? await this.prisma.employee.findMany({
           take: limit,
+          where: {
+            isActive: true,
+          } as any,
           select: {
             id: true,
             firstName: true,
@@ -86,6 +89,9 @@ export class EmployeesService {
           },
         })
       : await this.prisma.employee.findMany({
+          where: {
+            isActive: true,
+          } as any,
           select: {
             id: true,
             firstName: true,
@@ -100,6 +106,9 @@ export class EmployeesService {
   async findAllSecure(limit?: number) {
     return await this.prisma.employee.findMany({
       ...(limit ? { take: limit } : {}),
+      where: {
+        isActive: true,
+      } as any,
       select: {
         id: true,
         firstName: true,
@@ -248,10 +257,25 @@ export class EmployeesService {
    * @param id the employee id
    */
   async remove(id: string) {
-    await this.prisma.employee.delete({
+    return await this.prisma.employee.delete({
       where: {
         id: id,
       },
+    });
+  }
+
+  /**
+   * Deactivate an employee by setting isActive to false
+   * @param id the employee id
+   */
+  async deactivate(id: string) {
+    return await this.prisma.employee.update({
+      where: {
+        id: id,
+      },
+      data: {
+        isActive: false,
+      } as any,
     });
   }
 

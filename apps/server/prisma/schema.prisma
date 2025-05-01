@@ -72,6 +72,7 @@ model Employee {
   signatureLink String?       @db.Text()
   scope         EmployeeScope @default(BASE_USER)
   pswdHash      String?       @db.VarChar(255)
+  isActive      Boolean       @default(true)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   refreshToken  String?       @db.Text()

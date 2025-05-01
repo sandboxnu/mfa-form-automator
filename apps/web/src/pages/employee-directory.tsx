@@ -25,6 +25,7 @@ import {
   departmentsControllerFindAll,
   positionsControllerFindAllInDepartment,
   employeesControllerUpdate,
+  employeesControllerRemove,
 } from '@web/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
@@ -83,9 +84,6 @@ function EmployeeDirectory() {
   const [employeeToDelete, setEmployeeToDelete] =
     useState<EmployeeSecureEntityHydrated | null>(null);
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
-  const [deactivatedEmployeeIds, setDeactivatedEmployeeIds] = useState<
-    string[]
-  >([]);
 
   const styles = `
     .employee-row:hover .edit-button {
@@ -93,23 +91,12 @@ function EmployeeDirectory() {
     }
   `;
 
-  // Load deactivated employee IDs from localStorage on component mount
-  useEffect(() => {
-    const savedDeactivatedIds = localStorage.getItem('deactivatedEmployeeIds');
-    if (savedDeactivatedIds) {
-      setDeactivatedEmployeeIds(JSON.parse(savedDeactivatedIds));
-    }
-  }, []);
-
-  // Filter out deactivated employees when employee data changes
+  // Set up initial data from API
   useEffect(() => {
     if (employees) {
-      const filteredEmployees = employees.filter(
-        (emp) => !deactivatedEmployeeIds.includes(emp.id),
-      );
-      setLocalEmployees(filteredEmployees);
+      setLocalEmployees(employees);
     }
-  }, [employees, deactivatedEmployeeIds]);
+  }, [employees]);
 
   /**
    * Sort employees based on the selected sort option
@@ -178,16 +165,15 @@ function EmployeeDirectory() {
 
   /**
    * Mutation to handle deactivating an employee
-   * Stores deactivated employee IDs in localStorage instead of actually deleting the record
+   * Calls the API to deactivate the employee instead of storing IDs in localStorage
    */
   const deactivateEmployee = useMutation({
     mutationFn: async (employeeId: string) => {
-      const updatedIds = [...deactivatedEmployeeIds, employeeId];
-      localStorage.setItem(
-        'deactivatedEmployeeIds',
-        JSON.stringify(updatedIds),
-      );
-      setDeactivatedEmployeeIds(updatedIds);
+      // Call the API to deactivate the employee
+      const response = await employeesControllerRemove({
+        path: { id: employeeId },
+        client,
+      });
       return { success: true, id: employeeId };
     },
     onMutate: (employeeId) => {
@@ -204,12 +190,10 @@ function EmployeeDirectory() {
       console.error('Failed to deactivate employee:', error);
       setIsDeleteLoading(false);
 
-      if (employees) {
-        const filteredEmployees = employees.filter(
-          (emp) => !deactivatedEmployeeIds.includes(emp.id),
-        );
-        setLocalEmployees(filteredEmployees);
-      }
+      // Refresh the employee list on error to restore the employee that failed to deactivate
+      queryClient.invalidateQueries({
+        queryKey: employeesControllerFindAllQueryKey(),
+      });
 
       toaster.create({
         title: 'Error',
@@ -223,6 +207,11 @@ function EmployeeDirectory() {
     onSuccess: () => {
       setIsDeleteLoading(false);
       setIsDeleteConfirmOpen(false);
+
+      // Refresh the employee list to ensure it's up to date
+      queryClient.invalidateQueries({
+        queryKey: employeesControllerFindAllQueryKey(),
+      });
 
       toaster.create({
         title: 'Success',

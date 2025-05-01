@@ -199,7 +199,7 @@ export class EmployeesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async remove(@Param('id') id: string) {
     try {
-      await this.employeesService.remove(id);
+      await this.employeesService.deactivate(id);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2016' && e.message.includes('RecordNotFound')) {
