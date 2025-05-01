@@ -3,7 +3,7 @@ import {
   DepartmentEntityHydrated,
   PositionEntityEmployeeHydrated,
 } from '@web/client';
-import { GrayPencilIcon } from '@web/static/icons';
+import { FiEdit2 } from 'react-icons/fi';
 import {
   positionsControllerUpdateMutation,
   positionsControllerFindAllQueryKey,
@@ -326,9 +326,9 @@ export const ModifyPositionCard = ({
             </>
           ) : (
             <>
-              <GrayPencilIcon
-                width="20px"
-                height="20px"
+              <FiEdit2
+                size={20}
+                color="#4A5568"
                 cursor="pointer"
                 onClick={handleEdit}
               />

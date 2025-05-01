@@ -13,7 +13,7 @@ import { SearchAndSort } from '@web/components/SearchAndSort';
 import { useEmployeesContext } from '@web/context/EmployeesContext';
 import { UserProfileAvatar } from '@web/static/icons';
 import { useState, useEffect, useMemo } from 'react';
-import { FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiTrash2, FiEdit2 } from 'react-icons/fi';
 import {
   departmentsControllerFindAll,
   positionsControllerFindAllInDepartment,
@@ -52,6 +52,12 @@ function EmployeeDirectory() {
   const [selectedDepartment, setSelectedDepartment] = useState<string>('');
   const [positions, setPositions] = useState<PositionBaseEntity[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<string>('');
+  const [originalData, setOriginalData] = useState<{
+    firstName: string;
+    lastName: string;
+    departmentId: string;
+    positionId: string;
+  } | null>(null);
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -91,6 +97,66 @@ function EmployeeDirectory() {
       setLocalEmployees(filteredEmployees);
     }
   }, [employees, deactivatedEmployeeIds]);
+  
+  // Apply sorting to the employees list
+  const sortedEmployees = useMemo(() => {
+    if (!localEmployees.length) return [];
+    
+    const employees = [...localEmployees];
+    
+    switch (sortOption) {
+      case SortBy.NAME_ASC:
+        return employees.sort((a, b) => 
+          `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`)
+        );
+      case SortBy.NAME_DESC:
+        return employees.sort((a, b) => 
+          `${b.firstName} ${b.lastName}`.localeCompare(`${a.firstName} ${a.lastName}`)
+        );
+      case SortBy.CREATED_AT_ASC:
+        return employees.sort((a, b) => {
+          // @ts-ignore - createdAt might not be directly accessible in the type
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          // @ts-ignore - createdAt might not be directly accessible in the type
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateA - dateB;
+        });
+      case SortBy.CREATED_AT_DESC:
+        return employees.sort((a, b) => {
+          // @ts-ignore - createdAt might not be directly accessible in the type
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          // @ts-ignore - createdAt might not be directly accessible in the type
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        });
+      default:
+        return employees;
+    }
+  }, [localEmployees, sortOption]);
+  
+  // Apply search filtering to the sorted employees
+  const filteredEmployees = useMemo(() => {
+    if (!sortedEmployees.length) return [];
+    if (!searchQuery.trim()) return sortedEmployees;
+    
+    const query = searchQuery.toLowerCase().trim();
+    
+    return sortedEmployees.filter(employee => {
+      const fullName = `${employee.firstName} ${employee.lastName}`.toLowerCase();
+      // @ts-ignore - position might not be directly accessible in the type
+      const departmentName = employee.position?.department?.name?.toLowerCase() || '';
+      // @ts-ignore - position might not be directly accessible in the type
+      const positionName = employee.position?.name?.toLowerCase() || '';
+      const email = employee.email.toLowerCase();
+      
+      return (
+        fullName.includes(query) ||
+        departmentName.includes(query) ||
+        positionName.includes(query) ||
+        email.includes(query)
+      );
+    });
+  }, [sortedEmployees, searchQuery]);
   
   // Deactivate employee instead of deleting
   const deactivateEmployee = useMutation({
@@ -240,10 +306,50 @@ function EmployeeDirectory() {
     setEditingEmployee(employee.id);
     setEditedFirstName(employee.firstName);
     setEditedLastName(employee.lastName);
+    
+    // Set the department and position values
     // @ts-ignore - position exists on employee but not in type
-    setSelectedDepartment(employee.position?.department.id || '');
+    const departmentId = employee.position?.department?.id || '';
     // @ts-ignore - position exists on employee but not in type
-    setSelectedPosition(employee.position?.id || '');
+    const positionId = employee.position?.id || '';
+    
+    // Store original data for comparison
+    setOriginalData({
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+      departmentId,
+      positionId
+    });
+    
+    setSelectedDepartment(departmentId);
+    setSelectedPosition(positionId);
+    
+    // If the employee has a department, fetch the positions for that department
+    if (departmentId) {
+      fetchPositionsForDepartment(departmentId);
+    }
+  };
+  
+  // Helper function to fetch positions for a specific department
+  const fetchPositionsForDepartment = async (departmentId: string) => {
+    try {
+      const response = await positionsControllerFindAllInDepartment({
+        path: { departmentId },
+        query: { limit: 100 },
+        client,
+      });
+      if (response.data) {
+        setPositions(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch positions:', error);
+      toaster.create({
+        title: 'Error',
+        description: 'Failed to fetch positions',
+        type: 'error',
+        duration: 5000,
+      });
+    }
   };
 
   const handleSaveClick = () => {
@@ -314,6 +420,18 @@ function EmployeeDirectory() {
     setIsConfirmChangesModalOpen(false);
   };
 
+  // Check if any changes have been made to the employee being edited
+  const hasChanges = () => {
+    if (!originalData || !editingEmployee) return false;
+    
+    return (
+      editedFirstName !== originalData.firstName ||
+      editedLastName !== originalData.lastName ||
+      selectedDepartment !== originalData.departmentId ||
+      selectedPosition !== originalData.positionId
+    );
+  };
+
   if (localEmployees.length === 0) return null;
   
   return (
@@ -326,7 +444,7 @@ function EmployeeDirectory() {
             Employees
           </Heading>
           <Text color="gray.600" mb={6}>
-            {localEmployees.length.toLocaleString()} employees
+            {filteredEmployees.length.toLocaleString()} employees
           </Text>
 
           <Flex justify="space-between" align="center" mb={6}>
@@ -398,7 +516,7 @@ function EmployeeDirectory() {
             </Box>
             <Box flex={2} />
           </Flex>
-          {localEmployees.map((employee, index) => {
+          {filteredEmployees.map((employee, index) => {
             return (
               <Flex
                 key={index}
@@ -425,6 +543,7 @@ function EmployeeDirectory() {
                           width="45%"
                           placeholder="First name"
                           borderColor="gray.300"
+                          paddingLeft="12px"
                           _hover={{ borderColor: "gray.400" }}
                           _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
                         />
@@ -435,6 +554,7 @@ function EmployeeDirectory() {
                           width="45%"
                           placeholder="Last name"
                           borderColor="gray.300"
+                          paddingLeft="12px"
                           _hover={{ borderColor: "gray.400" }}
                           _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
                         />
@@ -462,12 +582,16 @@ function EmployeeDirectory() {
                         color: '#2D3748',
                       }}
                     >
-                      <option value="">Select Department</option>
-                      {departments.map((dept) => (
-                        <option key={dept.id} value={dept.id}>
-                          {dept.name}
-                        </option>
-                      ))}
+                      <option value="" disabled>Select Department</option>
+                      {departments.length > 0 ? (
+                        departments.map((dept) => (
+                          <option key={dept.id} value={dept.id}>
+                            {dept.name}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled>No departments available</option>
+                      )}
                     </select>
                   ) : (
                     // @ts-ignore - position exists on employee but not in type
@@ -492,12 +616,20 @@ function EmployeeDirectory() {
                         opacity: selectedDepartment ? 1 : 0.5,
                       }}
                     >
-                      <option value="">Select Position</option>
-                      {positions.map((pos) => (
-                        <option key={pos.id} value={pos.id}>
-                          {pos.name}
-                        </option>
-                      ))}
+                      <option value="" disabled>Select Position</option>
+                      {selectedDepartment ? (
+                        positions.length > 0 ? (
+                          positions.map((pos) => (
+                            <option key={pos.id} value={pos.id}>
+                              {pos.name}
+                            </option>
+                          ))
+                        ) : (
+                          <option disabled>No positions for this department</option>
+                        )
+                      ) : (
+                        <option disabled>Select a department first</option>
+                      )}
                     </select>
                   ) : (
                     // @ts-ignore - position exists on employee but not in type
@@ -518,14 +650,16 @@ function EmployeeDirectory() {
                       <Flex gap={2} width="100%">
                         <Box
                           as="button"
-                          bg="blue.500"
+                          bg={hasChanges() ? "blue.500" : "blue.300"}
                           color="white"
                           px={3}
                           py={1.5}
                           fontSize="sm"
                           borderRadius="md"
-                          _hover={{ bg: "blue.600" }}
-                          onClick={handleSaveClick}
+                          _hover={{ bg: hasChanges() ? "blue.600" : "blue.300" }}
+                          onClick={hasChanges() ? handleSaveClick : undefined}
+                          opacity={hasChanges() ? 1 : 0.7}
+                          cursor="pointer"
                         >
                           Save
                         </Box>

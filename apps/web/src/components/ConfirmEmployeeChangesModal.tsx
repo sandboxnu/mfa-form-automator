@@ -1,4 +1,4 @@
-import { Dialog, Flex, Portal, Text, Button } from '@chakra-ui/react';
+import { Dialog, Flex, Portal, Text, Button, Box } from '@chakra-ui/react';
 import {
   DepartmentEntity,
   EmployeeBaseEntity,
@@ -49,9 +49,14 @@ export const ConfirmEmployeeChangesModal = ({
     editedFirstName !== employee.firstName || editedLastName !== employee.lastName;
   const hasDepartmentChange = currentDepartment?.id !== selectedDepartment;
   const hasPositionChange = currentPosition?.id !== selectedPosition;
+  
+  // Check if any changes have been made
+  const hasChanges = hasNameChange || hasDepartmentChange || hasPositionChange;
+
+  const oldFullName = `${employee.firstName} ${employee.lastName}`;
+  const newFullName = `${editedFirstName} ${editedLastName}`;
 
   return (
-    // TODO vibe coded this, lowkey it works!
     <Dialog.Root
       open={isOpen}
       onOpenChange={onClose}
@@ -63,13 +68,13 @@ export const ConfirmEmployeeChangesModal = ({
           <Dialog.Content
             padding={'24px 32px'}
             gap="24px"
-            backgroundColor="#F8F9FA"
+            backgroundColor="#fff"
             flexDir={'column'}
-            width="559px"
-            borderRadius="12px"
+            width="450px"
+            borderRadius="8px"
             boxShadow="0px 2px 16px 0px rgba(0, 0, 0, 0.15)"
           >
-            <Dialog.Header>
+            <Dialog.Header pb={0}>
               <Flex
                 width="100%"
                 flexDirection="row"
@@ -79,8 +84,8 @@ export const ConfirmEmployeeChangesModal = ({
               >
                 <Dialog.Title
                   fontFamily={'Hanken Grotesk'}
-                  fontSize="19px"
-                  fontWeight="bold"
+                  fontSize="20px"
+                  fontWeight="semibold"
                   lineHeight="26px"
                   textAlign="center"
                 >
@@ -94,58 +99,96 @@ export const ConfirmEmployeeChangesModal = ({
                     height: '19px',
                     position: 'absolute',
                     right: 0,
+                    top: 0,
                   }}
                 />
               </Flex>
             </Dialog.Header>
-            <Dialog.Body>
-              <Flex flexDirection="column" alignItems="center" gap="24px">
-                {hasNameChange && (
-                  <Flex width="100%" justify="space-between" align="center">
-                    <Text color="gray.600">
-                      Current: {employee.firstName} {employee.lastName}
-                    </Text>
-                    <Text color="blue.500">New: {editedFirstName} {editedLastName}</Text>
-                  </Flex>
-                )}
-                {hasDepartmentChange && (
-                  <Flex width="100%" justify="space-between" align="center">
-                    <Text color="gray.600">
-                      Current: {currentDepartment?.name}
-                    </Text>
-                    <Text color="blue.500">New: {newDepartment?.name}</Text>
-                  </Flex>
-                )}
+            <Dialog.Body pt={4}>
+              <Flex flexDirection="column" gap="20px">
+                <Box>
+                  <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={1}>
+                    Name
+                  </Text>
+                  {hasNameChange ? (
+                    <Flex align="center">
+                      <Text fontWeight="medium">{oldFullName}</Text>
+                      <Box mx={2} color="blue.500">
+                        <Text fontSize="sm" fontWeight="bold">►</Text>
+                      </Box>
+                      <Text fontWeight="medium">{newFullName}</Text>
+                    </Flex>
+                  ) : (
+                    <Text fontWeight="medium">{oldFullName}</Text>
+                  )}
+                </Box>
+                
+                <Box>
+                  <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={1}>
+                    Department
+                  </Text>
+                  {hasDepartmentChange ? (
+                    <Flex align="center">
+                      <Text fontWeight="medium">{currentDepartment?.name || "—"}</Text>
+                      <Box mx={2} color="blue.500">
+                        <Text fontSize="sm" fontWeight="bold">►</Text>
+                      </Box>
+                      <Text fontWeight="medium">{newDepartment?.name || "—"}</Text>
+                    </Flex>
+                  ) : (
+                    <Text fontWeight="medium">{currentDepartment?.name || "—"}</Text>
+                  )}
+                </Box>
+                
                 {hasPositionChange && (
-                  <Flex width="100%" justify="space-between" align="center">
-                    <Text color="gray.600">
-                      Current: {currentPosition?.name}
+                  <Box>
+                    <Text fontSize="sm" fontWeight="medium" color="gray.600" mb={1}>
+                      Position
                     </Text>
-                    <Text color="blue.500">New: {newPosition?.name}</Text>
-                  </Flex>
+                    <Flex align="center">
+                      <Text fontWeight="medium">{currentPosition?.name || "—"}</Text>
+                      <Box mx={2} color="blue.500">
+                        <Text fontSize="sm" fontWeight="bold">►</Text>
+                      </Box>
+                      <Text fontWeight="medium">{newPosition?.name || "—"}</Text>
+                    </Flex>
+                  </Box>
                 )}
-                <Flex gap={4} justify="center" width="100%">
-                  <Button
-                    variant="outline"
-                    colorScheme="blue"
-                    onClick={onClose}
-                    width="120px"
-                    borderColor="blue.500"
-                    color="blue.500"
-                    _hover={{ bg: 'blue.50' }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    bg="blue.500"
-                    color="white"
-                    _hover={{ bg: 'blue.600' }}
-                    onClick={onSave}
-                    width="120px"
-                  >
-                    Save
-                  </Button>
-                </Flex>
+                
+                <Box mt={2}>
+                  <Flex gap={4} justify="center" width="100%">
+                    <Button
+                      variant="outline"
+                      onClick={onClose}
+                      width="120px"
+                      height="38px"
+                      fontSize="sm"
+                      fontWeight="medium"
+                      borderColor="#ced4da"
+                      color="#333"
+                      _hover={{ bg: 'gray.50' }}
+                      borderRadius="4px"
+                    >
+                      cancel
+                    </Button>
+                    <Button
+                      bg="blue.500"
+                      color="white"
+                      _hover={{ bg: 'blue.600' }}
+                      onClick={onSave}
+                      width="120px"
+                      height="38px"
+                      fontSize="sm"
+                      fontWeight="medium"
+                      borderRadius="4px"
+                      disabled={!hasChanges}
+                      opacity={!hasChanges ? 0.6 : 1}
+                      cursor={!hasChanges ? "not-allowed" : "pointer"}
+                    >
+                      save
+                    </Button>
+                  </Flex>
+                </Box>
               </Flex>
             </Dialog.Body>
           </Dialog.Content>

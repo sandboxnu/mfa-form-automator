@@ -465,13 +465,17 @@ export const GrayPencilIcon = createIcon({
         fill="#C0C0C0"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M11.7 18.0031H0V16.2031H11.7V18.0031Z"
         fill="#C0C0C0"
       />
     </>
   ),
+  defaultProps: {
+    width: '20px',
+    height: '20px',
+  },
 });
 
 export const SignoutIcon = createIcon({

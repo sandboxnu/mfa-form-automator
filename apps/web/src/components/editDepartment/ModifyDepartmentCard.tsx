@@ -1,6 +1,6 @@
 import { Button, Flex, Input, Text } from '@chakra-ui/react';
 import { DepartmentEntityHydrated } from '@web/client';
-import { GrayPencilIcon } from '@web/static/icons';
+import { FiEdit2 } from 'react-icons/fi';
 import {
   departmentsControllerFindAllQueryKey,
   departmentsControllerUpdateMutation,
@@ -242,9 +242,9 @@ export const ModifyDepartmentCard = ({
             </>
           ) : (
             <>
-              <GrayPencilIcon
-                width="20px"
-                height="20px"
+              <FiEdit2
+                size={20}
+                color="#4A5568"
                 cursor="pointer"
                 onClick={handleEdit}
               />
