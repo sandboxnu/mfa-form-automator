@@ -78,6 +78,7 @@ describe('EmployeesServiceIntegrationTest', () => {
       })
     ).id;
   });
+
   describe('createAndValidate', () => {
     beforeEach(async () => {
       jest
@@ -132,8 +133,6 @@ describe('EmployeesServiceIntegrationTest', () => {
       });
     });
 
-    describe;
-
     describe('create', () => {
       it('successfully creates a new employee', async () => {
         const employeeDto: CreateEmployeeDto = {
@@ -154,6 +153,71 @@ describe('EmployeesServiceIntegrationTest', () => {
         expect(newEmployee.scope).toBe(employeeDto.scope);
         expect(newEmployee.refreshToken).toBeNull();
         expect(newEmployee.pswdHash).toBeDefined();
+      });
+
+      it('throws an error when creating an employee with a duplicate email', async () => {
+        // First, create an employee
+        const employeeDto: CreateEmployeeDto = {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'duplicate@example.com',
+          scope: $Enums.EmployeeScope.ADMIN,
+          positionId: positionId1,
+          accessToken: '123456',
+        };
+
+        await service.create(employeeDto);
+
+        // Then, try to create another employee with the same email
+        const duplicateEmployeeDto: CreateEmployeeDto = {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          email: 'duplicate@example.com', // Same email as the first employee
+          scope: $Enums.EmployeeScope.BASE_USER,
+          positionId: positionId2,
+          accessToken: '789012',
+        };
+
+        // The second creation should fail with a specific error
+        await expect(service.create(duplicateEmployeeDto)).rejects.toThrow(
+          EmployeeErrorMessage.EMPLOYEE_EMAIL_ALREADY_EXISTS,
+        );
+      });
+
+      it('allows creating an employee with the same email if the existing employee is inactive', async () => {
+        // First, create an employee
+        const employeeDto: CreateEmployeeDto = {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'inactive@example.com',
+          scope: $Enums.EmployeeScope.ADMIN,
+          positionId: positionId1,
+          accessToken: '123456',
+        };
+
+        const employee = await service.create(employeeDto);
+
+        // Make the employee inactive
+        await module.get<PrismaService>(PrismaService).employee.update({
+          where: { id: employee.id },
+          data: { isActive: false },
+        });
+
+        // Try to create another employee with the same email
+        const newEmployeeDto: CreateEmployeeDto = {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          email: 'inactive@example.com', // Same email as the inactive employee
+          scope: $Enums.EmployeeScope.BASE_USER,
+          positionId: positionId2,
+          accessToken: '789012',
+        };
+
+        // This should succeed because the previous employee is inactive
+        const newEmployee = await service.create(newEmployeeDto);
+        expect(newEmployee).toBeDefined();
+        expect(newEmployee.email).toBe('inactive@example.com');
+        expect(newEmployee.isActive).toBe(true);
       });
     });
   });

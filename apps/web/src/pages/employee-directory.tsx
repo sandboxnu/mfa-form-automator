@@ -303,7 +303,7 @@ function EmployeeDirectory() {
         email: newEmail,
         positionId: newPosition || undefined,
         scope: newScope,
-        accessToken: 'test',
+        accessToken: '123456', // doesn't really matter here
       },
     });
   };
