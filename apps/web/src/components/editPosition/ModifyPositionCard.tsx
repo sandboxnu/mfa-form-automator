@@ -91,6 +91,12 @@ export const ModifyPositionCard = ({
         queryKey: departmentsControllerFindAllQueryKey(),
       });
       refreshUser();
+      toaster.create({
+        title: 'Success',
+        description: 'Employee updated successfully',
+        type: 'success',
+        duration: 8000,
+      });
     },
   });
 

@@ -22,6 +22,8 @@ import type {
   EmployeesControllerCreateResponse,
   EmployeesControllerOnboardEmployeeData,
   EmployeesControllerOnboardEmployeeResponse,
+  EmployeesControllerFindAllDisabledData,
+  EmployeesControllerFindAllDisabledResponse,
   EmployeesControllerFindMeData,
   EmployeesControllerFindMeResponse,
   EmployeesControllerRemoveData,
@@ -229,6 +231,21 @@ export const employeesControllerOnboardEmployee = <
       'Content-Type': 'application/json',
       ...options?.headers,
     },
+  });
+};
+
+export const employeesControllerFindAllDisabled = <
+  ThrowOnError extends boolean = false,
+>(
+  options?: Options<EmployeesControllerFindAllDisabledData, ThrowOnError>,
+) => {
+  return (options?.client ?? _heyApiClient).get<
+    EmployeesControllerFindAllDisabledResponse,
+    unknown,
+    ThrowOnError
+  >({
+    url: '/api/employees/disabled',
+    ...options,
   });
 };
 

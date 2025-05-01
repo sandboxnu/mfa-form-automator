@@ -17,7 +17,7 @@ import { SearchAndSort } from '@web/components/SearchAndSort';
 import { PlusIcon, UserProfileAvatar } from '@web/static/icons';
 import { useState, useEffect } from 'react';
 import { FiEdit2 } from 'react-icons/fi';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { EditDepartmentsModal } from '@web/components/editDepartment/EditDepartmentsModal';
 import { EditPositionsModal } from '@web/components/editPosition/EditPositionsModal';
@@ -26,11 +26,13 @@ import { Toaster, toaster } from '@web/components/ui/toaster';
 import {
   employeesControllerFindAllQueryKey,
   employeesControllerFindAllOptions,
+  employeesControllerFindAllDisabledOptions,
   employeesControllerRemoveMutation,
   departmentsControllerFindAllOptions,
   positionsControllerFindAllInDepartmentOptions,
   employeesControllerUpdateMutation,
   employeesControllerCreateMutation,
+  employeesControllerFindAllDisabledQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
 
 // Enhanced Scope enum with user-friendly display names
@@ -42,6 +44,8 @@ const ScopeDisplayNames = {
 
 // Grid template columns for the table - evenly spaced
 const gridTemplateColumns = '25% 15% 15% 15% 20% 10%';
+// Grid template columns for disabled employees
+const disabledGridTemplateColumns = '25% 15% 15% 15% 20% 10%';
 
 /**
  * Employee Directory page that displays all employees with their details
@@ -52,13 +56,27 @@ function EmployeeDirectory() {
   const [isDepartmentsModalOpen, setIsDepartmentsModalOpen] = useState(false);
   const [isPositionsModalOpen, setIsPositionsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [disabledSearchQuery, setDisabledSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState<SortBy>(SortBy.CREATED_AT_DESC);
+  const [disabledSortOption, setDisabledSortOption] = useState<SortBy>(
+    SortBy.CREATED_AT_DESC,
+  );
+  const [showDisabledEmployees, setShowDisabledEmployees] = useState(false);
 
   const { data: { employees = [] } = {} } = useQuery({
     ...employeesControllerFindAllOptions({
       query: {
         secure: true,
         sortBy: sortOption,
+      },
+    }),
+  });
+
+  const { data: { employees: disabledEmployees = [] } = {} } = useQuery({
+    ...employeesControllerFindAllDisabledOptions({
+      query: {
+        secure: true,
+        sortBy: disabledSortOption,
       },
     }),
   });
@@ -70,6 +88,11 @@ function EmployeeDirectory() {
   const [filteredEmployees, setFilteredEmployees] = useState<
     EmployeeBaseEntityResponse[]
   >([]);
+
+  const [filteredDisabledEmployees, setFilteredDisabledEmployees] = useState<
+    EmployeeBaseEntityResponse[]
+  >([]);
+
   const [editingEmployee, setEditingEmployee] = useState<string | null>(null);
   const [editedFirstName, setEditedFirstName] = useState('');
   const [editedLastName, setEditedLastName] = useState('');
@@ -145,7 +168,6 @@ function EmployeeDirectory() {
       queryClient.invalidateQueries({
         queryKey: employeesControllerFindAllQueryKey(),
       });
-      refreshUser();
 
       toaster.create({
         title: 'Success',
@@ -181,6 +203,9 @@ function EmployeeDirectory() {
       queryClient.invalidateQueries({
         queryKey: employeesControllerFindAllQueryKey(),
       });
+      queryClient.invalidateQueries({
+        queryKey: employeesControllerFindAllDisabledQueryKey(),
+      });
       refreshUser();
 
       toaster.create({
@@ -192,6 +217,47 @@ function EmployeeDirectory() {
     },
   });
 
+  const deactivateEmployee = useMutation({
+    ...employeesControllerRemoveMutation(),
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onError: () => {
+      setIsLoading(false);
+      toaster.create({
+        title: 'Error',
+        description: 'Failed to deactivate employee. Please try again.',
+        type: 'error',
+        duration: 5000,
+      });
+
+      setIsDeleteConfirmOpen(false);
+    },
+    onSuccess: () => {
+      setIsLoading(false);
+      setIsDeleteConfirmOpen(false);
+
+      // Refresh the employee lists to ensure they're up to date
+      queryClient.invalidateQueries({
+        queryKey: employeesControllerFindAllQueryKey(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: employeesControllerFindAllDisabledOptions({
+          query: { secure: true },
+        }).queryKey,
+      });
+
+      toaster.create({
+        title: 'Success',
+        description: 'Employee deactivated successfully',
+        type: 'success',
+        duration: 5000,
+      });
+    },
+  });
+
+  // Filter active employees based on search query
   useEffect(() => {
     if (!employees) return;
 
@@ -220,45 +286,34 @@ function EmployeeDirectory() {
     }
   }, [employees, searchQuery]);
 
-  const deactivateEmployee = useMutation({
-    ...employeesControllerRemoveMutation(),
-    onMutate: () => {
-      setIsLoading(true);
-    },
-    onError: () => {
-      setIsLoading(false);
+  // Filter disabled employees based on search query
+  useEffect(() => {
+    if (!disabledEmployees) return;
 
-      // Refresh the employee list on error to restore the employee that failed to deactivate
-      queryClient.invalidateQueries({
-        queryKey: employeesControllerFindAllQueryKey(),
+    if (disabledSearchQuery.trim() === '') {
+      setFilteredDisabledEmployees(disabledEmployees);
+    } else {
+      const query = disabledSearchQuery.toLowerCase().trim();
+      const filtered = disabledEmployees.filter((employee) => {
+        const fullName =
+          `${employee.firstName} ${employee.lastName}`.toLowerCase();
+        const departmentName =
+          employee.position?.department?.name?.toLowerCase() || '';
+        const positionName = employee.position?.name?.toLowerCase() || '';
+        const email = employee.email?.toLowerCase() || '';
+        const scope = employee.scope?.toLowerCase() || '';
+
+        return (
+          fullName.includes(query) ||
+          departmentName.includes(query) ||
+          positionName.includes(query) ||
+          email.includes(query) ||
+          scope.includes(query)
+        );
       });
-
-      toaster.create({
-        title: 'Error',
-        description: 'Failed to deactivate employee. Please try again.',
-        type: 'error',
-        duration: 5000,
-      });
-
-      setIsDeleteConfirmOpen(false);
-    },
-    onSuccess: () => {
-      setIsLoading(false);
-      setIsDeleteConfirmOpen(false);
-
-      // Refresh the employee list to ensure it's up to date
-      queryClient.invalidateQueries({
-        queryKey: employeesControllerFindAllQueryKey(),
-      });
-
-      toaster.create({
-        title: 'Success',
-        description: 'Employee deactivated successfully',
-        type: 'success',
-        duration: 5000,
-      });
-    },
-  });
+      setFilteredDisabledEmployees(filtered);
+    }
+  }, [disabledEmployees, disabledSearchQuery]);
 
   /**
    * Toggles the create employee form
@@ -393,6 +448,18 @@ function EmployeeDirectory() {
   };
 
   /**
+   * Handles re-enabling an employee
+   */
+  const handleReactivateEmployee = async (employeeId: string) => {
+    updateEmployee.mutateAsync({
+      path: { id: employeeId },
+      body: {
+        isActive: true,
+      },
+    });
+  };
+
+  /**
    * Checks if any changes have been made to the employee being edited
    * @returns True if changes have been made, false otherwise
    */
@@ -413,12 +480,9 @@ function EmployeeDirectory() {
     return ScopeDisplayNames[scope] || scope;
   };
 
-  // Get all available scopes as an array for display
-  const scopeEntries = Object.entries(Scope).map(([key, value]) => ({
-    key,
-    value,
-    displayName: ScopeDisplayNames[value] || value,
-  }));
+  const toggleDisabledEmployees = () => {
+    setShowDisabledEmployees(!showDisabledEmployees);
+  };
 
   if (filteredEmployees.length === 0 && !isCreatingEmployee) return null;
 
@@ -431,7 +495,9 @@ function EmployeeDirectory() {
             Employees
           </Heading>
           <Text color="gray.600" mb={6}>
-            {filteredEmployees.length.toLocaleString()} employees
+            {filteredEmployees.length.toLocaleString()} active employees
+            {disabledEmployees.length > 0 &&
+              ` • ${disabledEmployees.length.toLocaleString()} disabled`}
           </Text>
 
           <Flex justify="space-between" align="center" mb={6}>
@@ -439,7 +505,7 @@ function EmployeeDirectory() {
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               setSortOption={setSortOption}
-              placeholder="Search employees"
+              placeholder="Search active employees"
             />
             <Flex>
               <Button
@@ -486,11 +552,13 @@ function EmployeeDirectory() {
           </Flex>
         </Box>
 
+        {/* Active Employees Table */}
         <Box
           bg="white"
           borderRadius="md"
           border="1px solid"
           borderColor="gray.200"
+          mb={8}
         >
           {/* Table Header */}
           <Grid
@@ -1036,6 +1104,160 @@ function EmployeeDirectory() {
             </Grid>
           ))}
         </Box>
+
+        {/* Disabled Employees Section */}
+        {disabledEmployees.length > 0 && (
+          <>
+            <Flex justify="space-between" align="center" mb={4} mt={8}>
+              <Heading as="h2" fontSize="24px" fontWeight="500">
+                Disabled Employees
+              </Heading>
+              <Button
+                ml={4}
+                px={4}
+                variant="outline"
+                bg="#FFF"
+                borderRadius="4px"
+                border="1px solid #E5E5E5"
+                onClick={toggleDisabledEmployees}
+              >
+                {showDisabledEmployees ? 'Hide' : 'Show'} Disabled Employees
+              </Button>
+            </Flex>
+
+            {showDisabledEmployees && (
+              <>
+                <Box mb={4}>
+                  <SearchAndSort
+                    searchQuery={disabledSearchQuery}
+                    setSearchQuery={setDisabledSearchQuery}
+                    setSortOption={setDisabledSortOption}
+                    placeholder="Search disabled employees"
+                  />
+                </Box>
+
+                {/* Disabled Employees Table */}
+                <Box
+                  bg="white"
+                  borderRadius="md"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  mb={8}
+                >
+                  {/* Table Header */}
+                  <Grid
+                    templateColumns={disabledGridTemplateColumns}
+                    p={4}
+                    borderBottom="1px solid"
+                    borderColor="gray.200"
+                    color="gray.700"
+                    fontWeight="500"
+                  >
+                    <GridItem>
+                      <Text fontWeight="600">Name</Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="600">Department</Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="600">Position</Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="600">Scope</Text>
+                    </GridItem>
+                    <GridItem>
+                      <Text fontWeight="600">Email</Text>
+                    </GridItem>
+                    <GridItem textAlign="right">
+                      <Text fontWeight="600">Actions</Text>
+                    </GridItem>
+                  </Grid>
+
+                  {/* Disabled Employee rows */}
+                  {filteredDisabledEmployees.length > 0 ? (
+                    filteredDisabledEmployees.map((employee, index) => (
+                      <Grid
+                        key={index}
+                        templateColumns={disabledGridTemplateColumns}
+                        p={4}
+                        alignItems="center"
+                        borderBottom="1px solid"
+                        borderColor="gray.200"
+                        bg="gray.50"
+                        className="disabled-employee-row"
+                      >
+                        {/* Name with avatar */}
+                        <GridItem>
+                          <Flex align="center" gap={3}>
+                            <UserProfileAvatar
+                              firstName={employee.firstName}
+                              lastName={employee.lastName}
+                            />
+                            <Text>
+                              {employee.firstName} {employee.lastName}
+                            </Text>
+                          </Flex>
+                        </GridItem>
+
+                        {/* Department */}
+                        <GridItem>
+                          <Text>
+                            {employee.position?.department?.name || '—'}
+                          </Text>
+                        </GridItem>
+
+                        {/* Position */}
+                        <GridItem>
+                          <Text>{employee.position?.name || '—'}</Text>
+                        </GridItem>
+
+                        {/* Scope */}
+                        <GridItem>
+                          <Text>
+                            {getScopeDisplayName(employee.scope as Scope) ||
+                              '—'}
+                          </Text>
+                        </GridItem>
+
+                        {/* Email */}
+                        <GridItem>
+                          <Text>{employee.email || '—'}</Text>
+                        </GridItem>
+
+                        {/* Actions */}
+                        <GridItem textAlign="right">
+                          <Button
+                            bg="blue.500"
+                            color="white"
+                            px={3}
+                            py={1.5}
+                            fontSize="sm"
+                            borderRadius="md"
+                            _hover={{
+                              bg: 'blue.600',
+                            }}
+                            cursor="pointer"
+                            onClick={() =>
+                              handleReactivateEmployee(employee.id)
+                            }
+                            loading={isLoading}
+                            disabled={isLoading}
+                          >
+                            Reactivate
+                          </Button>
+                        </GridItem>
+                      </Grid>
+                    ))
+                  ) : (
+                    <Box p={6} textAlign="center">
+                      <Text color="gray.500">No disabled employees found</Text>
+                    </Box>
+                  )}
+                </Box>
+              </>
+            )}
+          </>
+        )}
       </Box>
 
       {employeeToDelete && (

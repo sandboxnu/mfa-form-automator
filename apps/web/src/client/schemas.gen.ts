@@ -276,6 +276,9 @@ export const UpdateEmployeeDtoSchema = {
     signatureLink: {
       type: 'string',
     },
+    isActive: {
+      type: 'boolean',
+    },
   },
 } as const;
 

@@ -40,11 +40,10 @@ export class EmployeesService {
    * @returns the created employee, hydrated
    */
   async create(createEmployeeDto: CreateEmployeeDto) {
-    // manually make sure email is unique (since we are not using unique constraint in the database due to disabled flag)
+    // manually make sure email is unique
     const existingEmployee = await this.prisma.employee.findFirst({
       where: {
         email: createEmployeeDto.email,
-        isActive: true,
       },
     });
 
@@ -84,13 +83,21 @@ export class EmployeesService {
    * @param limit the number of employees we want to retrieve (optional)
    * @returns all employees, hydrated
    */
-  async findAll({ limit, sortBy }: { limit?: number; sortBy?: SortOption }) {
+  async findAll({
+    limit,
+    sortBy,
+    isActive = true,
+  }: {
+    limit?: number;
+    sortBy?: SortOption;
+    isActive?: boolean;
+  }) {
     const employees = limit
       ? await this.prisma.employee.findMany({
           take: limit,
           orderBy: orderBy(sortBy, true),
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           select: {
             id: true,
@@ -102,7 +109,7 @@ export class EmployeesService {
       : await this.prisma.employee.findMany({
           orderBy: orderBy(sortBy, true),
           where: {
-            isActive: true,
+            isActive: isActive,
           },
           select: {
             id: true,
@@ -118,15 +125,17 @@ export class EmployeesService {
   async findAllSecure({
     limit,
     sortBy,
+    isActive = true,
   }: {
     limit?: number;
     sortBy?: SortOption;
+    isActive?: boolean;
   }) {
     const employees = await this.prisma.employee.findMany({
       ...(limit ? { take: limit } : {}),
       orderBy: orderBy(sortBy, true),
       where: {
-        isActive: true,
+        isActive: isActive,
       },
       select: {
         id: true,

@@ -10,6 +10,7 @@ import {
   employeesControllerFindAll,
   employeesControllerCreate,
   employeesControllerOnboardEmployee,
+  employeesControllerFindAllDisabled,
   employeesControllerFindMe,
   employeesControllerRemove,
   employeesControllerFindOne,
@@ -64,6 +65,7 @@ import type {
   EmployeesControllerCreateResponse,
   EmployeesControllerOnboardEmployeeData,
   EmployeesControllerOnboardEmployeeResponse,
+  EmployeesControllerFindAllDisabledData,
   EmployeesControllerFindMeData,
   EmployeesControllerRemoveData,
   EmployeesControllerFindOneData,
@@ -374,6 +376,27 @@ export const employeesControllerOnboardEmployeeMutation = (
     },
   };
   return mutationOptions;
+};
+
+export const employeesControllerFindAllDisabledQueryKey = (
+  options?: Options<EmployeesControllerFindAllDisabledData>,
+) => [createQueryKey('employeesControllerFindAllDisabled', options)];
+
+export const employeesControllerFindAllDisabledOptions = (
+  options?: Options<EmployeesControllerFindAllDisabledData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await employeesControllerFindAllDisabled({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: employeesControllerFindAllDisabledQueryKey(options),
+  });
 };
 
 export const employeesControllerFindMeQueryKey = (

@@ -83,6 +83,12 @@ export const ModifyDepartmentCard = ({
         queryKey: positionsControllerFindAllQueryKey(),
       });
       refreshUser();
+      toaster.create({
+        title: 'Success',
+        description: 'Position updated successfully',
+        type: 'success',
+        duration: 8000,
+      });
     },
   });
 

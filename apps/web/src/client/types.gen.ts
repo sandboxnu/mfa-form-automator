@@ -91,6 +91,7 @@ export type UpdateEmployeeDto = {
   scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
   accessToken?: string;
   signatureLink?: string;
+  isActive?: boolean;
 };
 
 export type CreatePositionDto = {
@@ -525,6 +526,44 @@ export type EmployeesControllerOnboardEmployeeResponses = {
 
 export type EmployeesControllerOnboardEmployeeResponse =
   EmployeesControllerOnboardEmployeeResponses[keyof EmployeesControllerOnboardEmployeeResponses];
+
+export type EmployeesControllerFindAllDisabledData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * Limit on number of employees to return
+     */
+    limit?: number;
+    /**
+     * If true, returns secure employee data
+     */
+    secure?: boolean;
+    /**
+     * Optional sorting parameter
+     */
+    sortBy?: string;
+  };
+  url: '/api/employees/disabled';
+};
+
+export type EmployeesControllerFindAllDisabledErrors = {
+  /**
+   * Bad Request
+   */
+  400: unknown;
+  /**
+   * Unauthorized Request
+   */
+  403: unknown;
+};
+
+export type EmployeesControllerFindAllDisabledResponses = {
+  200: EmployeesFindAllResponse;
+};
+
+export type EmployeesControllerFindAllDisabledResponse =
+  EmployeesControllerFindAllDisabledResponses[keyof EmployeesControllerFindAllDisabledResponses];
 
 export type EmployeesControllerFindMeData = {
   body?: never;

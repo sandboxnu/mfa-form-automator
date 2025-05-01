@@ -158,6 +158,63 @@ export class EmployeesController {
     );
   }
 
+  @Get('disabled')
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: EmployeesFindAllResponse })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Limit on number of employees to return',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'secure',
+    type: Boolean,
+    description: 'If true, returns secure employee data',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    type: String,
+    description: 'Optional sorting parameter',
+    required: false,
+  })
+  async findAllDisabled(
+    @AuthUser() currentUser: UserEntity,
+    @Query('limit') limit?: number,
+    @Query('secure') secure?: string,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    if (secure === 'true') {
+      const currentEmployee = await this.employeesService.findOne(
+        currentUser.id,
+      );
+      if (currentEmployee.scope !== EmployeeScope.ADMIN) {
+        throw new NotFoundException(AppErrorMessage.FORBIDDEN);
+      }
+      const employees = await this.employeesService.findAllSecure({
+        limit,
+        sortBy,
+        isActive: false,
+      });
+      return new EmployeesFindAllResponse(
+        employees.length,
+        employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
+      );
+    }
+    const employees = await this.employeesService.findAll({
+      limit,
+      sortBy,
+      isActive: false,
+    });
+    return new EmployeesFindAllResponse(
+      employees.length,
+      employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
+    );
+  }
+
   @Get('me')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
