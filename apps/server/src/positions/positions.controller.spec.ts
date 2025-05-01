@@ -137,9 +137,14 @@ describe('PositionsController', () => {
 
       jest.spyOn(positionsService, 'findOne').mockImplementation(async (id) => {
         if (id === positionId) {
-          return position as any;
+          return position;
         }
-        return null as any;
+        throw new Prisma.PrismaClientKnownRequestError('Position not found', {
+          code: 'P2025',
+          clientVersion: '',
+          meta: undefined,
+          batchRequestIdx: undefined,
+        });
       });
 
       const result = await controller.findOne(positionId);
@@ -152,8 +157,22 @@ describe('PositionsController', () => {
 
       jest.spyOn(positionsService, 'findOne').mockImplementation(async (id) => {
         if (id === invalidPositionId) {
-          return null as any;
+          throw new Prisma.PrismaClientKnownRequestError('Position not found', {
+            code: 'P2025',
+            clientVersion: '',
+            meta: undefined,
+            batchRequestIdx: undefined,
+          });
         }
+        return {
+          id: 'id',
+          name: 'Position Name',
+          single: false,
+          departmentId: '3f08fe46-a243-4b33-84fa-6702a74f3a5d',
+          employees: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
       });
 
       await expect(controller.findOne(invalidPositionId)).rejects.toThrowError(

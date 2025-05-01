@@ -91,7 +91,7 @@ export class EmployeesService {
           orderBy: orderBy(sortBy, true),
           where: {
             isActive: true,
-          } as any,
+          },
           select: {
             id: true,
             firstName: true,
@@ -103,7 +103,7 @@ export class EmployeesService {
           orderBy: orderBy(sortBy, true),
           where: {
             isActive: true,
-          } as any,
+          },
           select: {
             id: true,
             firstName: true,
@@ -127,7 +127,7 @@ export class EmployeesService {
       orderBy: orderBy(sortBy, true),
       where: {
         isActive: true,
-      } as any,
+      },
       select: {
         id: true,
         firstName: true,
@@ -298,7 +298,7 @@ export class EmployeesService {
       },
       data: {
         isActive: false,
-      } as any,
+      },
     });
   }
 

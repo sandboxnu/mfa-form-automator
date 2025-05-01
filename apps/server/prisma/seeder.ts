@@ -176,7 +176,7 @@ export class Seeder {
         },
         scope: scope,
         isActive: true,
-      } as any,
+      },
     });
   }
 
