@@ -16,7 +16,7 @@ import isAuth from '@web/components/isAuth';
 import { SearchAndSort } from '@web/components/SearchAndSort';
 import { PlusIcon, UserProfileAvatar } from '@web/static/icons';
 import { useState, useEffect } from 'react';
-import { FiEdit2 } from 'react-icons/fi';
+import { FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '@web/pages/_app';
 import { EditDepartmentsModal } from '@web/components/editDepartment/EditDepartmentsModal';
@@ -1080,7 +1080,7 @@ function EmployeeDirectory() {
                         cursor="pointer"
                       >
                         <Flex align="center" gap={1}>
-                          <Text>Delete</Text>
+                          <FiTrash2 size={16} />
                         </Flex>
                       </Box>
                     </Flex>
@@ -1106,158 +1106,154 @@ function EmployeeDirectory() {
         </Box>
 
         {/* Disabled Employees Section */}
-        {disabledEmployees.length > 0 && (
-          <>
-            <Flex justify="space-between" align="center" mb={4} mt={8}>
-              <Heading as="h2" fontSize="24px" fontWeight="500">
-                Disabled Employees
-              </Heading>
-              <Button
-                ml={4}
-                px={4}
-                variant="outline"
-                bg="#FFF"
-                borderRadius="4px"
-                border="1px solid #E5E5E5"
-                onClick={toggleDisabledEmployees}
+
+        <>
+          <Flex justify="space-between" align="center" mb={4} mt={8}>
+            <Heading as="h2" fontSize="24px" fontWeight="500">
+              Disabled Employees
+            </Heading>
+            <Button
+              ml={4}
+              px={4}
+              variant="outline"
+              bg="#FFF"
+              borderRadius="4px"
+              border="1px solid #E5E5E5"
+              onClick={toggleDisabledEmployees}
+            >
+              {showDisabledEmployees ? 'Hide' : 'Show'} Disabled Employees
+            </Button>
+          </Flex>
+
+          {showDisabledEmployees && (
+            <>
+              <Box mb={4}>
+                <SearchAndSort
+                  searchQuery={disabledSearchQuery}
+                  setSearchQuery={setDisabledSearchQuery}
+                  setSortOption={setDisabledSortOption}
+                  placeholder="Search disabled employees"
+                />
+              </Box>
+
+              {/* Disabled Employees Table */}
+              <Box
+                bg="white"
+                borderRadius="md"
+                border="1px solid"
+                borderColor="gray.200"
+                mb={8}
               >
-                {showDisabledEmployees ? 'Hide' : 'Show'} Disabled Employees
-              </Button>
-            </Flex>
-
-            {showDisabledEmployees && (
-              <>
-                <Box mb={4}>
-                  <SearchAndSort
-                    searchQuery={disabledSearchQuery}
-                    setSearchQuery={setDisabledSearchQuery}
-                    setSortOption={setDisabledSortOption}
-                    placeholder="Search disabled employees"
-                  />
-                </Box>
-
-                {/* Disabled Employees Table */}
-                <Box
-                  bg="white"
-                  borderRadius="md"
-                  border="1px solid"
+                {/* Table Header */}
+                <Grid
+                  templateColumns={disabledGridTemplateColumns}
+                  p={4}
+                  borderBottom="1px solid"
                   borderColor="gray.200"
-                  mb={8}
+                  color="gray.700"
+                  fontWeight="500"
                 >
-                  {/* Table Header */}
-                  <Grid
-                    templateColumns={disabledGridTemplateColumns}
-                    p={4}
-                    borderBottom="1px solid"
-                    borderColor="gray.200"
-                    color="gray.700"
-                    fontWeight="500"
-                  >
-                    <GridItem>
-                      <Text fontWeight="600">Name</Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="600">Department</Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="600">Position</Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="600">Scope</Text>
-                    </GridItem>
-                    <GridItem>
-                      <Text fontWeight="600">Email</Text>
-                    </GridItem>
-                    <GridItem textAlign="right">
-                      <Text fontWeight="600">Actions</Text>
-                    </GridItem>
-                  </Grid>
+                  <GridItem>
+                    <Text fontWeight="600">Name</Text>
+                  </GridItem>
+                  <GridItem>
+                    <Text fontWeight="600">Department</Text>
+                  </GridItem>
+                  <GridItem>
+                    <Text fontWeight="600">Position</Text>
+                  </GridItem>
+                  <GridItem>
+                    <Text fontWeight="600">Scope</Text>
+                  </GridItem>
+                  <GridItem>
+                    <Text fontWeight="600">Email</Text>
+                  </GridItem>
+                  <GridItem textAlign="right">
+                    <Text fontWeight="600">Actions</Text>
+                  </GridItem>
+                </Grid>
 
-                  {/* Disabled Employee rows */}
-                  {filteredDisabledEmployees.length > 0 ? (
-                    filteredDisabledEmployees.map((employee, index) => (
-                      <Grid
-                        key={index}
-                        templateColumns={disabledGridTemplateColumns}
-                        p={4}
-                        alignItems="center"
-                        borderBottom="1px solid"
-                        borderColor="gray.200"
-                        bg="gray.50"
-                        className="disabled-employee-row"
-                      >
-                        {/* Name with avatar */}
-                        <GridItem>
-                          <Flex align="center" gap={3}>
-                            <UserProfileAvatar
-                              firstName={employee.firstName}
-                              lastName={employee.lastName}
-                            />
-                            <Text>
-                              {employee.firstName} {employee.lastName}
-                            </Text>
-                          </Flex>
-                        </GridItem>
-
-                        {/* Department */}
-                        <GridItem>
+                {/* Disabled Employee rows */}
+                {filteredDisabledEmployees.length > 0 ? (
+                  filteredDisabledEmployees.map((employee, index) => (
+                    <Grid
+                      key={index}
+                      templateColumns={disabledGridTemplateColumns}
+                      p={4}
+                      alignItems="center"
+                      borderBottom="1px solid"
+                      borderColor="gray.200"
+                      className="disabled-employee-row"
+                      textDecoration={'line-through'}
+                    >
+                      {/* Name with avatar */}
+                      <GridItem>
+                        <Flex align="center" gap={3}>
+                          <UserProfileAvatar
+                            firstName={employee.firstName}
+                            lastName={employee.lastName}
+                          />
                           <Text>
-                            {employee.position?.department?.name || '—'}
+                            {employee.firstName} {employee.lastName}
                           </Text>
-                        </GridItem>
+                        </Flex>
+                      </GridItem>
 
-                        {/* Position */}
-                        <GridItem>
-                          <Text>{employee.position?.name || '—'}</Text>
-                        </GridItem>
+                      {/* Department */}
+                      <GridItem>
+                        <Text>
+                          {employee.position?.department?.name || '—'}
+                        </Text>
+                      </GridItem>
 
-                        {/* Scope */}
-                        <GridItem>
-                          <Text>
-                            {getScopeDisplayName(employee.scope as Scope) ||
-                              '—'}
-                          </Text>
-                        </GridItem>
+                      {/* Position */}
+                      <GridItem>
+                        <Text>{employee.position?.name || '—'}</Text>
+                      </GridItem>
 
-                        {/* Email */}
-                        <GridItem>
-                          <Text>{employee.email || '—'}</Text>
-                        </GridItem>
+                      {/* Scope */}
+                      <GridItem>
+                        <Text>
+                          {getScopeDisplayName(employee.scope as Scope) || '—'}
+                        </Text>
+                      </GridItem>
 
-                        {/* Actions */}
-                        <GridItem textAlign="right">
-                          <Button
-                            bg="blue.500"
-                            color="white"
-                            px={3}
-                            py={1.5}
-                            fontSize="sm"
-                            borderRadius="md"
-                            _hover={{
-                              bg: 'blue.600',
-                            }}
-                            cursor="pointer"
-                            onClick={() =>
-                              handleReactivateEmployee(employee.id)
-                            }
-                            loading={isLoading}
-                            disabled={isLoading}
-                          >
-                            Reactivate
-                          </Button>
-                        </GridItem>
-                      </Grid>
-                    ))
-                  ) : (
-                    <Box p={6} textAlign="center">
-                      <Text color="gray.500">No disabled employees found</Text>
-                    </Box>
-                  )}
-                </Box>
-              </>
-            )}
-          </>
-        )}
+                      {/* Email */}
+                      <GridItem>
+                        <Text>{employee.email || '—'}</Text>
+                      </GridItem>
+
+                      {/* Actions */}
+                      <GridItem textAlign="right">
+                        <Button
+                          bg="blue.500"
+                          color="white"
+                          px={3}
+                          py={1.5}
+                          fontSize="sm"
+                          borderRadius="md"
+                          _hover={{
+                            bg: 'blue.600',
+                          }}
+                          cursor="pointer"
+                          onClick={() => handleReactivateEmployee(employee.id)}
+                          loading={isLoading}
+                          disabled={isLoading}
+                        >
+                          Reactivate
+                        </Button>
+                      </GridItem>
+                    </Grid>
+                  ))
+                ) : (
+                  <Box p={6} textAlign="center">
+                    <Text color="gray.500">No disabled employees found</Text>
+                  </Box>
+                )}
+              </Box>
+            </>
+          )}
+        </>
       </Box>
 
       {employeeToDelete && (
