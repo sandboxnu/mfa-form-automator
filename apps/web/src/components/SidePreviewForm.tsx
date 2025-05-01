@@ -4,6 +4,7 @@ import AssigneeMap from './AssigneeMap';
 import { FormInstanceEntity, SignerType } from '@web/client';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
 import router from 'next/router';
+import { getIsActive } from '@web/utils/misc';
 
 export const SidePreviewForm = ({
   formInstance,
@@ -57,6 +58,7 @@ export const SidePreviewForm = ({
               title: getNameFromAssignedGroup(assignedGroup),
               signerType: assignedGroup.signerType as SignerType,
               signedAt: assignedGroup.signed,
+              isActive: getIsActive(assignedGroup),
             }))}
           />
         </Flex>

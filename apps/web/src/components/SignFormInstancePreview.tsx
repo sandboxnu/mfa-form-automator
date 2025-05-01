@@ -1,9 +1,5 @@
 import { Button, Dialog, Flex, Portal, Text } from '@chakra-ui/react';
-import {
-  AssignedGroupEntityHydrated,
-  FormInstanceEntity,
-  SignerType,
-} from '@web/client/types.gen';
+import { FormInstanceEntity, SignerType } from '@web/client/types.gen';
 import { useRouter } from 'next/router';
 import { CloseIcon, PenSigningIcon } from '@web/static/icons';
 import { getNameFromAssignedGroup } from '@web/utils/formInstanceUtils';
@@ -12,6 +8,7 @@ import AssigneeMap from './AssigneeMap';
 import { Avatar } from './ui/avatar.tsx';
 import { nextSigner, signerIsUser } from '@web/utils/formInstanceUtils';
 import { useRouterContext } from '@web/context/RouterProvider.tsx';
+import { getIsActive } from '@web/utils/misc.ts';
 
 /**
  * Modal used in OverviewRow component for To Do forms
@@ -43,40 +40,6 @@ export const SignFormInstancePreview = ({
   if (!formInstance || !user) {
     return <></>;
   }
-
-  /**
-   * Determine if an assigned group is active based on signer type
-   * @param assignedGroup - The assigned group to check
-   * @returns boolean indicating if the assigned group is active
-   */
-  const getIsActive = (assignedGroup: AssignedGroupEntityHydrated): boolean => {
-    const { signerType } = assignedGroup;
-
-    // Department or Position are always active
-    if (
-      signerType === SignerType.DEPARTMENT ||
-      signerType === SignerType.POSITION
-    ) {
-      return true;
-    }
-
-    // For User type, check if the user is active
-    if (signerType === SignerType.USER) {
-      return assignedGroup?.signerEmployee?.isActive ?? false;
-    }
-
-    // For User List type, check if any user in the list is active
-    if (signerType === SignerType.USER_LIST) {
-      return (
-        assignedGroup?.signerEmployeeList?.some(
-          (employee) => employee.isActive,
-        ) ?? false
-      );
-    }
-
-    // Default case for unknown signer types
-    return false;
-  };
 
   const openForm = () => {
     const url =
