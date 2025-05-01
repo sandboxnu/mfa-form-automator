@@ -297,11 +297,11 @@ describe('EmployeesServiceIntegrationTest', () => {
     });
 
     it('successfully retrieves all employees', async () => {
-      const employees = await service.findAll();
+      const employees = await service.findAll({});
       expect(employees).toHaveLength(2);
     });
     it('successfully retrieves a limited number of employees', async () => {
-      const employees = await service.findAll(1);
+      const employees = await service.findAll({ limit: 1 });
       expect(employees).toHaveLength(1);
     });
   });
@@ -355,7 +355,7 @@ describe('EmployeesServiceIntegrationTest', () => {
     });
 
     it('successfully retrieves all employees with secure data', async () => {
-      const employees = await service.findAllSecure();
+      const employees = await service.findAllSecure({});
       expect(employees).toHaveLength(2);
       expect(employees[0].id).toBe(employeeId1);
       expect(employees[1].id).toBe(employeeId2);

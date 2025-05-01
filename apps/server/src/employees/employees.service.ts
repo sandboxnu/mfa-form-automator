@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { ValidateEmployeeHandler } from './validate-employee/ValidateEmployeeHandlerInterface';
 import { EmployeeErrorMessage } from './employees.errors';
+import { orderBy, SortOption } from '../utils';
 
 @Injectable()
 export class EmployeesService {
@@ -74,10 +75,11 @@ export class EmployeesService {
    * @param limit the number of employees we want to retrieve (optional)
    * @returns all employees, hydrated
    */
-  async findAll(limit?: number) {
+  async findAll({ limit, sortBy }: { limit?: number; sortBy?: SortOption }) {
     const employees = limit
       ? await this.prisma.employee.findMany({
           take: limit,
+          orderBy: orderBy(sortBy, true),
           where: {
             isActive: true,
           } as any,
@@ -89,6 +91,7 @@ export class EmployeesService {
           },
         })
       : await this.prisma.employee.findMany({
+          orderBy: orderBy(sortBy),
           where: {
             isActive: true,
           } as any,
@@ -103,9 +106,16 @@ export class EmployeesService {
     return employees;
   }
 
-  async findAllSecure(limit?: number) {
+  async findAllSecure({
+    limit,
+    sortBy,
+  }: {
+    limit?: number;
+    sortBy?: SortOption;
+  }) {
     return await this.prisma.employee.findMany({
       ...(limit ? { take: limit } : {}),
+      orderBy: orderBy(sortBy, true),
       where: {
         isActive: true,
       } as any,

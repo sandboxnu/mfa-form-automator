@@ -54,6 +54,7 @@ function EmployeeDirectory() {
     ...employeesControllerFindAllOptions({
       query: {
         secure: true,
+        sortBy: sortOption,
       },
     }),
   });
@@ -113,45 +114,6 @@ function EmployeeDirectory() {
       setFilteredEmployees(filtered);
     }
   }, [employees, searchQuery]);
-
-  // TODO: sort on server side
-  // /**
-  //  * Sort employees based on the selected sort option
-  //  * @returns Sorted array of employees
-  //  */
-  // const sortedEmployees = useMemo(() => {
-  //   if (!localEmployees.length) return [];
-  //   const employeesCopy = [...localEmployees];
-
-  //   switch (sortOption) {
-  //     case SortBy.NAME_ASC:
-  //       return employeesCopy.sort((a, b) =>
-  //         `${a.firstName} ${a.lastName}`.localeCompare(
-  //           `${b.firstName} ${b.lastName}`,
-  //         ),
-  //       );
-  //     case SortBy.NAME_DESC:
-  //       return employeesCopy.sort((a, b) =>
-  //         `${b.firstName} ${b.lastName}`.localeCompare(
-  //           `${a.firstName} ${a.lastName}`,
-  //         ),
-  //       );
-  //     case SortBy.CREATED_AT_ASC:
-  //       return employeesCopy.sort((a, b) => {
-  //         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-  //         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-  //         return dateA - dateB;
-  //       });
-  //     case SortBy.CREATED_AT_DESC:
-  //       return employeesCopy.sort((a, b) => {
-  //         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-  //         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-  //         return dateB - dateA;
-  //       });
-  //     default:
-  //       return employeesCopy;
-  //   }
-  // }, [localEmployees, sortOption]);
 
   /**
    * Mutation to handle deactivating an employee

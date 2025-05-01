@@ -36,6 +36,7 @@ export type EmployeeSecureEntityHydrated = {
   email: string;
   signatureLink: string | null;
   scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
+  isActive: boolean;
   position: PositionBaseEntity | null;
   positionId: string | null;
   pswdHash: string | null;
@@ -441,6 +442,10 @@ export type EmployeesControllerFindAllData = {
      * If true, returns secure employee data
      */
     secure?: boolean;
+    /**
+     * Optional sorting parameter
+     */
+    sortBy?: string;
   };
   url: '/api/employees';
 };

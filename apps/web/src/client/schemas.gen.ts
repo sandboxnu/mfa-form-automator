@@ -91,6 +91,9 @@ export const EmployeeSecureEntityHydratedSchema = {
       type: 'string',
       enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
+    isActive: {
+      type: 'boolean',
+    },
     position: {
       nullable: true,
       allOf: [
@@ -127,6 +130,7 @@ export const EmployeeSecureEntityHydratedSchema = {
     'email',
     'signatureLink',
     'scope',
+    'isActive',
     'position',
     'positionId',
     'pswdHash',

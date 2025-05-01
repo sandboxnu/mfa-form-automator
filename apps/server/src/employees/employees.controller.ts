@@ -42,6 +42,7 @@ import {
   EmployeeBaseEntityResponse,
   EmployeesFindAllResponse,
 } from './responses/employees-find-all.response';
+import { SortOption } from '../utils';
 
 @ApiTags('employees')
 @Controller('employees')
@@ -105,10 +106,17 @@ export class EmployeesController {
     description: 'If true, returns secure employee data',
     required: false,
   })
+  @ApiQuery({
+    name: 'sortBy',
+    type: String,
+    description: 'Optional sorting parameter',
+    required: false,
+  })
   async findAll(
     @AuthUser() currentUser: UserEntity,
     @Query('limit') limit?: number,
     @Query('secure') secure?: string,
+    @Query('sortBy') sortBy?: SortOption,
   ) {
     if (secure === 'true') {
       const currentEmployee = await this.employeesService.findOne(
@@ -117,13 +125,19 @@ export class EmployeesController {
       if (currentEmployee.scope !== EmployeeScope.ADMIN) {
         throw new NotFoundException(AppErrorMessage.FORBIDDEN);
       }
-      const employees = await this.employeesService.findAllSecure(limit);
+      const employees = await this.employeesService.findAllSecure({
+        limit,
+        sortBy,
+      });
       return new EmployeesFindAllResponse(
         employees.length,
         employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
       );
     }
-    const employees = await this.employeesService.findAll(limit);
+    const employees = await this.employeesService.findAll({
+      limit,
+      sortBy,
+    });
     return new EmployeesFindAllResponse(
       employees.length,
       employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
