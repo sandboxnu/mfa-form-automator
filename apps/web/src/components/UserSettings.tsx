@@ -53,7 +53,7 @@ export const UserSettings = ({
     onMutate: () => {
       setLoading(true);
     },
-    onError: (error) => {
+    onError: () => {
       setLoading(false);
     },
     onSuccess: () => {
@@ -142,9 +142,10 @@ export const UserSettings = ({
                 >
                   <Text>Email</Text>
                   <Input
-                    value={'Jane.Doe@mfa.com'}
+                    value={user?.email}
                     disabled={true}
                     outlineColor={'black'}
+                    padding="10px"
                   ></Input>
                   <Flex width="100%" flexDirection="column">
                     <label htmlFor="departmentDropdown">Department</label>
