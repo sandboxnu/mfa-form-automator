@@ -1,4 +1,4 @@
-import { Box, Flex, Stack, Table, Text } from '@chakra-ui/react';
+import { Box, Flex, Stack, Table, Text, Center } from '@chakra-ui/react';
 import { Status } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { SearchAndSort } from '@web/components/SearchAndSort';
@@ -93,9 +93,12 @@ export const ActiveFormList = ({ title }: { title: string }) => {
     setSortedFormInstances(filteredAndSortedForms);
   }, [searchQuery, allActiveForms]);
 
-  if (isLoading || !allActiveForms.length || error) {
+  if (isLoading || error) {
     return <></>;
   }
+
+  const hasActiveForms = allActiveForms.length > 0;
+  const hasFilteredForms = sortedFormInstances.length > 0;
 
   return (
     <>
@@ -122,7 +125,9 @@ export const ActiveFormList = ({ title }: { title: string }) => {
               fontWeight="400"
               lineHeight="21px"
             >
-              {allActiveForms.length === 1
+              {!hasActiveForms
+                ? 'There are no active form instances'
+                : allActiveForms.length === 1
                 ? 'There is 1 active form instance'
                 : `There are ${infiniteFormInstances?.pages[0].count} active form instances`}
             </Text>
@@ -199,81 +204,94 @@ export const ActiveFormList = ({ title }: { title: string }) => {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {sortedFormInstances.map(
-                  (formInstance: FormInstanceEntity, index: number) => (
-                    <Table.Row
-                      key={index}
-                      cursor="pointer"
-                      _hover={{ backgroundColor: '#f5f5f5' }}
-                      bg="white"
-                      onMouseEnter={() => setHoveredRowIndex(index)}
-                      onMouseLeave={() => setHoveredRowIndex(null)}
-                      onClick={() =>
-                        router.push('/preview-form/' + formInstance.id)
-                      }
-                    >
-                      <Table.Cell py="12px" px="24px">
-                        {isFullySigned(formInstance) &&
-                        formInstance.markedCompleted ? (
-                          <Status.Root
-                            size="lg"
-                            width="100px"
-                            colorPalette="green"
-                          >
-                            <Status.Indicator />
-                            Complete
-                          </Status.Root>
-                        ) : (
-                          <Status.Root
-                            size="lg"
-                            width="100px"
-                            colorPalette="yellow"
-                          >
-                            <Status.Indicator />
-                            Pending
-                          </Status.Root>
-                        )}
-                      </Table.Cell>
+                {hasFilteredForms ? (
+                  sortedFormInstances.map(
+                    (formInstance: FormInstanceEntity, index: number) => (
+                      <Table.Row
+                        key={index}
+                        cursor="pointer"
+                        _hover={{ backgroundColor: '#f5f5f5' }}
+                        bg="white"
+                        onMouseEnter={() => setHoveredRowIndex(index)}
+                        onMouseLeave={() => setHoveredRowIndex(null)}
+                        onClick={() =>
+                          router.push('/preview-form/' + formInstance.id)
+                        }
+                      >
+                        <Table.Cell py="12px" px="24px">
+                          {isFullySigned(formInstance) &&
+                          formInstance.markedCompleted ? (
+                            <Status.Root
+                              size="lg"
+                              width="100px"
+                              colorPalette="green"
+                            >
+                              <Status.Indicator />
+                              Complete
+                            </Status.Root>
+                          ) : (
+                            <Status.Root
+                              size="lg"
+                              width="100px"
+                              colorPalette="yellow"
+                            >
+                              <Status.Indicator />
+                              Pending
+                            </Status.Root>
+                          )}
+                        </Table.Cell>
 
-                      <Table.Cell py="12px" px="24px">
-                        {formInstance.name}
-                      </Table.Cell>
+                        <Table.Cell py="12px" px="24px">
+                          {formInstance.name}
+                        </Table.Cell>
 
-                      <Table.Cell py="12px" px="24px">
-                        <Text>
-                          {formInstance.originator.firstName}{' '}
-                          {formInstance.originator.lastName}
-                        </Text>
-                      </Table.Cell>
-
-                      <Table.Cell py="12px" px="24px">
-                        <Flex>
-                          <Text mt="5px">
-                            {`${
-                              formInstance.assignedGroups.filter(
-                                (assignedGroup: AssignedGroupEntityHydrated) =>
-                                  assignedGroup.signed,
-                              ).length
-                            }/${formInstance.assignedGroups.length}`}{' '}
-                            signed
+                        <Table.Cell py="12px" px="24px">
+                          <Text>
+                            {formInstance.originator.firstName}{' '}
+                            {formInstance.originator.lastName}
                           </Text>
-                        </Flex>
-                      </Table.Cell>
-                      <Table.Cell py="12px" px="24px">
-                        <AssignedAvatarGroup
-                          assignedGroups={formInstance.assignedGroups}
-                        />
-                      </Table.Cell>
-                      <Table.Cell py="12px">
-                        {hoveredRowIndex === index && (
-                          <>
-                            <PreviewIcon boxSize="20px" marginRight="8px" />
-                            preview
-                          </>
-                        )}
-                      </Table.Cell>
-                    </Table.Row>
-                  ),
+                        </Table.Cell>
+
+                        <Table.Cell py="12px" px="24px">
+                          <Flex>
+                            <Text mt="5px">
+                              {`${
+                                formInstance.assignedGroups.filter(
+                                  (
+                                    assignedGroup: AssignedGroupEntityHydrated,
+                                  ) => assignedGroup.signed,
+                                ).length
+                              }/${formInstance.assignedGroups.length}`}{' '}
+                              signed
+                            </Text>
+                          </Flex>
+                        </Table.Cell>
+                        <Table.Cell py="12px" px="24px">
+                          <AssignedAvatarGroup
+                            assignedGroups={formInstance.assignedGroups}
+                          />
+                        </Table.Cell>
+                        <Table.Cell py="12px">
+                          {hoveredRowIndex === index && (
+                            <>
+                              <PreviewIcon boxSize="20px" marginRight="8px" />
+                              preview
+                            </>
+                          )}
+                        </Table.Cell>
+                      </Table.Row>
+                    ),
+                  )
+                ) : (
+                  <Table.Row>
+                    <Table.Cell colSpan={6}>
+                      <Center py="40px">
+                        <Text fontSize="16px" color="#5E5E5E">
+                          No active form instances found
+                        </Text>
+                      </Center>
+                    </Table.Cell>
+                  </Table.Row>
                 )}
               </Table.Body>
             </Table.Root>
