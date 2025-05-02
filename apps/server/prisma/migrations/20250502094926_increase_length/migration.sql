@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "FormTemplate" ALTER COLUMN "formDocLink" SET DATA TYPE VARCHAR(1000);
