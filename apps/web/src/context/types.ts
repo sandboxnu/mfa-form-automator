@@ -48,7 +48,7 @@ export interface AuthContextType {
   user?: User;
   userData?: GraphUser;
   login: (email: string, password: string) => Promise<boolean>;
-  azureLogin: () => void;
+  azureLogin: () => Promise<boolean>;
   completeRegistration: (
     department: string,
     signatureLink: string,

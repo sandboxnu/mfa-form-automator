@@ -41,7 +41,7 @@ export const SignOut: React.FC = () => {
       background="white"
       onClick={() => {
         logout();
-        handleAzureLogout();
+        // handleAzureLogout(); // disabled so we don't logout people from Azure AD
       }}
       cursor="pointer"
     >

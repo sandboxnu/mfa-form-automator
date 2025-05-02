@@ -47,7 +47,10 @@ export class Seeder {
 
     // make sure that positions specified in each employee are valid
     for (const employee of this.employees) {
-      if (!this.positions.find((pos) => pos.id === employee.positionId)) {
+      if (
+        employee.positionId &&
+        !this.positions.find((pos) => pos.id === employee.positionId)
+      ) {
         throw new Error('Position not found for employee');
       }
     }
@@ -159,8 +162,16 @@ export class Seeder {
   }
 
   private async upsertEmployee(data: EmployeeData) {
-    const { id, firstName, lastName, email, signatureLink, positionId, scope } =
-      data;
+    const {
+      id,
+      firstName,
+      lastName,
+      email,
+      signatureLink,
+      positionId,
+      scope,
+      passwordHash,
+    } = data;
 
     return await this.prisma.employee.upsert({
       where: { id: id },
@@ -171,11 +182,10 @@ export class Seeder {
         lastName: lastName,
         email: email,
         signatureLink: signatureLink,
-        position: {
-          connect: { id: positionId },
-        },
+        positionId: positionId ?? undefined,
         scope: scope,
         isActive: true,
+        pswdHash: passwordHash ?? undefined,
       },
     });
   }
