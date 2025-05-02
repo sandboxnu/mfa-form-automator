@@ -16,15 +16,13 @@
     "tsc": "yarn workspaces run tsc -p tsconfig.json",
     "migrate": "yarn --cwd apps/server prisma migrate dev",
     "gen-client": "yarn --cwd apps/web openapi-ts",
+    "seed": "ts-node apps/server/prisma/seed.ts",
     "dev:db:up": "docker compose -f apps/server/docker-compose.db.yml up -d",
     "dev:db:down": "docker compose -f apps/server/docker-compose.db.yml down",
     "backend:docker:build": "docker compose -f apps/server/docker-compose.yml build",
     "backend:docker:run": "docker compose -f apps/server/docker-compose.yml up -d",
     "backend:docker:down": "docker compose -f apps/server/docker-compose.yml down",
     "frontend:docker:build": "docker build -t nextjs-docker -f apps/web/Dockerfile ."
-  },
-  "prisma": {
-    "seed": "ts-node apps/server/prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
