@@ -5,6 +5,7 @@ import { FormInteractionType } from '@web/components/createForm/types';
 import Error from '@web/components/Error';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
+import { useRouterContext } from '@web/context/RouterProvider';
 import { useRouter } from 'next/router';
 
 /**
@@ -19,6 +20,7 @@ function Description() {
     pdfFile,
     formDimensions,
   } = useCreateFormTemplate();
+  const { isRouteChanging } = useRouterContext();
 
   const router = useRouter();
 
@@ -47,7 +49,8 @@ function Description() {
         router.push('/form-template/create/input-fields');
       }}
       backLink={'/form-template/create/upload'}
-      disabled={!formTemplateName}
+      disabled={!formTemplateName || isRouteChanging}
+      loading={isRouteChanging}
     />
   );
 }
