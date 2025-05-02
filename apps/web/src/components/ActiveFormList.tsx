@@ -14,6 +14,7 @@ import { distance } from 'fastest-levenshtein';
 import { PreviewIcon } from '@web/static/icons';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { isFullySigned } from '@web/utils/formInstanceUtils';
+import FormLoading from './FormLoading';
 
 export const ActiveFormList = ({ title }: { title: string }) => {
   const router = useRouter();
@@ -94,7 +95,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
   }, [searchQuery, allActiveForms]);
 
   if (isLoading || error) {
-    return <></>;
+    return <FormLoading />;
   }
 
   const hasActiveForms = allActiveForms.length > 0;

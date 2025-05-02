@@ -38,6 +38,7 @@ export const ButtonSwitch = ({
         borderColor={isActive ? activeColor : '#C0C0C0'}
         color={isActive ? activeColor : '#63646B'}
         onClick={onToggle}
+        cursor={'pointer'}
       >
         {label}
       </Box>

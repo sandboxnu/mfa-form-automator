@@ -22,6 +22,7 @@ import { queryClient } from './_app';
 import { distance } from 'fastest-levenshtein';
 import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
 import { useRouterContext } from '@web/context/RouterProvider';
+import FormLoading from '@web/components/FormLoading';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -48,6 +49,7 @@ function TemplateDirectory() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading: isLoadingTemplates,
   } = useInfiniteQuery({
     ...formTemplatesControllerFindAllInfiniteOptions({
       query: {
@@ -164,6 +166,10 @@ function TemplateDirectory() {
 
   const hasTemplates = formTemplates.length > 0;
   const hasFilteredTemplates = sortedFormTemplates.length > 0;
+
+  if (isLoadingTemplates) {
+    return <FormLoading />;
+  }
 
   return (
     <>
