@@ -15,7 +15,10 @@ const seeder = new Seeder(
   formInstances,
 );
 
-seeder.seed().catch((e) => {
+const clearFirst = true;
+const clearOnly = false;
+
+seeder.seed(clearFirst, clearOnly).catch((e) => {
   console.error(e);
   process.exit(1);
 });
