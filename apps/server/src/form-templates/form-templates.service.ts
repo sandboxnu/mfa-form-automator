@@ -6,6 +6,7 @@ import { PdfStoreService } from '../pdf-store/pdf-store.service';
 import { FormTemplateErrorMessage } from './form-templates.errors';
 import { SortOption, orderBy } from '../utils';
 import { CreateFieldGroupDto } from '../field-group/dto/create-field-group.dto';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class FormTemplatesService {
@@ -32,7 +33,7 @@ export class FormTemplatesService {
 
     const formTemplatePdfFormDocLink = await this.pdfStoreService.uploadPdf(
       createFormTemplateDto.file.buffer,
-      createFormTemplateDto.name,
+      createFormTemplateDto.name + '_' + uuid(),
     );
 
     const newFormTemplate = await this.prisma.formTemplate.create({
@@ -40,8 +41,8 @@ export class FormTemplatesService {
         name: createFormTemplateDto.name,
         formDocLink: formTemplatePdfFormDocLink,
         description: createFormTemplateDto.description,
-        pageHeight: createFormTemplateDto.pageHeight,
-        pageWidth: createFormTemplateDto.pageWidth,
+        pageHeight: Math.floor(createFormTemplateDto.pageHeight),
+        pageWidth: Math.floor(createFormTemplateDto.pageWidth),
         disabled: createFormTemplateDto.disabled,
         fieldGroups: {
           create: createFormTemplateDto.fieldGroups.map((fieldGroup) => {
@@ -249,8 +250,8 @@ export class FormTemplatesService {
                 existingFormTemplate.description,
               // reuse the existing base pdf url
               formDocLink: existingFormTemplate.formDocLink,
-              pageHeight: existingFormTemplate.pageHeight,
-              pageWidth: existingFormTemplate.pageWidth,
+              pageHeight: Math.floor(existingFormTemplate.pageHeight),
+              pageWidth: Math.floor(existingFormTemplate.pageWidth),
               fieldGroups: {
                 create: updateFormTemplateDto.fieldGroups?.map((fieldGroup) => {
                   return {

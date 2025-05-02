@@ -108,8 +108,8 @@ function Review() {
       await createFormTemplateMutation
         .mutateAsync({
           body: {
-            pageHeight: formDimensions.height,
-            pageWidth: formDimensions.width,
+            pageHeight: Math.floor(formDimensions.height),
+            pageWidth: Math.floor(formDimensions.width),
             name: formTemplateName ?? '',
             fieldGroups: fieldGroups,
             file: pdfFile,

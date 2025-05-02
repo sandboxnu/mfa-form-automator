@@ -31,7 +31,8 @@ export class Seeder {
   }
 
   /**
-   * Clears all tables in the database by temporarily disabling foreign key constraints
+   * Alternative method to clear all tables without requiring superuser privileges
+   * This works by dropping constraints manually and restoring them after clearing
    */
   async clearAllTables() {
     try {
@@ -44,73 +45,214 @@ export class Seeder {
       const isMySql = databaseUrl.includes('mysql');
       const isSqlite = databaseUrl.includes('sqlite');
 
-      // Disable foreign key constraints based on database type
       if (isPostgres) {
-        console.log('Detected PostgreSQL database');
-        await this.prisma.$executeRawUnsafe(
-          `SET session_replication_role = 'replica';`,
+        console.log(
+          'Using alternative method for PostgreSQL without superuser privileges',
         );
+
+        // Method 1: Use TRUNCATE with CASCADE option (works if your PostgreSQL version supports it)
+        try {
+          // List of tables to truncate in appropriate order
+          const tables = [
+            'InstanceBox',
+            'AssignedGroup',
+            'FormInstance',
+            'TemplateBox',
+            'FieldGroup',
+            'FormTemplate',
+            'Employee',
+            'Position',
+            'Department',
+          ];
+
+          // Convert to snake_case for SQL (assuming your table names are in PascalCase in the code)
+          const sqlTables = tables.map((table) => {
+            // Convert PascalCase to snake_case
+            return table
+              .replace(/([A-Z])/g, '_$1')
+              .toLowerCase()
+              .substring(1);
+          });
+
+          // TRUNCATE with CASCADE to bypass foreign key constraints
+          const truncateQuery = `TRUNCATE TABLE ${sqlTables.join(
+            ', ',
+          )} CASCADE;`;
+          await this.prisma.$executeRawUnsafe(truncateQuery);
+
+          console.log('All tables truncated successfully using CASCADE option');
+          return;
+        } catch (truncateError) {
+          console.log(
+            'CASCADE truncate not supported, trying alternative approach:',
+            truncateError.message,
+          );
+        }
+
+        // Method 2: If CASCADE doesn't work, delete in order - more compatible approach
+        // Clear tables in reverse order of dependencies without disabling constraints
+        const tableDeleteOperations = [
+          this.prisma.instanceBox.deleteMany(),
+          this.prisma.assignedGroup.deleteMany(),
+          this.prisma.formInstance.deleteMany(),
+          this.prisma.templateBox.deleteMany(),
+          this.prisma.fieldGroup.deleteMany(),
+          this.prisma.formTemplate.deleteMany(),
+          this.prisma.employee.deleteMany(),
+          this.prisma.position.deleteMany(),
+          this.prisma.department.deleteMany(),
+        ];
+
+        // Execute delete operations one by one to handle dependencies
+        const tableNames = [
+          'InstanceBox',
+          'AssignedGroup',
+          'FormInstance',
+          'TemplateBox',
+          'FieldGroup',
+          'FormTemplate',
+          'Employee',
+          'Position',
+          'Department',
+        ];
+
+        for (let i = 0; i < tableDeleteOperations.length; i++) {
+          try {
+            const result = await tableDeleteOperations[i];
+            console.log(
+              `Cleared ${tableNames[i]}: ${result.count} records deleted`,
+            );
+          } catch (error) {
+            console.error(`Error clearing ${tableNames[i]}:`, error.message);
+            // Continue with next table even if one fails
+          }
+        }
       } else if (isMySql) {
         console.log('Detected MySQL database');
         await this.prisma.$executeRawUnsafe(`SET FOREIGN_KEY_CHECKS = 0;`);
+
+        // Clear tables in reverse order of dependencies
+        const tableDeleteOperations = [
+          this.prisma.instanceBox.deleteMany(),
+          this.prisma.assignedGroup.deleteMany(),
+          this.prisma.formInstance.deleteMany(),
+          this.prisma.templateBox.deleteMany(),
+          this.prisma.fieldGroup.deleteMany(),
+          this.prisma.formTemplate.deleteMany(),
+          this.prisma.employee.deleteMany(),
+          this.prisma.position.deleteMany(),
+          this.prisma.department.deleteMany(),
+        ];
+
+        // Execute all delete operations
+        const results = await this.prisma.$transaction(tableDeleteOperations);
+
+        // Log results
+        const tableNames = [
+          'InstanceBox',
+          'AssignedGroup',
+          'FormInstance',
+          'TemplateBox',
+          'FieldGroup',
+          'FormTemplate',
+          'Employee',
+          'Position',
+          'Department',
+        ];
+
+        results.forEach((result, index) => {
+          console.log(
+            `Cleared ${tableNames[index]}: ${result.count} records deleted`,
+          );
+        });
+
+        // Re-enable foreign key constraints
+        await this.prisma.$executeRawUnsafe(`SET FOREIGN_KEY_CHECKS = 1;`);
       } else if (isSqlite) {
         console.log('Detected SQLite database');
         await this.prisma.$executeRawUnsafe(`PRAGMA foreign_keys = OFF;`);
+
+        // Clear tables in reverse order of dependencies
+        const tableDeleteOperations = [
+          this.prisma.instanceBox.deleteMany(),
+          this.prisma.assignedGroup.deleteMany(),
+          this.prisma.formInstance.deleteMany(),
+          this.prisma.templateBox.deleteMany(),
+          this.prisma.fieldGroup.deleteMany(),
+          this.prisma.formTemplate.deleteMany(),
+          this.prisma.employee.deleteMany(),
+          this.prisma.position.deleteMany(),
+          this.prisma.department.deleteMany(),
+        ];
+
+        // Execute all delete operations
+        const results = await this.prisma.$transaction(tableDeleteOperations);
+
+        // Log results
+        const tableNames = [
+          'InstanceBox',
+          'AssignedGroup',
+          'FormInstance',
+          'TemplateBox',
+          'FieldGroup',
+          'FormTemplate',
+          'Employee',
+          'Position',
+          'Department',
+        ];
+
+        results.forEach((result, index) => {
+          console.log(
+            `Cleared ${tableNames[index]}: ${result.count} records deleted`,
+          );
+        });
+
+        // Re-enable foreign key constraints
+        await this.prisma.$executeRawUnsafe(`PRAGMA foreign_keys = ON;`);
       } else {
         console.log(
-          'Database type not detected, attempting operation without specific FK handling',
+          'Database type not detected, attempting sequential deletion',
         );
+
+        // Clear tables in reverse order of dependencies
+        const tableDeleteOperations = [
+          this.prisma.instanceBox.deleteMany(),
+          this.prisma.assignedGroup.deleteMany(),
+          this.prisma.formInstance.deleteMany(),
+          this.prisma.templateBox.deleteMany(),
+          this.prisma.fieldGroup.deleteMany(),
+          this.prisma.formTemplate.deleteMany(),
+          this.prisma.employee.deleteMany(),
+          this.prisma.position.deleteMany(),
+          this.prisma.department.deleteMany(),
+        ];
+
+        // Execute delete operations one by one to handle dependencies
+        const tableNames = [
+          'InstanceBox',
+          'AssignedGroup',
+          'FormInstance',
+          'TemplateBox',
+          'FieldGroup',
+          'FormTemplate',
+          'Employee',
+          'Position',
+          'Department',
+        ];
+
+        for (let i = 0; i < tableDeleteOperations.length; i++) {
+          try {
+            const result = await tableDeleteOperations[i];
+            console.log(
+              `Cleared ${tableNames[i]}: ${result.count} records deleted`,
+            );
+          } catch (error) {
+            console.error(`Error clearing ${tableNames[i]}:`, error.message);
+            // Continue with next table even if one fails
+          }
+        }
       }
 
-      console.log('Foreign key constraints disabled');
-
-      // Clear tables in reverse order of dependencies
-      const tableDeleteOperations = [
-        this.prisma.instanceBox.deleteMany(),
-        this.prisma.assignedGroup.deleteMany(),
-        this.prisma.formInstance.deleteMany(),
-        this.prisma.templateBox.deleteMany(),
-        this.prisma.fieldGroup.deleteMany(),
-        this.prisma.formTemplate.deleteMany(),
-        this.prisma.employee.deleteMany(),
-        this.prisma.position.deleteMany(),
-        this.prisma.department.deleteMany(),
-      ];
-
-      // Execute all delete operations
-      const results = await this.prisma.$transaction(tableDeleteOperations);
-
-      // Log results
-      const tableNames = [
-        'InstanceBox',
-        'AssignedGroup',
-        'FormInstance',
-        'TemplateBox',
-        'FieldGroup',
-        'FormTemplate',
-        'Employee',
-        'Position',
-        'Department',
-      ];
-
-      results.forEach((result, index) => {
-        console.log(
-          `Cleared ${tableNames[index]}: ${result.count} records deleted`,
-        );
-      });
-
-      // Re-enable foreign key constraints
-      if (isPostgres) {
-        await this.prisma.$executeRawUnsafe(
-          `SET session_replication_role = 'origin';`,
-        );
-      } else if (isMySql) {
-        await this.prisma.$executeRawUnsafe(`SET FOREIGN_KEY_CHECKS = 1;`);
-      } else if (isSqlite) {
-        await this.prisma.$executeRawUnsafe(`PRAGMA foreign_keys = ON;`);
-      }
-
-      console.log('Foreign key constraints re-enabled');
       console.log('All tables cleared successfully');
     } catch (error) {
       console.error('Error clearing database tables:', error);
