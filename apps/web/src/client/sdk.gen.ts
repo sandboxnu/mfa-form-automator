@@ -31,6 +31,8 @@ import type {
   EmployeesControllerFindOneResponse,
   EmployeesControllerUpdateData,
   EmployeesControllerUpdateResponse,
+  EmployeesControllerUpdateSignatureData,
+  EmployeesControllerUpdateSignatureResponse,
   PositionsControllerFindAllData,
   PositionsControllerFindAllResponse,
   PositionsControllerCreateData,
@@ -305,6 +307,25 @@ export const employeesControllerUpdate = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     url: '/api/employees/{id}',
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+};
+
+export const employeesControllerUpdateSignature = <
+  ThrowOnError extends boolean = false,
+>(
+  options: Options<EmployeesControllerUpdateSignatureData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).patch<
+    EmployeesControllerUpdateSignatureResponse,
+    unknown,
+    ThrowOnError
+  >({
+    url: '/api/employees/{id}/signature',
     ...options,
     headers: {
       'Content-Type': 'application/json',

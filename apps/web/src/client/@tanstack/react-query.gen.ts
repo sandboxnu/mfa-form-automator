@@ -15,6 +15,7 @@ import {
   employeesControllerRemove,
   employeesControllerFindOne,
   employeesControllerUpdate,
+  employeesControllerUpdateSignature,
   positionsControllerFindAll,
   positionsControllerCreate,
   positionsControllerFindAllInDepartment,
@@ -71,6 +72,8 @@ import type {
   EmployeesControllerFindOneData,
   EmployeesControllerUpdateData,
   EmployeesControllerUpdateResponse,
+  EmployeesControllerUpdateSignatureData,
+  EmployeesControllerUpdateSignatureResponse,
   PositionsControllerFindAllData,
   PositionsControllerCreateData,
   PositionsControllerCreateResponse,
@@ -471,6 +474,26 @@ export const employeesControllerUpdateMutation = (
   > = {
     mutationFn: async (localOptions) => {
       const { data } = await employeesControllerUpdate({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const employeesControllerUpdateSignatureMutation = (
+  options?: Partial<Options<EmployeesControllerUpdateSignatureData>>,
+) => {
+  const mutationOptions: UseMutationOptions<
+    EmployeesControllerUpdateSignatureResponse,
+    AxiosError<DefaultError>,
+    Options<EmployeesControllerUpdateSignatureData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await employeesControllerUpdateSignature({
         ...options,
         ...localOptions,
         throwOnError: true,

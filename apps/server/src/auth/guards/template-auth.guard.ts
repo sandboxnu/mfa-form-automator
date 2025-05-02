@@ -29,10 +29,9 @@ export class TemplateAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err: any, user: any, info: any) {
+  handleRequest(err: any, user: any) {
     // You can throw an exception based on either "info" or "err" arguments
     if (err || !user || !this.scopes.includes(user.scope)) {
-      console.log(info);
       throw err || new UnauthorizedException();
     }
     return user;

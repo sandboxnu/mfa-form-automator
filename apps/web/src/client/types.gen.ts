@@ -95,6 +95,10 @@ export type UpdateEmployeeDto = {
   isActive?: boolean;
 };
 
+export type UpdateSignatureDto = {
+  signatureLink?: string;
+};
+
 export type CreatePositionDto = {
   name: string;
   departmentId?: string | null;
@@ -684,6 +688,41 @@ export type EmployeesControllerUpdateResponses = {
 
 export type EmployeesControllerUpdateResponse =
   EmployeesControllerUpdateResponses[keyof EmployeesControllerUpdateResponses];
+
+export type EmployeesControllerUpdateSignatureData = {
+  body: UpdateSignatureDto;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: '/api/employees/{id}/signature';
+};
+
+export type EmployeesControllerUpdateSignatureErrors = {
+  /**
+   * Bad Request
+   */
+  400: unknown;
+  /**
+   * Unauthorized Request
+   */
+  403: unknown;
+  /**
+   * Resource not found
+   */
+  404: unknown;
+  /**
+   * Bad Request
+   */
+  422: unknown;
+};
+
+export type EmployeesControllerUpdateSignatureResponses = {
+  200: EmployeeSecureEntityHydrated;
+};
+
+export type EmployeesControllerUpdateSignatureResponse =
+  EmployeesControllerUpdateSignatureResponses[keyof EmployeesControllerUpdateSignatureResponses];
 
 /**
  * Positions sorting option

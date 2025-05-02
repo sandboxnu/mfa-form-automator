@@ -44,6 +44,7 @@ import {
   EmployeesFindAllResponse,
 } from './responses/employees-find-all.response';
 import { SortOption } from '../utils';
+import { UpdateSignatureDto } from './dto/update-signature.dto';
 
 @ApiTags('employees')
 @Controller('employees')
@@ -261,6 +262,39 @@ export class EmployeesController {
       const updatedEmployee = await this.employeesService.update(
         id,
         updateEmployeeDto,
+      );
+      return new EmployeeSecureEntityHydrated(updatedEmployee);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          this.loggerService.error(EmployeeErrorMessage.EMPLOYEE_NOT_FOUND);
+          throw new NotFoundException(
+            EmployeeErrorMessage.EMPLOYEE_NOT_FOUND_CLIENT,
+          );
+        }
+      }
+      throw e;
+    }
+  }
+
+  @Patch(':id/signature')
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: EmployeeSecureEntityHydrated })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
+  @ApiUnprocessableEntityResponse({
+    description: AppErrorMessage.UNPROCESSABLE_ENTITY,
+  })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  async updateSignature(
+    @Param('id') id: string,
+    @Body(new ValidationPipe({ transform: true }))
+    updateSignatureDto: UpdateSignatureDto,
+  ) {
+    try {
+      const updatedEmployee = await this.employeesService.update(
+        id,
+        updateSignatureDto,
       );
       return new EmployeeSecureEntityHydrated(updatedEmployee);
     } catch (e) {

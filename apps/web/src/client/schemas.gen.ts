@@ -285,6 +285,15 @@ export const UpdateEmployeeDtoSchema = {
   },
 } as const;
 
+export const UpdateSignatureDtoSchema = {
+  type: 'object',
+  properties: {
+    signatureLink: {
+      type: 'string',
+    },
+  },
+} as const;
+
 export const CreatePositionDtoSchema = {
   type: 'object',
   properties: {

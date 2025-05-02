@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { DepartmentEntity, PositionBaseEntity } from '@web/client';
 import {
   departmentsControllerFindAllOptions,
-  employeesControllerUpdateMutation,
+  employeesControllerUpdateSignatureMutation,
   positionsControllerFindAllInDepartmentOptions,
 } from '@web/client/@tanstack/react-query.gen';
 import { useAuth } from '@web/hooks/useAuth';
@@ -49,7 +49,7 @@ export const UserSettings = ({
   });
 
   const updateEmployee = useMutation({
-    ...employeesControllerUpdateMutation(),
+    ...employeesControllerUpdateSignatureMutation(),
     onMutate: () => {
       setLoading(true);
     },
@@ -81,7 +81,6 @@ export const UserSettings = ({
       },
       body: {
         signatureLink: newSignatureLink ?? user?.signatureLink,
-        positionId: currentPositionId,
       },
     });
   };
