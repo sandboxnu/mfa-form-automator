@@ -12,12 +12,12 @@ import { ReviewBox } from '@web/components/createFormInstance/ReviewBox';
 import isAuth from '@web/components/isAuth';
 import { toaster } from '@web/components/ui/toaster';
 import { useCreateFormInstance } from '@web/context/CreateFormInstanceContext';
+import { useRouterContext } from '@web/context/RouterProvider';
 import { useAuth } from '@web/hooks/useAuth';
 import { queryClient } from '@web/pages/_app';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import Error from '@web/components/Error';
 
 function Review() {
   const [createFormLoading, setCreateFormLoading] = useState(false);
@@ -29,6 +29,7 @@ function Review() {
     pdfFile,
   } = useCreateFormInstance();
   const router = useRouter();
+  const { isRouteChanging } = useRouterContext();
   const createFormInstanceMutation = useMutation({
     ...formInstancesControllerCreateMutation(),
     onSuccess: () => {
@@ -145,8 +146,8 @@ function Review() {
       submitFunction={_submitFormInstance}
       backLink={'/form-instance/create/assign-groups'}
       review={true}
-      disabled={createFormLoading}
-      loading={createFormLoading}
+      disabled={createFormLoading || isRouteChanging}
+      loading={createFormLoading || isRouteChanging}
     />
   );
 }

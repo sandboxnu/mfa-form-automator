@@ -53,7 +53,8 @@ export const SignIn: React.FC = () => {
             if (!(await handleLogin())) {
               toaster.create({
                 title: 'Failed to log in',
-                description: 'Invalid credentials.',
+                description:
+                  'User not registered. Please ask an admin to register you.',
                 type: 'error',
                 duration: 3000,
               });

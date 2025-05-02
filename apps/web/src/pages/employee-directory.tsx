@@ -34,6 +34,7 @@ import {
   employeesControllerCreateMutation,
   employeesControllerFindAllDisabledQueryKey,
 } from '@web/client/@tanstack/react-query.gen';
+import FormLoading from '@web/components/FormLoading';
 
 // Enhanced Scope enum with user-friendly display names
 const ScopeDisplayNames = {
@@ -484,7 +485,8 @@ function EmployeeDirectory() {
     setShowDisabledEmployees(!showDisabledEmployees);
   };
 
-  if (filteredEmployees.length === 0 && !isCreatingEmployee) return null;
+  if (filteredEmployees.length === 0 && !isCreatingEmployee)
+    return <FormLoading />;
 
   return (
     <>

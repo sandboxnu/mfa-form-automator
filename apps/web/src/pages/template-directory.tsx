@@ -1,4 +1,4 @@
-import { Button, Flex, Text, Box } from '@chakra-ui/react';
+import { Button, Flex, Text, Box, Center } from '@chakra-ui/react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 import { FormTemplateEntity, Scope, SortBy } from '@web/client';
 import {
@@ -22,6 +22,7 @@ import { queryClient } from './_app';
 import { distance } from 'fastest-levenshtein';
 import { DeleteConfirmModal } from '@web/components/DeleteConfirmModal';
 import { useRouterContext } from '@web/context/RouterProvider';
+import FormLoading from '@web/components/FormLoading';
 
 /**
  * @returns A page for admins and contributors to see all templates and the templates they have created.
@@ -48,6 +49,7 @@ function TemplateDirectory() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading: isLoadingTemplates,
   } = useInfiniteQuery({
     ...formTemplatesControllerFindAllInfiniteOptions({
       query: {
@@ -162,6 +164,13 @@ function TemplateDirectory() {
     router.push('/form-template/' + formTemplate.id + '/edit/description');
   }
 
+  const hasTemplates = formTemplates.length > 0;
+  const hasFilteredTemplates = sortedFormTemplates.length > 0;
+
+  if (isLoadingTemplates) {
+    return <FormLoading />;
+  }
+
   return (
     <>
       <Flex
@@ -257,14 +266,41 @@ function TemplateDirectory() {
             )}
           </Flex>
         )}
-        <TemplateSelectGrid
-          formTemplates={sortedFormTemplates}
-          allowCreate={false}
-          handleSelectTemplate={(template: FormTemplateEntity) =>
-            setFormTemplate(template)
-          }
-          selectedFormTemplate={formTemplate}
-        />
+
+        {hasTemplates ? (
+          hasFilteredTemplates ? (
+            <TemplateSelectGrid
+              formTemplates={sortedFormTemplates}
+              allowCreate={false}
+              handleSelectTemplate={(template: FormTemplateEntity) =>
+                setFormTemplate(template)
+              }
+              selectedFormTemplate={formTemplate}
+            />
+          ) : (
+            <Center
+              borderWidth="1px"
+              borderRadius="8px"
+              py="80px"
+              backgroundColor="white"
+            >
+              <Text fontSize="16px" color="#5E5E5E">
+                No templates match your search
+              </Text>
+            </Center>
+          )
+        ) : (
+          <Center
+            borderWidth="1px"
+            borderRadius="8px"
+            py="80px"
+            backgroundColor="white"
+          >
+            <Text fontSize="16px" color="#5E5E5E">
+              No form templates available
+            </Text>
+          </Center>
+        )}
 
         {/* Infinite scroll loading trigger */}
         {hasNextPage && (

@@ -4,6 +4,7 @@ import { FormInteractionType } from '@web/components/createForm/types';
 import { UploadBox } from '@web/components/createFormTemplate/UploadBox';
 import isAuth from '@web/components/isAuth';
 import { useCreateFormTemplate } from '@web/context/CreateFormTemplateContext';
+import { useRouterContext } from '@web/context/RouterProvider';
 import { useRouter } from 'next/router';
 import { pdfjs } from 'react-pdf';
 
@@ -13,6 +14,7 @@ import { pdfjs } from 'react-pdf';
 function Upload() {
   const router = useRouter();
   const { pdfFile, setPdfFile, setFormDimensions } = useCreateFormTemplate();
+  const { isRouteChanging } = useRouterContext();
 
   return (
     <FormLayout
@@ -53,7 +55,8 @@ function Upload() {
       }}
       backLink={'/'}
       review={false}
-      disabled={!pdfFile}
+      disabled={!pdfFile || isRouteChanging}
+      loading={isRouteChanging}
     />
   );
 }

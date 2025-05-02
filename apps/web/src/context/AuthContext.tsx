@@ -12,7 +12,7 @@ import { useMsal } from '@azure/msal-react';
 import { loginRequest } from '@web/authConfig';
 import { callMsGraph, GraphUser } from '@web/graph';
 import { useMutation } from '@tanstack/react-query';
-import { appControllerRegister, OnboardEmployeeDto, Scope } from '@web/client';
+import { OnboardEmployeeDto, Scope } from '@web/client';
 
 import {
   appControllerLogin,
@@ -106,17 +106,6 @@ export const AuthProvider = ({ children }: any) => {
       .finally(() => setLoadingInitial(false));
   }, []);
 
-  useEffect(() => {
-    if (
-      !router.pathname.includes('register') &&
-      !loadingInitial &&
-      user &&
-      user.position?.id === null
-    ) {
-      router.push('/register');
-    }
-  }, [loadingInitial, router, user]);
-
   // Flags the component loading state and posts the login
   // data to the server.
   //
@@ -126,7 +115,10 @@ export const AuthProvider = ({ children }: any) => {
   // Finally, just signal the component that loading the
   // loading state is over.
   const login = useCallback(
-    (email: string, password: string) => {
+    async (email: string, password: string) => {
+      if (email.trim() === '' || password.trim() === '') {
+        return Promise.resolve(false);
+      }
       return appControllerLogin({
         client: client,
         body: {
@@ -150,51 +142,44 @@ export const AuthProvider = ({ children }: any) => {
   );
 
   const azureLogin = useCallback(async () => {
-    // Get the access token for the Microsoft Graph API
-    const getAccessToken = async () => {
-      const response = await instance.acquireTokenSilent({
-        ...loginRequest,
-        account: instance.getAllAccounts()[0],
-      });
-      return response.accessToken;
-    };
+    try {
+      // Get the access token for the Microsoft Graph API
+      const getAccessToken = async () => {
+        const response = await instance.acquireTokenSilent({
+          ...loginRequest,
+          account: instance.getAllAccounts()[0],
+        });
+        return response.accessToken;
+      };
 
-    // Request the profile data from the Microsoft Graph API
-    const requestProfileData = async (accessToken: string) => {
-      try {
-        const profileData = await callMsGraph(accessToken);
-        return profileData;
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
-        throw error;
-      }
-    };
+      // Request the profile data from the Microsoft Graph API
+      const requestProfileData = async (accessToken: string) => {
+        try {
+          const profileData = await callMsGraph(accessToken);
+          return profileData;
+        } catch (error) {
+          throw error;
+        }
+      };
 
-    await instance.loginPopup(loginRequest);
+      await instance.loginPopup(loginRequest);
 
-    const accessToken = await getAccessToken();
-    const graphUser = await requestProfileData(accessToken);
+      const accessToken = await getAccessToken();
+      const graphUser = await requestProfileData(accessToken);
 
-    if (!graphUser) {
-      throw new Error('Azure user data not found');
-    }
-
-    setAzureUser(graphUser);
-
-    if (!(await login(graphUser?.mail, graphUser?.id))) {
       if (!graphUser) {
         throw new Error('Azure user data not found');
       }
-      await appControllerRegister({
-        body: {
-          firstName: graphUser.givenName ?? graphUser.displayName.split(' ')[0],
-          lastName: graphUser.surname ?? graphUser.displayName.split(' ')[1],
-          email: graphUser.mail,
-          password: graphUser.id,
-          accessToken: accessToken,
-        },
-      });
-      await login(graphUser.mail, graphUser.id);
+
+      setAzureUser(graphUser);
+
+      if (!(await login(graphUser.mail, graphUser.id))) {
+        // if user is not registered, throw an error
+        throw new Error('User not registered');
+      }
+      return true;
+    } catch (error) {
+      return false;
     }
   }, [instance, login]);
 

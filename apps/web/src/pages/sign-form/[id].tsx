@@ -99,7 +99,7 @@ export function SignFormPage() {
         }}
         backLink={'/'}
         disabled={isLoading}
-        loading={false}
+        loading={isLoading}
       />
     </>
   );

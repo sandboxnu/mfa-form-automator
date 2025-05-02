@@ -21,9 +21,10 @@ export type EmployeeData = {
   firstName: string;
   lastName: string;
   email: string;
-  positionId: string;
+  positionId?: string;
   signatureLink: string;
   scope: EmployeeScope;
+  passwordHash?: string;
 };
 
 export type TemplateBoxData = {

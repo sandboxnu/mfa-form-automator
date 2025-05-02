@@ -14,6 +14,7 @@ import { Toaster, toaster } from '@web/components/ui/toaster';
 import SignatureCanvas from 'react-signature-canvas';
 import { createSignatureImage } from '@web/utils/signatureUtils';
 
+// we never navigate to this page, but keeping it for now
 function Register() {
   const router = useRouter();
   const { completeRegistration, user } = useAuth();
@@ -70,7 +71,6 @@ function Register() {
         type: 'error',
         duration: 3000,
       });
-      console.error('Error during registration:', error);
     }
   };
 

@@ -6,7 +6,7 @@ import isAuth from '@web/components/isAuth';
 import { Scope } from '@web/client';
 import { FormInteractionType } from '@web/components/createForm/types';
 import { useRouter } from 'next/router';
-import Error from '@web/components/Error';
+import { useRouterContext } from '@web/context/RouterProvider';
 
 /**
  * The upload page in the form template creation flow, where users add their pdf.
@@ -24,6 +24,7 @@ function InputFields() {
   } = useCreateFormTemplate();
 
   const router = useRouter();
+  const { isRouteChanging } = useRouterContext();
 
   if (!formDimensions || !formFields) {
     return <></>;
@@ -55,12 +56,13 @@ function InputFields() {
         router.push('/form-template/create/review');
       }}
       backLink={'/form-template/create/description'}
-      // TODO set disabled based on some state in the pdf editor component
       disabled={
         Object.values(formFields)
           .map((page) => Array.from(page.values()))
-          .reduce((prev, curr) => prev + curr.length, 0) === 0
+          .reduce((prev, curr) => prev + curr.length, 0) === 0 ||
+        isRouteChanging
       }
+      loading={isRouteChanging}
     />
   );
 }

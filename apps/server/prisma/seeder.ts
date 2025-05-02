@@ -30,105 +30,225 @@ export class Seeder {
     this.formInstances = formInstances;
   }
 
-  async seed() {
-    for (const department of this.departments) {
-      await this.upsertDepartment(department);
-    }
+  /**
+   * Clears all tables in the database by temporarily disabling foreign key constraints
+   */
+  async clearAllTables() {
+    try {
+      console.log('Starting database clear operation...');
 
-    // make sure that departments specified in each position are valid
-    for (const position of this.positions) {
-      if (!this.departments.find((dept) => dept.id === position.departmentId)) {
-        throw new Error('Department not found for position');
-      }
-    }
-    for (const position of this.positions) {
-      await this.upsertPosition(position);
-    }
+      // Determine database type
+      const databaseUrl = process.env.DATABASE_URL || '';
+      const isPostgres =
+        databaseUrl.includes('postgres') || databaseUrl.includes('postgresql');
+      const isMySql = databaseUrl.includes('mysql');
+      const isSqlite = databaseUrl.includes('sqlite');
 
-    // make sure that positions specified in each employee are valid
-    for (const employee of this.employees) {
-      if (!this.positions.find((pos) => pos.id === employee.positionId)) {
-        throw new Error('Position not found for employee');
+      // Disable foreign key constraints based on database type
+      if (isPostgres) {
+        console.log('Detected PostgreSQL database');
+        await this.prisma.$executeRawUnsafe(
+          `SET session_replication_role = 'replica';`,
+        );
+      } else if (isMySql) {
+        console.log('Detected MySQL database');
+        await this.prisma.$executeRawUnsafe(`SET FOREIGN_KEY_CHECKS = 0;`);
+      } else if (isSqlite) {
+        console.log('Detected SQLite database');
+        await this.prisma.$executeRawUnsafe(`PRAGMA foreign_keys = OFF;`);
+      } else {
+        console.log(
+          'Database type not detected, attempting operation without specific FK handling',
+        );
       }
-    }
-    for (const employee of this.employees) {
-      await this.upsertEmployee(employee);
-    }
 
-    for (const formTemplate of this.formTemplates) {
-      await this.upsertFormTemplate(formTemplate);
-    }
+      console.log('Foreign key constraints disabled');
 
-    // make sure that form templates specified in each form instance are valid
-    for (const formInstance of this.formInstances) {
-      if (
-        !this.formTemplates.find(
-          (temp) => temp.id === formInstance.formTemplateId,
-        )
-      ) {
-        throw new Error('Form template not found for form instance');
+      // Clear tables in reverse order of dependencies
+      const tableDeleteOperations = [
+        this.prisma.instanceBox.deleteMany(),
+        this.prisma.assignedGroup.deleteMany(),
+        this.prisma.formInstance.deleteMany(),
+        this.prisma.templateBox.deleteMany(),
+        this.prisma.fieldGroup.deleteMany(),
+        this.prisma.formTemplate.deleteMany(),
+        this.prisma.employee.deleteMany(),
+        this.prisma.position.deleteMany(),
+        this.prisma.department.deleteMany(),
+      ];
+
+      // Execute all delete operations
+      const results = await this.prisma.$transaction(tableDeleteOperations);
+
+      // Log results
+      const tableNames = [
+        'InstanceBox',
+        'AssignedGroup',
+        'FormInstance',
+        'TemplateBox',
+        'FieldGroup',
+        'FormTemplate',
+        'Employee',
+        'Position',
+        'Department',
+      ];
+
+      results.forEach((result, index) => {
+        console.log(
+          `Cleared ${tableNames[index]}: ${result.count} records deleted`,
+        );
+      });
+
+      // Re-enable foreign key constraints
+      if (isPostgres) {
+        await this.prisma.$executeRawUnsafe(
+          `SET session_replication_role = 'origin';`,
+        );
+      } else if (isMySql) {
+        await this.prisma.$executeRawUnsafe(`SET FOREIGN_KEY_CHECKS = 1;`);
+      } else if (isSqlite) {
+        await this.prisma.$executeRawUnsafe(`PRAGMA foreign_keys = ON;`);
       }
+
+      console.log('Foreign key constraints re-enabled');
+      console.log('All tables cleared successfully');
+    } catch (error) {
+      console.error('Error clearing database tables:', error);
+      throw error;
     }
-    // make sure that originator ids are all valid employees
-    for (const formInstance of this.formInstances) {
-      if (!this.employees.find((emp) => emp.id === formInstance.originatorId)) {
-        throw new Error('Originator not found for form instance');
+  }
+
+  /**
+   * Seed the database with test data
+   * @param clearFirst If true, clear all tables before seeding (default: false)
+   */
+  async seed(clearFirst = false, clearOnly = false) {
+    try {
+      if (clearFirst) {
+        console.log('Clearing existing data before seeding...');
+        await this.clearAllTables();
+
+        if (clearOnly) {
+          console.log('Clear operation completed successfully');
+          await this.closeConnection();
+          return;
+        }
       }
-    }
-    // make sure assigned group signer ids are all valid employees, positions, or departments
-    for (const formInstance of this.formInstances) {
-      for (const assignedGroup of formInstance.assignedGroups) {
-        if (assignedGroup.signerType === 'USER') {
-          if (!assignedGroup.signerEmployeeId) {
-            throw new Error('Missing signer employee id');
-          }
-          if (
-            !this.employees.find(
-              (emp) => emp.id === assignedGroup.signerEmployeeId,
-            )
-          ) {
-            throw new Error('Signer employee not found for assigned group');
-          }
-        } else if (assignedGroup.signerType === 'POSITION') {
-          if (!assignedGroup.signerPositionId) {
-            throw new Error('Missing signer position id');
-          }
-          if (
-            !this.positions.find(
-              (pos) => pos.id === assignedGroup.signerPositionId,
-            )
-          ) {
-            throw new Error('Signer position not found for assigned group');
-          }
-        } else if (assignedGroup.signerType === 'DEPARTMENT') {
-          if (!assignedGroup.signerDepartmentId) {
-            throw new Error('Missing signer department id');
-          }
-          if (
-            !this.departments.find(
-              (dept) => dept.id === assignedGroup.signerDepartmentId,
-            )
-          ) {
-            throw new Error('Signer department not found for assigned group');
-          }
-        } else if (assignedGroup.signerType === 'USER_LIST') {
-          if (!assignedGroup.signerEmployeeList) {
-            throw new Error('Missing signer employee list');
-          }
-          for (const emp of assignedGroup.signerEmployeeList) {
-            if (!this.employees.find((e) => e.id === emp.id)) {
-              throw new Error('Signer employee not found in list');
+
+      console.log('Starting seed operation...');
+
+      for (const department of this.departments) {
+        await this.upsertDepartment(department);
+      }
+
+      // make sure that departments specified in each position are valid
+      for (const position of this.positions) {
+        if (
+          !this.departments.find((dept) => dept.id === position.departmentId)
+        ) {
+          throw new Error('Department not found for position');
+        }
+      }
+      for (const position of this.positions) {
+        await this.upsertPosition(position);
+      }
+
+      // make sure that positions specified in each employee are valid
+      for (const employee of this.employees) {
+        if (
+          employee.positionId &&
+          !this.positions.find((pos) => pos.id === employee.positionId)
+        ) {
+          throw new Error('Position not found for employee');
+        }
+      }
+      for (const employee of this.employees) {
+        await this.upsertEmployee(employee);
+      }
+
+      for (const formTemplate of this.formTemplates) {
+        await this.upsertFormTemplate(formTemplate);
+      }
+
+      // make sure that form templates specified in each form instance are valid
+      for (const formInstance of this.formInstances) {
+        if (
+          !this.formTemplates.find(
+            (temp) => temp.id === formInstance.formTemplateId,
+          )
+        ) {
+          throw new Error('Form template not found for form instance');
+        }
+      }
+      // make sure that originator ids are all valid employees
+      for (const formInstance of this.formInstances) {
+        if (
+          !this.employees.find((emp) => emp.id === formInstance.originatorId)
+        ) {
+          throw new Error('Originator not found for form instance');
+        }
+      }
+      // make sure assigned group signer ids are all valid employees, positions, or departments
+      for (const formInstance of this.formInstances) {
+        for (const assignedGroup of formInstance.assignedGroups) {
+          if (assignedGroup.signerType === 'USER') {
+            if (!assignedGroup.signerEmployeeId) {
+              throw new Error('Missing signer employee id');
+            }
+            if (
+              !this.employees.find(
+                (emp) => emp.id === assignedGroup.signerEmployeeId,
+              )
+            ) {
+              throw new Error('Signer employee not found for assigned group');
+            }
+          } else if (assignedGroup.signerType === 'POSITION') {
+            if (!assignedGroup.signerPositionId) {
+              throw new Error('Missing signer position id');
+            }
+            if (
+              !this.positions.find(
+                (pos) => pos.id === assignedGroup.signerPositionId,
+              )
+            ) {
+              throw new Error('Signer position not found for assigned group');
+            }
+          } else if (assignedGroup.signerType === 'DEPARTMENT') {
+            if (!assignedGroup.signerDepartmentId) {
+              throw new Error('Missing signer department id');
+            }
+            if (
+              !this.departments.find(
+                (dept) => dept.id === assignedGroup.signerDepartmentId,
+              )
+            ) {
+              throw new Error('Signer department not found for assigned group');
+            }
+          } else if (assignedGroup.signerType === 'USER_LIST') {
+            if (!assignedGroup.signerEmployeeList) {
+              throw new Error('Missing signer employee list');
+            }
+            for (const emp of assignedGroup.signerEmployeeList) {
+              if (!this.employees.find((e) => e.id === emp.id)) {
+                throw new Error('Signer employee not found in list');
+              }
             }
           }
         }
       }
-    }
-    for (const formInstance of this.formInstances) {
-      await this.upsertFormInstance(formInstance);
-    }
+      for (const formInstance of this.formInstances) {
+        await this.upsertFormInstance(formInstance);
+      }
 
-    this.logSeededData();
-    this.closeConnection();
+      this.logSeededData();
+      this.closeConnection();
+
+      console.log('Seed operation completed successfully');
+    } catch (error) {
+      console.error('Error during seed operation:', error);
+      await this.closeConnection();
+      throw error;
+    }
   }
 
   private async upsertPosition(data: PositionData) {
@@ -159,8 +279,16 @@ export class Seeder {
   }
 
   private async upsertEmployee(data: EmployeeData) {
-    const { id, firstName, lastName, email, signatureLink, positionId, scope } =
-      data;
+    const {
+      id,
+      firstName,
+      lastName,
+      email,
+      signatureLink,
+      positionId,
+      scope,
+      passwordHash,
+    } = data;
 
     return await this.prisma.employee.upsert({
       where: { id: id },
@@ -171,11 +299,10 @@ export class Seeder {
         lastName: lastName,
         email: email,
         signatureLink: signatureLink,
-        position: {
-          connect: { id: positionId },
-        },
+        positionId: positionId ?? undefined,
         scope: scope,
         isActive: true,
+        pswdHash: passwordHash ?? undefined,
       },
     });
   }
@@ -354,8 +481,6 @@ export class Seeder {
       },
     });
     console.log('Form Instances:', allFormInstances);
-
-    await this.prisma.$disconnect();
   }
 
   async closeConnection() {
