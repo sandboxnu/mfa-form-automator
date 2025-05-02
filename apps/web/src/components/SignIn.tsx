@@ -16,9 +16,7 @@ export const SignIn: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    setLoading(true);
     const loginResult = await login(loginForm.email, loginForm.password);
-    setLoading(false);
     return loginResult;
   };
 
@@ -49,6 +47,7 @@ export const SignIn: React.FC = () => {
         color="#FFF"
         marginBottom="20px"
         onClick={async () => {
+          setLoading(true);
           try {
             if (!(await handleLogin())) {
               toaster.create({
@@ -67,6 +66,7 @@ export const SignIn: React.FC = () => {
               duration: 3000,
             });
           }
+          setLoading(false);
         }}
         loading={loading}
         disabled={loading}

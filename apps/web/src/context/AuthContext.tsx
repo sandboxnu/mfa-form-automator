@@ -22,6 +22,7 @@ import {
 } from '../client';
 import { client } from '@web/client/client.gen';
 import { employeesControllerOnboardEmployeeMutation } from '@web/client/@tanstack/react-query.gen';
+import { AxiosError } from 'axios';
 // Reference: https://blog.finiam.com/blog/predictable-react-authentication-with-the-context-api
 
 export const AuthContext = createContext<AuthContextType>(
@@ -127,6 +128,11 @@ export const AuthProvider = ({ children }: any) => {
         },
       })
         .then(async (response) => {
+          if (response instanceof AxiosError) {
+            if (response.response?.status === 401) {
+              throw new Error('Invalid email or password');
+            }
+          }
           if (response.data == null) {
             return false;
           }
