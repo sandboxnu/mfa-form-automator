@@ -10,10 +10,9 @@ import {
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   DepartmentEntity,
-  EmployeeBaseEntity,
+  EmployeeBaseEntityResponse,
   FieldGroupBaseEntity,
   PositionBaseEntity,
-  SignerType,
 } from '@web/client';
 import { ContextAssignedGroupData } from '@web/context/types';
 import { SignatureDropdownSelect } from './SignatureDropdownSelect';
@@ -33,12 +32,12 @@ export const SignatureDropdown = ({
   border: string;
   background: string;
   positions?: PositionBaseEntity[];
-  employees?: EmployeeBaseEntity[];
+  employees?: EmployeeBaseEntityResponse[];
   departments?: DepartmentEntity[];
   assignedGroupData: ContextAssignedGroupData[];
   setAssignedGroupData: Dispatch<SetStateAction<ContextAssignedGroupData[]>>;
 }) => {
-  const [activeTab, setActiveTab] = useState('Employee');
+  const [activeTab, setActiveTab] = useState<string>('Employee');
   const [options, setOptions] = useState<OptionType[]>(
     employees?.map((emp) => ({
       value: emp.id,
@@ -46,8 +45,7 @@ export const SignatureDropdown = ({
     })) || [],
   );
 
-  // this is not ideal, we should just use on onClick handler fucntion
-  // instead of useEffect
+  // Update options when the active tab changes
   useEffect(() => {
     switch (activeTab) {
       case 'Employee':
@@ -73,19 +71,6 @@ export const SignatureDropdown = ({
     }
   }, [activeTab, employees, positions, departments]);
 
-  const getSignerType = (tab: string): SignerType => {
-    switch (tab) {
-      case 'Employee':
-        return SignerType.USER;
-      case 'Role':
-        return SignerType.POSITION;
-      case 'Department':
-        return SignerType.DEPARTMENT;
-      default:
-        return SignerType.USER;
-    }
-  };
-
   const SignatureGroupItem = ({
     name,
     color,
@@ -103,65 +88,66 @@ export const SignatureDropdown = ({
           backgroundColor={color}
           border={`1px solid ${borderColor}`}
         />
-        <Text font-size="16px" fontWeight="400" whiteSpace={'nowrap'}>
+        <Text fontSize="16px" fontWeight="400" whiteSpace="nowrap">
           {name}
         </Text>
       </Flex>
     );
   };
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    // Remove any existing assignment for this field group when switching tabs
+    setAssignedGroupData((prev) =>
+      prev.filter((group) => group.fieldGroupId !== field.id),
+    );
+  };
+
   return (
-    <>
-      <Box w="100%">
-        <Heading as="h3" color="black" marginTop="7px">
-          <SignatureGroupItem
-            name={field.name}
-            color={background}
-            borderColor={border}
+    <Box w="100%">
+      <Heading as="h3" color="black" marginTop="7px">
+        <SignatureGroupItem
+          name={field.name}
+          color={background}
+          borderColor={border}
+        />
+      </Heading>
+      <VStack align="start" marginTop="12px">
+        <HStack
+          width="360px"
+          gap="0px"
+          borderWidth="1px"
+          borderRadius="4px"
+          overflow="hidden"
+        >
+          {['Employee', 'Role', 'Department'].map((tab) => (
+            <Button
+              key={tab}
+              onClick={() => handleTabChange(tab)}
+              flex="1"
+              borderRadius="0"
+              borderWidth="1px"
+              backgroundColor={activeTab === tab ? 'blue.50' : 'white'}
+              color={activeTab === tab ? '#1367EA' : '#63646B'}
+              fontWeight={activeTab === tab ? '550' : '500'}
+              _hover={{ backgroundColor: 'blue.100' }}
+            >
+              {tab}
+            </Button>
+          ))}
+        </HStack>
+        <Box w="100%">
+          <SignatureDropdownSelect
+            assignedGroupData={assignedGroupData}
+            setAssignedGroupData={setAssignedGroupData}
+            isMulti={activeTab === 'Employee'}
+            fieldGroup={field}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            options={options}
           />
-        </Heading>
-        <VStack align="start" marginTop="12px">
-          <HStack
-            width="360px"
-            gap="0px"
-            borderWidth="1px"
-            borderRadius="4px"
-            overflow="hidden"
-          >
-            {['Employee', 'Role', 'Department'].map((tab) => (
-              <Button
-                key={tab}
-                onClick={() => {
-                  setActiveTab(tab);
-                  setAssignedGroupData((prev) =>
-                    prev.filter((group) => group.fieldGroupId !== field.id),
-                  );
-                }}
-                flex="1"
-                borderRadius="0"
-                borderWidth="1px"
-                backgroundColor={activeTab === tab ? 'blue.50' : 'white'}
-                color={activeTab === tab ? '#1367EA' : '#63646B'}
-                fontWeight={activeTab === tab ? '550' : '500'}
-                _hover={{ backgroundColor: 'blue.100' }}
-              >
-                {tab}
-              </Button>
-            ))}
-          </HStack>
-          <Box w="100%">
-            <SignatureDropdownSelect
-              assignedGroupData={assignedGroupData}
-              setAssignedGroupData={setAssignedGroupData}
-              isMulti={activeTab === 'Employee'}
-              fieldGroup={field}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              options={options}
-            />
-          </Box>
-        </VStack>
-      </Box>
-    </>
+        </Box>
+      </VStack>
+    </Box>
   );
 };

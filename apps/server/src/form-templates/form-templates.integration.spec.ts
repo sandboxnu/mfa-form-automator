@@ -126,7 +126,6 @@ describe('FormTemplatesIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         accessToken: '123456',
       })

@@ -183,6 +183,7 @@ export class FormInstancesService {
             firstName: true,
             lastName: true,
             email: true,
+            isActive: true,
             position: {
               select: {
                 id: true,
@@ -254,6 +255,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signerEmployeeList: {
@@ -262,6 +264,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signingEmployee: {
@@ -270,6 +273,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             instanceBoxes: true,
@@ -370,6 +374,7 @@ export class FormInstancesService {
             firstName: true,
             lastName: true,
             email: true,
+            isActive: true,
             position: {
               select: {
                 id: true,
@@ -441,6 +446,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signerEmployeeList: {
@@ -449,6 +455,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signingEmployee: {
@@ -457,6 +464,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             instanceBoxes: true,
@@ -513,6 +521,7 @@ export class FormInstancesService {
             firstName: true,
             lastName: true,
             email: true,
+            isActive: true,
             position: {
               select: {
                 id: true,
@@ -584,6 +593,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signerEmployeeList: {
@@ -592,6 +602,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signingEmployee: {
@@ -600,6 +611,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             instanceBoxes: true,
@@ -645,6 +657,7 @@ export class FormInstancesService {
             firstName: true,
             lastName: true,
             email: true,
+            isActive: true,
             position: {
               select: {
                 id: true,
@@ -722,6 +735,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signerEmployeeList: {
@@ -730,6 +744,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signingEmployee: {
@@ -738,6 +753,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             instanceBoxes: true,
@@ -790,6 +806,7 @@ export class FormInstancesService {
             firstName: true,
             lastName: true,
             email: true,
+            isActive: true,
             position: {
               select: {
                 id: true,
@@ -867,6 +884,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signerEmployeeList: {
@@ -875,6 +893,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             signingEmployee: {
@@ -883,6 +902,7 @@ export class FormInstancesService {
                 firstName: true,
                 lastName: true,
                 email: true,
+                isActive: true,
               },
             },
             instanceBoxes: true,
@@ -1016,6 +1036,7 @@ export class FormInstancesService {
               firstName: true,
               lastName: true,
               email: true,
+              isActive: true,
               position: {
                 select: {
                   id: true,
@@ -1093,6 +1114,7 @@ export class FormInstancesService {
                   firstName: true,
                   lastName: true,
                   email: true,
+                  isActive: true,
                 },
               },
               signerEmployeeList: {
@@ -1101,6 +1123,7 @@ export class FormInstancesService {
                   firstName: true,
                   lastName: true,
                   email: true,
+                  isActive: true,
                 },
               },
               signingEmployee: {
@@ -1109,6 +1132,7 @@ export class FormInstancesService {
                   firstName: true,
                   lastName: true,
                   email: true,
+                  isActive: true,
                 },
               },
               instanceBoxes: true,
@@ -1406,6 +1430,7 @@ export class FormInstancesService {
                   firstName: true,
                   lastName: true,
                   email: true,
+                  isActive: true,
                 },
               },
               signerEmployeeList: {
@@ -1414,6 +1439,7 @@ export class FormInstancesService {
                   firstName: true,
                   lastName: true,
                   email: true,
+                  isActive: true,
                 },
               },
               signingEmployee: {
@@ -1422,6 +1448,7 @@ export class FormInstancesService {
                   firstName: true,
                   lastName: true,
                   email: true,
+                  isActive: true,
                 },
               },
               instanceBoxes: true,

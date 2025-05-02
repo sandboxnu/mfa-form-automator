@@ -86,9 +86,16 @@ export const TopBar: React.FC = () => {
                       <UserProfileAvatar
                         firstName={user.firstName}
                         lastName={user.lastName}
+                        bg="#1367EA"
+                        color="white"
                       />
                     ) : (
-                      <UserProfileAvatar firstName="Default" lastName="User" />
+                      <UserProfileAvatar
+                        firstName="Default"
+                        lastName="User"
+                        bg="#1367EA"
+                        color="white"
+                      />
                     )}
                   </IconButton>
                 </Flex>

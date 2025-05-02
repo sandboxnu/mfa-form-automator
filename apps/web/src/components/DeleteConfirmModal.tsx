@@ -14,6 +14,9 @@ export const DeleteConfirmModal = ({
   deleteObjectName,
   deleteObjectType,
   isLoading,
+  title,
+  actionText = 'Remove',
+  description,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -21,6 +24,9 @@ export const DeleteConfirmModal = ({
   deleteObjectName: string;
   deleteObjectType: string;
   isLoading: boolean;
+  title?: string;
+  actionText?: string;
+  description?: string;
 }) => {
   return (
     <Dialog.Root
@@ -44,14 +50,18 @@ export const DeleteConfirmModal = ({
               borderRadius={'5px'}
             >
               <Flex fontSize="19px" fontWeight="700">
-                Delete {deleteObjectType}?
+                {title || `Delete ${deleteObjectType}?`}
               </Flex>
               <Text textAlign={'center'}>
-                Are you sure you want to remove{' '}
-                <em>
-                  <strong>{deleteObjectName} </strong>
-                </em>
-                from the directory permanently?
+                {description || (
+                  <>
+                    Are you sure you want to remove{' '}
+                    <em>
+                      <strong>{deleteObjectName} </strong>
+                    </em>
+                    from the directory permanently?
+                  </>
+                )}
               </Text>
               <Flex
                 justifyContent={'center'}
@@ -88,7 +98,7 @@ export const DeleteConfirmModal = ({
                   onClick={onConfirm}
                   loading={isLoading}
                 >
-                  Remove
+                  {actionText}
                 </Button>
               </Flex>
             </Flex>

@@ -6,7 +6,6 @@ import {
   CompletedIcon,
   PlusIcon,
   FormInstanceIcon,
-  GrayPencilIcon,
   DropdownDownArrow,
   DropdownUpArrow,
   TemplateFolder,
@@ -14,6 +13,7 @@ import {
   InstancesIcon,
   InstancesIconActive,
 } from 'apps/web/src/static/icons.tsx';
+import { FiEdit2 } from 'react-icons/fi';
 import Link from 'next/link';
 import {
   MenuContent,
@@ -56,8 +56,10 @@ const icons = {
     <CompletedIcon boxSize="24px" color="black" stroke="black" fill="black" />
   ),
   formInstance: <FormInstanceIcon boxSize="24px" mr="2" />,
-  test: <GrayPencilIcon boxSize="24px" mr="2" />,
-  testActive: <GrayPencilIcon boxSize="24px" mr="2" />,
+  test: <FiEdit2 size={24} style={{ marginRight: '8px' }} color="#4A5568" />,
+  testActive: (
+    <FiEdit2 size={24} style={{ marginRight: '8px' }} color="black" />
+  ),
   template: <TemplateFolder boxSize="24px" mr="2" fill="#5E5E5E" />,
   templateActive: <TemplateFolder boxSize="24px" mr="2" fill="black" />,
   employeeDirectory: (

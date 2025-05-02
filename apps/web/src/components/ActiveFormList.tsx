@@ -132,6 +132,7 @@ export const ActiveFormList = ({ title }: { title: string }) => {
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 setSortOption={setSortOption}
+                placeholder="Search forms"
               />
             </Box>
           </Flex>

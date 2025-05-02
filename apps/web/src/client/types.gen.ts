@@ -36,6 +36,7 @@ export type EmployeeSecureEntityHydrated = {
   email: string;
   signatureLink: string | null;
   scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
+  isActive: boolean;
   position: PositionBaseEntity | null;
   positionId: string | null;
   pswdHash: string | null;
@@ -49,7 +50,6 @@ export type CreateEmployeeDto = {
   lastName: string;
   positionId?: string | null;
   email: string;
-  password: string;
   scope: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
   accessToken: string;
 };
@@ -82,6 +82,7 @@ export type EmployeeBaseEntity = {
   firstName: string;
   lastName: string;
   email: string;
+  isActive: boolean;
 };
 
 export type UpdateEmployeeDto = {
@@ -91,6 +92,7 @@ export type UpdateEmployeeDto = {
   scope?: 'BASE_USER' | 'CONTRIBUTOR' | 'ADMIN';
   accessToken?: string;
   signatureLink?: string;
+  isActive?: boolean;
 };
 
 export type CreatePositionDto = {
@@ -441,6 +443,10 @@ export type EmployeesControllerFindAllData = {
      * If true, returns secure employee data
      */
     secure?: boolean;
+    /**
+     * Optional sorting parameter
+     */
+    sortBy?: string;
   };
   url: '/api/employees';
 };
@@ -521,6 +527,44 @@ export type EmployeesControllerOnboardEmployeeResponses = {
 
 export type EmployeesControllerOnboardEmployeeResponse =
   EmployeesControllerOnboardEmployeeResponses[keyof EmployeesControllerOnboardEmployeeResponses];
+
+export type EmployeesControllerFindAllDisabledData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * Limit on number of employees to return
+     */
+    limit?: number;
+    /**
+     * If true, returns secure employee data
+     */
+    secure?: boolean;
+    /**
+     * Optional sorting parameter
+     */
+    sortBy?: string;
+  };
+  url: '/api/employees/disabled';
+};
+
+export type EmployeesControllerFindAllDisabledErrors = {
+  /**
+   * Bad Request
+   */
+  400: unknown;
+  /**
+   * Unauthorized Request
+   */
+  403: unknown;
+};
+
+export type EmployeesControllerFindAllDisabledResponses = {
+  200: EmployeesFindAllResponse;
+};
+
+export type EmployeesControllerFindAllDisabledResponse =
+  EmployeesControllerFindAllDisabledResponses[keyof EmployeesControllerFindAllDisabledResponses];
 
 export type EmployeesControllerFindMeData = {
   body?: never;

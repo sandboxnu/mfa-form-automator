@@ -93,7 +93,6 @@ export function SignFormPage() {
         submitFunction={async () => {
           setIsLoading(true);
           await nextSignFormPage(`/`, false);
-          console.log('Form submitted successfully');
           router.push(`/sign-form/review/${id}`).then(() => {
             setIsLoading(false);
           });

@@ -13,6 +13,7 @@ export type SearchAndSortProps<
   setSortOption: React.Dispatch<SortBy>;
   sortedForms?: T[];
   setSortedForms?: React.Dispatch<SetStateAction<T[]>>;
+  placeholder?: string;
 };
 
 /**
@@ -26,6 +27,7 @@ export const SearchAndSort = <
   setSortOption,
   sortedForms,
   setSortedForms,
+  placeholder,
 }: SearchAndSortProps<T>) => {
   const [showSearchField, setShowSearchField] = useState(false);
   const [showButton, setShowButton] = useState(true);
@@ -117,7 +119,7 @@ export const SearchAndSort = <
                   borderColor: '#595959',
                   boxShadow: 'none',
                 }}
-                placeholder="Search for forms"
+                placeholder={placeholder}
                 value={searchQuery}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setSearchQuery(e.target.value)

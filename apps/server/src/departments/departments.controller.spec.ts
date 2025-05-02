@@ -134,9 +134,17 @@ describe('DepartmentsController', () => {
         .spyOn(departmentsService, 'findOne')
         .mockImplementation(async (id) => {
           if (id === departmentId) {
-            return department as any;
+            return department;
           }
-          return null as any;
+          throw new Prisma.PrismaClientKnownRequestError(
+            'Department not found',
+            {
+              code: 'P2025',
+              clientVersion: '',
+              meta: undefined,
+              batchRequestIdx: undefined,
+            },
+          );
         });
 
       const result = await controller.findOne(departmentId);
@@ -151,9 +159,22 @@ describe('DepartmentsController', () => {
         .spyOn(departmentsService, 'findOne')
         .mockImplementation(async (id) => {
           if (id === invalidDepartmentId) {
-            return null as any; // Cast to the expected type.
+            throw new Prisma.PrismaClientKnownRequestError(
+              'Department not found',
+              {
+                code: 'P2025',
+                clientVersion: '',
+                meta: undefined,
+                batchRequestIdx: undefined,
+              },
+            );
           }
-          // Handle other IDs if needed.
+          return {
+            id: 'id',
+            name: 'Department Name',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
         });
 
       await expect(

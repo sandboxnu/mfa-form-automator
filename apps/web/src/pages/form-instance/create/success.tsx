@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 function Success() {
-  const { setFormInstanceUseId, formInstanceUseId } = useEditFormInstance();
+  const { setFormInstanceUseId, formInstanceData } = useEditFormInstance();
   const router = useRouter();
 
   useEffect(() => {
@@ -14,12 +14,16 @@ function Success() {
     }
   }, [router.query]);
 
+  if (!formInstanceData) {
+    return <></>;
+  }
+
   return (
     <SuccessPage
       message={'Your form instance has been created!'}
       linkText={'Edit Form'}
       linkAction={() => {
-        router.push(`/form-instance/${formInstanceUseId}/edit/description`);
+        router.push(`/form-instance/${formInstanceData.id}/edit/description`);
       }}
     />
   );

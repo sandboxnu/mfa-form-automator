@@ -175,6 +175,7 @@ export class Seeder {
           connect: { id: positionId },
         },
         scope: scope,
+        isActive: true,
       },
     });
   }

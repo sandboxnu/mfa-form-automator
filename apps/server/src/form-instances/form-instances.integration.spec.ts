@@ -131,7 +131,6 @@ describe('FormInstancesIntegrationTest', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.ADMIN,
         accessToken: '123456',
       })
@@ -141,7 +140,6 @@ describe('FormInstancesIntegrationTest', () => {
         firstName: 'Jane',
         lastName: 'Doe',
         email: 'jane.doe@example.com',
-        password: 'password',
         scope: $Enums.EmployeeScope.BASE_USER,
         accessToken: '123456',
       })

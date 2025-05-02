@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   ValidationPipe,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -42,6 +43,7 @@ import {
   EmployeeBaseEntityResponse,
   EmployeesFindAllResponse,
 } from './responses/employees-find-all.response';
+import { SortOption } from '../utils';
 
 @ApiTags('employees')
 @Controller('employees')
@@ -64,8 +66,21 @@ export class EmployeesController {
     @Body(new ValidationPipe({ transform: true }))
     createEmployeeDto: CreateEmployeeDto,
   ) {
-    const newEmployee = await this.employeesService.create(createEmployeeDto);
-    return new EmployeeSecureEntityHydrated(newEmployee);
+    try {
+      const newEmployee = await this.employeesService.create(createEmployeeDto);
+      return new EmployeeSecureEntityHydrated(newEmployee);
+    } catch (e) {
+      if (e instanceof Error) {
+        if (e.message === EmployeeErrorMessage.EMPLOYEE_EMAIL_ALREADY_EXISTS) {
+          this.loggerService.error(
+            EmployeeErrorMessage.EMPLOYEE_EMAIL_ALREADY_EXISTS,
+          );
+          throw new UnprocessableEntityException(
+            EmployeeErrorMessage.EMPLOYEE_EMAIL_ALREADY_EXISTS,
+          );
+        }
+      }
+    }
   }
 
   @Patch('/onboarding')
@@ -105,10 +120,17 @@ export class EmployeesController {
     description: 'If true, returns secure employee data',
     required: false,
   })
+  @ApiQuery({
+    name: 'sortBy',
+    type: String,
+    description: 'Optional sorting parameter',
+    required: false,
+  })
   async findAll(
     @AuthUser() currentUser: UserEntity,
     @Query('limit') limit?: number,
     @Query('secure') secure?: string,
+    @Query('sortBy') sortBy?: SortOption,
   ) {
     if (secure === 'true') {
       const currentEmployee = await this.employeesService.findOne(
@@ -117,13 +139,76 @@ export class EmployeesController {
       if (currentEmployee.scope !== EmployeeScope.ADMIN) {
         throw new NotFoundException(AppErrorMessage.FORBIDDEN);
       }
-      const employees = await this.employeesService.findAllSecure(limit);
+      const employees = await this.employeesService.findAllSecure({
+        limit,
+        sortBy,
+      });
       return new EmployeesFindAllResponse(
         employees.length,
         employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
       );
     }
-    const employees = await this.employeesService.findAll(limit);
+    const employees = await this.employeesService.findAll({
+      limit,
+      sortBy,
+    });
+    return new EmployeesFindAllResponse(
+      employees.length,
+      employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
+    );
+  }
+
+  @Get('disabled')
+  @UseGuards(JwtAuthGuard)
+  @ApiOkResponse({ type: EmployeesFindAllResponse })
+  @ApiForbiddenResponse({ description: AppErrorMessage.FORBIDDEN })
+  @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Limit on number of employees to return',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'secure',
+    type: Boolean,
+    description: 'If true, returns secure employee data',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    type: String,
+    description: 'Optional sorting parameter',
+    required: false,
+  })
+  async findAllDisabled(
+    @AuthUser() currentUser: UserEntity,
+    @Query('limit') limit?: number,
+    @Query('secure') secure?: string,
+    @Query('sortBy') sortBy?: SortOption,
+  ) {
+    if (secure === 'true') {
+      const currentEmployee = await this.employeesService.findOne(
+        currentUser.id,
+      );
+      if (currentEmployee.scope !== EmployeeScope.ADMIN) {
+        throw new NotFoundException(AppErrorMessage.FORBIDDEN);
+      }
+      const employees = await this.employeesService.findAllSecure({
+        limit,
+        sortBy,
+        isActive: false,
+      });
+      return new EmployeesFindAllResponse(
+        employees.length,
+        employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
+      );
+    }
+    const employees = await this.employeesService.findAll({
+      limit,
+      sortBy,
+      isActive: false,
+    });
     return new EmployeesFindAllResponse(
       employees.length,
       employees.map((employee) => new EmployeeBaseEntityResponse(employee)),
@@ -199,7 +284,7 @@ export class EmployeesController {
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async remove(@Param('id') id: string) {
     try {
-      await this.employeesService.remove(id);
+      await this.employeesService.deactivate(id);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2016' && e.message.includes('RecordNotFound')) {

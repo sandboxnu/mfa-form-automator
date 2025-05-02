@@ -3,7 +3,7 @@ import {
   DepartmentEntityHydrated,
   PositionEntityEmployeeHydrated,
 } from '@web/client';
-import { GrayPencilIcon } from '@web/static/icons';
+import { FiEdit2 } from 'react-icons/fi';
 import {
   positionsControllerUpdateMutation,
   positionsControllerFindAllQueryKey,
@@ -18,6 +18,7 @@ import { useAuth } from '@web/hooks/useAuth';
 import { RxCross2 } from 'react-icons/rx';
 import { DeleteConfirmModal } from '../DeleteConfirmModal';
 import { RiSubtractFill } from 'react-icons/ri';
+import { Toaster, toaster } from '@web/components/ui/toaster';
 
 export const ModifyPositionCard = ({
   position,
@@ -40,8 +41,16 @@ export const ModifyPositionCard = ({
     onMutate: () => {
       setLoading(true);
     },
-    onError: (_) => {
+    onError: (error) => {
       setLoading(false);
+      toaster.create({
+        title: 'Error',
+        description: `Failed to update position: ${
+          error.message || 'Please try again'
+        }`,
+        type: 'error',
+        duration: 8000,
+      });
     },
     onSuccess: () => {
       setIsEditing(false);
@@ -53,11 +62,27 @@ export const ModifyPositionCard = ({
         queryKey: departmentsControllerFindAllQueryKey(),
       });
       refreshUser();
+      toaster.create({
+        title: 'Success',
+        description: 'Position updated successfully',
+        type: 'success',
+        duration: 8000,
+      });
     },
   });
 
   const updateEmployee = useMutation({
     ...employeesControllerUpdateMutation(),
+    onError: (error) => {
+      toaster.create({
+        title: 'Error',
+        description: `Failed to update employee: ${
+          error.message || 'Please try again'
+        }`,
+        type: 'error',
+        duration: 8000,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: positionsControllerFindAllQueryKey(),
@@ -66,11 +91,29 @@ export const ModifyPositionCard = ({
         queryKey: departmentsControllerFindAllQueryKey(),
       });
       refreshUser();
+      toaster.create({
+        title: 'Success',
+        description: 'Employee updated successfully',
+        type: 'success',
+        duration: 8000,
+      });
     },
   });
 
   const removePosition = useMutation({
     ...positionsControllerRemoveMutation(),
+    onError: (error) => {
+      setLoading(false);
+      setIsDeleteConfirmOpen(false);
+      toaster.create({
+        title: 'Error',
+        description: `Failed to delete position: ${
+          error.message || 'Please try again'
+        }`,
+        type: 'error',
+        duration: 8000,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: positionsControllerFindAllQueryKey(),
@@ -79,6 +122,12 @@ export const ModifyPositionCard = ({
         queryKey: departmentsControllerFindAllQueryKey(),
       });
       refreshUser();
+      toaster.create({
+        title: 'Success',
+        description: 'Position deleted successfully',
+        type: 'success',
+        duration: 8000,
+      });
     },
   });
 
@@ -93,6 +142,12 @@ export const ModifyPositionCard = ({
 
   const handleSave = () => {
     if (positionName.trim() === '' || departmentId === null) {
+      toaster.create({
+        title: 'Error',
+        description: 'Position name and department are required',
+        type: 'error',
+        duration: 8000,
+      });
       return;
     }
     updatePosition.mutate({
@@ -108,29 +163,36 @@ export const ModifyPositionCard = ({
 
   const handleDelete = async () => {
     setLoading(true);
-    await Promise.all(
-      position.employees.map((employee) => {
-        return updateEmployee.mutate({
-          path: {
-            id: employee.id,
-          },
-          body: {
-            positionId: null,
-          },
-        });
-      }),
-    );
+    try {
+      await Promise.all(
+        position.employees.map((employee) => {
+          return updateEmployee.mutate({
+            path: {
+              id: employee.id,
+            },
+            body: {
+              positionId: null,
+            },
+          });
+        }),
+      );
 
-    await removePosition.mutateAsync({
-      path: {
-        id: position.id,
-      },
-    });
-    setLoading(false);
+      await removePosition.mutateAsync({
+        path: {
+          id: position.id,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to delete position:', error);
+    } finally {
+      setIsDeleteConfirmOpen(false);
+      setLoading(false);
+    }
   };
 
   return (
     <>
+      <Toaster />
       <Flex
         borderRadius="5px"
         bg="#FFF"
@@ -251,9 +313,9 @@ export const ModifyPositionCard = ({
             </>
           ) : (
             <>
-              <GrayPencilIcon
-                width="20px"
-                height="20px"
+              <FiEdit2
+                size={20}
+                color="#4A5568"
                 cursor="pointer"
                 onClick={handleEdit}
               />

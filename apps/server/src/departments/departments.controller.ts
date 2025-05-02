@@ -100,16 +100,22 @@ export class DepartmentsController {
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findOne(@Param('id') id: string) {
-    const department = await this.departmentsService.findOne(id);
-
-    if (department == null) {
-      this.loggerService.error(DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND);
-      throw new NotFoundException(
-        DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND_CLIENT,
-      );
+    try {
+      const department = await this.departmentsService.findOne(id);
+      return new DepartmentEntity(department);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          this.loggerService.error(
+            DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND,
+          );
+          throw new NotFoundException(
+            DepartmentsErrorMessage.DEPARTMENT_NOT_FOUND_CLIENT,
+          );
+        }
+      }
+      throw e;
     }
-
-    return new DepartmentEntity(department);
   }
 
   @Get('name/:name')

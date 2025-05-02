@@ -92,6 +92,7 @@ export const EditFormInstanceProvider = ({ children }: any) => {
       value={{
         formInstanceName,
         formInstanceDescription,
+        formInstanceData: formInstanceData ?? null,
         setFormInstanceName,
         setFormInstanceDescription,
         formTemplate,

@@ -136,14 +136,19 @@ export class PositionsController {
   @ApiNotFoundResponse({ description: AppErrorMessage.NOT_FOUND })
   @ApiBadRequestResponse({ description: AppErrorMessage.UNPROCESSABLE_ENTITY })
   async findOne(@Param('id') id: string) {
-    const position = await this.positionsService.findOne(id);
-    if (position == null) {
-      this.loggerService.error(PositionsErrorMessage.POSITION_NOT_FOUND);
-      throw new NotFoundException(
-        PositionsErrorMessage.POSITION_NOT_FOUND_CLIENT,
-      );
+    try {
+      const position = await this.positionsService.findOne(id);
+      return new PositionBaseEntity(position);
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2025') {
+          this.loggerService.error(PositionsErrorMessage.POSITION_NOT_FOUND);
+          throw new NotFoundException(
+            PositionsErrorMessage.POSITION_NOT_FOUND_CLIENT,
+          );
+        }
+      }
     }
-    return new PositionBaseEntity(position);
   }
 
   @Get('name/:name')

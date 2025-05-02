@@ -8,6 +8,7 @@ import AssigneeMap from './AssigneeMap';
 import { Avatar } from './ui/avatar.tsx';
 import { nextSigner, signerIsUser } from '@web/utils/formInstanceUtils';
 import { useRouterContext } from '@web/context/RouterProvider.tsx';
+import { getIsActive } from '@web/utils/misc.ts';
 
 /**
  * Modal used in OverviewRow component for To Do forms
@@ -156,6 +157,7 @@ export const SignFormInstancePreview = ({
                         title: getNameFromAssignedGroup(assignedGroup),
                         signerType: assignedGroup.signerType as SignerType,
                         signedAt: assignedGroup.signed,
+                        isActive: getIsActive(assignedGroup),
                       }),
                     )}
                   />
@@ -163,6 +165,42 @@ export const SignFormInstancePreview = ({
               </Flex>
             </Dialog.Body>
             <Dialog.Footer>
+              {user.id === formInstance.originator.id && (
+                <Button
+                  height="32px"
+                  padding="4px 16px"
+                  borderRadius="6px"
+                  background="#1367EA"
+                  onClick={() =>
+                    router.push(
+                      `/form-instance/${formInstance.id}/edit/description`,
+                    )
+                  }
+                  _hover={{
+                    background: '#1367EA',
+                  }}
+                  loading={isRouteChanging}
+                  disabled={isRouteChanging}
+                >
+                  <Flex gap="8px" alignItems="center" justifyContent="center">
+                    <Text color="#FFF">Edit Form</Text>
+                  </Flex>
+                </Button>
+              )}
+              <Button
+                height="32px"
+                padding="4px 16px"
+                borderRadius="6px"
+                background="#1367EA"
+                onClick={openForm}
+                _hover={{
+                  background: '#1367EA',
+                }}
+              >
+                <Flex gap="8px" alignItems="center" justifyContent="center">
+                  <Text color="#FFF">Open Form </Text>
+                </Flex>
+              </Button>
               {nextAssignedGroup && signerIsUser(nextAssignedGroup, user) && (
                 <Button
                   width="158px"
@@ -184,23 +222,6 @@ export const SignFormInstancePreview = ({
                   </Flex>
                 </Button>
               )}
-              {
-                <Button
-                  height="32px"
-                  padding="4px 16px"
-                  borderRadius="6px"
-                  background="#1367EA"
-                  onClick={openForm}
-                  _hover={{
-                    background: '#1367EA',
-                  }}
-                >
-                  <Flex gap="8px" alignItems="center" justifyContent="center">
-                    <Text color="#FFF">Open Form </Text>
-                  </Flex>
-                </Button>
-              }
-
               {!nextAssignedGroup &&
                 !formInstance.markedCompleted &&
                 user.id === formInstance.originator.id && (

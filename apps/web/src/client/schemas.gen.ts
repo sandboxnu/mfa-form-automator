@@ -91,6 +91,9 @@ export const EmployeeSecureEntityHydratedSchema = {
       type: 'string',
       enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
     },
+    isActive: {
+      type: 'boolean',
+    },
     position: {
       nullable: true,
       allOf: [
@@ -127,6 +130,7 @@ export const EmployeeSecureEntityHydratedSchema = {
     'email',
     'signatureLink',
     'scope',
+    'isActive',
     'position',
     'positionId',
     'pswdHash',
@@ -154,10 +158,6 @@ export const CreateEmployeeDtoSchema = {
       type: 'string',
       format: 'email',
     },
-    password: {
-      type: 'string',
-      minLength: 5,
-    },
     scope: {
       type: 'string',
       enum: ['BASE_USER', 'CONTRIBUTOR', 'ADMIN'],
@@ -166,14 +166,7 @@ export const CreateEmployeeDtoSchema = {
       type: 'string',
     },
   },
-  required: [
-    'firstName',
-    'lastName',
-    'email',
-    'password',
-    'scope',
-    'accessToken',
-  ],
+  required: ['firstName', 'lastName', 'email', 'scope', 'accessToken'],
 } as const;
 
 export const OnboardEmployeeDtoSchema = {
@@ -255,8 +248,11 @@ export const EmployeeBaseEntitySchema = {
     email: {
       type: 'string',
     },
+    isActive: {
+      type: 'boolean',
+    },
   },
-  required: ['id', 'firstName', 'lastName', 'email'],
+  required: ['id', 'firstName', 'lastName', 'email', 'isActive'],
 } as const;
 
 export const UpdateEmployeeDtoSchema = {
@@ -282,6 +278,9 @@ export const UpdateEmployeeDtoSchema = {
     },
     signatureLink: {
       type: 'string',
+    },
+    isActive: {
+      type: 'boolean',
     },
   },
 } as const;

@@ -2,9 +2,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
 import { ValidateEmployeeHandler } from './validate-employee/ValidateEmployeeHandlerInterface';
 import { EmployeeErrorMessage } from './employees.errors';
+import { orderBy, SortOption } from '../utils';
 
 @Injectable()
 export class EmployeesService {
@@ -40,16 +40,25 @@ export class EmployeesService {
    * @returns the created employee, hydrated
    */
   async create(createEmployeeDto: CreateEmployeeDto) {
+    // manually make sure email is unique
+    const existingEmployee = await this.prisma.employee.findFirst({
+      where: {
+        email: createEmployeeDto.email,
+      },
+    });
+
+    if (existingEmployee) {
+      throw new Error(EmployeeErrorMessage.EMPLOYEE_EMAIL_ALREADY_EXISTS);
+    }
+
     const newEmployee = await this.prisma.employee.create({
       data: {
         firstName: createEmployeeDto.firstName,
         lastName: createEmployeeDto.lastName,
         email: createEmployeeDto.email,
-        pswdHash: await bcrypt.hash(
-          createEmployeeDto.password,
-          await bcrypt.genSalt(Number(process.env.SALT_ROUNDS) || 10),
-        ),
+        positionId: createEmployeeDto.positionId,
         scope: createEmployeeDto.scope,
+        isActive: true,
       },
       include: {
         position: {
@@ -74,10 +83,22 @@ export class EmployeesService {
    * @param limit the number of employees we want to retrieve (optional)
    * @returns all employees, hydrated
    */
-  async findAll(limit?: number) {
+  async findAll({
+    limit,
+    sortBy,
+    isActive = true,
+  }: {
+    limit?: number;
+    sortBy?: SortOption;
+    isActive?: boolean;
+  }) {
     const employees = limit
       ? await this.prisma.employee.findMany({
           take: limit,
+          orderBy: orderBy(sortBy, true),
+          where: {
+            isActive: isActive,
+          },
           select: {
             id: true,
             firstName: true,
@@ -86,6 +107,10 @@ export class EmployeesService {
           },
         })
       : await this.prisma.employee.findMany({
+          orderBy: orderBy(sortBy, true),
+          where: {
+            isActive: isActive,
+          },
           select: {
             id: true,
             firstName: true,
@@ -97,9 +122,21 @@ export class EmployeesService {
     return employees;
   }
 
-  async findAllSecure(limit?: number) {
-    return await this.prisma.employee.findMany({
+  async findAllSecure({
+    limit,
+    sortBy,
+    isActive = true,
+  }: {
+    limit?: number;
+    sortBy?: SortOption;
+    isActive?: boolean;
+  }) {
+    const employees = await this.prisma.employee.findMany({
       ...(limit ? { take: limit } : {}),
+      orderBy: orderBy(sortBy, true),
+      where: {
+        isActive: isActive,
+      },
       select: {
         id: true,
         firstName: true,
@@ -120,6 +157,7 @@ export class EmployeesService {
         scope: true,
       },
     });
+    return employees;
   }
 
   /**
@@ -131,6 +169,7 @@ export class EmployeesService {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         id: id,
+        isActive: true,
       },
       include: {
         position: {
@@ -160,6 +199,7 @@ export class EmployeesService {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         AND: [{ id: id }, { refreshToken: refreshToken }],
+        isActive: true,
       },
       include: {
         position: {
@@ -188,6 +228,7 @@ export class EmployeesService {
     const employee = await this.prisma.employee.findFirstOrThrow({
       where: {
         email: email,
+        isActive: true,
       },
       select: {
         id: true,
@@ -248,9 +289,24 @@ export class EmployeesService {
    * @param id the employee id
    */
   async remove(id: string) {
-    await this.prisma.employee.delete({
+    return await this.prisma.employee.delete({
       where: {
         id: id,
+      },
+    });
+  }
+
+  /**
+   * Deactivate an employee by setting isActive to false
+   * @param id the employee id
+   */
+  async deactivate(id: string) {
+    return await this.prisma.employee.update({
+      where: {
+        id: id,
+      },
+      data: {
+        isActive: false,
       },
     });
   }

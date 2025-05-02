@@ -8,7 +8,11 @@ import { Avatar } from './ui/avatar.tsx';
  * @param assignees - an array of assignees
  * @returns a map of assignees with their avatars
  */
-const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
+const AssigneeMap: React.FC<AvatarMapProps> = ({
+  assignees,
+}: {
+  assignees: Assignee[];
+}) => {
   const getInitialsFromTitle = (
     title: string,
     signerType: SignerType,
@@ -25,13 +29,19 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
     }
   };
 
-  let prevAwaiting = false;
+  // Find the index of the first unsigned assignee
+  const firstUnsignedIndex = assignees.findIndex(
+    (assignee) => !assignee.signedAt,
+  );
 
   return (
     <Flex flexDirection="column" gap="24px" position="relative">
       {assignees.map((assignee, index) => {
-        const awaiting = !assignee.signedAt && !prevAwaiting;
-        prevAwaiting = awaiting;
+        // Only the first unsigned assignee is marked as awaiting
+        const awaiting = index === firstUnsignedIndex;
+        // Determine if inactive styling should be applied
+        const isInactive = assignee.isActive === false;
+
         return (
           <Flex key={index} flexDirection="column" alignSelf="stretch">
             <Flex columnGap="8px" alignItems="center">
@@ -44,7 +54,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 boxSize="32px"
                 padding="6px 7px"
                 size="md"
-                color="#0C0C0C"
+                color={isInactive ? '#828282' : '#0C0C0C'}
                 bg={
                   assignee.signedAt
                     ? '#D1F0D4'
@@ -53,14 +63,22 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                     : '#E5E5E5'
                 }
                 border="1px solid #FFFFFF"
+                opacity={isInactive ? 0.7 : 1}
               />
               <Flex
                 justifyContent="space-between"
                 alignItems="center"
                 flex="1 0 0"
               >
-                <Text color="#0C0C0C" fontSize="15px" lineHeight="20px">
+                <Text
+                  color={isInactive ? '#828282' : '#0C0C0C'}
+                  fontSize="15px"
+                  lineHeight="20px"
+                  textDecoration={isInactive ? 'line-through' : 'none'}
+                  opacity={isInactive ? 0.7 : 1}
+                >
                   {assignee.title}
+                  {isInactive && ' (Inactive)'}
                 </Text>
                 <Flex>
                   {assignee.signedAt ? (
@@ -70,6 +88,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                         whiteSpace="nowrap"
                         fontSize="13px"
                         fontWeight="500px"
+                        opacity={isInactive ? 0.7 : 1}
                       >
                         Signed
                       </Text>
@@ -83,6 +102,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                           whiteSpace="nowrap"
                           fontSize="13px"
                           fontWeight="500px"
+                          opacity={isInactive ? 0.7 : 1}
                         >
                           Awaiting Signature
                         </Text>
@@ -104,6 +124,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 fontWeight="400"
                 lineHeight="normal"
                 paddingLeft={'40px'}
+                opacity={isInactive ? 0.7 : 1}
               >
                 {assignee.title}
               </Text>
@@ -113,6 +134,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                   fontSize="13px"
                   fontWeight="400"
                   lineHeight="normal"
+                  opacity={isInactive ? 0.7 : 1}
                 >
                   {new Date(assignee.signedAt).toLocaleDateString()}
                 </Text>
@@ -128,6 +150,7 @@ const AssigneeMap: React.FC<AvatarMapProps> = ({ assignees }) => {
                 marginTop="34px"
                 marginLeft="15.5px"
                 borderLeftColor="#A1A1A1"
+                opacity={isInactive ? 0.5 : 1}
               />
             ) : (
               <></>

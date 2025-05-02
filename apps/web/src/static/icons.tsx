@@ -201,16 +201,20 @@ export const ProfileIcon = createIcon({
 interface UserProfileAvatarProps {
   firstName: string;
   lastName: string;
+  bg?: string;
+  color?: string;
 }
 
 export const UserProfileAvatar: React.FC<UserProfileAvatarProps> = ({
   firstName,
   lastName,
+  bg = '#E2E8F0', // Gray.200 in Chakra UI
+  color = 'black',
 }) => {
   return (
     <Avatar.Root
-      bg="#1367EA"
-      color="white"
+      bg={bg}
+      color={color}
       h="32px"
       w="32px"
       fontSize="16px"
@@ -461,13 +465,17 @@ export const GrayPencilIcon = createIcon({
         fill="#C0C0C0"
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M11.7 18.0031H0V16.2031H11.7V18.0031Z"
         fill="#C0C0C0"
       />
     </>
   ),
+  defaultProps: {
+    width: '20px',
+    height: '20px',
+  },
 });
 
 export const SignoutIcon = createIcon({

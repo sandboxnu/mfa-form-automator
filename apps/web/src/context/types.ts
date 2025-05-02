@@ -1,5 +1,9 @@
 import {
   CreateAssignedGroupDto,
+  EmployeeBaseEntity,
+  EmployeeBaseEntityResponse,
+  EmployeeSecureEntityHydrated,
+  EmployeesFindAllResponse,
   FormInstanceEntity,
   FormTemplateBaseEntity,
   FormTemplateEntity,
@@ -117,6 +121,7 @@ export interface EditFormTemplateContextType {
 export interface EditFormInstanceContextType {
   formInstanceName: string | null;
   formInstanceDescription: string | null;
+  formInstanceData: FormInstanceEntity | null;
   setFormInstanceName: Dispatch<SetStateAction<string | null>>;
   setFormInstanceDescription: Dispatch<SetStateAction<string | null>>;
   formTemplate: FormTemplateEntity | null;

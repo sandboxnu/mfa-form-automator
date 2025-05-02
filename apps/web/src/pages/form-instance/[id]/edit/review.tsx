@@ -16,14 +16,15 @@ import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Error from '@web/components/Error';
+import EditGuard from './EditGuard';
 
 function Review() {
   const {
     formInstanceName,
     formInstanceDescription,
+    formInstanceData,
     formTemplate,
     assignedGroupData,
-    formInstanceUseId,
     pdfFile,
   } = useEditFormInstance();
   const router = useRouter();
@@ -46,6 +47,7 @@ function Review() {
       !formTemplate ||
       !assignedGroupData ||
       !user ||
+      !formInstanceData ||
       assignedGroupData.length != formTemplate.fieldGroups.length ||
       createFormLoading
     ) {
@@ -63,12 +65,12 @@ function Review() {
           assignedGroups: assignedGroupData,
         },
         path: {
-          id: formInstanceUseId!!,
+          id: formInstanceData.id,
         },
       })
       .then(async (response) => {
         router
-          .push('/form-instance/' + formInstanceUseId + '/edit/success')
+          .push('/form-instance/' + formInstanceData.id + '/edit/success')
           .then(() => {
             setCreateFormLoading(false);
           });
@@ -98,28 +100,35 @@ function Review() {
     return <Error secondaryErrorMessage="Error editing instance" />;
   }
 
+  if (!user || !formInstanceData) {
+    return <></>;
+  }
   return (
-    <FormLayout
-      type={FormInteractionType.EditFormInstance}
-      pageNumber={4}
-      heading={'Edit form instance'}
-      subheading={'Review your form instance'}
-      boxContent={
-        <ReviewBox
-          assignedGroupData={assignedGroupData}
-          pdfFile={pdfFile}
-          name={formInstanceName ?? ''}
-          description={formInstanceDescription ?? ''}
-          fieldGroups={formTemplate?.fieldGroups ?? []}
-          formTemplate={formTemplate}
-        />
-      }
-      submitFunction={_submitFormInstance}
-      backLink={'/form-instance/' + formInstanceUseId + '/edit/assign-groups'}
-      review={true}
-      disabled={createFormLoading}
-      loading={createFormLoading}
-    />
+    <EditGuard formInstanceData={formInstanceData} user={user}>
+      <FormLayout
+        type={FormInteractionType.EditFormInstance}
+        pageNumber={4}
+        heading={'Edit form instance'}
+        subheading={'Review your form instance'}
+        boxContent={
+          <ReviewBox
+            assignedGroupData={assignedGroupData}
+            pdfFile={pdfFile}
+            name={formInstanceName ?? ''}
+            description={formInstanceDescription ?? ''}
+            fieldGroups={formTemplate?.fieldGroups ?? []}
+            formTemplate={formTemplate}
+          />
+        }
+        submitFunction={_submitFormInstance}
+        backLink={
+          '/form-instance/' + formInstanceData.id + '/edit/assign-groups'
+        }
+        review={true}
+        disabled={createFormLoading}
+        loading={createFormLoading}
+      />
+    </EditGuard>
   );
 }
 

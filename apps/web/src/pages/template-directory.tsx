@@ -250,6 +250,7 @@ function TemplateDirectory() {
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 setSortOption={setSortOption}
+                placeholder="Search forms"
               />
             ) : (
               <></>
