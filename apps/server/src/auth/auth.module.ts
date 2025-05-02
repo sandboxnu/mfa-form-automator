@@ -7,6 +7,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { DepartmentsModule } from '../departments/departments.module';
 import { PositionsModule } from '../positions/positions.module';
+import { AzureGraphValidateEmployeeHandler } from '../employees/validate-employee/AzureGraphValidateEmployeeHandler';
 
 @Module({
   imports: [
@@ -16,7 +17,15 @@ import { PositionsModule } from '../positions/positions.module';
     PassportModule,
     JwtModule.register({}),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    {
+      provide: 'ValidateEmployeeHandler',
+      useClass: AzureGraphValidateEmployeeHandler,
+    },
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}

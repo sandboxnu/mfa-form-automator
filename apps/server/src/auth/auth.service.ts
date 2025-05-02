@@ -1,15 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { EmployeesService } from '../employees/employees.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { EmployeeSecureEntityHydrated } from '../employees/entities/employee.entity';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ValidateEmployeeHandler } from '../employees/validate-employee/ValidateEmployeeHandlerInterface';
 
 @Injectable()
 export class AuthService {
   constructor(
     private employeesService: EmployeesService,
     private jwtService: JwtService,
+    @Inject('ValidateEmployeeHandler')
+    private validateEmployeeHandler: ValidateEmployeeHandler,
   ) {}
 
   /**
@@ -21,7 +24,16 @@ export class AuthService {
   async validateEmployee(
     email: string,
     pass: string,
+    azureToken?: string, // Optional Azure token for additional validation
   ): Promise<EmployeeSecureEntityHydrated | null> {
+    if (azureToken) {
+      const validAzureUser =
+        await this.validateEmployeeHandler.validateEmployee(azureToken, email);
+      if (!validAzureUser) {
+        return null;
+      }
+    }
+
     try {
       const user = await this.employeesService.findOneByEmailAuth(email);
 

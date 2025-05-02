@@ -36,7 +36,6 @@ import { AssignedGroupModule } from './assigned-group/assigned-group.module';
   controllers: [AppController],
   providers: [
     AppService,
-
     // {
     //   provide: APP_GUARD,
     //   useClass: JwtAuthGuard,

@@ -116,7 +116,7 @@ export const AuthProvider = ({ children }: any) => {
   // Finally, just signal the component that loading the
   // loading state is over.
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string, azureToken?: string) => {
       if (email.trim() === '' || password.trim() === '') {
         return Promise.resolve(false);
       }
@@ -125,6 +125,9 @@ export const AuthProvider = ({ children }: any) => {
         body: {
           username: email,
           password: password,
+        },
+        headers: {
+          'x-azure-token': azureToken ?? undefined, // Optional for Azure login
         },
       })
         .then(async (response) => {
@@ -179,7 +182,7 @@ export const AuthProvider = ({ children }: any) => {
 
       setAzureUser(graphUser);
 
-      if (!(await login(graphUser.mail, graphUser.id))) {
+      if (!(await login(graphUser.mail, graphUser.id, accessToken))) {
         // if user is not registered, throw an error
         throw new Error('User not registered');
       }
